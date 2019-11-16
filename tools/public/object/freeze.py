@@ -19,10 +19,11 @@ class BsMax_OT_UnFreezeAll(Operator):
 
 def freeze_cls(register):
 	classes = [BsMax_OT_FreezeSelected, BsMax_OT_UnFreezeAll]
-	for c in classes:
-		if register: bpy.utils.register_class(c)
-		else: bpy.utils.unregister_class(c)
-	return classes
+
+	if register:
+		[bpy.utils.register_class(c) for c in classes]
+	else:
+		[bpy.utils.unregister_class(c) for c in classes]
 
 if __name__ == '__main__':
 	freeze_cls(True)

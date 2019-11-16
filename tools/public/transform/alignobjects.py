@@ -246,9 +246,11 @@ class BsMax_OT_AlignObjects(Operator):
 
 def alignobjects_cls(register):
 	classes = [BsMax_OT_AlignObjects]
-	for c in classes:
-		if register: bpy.utils.register_class(c)
-		else: bpy.utils.unregister_class(c)
+
+	if register: 
+		[bpy.utils.register_class(c) for c in classes]
+	else: 
+		[bpy.utils.unregister_class(c) for c in classes]
 	return classes
 
 if __name__ == '__main__':

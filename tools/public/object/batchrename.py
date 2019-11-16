@@ -273,9 +273,11 @@ class Node_OT_BatchRename(Operator):
 def batchrename_cls(register):
 	classes = [Objects_OT_BatchRename, Armature_OT_BatchRename,
 			Sequences_OT_BatchRename, Node_OT_BatchRename]
-	for c in classes:
-		if register: bpy.utils.register_class(c)
-		else: bpy.utils.unregister_class(c)
+
+	if register:
+		[bpy.utils.register_class(c) for c in classes]
+	else:
+		[bpy.utils.unregister_class(c) for c in classes]
 
 if __name__ == '__main__':
 	batchrename_cls(True)

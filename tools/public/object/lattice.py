@@ -101,8 +101,10 @@ class BsMax_OT_Lattice_Set(Operator):
 
 def lattice_cls(register):
 	c = BsMax_OT_Lattice_Set
-	if register: bpy.utils.register_class(c)
-	else: bpy.utils.unregister_class(c)
+	if register:
+		bpy.utils.register_class(c)
+	else:
+		bpy.utils.unregister_class(c)
 
 if __name__ == '__main__':
 	lattice_cls(True)

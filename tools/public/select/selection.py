@@ -4,6 +4,11 @@ from bpy.types import Operator
 class BsMax_OT_SelectInstance(Operator):
 	bl_idname = "bsmax.select_instance"
 	bl_label = "Select Instance"
+	@classmethod
+	def poll(self, ctx):
+		if ctx.area.type == 'VIEW_3D':
+			return len(ctx.selected_objects) > 0
+		return False
 	def execute(self, ctx):
 		if ctx.active_object != None and len(ctx.selected_objects) == 1:
 			for obj in ctx.scene.objects:
@@ -20,7 +25,11 @@ def BsMax_ReadPrimitiveData(obj):
 class BsMax_OT_SelectSimilar(Operator):
 	bl_idname = "bsmax.select_similar"
 	bl_label = "Select Similar"
-
+	@classmethod
+	def poll(self, ctx):
+		if ctx.area.type == 'VIEW_3D':
+			return len(ctx.selected_objects) > 0
+		return False
 	def execute(self, ctx):
 		matt,clss,inst,subcls = [],[],[],[]
 		if ctx.active_object != None and len(ctx.selected_objects) == 1:
@@ -33,11 +42,11 @@ class BsMax_OT_SelectSimilar(Operator):
 					# type and sub types
 					if me.type == obj.type:
 						clss.append(obj)
-						if me.type == 'MESH':
-							if me.PrimitiveData != "":
-								mecls = BsMax_ReadPrimitiveData(me)
-								objcls = BsMax_ReadPrimitiveData(obj)
-								if mecls[0] == objcls[0]:
+						if me.type in ['MESH','CURVE']:
+							if me.data.primitivedata.classname != "":
+								mecls = me.data.primitivedata.classname
+								objcls = obj.data.primitivedata.classname
+								if mecls == objcls:
 									subcls.append(obj)
 							# Material
 							if me.data.materials == obj.data.materials:
@@ -62,11 +71,21 @@ class BsMax_OT_SelectSimilar(Operator):
 				o.select_set(True)
 		return{"FINISHED"}
 
+def select_menu(self, ctx):
+	layout = self.layout
+	layout.separator()
+	layout.operator("bsmax.select_instance")
+	layout.operator("bsmax.select_similar")
+
 def selection_cls(register):
 	classes = [BsMax_OT_SelectInstance, BsMax_OT_SelectSimilar]
-	for c in classes:
-		if register: bpy.utils.register_class(c)
-		else: bpy.utils.unregister_class(c)
+
+	if register:
+		[bpy.utils.register_class(c) for c in classes]
+		bpy.types.VIEW3D_MT_select_object.append(select_menu)
+	else:
+		bpy.types.VIEW3D_MT_select_object.remove(select_menu)
+		[bpy.utils.unregister_class(c) for c in classes]
 
 if __name__ == '__main__':
 	selection_cls(True)

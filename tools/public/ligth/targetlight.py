@@ -47,9 +47,11 @@ class BsMax_OT_MakeFreeLight(Operator):
 
 def targetlight_cls(register):
 	classes = [BsMax_OT_MakeTargetLight, BsMax_OT_MakeFreeLight]
-	for c in classes:
-		if register: bpy.utils.register_class(c)
-		else: bpy.utils.unregister_class(c)
+	
+	if register:
+		[bpy.utils.register_class(c) for c in classes]
+	else:
+		[bpy.utils.unregister_class(c) for c in classes]
 
 if __name__ == '__main__':
 	targetlight_cls(True)

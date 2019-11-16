@@ -49,6 +49,7 @@ class Dimantion:
 
 class CreatePrimitive(Operator):
 	bl_options = {'REGISTER','UNDO'}
+	#bpy.ops.ed.undo_push() TODO use this for undo step by step
 	subclass = None
 	params = None
 	step = 0
@@ -229,9 +230,9 @@ def AddCursurOveride(self):
 def RemoveCursurOveride(handle):
 	bpy.types.SpaceView3D.draw_handler_remove(handle, 'WINDOW')
 
-def is_true_class(ctx, clasname):
+def is_true_class(ctx, classname):
 	if ctx.active_object != None:
-		if clasname == ctx.active_object.primitivedata.clasname:
+		if classname == ctx.active_object.primitivedata.classname:
 			return True
 	return False
 

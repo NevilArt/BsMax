@@ -155,7 +155,10 @@ def quadmenu_cls(register):
 		if register:
 			bpy.utils.register_class(c)
 		else:
-			bpy.utils.unregister_class(c)
+			try:
+				bpy.utils.unregister_class(c)
+			except:
+				pass
 
 if __name__ == '__main__':
 	quadmenu_cls(True)

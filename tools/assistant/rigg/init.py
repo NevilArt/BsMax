@@ -1,7 +1,8 @@
 from .joystick import *
+from .menu import *
 
 def rigg_cls(register, pref):
-	classes = joystick_cls(register)
-	return classes
+	joystick_cls(register)
+	menu_cls(register)
 
 __all__ = ["rigg_cls"]

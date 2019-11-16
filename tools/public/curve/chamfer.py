@@ -1,5 +1,5 @@
 import bpy, numpy, copy, math
-from bpy.types import Operator
+from bpy.types import Operator, Menu
 from mathutils import Vector
 from bpy.props import BoolProperty, FloatProperty
 from bsmax.math import get_segment_length, split_segment, get_3_points_angle, point_on_line
@@ -286,11 +286,20 @@ class BsMax_OT_CurveChamfer(Operator):
 		else:
 			ctx.window_manager.modal_handler_add(self)
 			return {'RUNNING_MODAL'}
+
+def camfer_menu(self, ctx):
+	layout = self.layout
+	layout.separator()
+	layout.operator("curve.chamfer", text="Chamfer/Fillet").typein=True
 		
 def chamfer_cls(register):
 	c = BsMax_OT_CurveChamfer
-	if register: bpy.utils.register_class(c)
-	else: bpy.utils.unregister_class(c)
+	if register: 
+		bpy.utils.register_class(c)
+		bpy.types.VIEW3D_MT_edit_curve_ctrlpoints.append(camfer_menu)
+	else:
+		bpy.types.VIEW3D_MT_edit_curve_ctrlpoints.remove(camfer_menu)
+		bpy.utils.unregister_class(c)
 
 if __name__ == '__main__':
 	chamfer_cls(True)

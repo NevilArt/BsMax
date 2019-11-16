@@ -205,7 +205,7 @@ class Cylinder(PrimitiveGeometryClass):
 	def reset(self):
 		self.__init__()
 	def create(self, ctx):
-		mesh = GetCylinderMesh(0, 0, 0, 1, 1, 18, False, 0, 360)
+		mesh = GetCylinderMesh(0,0,0,1,1,18,False,0,360)
 		self.create_mesh(ctx, mesh, self.classname)
 		pd = self.data.primitivedata
 		pd.classname = self.classname
@@ -229,7 +229,7 @@ class Cone(PrimitiveGeometryClass):
 	def reset(self):
 		self.__init__()
 	def create(self, ctx):
-		mesh = GetCylinderMesh(0, 0, 0, 1, 1, 18, False, 0, 360)
+		mesh = GetCylinderMesh(0,0,0,1,1,18,False,0,360)
 		self.create_mesh(ctx, mesh, self.classname)
 		pd = self.data.primitivedata
 		pd.classname = self.classname
@@ -240,6 +240,8 @@ class Cone(PrimitiveGeometryClass):
 				pd.hsegs, pd.csegs, pd.ssegs,
 				pd.sliceon, pd.sfrom, pd.sto)
 		self.update_mesh(mesh)
+		#self.data.use_auto_smooth = True
+		#bpy.ops.object.shade_smooth() TODO find related data info
 	def abort(self):
 		delete_objects([self.owner])
 

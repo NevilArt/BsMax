@@ -87,10 +87,11 @@ class BsMax_OT_TweakBetter(Operator):
 def transforms_cls(register):
 	classes = [BsMax_OT_TransformGizmoSize,BsMax_OT_TweakBetter,
 			BsMax_OT_Move,BsMax_OT_Rotate,BsMax_OT_Scale]
-	for c in classes:
-		if register: bpy.utils.register_class(c)
-		else: bpy.utils.unregister_class(c)
-	return classes
+
+	if register:
+		[bpy.utils.register_class(c) for c in classes]
+	else:
+		[bpy.utils.unregister_class(c) for c in classes]
 
 if __name__ == '__main__':
 	transforms_cls(True)

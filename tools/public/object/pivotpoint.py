@@ -115,9 +115,11 @@ class BsMax_OT_ModifyPivot(Operator):
 
 def pivotpoint_cls(register):
 	classes = [BsMax_MT_SetPivotPoint, BsMax_OT_ModifyPivot]
-	for c in classes:
-		if register: bpy.utils.register_class(c)
-		else: bpy.utils.unregister_class(c)
+
+	if register:
+		[bpy.utils.register_class(c) for c in classes]
+	else:
+		[bpy.utils.unregister_class(c) for c in classes]
 
 if __name__ == '__main__':
 	pivotpoint_cls(True)

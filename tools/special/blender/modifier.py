@@ -661,10 +661,11 @@ def modifier_cls(register):
 			BsMax_OT_PARTICLE_SYSTEM_Add,
 			BsMax_OT_SMOKE_Add,
 			BsMax_OT_SOFT_BODY_Add]
-	for c in classes:
-		if register: bpy.utils.register_class(c)
-		else: bpy.utils.unregister_class(c)
-	return classes
+
+	if register:
+		[bpy.utils.register_class(c) for c in classes]
+	else:
+		[bpy.utils.unregister_class(c) for c in classes]
 
 if __name__ == '__main__':
 	modifier_cls(True)

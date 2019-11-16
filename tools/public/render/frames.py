@@ -80,11 +80,23 @@ class RENDER_PT_frames(Panel):
 def frames_cls(register):
 	bpy.types.Scene.frames = StringProperty()
 	classes = [BsMax_OT_RenderFrames, RENDER_PT_frames]
-	for c in classes:
-		if register: bpy.utils.register_class(c)
-		else: bpy.utils.unregister_class(c)
+
+	if register:
+		[bpy.utils.register_class(c) for c in classes]
+	else:
+		[bpy.utils.unregister_class(c) for c in classes]
 
 if __name__ == '__main__':
 	frames_cls(True)
 
 __all__ = ["frames_cls"]
+
+
+
+#bpy.app.handlers.frame_change_post.append(frame_Update)render_cancel
+# render_complete
+# render_init
+# render_post
+# render_pre
+# render_stats
+# render_write

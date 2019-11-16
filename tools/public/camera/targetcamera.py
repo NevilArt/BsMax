@@ -63,11 +63,25 @@ class BsMax_OT_SelectTarget(Operator):
 		set_as_active_object(ctx, targ)
 		return {'FINISHED'}
 
+def camera_menu(self, ctx):
+	layout = self.layout
+	layout.separator()
+	layout.operator("bsmax.maketargetcamera")
+	layout.operator("bsmax.makefreecamera")
+	layout.operator("bsmax.selecttarget")
+
 def targetcamera_cls(register):
-	classes = [BsMax_OT_MakeTargetCamera,BsMax_OT_MakeFreeCamera,BsMax_OT_SelectTarget]
-	for c in classes:
-		if register: bpy.utils.register_class(c)
-		else: bpy.utils.unregister_class(c)
+	classes = [BsMax_OT_MakeTargetCamera,
+		BsMax_OT_MakeFreeCamera,
+		BsMax_OT_SelectTarget]
+
+	if register:
+		[bpy.utils.register_class(c) for c in classes]
+		bpy.types.VIEW3D_MT_view_cameras.append(camera_menu)
+	else:
+		bpy.types.VIEW3D_MT_view_cameras.remove(camera_menu)
+		[bpy.utils.unregister_class(c) for c in classes]
+		
 
 if __name__ == '__main__':
 	targetcamera_cls(True)

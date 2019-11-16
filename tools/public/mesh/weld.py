@@ -84,8 +84,10 @@ class BsMax_OT_TargetWeldToggle(Operator):
 
 def weld_cls(register):
 	c = BsMax_OT_TargetWeldToggle
-	if register: bpy.utils.register_class(c)
-	else: bpy.utils.unregister_class(c)
+	if register:
+		bpy.utils.register_class(c)
+	else:
+		bpy.utils.unregister_class(c)
 
 if __name__ == '__main__':
 	weld_cls(True)

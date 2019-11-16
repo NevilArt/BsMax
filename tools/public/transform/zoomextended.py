@@ -35,10 +35,10 @@ class BsMax_OT_ZoomExtended(Operator):
 
 def zoomextended_cls(register):
 	classes = [BsMax_OT_ZoomExtended, BsMax_OT_HomeView]
-	for c in classes:
-		if register: bpy.utils.register_class(c)
-		else: bpy.utils.unregister_class(c)
-	return classes
+	if register:
+		[bpy.utils.register_class(c) for c in classes]
+	else:
+		[bpy.utils.unregister_class(c) for c in classes]
 
 if __name__ == '__main__':
 	zoomextended_cls(True)

@@ -13,12 +13,16 @@ def is_in_keymaps(key,keymaps):
 	return False
 
 def set_extera_keymaps(space,keymaps,state):
-	sleep(0.1)
-	kdif = bpy.context.window_manager.keyconfigs.default
-	km = kdif.keymaps[space]
-	for k in km.keymap_items:
-		if is_in_keymaps(k,keymaps):
-			k.active = state
+	try:
+		sleep(0.1)
+		kdif = bpy.context.window_manager.keyconfigs.default
+		km = kdif.keymaps[space]
+		for k in km.keymap_items:
+			if is_in_keymaps(k,keymaps):
+				k.active = state
+	except:
+		pass
+		#set_extera_keymaps(space,keymaps,state)
 
 def max_dif_keys_set(state):
 	# Disable/Enable Unwanted Default ShortKeys
@@ -254,6 +258,14 @@ def create_3dsmax_keymaps():
 
 		# kmi = km.keymap_items.new("bsmax.droptool", "RIGHTMOUSE", "PRESS")
 		# KeyMaps.append((km, kmi))
+
+		kmi = km.keymap_items.new("view.undoredo","Z","PRESS",shift=True)
+		kmi.properties.redo=False
+		KeyMaps.append((km,kmi))
+
+		kmi = km.keymap_items.new("view.undoredo","Y","PRESS",shift=True)
+		kmi.properties.redo=True
+		KeyMaps.append((km,kmi))
 
 		# Float Editors
 		kmi = km.keymap_items.new("bsmax.openmaterialeditor","M","PRESS")
@@ -640,6 +652,8 @@ def create_3dsmax_keymaps():
 		KeyMaps.append((km,kmi))
 
 		# Selection
+		create_view3d_click_celection_keymap(km)
+
 		kmi = km.keymap_items.new("armature.select_all","A","PRESS",ctrl=True)
 		kmi.properties.action = "SELECT"
 		KeyMaps.append((km,kmi))
@@ -788,7 +802,6 @@ def create_3dsmax_keymaps():
 
 		# Selection
 		create_view3d_click_celection_keymap(km)
-		#create_view3d_tweak_selection_keymap(km)
 
 		kmi = km.keymap_items.new("pose.select_all","A","PRESS",ctrl=True)
 		kmi.properties.action = "SELECT"
@@ -836,6 +849,8 @@ def create_3dsmax_keymaps():
 		kmi = km.keymap_items.new("bsmax.autokeymodetoggle","N","PRESS")
 		KeyMaps.append((km,kmi))
 		kmi = km.keymap_items.new("bsmax.selectcamera","C","PRESS")
+		KeyMaps.append((km,kmi))
+		kmi = km.keymap_items.new("bsmax.setkeys","K","PRESS")
 		KeyMaps.append((km,kmi))
 		# kmi = km.keymap_items.new("bsmax.droptool", "RIGHTMOUSE", "PRESS")
 		# KeyMaps.append((km, kmi))

@@ -8,10 +8,11 @@ def create_view3d_quads(km, navigation):
 	kmi.properties.space = 'View3D'
 	KeyMaps.append((km, kmi))
 
-	kmi = km.keymap_items.new("bsmax.view3dquadmenue", "RIGHTMOUSE", "PRESS")
-	kmi.properties.menu = 'default'
-	kmi.properties.space = 'View3D'
-	KeyMaps.append((km, kmi))
+	# This not needed drop tool can call this
+	# kmi = km.keymap_items.new("bsmax.view3dquadmenue", "RIGHTMOUSE", "PRESS")
+	# kmi.properties.menu = 'default'
+	# kmi.properties.space = 'View3D'
+	# KeyMaps.append((km, kmi))
 
 	# ignore alt + RMB if maya navigation was selected
 	if navigation != 'Maya':

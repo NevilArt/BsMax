@@ -2,93 +2,80 @@ import bpy
 from bpy.types import Operator
 from bpy.props import BoolProperty, EnumProperty
 
-class BsMax_OT_MaxKeyData(Operator):
+class KeyData(Operator):
 	Key_All = False
-	#Key_Available = True
+	Key_Available = True
 	Key_Position = True
 	Key_Rotation = True
 	Key_Scale = True
-	Key_IKParams = False
-	Key_ObjParams = False
-	Key_CusAttributes = False
-	Key_Modifiers = False
-	Key_Materials = False
-	Key_Other = False
+	# Key_IKParams = False
+	# Key_ObjParams = False
+	# Key_CusAttributes = False
+	# Key_Modifiers = False
+	# Key_Materials = False
+	# Key_Other = False
 
 class BsMax_OT_SetKeyFilters(Operator):
-	bl_idname = "bsmax.setkeyfilters"
-	bl_label  = "Set Key Filters"
-	bl_description = "Set Key Filter"
-	bl_options = {'REGISTER', 'UNDO'}
-
-	Key_All: BoolProperty(name = "All")
-	#Key_Available: BoolProperty(name = "Available", default = True)
-	Key_Position: BoolProperty(name = "Position",  default = True)
-	Key_Rotation: BoolProperty(name = "Rotation",  default = True)
-	Key_Scale: BoolProperty(name = "Scale",     default = True)
-	Key_IKParams: BoolProperty(name = "IK Parameters")
-	Key_ObjParams: BoolProperty(name = "Object Parameters")
-	Key_CusAttributes: BoolProperty(name = "CUstom Attributes")
-	Key_Modifiers: BoolProperty(name = "Modifiers")
-	Key_Materials: BoolProperty(name = "Materials")
-	Key_Other: BoolProperty(name = "Other")
+	bl_idname="bsmax.setkeyfilters"
+	bl_label="Set Key Filters"
+	bl_description="Set Key Filter"
+	bl_options={'REGISTER', 'UNDO'}
+	Key_All: BoolProperty(name="All")
+	Key_Available: BoolProperty(name="Available",default=True)
+	Key_Position: BoolProperty(name="Position",default=True)
+	Key_Rotation: BoolProperty(name="Rotation",default=True)
+	Key_Scale: BoolProperty(name="Scale",default=True)
+	# Key_IKParams: BoolProperty(name="IK Parameters")
+	# Key_ObjParams: BoolProperty(name="Object Parameters")
+	# Key_CusAttributes: BoolProperty(name="CUstom Attributes")
+	# Key_Modifiers: BoolProperty(name="Modifiers")
+	# Key_Materials: BoolProperty(name="Materials")
+	# Key_Other: BoolProperty(name="Other")
 
 	def draw(self, ctx):
-		box = self.layout.box()
+		layout = self.layout
+		box = layout.box()
 		row = box.row()
 		row.prop(self, "Key_All")
-		#row = box.row()
-		#row.prop(self, "Key_Available")
-		row = box.row()
+		row.prop(self, "Key_Available")
 		row.prop(self, "Key_Position")
-		row = box.row()
 		row.prop(self, "Key_Rotation")
-		row = box.row()
 		row.prop(self, "Key_Scale")
-		row = box.row()
-		row.prop(self, "Key_ObjParams")
-		row = box.row()
-		row.prop(self, "Key_CusAttributes")
-		row = box.row()
-		row.prop(self, "Key_Modifiers")
-		row = box.row()
-		row.prop(self, "Key_Materials")
-		row = box.row()
-		row.prop(self, "Key_Other")
+		# row.prop(self, "Key_ObjParams")
+		# row.prop(self, "Key_CusAttributes")
+		# row.prop(self, "Key_Modifiers")
+		# row.prop(self, "Key_Materials")
+		# row.prop(self, "Key_Other")
 		
 	def execute(self, ctx):
-		BsMax_OT_MaxKeyData.Key_All = self.Key_All
-		#BsMax_OT_MaxKeyData.Key_Available = self.Key_Available
-		BsMax_OT_MaxKeyData.Key_Position = self.Key_Position
-		BsMax_OT_MaxKeyData.Key_Rotation = self.Key_Rotation
-		BsMax_OT_MaxKeyData.Key_Scale = self.Key_Scale
-		BsMax_OT_MaxKeyData.Key_ObjParams = self.Key_ObjParams
-		BsMax_OT_MaxKeyData.Key_CusAttributes = self.Key_CusAttributes
-		BsMax_OT_MaxKeyData.Key_Modifiers = self.Key_Modifiers
-		BsMax_OT_MaxKeyData.Key_Materials = self.Key_Materials
-		BsMax_OT_MaxKeyData.Key_Other = self.Key_Other
+		KeyData.Key_All = self.Key_All
+		KeyData.Key_Available = self.Key_Available
+		KeyData.Key_Position = self.Key_Position
+		KeyData.Key_Rotation = self.Key_Rotation
+		KeyData.Key_Scale = self.Key_Scale
+		# KeyData.Key_ObjParams = self.Key_ObjParams
+		# KeyData.Key_CusAttributes = self.Key_CusAttributes
+		# KeyData.Key_Modifiers = self.Key_Modifiers
+		# KeyData.Key_Materials = self.Key_Materials
+		# KeyData.Key_Other = self.Key_Other
 		return {'FINISHED'}
 
-	# def invoke(self, ctx, event):
-	# 	self.new_name = ctx.active_object.name
-	# 	ctx.window_manager.invoke_props_dialog(self, width = 140)
-	# 	return {'RUNNING_MODAL'}
-   
 	def invoke(self, ctx, event):
-		self.Key_All = BsMax_OT_MaxKeyData.Key_All
-		#self.Key_Available = BsMax_OT_MaxKeyData.Key_Available
-		self.Key_Position = BsMax_OT_MaxKeyData.Key_Position
-		self.Key_Rotation = BsMax_OT_MaxKeyData.Key_Rotation
-		self.Key_Scale = BsMax_OT_MaxKeyData.Key_Scale
-		self.Key_ObjParams = BsMax_OT_MaxKeyData.Key_ObjParams
-		self.Key_CusAttributes = BsMax_OT_MaxKeyData.Key_CusAttributes
-		self.Key_Modifiers = BsMax_OT_MaxKeyData.Key_Modifiers
-		self.Key_Materials = BsMax_OT_MaxKeyData.Key_Materials
-		self.Key_Other = BsMax_OT_MaxKeyData.Key_Other
-
+		self.Key_All = KeyData.Key_All
+		self.Key_Available = KeyData.Key_Available
+		self.Key_Position = KeyData.Key_Position
+		self.Key_Rotation = KeyData.Key_Rotation
+		self.Key_Scale = KeyData.Key_Scale
+		# self.Key_ObjParams = KeyData.Key_ObjParams
+		# self.Key_CusAttributes = KeyData.Key_CusAttributes
+		# self.Key_Modifiers = KeyData.Key_Modifiers
+		# self.Key_Materials = KeyData.Key_Materials
+		# self.Key_Other = KeyData.Key_Other
 		self.Cast = True
 		wm = ctx.window_manager
-		return wm.invoke_props_dialog(self, width = 140)
+		return wm.invoke_props_dialog(self, width = 140)\
+
+#obj.modifiers[0].keyframe_insert(data_path="thickness")
 
 class BsMax_OT_AutoKeyModeToggle(Operator):
 	bl_idname = "bsmax.autokeymodetoggle"
@@ -107,37 +94,55 @@ class BsMax_OT_AutoKeyModeToggle(Operator):
 		return{"FINISHED"}
 
 # Set key animation tool (K button)
+def set_key(objs, key):
+	for obj in objs:
+		obj.keyframe_insert(data_path=key)
+
 class BsMax_OT_SetKeys(Operator):
 	bl_idname = "bsmax.setkeys"
 	bl_label = "Set Keys"
 
+	# @classmethod
+	# def poll(self, ctx):
+	# 	return len(ctx.selected_objects) > 0
+
 	def execute(self, ctx):
-		if ctx.object.mode == "OBJECT": #TODO Pos mode
-			selectioncount = len(ctx.selected_objects)
-			if selectioncount > 0:
-				if BsMax_OT_MaxKeyData.Key_All:
-					bpy.ops.anim.keyframe_insert_menu(type = 'Location')
-					bpy.ops.anim.keyframe_insert_menu(type = 'Rotation')
-					bpy.ops.anim.keyframe_insert_menu(type = 'Scaling')
-				else:
-					#if BsMax_OT_MaxKeyData.Key_Available:
-						#bpy.ops.anim.keyframe_insert_menu(type='Available')
-					if BsMax_OT_MaxKeyData.Key_Position:
-						bpy.ops.anim.keyframe_insert_menu(type = 'Location')
-					if BsMax_OT_MaxKeyData.Key_Rotation:
-						bpy.ops.anim.keyframe_insert_menu(type = 'Rotation')
-					if BsMax_OT_MaxKeyData.Key_Scale:
-						bpy.ops.anim.keyframe_insert_menu(type = 'Scaling')
-					if BsMax_OT_MaxKeyData.Key_ObjParams:
-						print("Key object params on progress")
-					if BsMax_OT_MaxKeyData.Key_CusAttributes:
-						print("Key object params on progress")
-					if BsMax_OT_MaxKeyData.Key_Modifiers:
-						print("Key object params on progress")
-					if BsMax_OT_MaxKeyData.Key_Materials:
-						print("Key object params on progress")
-					if BsMax_OT_MaxKeyData.Key_Other:
-						print("Key object params on progress")
+		print("set key")
+		print(ctx.mode)
+		if ctx.mode in ['OBJECT', 'POSE']:
+			#objs=ctx.selected_objects
+			if KeyData.Key_All:
+				bpy.ops.anim.keyframe_insert_menu(type='Location')
+				bpy.ops.anim.keyframe_insert_menu(type='Rotation')
+				bpy.ops.anim.keyframe_insert_menu(type='Scaling')
+			else:
+				if KeyData.Key_Available:
+					try:
+						bpy.ops.anim.keyframe_insert_menu(type='Available')
+					except:
+						pass
+				if KeyData.Key_Position:
+					bpy.ops.anim.keyframe_insert_menu(type='Location')
+				if KeyData.Key_Rotation:
+					bpy.ops.anim.keyframe_insert_menu(type='Rotation')
+				if KeyData.Key_Scale:
+					bpy.ops.anim.keyframe_insert_menu(type='Scaling')
+				# if KeyData.Key_ObjParams:
+				# 	print("Key object params on progress")
+				# if KeyData.Key_CusAttributes:
+				# 	print("Key object params on progress")
+				# if KeyData.Key_Modifiers:
+				# 	print("Key object params on progress")
+				# if KeyData.Key_Materials:
+				# 	print("Key object params on progress")
+				# if KeyData.Key_Other:
+				# 	print("Key object params on progress")
+		#elif ctx.mode == 'POSE':
+			# print("-->   pose")
+			# #set_key(ctx.selected_bones,"scale")
+			# #ctx.active_bone.keyframe_insert("Location")#, index=2)
+			# ctx.active_bone.keyframe_insert("rotation_euler")#, index=2)
+			# #(data_path, index=-1, frame=bpy.context.scene.frame_current, group="")
 		return{"FINISHED"}
 
 # Delete selected objects animation
@@ -227,10 +232,11 @@ def animationkey_cls(register):
 			BsMax_OT_DeleteSelectedAnimation,
 			BsMax_OT_SetFrame,
 			BsMax_OT_TimeLineRangeChange]
-	for c in classes:
-		if register: bpy.utils.register_class(c)
-		else: bpy.utils.unregister_class(c)
-	return classes
+
+	if register:
+		[bpy.utils.register_class(c) for c in classes]
+	else:
+		[bpy.utils.unregister_class(c) for c in classes]
 
 if __name__ == '__main__':
 	animationkey_cls(True)

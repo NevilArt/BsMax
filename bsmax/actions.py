@@ -38,11 +38,13 @@ def duplicate_copy(ctx, obj):
 	return ctx.view_layer.objects.active
 
 def modifier_add(ctx, objs, modifier):
-	activeobject = ctx.active_object
-	for obj in ctx.selected_objects:
-		ctx.view_layer.objects.active = obj
-		bpy.ops.object.modifier_add(type=modifier)
-	ctx.view_layer.objects.active = obj
+	# activeobject = ctx.active_object
+	# for obj in objs:
+	# 	ctx.view_layer.objects.active = obj
+	# 	bpy.ops.object.modifier_add(type=modifier)
+	# ctx.view_layer.objects.active = activeobject
+	for obj in objs:
+		obj.modifiers.new(name=modifier, type=modifier)
 
 def link_to_scene(ctx, obj):
 	activelayername = ctx.view_layer.active_layer_collection.name
@@ -79,8 +81,31 @@ def set_create_target(obj, targ):
 	cont.up_axis = 'UP_Y'
 	return targ
 
-def get_objects_target(obj):
+def link_to(obj, target):
+	obj.parent = target
+	obj.matrix_parent_inverse = target.matrix_world.inverted()
+
+def get_object_target(obj):
 	return None
+
+def set_origen(ctx, obj, location):
+	scene = ctx.scene
+	saved_location = scene.cursor.location
+	saved_rotation = scene.cursor.rotation_euler
+	scene.cursor.location = location
+	bpy.ops.object.select_all(action='DESELECT')
+	ctx.view_layer.objects.active = obj
+	obj.select_set(state = True)
+	bpy.ops.object.origin_set(type='ORIGIN_CURSOR', center='MEDIAN')
+	scene.cursor.location = saved_location
+	scene.cursor.rotation_euler = saved_rotation
+
+def freeze_transform(objs):
+	for obj in objs:
+		obj.delta_location = obj.location
+		obj.location = [0,0,0]
+		obj.delta_rotation_euler = obj.rotation_euler
+		obj.rotation_euler = [0,0,0]
 
 __all__ = ["solve_missing_activeobject",
 		"lock_transform",
@@ -91,4 +116,7 @@ __all__ = ["solve_missing_activeobject",
 		"link_to_scene",
 		"delete_objects",
 		"set_as_active_object",
-		"set_create_target"]
+		"set_create_target",
+		"link_to",
+		"set_origen",
+		"freeze_transform"]

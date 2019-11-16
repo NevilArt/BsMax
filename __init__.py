@@ -1,5 +1,5 @@
 ############################################################################
-#    BsMax, Other 3d Software inteface simulator in Blender 3D
+#    BsMax, 3D apps inteface simulator and tools pack for Blender
 #    Copyright (C) 2019  Naser Merati (Nevil)
 #
 #    This program is free software: you can redistribute it and/or modify
@@ -18,9 +18,9 @@
 
 bl_info = {
 	"name": "BsMax",
-	"description": "Beta Version Updated on 21.October.2019",
+	"description": "Beta Version Updated on 12.November.2019",
 	"author": "Naser Merati (Nevil)",
-	"version": (0, 1, 0, 20191021),
+	"version": (0, 1, 0, 20191112),
 	"blender": (2, 80, 0),
 	#"location": "Every where",
 	#"warning": "", # used for warning icon and text in addons panel
@@ -72,7 +72,6 @@ class BsMax_AddonPreferences(AddonPreferences):
 
 	navigation: EnumProperty(name='Navigation',update=update_navigation,
 		default='Blender',
-		#default='3DsMax',
 		description='select overide navigation mode',
 		items=[('3DsMax','3DsMax',''),
 			('Maya','Maya',''),
@@ -90,13 +89,11 @@ class BsMax_AddonPreferences(AddonPreferences):
 
 	toolpack: EnumProperty(name='Tools Pack',
 		default='Blender',
-		#default='3DsMax',
 		description='Extera Overide Tools',
 		update=update_toolpack,items=apppack)
 
 	floatmenus: EnumProperty(name='Float Menu',update=update_floatmenu,
 		default='Blender',
-		#default='QuadMenu_st_andkey',
 		description='Float menus type',
 		items=[('QuadMenu_st_andkey','QuadMenu Standard (with Keymap)',''),
 			('QuadMenu_st_nokey','QuadMenu Standard (without Keymap)',''),
@@ -104,16 +101,16 @@ class BsMax_AddonPreferences(AddonPreferences):
 
 	keymaps: EnumProperty(name='Keymap',
 		default='Blender',
-		#default='3DsMax',
 		description='Overide Full Keymap',
 		update=update_keymaps,items=apppack)
 
 	assistpack: EnumProperty(name='Assistance Pack',update=update_assistpack,
 		default='None',
-		#default='3DsMax',
-		description='',
-		items=[('Rigg','Rigg',''),('Animate','Animate',''),
-			('Model','Model',''),('None','None','')])
+		description='More Tools',
+		items=[('Rigg','Rigg',''),
+			#('Animate','Animate',''),
+			#('Model','Model',''),
+			('None','None','')])
 
 	def draw(self, ctx):
 		layout = self.layout
@@ -124,14 +121,17 @@ class BsMax_AddonPreferences(AddonPreferences):
 		col.prop(self, "keymaps")
 		col.prop(self, "floatmenus")
 		col.prop(self, "toolpack")
-		#col.prop(self, "assistpack")
+		col.prop(self, "assistpack")
 
 def get_pret():
 	return bpy.context.preferences.addons[__name__].preferences
 
 def bsmax_cls(register, pref):
+	navigation_keys(register, pref)
 	menu_cls(register, pref)
 	primitive_cls(register, pref)
+	special_cls(register, pref)
+	assistant_cls(register, pref)
 	public_cls(register, pref)
 	keymaps_keys(register, pref)
 	public_keys(register, pref)

@@ -164,6 +164,12 @@ class BsMax_OT_ShowSafeAreaToggle(Operator):
 			cam.data.show_safe_areas = not cam.data.show_safe_areas
 		return {'FINISHED'}
 
+def camera_menu(self, ctx):
+	layout = self.layout
+	layout.separator()
+	layout.operator("bsmax.createcamerafromview")
+	layout.operator("bsmax.searchcamera")
+
 def cameras_cls(register):
 	classes = [BsMax_OT_SetAsActiveCamera,
 			BsMax_OT_CreateCameraFromView,
@@ -172,9 +178,13 @@ def cameras_cls(register):
 			BsMax_OT_LockCameraToViewToggle,
 			BsMax_OT_SelectActiveCamera,
 			BsMax_OT_ShowSafeAreaToggle]
-	for c in classes:
-		if register: bpy.utils.register_class(c)
-		else: bpy.utils.unregister_class(c)
+	
+	if register:
+		bpy.types.VIEW3D_MT_view_cameras.append(camera_menu)
+		[bpy.utils.register_class(c) for c in classes]
+	else:
+		bpy.types.VIEW3D_MT_view_cameras.remove(camera_menu)
+		[bpy.utils.unregister_class(c) for c in classes]
 
 if __name__ == '__main__':
 	cameras_cls(True)

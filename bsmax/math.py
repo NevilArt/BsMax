@@ -11,6 +11,40 @@ def point_on_vector(a, b, c, d, t):
 	C4 = a
 	return C1 * t * t * t + C2 * t * t + C3 * t + C4
 
+def point_on_curve(curve, index, time):
+	spline = curve.data.splines[index]
+	lengths, totallength = [], 0
+	if time <= 0:
+		return spline.bezier_points[0].co.copy()
+	if time >= 1:
+		return spline.bezier_points[-1].co.copy()
+	else:
+		segs = [point for point in spline.bezier_points]
+		if spline.use_cyclic_u:
+			segs.append(spline.bezier_points[0])
+		# collect the segment length
+		for i in range(len(segs) - 1):
+			a = segs[i].co
+			b = segs[i].handle_right
+			c = segs[i+1].handle_left
+			d = segs[i+1].co
+			l = get_segment_length(a,b,c,d,100)
+			lengths.append(l)
+			totallength += l
+		length = totallength*time
+		for i in range(len(lengths)):
+			if length >= lengths[i]:
+				length -= lengths[i]
+			else:
+				index = i
+				break
+		a = segs[index].co
+		b = segs[index].handle_right
+		c = segs[index+1].handle_left
+		d = segs[index+1].co
+		t = length / lengths[index]
+		return point_on_vector(a, b, c, d, t)
+
 def split_segment(p1, p2, p3, p4, t):
 	# start.co start.out end.in end.co
 	p12 = (p2 - p1) * t + p1
@@ -96,6 +130,7 @@ def get_offset_by_orient(offset ,orient):
 
 __all__ = ["point_on_line",
 		"point_on_vector",
+		"point_on_curve",
 		"split_segment",
 		"get_2_point_center",
 		"get_distance",

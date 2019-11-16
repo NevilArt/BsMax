@@ -302,11 +302,12 @@ def get_view3d_coordinates(ctx):
 
 def get_view3d_transform2(ctx):
 	items = []
-	items.append(QuadItem("Rotation To Zero",f,f,n,"",n))
-	items.append(QuadItem("Transform To Zero",f,f,n,"",n))
+	#  text, check, enabled,menu,action,setting
+	items.append(QuadItem("Rotation To Zero",f,t,n,c0158,n))
+	items.append(QuadItem("Transform To Zero",f,t,n,c0157,n))
 	items.append(seprator())
-	items.append(QuadItem("Freeze Rotation",f,f,n,"",n))
-	items.append(QuadItem("Freeze Transform",f,f,n,"",n))
+	items.append(QuadItem("Freeze Rotation",f,t,n,c0156,n))
+	items.append(QuadItem("Freeze Transform",f,t,n,c0155,n))
 	return "Transform",items,3
 
 def get_view3d_pose(ctx):

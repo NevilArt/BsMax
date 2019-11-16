@@ -98,10 +98,11 @@ def modifier_cls(register):
 			BsMax_OT_ResetXform,
 			BsMax_OT_ShellModifierAdd,
 			BsMax_OT_TurboSmoothModifierAdd]
-	for c in classes:
-		if register: bpy.utils.register_class(c)
-		else: bpy.utils.unregister_class(c)
-	return classes
+
+	if register:
+		[bpy.utils.register_class(c) for c in classes]
+	else:
+		[bpy.utils.unregister_class(c) for c in classes]
 
 if __name__ == '__main__':
 	modifier_cls(True)

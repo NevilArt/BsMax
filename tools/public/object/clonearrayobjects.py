@@ -104,6 +104,12 @@ class BsMax_OT_CloneArrayObjects(Operator):
 	count: IntProperty(default=1,min=1,max=99999999)
 	num = 0 # keep old value for check has update or not
 	parents,NewNds = [],[]
+
+	@classmethod
+	def poll(self, ctx):
+		if ctx.area.type == 'VIEW_3D':
+			return len(ctx.selected_objects) > 0
+		return False
 	
 	def draw(self, ctx):
 		layout = self.layout
@@ -163,10 +169,20 @@ class BsMax_OT_CloneArrayObjects(Operator):
 		ctx.window_manager.invoke_props_dialog(self)
 		return {'RUNNING_MODAL'}
 
+def object_menu(self, ctx):
+	layout = self.layout
+	layout.separator()
+	layout.operator("bsmax.cloneselectedobjects")
+
 def cloneobject_cls(register):
 	c = BsMax_OT_CloneArrayObjects
-	if register: bpy.utils.register_class(c)
-	else: bpy.utils.unregister_class(c)
+
+	if register:
+		bpy.utils.register_class(c)
+		bpy.types.VIEW3D_MT_object.append(object_menu)
+	else:
+		bpy.types.VIEW3D_MT_object.remove(object_menu)
+		bpy.utils.unregister_class(c)
 
 if __name__ == '__main__':
 	cloneobject_cls(True)

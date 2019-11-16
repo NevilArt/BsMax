@@ -57,10 +57,16 @@ def get_pref(ctx):
 	# to do get addon name from __name__
 	return ctx.preferences.addons['BsMax_2_80'].preferences
 
+def get_obj_class(obj):
+	if obj.type in ['MESH', 'CURVE']:
+		return obj.data.primitivedata.classname
+	return ""
+
 __all__ = ["is_active_object",
 		"is_active_primitive",
 		"is_objects_selected",
 		"is_object_mode",
 		"has_constraint",
 		"get_active_type",
-		"get_pref"]
+		"get_pref",
+		"get_obj_class"]

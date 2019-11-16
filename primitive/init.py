@@ -41,7 +41,7 @@ from .text import *
 from .greacepencil import *
 
 # UI
-from .createmenu import *
+from .menu import *
 
 def primitive_cls(register, pref):
 	update_cls(register)
@@ -53,7 +53,6 @@ def primitive_cls(register, pref):
 	capsule_cls(register)
 	camera_cls(register)
 	circle_cls(register)
-	createmenu_cls(register)
 	cylinder_cls(register)
 	donut_cls(register)
 	effector_cls(register)
@@ -69,6 +68,7 @@ def primitive_cls(register, pref):
 	line_cls(register)
 	#logo_cls(register)
 	mesher_cls(register)
+	menu_cls(register)
 	metaball_cls(register)
 	monkey_cls(register)
 	ngon_cls(register)
@@ -83,8 +83,5 @@ def primitive_cls(register, pref):
 	torus_cls(register)
 	tube_cls(register)
 	vertex_cls(register)
-	if pref.assistpack == "Rigg":
-		# import and register rigg primitives
-		pass
 
 __all__ = ["primitive_cls"]

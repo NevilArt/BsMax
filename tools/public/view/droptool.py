@@ -75,9 +75,10 @@ class BsMax_OT_DropTool(Operator):
 
 def droptool_cls(register, pref):
 	classes = [BsMax_OT_BlenderDefaultMenueCall, BsMax_OT_DropTool]
-	for c in classes:
-		if register: bpy.utils.register_class(c)
-		else: bpy.utils.unregister_class(c)
+	if register:
+		[bpy.utils.register_class(c) for c in classes]
+	else:
+		[bpy.utils.unregister_class(c) for c in classes]
 
 if __name__ == '__main__':
 	droptool_cls(True)

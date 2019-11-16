@@ -1,6 +1,7 @@
 import bpy
 from primitive.primitive import CreatePrimitive, PrimitiveGeometryClass
 from bsmax.actions import delete_objects
+from bsmax.math import get_axis_constraint
 
 class Armature(PrimitiveGeometryClass):
 	def __init__(self):
@@ -57,7 +58,7 @@ class BsMax_OT_CreateBone(CreatePrimitive):
 
 		if self.shift:
 			if len(edit_bones) > 0:
-				dimantion.view = axis_constraint(edit_bones[-1].head, dimantion.view)
+				dimantion.view = get_axis_constraint(edit_bones[-1].head, dimantion.view)
 
 		if len(edit_bones) > 0:
 			edit_bones[-1].tail = dimantion.view

@@ -13,12 +13,21 @@ class CurveFilletTool(WorkSpaceTool):
 	bl_widget = None
 
 	def draw_settings(ctx, layout, tool):
-		# props = tool.operator_properties("view3d.select_circle")
-		# layout.prop(props, "mode")
-		# layout.prop(props, "radius")
+		#props = tool.operator_properties("view3d.select_circle")
+		props = tool.operator_properties("curve.chamfer")
+		#layout.prop(props, "mode")
+		#layout.prop(props, "radius")
 		print("asdfsadf")
-	def execute(self, ctx):
-		print("execuite")
+	# def execute(self, ctx):
+	# 	print("execuite")
+
+	# def modal(self, ctx, event):
+	# 	print("Haha")
+
+	# def invoke(self, ctx, event):
+	# 	wm = ctx.window_manager
+	# 	wm.modal_handler_add(self)
+	# 	return {'RUNNING_MODAL'}
 
 class CurveChamferTool(WorkSpaceTool):
 	bl_space_type='VIEW_3D'
@@ -26,7 +35,7 @@ class CurveChamferTool(WorkSpaceTool):
 
 	bl_idname = "bsmax.curvechamfer"
 	bl_label = "Chamfer (Curve)"
-	bl_description = ( "This is a tooltip")
+	bl_description = ("This is a tooltip")
 	#bl_icon = "ops.generic.select_lasso"
 	bl_widget = None
 	def draw_settings(ctx, layout, tool):

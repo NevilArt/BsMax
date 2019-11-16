@@ -114,10 +114,10 @@ class BsMax_OT_Mirror(Operator):
 
 def mirror_cls(register):
 	classes = [BsMax_OT_Mirror]
-	for c in classes:
-		if register: bpy.utils.register_class(c)
-		else: bpy.utils.unregister_class(c)
-	return classes
+	if register:
+		[bpy.utils.register_class(c) for c in classes]
+	else:
+		[bpy.utils.unregister_class(c) for c in classes]
 
 if __name__ == '__main__':
 	mirror_cls(True)

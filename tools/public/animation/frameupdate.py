@@ -7,9 +7,9 @@ def frame_Update(scene):
 
 def frameupdate_cls(register):
 	if register:
-		bpy.app.handlers.frame_change_post.append(frame_Update)
+		bpy.app.handlers.frame_change_pre.append(frame_Update)
 	else:
-		pass # remove the handler
+		bpy.app.handlers.frame_change_pre.remove(frame_Update)
 
 if __name__ == '__main__':
 	frameupdate_cls(True)
