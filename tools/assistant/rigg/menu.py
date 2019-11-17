@@ -15,6 +15,7 @@ class BsMax_MT_rigg_tools(Menu):
 		layout=self.layout
 		layout.operator("bsmax.joystickcreator",icon="EVENT_O")
 		layout.operator("bsmax.joystickshapekeyconnector",icon="LINK_BLEND")
+		layout.operator("bsmax.eyetargetcreator",icon="HIDE_OFF")
 
 def rigg_menu(self, ctx):
 	self.layout.menu("BSMAX_MT_riggtools")

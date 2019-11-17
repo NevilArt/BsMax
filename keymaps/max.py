@@ -88,7 +88,20 @@ def create_subobject_mode_keymap(km):
 	KeyMaps.append((km,kmi))
 
 def create_switch_view_keymap(km):
-	pass
+	kmi = km.keymap_items.new("view3d.view_persportho","P","PRESS")
+	KeyMaps.append((km,kmi))
+	kmi = km.keymap_items.new("view3d.view_axis","F","PRESS")
+	kmi.properties.type = "FRONT"
+	KeyMaps.append((km,kmi))
+	kmi = km.keymap_items.new("view3d.view_axis","L","PRESS")
+	kmi.properties.type = "LEFT"
+	KeyMaps.append((km,kmi))
+	kmi = km.keymap_items.new("view3d.view_axis","T","PRESS")
+	kmi.properties.type = "TOP"
+	KeyMaps.append((km,kmi))
+	kmi = km.keymap_items.new("view3d.view_axis","B","PRESS")
+	kmi.properties.type = "BOTTOM"
+	KeyMaps.append((km,kmi))
 
 def create_view3d_click_celection_keymap(km):
 	kmi = km.keymap_items.new("view3d.select","LEFTMOUSE","CLICK")
@@ -149,20 +162,7 @@ def create_3dsmax_keymaps():
 		KeyMaps.append((km,kmi))
 
 		# View
-		kmi = km.keymap_items.new("view3d.view_persportho","P","PRESS")
-		KeyMaps.append((km,kmi))
-		kmi = km.keymap_items.new("view3d.view_axis","F","PRESS")
-		kmi.properties.type = "FRONT"
-		KeyMaps.append((km,kmi))
-		kmi = km.keymap_items.new("view3d.view_axis","L","PRESS")
-		kmi.properties.type = "LEFT"
-		KeyMaps.append((km,kmi))
-		kmi = km.keymap_items.new("view3d.view_axis","T","PRESS")
-		kmi.properties.type = "TOP"
-		KeyMaps.append((km,kmi))
-		kmi = km.keymap_items.new("view3d.view_axis","B","PRESS")
-		kmi.properties.type = "BOTTOM"
-		KeyMaps.append((km,kmi))
+		create_switch_view_keymap(km)
 
 		# Display
 		kmi = km.keymap_items.new("view3d.localview","Q","PRESS",alt=True)
@@ -509,20 +509,8 @@ def create_3dsmax_keymaps():
 		KeyMaps.append((km,kmi))
 
 		# View
-		kmi = km.keymap_items.new("view3d.view_persportho","P","PRESS")
-		KeyMaps.append((km,kmi))
-		kmi = km.keymap_items.new("view3d.view_axis","F","PRESS")
-		kmi.properties.type = "FRONT"
-		KeyMaps.append((km,kmi))
-		kmi = km.keymap_items.new("view3d.view_axis","L","PRESS")
-		kmi.properties.type = "LEFT"
-		KeyMaps.append((km,kmi))
-		kmi = km.keymap_items.new("view3d.view_axis","T","PRESS")
-		kmi.properties.type = "TOP"
-		KeyMaps.append((km,kmi))
-		kmi = km.keymap_items.new("view3d.view_axis","B","PRESS")
-		kmi.properties.type = "BOTTOM"
-		KeyMaps.append((km,kmi))
+		create_switch_view_keymap(km)
+
 		kmi = km.keymap_items.new("screen.screen_full_area","X","PRESS",ctrl=True)
 		KeyMaps.append((km,kmi))
 
@@ -629,7 +617,8 @@ def create_3dsmax_keymaps():
 		# Set Subobject Mode
 		create_subobject_mode_keymap(km)
 
-		#View
+		# View
+		create_switch_view_keymap(km)
 		kmi = km.keymap_items.new("screen.screen_full_area","X","PRESS",ctrl=True)
 		KeyMaps.append((km,kmi))
 
@@ -701,7 +690,8 @@ def create_3dsmax_keymaps():
 		# Set Subobject Mode
 		create_subobject_mode_keymap(km)
 
-		#View
+		# View
+		create_switch_view_keymap(km)
 		kmi = km.keymap_items.new("screen.screen_full_area","X","PRESS",ctrl=True)
 		KeyMaps.append((km,kmi))
 		kmi = km.keymap_items.new("armature.batchrename","F2","PRESS")
@@ -858,12 +848,14 @@ def create_3dsmax_keymaps():
 		# Vertex Paint
 		km = kcfg.keymaps.new(name='Vertex Paint',space_type='EMPTY')
 
+		create_switch_view_keymap(km)
 		kmi = km.keymap_items.new("bsmax.showcameratoggle",  "C","PRESS",shift=True)
 		KeyMaps.append((km,kmi))
 
 		# Weight Paint
 		km = kcfg.keymaps.new(name='Weight Paint',space_type='EMPTY')
 
+		create_switch_view_keymap(km)
 		kmi = km.keymap_items.new("bsmax.showcameratoggle",  "C","PRESS",shift=True)
 		KeyMaps.append((km,kmi))
 
@@ -875,6 +867,8 @@ def create_3dsmax_keymaps():
 
 		# Sculpt
 		km = kcfg.keymaps.new(name='Sculpt',space_type='EMPTY')
+
+		create_switch_view_keymap(km)
 
 		kmi = km.keymap_items.new("bsmax.showcameratoggle",  "C","PRESS",shift=True)
 		KeyMaps.append((km,kmi))

@@ -1,119 +1,10 @@
-import bpy, numpy, copy, math
-from bpy.types import Operator, Menu
+import bpy#, numpy, copy, math
+from bpy.types import Operator
 from mathutils import Vector
 from bpy.props import BoolProperty, FloatProperty
-from bsmax.math import get_segment_length, split_segment, get_3_points_angle, point_on_line
-
-class Point:
-	def __init__(self, point):
-		self.select_left_handle = point.select_left_handle
-		self.select_right_handle = point.select_right_handle
-		self.select_control_point = point.select_control_point
-		self.hide = point.hide
-		self.handle_left_type = point.handle_left_type
-		self.handle_right_type = point.handle_right_type
-		self.handle_left = Vector(point.handle_left)
-		self.co = Vector(point.co)
-		self.handle_right = Vector(point.handle_right)
-		self.tilt = point.tilt
-		self.weight_softbody = point.weight_softbody
-		self.radius = point.radius
-
-	def get_bezier_point(self, bezier_point):
-		bezier_point.select_left_handle = self.select_left_handle
-		bezier_point.select_right_handle = self.select_right_handle
-		bezier_point.select_control_point = self.select_control_point
-		bezier_point.hide = self.hide
-		bezier_point.handle_left_type = self.handle_left_type
-		bezier_point.handle_right_type = self.handle_right_type
-		bezier_point.handle_left = self.handle_left
-		bezier_point.co = self.co
-		bezier_point.handle_right = self.handle_right
-		bezier_point.tilt = self.tilt
-		bezier_point.weight_softbody = self.weight_softbody
-		bezier_point.radius = self.radius
-
-class Spline:
-	def __init__(self, spline):
-		self.points = []
-		self.bezier_points = []
-		self.tilt_interpolation = spline.tilt_interpolation
-		self.radius_interpolatio = spline.radius_interpolation
-		self.type = spline.type
-		self.point_count_u = spline.point_count_u
-		self.point_count_v = spline.point_count_v
-		self.order_u = spline.order_u
-		self.order_v = spline.order_v
-		self.resolution_u = spline.resolution_u
-		self.resolution_v = spline.resolution_v
-		self.use_cyclic_u = spline.use_cyclic_u
-		self.use_cyclic_v = spline.use_cyclic_v
-		self.use_endpoint_u = spline.use_endpoint_u
-		self.use_endpoint_v = spline.use_endpoint_v
-		self.use_bezier_u = spline.use_bezier_u
-		self.use_bezier_v = spline.use_bezier_v
-		self.use_smooth = spline.use_smooth
-		self.hide = spline.hide
-		self.material_index = spline.material_index
-		self.character_index = spline.character_index
-		self.read_bezier_points(spline)
-
-	def read_bezier_points(self, spline):
-		for bp in spline.bezier_points:
-			self.bezier_points.append(Point(bp))
-	
-	def insert(self, index, point):
-		self.bezier_points.insert(index, point)
-
-	def remove(self, index):
-		self.bezier_points.pop(index)
-
-	def create_new_spline(self, data):
-		spline = data.splines.new(self.type)
-		spline.bezier_points.add(len(self.bezier_points) - 1)
-		for i in range(len(self.bezier_points)):
-			point = self.bezier_points[i]
-			point.get_bezier_point(spline.bezier_points[i])
-		spline.tilt_interpolation = self.tilt_interpolation
-		#spline.radius_interpolatio = self.radius_interpolation
-		#spline.point_count_u = self.point_count_u
-		#spline.point_count_v = self.point_count_v
-		spline.order_u = self.order_u
-		spline.order_v = self.order_v
-		spline.resolution_u = self.resolution_u
-		spline.resolution_v = self.resolution_v
-		spline.use_cyclic_u = self.use_cyclic_u
-		spline.use_cyclic_v = self.use_cyclic_v
-		spline.use_endpoint_u = self.use_endpoint_u
-		spline.use_endpoint_v = self.use_endpoint_v
-		spline.use_bezier_u = self.use_bezier_u
-		spline.use_bezier_v = self.use_bezier_v
-		spline.use_smooth = self.use_smooth
-		spline.hide = self.hide
-		spline.material_index = self.material_index
-		#spline.character_index = self.character_index
-
-class Shape:
-	def __init__(self, obj, splines):
-		self.obj = obj
-		self.splines = []
-		self.read_splines(splines)
-
-	def read_splines(self, splines):
-		for spline in splines:
-			self.splines.append(Spline(spline))
-
-	def deepcopy(self):
-		NewShape = Shape(self.obj, [])
-		for spline in self.splines:
-			newspline = copy.deepcopy(spline)
-			NewShape.splines.append(newspline)
-		return NewShape
-
-	def create_shape(self):
-		self.obj.data.splines.clear()
-		for spline in self.splines:
-			spline.create_new_spline(self.obj.data)
+from bsmax.data import Point,Spline,Shape
+from bsmax.math import (get_segment_length, split_segment, get_3_points_angle, point_on_line,
+						get_spline_left_index, get_spline_rigth_index)
 
 class BsMax_OT_CurveChamfer(Operator):
 	bl_idname = "curve.chamfer"
@@ -121,27 +12,13 @@ class BsMax_OT_CurveChamfer(Operator):
 	fillet: BoolProperty(name="Fillet:",default = False)
 	value: FloatProperty(name="Value:",unit='LENGTH')
 	typein: BoolProperty(name="Type In:",default = False)
-	start = False
-	finish = False
-	obj = None
-	shape = None
+	start,finish = False,False
+	shape,obj = None,None
 	start_y = 0
 
 	def get_data(self, ctx):
 		self.obj = ctx.active_object
 		self.shape = Shape(self.obj, self.obj.data.splines)
-
-	def get_left_index(self, spline, index):
-		left = index - 1
-		if index == 0:
-			left = len(spline.bezier_points) - 1 if spline.use_cyclic_u else index
-		return left
-
-	def get_rigth_index(self, spline, index):
-		right = index + 1
-		if index >= len(spline.bezier_points) - 1:
-			right = 0 if spline.use_cyclic_u else index
-		return right
 
 	def chamfer(self):
 		shape = self.shape.deepcopy()
@@ -153,8 +30,8 @@ class BsMax_OT_CurveChamfer(Operator):
 					selection.append([i, j, point])
 
 		for i, j, point in reversed(selection):
-			left = self.get_left_index(shape.splines[i], j)
-			right = self.get_rigth_index(shape.splines[i], j)
+			left = get_spline_left_index(shape.splines[i], j)
+			right = get_spline_rigth_index(shape.splines[i], j)
 
 			point_start = shape.splines[i].bezier_points[left]
 			point_center = shape.splines[i].bezier_points[j] 
@@ -287,18 +164,11 @@ class BsMax_OT_CurveChamfer(Operator):
 			ctx.window_manager.modal_handler_add(self)
 			return {'RUNNING_MODAL'}
 
-def camfer_menu(self, ctx):
-	layout = self.layout
-	layout.separator()
-	layout.operator("curve.chamfer", text="Chamfer/Fillet").typein=True
-		
 def chamfer_cls(register):
 	c = BsMax_OT_CurveChamfer
 	if register: 
 		bpy.utils.register_class(c)
-		bpy.types.VIEW3D_MT_edit_curve_ctrlpoints.append(camfer_menu)
 	else:
-		bpy.types.VIEW3D_MT_edit_curve_ctrlpoints.remove(camfer_menu)
 		bpy.utils.unregister_class(c)
 
 if __name__ == '__main__':

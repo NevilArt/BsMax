@@ -45,6 +45,18 @@ def point_on_curve(curve, index, time):
 		t = length / lengths[index]
 		return point_on_vector(a, b, c, d, t)
 
+def get_spline_left_index(spline, index):
+	left = index - 1
+	if index == 0:
+		left = len(spline.bezier_points) - 1 if spline.use_cyclic_u else index
+	return left
+
+def get_spline_rigth_index(spline, index):
+	right = index + 1
+	if index >= len(spline.bezier_points) - 1:
+		right = 0 if spline.use_cyclic_u else index
+	return right
+
 def split_segment(p1, p2, p3, p4, t):
 	# start.co start.out end.in end.co
 	p12 = (p2 - p1) * t + p1
@@ -84,16 +96,21 @@ def get_segment_length(a, b, c, d, steps):
 		lenght += get_distance(points[i], points[i - 1])
 	return lenght
 
+# def get_2_points_2d_angel(point1, point2):
+# 	return atan2(point2.x-point1.x,point1.y-point2.y)
+
 def get_3_points_angle(a, b, c):
 	v1 = Vector((a.x - b.x, a.y - b.y, a.z - b.z))
 	v2 = Vector((c.x - b.x, c.y - b.y, c.z - b.z))
 	v1mag = sqrt(v1.x**2 + v1.y**2 + v1.z**2)
-	v1mag = 0.0001 if v1mag == 0 else v1mag
+	v1mag = 0.00000000000001 if v1mag == 0 else v1mag
 	v1norm = Vector((v1.x / v1mag, v1.y / v1mag, v1.z / v1mag))
 	v2mag = sqrt(v2.x**2 + v2.y**2 + v2.z**2)
-	v2mag = 0.0001 if v2mag == 0 else v2mag
+	v2mag = 0.00000000000001 if v2mag == 0 else v2mag
 	v2norm = Vector((v2.x / v2mag, v2.y / v2mag, v2.z / v2mag))
 	res = v1norm.x * v2norm.x + v1norm.y * v2norm.y + v1norm.z * v2norm.z
+	res = 1 if res > 1 else res
+	res = -1 if res < -1 else res
 	return acos(res)
 
 def get_axis_constraint(oring, current):
@@ -131,6 +148,8 @@ def get_offset_by_orient(offset ,orient):
 __all__ = ["point_on_line",
 		"point_on_vector",
 		"point_on_curve",
+		"get_spline_left_index",
+		"get_spline_rigth_index",
 		"split_segment",
 		"get_2_point_center",
 		"get_distance",

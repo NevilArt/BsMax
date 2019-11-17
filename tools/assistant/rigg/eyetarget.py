@@ -2,17 +2,8 @@ import bpy
 from bpy.types import Operator
 from mathutils import Vector
 from bsmax.math import get_distance
-from bsmax.actions import link_to,set_create_target#,freeze_transform
+from bsmax.actions import link_to,set_create_target,freeze_transform
 from primitive.rectangle import Rectangle
-
-##################################
-def freeze_transform(objs):
-	for obj in objs:
-		obj.delta_location = obj.location
-		obj.location = [0,0,0]
-		obj.delta_rotation_euler = obj.rotation_euler
-		obj.rotation_euler = [0,0,0]
-##################################
 
 def create_rectangle(ctx, location, width, length):
 	rec = Rectangle()
@@ -42,7 +33,7 @@ def create_holder(ctx, location, radius, target):
 class BsMax_TO_EyeTargetCreator(Operator):
 	bl_idname = "bsmax.eyetargetcreator"
 	bl_label = "Eye Target Creator"
-	bl_description = "Create Eyetarget Controllers"
+	bl_description = "Create Eyetarget For 2 Selected Objects"
 
 	@classmethod
 	def poll(self, ctx):
