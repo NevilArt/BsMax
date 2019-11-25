@@ -42,6 +42,18 @@ def is_object_mode(ctx):
 			return True
 	return False
 
+def is_mode(ctx, mode):
+	if ctx.area.type == 'VIEW_3D':
+		if len(ctx.scene.objects) > 0:
+			if ctx.object != None:
+				if ctx.object.mode == mode:
+					return True
+			else:
+				return True
+		else:
+			return True
+	return False
+
 def has_constraint(obj, constrainttype):
 	for c in obj.constraints:
 		if c.type == constrainttype:

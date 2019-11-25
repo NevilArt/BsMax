@@ -4,7 +4,7 @@ def curve_menu(self, ctx):
 	layout = self.layout
 	layout.separator()
 	layout.operator("curve.chamfer", text="Chamfer/Fillet").typein=True
-	layout.operator("curve.outlinecurve", text="Outline (Under Construction)").typein=True
+	layout.operator("curve.outlinecurve", text="Outline").typein=True
 		
 def menu_cls(register):
 	if register: 

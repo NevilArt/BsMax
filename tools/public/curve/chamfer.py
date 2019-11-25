@@ -1,10 +1,9 @@
-import bpy#, numpy, copy, math
+import bpy
 from bpy.types import Operator
 from mathutils import Vector
 from bpy.props import BoolProperty, FloatProperty
-from bsmax.data import Point,Spline,Shape
-from bsmax.math import (get_segment_length, split_segment, get_3_points_angle, point_on_line,
-						get_spline_left_index, get_spline_rigth_index)
+from bsmax.curve import Curve, Bezier_point
+from bsmax.math import get_segment_length, split_segment, get_3_points_angle_3d, point_on_line
 
 class BsMax_OT_CurveChamfer(Operator):
 	bl_idname = "curve.chamfer"
@@ -13,29 +12,30 @@ class BsMax_OT_CurveChamfer(Operator):
 	value: FloatProperty(name="Value:",unit='LENGTH')
 	typein: BoolProperty(name="Type In:",default = False)
 	start,finish = False,False
-	shape,obj = None,None
+	curve,obj = None,None
 	start_y = 0
 
 	def get_data(self, ctx):
 		self.obj = ctx.active_object
-		self.shape = Shape(self.obj, self.obj.data.splines)
+		self.curve = Curve(self.obj)
 
 	def chamfer(self):
-		shape = self.shape.deepcopy()
+		curve = self.curve
+		curve.restore()
 		selection = []
-		for i in range(len(shape.splines)):
-			for j in range(len(shape.splines[i].bezier_points)):
-				point = shape.splines[i].bezier_points[j]
+		for i in range(len(curve.splines)):
+			for j in range(len(curve.splines[i].bezier_points)):
+				point = curve.splines[i].bezier_points[j]
 				if point.select_control_point:
 					selection.append([i, j, point])
 
 		for i, j, point in reversed(selection):
-			left = get_spline_left_index(shape.splines[i], j)
-			right = get_spline_rigth_index(shape.splines[i], j)
+			left = curve.splines[i].get_left_index(j)
+			right = curve.splines[i].get_rigth_index(j)
 
-			point_start = shape.splines[i].bezier_points[left]
-			point_center = shape.splines[i].bezier_points[j] 
-			point_end = shape.splines[i].bezier_points[right]
+			point_start = curve.splines[i].bezier_points[left]
+			point_center = curve.splines[i].bezier_points[j] 
+			point_end = curve.splines[i].bezier_points[right]
 
 			value = abs(self.value)
 
@@ -46,6 +46,7 @@ class BsMax_OT_CurveChamfer(Operator):
 			c1 = segment1[1].handle_left
 			d1 = segment1[1].co
 			length1 = get_segment_length(a1, b1, c1, d1, 100)
+			#length1 = curve.splines[i].get_segment_length(left)
 			val = value if value <= length1 else length1
 			t1 = 1 - (val / length1)
 
@@ -56,6 +57,7 @@ class BsMax_OT_CurveChamfer(Operator):
 			c2 = segment2[1].handle_left
 			d2 = segment2[1].co
 			length2 = get_segment_length(a2, b2, c2, d2, 100)
+			#length2 = curve.splines[i].get_segment_length(j)
 			val = value if value <= length2 else length2
 			t2 = val / length2
 
@@ -65,7 +67,7 @@ class BsMax_OT_CurveChamfer(Operator):
 			a = r[2]
 			c = Vector(point_center.co)
 			b = l[4]
-			angle = get_3_points_angle(a, c, b)
+			angle = get_3_points_angle_3d(a, c, b)
 
 			# not a perfect solution
 			t = 0.551786 * (angle / 1.5708) # 1.5708 = rad(90)
@@ -86,7 +88,7 @@ class BsMax_OT_CurveChamfer(Operator):
 
 			handle_type = 'FREE' if self.fillet else 'VECTOR'
 
-			NewPoint = Point(point)
+			NewPoint = Bezier_point(point)
 			point_start.handle_right_type = 'FREE'
 			point_start.handle_right = out_0
 
@@ -105,13 +107,12 @@ class BsMax_OT_CurveChamfer(Operator):
 			point_end.handle_left_type = "FREE"
 			point_end.handle_left = in_3
 
-			shape.splines[i].bezier_points.insert(j, NewPoint)
+			curve.splines[i].bezier_points.insert(j, NewPoint)
 
-		shape.create_shape()
+		curve.update()
 
 	def abort(self):
-		if self.shape != None:
-			self.shape.create_shape()
+		self.curve.reset()
 
 	def execute(self, ctx):
 		if self.value == 0:

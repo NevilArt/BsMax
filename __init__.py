@@ -18,9 +18,9 @@
 
 bl_info = {
 	"name": "BsMax",
-	"description": "Beta Version Updated on 17.November.2019",
+	"description": "Beta Version Updated on 25.November.2019",
 	"author": "Naser Merati (Nevil)",
-	"version": (0, 1, 0, 20191117),
+	"version": (0, 1, 0, 20191125),
 	"blender": (2, 80, 0),
 	#"location": "Every where",
 	#"warning": "", # used for warning icon and text in addons panel

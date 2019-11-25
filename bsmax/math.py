@@ -1,4 +1,4 @@
-from math import sqrt, acos
+from math import sqrt, acos, atan2
 from mathutils import Vector
 
 def point_on_line(a, b, t):
@@ -45,17 +45,21 @@ def point_on_curve(curve, index, time):
 		t = length / lengths[index]
 		return point_on_vector(a, b, c, d, t)
 
-def get_spline_left_index(spline, index):
-	left = index - 1
-	if index == 0:
-		left = len(spline.bezier_points) - 1 if spline.use_cyclic_u else index
-	return left
+# def get_spline_left_index(spline, index):
+# 	left = index - 1
+# 	if index == 0:
+# 		left = len(spline.bezier_points) - 1 if spline.use_cyclic_u else index
+# 	return left
 
-def get_spline_rigth_index(spline, index):
-	right = index + 1
-	if index >= len(spline.bezier_points) - 1:
-		right = 0 if spline.use_cyclic_u else index
-	return right
+# def get_spline_rigth_index(spline, index):
+# 	right = index + 1
+# 	if index >= len(spline.bezier_points) - 1:
+# 		right = 0 if spline.use_cyclic_u else index
+# 	return right
+
+# def get_line_tilt(p1, p2):
+# 	a,b = p1.y-p2.y, p2.x-p1.x
+# 	return atan2(b,a)
 
 def split_segment(p1, p2, p3, p4, t):
 	# start.co start.out end.in end.co
@@ -94,12 +98,16 @@ def get_segment_length(a, b, c, d, steps):
 	lenght = 0
 	for i in range(len(points) - 1):
 		lenght += get_distance(points[i], points[i - 1])
+	#bpy.context.active_object.data.splines[0].calc_length()
 	return lenght
 
-# def get_2_points_2d_angel(point1, point2):
-# 	return atan2(point2.x-point1.x,point1.y-point2.y)
+def get_2_points_angel_2d(p1, p2):
+	return atan2(p2.x-p1.x, p1.y-p2.y)
 
-def get_3_points_angle(a, b, c):
+def get_3_points_angle_2d(a, b, c):
+	return atan2(c.y-b.y, c.x-b.x) - atan2(a.y-b.y, a.x-b.x)
+
+def get_3_points_angle_3d(a, b, c):
 	v1 = Vector((a.x - b.x, a.y - b.y, a.z - b.z))
 	v2 = Vector((c.x - b.x, c.y - b.y, c.z - b.z))
 	v1mag = sqrt(v1.x**2 + v1.y**2 + v1.z**2)
@@ -112,6 +120,17 @@ def get_3_points_angle(a, b, c):
 	res = 1 if res > 1 else res
 	res = -1 if res < -1 else res
 	return acos(res)
+
+def get_lines_intersection(p1,p2,p3,p4):
+	delta = ((p1.x-p2.x)*(p3.y-p4.y)-(p1.y-p2.y)*(p3.x-p4.x))
+	if delta == 0:
+		return None
+	else:
+		a = ((p1.x*p2.y-p1.y*p2.x)*(p3.x-p4.x)-(p1.x-p2.x)*(p3.x*p4.y-p3.y*p4.x))
+		b = ((p1.x*p2.y-p1.y*p2.x)*(p3.y-p4.y)-(p1.y-p2.y)*(p3.x*p4.y-p3.y*p4.x))
+		x=((p1.x*p2.y-p1.y*p2.x)*(p3.x-p4.x)-(p1.x-p2.x)*(p3.x*p4.y-p3.y*p4.x))/delta
+		y=((p1.x*p2.y-p1.y*p2.x)*(p3.y-p4.y)-(p1.y-p2.y)*(p3.x*p4.y-p3.y*p4.x))/delta
+	return Vector((x,y,0))
 
 def get_axis_constraint(oring, current):
 	# Keep bigger axis and set the other zero
@@ -145,15 +164,16 @@ def get_offset_by_orient(offset ,orient):
 	else:
 		return offset
 
+
 __all__ = ["point_on_line",
 		"point_on_vector",
 		"point_on_curve",
-		"get_spline_left_index",
-		"get_spline_rigth_index",
 		"split_segment",
 		"get_2_point_center",
 		"get_distance",
 		"get_segment_length",
-		"get_3_points_angle",
+		"get_2_points_angel_2d",
+		"get_3_points_angle_2d",
+		"get_3_points_angle_3d",
 		"get_axis_constraint",
 		"get_offset_by_orient"]

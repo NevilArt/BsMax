@@ -340,8 +340,8 @@ def create_3dsmax_keymaps():
 		km = kcfg.keymaps.new(name='Transform Modal Map',space_type='EMPTY',
 							  region_type='WINDOW',      modal = True)
 
-		#kmi = km.keymap_items.new("AXIS_X","F5","ANY")
-		#KeyMaps.append((km,kmi))
+		# kmi = km.keymap_items.new("AXIS_X","F5","ANY")
+		# KeyMaps.append((km,kmi))
 
 		"""
 		("AXIS_X",{"type": 'X',"value": 'PRESS',"ctrl": True},None),
@@ -586,7 +586,7 @@ def create_3dsmax_keymaps():
 		kmi.properties.name="builtin.scale"
 		kmi.properties.cycle = True
 		# kmi = km.keymap_items.new("bsmax.droptool", "RIGHTMOUSE", "PRESS")
-		# KeyMaps.append((km, kmi))
+		KeyMaps.append((km, kmi))
 
 		# Curve ----------------------------------------------------------------
 		km = kcfg.keymaps.new(name='Curve',space_type='EMPTY')
@@ -631,7 +631,7 @@ def create_3dsmax_keymaps():
 		kmi.properties.name="builtin.rotate"
 		KeyMaps.append((km,kmi))
 		# kmi = km.keymap_items.new("bsmax.droptool", "RIGHTMOUSE", "PRESS")
-		# KeyMaps.append((km, kmi))
+		KeyMaps.append((km, kmi))
 
 		# Armature -------------------------------------------------------------
 		km = kcfg.keymaps.new(name='Armature',space_type='EMPTY')

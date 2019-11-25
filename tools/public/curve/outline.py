@@ -1,154 +1,71 @@
 import bpy, numpy
 from bpy.types import Operator
-from bpy.props import BoolProperty, FloatProperty
-from copy import deepcopy
-from mathutils import Vector
-from bsmax.math import (get_distance, get_segment_length, point_on_line,
-						get_spline_left_index, get_spline_rigth_index)
-from bsmax.data import Shape
-
-from math import sin, cos, atan, sqrt, degrees, pi, atan2
-
-def get_2_points_2d_normal(p1, p2):
-	a,b = p1.y-p2.y, p2.x-p1.x
-	d = atan2(b,a)
-	x,y = cos(d),sin(d)
-	return Vector((x,y,0))
-
-def get_side_offset(p1, p2, val):
-	return get_2_points_2d_normal(p1,p2)*val
-
-def get_intersection_of_2_lines(p1,p2,p3,p4):
-	d = ((p1.x-p2.x)*(p3.y-p4.y)-(p1.y-p2.y)*(p3.x-p4.x))
-	d = 0.000000000000001 if d == 0 else d
-	x=((p1.x*p2.y-p1.y*p2.x)*(p3.x-p4.x)-(p1.x-p2.x)*(p3.x*p4.y-p3.y*p4.x))/d
-	y=((p1.x*p2.y-p1.y*p2.x)*(p3.y-p4.y)-(p1.y-p2.y)*(p3.x*p4.y-p3.y*p4.x))/d
-	return x,y
-
-def get_corner_offset(p1, p2, p3, val):
-	o1 = get_side_offset(p1,p2,val)
-	o2 = get_side_offset(p2,p3,val)
-	lp1 = Vector((p1.x+o1.x, p1.y+o1.y, 0))
-	lp2 = Vector((p2.x+o1.x, p2.y+o1.y, 0))
-	lp3 = Vector((p2.x+o2.x, p2.y+o2.y, 0))
-	lp4 = Vector((p3.x+o2.x, p3.y+o2.y, 0))
-	x,y = get_intersection_of_2_lines(lp1,lp2,lp3,lp4)
-	x -= p2.x
-	y -= p2.y
-	return Vector((x,y,0))
-
-def get_corner_position(p1, p2, p3, val):
-	o1 = get_side_offset(p1,p2,val)
-	o2 = get_side_offset(p2,p3,val)
-	lp1 = Vector((p1.x+o1.x, p1.y+o1.y, 0))
-	lp2 = Vector((p2.x+o1.x, p2.y+o1.y, 0))
-	lp3 = Vector((p2.x+o2.x, p2.y+o2.y, 0))
-	lp4 = Vector((p3.x+o2.x, p3.y+o2.y, 0))
-	x,y = get_intersection_of_2_lines(lp1,lp2,lp3,lp4)
-	return Vector((x,y,0))
+from bpy.props import BoolProperty, FloatProperty, IntProperty
+from bsmax.curve import Curve
 
 class BsMax_OT_OutlineCurve(Operator):
 	bl_idname = "curve.outlinecurve"
 	bl_label = "Outline (Curve)"
 
-	typein: BoolProperty(name="Type In:",default = False)
+	typein: BoolProperty(name="Type In:",default=False)
 	value: FloatProperty(name="Value:",unit='LENGTH')
-	shape,obj = None,None
+	close: BoolProperty(name="Close:",default=True)
+	count: IntProperty(name="Count:",default=1)
+	mirror: BoolProperty(name="Mirror:",default=False)
+	curve,obj = None,None
 	start,finish = False,False
 	start_y = 0
 
+	@classmethod
+	def poll(self, ctx):
+		if ctx.area.type == 'VIEW_3D':
+			if len(ctx.scene.objects) > 0:
+				if ctx.object != None:
+					return ctx.mode == 'EDIT_CURVE'
+		return False
+
 	def get_data(self, ctx):
 		self.obj = ctx.active_object
-		self.shape = Shape(self.obj, self.obj.data.splines)
+		self.curve = Curve(self.obj)
 
-	def outline(self):
-		shape = self.shape.deepcopy()
+	def get_selection(self, curve):
 		selection = []
-		for i in range(len(shape.splines)):
-			for j in range(len(shape.splines[i].bezier_points)):
-				point = shape.splines[i].bezier_points[j]
+		for i in range(len(curve.splines)):
+			for j in range(len(curve.splines[i].bezier_points)):
+				point = curve.splines[i].bezier_points[j]
 				if point.select_control_point:
 					selection.append(i)
 					break
-		for i in selection:
-			spline = shape.splines[i]
-			close = spline.use_cyclic_u
-			points = spline.bezier_points
-			newspline = deepcopy(shape.splines[i])			
-			for index in range(len(points)):
-				# check for start and end of spline
-				hasleft = True if close else (index > 0)
-				hasright = True if close else (index < len(points) - 1)
+		return selection
 
-				# get nex and previews besier point index
-				left = get_spline_left_index(newspline, index)
-				right = get_spline_rigth_index(newspline, index)
-
-				point = newspline.bezier_points[index]
-				# dis select the new created segment
-				point.select_left_handle = False
-				point.select_right_handle = False
-				point.select_control_point = False
-
-				if not hasleft and hasright:
-					point.handle_left_type = 'VECTOR'
-					points[index].handle_left_type = 'VECTOR'
-					point.handle_right_type = 'FREE'
-					points[index].handle_right_type = 'FREE'
-
-					p1 = points[index].co
-					p2 = points[index].handle_right
-					p3 = points[right].handle_left
-
-					point.co += get_side_offset(p1,p2,self.value)
-					point.handle_right = get_corner_position(p1,p2,p3,self.value)
-					
-				elif hasleft and hasright:
-					point.handle_left_type = 'FREE'
-					point.handle_right_type = 'FREE'
-
-					p0 = points[left].handle_right
-					p1 = points[index].handle_left
-					p2 = points[index].co
-					p3 = points[index].handle_right
-					p4 = points[right].handle_left
-
-					point.handle_left = get_corner_position(p0,p1,p2,self.value)
-					point.co = get_corner_position(p1,p2,p3,self.value)
-					point.handle_right = get_corner_position(p2,p3,p4,self.value)
-
-				elif hasleft and not hasright:
-					points[index].handle_left_type = 'FREE'
-					point.handle_left_type = 'FREE'
-					point.handle_right_type = 'VECTOR'
-					points[index].handle_right_type = 'VECTOR'
-
-					p0 = points[left].handle_right
-					p1 = points[index].handle_left
-					p2 = points[index].co
-					
-					point.handle_left = get_corner_position(p0,p1,p2,self.value)
-					point.co += get_side_offset(p1,p2,self.value)
-
-			if close:
-				shape.splines.append(newspline)
-			else:
-				for point in reversed(newspline.bezier_points):
-					left = point.handle_right
-					right = point.handle_left
-					ltype = point.handle_right_type
-					rtype = point.handle_left_type
-					point.handle_left = left
-					point.handle_right = right
-					point.handle_left_type = ltype
-					point.handle_right_type = rtype
-					shape.splines[i].bezier_points.append(point)
-				spline.use_cyclic_u = True
-		shape.create_shape()
+	def outline(self):
+		curve = self.curve
+		curve.restore()
+		if self.value != 0:
+			selection = self.get_selection(curve)
+			for i in selection:
+				curve.splines[i].set_free()
+				count = 1 if self.close else self.count
+				for j in range(count):
+					value = self.value * (j+1)
+					newspline = curve.clone(i)
+					newspline.select(False)
+					newspline.offset(value)
+					if self.mirror and not self.close:
+						mirrorspline = curve.clone(i)
+						mirrorspline.select(False)
+						mirrorspline.offset(-value)
+						curve.splines.append(mirrorspline)
+					if not curve.splines[i].use_cyclic_u and self.close:
+						newspline.reverse()
+						curve.join(i,newspline)
+						curve.splines[i].use_cyclic_u = True
+					else:
+						curve.splines.append(newspline)
+		curve.update()
 
 	def abort(self):
-		if self.shape != None:
-			self.shape.create_shape()
+		self.curve.reset()
 
 	def execute(self, ctx):
 		if self.value == 0:
@@ -166,7 +83,11 @@ class BsMax_OT_OutlineCurve(Operator):
 	def draw(self, ctx):
 		layout = self.layout
 		col = layout.column(align=True)
-		col.prop(self,"value",text="Value")
+		col.prop(self,"value")
+		col.prop(self,"close")
+		if not self.close:
+			col.prop(self,"count")
+			col.prop(self,"mirror")
 
 	def modal(self, ctx, event):
 		if event.type == 'LEFTMOUSE':
