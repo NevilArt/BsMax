@@ -4,7 +4,7 @@ from bpy.props import BoolProperty, FloatProperty, IntProperty
 from bsmax.curve import Curve
 
 class BsMax_OT_OutlineCurve(Operator):
-	bl_idname = "curve.outlinecurve"
+	bl_idname = "curve.outline"
 	bl_label = "Outline (Curve)"
 
 	typein: BoolProperty(name="Type In:",default=False)
@@ -12,6 +12,7 @@ class BsMax_OT_OutlineCurve(Operator):
 	close: BoolProperty(name="Close:",default=True)
 	count: IntProperty(name="Count:",default=1)
 	mirror: BoolProperty(name="Mirror:",default=False)
+	#remove: BoolProperty(name="Delete:",default=False)
 	curve,obj = None,None
 	start,finish = False,False
 	start_y = 0

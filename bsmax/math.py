@@ -2,14 +2,14 @@ from math import sqrt, acos, atan2
 from mathutils import Vector
 
 def point_on_line(a, b, t):
-	return a + (b - a) * t
+	return a+(b-a)*t
 
 def point_on_vector(a, b, c, d, t):
-	C1 = d - (3.0 * c) + (3.0 * b) - a
-	C2 = (3.0 * c) - (6.0 * b) + (3.0 * a)
-	C3 = (3.0 * b) - (3.0 * a)
+	C1 = d-3*c+3*b-a
+	C2 = 3*c-6*b+3*a
+	C3 = 3*b-3*a
 	C4 = a
-	return C1 * t * t * t + C2 * t * t + C3 * t + C4
+	return C1*t**3+C2*t*t+C3*t+C4
 
 def point_on_curve(curve, index, time):
 	spline = curve.data.splines[index]

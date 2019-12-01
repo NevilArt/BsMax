@@ -25,11 +25,12 @@ class BsMax_OT_MaxNavigation(Operator):
 		if not event.type in ['MIDDLEMOUSE','LEFT_CTRL','LEFT_ALT','RIGHT_CTRL','RIGHT_ALT']: 
 			return {'PASS_THROUGH'}
 		print(event.type, event.value)
+
 		if event.type == 'MIDDLEMOUSE':
 			if event.value in {'PRESS','CLICK_DRAG'}:
 				self.mmb = True
 			elif event.value == 'RELEASE':
-				return {'CANCELLED'}
+				self.mmb = False
 
 		if event.type in {'LEFT_ALT','RIGHT_ALT'}:
 			if event.value in {'PRESS','CLICK_DRAG'}:
@@ -42,8 +43,9 @@ class BsMax_OT_MaxNavigation(Operator):
 				self.ctrl = True
 			elif event.value == 'RELEASE':
 				self.ctrl = False
-		self.action()
 
+		self.action()
+		#return {'CANCELLED'}
 		return {'RUNNING_MODAL'}
 	def invoke(self,ctx,event):
 		ctx.window_manager.modal_handler_add(self)

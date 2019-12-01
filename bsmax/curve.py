@@ -2,7 +2,8 @@ import bpy, numpy, math
 from mathutils import Vector
 from copy import deepcopy
 from math import sin, cos, atan2, pi, sqrt
-from bsmax.math import get_3_points_angle_2d, get_lines_intersection
+from bsmax.math import (get_3_points_angle_2d,get_lines_intersection,split_segment,point_on_line,
+	point_on_vector,get_distance,get_3_points_angle_3d,get_segment_length)
 
 def get_line_offset(p1, p2, val):
 	a,b = p1.y-p2.y, p2.x-p1.x
@@ -27,6 +28,63 @@ def get_corner_position(p1, p2, p3, val):
 		# avod the not spected errores
 		position = o1 + p2
 	return position
+
+def get_curve_selection_index(curve, mode):
+	selection = []
+	if mode == 'point':
+		for i, spline in enumerate(curve.splines):
+			sel = []
+			for j, point in enumerate(spline.bezier_points):
+				if point.select_control_point:
+					sel.append(j)
+			if len(sel) > 0:
+				selection.append([i,sel])
+	elif mode == 'segment':
+		for i, spline in enumerate(curve.splines):
+			sel = []
+			count = len(spline.bezier_points)
+			for j in range(count):
+				k = j + 1
+				if k >= count:
+					if spline.use_cyclic_u:
+						k = -1
+					else:
+						break
+				point1 = spline.bezier_points[j].select_control_point
+				point2 = spline.bezier_points[k].select_control_point
+				if point1 and point2:
+					sel.append([j,k])
+			if len(sel) > 0:
+				selection.append([i,sel])
+	elif mode == 'spline':
+		for i, spline in enumerate(curve.splines):
+			istrue = True
+			for point in spline.bezier_points:
+				if not point.select_control_point:
+					istrue = False
+					break
+			if istrue:
+				selection.append(i)
+	elif mode == 'close':
+		for i, spline in enumerate(curve.splines):
+			if not spline.use_cyclic_u:
+				break
+			istrue = True
+			for point in spline.bezier_points:
+				if not point.select_control_point:
+					istrue = False
+					break
+			if istrue:
+				selection.append(i)
+	return selection
+
+def get_curve_activespline_index(curve):
+	splines = curve.splines
+	active = splines.active
+	for i, spline in enumerate(curve.splines):
+		if spline == active:
+			return i
+	return None
 
 class Bezier_point:
 	def __init__(self, bpoint):
@@ -71,6 +129,19 @@ class Bezier_point:
 		bezier_point.select_right_handle = self.select_right_handle
 		bezier_point.weight_softbody = self.weight_softbody
 
+class Segment:
+	def __init__(self, spline, indexs):
+		self.spline = spline
+		self.a = spline.bezier_points[indexs[0]].co
+		self.b = spline.bezier_points[indexs[0]].handle_right
+		self.c = spline.bezier_points[indexs[1]].handle_left
+		self.d = spline.bezier_points[indexs[1]].co
+		self.cuts = []
+	def split(self, divide):
+		self.cuts = [point_on_vector(self.a,self.b,self.c,self.d,self.t) for t in range(divide)]
+	def length(self, divide):
+		return get_segment_length(self.a,self.b,self.c,self.d,divide)
+
 class Spline:
 	def __init__(self, spline):
 		self.points = []
@@ -111,7 +182,7 @@ class Spline:
 		return right
 
 	def get_segment_length(self, index, steps=100):
-		if index < len(self.bezier_points)-2:
+		if index <= len(self.bezier_points)-2:
 			a = self.bezier_points[index].co
 			b = self.bezier_points[index].handle_right
 			c = self.bezier_points[index+1].handle_left
@@ -245,6 +316,86 @@ class Spline:
 					point.handle_left = get_corner_position(p0,p1,p2,value)
 				point.co += get_line_offset(p1,p2,value)
 
+	def chamfer(self, indexs, value, tention):
+		# TODO need to optimize and add tention functinality
+		for i in reversed(indexs):
+			point = self.bezier_points[i]
+			left = self.get_left_index(i)
+			right = self.get_rigth_index(i)
+
+			point_start = self.bezier_points[left]
+			point_center = self.bezier_points[i]
+			point_end = self.bezier_points[right]
+
+			segment1 = [point_start]
+			segment1.append(point_center)
+			a1 = segment1[0].co
+			b1 = segment1[0].handle_right
+			c1 = segment1[1].handle_left
+			d1 = segment1[1].co
+			length1 = self.get_segment_length(left)
+			val = value if value <= length1 else length1
+			t1 = 1 - (val / length1) if length1 != 0 else 0
+
+			segment2 = [point_center]
+			segment2.append(point_end)
+			a2 = segment2[0].co
+			b2 = segment2[0].handle_right
+			c2 = segment2[1].handle_left
+			d2 = segment2[1].co
+			length2 = self.get_segment_length(i)
+			val = value if value <= length2 else length2
+			t2 = val / length2 if length2 != 0 else 1
+
+			l = split_segment(a1, b1, c1, d1, t1)
+			r = split_segment(a2, b2, c2, d2, t2)
+
+			a = r[2]
+			c = Vector(point_center.co)
+			b = l[4]
+			angle = get_3_points_angle_3d(a, c, b)
+
+			# not a perfect solution
+			t = 0.551786 * (angle/(pi/2))
+
+			f1 = point_on_line(a, c, t)
+			f2 = point_on_line(b, c, t)
+
+			point_0 = l[0]#
+			out_0 = l[1]#
+			in_1 = r[4]
+			point_1 = r[3]#
+			out_1 = f1 # Flet arc
+			in_2 = f2 # Flet arc
+			point_2 = l[3]#
+			out_2 = l[2]#
+			in_3 = r[5]#
+			point_3 = r[6]#
+
+			handle_type = 'FREE' if tention > 0 else 'VECTOR'
+
+			NewPoint = Bezier_point(point)
+			point_start.handle_right_type = 'FREE'
+			point_start.handle_right = out_0
+
+			point.handle_right_type = 'FREE'
+			point.handle_right = in_1
+			point.co = point_1
+			point.handle_left = out_1 # make filet arc
+			point.handle_left_type = handle_type
+
+			NewPoint.handle_right = in_2 # make filet arc
+			NewPoint.handle_right_type = handle_type
+			NewPoint.co = point_2
+			NewPoint.handle_left = out_2
+			NewPoint.handle_left_type = 'FREE'
+
+			point_end.handle_left_type = "FREE"
+			point_end.handle_left = in_3
+
+			self.bezier_points.insert(i, NewPoint)
+
+
 class Curve:
 	def __init__(self, obj):
 		self.obj = obj
@@ -293,4 +444,4 @@ class Curve:
 			return True
 		return False
 
-__all__ = ["Bezier_point", "Spline", "Curve"]
+__all__ = ["Bezier_point", "Segment", "Spline", "Curve"]

@@ -24,91 +24,17 @@ class BsMax_OT_CurveChamfer(Operator):
 		curve.restore()
 		selection = []
 		for i in range(len(curve.splines)):
+			sel = []
 			for j in range(len(curve.splines[i].bezier_points)):
 				point = curve.splines[i].bezier_points[j]
 				if point.select_control_point:
-					selection.append([i, j, point])
-
-		for i, j, point in reversed(selection):
-			left = curve.splines[i].get_left_index(j)
-			right = curve.splines[i].get_rigth_index(j)
-
-			point_start = curve.splines[i].bezier_points[left]
-			point_center = curve.splines[i].bezier_points[j] 
-			point_end = curve.splines[i].bezier_points[right]
-
-			value = abs(self.value)
-
-			segment1 = [point_start]
-			segment1.append(point_center)
-			a1 = segment1[0].co
-			b1 = segment1[0].handle_right
-			c1 = segment1[1].handle_left
-			d1 = segment1[1].co
-			length1 = get_segment_length(a1, b1, c1, d1, 100)
-			#length1 = curve.splines[i].get_segment_length(left)
-			val = value if value <= length1 else length1
-			t1 = 1 - (val / length1)
-
-			segment2 = [point_center]
-			segment2.append(point_end)
-			a2 = segment2[0].co
-			b2 = segment2[0].handle_right
-			c2 = segment2[1].handle_left
-			d2 = segment2[1].co
-			length2 = get_segment_length(a2, b2, c2, d2, 100)
-			#length2 = curve.splines[i].get_segment_length(j)
-			val = value if value <= length2 else length2
-			t2 = val / length2
-
-			l = split_segment(a1, b1, c1, d1, t1)
-			r = split_segment(a2, b2, c2, d2, t2)
-
-			a = r[2]
-			c = Vector(point_center.co)
-			b = l[4]
-			angle = get_3_points_angle_3d(a, c, b)
-
-			# not a perfect solution
-			t = 0.551786 * (angle / 1.5708) # 1.5708 = rad(90)
-
-			f1 = point_on_line(a, c, t)
-			f2 = point_on_line(b, c, t)
-
-			point_0 = l[0]#
-			out_0 = l[1]#
-			in_1 = r[4]
-			point_1 = r[3]#
-			out_1 = f1 # Flet arc
-			in_2 = f2 # Flet arc
-			point_2 = l[3]#
-			out_2 = l[2]#
-			in_3 = r[5]#
-			point_3 = r[6]#
-
-			handle_type = 'FREE' if self.fillet else 'VECTOR'
-
-			NewPoint = Bezier_point(point)
-			point_start.handle_right_type = 'FREE'
-			point_start.handle_right = out_0
-
-			point.handle_right_type = 'FREE'
-			point.handle_right = in_1
-			point.co = point_1
-			point.handle_left = out_1 # make filet arc
-			point.handle_left_type = handle_type
-
-			NewPoint.handle_right = in_2 # make filet arc
-			NewPoint.handle_right_type = handle_type
-			NewPoint.co = point_2
-			NewPoint.handle_left = out_2
-			NewPoint.handle_left_type = 'FREE'
-
-			point_end.handle_left_type = "FREE"
-			point_end.handle_left = in_3
-
-			curve.splines[i].bezier_points.insert(j, NewPoint)
-
+					sel.append(j)
+			if len(sel) > 1:
+				selection.append([i,sel])
+		value = abs(self.value)
+		tention = 0.5 if self.fillet else 0
+		for i, sel in selection:
+			curve.splines[i].chamfer(sel, value, tention)
 		curve.update()
 
 	def abort(self):
