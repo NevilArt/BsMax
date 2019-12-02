@@ -67,7 +67,7 @@ def get_active_type(ctx):
 def get_pref(ctx):
 	for pr in ctx.preferences.addons:
 		addon = str(pr)
-		st = addon.find('BsMax_')
+		st = addon.find('BsMax')
 		if st != -1:
 			return ctx.preferences.addons[addon[st:-3]].preferences
 	return None
