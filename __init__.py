@@ -21,11 +21,11 @@ bl_info = {
 	"description": "Beta Version Updated on 01.December.2019",
 	"author": "Naser Merati (Nevil)",
 	"version": (0, 1, 0, 20191201),
-	"blender": (2, 80, 0),
+	"blender": (2, 80, 0),# 2.80~2.82
 	#"location": "Every where",
 	#"warning": "", # used for warning icon and text in addons panel
-	"wiki_url": "http://nevilart.blogspot.com/p/about-bsmax.html", # Documantion
-	#"tracker_url": "https://nevilart.blogspot.com/p/bsmax.html", # Report bug
+	"wiki_url": "https://github.com/NevilArt/BsMax_2_80/wiki",
+	"tracker_url": "https://github.com/NevilArt/BsMax_2_80/issues",
 	#"support": "COMMUNITY",
 	"category": "UI"
 }
