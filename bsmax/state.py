@@ -46,7 +46,7 @@ def is_mode(ctx, mode):
 	if ctx.area.type == 'VIEW_3D':
 		if len(ctx.scene.objects) > 0:
 			if ctx.object != None:
-				if ctx.object.mode == mode:
+				if ctx.object.mode == mode: 
 					return True
 			else:
 				return True
@@ -65,9 +65,12 @@ def get_active_type(ctx):
 	return None if active_obj == None else active_obj.type
 
 def get_pref(ctx):
-	#print("-->", __name__)
-	# to do get addon name from __name__
-	return ctx.preferences.addons['BsMax_2_80'].preferences
+	for pr in ctx.preferences.addons:
+		addon = str(pr)
+		st = addon.find('BsMax')
+		if st != -1:
+			return ctx.preferences.addons[addon[st:-3]].preferences
+	return None
 
 def get_obj_class(obj):
 	if obj.type in ['MESH', 'CURVE']:
