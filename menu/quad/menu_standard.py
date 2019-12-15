@@ -113,10 +113,10 @@ def get_view3d_tool1(ctx):
 				items.append(QuadItem("Unbined",f,f,n,"",n))
 				items.append(QuadItem("Bined",f,f,n,"",n))
 				items.append(seprator())
-				items.append(QuadItem("Divide",f,t,n,c0034,n))
+				items.append(QuadItem("Divide",f,t,n,c0034,c0159))
 				items.append(seprator())
 				items.append(QuadItem("Make First",f,f,n,"",n))
-				items.append(QuadItem("Revarse Spline",f,f,n,"",n))
+				items.append(QuadItem("Revarse Spline",f,t,n,c0160,n))
 	if get_active_type(ctx) == 'ARMATURE':
 		items.append(QuadItem("Octahedral",f,t,n,c0150,n))
 		items.append(QuadItem("Stick",f,t,n,c0151,n))

@@ -2,14 +2,7 @@ import bpy
 from math import radians, pi, sin, cos
 from primitive.primitive import PrimitiveCurveClass, CreatePrimitive
 from bsmax.actions import delete_objects
-
-def Bias(height, bias, time):
-	if bias > 0:
-		return height*(1 - pow(1 - time, 9*bias + 1))
-	elif bias < 0:
-		return height*pow(time, 1 - 9*bias)
-	else:
-		return height*time
+from bsmax.math import get_bias
 
 def GetHelixshape(radius1, radius2, height, turns, segs, bias, ccw):
 	shape = []
@@ -29,7 +22,7 @@ def GetHelixshape(radius1, radius2, height, turns, segs, bias, ccw):
 			percent = (hpiece*i)/height
 		else:
 			percent = 0
-		z = Bias(height,bias,percent)
+		z = height*get_bias(bias,percent)
 		p = (x,y,z)
 		shape.append((p,p,'ALIGNED',p,'ALIGNED'))
 	return [shape]

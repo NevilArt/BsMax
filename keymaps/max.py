@@ -605,6 +605,8 @@ def create_3dsmax_keymaps():
 		kmi = km.keymap_items.new("curve.select_all","I","PRESS",ctrl=True)
 		kmi.properties.action = "INVERT"
 		KeyMaps.append((km,kmi))
+		create_view3d_click_celection_keymap(km)
+		create_view3d_tweak_selection_keymap(km)
 
 		kmi = km.keymap_items.new("curve.select_more","PAGE_UP","PRESS",ctrl=True)
 		KeyMaps.append((km,kmi))

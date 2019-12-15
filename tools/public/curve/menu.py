@@ -7,6 +7,7 @@ def controlpoints_menu(self, ctx):
 
 def segments_menu(self, ctx):
 	layout = self.layout
+	layout.operator("curve.dividplus", text="Divid plus").typein=True
 	layout.separator()
 	layout.operator("curve.outline", text="Outline").typein=True
 	layout.separator()

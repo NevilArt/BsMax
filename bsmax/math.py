@@ -126,11 +126,26 @@ def get_lines_intersection(p1,p2,p3,p4):
 	if delta == 0:
 		return None
 	else:
-		a = ((p1.x*p2.y-p1.y*p2.x)*(p3.x-p4.x)-(p1.x-p2.x)*(p3.x*p4.y-p3.y*p4.x))
-		b = ((p1.x*p2.y-p1.y*p2.x)*(p3.y-p4.y)-(p1.y-p2.y)*(p3.x*p4.y-p3.y*p4.x))
 		x=((p1.x*p2.y-p1.y*p2.x)*(p3.x-p4.x)-(p1.x-p2.x)*(p3.x*p4.y-p3.y*p4.x))/delta
 		y=((p1.x*p2.y-p1.y*p2.x)*(p3.y-p4.y)-(p1.y-p2.y)*(p3.x*p4.y-p3.y*p4.x))/delta
 	return Vector((x,y,0))
+#############################################
+# def get_2_line_intersection(line1, line2):
+# 	def line1(x1,y1,x2,y2,x3,y3,x4,y4):
+# 		nx=(x1*y2-y1*x2)*(x3-x4)-(x1-x2)*(x3*y4-y3*x4),
+# 		ny=(x1*y2-y1*x2)*(y3-y4)-(y1-y2)*(x3*y4-y3*x4),
+# 		d=(x1-x2)*(y3-y4)-(y1-y2)*(x3-x4);
+# 		if d==0:
+# 			return False
+# 		return point(nx/d, ny/d)
+# 	def line2(p1, p2, p3, p4):
+# 		x1 = p1.x, y1 = p1.y,
+# 		x2 = p2.x, y2 = p2.y,
+# 		x3 = p3.x, y3 = p3.y,
+# 		x4 = p4.x, y4 = p4.y;
+# 		return line1(x1,y1,x2,y2,x3,y3,x4,y4)
+# 	return line2(line1.p1, line1.p2, line2.p1, line2.p2)
+###############################################
 
 def get_axis_constraint(oring, current):
 	# Keep bigger axis and set the other zero
@@ -164,6 +179,13 @@ def get_offset_by_orient(offset ,orient):
 	else:
 		return offset
 
+def get_bias(bias, time):
+	if bias > 0:
+		return (1-pow(1-time,9*bias+1))
+	elif bias < 0:
+		return pow(time,1-9*bias)
+	else:
+		return time
 
 __all__ = ["point_on_line",
 		"point_on_vector",
@@ -176,4 +198,5 @@ __all__ = ["point_on_line",
 		"get_3_points_angle_2d",
 		"get_3_points_angle_3d",
 		"get_axis_constraint",
-		"get_offset_by_orient"]
+		"get_offset_by_orient",
+		"get_bias"]
