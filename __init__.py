@@ -18,16 +18,16 @@
 
 bl_info = {
 	"name": "BsMax",
-	"description": "Beta Version Updated on 15.December.2019",
+	"description": "Beta Version Updated on 22.December.2019",
 	"author": "Naser Merati (Nevil)",
-	"version": (0, 1, 0, 20191215),
+	"version": (0, 1, 0, 20191222),
 	"blender": (2, 80, 0),# 2.80~2.82
 	#"location": "Every where",
 	#"warning": "", # used for warning icon and text in addons panel
 	"wiki_url": "https://github.com/NevilArt/BsMax_2_80/wiki",
 	"tracker_url": "https://github.com/NevilArt/BsMax_2_80/issues",
 	#"support": "COMMUNITY",
-	"category": "UI"
+	"category": "User Interface"
 }
 
 import bpy, sys, os

@@ -8,6 +8,8 @@ class CurveTool(Operator):
 	start,finish = False,False
 	start_x,start_y = 0,0
 	value_x,value_y,value_w = 0,0,0
+	canceled,singleaction = False,False
+	typein = False
 
 	@classmethod
 	def poll(self, ctx):
@@ -31,7 +33,7 @@ class CurveTool(Operator):
 		self.curve.reset()
 
 	def execute(self, ctx):
-		if self.value_x + self.value_y == 0:
+		if self.canceled:
 			self.abort()
 		else:
 			self.apply()
@@ -43,6 +45,10 @@ class CurveTool(Operator):
 		self.apply()
 
 	def modal(self, ctx, event):
+		if self.singleaction:
+			self.apply()
+			return {'CANCELLED'}
+
 		if event.type == 'LEFTMOUSE':
 			if not self.start:
 				self.start = True
@@ -70,7 +76,7 @@ class CurveTool(Operator):
 		self.get_data(ctx)
 		if self.typein:
 			wm = ctx.window_manager
-			return wm.invoke_props_dialog(self)#,width=120)
+			return wm.invoke_props_dialog(self)
 		else:
 			ctx.window_manager.modal_handler_add(self)
 			return {'RUNNING_MODAL'}

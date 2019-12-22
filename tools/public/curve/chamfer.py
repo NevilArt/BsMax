@@ -1,57 +1,26 @@
 import bpy
-from bpy.types import Operator
-from mathutils import Vector
 from bpy.props import BoolProperty, FloatProperty
-from bsmax.curve import Curve, Bezier_point
-from bsmax.math import get_segment_length, split_segment, get_3_points_angle_3d, point_on_line
+from bsmax.curve import Curve
+from .operator import CurveTool
 
-class BsMax_OT_CurveChamfer(Operator):
+class BsMax_OT_CurveChamfer(CurveTool):
 	bl_idname = "curve.chamfer"
 	bl_label = "Fillet/Chamfer (Curve)"
-	fillet: BoolProperty(name="Fillet:",default = False)
-	value: FloatProperty(name="Value:",unit='LENGTH')
-	typein: BoolProperty(name="Type In:",default = False)
-	start,finish = False,False
-	curve,obj = None,None
-	start_y = 0
+	fillet: BoolProperty(name="Fillet:",default=False)
+	value: FloatProperty(name="Value:",unit='LENGTH',min=0)
+	typein: BoolProperty(name="Type In:",default=False)
 
-	def get_data(self, ctx):
-		self.obj = ctx.active_object
-		self.curve = Curve(self.obj)
-
-	def chamfer(self):
+	def apply(self):
 		curve = self.curve
 		curve.restore()
-		selection = []
-		for i in range(len(curve.splines)):
-			sel = []
-			for j in range(len(curve.splines[i].bezier_points)):
-				point = curve.splines[i].bezier_points[j]
-				if point.select_control_point:
-					sel.append(j)
-			if len(sel) > 1:
-				selection.append([i,sel])
-		value = abs(self.value)
+
+		value = abs(self.value) if self.typein else abs(self.value_y)
 		tention = 0.5 if self.fillet else 0
-		for i, sel in selection:
+		for i, sel in curve.selection('point'):
 			curve.splines[i].chamfer(sel, value, tention)
+		
+		self.canceled = (self.value == 0)
 		curve.update()
-
-	def abort(self):
-		self.curve.reset()
-
-	def execute(self, ctx):
-		if self.value == 0:
-			self.abort()
-		else:
-			self.chamfer()
-		return {'FINISHED'}
-
-	def check(self, ctx):
-		if not self.start:
-			self.start = True
-			self.get_data(ctx)
-		self.chamfer()
 
 	def draw(self, ctx):
 		layout = self.layout
@@ -60,36 +29,7 @@ class BsMax_OT_CurveChamfer(Operator):
 		col = layout.column(align=True)
 		col.prop(self,"fillet",text=text, icon=icon)
 		col.prop(self,"value",text="Value")
-		
-	def modal(self, ctx, event):
-		if event.type == 'LEFTMOUSE':
-			if not self.start:
-				self.start = True
-				self.start_y = event.mouse_y
-				self.get_data(ctx)
-		if event.type == 'MOUSEMOVE':
-			if self.start:
-				scale = (event.mouse_y - self.start_y)
-				self.value = scale / 200
-				self.chamfer()
-			if self.start and event.value =='RELEASE':
-				self.finish = True
-		if self.finish:
-			if self.value == 0:
-				self.abort()
-			return {'CANCELLED'}
-		if event.type in {'RIGHTMOUSE', 'ESC'}:
-			self.abort()
-			return {'CANCELLED'}
-		return {'RUNNING_MODAL'}
-		
-	def invoke(self, ctx, event):
-		if self.typein:
-			wm = ctx.window_manager
-			return wm.invoke_props_dialog(self, width=120)
-		else:
-			ctx.window_manager.modal_handler_add(self)
-			return {'RUNNING_MODAL'}
+
 
 def chamfer_cls(register):
 	c = BsMax_OT_CurveChamfer
