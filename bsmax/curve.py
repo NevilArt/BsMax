@@ -2,8 +2,9 @@ import bpy, numpy, math, cmath
 from mathutils import Vector
 from copy import deepcopy
 from math import sin, cos, atan2, pi, sqrt
+from itertools import product
 from bsmax.math import (get_3_points_angle_2d,get_lines_intersection,split_segment,point_on_line,
-	point_on_vector,get_distance,get_3_points_angle_3d,get_segment_length)
+	point_on_vector,get_distance,get_3_points_angle_3d,get_segment_length,shift_number)
 
 ############################################################################################
 ## temprary function need to simplifyied ###################################################
@@ -646,6 +647,11 @@ class Spline:
 		self.bezier_points.clear()
 
 	def join(self, spline):
+		# TODO add modes for join the last and first point
+		# keep both
+		# keep first
+		# keep last
+		# merge to center
 		for point in spline.bezier_points:
 			self.bezier_points.append(point)
 
@@ -948,9 +954,6 @@ class Curve:
 			return True
 		return False
 
-	def remove_doubles(self, tollerance):
-		pass
-
 	def delete_segments(self, splineindex, indexes):
 		indexes.sort()
 		segments, new = [],[]
@@ -983,8 +986,94 @@ class Curve:
 		for newspline in splines:
 			self.splines.append(newspline)
 
-	def remove_doubles(self, tollerance=0.01,selected=False):
-		pass
+	def break_point(self, spline, points):
+		""" seprate spline from given point indexe
+			spline can be Spline class or index
+		"""
+		if type(spline) == int:
+			spline = self.splines[spline]
+
+		points.sort()
+
+		if spline.use_cyclic_u:
+			first = points[0]
+			spline.make_first(first)
+			spline.append(spline.bezier_points[0])
+			spline.use_cyclic_u = False
+			maximum = len(spline.bezier_points)
+			points = [shift_number(i, -first, 0, maximum) for i in points]
+
+		if points[0] != 0:
+			newspline = Spline(spline)
+			newspline.clear()
+			newspline.bezier_points = spline.bezier_points[0:points[0]+1]
+			self.append(newspline)
+
+		for i in range(len(points)):
+			newspline = Spline(spline)
+			newspline.clear()
+			start = points[i]
+			if i < len(points)-1:
+				end = points[i+1]+1
+				newspline.bezier_points = spline.bezier_points[start:end]
+			else:
+				newspline.bezier_points = spline.bezier_points[start:]
+			self.append(newspline)
+		self.remove(spline)
+
+	def merge_gaps_by_distance(self, distance, selectedonly):
+
+		def is_gap(spline1, index1, spline2, index2, distance, selectedonly):
+			if selectedonly:
+				if not spline1.bezier_points[index1].select_control_point or\
+					not spline2.bezier_points[index2].select_control_point:
+					return False
+			if spline1.use_cyclic_u or spline2.use_cyclic_u:
+				return False
+			if spline1 == spline2 and index1 == index2:
+				return False
+			return get_distance(spline1.bezier_points[index1].co,
+								spline2.bezier_points[index2].co) <= distance
+
+		def collaps_splines(spline1, spline2):
+			spline1.bezier_points[-1].handle_right_type = "FREE"
+			spline1.bezier_points[-1].handle_right = spline2.bezier_points[0].handle_right
+			spline2.remove(0)
+			if spline1 == spline2:
+				""" close the spline """
+				spline1.use_cyclic_u = True
+			else:
+				""" combine 2 spline """
+				spline1.join(spline2)
+				self.remove(spline2)
+			return True
+		hasgap = True
+		while hasgap:
+			hasgap = False
+			"""self loop"""
+			for spline in self.splines:
+				if is_gap(spline, 0, spline, -1, distance, selectedonly):
+					hasgap = collaps_splines(spline, spline)
+			for spline1, spline2 in product(self.splines, self.splines):
+				"""end to head"""
+				if is_gap(spline1, -1, spline2, 0, distance, selectedonly):
+					hasgap = collaps_splines(spline1, spline2)
+					break
+				"""head to heads"""
+				if is_gap(spline1, 0, spline2, 0, distance, selectedonly):
+					spline1.reverse()
+					hasgap = collaps_splines(spline1, spline2)
+					break
+				"""end to ends"""
+				if is_gap(spline1, -1, spline2, -1, distance, selectedonly):
+					spline2.reverse()
+					hasgap = collaps_splines(spline1, spline2)
+					print("end to end")
+					break
+				"""head to end """
+				if is_gap(spline1, 0, spline2, -1, distance, selectedonly):
+					hasgap = collaps_splines(spline2, spline1)
+					break
 
 	def boolean(self, index1, index2, mode, tollerance):
 		spline1, spline2 = self.splines[index1], self.splines[index2]
@@ -1004,5 +1093,6 @@ class Curve:
 		elif mode == 'DIFFERENCE':
 			self.delete_segments(index1, inner1)
 			self.delete_segments(index2, outer2)
+		self.merge_gaps_by_distance(0.0001, False)
 
 __all__ = ["Bezier_point", "Line", "Segment", "Spline", "Curve"]

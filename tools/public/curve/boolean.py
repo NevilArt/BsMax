@@ -1,7 +1,8 @@
 import bpy
 from bpy.props import *
 from bsmax.curve import Curve
-from .operator import CurveTool
+#from .operator import CurveTool
+from tools.public.curve.operator import CurveTool
 
 class BsMax_OT_BooleanCurve(CurveTool):
 	bl_idname = "curve.boolean"
@@ -36,10 +37,10 @@ class BsMax_OT_BooleanCurve(CurveTool):
 			index2 = indexes[1]
 		if len(indexes) == 2:
 			curve.boolean(index1, index2, self.mode, self.value)
-
+			#curve.merge_gaps_by_distance(0.00001)
 		curve.update()
 		# temprary solution
-		bpy.ops.curve.mergebydistance('INVOKE_DEFAULT')
+		# bpy.ops.curve.mergebydistance('INVOKE_DEFAULT')
 
 	def draw(self, ctx):
 		layout = self.layout

@@ -187,6 +187,14 @@ def get_bias(bias, time):
 	else:
 		return time
 
+def shift_number(number, value, minimum, maximum):
+	number += value
+	if number > maximum:
+		number -= maximum - minimum + 1
+	if number < minimum:
+		number += maximum - minimum + 1
+	return number
+
 __all__ = ["point_on_line",
 		"point_on_vector",
 		"point_on_curve",
@@ -199,4 +207,5 @@ __all__ = ["point_on_line",
 		"get_3_points_angle_3d",
 		"get_axis_constraint",
 		"get_offset_by_orient",
-		"get_bias"]
+		"get_bias",
+		"shift_number"]
