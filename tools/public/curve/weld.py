@@ -3,56 +3,20 @@ from bpy.types import Operator
 from bpy.props import BoolProperty, FloatProperty
 from bsmax.math import get_distance
 from bsmax.curve import Curve, Spline
-from itertools import product
 from tools.public.curve.operator import CurveTool
-
-##############################################################################
-def merge_points_by_distance(ctx, distance):
-	dellist = []
-	for spline in ctx.active_object.data.splines: 
-		if len(spline.bezier_points) > 1:
-			for i in range(0, len(spline.bezier_points)): 
-				if i == 0:
-					ii = len(spline.bezier_points) - 1
-				else:        
-					ii = i - 1
-				dot = spline.bezier_points[i];
-				dot1 = spline.bezier_points[ii];   
-				while dot1 in dellist and i != ii:
-					ii -= 1
-					if ii < 0: 
-						ii = len(spline.bezier_points)-1
-					dot1 = spline.bezier_points[ii]
-				if dot.select_control_point and\
-				   dot1.select_control_point and\
-				   (i!=0 or spline.use_cyclic_u):   
-					if (dot.co-dot1.co).length < distance:
-						# remove points and recreate hangles
-						dot1.handle_right_type = "FREE"
-						dot1.handle_right = dot.handle_right
-						dot1.co = (dot.co + dot1.co) / 2
-						dellist.append(dot)
-					else:
-						# Handles that are on main point position converts to vector,
-						# if next handle are also vector
-						if dot.handle_left_type == 'VECTOR' and\
-						   (dot1.handle_right - dot1.co).length < distance:
-							dot1.handle_right_type = "VECTOR"
-						if dot1.handle_right_type == 'VECTOR' and\
-						   (dot.handle_left - dot.co).length < distance:
-							dot.handle_left_type = "VECTOR"  
-	bpy.ops.curve.select_all(action = 'DESELECT')
-	for dot in dellist:
-		dot.select_control_point = True
-	count = len(dellist)
-	bpy.ops.curve.delete(type = 'VERT')
-	bpy.ops.curve.select_all(action = 'SELECT')
-##############################################################################
 
 class BsMax_OT_CurveBreak(Operator):
 	bl_idname = "curve.break"
 	bl_label = "Break (Curve)"
 	bl_options = {'REGISTER','UNDO'}
+
+	@classmethod
+	def poll(self, ctx):
+		if ctx.area.type == 'VIEW_3D':
+			if len(ctx.scene.objects) > 0:
+				if ctx.object != None:
+					return ctx.mode == 'EDIT_CURVE'
+		return False
 
 	def execute(self, ctx):
 		curve = Curve(ctx.active_object)
@@ -61,12 +25,34 @@ class BsMax_OT_CurveBreak(Operator):
 		curve.update()
 		return{"FINISHED"}
 
+class BsMax_OT_MakeFirst(Operator):
+	bl_idname = "curve.makefirst"
+	bl_label = "Make First (Curve)"
+	bl_options = {'REGISTER','UNDO'}
+
+	@classmethod
+	def poll(self, ctx):
+		if ctx.area.type == 'VIEW_3D':
+			if len(ctx.scene.objects) > 0:
+				if ctx.object != None:
+					return ctx.mode == 'EDIT_CURVE'
+		return False
+
+	def execute(self, ctx):
+		curve = Curve(ctx.active_object)
+		for splineindex, points in curve.selection("point"):
+			if len(points) == 1:
+				spline = curve.splines[splineindex]
+				spline.make_first(points[0])
+		curve.update()
+		return{"FINISHED"}
+
 class BsMax_OT_CurveMergeByDistance(CurveTool):
 	bl_idname = "curve.mergebydistance"
 	bl_label = "Merge by distance"
 	singleaction = True
 	typein: BoolProperty(name="Type In:",default=True)
-	value: FloatProperty(name="distance:",unit='LENGTH',default=0.0001, min=0.0)
+	value: FloatProperty(name="distance:",unit='LENGTH',default=0.0001,min=0.0)
 	selectedonly: BoolProperty(name="Selected only:",default=True)
 	gapsonly: BoolProperty(name="Gaps only:",default=True)
 
@@ -78,6 +64,9 @@ class BsMax_OT_CurveMergeByDistance(CurveTool):
 		curve = self.curve
 		curve.restore()
 		curve.merge_gaps_by_distance(self.value, self.selectedonly)
+		if not self.gapsonly:
+			for spline in curve.splines:
+				spline.merge_points_by_distance(self.value, self.selectedonly)
 		curve.update()
 
 	def draw(self, ctx):
@@ -85,10 +74,10 @@ class BsMax_OT_CurveMergeByDistance(CurveTool):
 		col = layout.column()
 		col.prop(self,"value")
 		col.prop(self,"selectedonly")
-		#col.prop(self,"gapsonly")
+		col.prop(self,"gapsonly")
 
 def weld_cls(register):
-	classes = [BsMax_OT_CurveMergeByDistance, BsMax_OT_CurveBreak]
+	classes = [BsMax_OT_CurveMergeByDistance, BsMax_OT_CurveBreak, BsMax_OT_MakeFirst]
 	if register: 
 		[bpy.utils.register_class(c) for c in classes]
 	else: 

@@ -115,7 +115,7 @@ def get_view3d_tool1(ctx):
 				items.append(seprator())
 				items.append(QuadItem("Divide",f,t,n,c0034,c0159))
 				items.append(seprator())
-				items.append(QuadItem("Make First",f,f,n,"",n))
+				items.append(QuadItem("Make First",f,t,n,c0161,n))
 				items.append(QuadItem("Revarse Spline",f,t,n,c0160,n))
 	if get_active_type(ctx) == 'ARMATURE':
 		items.append(QuadItem("Octahedral",f,t,n,c0150,n))

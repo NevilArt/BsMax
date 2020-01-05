@@ -629,10 +629,6 @@ class Spline:
 					pe.handle_left_type = 'FREE'
 				pe.handle_right_type = 'VECTOR'
 
-	def make_first(self, index):
-		spb = self.bezier_points
-		spb = spb[index:] + spb[0:index]
-
 	def append(self, bezier_point):
 		self.bezier_points.append(bezier_point)
 
@@ -656,7 +652,12 @@ class Spline:
 			self.bezier_points.append(point)
 
 	def remove(self, index):
-		self.bezier_points.pop(index)
+		if type(index)==int:
+			self.bezier_points.pop(index)
+		elif type(index)==list:
+			index.sort(reverse=True)
+			for i in index:
+				self.bezier_points.pop(i)
 
 	def reverse(self):
 		bezier_points = deepcopy(self.bezier_points)
@@ -671,6 +672,14 @@ class Spline:
 			point.handle_left_type = ltype
 			point.handle_right_type = rtype
 			self.bezier_points.append(point)
+
+	def make_first(self, index):
+		if self.use_cyclic_u:
+			spb = self.bezier_points.copy()
+			self.bezier_points.clear()
+			self.bezier_points = spb[index:] + spb[0:index]
+		elif index == len(self.bezier_points)-1:
+			self.reverse()
 
 	def select(self, select):
 		for point in self.bezier_points:
@@ -890,6 +899,56 @@ class Spline:
 		for i in range(len(pc)):
 			self.bezier_points.insert(index+i+1, pc[i])
 
+	def get_point_index(self, point):
+		for index,bezier_point in enumerate(self.bezier_points):
+			if point == bezier_point:
+				return index
+		return None
+
+	def merge_points_by_distance(self, distance, selectedonly):
+		dellist = []
+		if len(self.bezier_points) > 1:
+			for i in range(len(self.bezier_points)):
+				if i == 0:
+					ii = len(self.bezier_points)-1
+				else:
+					ii = i - 1
+				dot = self.bezier_points[i];
+				dot1 = self.bezier_points[ii];   
+				while dot1 in dellist and i != ii:
+					ii -= 1
+					if ii < 0:
+						ii = len(self.bezier_points)-1
+					dot1 = self.bezier_points[ii]
+				
+				if selectedonly:
+					allowed = (dot.select_control_point and	dot1.select_control_point)
+				else:
+					allowed = True
+
+				if allowed and (i!=0 or self.use_cyclic_u):
+					if (dot.co-dot1.co).length < distance:
+						# remove points and recreate handles
+						dot1.handle_right_type = "FREE"
+						dot1.handle_right = dot.handle_right
+						dot1.co = (dot.co + dot1.co) / 2
+						dellist.append(dot)
+					else:
+						# Handles that are on main point position converts to vector,
+						# if next handle are also vector
+						if dot.handle_left_type == 'VECTOR' and\
+							(dot1.handle_right - dot1.co).length < distance:
+							dot1.handle_right_type = "VECTOR"
+						if dot1.handle_right_type == 'VECTOR' and\
+							(dot.handle_left - dot.co).length < distance:
+							dot.handle_left_type = "VECTOR"
+		delindex = []
+		for bezier_point in dellist:
+			index = self.get_point_index(bezier_point)
+			if index != None:
+				delindex.append(index)
+		self.remove(delindex)
+
 class Curve:
 	def __init__(self, obj):
 		self.obj = obj
@@ -1002,8 +1061,9 @@ class Curve:
 			spline.use_cyclic_u = False
 			maximum = len(spline.bezier_points)
 			points = [shift_number(i, -first, 0, maximum) for i in points]
+			points.sort()
 
-		if points[0] != 0:
+		if not spline.use_cyclic_u and points[0] != 0:
 			newspline = Spline(spline)
 			newspline.clear()
 			newspline.bezier_points = spline.bezier_points[0:points[0]+1]
@@ -1022,7 +1082,6 @@ class Curve:
 		self.remove(spline)
 
 	def merge_gaps_by_distance(self, distance, selectedonly):
-
 		def is_gap(spline1, index1, spline2, index2, distance, selectedonly):
 			if selectedonly:
 				if not spline1.bezier_points[index1].select_control_point or\
@@ -1034,7 +1093,6 @@ class Curve:
 				return False
 			return get_distance(spline1.bezier_points[index1].co,
 								spline2.bezier_points[index2].co) <= distance
-
 		def collaps_splines(spline1, spline2):
 			spline1.bezier_points[-1].handle_right_type = "FREE"
 			spline1.bezier_points[-1].handle_right = spline2.bezier_points[0].handle_right
@@ -1068,7 +1126,6 @@ class Curve:
 				if is_gap(spline1, -1, spline2, -1, distance, selectedonly):
 					spline2.reverse()
 					hasgap = collaps_splines(spline1, spline2)
-					print("end to end")
 					break
 				"""head to end """
 				if is_gap(spline1, 0, spline2, -1, distance, selectedonly):

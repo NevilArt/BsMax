@@ -9,7 +9,7 @@ class BsMax_OT_OutlineCurve(CurveTool):
 	typein: BoolProperty(name="Type In:",default=False)
 	value: FloatProperty(name="Value:",unit='LENGTH')
 	close: BoolProperty(name="Close:",default=True)
-	count: IntProperty(name="Count:",default=1)
+	count: IntProperty(name="Count:",default=1,min=0)
 	mirror: BoolProperty(name="Mirror:",default=False)
 
 	def apply(self):
