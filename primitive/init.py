@@ -8,6 +8,7 @@ from .cylinder import *
 from .icosphere import *
 from .mesher import *
 from .monkey import *
+from .oiltank import *
 from .plane import *
 from .pyramid import *
 from .sphere import *
@@ -71,6 +72,7 @@ def primitive_cls(register, pref):
 	menu_cls(register)
 	metaball_cls(register)
 	monkey_cls(register)
+	oiltank_cls(register)
 	ngon_cls(register)
 	plane_cls(register)
 	profilo_cls(register)

@@ -81,6 +81,27 @@ def get_capsule_panel(self, layout):
 		col.prop(self, "sfrom", text="From")
 		col.prop(self, "sto", text="To")
 
+def get_oiltank_panel(self, layout):
+	layout.label(text="Capsule", icon='META_CAPSULE')
+	col = layout.column(align=True)
+	col.prop(self, "radius1", text="Radius")
+	col.prop(self, "height", text="Height")
+	col.prop(self, "thickness", text="Cap Height")
+	col = layout.column(align=True)
+	col.prop(self, "center", text="Center/Overall")
+	col = layout.column(align=True)
+	#col.prop(self, "chamfer1", text="Blend")
+	col.prop(self, "hsegs", text="Height segs")
+	col.prop(self, "ssegs", text="Side segs")
+	if not self.seglock:
+		col.prop(self, "csegs", text="Cap")
+	col.prop(self, "seglock", text="Segs Lock")
+	col = layout.column(align=True)
+	col.prop(self, "sliceon", text="Sliceon")
+	if self.sliceon:
+		col.prop(self, "sfrom", text="From")
+		col.prop(self, "sto", text="To")
+
 def get_cylinder_panel(self, layout):
 	layout.label(text="Cylinder", icon='MESH_CYLINDER')
 	col = layout.column(align=True)
@@ -335,6 +356,8 @@ def get_panel(self, layout):
 		get_icosphere_panel(self, layout)
 	elif self.classname == "Capsule":
 		get_capsule_panel(self, layout)
+	elif self.classname == "OilTank":
+		get_oiltank_panel(self, layout)
 	elif self.classname == "Cylinder":
 		get_cylinder_panel(self, layout)
 	elif self.classname == "Tube":

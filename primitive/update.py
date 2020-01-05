@@ -9,6 +9,7 @@ from primitive.cylinder import Cylinder, Cone
 from primitive.icosphere import Icosphere
 from primitive.mesher import Mesher
 from primitive.monkey import Monkey
+from primitive.oiltank import OilTank
 from primitive.plane import Plane
 from primitive.pyramid import Pyramid
 from primitive.sphere import Sphere
@@ -36,6 +37,7 @@ def get_class(name):
 	elif name == "Icosphere": return Icosphere()
 	elif name == "Mesher": return Mesher()
 	elif name == "Monkey": return Monkey()
+	elif name == "OilTank": return OilTank()
 	elif name == "Plane": return Plane()
 	elif name == "Pyramid": return Pyramid()
 	elif name == "Sphere": return Sphere()
