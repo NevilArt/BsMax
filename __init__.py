@@ -1,6 +1,6 @@
 ############################################################################
 #    BsMax, 3D apps inteface simulator and tools pack for Blender
-#    Copyright (C) 2019  Naser Merati (Nevil)
+#    Copyright (C) 2020  Naser Merati (Nevil)
 #
 #    This program is free software: you can redistribute it and/or modify
 #    it under the terms of the GNU General Public License as published by
@@ -18,10 +18,10 @@
 
 bl_info = {
 	"name": "BsMax",
-	"description": "BsMax Updated on 06.january.2020",
+	"description": "BsMax Updated on 13.january.2020",
 	"author": "Naser Merati (Nevil)",
-	"version": (0, 1, 0, 20200106),
-	"blender": (2, 80, 0),# 2.80~2.82
+	"version": (0, 1, 0, 20200113),
+	"blender": (2, 80, 0),# 2.80~2.83
 	#"location": "Every where",
 	#"warning": "", # used for warning icon and text in addons panel
 	"wiki_url": "https://github.com/NevilArt/BsMax_2_80/wiki",

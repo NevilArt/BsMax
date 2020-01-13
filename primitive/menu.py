@@ -31,7 +31,7 @@ class BsMax_MT_MeshCreate(Menu):
 		layout.operator("bsmax.createtube",text="Tube",icon="MESH_TORUS")
 		layout.operator("bsmax.createtorus",text="Torus",icon="MESH_TORUS")
 		layout.operator("bsmax.createpyramid",text="Pyramid",icon="MARKER")
-		#layout.operator("bsmax.createteapot",icon="MESH_MONKEY")
+		layout.operator("bsmax.createteapot",text="Teapot",icon="NODE_MATERIAL")
 		layout.operator("bsmax.createmonkey",text="Monkey",icon="MESH_MONKEY")
 		layout.separator()
 		layout.menu("BSMAX_MT_vertexcreatemenu",icon='DOT')

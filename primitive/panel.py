@@ -117,6 +117,17 @@ def get_cylinder_panel(self, layout):
 		col.prop(self, "sfrom", text="From")
 		col.prop(self, "sto", text="To")
 
+def get_teapot_panel(self, layout):
+	layout.label(text="Teapot", icon='MESH_CYLINDER')
+	col = layout.column(align=True)
+	col.prop(self, "radius1", text="Radius1")
+	col.prop(self, "csegs", text="Segs")
+	col = layout.column(align=True)
+	col.prop(self, "bool1", text="Body")
+	col.prop(self, "bool2", text="Handle")
+	col.prop(self, "bool3", text="Spout")
+	col.prop(self, "bool4", text="Lid")
+
 def get_tube_panel(self, layout):
 	layout.label(text="Tube", icon='MESH_CYLINDER')
 	col = layout.column(align=True)
@@ -360,6 +371,8 @@ def get_panel(self, layout):
 		get_oiltank_panel(self, layout)
 	elif self.classname == "Cylinder":
 		get_cylinder_panel(self, layout)
+	elif self.classname == "Teapot":
+		get_teapot_panel(self, layout)
 	elif self.classname == "Tube":
 		get_tube_panel(self, layout)
 	elif self.classname == "Torus":

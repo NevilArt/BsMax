@@ -13,6 +13,7 @@ from primitive.oiltank import OilTank
 from primitive.plane import Plane
 from primitive.pyramid import Pyramid
 from primitive.sphere import Sphere
+from primitive.teapot import Teapot
 from primitive.torus import Torus
 from primitive.tube import Tube
 from primitive.arc import Arc
@@ -41,6 +42,7 @@ def get_class(name):
 	elif name == "Plane": return Plane()
 	elif name == "Pyramid": return Pyramid()
 	elif name == "Sphere": return Sphere()
+	elif name == "Teapot": return Teapot()
 	elif name == "Torus": return Torus()
 	elif name == "Tube": return Tube()
 	elif name == "Arc": return Arc()
@@ -125,6 +127,11 @@ class PrimitiveData(PropertyGroup):
 	corner: BoolProperty(update=primitive_update)
 	mirror_x: BoolProperty(update=primitive_update)
 	mirror_y: BoolProperty(update=primitive_update)
+
+	bool1:BoolProperty(update=primitive_update)
+	bool2:BoolProperty(update=primitive_update)
+	bool3:BoolProperty(update=primitive_update)
+	bool4:BoolProperty(update=primitive_update)
 
 	mode: StringProperty(update=primitive_update)
 	target: StringProperty(update=primitive_update)

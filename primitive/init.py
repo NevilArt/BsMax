@@ -12,6 +12,7 @@ from .oiltank import *
 from .plane import *
 from .pyramid import *
 from .sphere import *
+from .teapot import *
 from .tube import *
 from .torus import *
 from .vertex import *
@@ -82,6 +83,7 @@ def primitive_cls(register, pref):
 	sphere_cls(register)
 	star_cls(register)
 	text_cls(register)
+	teapot_cls(register)
 	torus_cls(register)
 	tube_cls(register)
 	vertex_cls(register)
