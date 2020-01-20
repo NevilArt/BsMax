@@ -9,6 +9,7 @@ from .object.init import *
 from .render.init import *
 from .select.init import *
 from .transform.init import *
+from .uv.init import *
 from .view.init import *
 
 registered = False
@@ -29,6 +30,7 @@ def public_cls(register, pref):
 		render_cls(register, pref)
 		select_cls(register, pref)
 		transform_cls(register, pref)
+		uv_cls(register, pref)
 		view_cls(register, pref)
 
 	registered = register

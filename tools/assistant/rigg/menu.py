@@ -27,7 +27,7 @@ def menu_cls(register):
 		bpy.types.VIEW3D_MT_editor_menus.append(rigg_menu)
 	else:
 		[bpy.utils.unregister_class(c) for c in classes]
-		bpy.types.VIEW3D_MT_editor_menus.remove(rigg_menu)  
+		bpy.types.VIEW3D_MT_editor_menus.remove(rigg_menu)
 
 if __name__ == '__main__':
 	menu_cls(True)

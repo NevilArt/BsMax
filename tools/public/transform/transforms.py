@@ -14,8 +14,13 @@ class BsMax_OT_Move(Operator):
 	bl_idname = "bsmax.move"
 	bl_label = "Move"
 	def execute(self, ctx):
-		mode = ctx.mode
-		tool = ctx.workspace.tools.from_space_view3d_mode(mode,create=False).idname
+		space_type = ctx.area.spaces.active.type
+		if space_type == "VIEW_3D":
+			tool = ctx.workspace.tools.from_space_view3d_mode(ctx.mode,create=False).idname
+		elif space_type == "IMAGE_EDITOR":
+			tool = ctx.workspace.tools.from_space_image_mode("UV",create=False).idname
+		else:
+			tool = ""
 		if tool == "builtin.select":
 			ctx.space_data.show_gizmo_object_translate = True
 			ctx.space_data.show_gizmo_object_rotate = False

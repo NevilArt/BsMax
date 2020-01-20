@@ -125,7 +125,6 @@ def create_view3d_tweak_selection_keymap(km):
 	kmi.properties.mode = 'SUB'
 	KeyMaps.append((km,kmi))
 
-
 # Create Keymaps
 def create_3dsmax_keymaps():
 	kcfg = bpy.context.window_manager.keyconfigs.addon
@@ -174,22 +173,12 @@ def create_3dsmax_keymaps():
 		kmi.properties.cycle = True
 		KeyMaps.append((km,kmi))
 		kmi = km.keymap_items.new("bsmax.move","W","PRESS")
-		#kmi = km.keymap_items.new("wm.tool_set_by_id","W","PRESS")
-		#kmi.properties.name="builtin.move"
 		KeyMaps.append((km,kmi))
 		kmi = km.keymap_items.new("bsmax.rotate","E","PRESS")
-		#kmi = km.keymap_items.new("wm.tool_set_by_id","E","PRESS")
-		#kmi.properties.name="builtin.rotate"
 		KeyMaps.append((km,kmi))
 		kmi = km.keymap_items.new("bsmax.scale","R","PRESS")
-		#kmi = km.keymap_items.new("wm.tool_set_by_id","R","PRESS")
-		#kmi.properties.name="builtin.scale"
-		#kmi.properties.cycle = True
 		KeyMaps.append((km,kmi))
 		kmi = km.keymap_items.new("bsmax.scale","E","PRESS",ctrl=True)
-		#kmi = km.keymap_items.new("wm.tool_set_by_id","E","PRESS",ctrl=True)
-		#kmi.properties.name="builtin.scale"
-		#kmi.properties.cycle = True
 		KeyMaps.append((km,kmi))
 
 		# selection
@@ -1053,6 +1042,11 @@ def create_3dsmax_keymaps():
 		kmi = km.keymap_items.new("text.save","S","PRESS",ctrl=True)
 		KeyMaps.append((km,kmi))
 
+		kmi = km.keymap_items.new("console.autocomplete","RET","PRESS",ctrl=True)
+		KeyMaps.append((km,kmi))
+		kmi = km.keymap_items.new("console.autocomplete","SPACE","PRESS",ctrl=True)
+		KeyMaps.append((km,kmi))
+
 		# Info ------------------------------------------------------------------------
 		km = kcfg.keymaps.new(name='Info',space_type='INFO',region_type='WINDOW')
 
@@ -1199,6 +1193,16 @@ def create_3dsmax_keymaps():
 		km = kcfg.keymaps.new(name='UV Editor',space_type='EMPTY',region_type='WINDOW')
 
 		# Selection
+		kmi = km.keymap_items.new("bsmax.move","W","PRESS")
+		KeyMaps.append((km,kmi))
+		kmi = km.keymap_items.new("bsmax.rotate","E","PRESS")
+		KeyMaps.append((km,kmi))
+		kmi = km.keymap_items.new("bsmax.scale","R","PRESS")
+		KeyMaps.append((km,kmi))
+
+		#create_view3d_click_celection_keymap(km)
+		create_view3d_tweak_selection_keymap(km)
+
 		kmi = km.keymap_items.new("wm.tool_set_by_id","Q","PRESS")
 		kmi.properties.name="builtin.select_box"
 		kmi.properties.cycle = True
