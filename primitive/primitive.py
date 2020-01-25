@@ -61,6 +61,7 @@ class CreatePrimitive(Operator):
 	usedkeys = ['LEFTMOUSE', 'RIGHTMOUSE', 'ESC', 'MOUSEMOVE']
 	cancelkeys = ['RIGHTMOUSE', 'ESC']
 	requestkey = []
+	forcefinish = False
 	shift = False
 	#ctrl = False
 	#alt = False
@@ -119,7 +120,8 @@ class CreatePrimitive(Operator):
 						self.finish()
 						self.subclass.reset()
 
-			if event.type in self.cancelkeys:
+			if event.type in self.cancelkeys or self.forcefinish:
+				self.forcefinish = False
 				RemoveCursurOveride(self.drawhandler)
 				if self.step > 0:
 					self.subclass.abort()

@@ -84,4 +84,6 @@ def get_click_point_info(x, y, ctx):
 	cp.view_name = view_orient
 	return cp
 
+#bpy.context.area.spaces.active.region_3d.view_matrix.inverted().translation
+
 __all__ = ["ClickPoint","get_click_point_info"]

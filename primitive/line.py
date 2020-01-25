@@ -1,8 +1,10 @@
 import bpy
+from bpy.types import Operator
 from mathutils import Vector
-from bsmax.math import get_axis_constraint
+from bsmax.math import get_axis_constraint, get_distance
 from primitive.primitive import CreatePrimitive, PrimitiveCurveClass
 from bsmax.actions import delete_objects
+from bpy_extras.view3d_utils import location_3d_to_region_2d
 
 class knot:
 	def __init__(self, pos, invec, outvec, mode):
@@ -43,6 +45,29 @@ class Line(PrimitiveCurveClass):
 			self.update()
 			bpy.ops.object.origin_set(type='ORIGIN_CENTER_OF_VOLUME', center='MEDIAN')
 
+class LineData:
+	close = False
+
+class BsMax_OT_CloseLine(Operator):
+	bl_idname = "curve.closeline"
+	bl_label = "Close Line?"
+	bl_options = {'REGISTER', 'INTERNAL'}
+	def execute(self, ctx):
+		LineData.close = True
+		print(LineData.close)
+		return {'FINISHED'}
+	def invoke(self, ctx, event):
+		return ctx.window_manager.invoke_confirm(self, event)
+
+def check_for_close(self):
+	if len(self.subclass.knots) > 2:
+		region = bpy.context.region
+		region_data = bpy.context.space_data.region_3d
+		p0 = location_3d_to_region_2d(region,region_data,self.subclass.knots[0].pos)
+		pl = location_3d_to_region_2d(region,region_data,self.subclass.lastknot[0].pos)
+		if abs(p0.x-pl.x) < 10 and abs(p0.y-pl.y) < 10:
+			bpy.ops.curve.closeline('INVOKE_DEFAULT')
+
 class BsMax_OT_CreateLine(CreatePrimitive):
 	bl_idname = "bsmax.createline"
 	bl_label = "Line (Create)"
@@ -56,6 +81,7 @@ class BsMax_OT_CreateLine(CreatePrimitive):
 		self.params = self.subclass.owner.data.primitivedata
 		newknot = knot(clickpoint.view, clickpoint.view, clickpoint.view, "VECTOR")
 		self.subclass.knots.append(newknot)
+		LineData.close = False
 
 	def update(self, clickcount, dimantion):
 		dim = dimantion
@@ -78,15 +104,16 @@ class BsMax_OT_CreateLine(CreatePrimitive):
 		if clickcount != self.lastclick:
 			self.subclass.knots.append(newknot)
 			self.lastclick = clickcount
+			check_for_close(self)
+
+		if LineData.close:
+			self.subclass.knots.pop()
+			self.subclass.close = True
+			self.forcefinish = True
 
 		self.subclass.knots[-1] = newknot
 		self.subclass.lastknot = [knot(dim.view, dim.view, dim.view, "VECTOR")]
 
-		if self.subclass.lastknot[0].pos == self.subclass.knots[0].pos:
-			#TODO close on click near the start point
-			#self.subclass.close = True
-			print("close")
-		
 		self.subclass.update()
 
 	def event(self, event, value):
@@ -98,9 +125,11 @@ class BsMax_OT_CreateLine(CreatePrimitive):
 		pass
 
 def line_cls(register):
-	c = BsMax_OT_CreateLine
-	if register: bpy.utils.register_class(c)
-	else: bpy.utils.unregister_class(c)
+	classes = [BsMax_OT_CreateLine, BsMax_OT_CloseLine]
+	if register: 
+		[bpy.utils.register_class(c) for c in classes]
+	else: 
+		[bpy.utils.unregister_class(c) for c in classes]
 
 if __name__ == '__main__':
 	line_cls(True)
