@@ -20,7 +20,7 @@ from primitive.arc import Arc
 from primitive.circle import Circle
 from primitive.donut import Donut
 from primitive.ellipse import Ellipse
-from primitive.extrude import Extrude
+from primitive.extrude import Extrude_Curve, Extrude_Mesh
 from primitive.helix import Helix
 from primitive.ngon import NGon
 from primitive.profilo import Profilo
@@ -49,7 +49,8 @@ def get_class(name):
 	elif name == "Circle": return Circle()
 	elif name == "Donut": return Donut()
 	elif name == "Ellipse": return Ellipse()
-	elif name == "Extrude": return Extrude()
+	elif name == "Extrude_Curve": return Extrude_Curve()
+	elif name == "Extrude_Mesh": return Extrude_Mesh()
 	elif name == "Helix": return Helix()
 	elif name == "NGon": return NGon()
 	elif name == "Profilo": return Profilo()
@@ -142,6 +143,10 @@ class PrimitiveData(PropertyGroup):
 				('Channel','Channel',''),('Cylinder','Cylinder',''),
 				('Pipe','Pipe',''),('Tee','Tee',''),('Tube','Tube',''),
 				('Width_flange','Width_flange',''),('Elipse','Elipse','')])
+
+	extrude_segmode: EnumProperty(name='Segment Type',default='Curve',
+		update = primitive_update,
+		items =[('Curve','Curve',''),('Manual','Manual',''),('Optimized','Optimized',''),('Adaptive','Adaptive','')])
 
 def update_cls(register):
 	if register:

@@ -35,8 +35,9 @@ class BsMax_MT_MeshCreate(Menu):
 		layout.operator("bsmax.createmonkey",text="Monkey",icon="MESH_MONKEY")
 		layout.separator()
 		layout.menu("BSMAX_MT_vertexcreatemenu",icon='DOT')
-		#layout.separator()
+		layout.separator()
 		#layout.operator("bsmax.createmesher",text="Mesher",icon="META_CUBE")
+		layout.operator("bsmax.createextrude",text="Extrude Mesh (Add)",icon="EXPORT").mode='Mesh'
 		
 # curve / shape / spline create menu
 class BsMax_MT_CurveCreate(Menu):
@@ -54,6 +55,8 @@ class BsMax_MT_CurveCreate(Menu):
 		layout.operator("bsmax.createstar",text="Start",icon="SOLO_OFF")
 		layout.operator("bsmax.createhelix",text="Helix",icon="FORCE_VORTEX")
 		layout.operator("bsmax.createprofilo",text="Profilo",icon="MOD_BOOLEAN")
+		layout.separator()
+		layout.operator("bsmax.createextrude",text="Extrude Curve (Add)",icon="EXPORT").mode='Curve'
 
 # Surface create menu
 class BsMax_MT_SurfaceCreate(Menu):
@@ -271,6 +274,11 @@ class BsMax_MT_Create(Menu):
 		layout.menu("BSMAX_MT_forcefieldcecreatemenu",icon='OUTLINER_OB_FORCE_FIELD')
 		# OUTLINER_OB_GROUP_INSTANCE
 
+def objects_context_menu(self, ctx):
+	layout = self.layout
+	layout.separator()
+	layout.operator("bsmax.clearprimitivedta",text="Convert to Ragular Object")
+
 def CreateMenu_CallBack(self,ctx):
 	self.layout.menu("BSMAX_MT_createmenu")
 
@@ -302,9 +310,11 @@ def menu_cls(register):
 	if register:
 		[bpy.utils.register_class(c) for c in classes]
 		Prepend_Create_Menu()
+		bpy.types.VIEW3D_MT_object_context_menu.append(objects_context_menu)
 	else:
 		[bpy.utils.unregister_class(c) for c in classes]
 		Remove_Create_Menu()
+		bpy.types.VIEW3D_MT_object_context_menu.remove(objects_context_menu)
 
 if __name__ == '__main__':
 	menu_cls(True)

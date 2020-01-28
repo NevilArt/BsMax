@@ -19,8 +19,38 @@ class BsMax_OT_TurnUV(Operator):
 						use_proportional_projected=False)
 		return{"FINISHED"}
 
+class BsMax_OT_test(Operator):
+	bl_idname = "test.ok"
+	bl_label = "Test"
+	def execute(self, ctx):
+		print("OK Pressed")
+		return {'FINISHED'}
+
+class BsMax_OT_test(Operator):
+	bl_idname = "test.test"
+	bl_label = "Test"
+	def execute(self, ctx):
+		if(bpy.ops.invoke_props_dialog(BsMax_OT_test)== {'FINISHED'}):
+			if main(bpy.ctx):
+				return {'FINISHED'}
+		return {'CANCELLED'}
+
+
+# class BsMax_OT_test(Operator):
+# 	bl_idname = "test.test"
+# 	bl_label = "Test"
+# 	def execute(self, ctx):
+# 		if(bpy.ops.invoke_props_dialog(<some_arguments_here>)== {'FINISHED'}):
+# 			if main(bpy.ctx):
+# 				return {'FINISHED'}
+# 		return {'CANCELLED'}
+# 	def invoke(self, context, event):
+#         wm = context.window_manager
+#         return wm.window_manager.invoke_props_dialog(operator, width=300, height=20)
+
+
 def edit_cls(register):
-	classes = [BsMax_OT_TurnUV]
+	classes = [BsMax_OT_TurnUV, BsMax_OT_test]
 	if register:
 		[bpy.utils.register_class(c) for c in classes]
 	else:
@@ -30,3 +60,4 @@ if __name__ == '__main__':
 	edit_cls(True)
 
 __all__ = ["edit_cls"]
+
