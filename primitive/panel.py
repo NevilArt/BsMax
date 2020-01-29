@@ -212,7 +212,11 @@ def get_curve_extrude_panel(self,layout):
 	col = layout.column(align=True)
 	col.prop(self,"chamfer1",text="Upper")
 	col.prop(self,"chamfer2",text="Lover")
-	col.prop(bpy.context.curve,"use_fill_caps",text="Cap")
+	try:
+		# ignore this on float dialog for now but hadto to solve
+		col.prop(bpy.context.curve,"use_fill_caps",text="Cap")
+	except:
+		pass
 
 def get_mesh_extrude_panel(self,layout):
 	layout.label(text="Extrude",icon='EXPORT')
@@ -428,7 +432,6 @@ def get_panel(self,layout):
 		get_compass_panel(self,layout)
 	col = layout.column(align=True)
 	col.prop(self,"animatable",text="Animatable")
-	col.operator("bsmax.clearprimitivedta",text="Convert to Ragular Object")
 
 class BsMax_PT_PrimitivePanel(Panel):
 	bl_label = "Parameters"
@@ -447,6 +450,8 @@ class BsMax_PT_PrimitivePanel(Panel):
 		layout = this.layout
 		self = ctx.object.data.primitivedata
 		get_panel(self,layout)
+		col = layout.column(align=True)
+		col.operator("bsmax.clearprimitivedta",text="Convert to Ragular Object")
 
 class BsMax_OT_EditPrimitive(Operator):
 	bl_idname = "bsmax.editprimitive"

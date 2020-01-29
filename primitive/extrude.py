@@ -6,18 +6,22 @@ from primitive.primitive import PrimitiveCurveClass,PrimitiveGeometryClass
 from bsmax.actions import delete_objects
 from bsmax.curve import Curve,Segment
 
-def get_extrude_curve(height, segs, start_height, end_height):
-	Shape,heights = [],[0]
+def get_heights(height,hsegs,start_height,end_height):
+	heights = [0]
 	if start_height > 0:
 		heights.append(start_height)
-	length = height - start_height - end_height
-	step = length/segs
-	for i in range(1,segs):
-		h = start_height+i*step
-		heights.append(h)
+	length = height-start_height-end_height
+	step = length/hsegs
+	for i in range(1,hsegs):
+		heights.append(start_height+i*step)
 	if end_height > 0:
-		heights.append(height - end_height)
+		heights.append(height-end_height)
 	heights.append(height)
+	return heights
+
+def get_extrude_curve(height,segs,start_height,end_height):
+	Shape = []
+	heights = get_heights(height,segs,start_height,end_height)
 	for h in heights:
 		p = (0,0,h)
 		v = (p,p,'VECTOR',p,'VECTOR')
@@ -47,12 +51,16 @@ def get_extrude_mesh(curve, height, hsegs, csegs, segmode, capu, capl, start_hei
 		faces = [[0,1,2],[1,2,3],[2,0,3],[0,1,3]]
 	else:
 		localcurve = Curve(curve)
+		heights = get_heights(height,hsegs,start_height,end_height)
 		first = 0
 		for spline in localcurve.splines:
 			sverts, length = [],0
+			close = spline.use_cyclic_u
 			""" create verts """
+			hsegs += int(start_height > 0)
+			hsegs += int(end_height > 0)
 			for i in range(hsegs+1):	
-				h = (height/hsegs)*i
+				h = heights[i]
 				for j in range(len(spline.bezier_points)):
 					count = get_csegs_count(spline,j,csegs,segmode)
 					offset = Vector((0,0,h))
@@ -70,17 +78,18 @@ def get_extrude_mesh(curve, height, hsegs, csegs, segmode, capu, capl, start_hei
 						b = a+1
 						c = b+length
 						d = c-1
-					else:
+						faces.append([a,b,c,d])
+					elif close:
 						b = f
 						c = b+length
 						d = a+length
-					faces.append([a,b,c,d])
+						faces.append([a,b,c,d])
 			""" create upepr cap """
-			if capl:
+			if capl and close:
 				newface = [first+i for i in range(length-1,-1,-1)]
 				faces.append(newface)
 			""" create lower cap """
-			if capu:
+			if capu and close:
 				f = first+length*hsegs
 				newface = [f+i for i in range(length)]
 				faces.append(newface)
