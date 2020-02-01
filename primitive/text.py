@@ -32,7 +32,7 @@ class BsMax_OT_CreateText(CreatePrimitive):
 		owner.location = clickpoint.view
 		owner.data.fill_mode = self.fill_mode
 		owner.rotation_euler = clickpoint.orient
-	def update(self, clickcount, dimantion):
+	def update(self, ctx, clickcount, dimantion):
 		if clickcount == 1:
 			self.subclass.owner.data.size = dimantion.radius
 	def finish(self):

@@ -35,11 +35,11 @@ class Ellipse(PrimitiveCurveClass):
 		self.create_curve(ctx, shapes, self.classname)
 		pd = self.data.primitivedata
 		pd.classname = self.classname
-	def update(self):
+	def update(self, ctx):
 		pd = self.data.primitivedata
 		# length, width, outline, Thickness
 		shapes = GetEllipseShape(pd.width, pd.length, pd.outline, pd.thickness)
-		self.update_curve(shapes)
+		self.update_curve(ctx, shapes)
 	def abort(self):
 		delete_objects([self.owner])
 
@@ -53,12 +53,12 @@ class BsMax_OT_CreateEllipse(CreatePrimitive):
 		self.params = self.subclass.owner.data.primitivedata
 		self.subclass.owner.location = clickpoint.view
 		self.subclass.owner.rotation_euler = clickpoint.orient
-	def update(self, clickcount, dimantion):
+	def update(self, ctx, clickcount, dimantion):
 		if clickcount == 1:
 			self.params.width = dimantion.width
 			self.params.length = dimantion.length
 		if clickcount > 0:
-			self.subclass.update()
+			self.subclass.update(ctx)
 	def finish(self):
 		pass
 

@@ -28,21 +28,23 @@ class Line(PrimitiveCurveClass):
 		self.close = False
 		self.knots = []
 		self.lastknot = []
+		self.ctx = None
 	def reset(self):
 		self.__init__()
 	def create(self, ctx):
+		self.ctx = ctx
 		shapes = GetLineShape([])
-		self.create_curve(ctx, shapes, "")
-	def update(self):
+		self.create_curve(ctx,shapes,"")
+	def update(self, ctx):
 		shapes = GetLineShape(self.knots + self.lastknot)
-		self.update_curve(shapes)
+		self.update_curve(ctx, shapes)
 	def abort(self):
 		if len(self.knots) < 2:
 			delete_objects([self.owner])
 		else:
 			self.lastknot = []
 			self.knots.pop()
-			self.update()
+			self.update(self.ctx) # abort does not have ctx argument
 			bpy.ops.object.origin_set(type='ORIGIN_CENTER_OF_VOLUME', center='MEDIAN')
 
 class LineData:
@@ -83,7 +85,7 @@ class BsMax_OT_CreateLine(CreatePrimitive):
 		self.subclass.knots.append(newknot)
 		LineData.close = False
 
-	def update(self, clickcount, dimantion):
+	def update(self, ctx, clickcount, dimantion):
 		dim = dimantion
 		if self.shift:
 			index = -1 if len(self.subclass.knots) < 2 else -2
@@ -114,7 +116,7 @@ class BsMax_OT_CreateLine(CreatePrimitive):
 		self.subclass.knots[-1] = newknot
 		self.subclass.lastknot = [knot(dim.view, dim.view, dim.view, "VECTOR")]
 
-		self.subclass.update()
+		self.subclass.update(ctx)
 
 	def event(self, event, value):
 		if event == 'BACK_SPACE':

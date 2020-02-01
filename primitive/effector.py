@@ -30,7 +30,7 @@ class BsMax_OT_CreateEffector(CreatePrimitive):
 									location=clickpoint.view)
 		self.subclass.owner = ctx.active_object
 		self.subclass.owner.rotation_euler = clickpoint.orient
-	def update(self, clickcount, dimantion):
+	def update(self, ctx, clickcount, dimantion):
 		if clickcount == 1:
 			self.subclass.owner.empty_display_size = dimantion.radius
 	def finish(self):

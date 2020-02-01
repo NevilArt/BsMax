@@ -33,7 +33,7 @@ class BsMax_OT_CreateEmpty(CreatePrimitive):
 		if self.empty_type == "IMAGE":
 			self.subclass.owner.empty_image_depth = self.depth
 
-	def update(self, clickcount, dimantion):
+	def update(self, ctx, clickcount, dimantion):
 		if clickcount == 1:
 			self.subclass.owner.empty_display_size = dimantion.radius
 	def finish(self):

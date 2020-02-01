@@ -36,10 +36,10 @@ class Plane(PrimitiveGeometryClass):
 		self.create_mesh(ctx, mesh, self.classname)
 		pd = self.data.primitivedata
 		pd.classname = self.classname
-	def update(self):
+	def update(self, ctx):
 		pd = self.data.primitivedata
 		mesh = GetPlaneMesh(pd.width, pd.length, pd.wsegs, pd.lsegs)
-		self.update_mesh(mesh)
+		self.update_mesh(ctx, mesh)
 	def abort(self):
 		delete_objects([self.owner])
 
@@ -53,13 +53,13 @@ class BsMax_OT_CreatePlane(CreatePrimitive):
 		self.params = self.subclass.owner.data.primitivedata
 		self.subclass.owner.location = clickpoint.view
 		self.subclass.owner.rotation_euler = clickpoint.orient
-	def update(self, clickcount, dimantion):
+	def update(self, ctx, clickcount, dimantion):
 		if clickcount == 1:
 			self.params.width = dimantion.width
 			self.params.length = dimantion.length
 			self.subclass.owner.location = dimantion.center
 		if clickcount > 0:
-			self.subclass.update()
+			self.subclass.update(ctx)
 	def finish(self):
 		pass
 

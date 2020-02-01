@@ -29,7 +29,7 @@ class Icosphere(PrimitiveGeometryClass):
 		pd = self.data.primitivedata
 		pd.classname = self.classname
 		pd.wsegs = 1
-	def update(self):
+	def update(self, ctx):
 		pd = self.data.primitivedata
 		orgmesh = bpy.data.meshes[self.data.name]
 		bm = bmesh.new()
@@ -51,11 +51,11 @@ class BsMax_OT_CreateIcosphere(CreatePrimitive):
 		self.params = self.subclass.owner.data.primitivedata
 		self.subclass.owner.location = clickpoint.view
 		self.subclass.owner.rotation_euler = clickpoint.orient
-	def update(self, clickcount, dimantion):
+	def update(self, ctx, clickcount, dimantion):
 		if clickcount == 1:
 			self.params.radius1 = dimantion.radius
 		if clickcount > 0:
-			self.subclass.update()
+			self.subclass.update(ctx)
 	def finish(self):
 		pass
 

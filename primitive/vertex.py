@@ -32,9 +32,9 @@ class Vertex(PrimitiveGeometryClass):
 	def create(self, ctx):
 		mesh = GetVertexMesh([], self.mode)
 		self.create_mesh(ctx, mesh, self.classname)
-	def update(self):
+	def update(self, ctx):
 		mesh = GetVertexMesh(self.verts, self.mode)
-		self.update_mesh(mesh)
+		self.update_mesh(ctx, mesh)
 	def abort(self):
 		if self.owner != None:
 			bpy.ops.object.origin_set(type='ORIGIN_GEOMETRY', center='MEDIAN')
@@ -55,14 +55,14 @@ class BsMax_OT_CreateVertex(CreatePrimitive):
 		self.subclass.verts.append(clickpoint.view)
 		self.subclass.create(ctx)
 		self.params = self.subclass.owner.data.primitivedata
-	def update(self, clickcount, dimantion):
+	def update(self, ctx, clickcount, dimantion):
 		if self.drag:
 			self.subclass.verts[-1] = dimantion.view
 		else:
 			if clickcount != self.lastclick:
 				self.subclass.verts.append(dimantion.view)
 				self.lastclick = clickcount
-		self.subclass.update()
+		self.subclass.update(ctx)
 	def finish(self):
 		bpy.ops.object.origin_set(type='ORIGIN_GEOMETRY',center='MEDIAN')
 		self.subclass.reset()

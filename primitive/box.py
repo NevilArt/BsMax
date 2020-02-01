@@ -200,16 +200,16 @@ class Box(PrimitiveGeometryClass):
 	def reset(self):
 		self.__init__()
 	def create(self, ctx):
-		mesh = GetBoxMesh(0, 0, 0, 1, 1, 1)
+		mesh = GetBoxMesh(0,0,0,1,1,1)
 		self.create_mesh(ctx, mesh, self.classname)
 		pd = self.data.primitivedata
 		pd.classname = self.classname
-		pd.wsegs, pd.lsegs, pd.hsegs = 1, 1, 1
-	def update(self):
+		pd.wsegs, pd.lsegs, pd.hsegs = 1,1,1
+	def update(self, ctx):
 		pd = self.data.primitivedata
 		mesh = GetBoxMesh(pd.width, pd.length, pd.height,
 					pd.wsegs, pd.lsegs, pd.hsegs)
-		self.update_mesh(mesh)
+		self.update_mesh(ctx, mesh)
 	def abort(self):
 		delete_objects([self.owner])
 
@@ -224,7 +224,7 @@ class BsMax_OT_CreateBox(CreatePrimitive):
 		self.params = owner.data.primitivedata
 		owner.location = clickpoint.view
 		owner.rotation_euler = clickpoint.orient
-	def update(self, clickcount, dimantion):
+	def update(self, ctx, clickcount, dimantion):
 		if clickcount == 1:
 			self.params.width = dimantion.width
 			self.params.length = dimantion.length
@@ -232,7 +232,7 @@ class BsMax_OT_CreateBox(CreatePrimitive):
 		elif clickcount == 2:
 			self.params.height = dimantion.height
 		if clickcount > 0:
-			self.subclass.update()
+			self.subclass.update(ctx)
 	def finish(self):
 		pass
 

@@ -83,7 +83,7 @@ class Arc(PrimitiveCurveClass):
 		self.create_curve(ctx, shapes, self.classname)
 		pd = self.data.primitivedata
 		pd.classname = self.classname
-	def draw(self):
+	def draw(self, ctx):
 		pd = self.data.primitivedata
 		if self.p3 == None:
 			shapes = GetLineShape(self.p1, self.p2)
@@ -97,12 +97,12 @@ class Arc(PrimitiveCurveClass):
 			self.owner.location = center
 			self.close = pd.sliceon = True
 			shapes = GetArcShape(pd.radius1, pd.sfrom, pd.sto, pd.sliceon)
-		self.update_curve(shapes)
-	def update(self):
+		self.update_curve(ctx, shapes)
+	def update(self, ctx):
 		pd = self.data.primitivedata
 		self.close = pd.sliceon
 		shapes = GetArcShape(pd.radius1, pd.sfrom, pd.sto, pd.sliceon)
-		self.update_curve(shapes)
+		self.update_curve(ctx, shapes)
 	def abort(self):
 		delete_objects([self.owner])
 
@@ -119,7 +119,7 @@ class BsMax_OT_CreateArc(CreatePrimitive):
 		self.params = self.subclass.owner.data.primitivedata
 		self.view = clickpoint.view
 		self.orient = clickpoint.orient
-	def update(self, clickcount, dimantion):
+	def update(self, ctx, clickcount, dimantion):
 		if clickcount == 1:
 			if not self.gotp1:
 				self.subclass.p1 = dimantion.local
@@ -132,7 +132,7 @@ class BsMax_OT_CreateArc(CreatePrimitive):
 			self.subclass.owner.rotation_euler = dimantion.orient
 		if clickcount > 0:
 			self.subclass.orient = dimantion.view_name
-			self.subclass.draw()
+			self.subclass.draw(ctx)
 	def finish(self):
 		self.gotp1 = False
 

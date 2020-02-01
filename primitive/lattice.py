@@ -16,7 +16,7 @@ class Lattice:
 		bpy.ops.object.add(type='LATTICE', location=clickpoint.view)
 		self.owner = ctx.active_object
 		self.owner.rotation_euler = clickpoint.orient
-	def update(self):
+	def update(self, ctx):
 		pass
 	def abort(self):
 		delete_objects([self.owner])
@@ -37,7 +37,7 @@ class BsMax_OT_CreateLattice(CreatePrimitive):
 		self.subclass.owner.data.points_v = self.resolution
 		self.subclass.owner.data.points_w = self.resolution
 
-	def update(self, clickcount, dimantion):
+	def update(self, ctx, clickcount, dimantion):
 		if clickcount == 1:
 			self.width = dimantion.width
 			self.length = dimantion.length

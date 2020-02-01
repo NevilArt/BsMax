@@ -21,7 +21,7 @@ class Surface(PrimitiveGeometryClass):
 		self.__init__()
 	def create(self, ctx):
 		pass
-	def update(self):
+	def update(self, ctx):
 		pass
 	def abort(self):
 		pass
@@ -36,7 +36,7 @@ class BsMax_OT_CreateSurface(CreatePrimitive):
 	def create(self, ctx, clickpoint):
 		self.subclass.create(ctx)
 			
-	def update(self, clickcount, dimantion):
+	def update(self, ctx, clickcount, dimantion):
 		pass
 
 	def finish(self):

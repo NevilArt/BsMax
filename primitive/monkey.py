@@ -283,10 +283,10 @@ class Monkey(PrimitiveGeometryClass):
 		self.create_mesh(ctx, mesh, self.classname)
 		pd = self.data.primitivedata
 		pd.classname = self.classname
-	def update(self):
+	def update(self, ctx):
 		pd = self.data.primitivedata
 		mesh = get_monkey_mesh(pd.radius1)
-		self.update_mesh(mesh)
+		self.update_mesh(ctx, mesh)
 	def abort(self):
 		delete_objects([self.owner])
 
@@ -300,11 +300,11 @@ class BsMax_OT_CreateMonkey(CreatePrimitive):
 		self.params = self.subclass.owner.data.primitivedata
 		self.subclass.owner.location = clickpoint.view
 		self.subclass.owner.rotation_euler = clickpoint.orient
-	def update(self, clickcount, dimantion):
+	def update(self, ctx, clickcount, dimantion):
 		if clickcount == 1:
 			self.params.radius1 = dimantion.radius
 		if clickcount > 0:
-			self.subclass.update()
+			self.subclass.update(ctx)
 	def finish(self):
 		pass
 

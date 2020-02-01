@@ -112,10 +112,10 @@ class Extrude_Curve(PrimitiveCurveClass):
 		pd = self.data.primitivedata
 		pd.classname = self.classname
 		pd.height = 1
-	def update(self):
+	def update(self, ctx):
 		pd = self.data.primitivedata
 		shapes = get_extrude_curve(pd.height,pd.hsegs,pd.chamfer2,pd.chamfer1)
-		self.update_curve(shapes)
+		self.update_curve(ctx, shapes)
 	def abort(self):
 		delete_objects([self.owner])
 
@@ -137,13 +137,13 @@ class Extrude_Mesh(PrimitiveGeometryClass):
 		pd.height,pd.hsegs,pd.csegs = 1,5,3
 		pd.bool1,pd.bool2 = True,True
 		pd.target = target.name
-	def update(self):
+	def update(self, ctx):
 		pd = self.data.primitivedata
 		target = None if pd.target == "" else bpy.context.scene.objects[pd.target]
 		mesh = get_extrude_mesh(target,pd.height,pd.hsegs,pd.csegs,
 								pd.extrude_segmode,pd.bool1,pd.bool2,
 								pd.chamfer2,pd.chamfer1)
-		self.update_mesh(mesh)
+		self.update_mesh(ctx, mesh)
 	def abort(self):
 		delete_objects([self.owner])
 

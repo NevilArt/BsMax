@@ -18,15 +18,13 @@
 
 bl_info = {
 	"name": "BsMax",
-	"description": "BsMax Updated on 29.january.2020",
+	"description": "BsMax for Blender 2.80 ~ 2.83",
 	"author": "Naser Merati (Nevil)",
-	"version": (0, 1, 0, 20200129),
-	"blender": (2, 80, 0),# 2.80~2.83
-	#"location": "Every where",
-	#"warning": "", # used for warning icon and text in addons panel
+	"version": (0, 1, 0, 20200201),
+	"blender": (2, 80, 0),
+	"location": "Almost Everywhere in Blender",
 	"wiki_url": "https://github.com/NevilArt/BsMax_2_80/wiki",
 	"tracker_url": "https://github.com/NevilArt/BsMax_2_80/issues",
-	#"support": "COMMUNITY",
 	"category": "User Interface"
 }
 

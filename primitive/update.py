@@ -64,22 +64,22 @@ def primitive_update(self, ctx):
 	subclass = get_class(obj.data.primitivedata.classname)
 	if subclass != None:
 		subclass.data = obj.data
-		subclass.update()
+		subclass.update(ctx)
 
-def update(data):
+def update(ctx, data):
 	subclass = get_class(data.primitivedata.classname)
 	if subclass != None:
 		subclass.data = data
-		subclass.update()
+		subclass.update(ctx)
 
 @persistent
 def primities_update(scene):
 	for data in bpy.data.meshes:
 		if data.primitivedata.animatable:
-			update(data)
+			update(ctx, data)
 	for data in bpy.data.curves:
 		if data.primitivedata.animatable:
-			update(data)
+			update(ctx, data)
 
 class PrimitiveData(PropertyGroup):
 	classname: StringProperty()

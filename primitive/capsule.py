@@ -119,7 +119,7 @@ class Capsule(PrimitiveGeometryClass):
 		pd.classname = self.classname
 		pd.ssegs, pd.csegs, pd.hsegs = 18, 8, 3
 		pd.center = True
-	def update(self):
+	def update(self, ctx):
 		pd = self.data.primitivedata
 		csegs = pd.csegs if not pd.seglock else pd.ssegs - 2
 		if pd.center:
@@ -132,7 +132,7 @@ class Capsule(PrimitiveGeometryClass):
 		mesh = GetCapsuleMesh(pd.radius1, height,
 			pd.ssegs, csegs, pd.hsegs,
 			pd.sliceon, pd.sfrom, pd.sto)
-		self.update_mesh(mesh)
+		self.update_mesh(ctx, mesh)
 	def abort(self):
 		delete_objects([self.owner])
 
@@ -146,13 +146,13 @@ class BsMax_OT_CreateCapsule(CreatePrimitive):
 		self.params = self.subclass.owner.data.primitivedata
 		self.subclass.owner.location = clickpoint.view
 		self.subclass.owner.rotation_euler = clickpoint.orient
-	def update(self, clickcount, dimantion):
+	def update(self, ctx, clickcount, dimantion):
 		if clickcount == 1:
 			self.params.radius1 = dimantion.radius
 		elif clickcount == 2:
 			self.params.height = dimantion.height
 		if clickcount > 0:
-			self.subclass.update()
+			self.subclass.update(ctx)
 	def finish(self):
 		pass
 

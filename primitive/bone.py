@@ -16,7 +16,7 @@ class Armature(PrimitiveGeometryClass):
 		bpy.ops.object.armature_add(enter_editmode=False, location=(0, 0, 0))
 		self.owner = ctx.active_object
 		self.data = self.owner.data
-	def update(self):
+	def update(self, ctx):
 		pass
 	def abort(self):
 		bpy.ops.object.mode_set(mode='EDIT', toggle=False)
@@ -52,7 +52,7 @@ class BsMax_OT_CreateBone(CreatePrimitive):
 		for bone in edit_bones:
 			edit_bones.remove(bone)
 
-	def update(self, clickcount, dimantion):
+	def update(self, ctx, clickcount, dimantion):
 		bpy.ops.object.mode_set(mode='EDIT', toggle=False)
 		edit_bones = self.subclass.data.edit_bones
 

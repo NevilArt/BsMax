@@ -20,7 +20,7 @@ class BsMax_OT_CreateSpeaker(CreatePrimitive):
 		bpy.ops.object.speaker_add(location=clickpoint.view)
 		self.subclass.owner = ctx.active_object
 		self.subclass.owner.rotation_euler = clickpoint.orient
-	def update(self, clickcount, dimantion):
+	def update(self, ctx, clickcount, dimantion):
 		if self.drag:
 			self.subclass.owner.location = dimantion.view
 	def finish(self):

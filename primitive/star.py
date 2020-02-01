@@ -38,12 +38,12 @@ class Star(PrimitiveCurveClass):
 		pd = self.data.primitivedata
 		pd.classname = self.classname
 		pd.ssegs = 5
-	def update(self):
+	def update(self, ctx):
 		pd = self.data.primitivedata
 		#radius1, radius2, points, distortion, filletradius1, filletradius2, seed, randval
 		shapes = get_star_shape(pd.radius1, pd.radius2, pd.ssegs, pd.twist, 
 						pd.chamfer1, pd.chamfer2, pd.seed, pd.random)
-		self.update_curve(shapes)
+		self.update_curve(ctx, shapes)
 	def abort(self):
 		delete_objects([self.owner])
 
@@ -57,14 +57,14 @@ class BsMax_OT_CreateStar(CreatePrimitive):
 		self.params = self.subclass.owner.data.primitivedata
 		self.subclass.owner.location = clickpoint.view
 		self.subclass.owner.rotation_euler = clickpoint.orient
-	def update(self, clickcount, dimantion):
+	def update(self, ctx, clickcount, dimantion):
 		if clickcount == 1:
 			self.params.radius1 = dimantion.radius
 			self.params.radius2 = self.params.radius1 / 2
 		elif clickcount == 2:
 			self.params.radius2 = dimantion.radius_from_start_point
 		if clickcount > 0:
-			self.subclass.update()
+			self.subclass.update(ctx)
 	def finish(self):
 		pass
 

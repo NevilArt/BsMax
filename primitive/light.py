@@ -45,10 +45,10 @@ class Compass(PrimitiveCurveClass):
 		self.create_curve(ctx, shapes, self.classname)
 		pd = self.data.primitivedata
 		pd.classname = self.classname
-	def update(self):
+	def update(self, ctx):
 		pd = self.data.primitivedata
 		shapes = GetCompassShape(pd.radius1)
-		self.update_curve(shapes)
+		self.update_curve(ctx, shapes)
 	def abort(self):
 		delete_objects([self.owner])
 
@@ -61,7 +61,7 @@ class BsMax_OT_CreatePointLight(CreatePrimitive):
 		self.subclass.create(ctx, 'POINT')
 		self.subclass.owner.location = clickpoint.view
 		self.subclass.owner.rotation_euler = clickpoint.orient
-	def update(self, clickcount, dimantion):
+	def update(self, ctx, clickcount, dimantion):
 		if self.drag:
 			self.subclass.owner.location = dimantion.view
 	def finish(self):
@@ -77,7 +77,7 @@ class BsMax_OT_CreateSpotLight(CreatePrimitive):
 		self.subclass.create(ctx, 'SPOT')
 		self.subclass.owner.location = clickpoint.view
 		self.subclass.owner.rotation_euler = clickpoint.orient
-	def update(self, clickcount, dimantion):
+	def update(self, ctx, clickcount, dimantion):
 		if clickcount == 1:
 			if self.drag and self.subclass.target == None:
 				self.subclass.target = set_create_target(self.subclass.owner, None)
@@ -100,10 +100,10 @@ class BsMax_OT_CreateSunLight(CreatePrimitive):
 		self.compass.owner.location = clickpoint.view
 		self.params = self.compass.owner.data.primitivedata
 		self.context = ctx
-	def update(self, clickcount, dimantion):
+	def update(self, ctx, clickcount, dimantion):
 		if clickcount == 1:
 			self.params.radius1 = dimantion.radius
-			self.compass.update()
+			self.compass.update(ctx)
 		if clickcount == 2:
 			if self.subclass.owner == None:
 				self.subclass.create(self.context, "SUN")
@@ -141,7 +141,7 @@ class BsMax_OT_CreateAreaLight(CreatePrimitive):
 		self.subclass.owner.location = clickpoint.view
 		self.subclass.owner.rotation_euler = clickpoint.orient
 		self.subclass.finishon = 2 if self.free else 3
-	def update(self, clickcount, dimantion):
+	def update(self, ctx, clickcount, dimantion):
 		if clickcount == 1:
 			width = dimantion.width
 			length = dimantion.length

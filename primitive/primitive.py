@@ -63,8 +63,8 @@ class CreatePrimitive(Operator):
 	requestkey = []
 	forcefinish = False
 	shift = False
-	#ctrl = False
-	#alt = False
+	ctrl = False
+	alt = False
 
 	@classmethod
 	def poll(self, ctx):
@@ -106,14 +106,14 @@ class CreatePrimitive(Operator):
 			if event.type in self.requestkey:
 				self.event(event.type, event.value)
 				dimantion.from_click_points(self.cpoint_a, self.cpoint_b, self.cpoint_o)	
-				self.update(self.step, dimantion)
+				self.update(ctx, self.step, dimantion)
 
 			if event.type == 'MOUSEMOVE':
 				if self.state:
 					self.drag = True
 				if self.step > 0:
 					dimantion.from_click_points(self.cpoint_a, self.cpoint_b, self.cpoint_o)
-					self.update(self.step, dimantion)
+					self.update(ctx, self.step, dimantion)
 				if self.subclass.finishon > 0:
 					if self.step >= self.subclass.finishon:
 						self.step = 0
@@ -137,28 +137,31 @@ class CreatePrimitive(Operator):
 
 class PrimitiveGeometryClass:
 	def create_mesh(self, ctx, meshdata, classname):
-		v, e, f = meshdata
+		verts,edges,faces, = meshdata
 		newmesh = bpy.data.meshes.new(classname)
-		newmesh.from_pydata(v, e, f)
-		newmesh.update(calc_edges = True)
-		self.owner = bpy.data.objects.new(classname, newmesh)
+		newmesh.from_pydata(verts,edges,faces)
+		newmesh.update(calc_edges=True)
+		self.owner = bpy.data.objects.new(classname,newmesh)
 		link_to_scene(ctx, self.owner)
-		set_as_active_object(ctx, self.owner)
+		set_as_active_object(ctx,self.owner)
 		self.data = self.owner.data
-	def update_mesh(self, meshdata):
-		if self.data != None:
-			try: # to pass the error in edit mode
+	def update_mesh(self, ctx, meshdata):
+		if self.data != None and ctx.mode == 'OBJECT':
+			verts,edges,faces, = meshdata
+			if bpy.app.version[1] == 80:
+				""" old method for V2.80 """
 				orgmesh = bpy.data.meshes[self.data.name]
 				tmpmesh = bpy.data.meshes.new("_NewTempMesh_")
-				v, e, f, = meshdata
-				tmpmesh.from_pydata(v, e, f)
+				tmpmesh.from_pydata(verts,edges,faces)
 				bm = bmesh.new()
 				bm.from_mesh(tmpmesh)
 				bm.to_mesh(orgmesh.id_data)
 				bm.free()
 				bpy.data.meshes.remove(tmpmesh)
-			except:
-				pass
+			else:
+				""" new method for V2.81 and above """
+				self.data.clear_geometry()
+				self.data.from_pydata(verts,edges,faces)
 
 class PrimitiveCurveClass:
 	def create_curve(self, ctx, shapes, classname):
@@ -171,13 +174,10 @@ class PrimitiveCurveClass:
 		link_to_scene(ctx, self.owner)
 		set_as_active_object(ctx, self.owner)
 		self.data = self.owner.data
-	def update_curve(self, shapes):
-		if self.data != None:
-			try: # to pass the error in edit mode
-				curve = bpy.data.curves[self.data.name]
-				CurveFromShapes(curve, shapes, self.close)
-			except:
-				pass
+	def update_curve(self, ctx, shapes):
+		if self.data != None and ctx.mode == 'OBJECT':
+			curve = bpy.data.curves[self.data.name]
+			CurveFromShapes(curve, shapes, self.close)
 
 # Create Curve from Splines in the shape Data
 def CurveFromShapes(Curve, Shapes, Close):
@@ -216,10 +216,10 @@ def GetCursurMesh(size, x, y):
 def DrawCursurOveride(self):
 	bgl.glEnable(bgl.GL_BLEND)
 	shader = gpu.shader.from_builtin('2D_UNIFORM_COLOR')
-	v, f = GetCursurMesh(20, self.mpos.x, self.mpos.y)
-	batch = batch_for_shader(shader,'TRIS', {"pos":v}, indices=f)
+	v,f = GetCursurMesh(20,self.mpos.x, self.mpos.y)
+	batch = batch_for_shader(shader,'TRIS',{"pos":v},indices=f)
 	shader.bind()
-	shader.uniform_float("color", (0.8, 0.8, 0.8, 0.6))
+	shader.uniform_float("color",(0.8,0.8,0.8,0.6))
 	batch.draw(shader)
 	bgl.glDisable(bgl.GL_BLEND)
 

@@ -14,7 +14,7 @@ class GreacePencil:
 		bpy.ops.object.gpencil_add(location=(0,0,0),type=gpencil_type)
 		self.owner = ctx.active_object
 		self.data = self.owner.data
-	def update(self):
+	def update(self, ctx):
 		pass
 	def abort(self):
 		delete_objects([self.owner])
@@ -33,7 +33,7 @@ class BsMax_OT_CreateGreacePencil(CreatePrimitive):
 		owner.location = clickpoint.view		
 		owner.rotation_euler = clickpoint.orient + Vector((-1.5708,0,0))
 
-	def update(self, clickcount, dimantion):
+	def update(self, ctx, clickcount, dimantion):
 		if clickcount == 1:
 			owner = self.subclass.owner
 			owner.location = dimantion.center

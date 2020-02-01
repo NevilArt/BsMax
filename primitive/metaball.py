@@ -3,6 +3,7 @@ from mathutils import Vector
 from bpy.props import EnumProperty
 from primitive.primitive import CreatePrimitive
 from bsmax.actions import delete_objects
+from bsmax.math import get_offset_by_orient
 
 class Metaball:
 	def __init__(self):
@@ -13,7 +14,7 @@ class Metaball:
 	def create(self, ctx, metaball_type):
 		bpy.ops.object.metaball_add(type=metaball_type)
 		self.owner = ctx.active_object
-	def update(self):
+	def update(self, ctx):
 		pass
 	def abort(self):
 		delete_objects([self.owner])
@@ -48,7 +49,7 @@ class BsMax_OT_CreateMetaball(CreatePrimitive):
 		owner.data.elements[0].size_y = 0
 		owner.data.elements[0].size_z = 0
 
-	def update(self, clickcount, dimantion):
+	def update(self, ctx, clickcount, dimantion):
 		data = self.subclass.owner.data
 		if self.metaball_type == 'BALL':
 			if clickcount == 1:

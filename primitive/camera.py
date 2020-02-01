@@ -21,7 +21,7 @@ class BsMax_OT_CreateCamera(CreatePrimitive):
 		bpy.ops.object.camera_add(align='WORLD', location=clickpoint.view)
 		self.subclass.owner = ctx.active_object
 		self.subclass.owner.rotation_euler = clickpoint.orient
-	def update(self, clickcount, dimantion):
+	def update(self, ctx, clickcount, dimantion):
 		if clickcount == 1:
 			if self.drag and self.subclass.target == None:
 				self.subclass.target = set_create_target(self.subclass.owner, None)

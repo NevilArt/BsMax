@@ -44,11 +44,11 @@ class Mesher(PrimitiveGeometryClass):
 		self.create_mesh(ctx, mesh, self.classname)
 		pd = self.data.primitivedata
 		pd.classname = self.classname
-	def update(self):
+	def update(self, ctx):
 		pd = self.data.primitivedata
 		if pd.target == "":
 			mesh = get_mesher_mesh(pd.radius1)
-			self.update_mesh(mesh)
+			self.update_mesh(ctx, mesh)
 		else:
 			self.target = pd.target
 			ctx = bpy.context
@@ -66,12 +66,12 @@ class BsMax_OT_CreateMesher(CreatePrimitive):
 		self.params = self.subclass.owner.data.primitivedata
 		self.subclass.owner.location = clickpoint.view
 		self.subclass.owner.rotation_euler = clickpoint.orient
-	def update(self, clickcount, dimantion):
+	def update(self, ctx, clickcount, dimantion):
 		if clickcount == 1:
 			self.params.radius1 = dimantion.radius / 2
 			self.subclass.owner.location = dimantion.center
 		if clickcount > 0:
-			self.subclass.update()
+			self.subclass.update(ctx)
 	def finish(self):
 		pass
 

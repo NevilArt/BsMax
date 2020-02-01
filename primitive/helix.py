@@ -43,12 +43,12 @@ class Helix(PrimitiveCurveClass):
 		pd.classname = self.classname
 		pd.turns = 3
 		pd.ssegs = 20
-	def update(self):
+	def update(self, ctx):
 		pd = self.data.primitivedata
 		# radius1, radius2, height, turns, segs, bias, ccw
 		shapes = GetHelixshape(pd.radius1, pd.radius2, pd.height,
 					pd.turns, pd.ssegs, pd.bias_np, pd.ccw)
-		self.update_curve(shapes)
+		self.update_curve(ctx, shapes)
 	def abort(self):
 		delete_objects([self.owner])
 
@@ -62,7 +62,7 @@ class BsMax_OT_CreateHelix(CreatePrimitive):
 		self.params = self.subclass.owner.data.primitivedata
 		self.subclass.owner.location = clickpoint.view
 		self.subclass.owner.rotation_euler = clickpoint.orient
-	def update(self, clickcount, dimantion):
+	def update(self, ctx, clickcount, dimantion):
 		if clickcount == 1:
 			self.params.radius1 = dimantion.radius
 			self.params.radius2 = dimantion.radius
@@ -72,7 +72,7 @@ class BsMax_OT_CreateHelix(CreatePrimitive):
 			radius = self.params.radius1 + dimantion.height_np
 			self.params.radius2 = 0 if radius < 0 else radius
 		if clickcount > 0:
-			self.subclass.update()
+			self.subclass.update(ctx)
 	def finish(self):
 		pass
 

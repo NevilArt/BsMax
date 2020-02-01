@@ -141,11 +141,11 @@ class Pyramid(PrimitiveGeometryClass):
 		pd = self.data.primitivedata
 		pd.classname = self.classname
 		pd.wsegs, pd.lsegs, pd.hsegs = 1, 1, 1
-	def update(self):
+	def update(self, ctx):
 		pd = self.data.primitivedata
 		mesh = GetPyramidMesh(pd.width, pd.length, pd.height,
 					pd.wsegs, pd.lsegs, pd.hsegs)
-		self.update_mesh(mesh)
+		self.update_mesh(ctx, mesh)
 	def abort(self):
 		delete_objects([self.owner])
 
@@ -159,7 +159,7 @@ class BsMax_OT_CreatePyramid(CreatePrimitive):
 		self.params = self.subclass.owner.data.primitivedata
 		self.subclass.owner.location = clickpoint.view
 		self.subclass.owner.rotation_euler = clickpoint.orient
-	def update(self, clickcount, dimantion):
+	def update(self, ctx, clickcount, dimantion):
 		if clickcount == 1:
 			self.params.width = dimantion.width
 			self.params.length = dimantion.length
@@ -167,7 +167,7 @@ class BsMax_OT_CreatePyramid(CreatePrimitive):
 		elif clickcount == 2:
 			self.params.height = dimantion.height
 		if clickcount > 0:
-			self.subclass.update()
+			self.subclass.update(ctx)
 	def finish(self):
 		pass
 

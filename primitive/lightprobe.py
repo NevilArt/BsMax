@@ -27,7 +27,7 @@ class BsMax_OT_CreateLightProbeGrid(CreatePrimitive):
 		self.subclass.owner = ctx.active_object
 		self.subclass.owner.scale = (0,0,0)
 		self.subclass.owner.rotation_euler = clickpoint.orient
-	def update(self, clickcount, dimantion):
+	def update(self, ctx, clickcount, dimantion):
 		if clickcount == 1:
 			self.width = dimantion.width / 2
 			self.length = dimantion.length / 2
@@ -57,7 +57,7 @@ class BsMax_OT_CreateLightProbePlaner(CreatePrimitive):
 		self.subclass.owner = ctx.active_object
 		self.subclass.owner.scale = (0,0,0)
 		self.subclass.owner.rotation_euler = clickpoint.orient
-	def update(self, clickcount, dimantion):
+	def update(self, ctx, clickcount, dimantion):
 		if clickcount == 1:
 			self.width = dimantion.width
 			self.length = dimantion.length
@@ -79,7 +79,7 @@ class BsMax_OT_CreateLightProbeCubemap(CreatePrimitive):
 		self.subclass.owner = ctx.active_object
 		self.subclass.owner.scale = (0,0,0)
 		self.subclass.owner.rotation_euler = clickpoint.orient
-	def update(self, clickcount, dimantion):
+	def update(self, ctx, clickcount, dimantion):
 		if clickcount == 1:
 			self.subclass.owner.data.influence_distance = dimantion.radius
 			self.subclass.owner.scale = (1,1,1)
