@@ -153,33 +153,12 @@ class BsMax_OT_SubobjectLevel(Operator):
 					set('OBJECT')
 		return{"FINISHED"}
 
-class BsMax_OT_SetObjectMode(Operator):
-	bl_idname="bsmax.mode_set"
-	bl_label="Set Object Mode"
-
-	@classmethod
-	def poll(self, ctx):
-		return ctx.active_object != None
-
-	def execute(self, ctx):
-		classname = ""
-		if ctx.active_object.type in {'MESH', 'CURVE'}:
-			classname = ctx.active_object.data.primitivedata.classname
-		if classname != "":
-			bpy.ops.bsmax.editprimitive('INVOKE_DEFAULT')
-		else:
-			if ctx.active_object.type == 'GPENCIL':
-				bpy.ops.gpencil.editmode_toggle()
-			else:
-				bpy.ops.object.editmode_toggle()
-		return {"FINISHED"}
-
 def subobjectlevel_cls(register):
-	classes = [BsMax_OT_SubobjectLevel, BsMax_OT_SetObjectMode]
-	for c in classes:
-		if register: bpy.utils.register_class(c)
-		else: bpy.utils.unregister_class(c)
-	return classes
+	classes = [BsMax_OT_SubobjectLevel]
+	if register:
+		[bpy.utils.register_class(c) for c in classes]
+	else:
+		[bpy.utils.unregister_class(c) for c in classes]
 
 if __name__ == '__main__':
 	subobjectlevel_cls(True)
