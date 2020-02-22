@@ -4,6 +4,7 @@ from math import sin,cos,pi,radians
 from bsmax.curve import Spline,Bezier_point
 from bsmax.math import point_on_vector,get_distance
 from primitive.primitive import CreatePrimitive,PrimitiveGeometryClass
+from bsmax.actions import delete_objects
 
 def get_path(part):
 	body_path = Spline(None)

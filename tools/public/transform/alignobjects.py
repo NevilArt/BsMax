@@ -10,8 +10,9 @@ def GetPosData(obj):
 	cld = []
 	msh = obj.data
 	if obj.type == 'MESH' and len(msh.vertices) > 0:
-		for vert in msh.vertices:
-			cld.append(obj.matrix_world @ vert.co)
+		# for vert in msh.vertices:
+		# 	cld.append(obj.matrix_world @ vert.co)
+		cld = [obj.matrix_world @ vert.co for vert in msh.vertices]
 	elif obj.type == 'CURVE' and len(msh.splines) > 0:
 		for spn in msh.splines:
 			for pts in spn.bezier_points:

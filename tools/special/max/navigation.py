@@ -1,30 +1,83 @@
 import bpy
 from bpy.types import Operator
+from bpy_extras.view3d_utils import region_2d_to_location_3d,location_3d_to_region_2d
 
-class BsMax_OT_MaxNavigation(Operator):
+# def obj_ray_cast(obj, matrix):
+# 	"""Wrapper for ray casting that moves the ray into object space"""
+# 	# get the ray relative to the object
+# 	matrix_inv = matrix.inverted()
+# 	ray_origin_obj = matrix_inv * ray_origin
+# 	ray_target_obj = matrix_inv * ray_target
+# 	# cast the ray
+# 	hit, normal, face_index = obj.ray_cast(ray_origin_obj, ray_target_obj)
+# 	if face_index != -1:
+# 		return hit, normal, face_index
+# 	else:
+# 		return None, None, None
+
+def view_pan(ctx,x,y):
+	# region = ctx.region
+	# region_data = ctx.space_data.region_3d
+	# depth = view_matrix @ Vector((0,0,-100000))
+	# r = region_2d_to_location_3d(region,region_data, (x,y), depth)
+	# p = location_3d_to_region_2d(region,region_data,(self.subclass.knots[0].pos))
+	# #bpy.ops.view3d.move('INVOKE_DEFAULT')
+
+	# # get the context arguments
+	# scene = ctx.scene
+	# region = ctx.region
+	# rv3d = ctx.region_data
+	# coord = 100, 100
+
+	# # get the ray from the viewport and mouse
+	# view_vector = view3d_utils.region_2d_to_vector_3d(region, rv3d, coord)
+	# ray_origin = view3d_utils.region_2d_to_origin_3d(region, rv3d, coord)
+
+	# if rv3d.view_perspective == 'ORTHO':
+	# 	# move ortho origin back
+	# 	ray_origin = ray_origin - (view_vector * (ray_max / 2.0))
+	
+	# ray_target = ray_origin + (view_vector * ray_max)
+
+	# # cast the ray
+	# hit, normal, face_index = obj.ray_cast(ray_origin_obj, ray_target_obj)
+	print("Pan")
+	pass
+
+def view_orbit(ctx,x,y):
+	#bpy.ops.view3d.rotate('INVOKE_DEFAULT')
+	print("Orbit")
+	pass
+
+def view_dolly(ctx,x,y):
+	#bpy.ops.view3d.dolly('INVOKE_DEFAULT')
+	print("dolly")
+	pass
+
+def view_zoom(ctx,x,y):
+	val = ctx.space_data.lens + y
+	val = 250 if val > 250 else val
+	val = 1 if val < 1 else val
+	ctx.space_data.lens = val
+
+class BsMax_OT_3DsMaxNavigation(Operator):
 	bl_idname = "bsmax.maxnavigation"
-	bl_label = "Max Navigation"
+	bl_label = "3DsMax Navigation"
 	alt = False
 	ctrl = False
+	shift = False
 	mmb = False
+	x,y = 0,0
 
 	@classmethod
 	def poll(self, ctx):
 		return ctx.area.type == 'VIEW_3D'
 
-	def action(self):
-		print(self.mmb, self.alt, self.ctrl)
-		if self.mmb and not self.alt and not self.ctrl:
-			bpy.ops.view3d.move('INVOKE_DEFAULT')
-		if self.mmb and self.alt and not self.ctrl:
-			bpy.ops.view3d.rotate('INVOKE_DEFAULT')
-		if self.mmb and self.alt and self.ctrl:
-			bpy.ops.view3d.zoom('INVOKE_DEFAULT')
-
 	def modal(self,ctx,event):
-		if not event.type in ['MIDDLEMOUSE','LEFT_CTRL','LEFT_ALT','RIGHT_CTRL','RIGHT_ALT']: 
+		print(event.type)
+		if not event.type in ['MIDDLEMOUSE','MOUSEMOVE','LEFT_CTRL','RIGHT_CTRL',
+							'LEFT_ALT','RIGHT_ALT','LEFT_SHIFT','RIGHT_SHIFT',]:
 			return {'PASS_THROUGH'}
-		print(event.type, event.value)
 
 		if event.type == 'MIDDLEMOUSE':
 			if event.value in {'PRESS','CLICK_DRAG'}:
@@ -44,19 +97,43 @@ class BsMax_OT_MaxNavigation(Operator):
 			elif event.value == 'RELEASE':
 				self.ctrl = False
 
-		self.action()
-		#return {'CANCELLED'}
+		if event.type in {'LEFT_SHIFT','RIGHT_SHIFT'}:
+			if event.value in {'PRESS','CLICK_DRAG'}:
+				self.ctrl = True
+			elif event.value == 'RELEASE':
+				self.ctrl = False
+
+		x,y = event.mouse_region_x,event.mouse_region_y
+		dx,dy = x-self.x, y-self.y
+		self.x,self.y = x,y
+
+		mmb,alt,ctrl,shift = self.mmb,self.alt,self.ctrl,self.shift
+
+		if mmb and not alt and not ctrl and not shift:
+			view_pan(ctx,dx,dy)
+		if mmb and alt and not ctrl and not shift:
+			view_orbit(ctx,dx,dy)
+		if mmb and alt and ctrl and not shift:
+			view_dolly(ctx,dx,dy)
+		if mmb and not alt and ctrl and shift:
+			view_zoom(ctx,dx,dy)
+
+		if not self.mmb:
+			return {'CANCELLED'}
 		return {'RUNNING_MODAL'}
+
 	def invoke(self,ctx,event):
+		self.x,self.y = event.mouse_region_x,event.mouse_region_y
+		self.mmb = True
 		ctx.window_manager.modal_handler_add(self)
 		return {'RUNNING_MODAL'}
 
 def navigation_cls(register):
-	classes = [BsMax_OT_MaxNavigation]
-	for c in classes:
-		if register: bpy.utils.register_class(c)
-		else: bpy.utils.unregister_class(c)
-	return classes
+	classes = [BsMax_OT_3DsMaxNavigation]
+	if register: 
+		[bpy.utils.register_class(c) for c in classes]
+	else: 
+		[bpy.utils.unregister_class(c) for c in classes]
 
 if __name__ == '__main__':
 	navigation_cls(True)

@@ -20,7 +20,7 @@ bl_info = {
 	"name": "BsMax",
 	"description": "BsMax for Blender 2.80 ~ 2.83",
 	"author": "Naser Merati (Nevil)",
-	"version": (0, 1, 0, 20200202),
+	"version": (0, 1, 0, 20200222),
 	"blender": (2, 80, 0),
 	"location": "Almost Everywhere in Blender",
 	"wiki_url": "https://github.com/NevilArt/BsMax_2_80/wiki",
@@ -106,7 +106,7 @@ class BsMax_AddonPreferences(AddonPreferences):
 		default='None',
 		description='More Tools',
 		items=[('Rigg','Rigg',''),
-			#('Animate','Animate',''),
+			('Animate','Animate',''),
 			#('Model','Model',''),
 			('None','None','')])
 
