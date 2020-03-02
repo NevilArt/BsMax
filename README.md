@@ -3,6 +3,7 @@
 
 
 Recent Updates
+* Rightclick Droptool disabled when rightclick select is active
 * Automate animated link(child of). active animation assistance tool pack to see it.
 * Float Primitive Panel can run in blender mode with out activing the 3DsMax tools.
 * Mesh Primitives Update faster (for Blender 2.81 and above).

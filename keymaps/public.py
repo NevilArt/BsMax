@@ -4,7 +4,8 @@ KeyMaps = []
 
 def create_public_keymaps():
 	kcfg = bpy.context.window_manager.keyconfigs.addon
-	if kcfg:
+	rcsm = bpy.context.window_manager.keyconfigs['blender'].preferences['select_mouse'] == 0
+	if kcfg and rcsm:
 		# 3D View --------------------------------------------------------------
 		km = kcfg.keymaps.new(name='3D View',space_type='VIEW_3D')
 
