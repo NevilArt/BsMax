@@ -1,6 +1,8 @@
 # BsMax_2_80 
 (Works on Blender 2.80 ~ 2.83)
 
+FixedBugs
+* ...preferences['select_mouse'] error on Blender 2.82a fixed
 
 Recent Updates
 * Rightclick Droptool disabled when rightclick select is active
