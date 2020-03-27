@@ -23,4 +23,5 @@ def keymaps_keys(register, pref):
 	elif pref.keymaps == 'Softimage':
 		softimage_keys(register)
 
+
 __all__ = ["keymaps_keys", "navigation_keys", "public_keys"]

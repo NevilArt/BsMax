@@ -20,12 +20,13 @@ bl_info = {
 	"name": "BsMax",
 	"description": "BsMax for Blender 2.80 ~ 2.83",
 	"author": "Naser Merati (Nevil)",
-	"version": (0, 1, 0, 20200316),
-	"blender": (2, 80, 0),
+	"version": (0, 1, 0, 20200327),
+	"blender": (2, 80, 0),# 2.80~2.83
 	"location": "Almost Everywhere in Blender",
 	"wiki_url": "https://github.com/NevilArt/BsMax_2_80/wiki",
+	"doc_url": "https://github.com/NevilArt/BsMax_2_80/wiki",
 	"tracker_url": "https://github.com/NevilArt/BsMax_2_80/issues",
-	"category": "User Interface"
+	"category": "Interface"
 }
 
 import bpy, sys, os
@@ -76,14 +77,16 @@ class BsMax_AddonPreferences(AddonPreferences):
 			# ('Softimage','Softimage',''),
 			# ('Modo','Modo',''),
 			# ('Cinema4D','Cinema4D',''),
-			('Blender','Blender','')])
+			('Blender','Blender',''),
+			('None','None','')])
 
 	apppack = [('3DsMax','3DsMax',''),
 			('Maya','Maya',''),
 			# ('Softimage','Softimage',''),
 			# ('Modo','Modo',''),
 			# ('Cinema4D','Cinema4D',''),
-			('Blender','Blender','')]
+			('Blender','Blender',''),
+			('None','None','')]
 
 	toolpack: EnumProperty(name='Tools Pack',
 		default='Blender',
@@ -95,7 +98,8 @@ class BsMax_AddonPreferences(AddonPreferences):
 		description='Float menus type',
 		items=[('QuadMenu_st_andkey','QuadMenu Standard (with Keymap)',''),
 			('QuadMenu_st_nokey','QuadMenu Standard (without Keymap)',''),
-			('Blender','Blender','')])
+			('Blender','Blender',''),
+			('None','None','')])
 
 	keymaps: EnumProperty(name='Keymap',
 		default='Blender',

@@ -5,8 +5,15 @@ KeyMaps = []
 def create_public_keymaps():
 	kc = bpy.context.window_manager.keyconfigs
 	kcfg = kc.addon
-	""" this command not working on version 2.82b """
-	rcsm = True if bpy.app.version == (2,82,7) else kc['blender'].preferences['select_mouse'] == 0
+
+	#TODO this just a temprary solution
+	""" this command not working on version 2.81a & 2.82b """
+	try:
+		rcsm = kc['blender'].preferences['select_mouse'] == 0
+	except:
+		rcsm = True	
+	# blacklist = [(2, 81, 16),(2,82,7)]
+	# rcsm = True if bpy.app.version in blacklist else kc['blender'].preferences['select_mouse'] == 0
 
 	if kcfg and rcsm:
 		# 3D View --------------------------------------------------------------
