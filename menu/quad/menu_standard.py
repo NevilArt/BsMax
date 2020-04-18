@@ -218,6 +218,9 @@ def get_view3d_tool2(ctx):
 		items.append(QuadItem("Make Free Camera",f,t,n,c0132,n))
 		items.append(seprator())
 		items.append(QuadItem("Select Camera Target",f,t,n,c0147,n))
+		items.append(seprator())
+		items.append(QuadItem("Lock Camera to View",ctx.space_data.lock_camera,t,n,c0162,n))
+		items.append(QuadItem("Lock to 3D Cursor",ctx.space_data.lock_cursor,t,n,c0163,n))
 	if get_active_type(ctx) == 'ARMATURE':
 		if ctx.mode == 'EDIT_ARMATURE':
 			items.append(QuadItem("Divide Bone",f,t,n,c0148,c0149))

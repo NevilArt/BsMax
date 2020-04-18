@@ -20,11 +20,12 @@ def uv_edit_menu(self, ctx):
 
 def menu_cls(register):
 	c = BsMax_MT_UV_Edit
+	mnu = bpy.types.MASK_MT_editor_menus if bpy.app.version[1] < 83 else bpy.types.IMAGE_MT_editor_menus
 	if register:
 		bpy.utils.register_class(c)
-		bpy.types.MASK_MT_editor_menus.append(uv_edit_menu)
+		mnu.append(uv_edit_menu)
 	else:
-		bpy.types.MASK_MT_editor_menus.remove(uv_edit_menu)
+		mnu.remove(uv_edit_menu)
 		bpy.utils.unregister_class(c)
 
 if __name__ == '__main__':

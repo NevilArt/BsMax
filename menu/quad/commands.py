@@ -160,8 +160,8 @@ c0158="bpy.ops.bsmax.rotationtozero('INVOKE_DEFAULT')"
 c0159="bpy.ops.curve.dividplus('INVOKE_DEFAULT',typein=True)"
 c0160="bpy.ops.curve.switch_direction('INVOKE_DEFAULT')"
 c0161="bpy.ops.curve.makefirst('INVOKE_DEFAULT')"
-c0162=""
-c0163=""
+c0162="bpy.context.space_data.lock_camera = not bpy.context.space_data.lock_camera"
+c0163="bpy.context.space_data.lock_cursor = not bpy.context.space_data.lock_cursor"
 c0164=""
 c0165=""
 c0166=""
@@ -169,3 +169,6 @@ c0167=""
 c0168=""
 c0169=""
 c0170=""
+
+
+

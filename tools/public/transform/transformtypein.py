@@ -33,8 +33,7 @@ class BsMax_OT_TransformTypeIn(Operator):
 	tool = None
 
 	def draw(self, ctx):
-		mode = ctx.mode
-		self.tool = ctx.workspace.tools.from_space_view3d_mode(mode,create=False).idname
+		self.tool = ctx.workspace.tools.from_space_view3d_mode(ctx.mode,create=False).idname
 		label = "" #ctx.scene.type
 		layout = self.layout
 		row = layout.row()
@@ -71,7 +70,7 @@ class BsMax_OT_TransformTypeIn(Operator):
 			col.prop(self,"scl_off_x")
 			col.prop(self,"scl_off_y")
 			col.prop(self,"scl_off_z")
-			cox.prop(self,"percent")
+			col.prop(self,"percent")
 
 		self.getdata(ctx)
 		self.pos_off_x,self.pos_off_y,self.pos_off_z = 0,0,0
@@ -154,7 +153,7 @@ class BsMax_OT_TransformTypeIn(Operator):
 		return {'FINISHED'}
 
 	def cancel(self, ctx):
-		return {'CANCELED'}
+		return None # {'CANCELED'}
 
 	def get_ui(self):
 		ret = "None"
