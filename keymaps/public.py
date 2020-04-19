@@ -1,10 +1,26 @@
-import bpy, rna_keymap_ui
+############################################################################
+#	This program is free software: you can redistribute it and/or modify
+#	it under the terms of the GNU General Public License as published by
+#	the Free Software Foundation,either version 3 of the License,or
+#	(at your option) any later version.
+#
+#	This program is distributed in the hope that it will be useful,
+#	but WITHOUT ANY WARRANTY; without even the implied warranty of
+#	MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+#	GNU General Public License for more details.
+#
+#	You should have received a copy of the GNU General Public License
+#	along with this program.  If not,see <https://www.gnu.org/licenses/>.
+############################################################################
 
-KeyMaps = []
+import bpy
+from .classes import KeyMaps
 
-def create_public_keymaps():
+def collect_mute_keymaps(km):
+	pass
+
+def create_keymaps(km):
 	kc = bpy.context.window_manager.keyconfigs
-	kcfg = kc.addon
 
 	#TODO this just a temprary solution
 	""" this command not working on version 2.81a & 2.82b """
@@ -12,71 +28,46 @@ def create_public_keymaps():
 		rcsm = kc['blender'].preferences['select_mouse'] == 0
 	except:
 		rcsm = True	
-	# blacklist = [(2, 81, 16),(2,82,7)]
-	# rcsm = True if bpy.app.version in blacklist else kc['blender'].preferences['select_mouse'] == 0
+	# blacklist = [(2,81,16),(2,82,7)]
+	# v = bpy.app.version[0]*100+bpy.app.version[1]
+	# rcsm = True if v > 281 else kc['blender'].preferences['select_mouse'] == 0
 
-	if kcfg and rcsm:
+	if kc.addon and rcsm:
 		# 3D View --------------------------------------------------------------
-		km = kcfg.keymaps.new(name='3D View',space_type='VIEW_3D')
-
-		kmi = km.keymap_items.new("bsmax.droptool", "RIGHTMOUSE", "PRESS")
-		KeyMaps.append((km, kmi))
-
+		space = km.space('3D View','VIEW_3D','WINDOW')
+		km.new(space,"bsmax.droptool","RIGHTMOUSE","PRESS",[])
 		# Object Mode -------------------------------------------------------------------------
-		km = kcfg.keymaps.new(name='Object Mode',space_type='EMPTY',region_type='WINDOW')
-
-		kmi = km.keymap_items.new("bsmax.droptool", "RIGHTMOUSE", "PRESS")
-		KeyMaps.append((km, kmi))
-		
+		space = km.space('Object Mode','EMPTY','WINDOW')
+		km.new(space,"bsmax.droptool","RIGHTMOUSE","PRESS",[])
 		# Mesh -----------------------------------------------------------------
-		km = kcfg.keymaps.new(name='Mesh',space_type='EMPTY')
-
-		kmi = km.keymap_items.new("bsmax.droptool", "RIGHTMOUSE", "PRESS")
-		KeyMaps.append((km, kmi))
-
+		space = km.space('Mesh','EMPTY','WINDOW')
+		km.new(space,"bsmax.droptool","RIGHTMOUSE","PRESS",[])
 		# Curve ----------------------------------------------------------------
-		km = kcfg.keymaps.new(name='Curve',space_type='EMPTY')
-
-		kmi = km.keymap_items.new("bsmax.droptool", "RIGHTMOUSE", "PRESS")
-		KeyMaps.append((km, kmi))
-
+		space = km.space('Curve','EMPTY','WINDOW')
+		km.new(space,"bsmax.droptool","RIGHTMOUSE","PRESS",[])
 		# Armature -------------------------------------------------------------
-		km = kcfg.keymaps.new(name='Armature',space_type='EMPTY')
-
-		kmi = km.keymap_items.new("bsmax.droptool", "RIGHTMOUSE", "PRESS")
-		KeyMaps.append((km, kmi))
-
+		space = km.space('Armature','EMPTY','WINDOW')
+		km.new(space,"bsmax.droptool","RIGHTMOUSE","PRESS",[])
 		# Metaball -------------------------------------------------------------
-		km = kcfg.keymaps.new(name='Metaball',space_type='EMPTY')
-
-		kmi = km.keymap_items.new("bsmax.droptool", "RIGHTMOUSE", "PRESS")
-		KeyMaps.append((km, kmi))
-
+		space = km.space('Metaball','EMPTY','WINDOW')
+		km.new(space,"bsmax.droptool","RIGHTMOUSE","PRESS",[])
 		# Lattice --------------------------------------------------------------
-		km = kcfg.keymaps.new(name='Lattice',space_type='EMPTY')
-
-		kmi = km.keymap_items.new("bsmax.droptool", "RIGHTMOUSE", "PRESS")
-		KeyMaps.append((km, kmi))
-
+		space = km.space('Lattice','EMPTY','WINDOW')
+		km.new(space,"bsmax.droptool","RIGHTMOUSE","PRESS",[])
 		# Pose -----------------------------------------------------------------
-		km = kcfg.keymaps.new(name='Pose',space_type='EMPTY')
+		space = km.space('Pose','EMPTY','WINDOW')
+		km.new(space,"bsmax.droptool","RIGHTMOUSE","PRESS",[])
 
-		kmi = km.keymap_items.new("bsmax.droptool", "RIGHTMOUSE", "PRESS")
-		KeyMaps.append((km, kmi))
+keymaps = KeyMaps()
 
-def remove_public_keymaps():
-	for km,kmi in KeyMaps:
-		km.keymap_items.remove(kmi)
-	KeyMaps.clear()
-
-def public_keys(register, pref):
+def public_keys(register,pref):
+	keymaps.reset()
 	if register:
-		remove_public_keymaps()
-		create_public_keymaps()
-	else:
-		remove_public_keymaps()
+		create_keymaps(keymaps)
+		collect_mute_keymaps(keymaps)
+	keymaps.set_mute(not register)
 
 if __name__ == '__main__':
-	max_keys(True)
+	public_keys(True,"")
 
-__all__=["max_keys"]
+__all__=["public_keys"]

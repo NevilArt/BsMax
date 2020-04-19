@@ -1,238 +1,136 @@
-import bpy, rna_keymap_ui
+############################################################################
+#	This program is free software: you can redistribute it and/or modify
+#	it under the terms of the GNU General Public License as published by
+#	the Free Software Foundation,either version 3 of the License,or
+#	(at your option) any later version.
+#
+#	This program is distributed in the hope that it will be useful,
+#	but WITHOUT ANY WARRANTY; without even the implied warranty of
+#	MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+#	GNU General Public License for more details.
+#
+#	You should have received a copy of the GNU General Public License
+#	along with this program.  If not,see <https://www.gnu.org/licenses/>.
+############################################################################
 
-KeyMaps = []
+import bpy
+from .classes import KeyMaps
 
 # https://www.autodesk.com/shortcuts/maya
-#TODO
+# TODO
 # push D edit pivot
 # hold D edit pivot
 # Timeline
 # [] Undo rido only camera
 
-def create_maya_keymaps():
-	kcfg = bpy.context.window_manager.keyconfigs.addon
+def collect_mute_keymaps(km):
+	pass
 
-	if kcfg:
+def create_keymaps(km):
+	if bpy.context.window_manager.keyconfigs.addon:
 		# Window ---------------------------------------------------------------
-		km = kcfg.keymaps.new(name ='Window', space_type ='EMPTY')
-
-		kmi = km.keymap_items.new("wm.search_menu", "X", "PRESS")
-		KeyMaps.append((km, kmi))
+		space = km.space('Window','EMPTY','WINDOW')
+		km.new(space,"wm.search_menu","X","PRESS",[])
 		# 3D View --------------------------------------------------------------
-		km = kcfg.keymaps.new(name = '3D View', space_type = 'VIEW_3D')
-
-		kmi = km.keymap_items.new("wm.search_menu", "X", "PRESS")
-		KeyMaps.append((km, kmi))
-
-		# Navigation
-		#kmi = km.keymap_items.new("view3d.move", "MIDDLEMOUSE", "PRESS", alt = True)
-		#KeyMaps.append((km, kmi))
-		#kmi = km.keymap_items.new("view3d.rotate", "LEFTMOUSE", "PRESS", alt = True)
-		#KeyMaps.append((km, kmi))
-		#kmi = km.keymap_items.new("view3d.zoom", "RIGHTMOUSE", "PRESS", alt = True)
-		#KeyMaps.append((km, kmi))
-
+		space = km.space( '3D View','VIEW_3D','WINDOW')
+		km.new(space,"wm.search_menu","X","PRESS",[])
 		# selection
-		kmi = km.keymap_items.new("view3d.select", "LEFTMOUSE", "CLICK")
-		KeyMaps.append((km, kmi))
-		kmi = km.keymap_items.new("view3d.select", "LEFTMOUSE", "CLICK", ctrl = True)
-		kmi.properties.extend = True
-		KeyMaps.append((km, kmi))
-		kmi = km.keymap_items.new("view3d.select", "LEFTMOUSE", "CLICK", alt = True)
-		kmi.properties.deselect = True
-		KeyMaps.append((km, kmi))
-
+		km.new(space,"view3d.select","LEFTMOUSE","CLICK",[])
+		km.new(space,"view3d.select","LEFTMOUSE","CLICK",[('extend',True)],ctrl=True)
+		km.new(space,"view3d.select","LEFTMOUSE","CLICK",[('deselect',True)],alt=True)
 		# Set tools
-		kmi = km.keymap_items.new("wm.tool_set_by_id", "Q", "PRESS")
-		kmi.properties.name = "builtin.select_box"
-		kmi.properties.cycle = True
-		KeyMaps.append((km, kmi))
-		kmi = km.keymap_items.new("wm.tool_set_by_id", "W", "PRESS")
-		kmi.properties.name = "builtin.move"
-		KeyMaps.append((km, kmi))
-		kmi = km.keymap_items.new("wm.tool_set_by_id", "E", "PRESS")
-		kmi.properties.name = "builtin.rotate"
-		KeyMaps.append((km, kmi))
-		kmi = km.keymap_items.new("wm.tool_set_by_id", "R", "PRESS")
-		kmi.properties.name = "builtin.scale"
-		kmi.properties.cycle = True
-		KeyMaps.append((km, kmi))
-
+		km.new(space,"wm.tool_set_by_id","Q","PRESS",[('name',"builtin.select_box"),('cycle',True)])
+		km.new(space,"wm.tool_set_by_id","W","PRESS",[('name',"builtin.move")])
+		km.new(space,"wm.tool_set_by_id","E","PRESS",[('name',"builtin.rotate")])
+		km.new(space,"wm.tool_set_by_id","R","PRESS",[('name',"builtin.scale"),('cycle',True)])
 		# Undo/Rido
-		kmi = km.keymap_items.new("ed.undo", "Z", "PRESS")
-		KeyMaps.append((km, kmi))
-		kmi = km.keymap_items.new("ed.undo", "Z", "PRESS", ctrl = True)
-		KeyMaps.append((km, kmi))
-		kmi = km.keymap_items.new("ed.redo", "Z", "PRESS", shift = True)
-		KeyMaps.append((km, kmi))
-
+		km.new(space,"ed.undo","Z","PRESS",[])
+		km.new(space,"ed.undo","Z","PRESS",[],ctrl=True)
+		km.new(space,"ed.redo","Z","PRESS",[],shift=True)
 		# Tools From Maya
-		kmi = km.keymap_items.new("view3d.view_selected", "F", "PRESS")
-		kmi.properties.use_all_regions = False
-		KeyMaps.append((km, kmi))
-		kmi = km.keymap_items.new("view3d.view_all", "A", "PRESS")
-		kmi.properties.use_all_regions = False
-		kmi.properties.center = False
-		KeyMaps.append((km, kmi))
-
+		km.new(space,"view3d.view_selected","F","PRESS",[('use_all_regions',False)])
+		km.new(space,"view3d.view_all","A","PRESS",[('use_all_regions',False),('center',False)])
 		# Object Non-modal --------------------------------------------------------------------
-		km = kcfg.keymaps.new(name = 'Object Non-modal', space_type = 'EMPTY', region_type = 'WINDOW')
-
-		kmi = km.keymap_items.new("bsmax.mode_set", 'TAB', "PRESS")
-		KeyMaps.append((km, kmi))
-
+		space = km.space( 'Object Non-modal','EMPTY','WINDOW')
+		km.new(space,"bsmax.mode_set",'TAB',"PRESS",[])
 		# Object Mode ----------------------------------------------------------
-		km = kcfg.keymaps.new(name = 'Object Mode', space_type = 'EMPTY')
-
+		space = km.space( 'Object Mode','EMPTY','WINDOW')
 		# Global
-		kmi = km.keymap_items.new("wm.search_menu", "X", "PRESS")
-		KeyMaps.append((km, kmi))
-		kmi = km.keymap_items.new("ed.undo", "Z", "PRESS")
-		KeyMaps.append((km, kmi))
-		kmi = km.keymap_items.new("ed.undo", "Z", "PRESS", ctrl = True)
-		KeyMaps.append((km, kmi))
-		kmi = km.keymap_items.new("ed.redo", "Z", "PRESS", shift = True)
-		KeyMaps.append((km, kmi))
-
+		km.new(space,"wm.search_menu","X","PRESS",[])
+		km.new(space,"ed.undo","Z","PRESS",[])
+		km.new(space,"ed.undo","Z","PRESS",[],ctrl=True)
+		km.new(space,"ed.redo","Z","PRESS",[],shift=True)
 		# Hide/Unhide
-		kmi = km.keymap_items.new("object.hide_view_set", "H", "PRESS", ctrl = True)
-		KeyMaps.append((km, kmi))
-		kmi = km.keymap_items.new("object.hide_view_set", "H", "PRESS", alt = True)
-		kmi.properties.unselected = True
-		KeyMaps.append((km, kmi))
-		kmi = km.keymap_items.new("object.hide_view_clear", "H", "PRESS", ctrl = True, shift = True)
-		KeyMaps.append((km, kmi))
-
+		km.new(space,"object.hide_view_set","H","PRESS",[],ctrl=True)
+		km.new(space,"object.hide_view_set","H","PRESS",[('unselected',True)],alt=True)
+		km.new(space,"object.hide_view_clear","H","PRESS",[],ctrl=True,shift=True)
 		# SetKey
-		kmi = km.keymap_items.new("object.hide_view_clear", "S", "PRESS")
-		KeyMaps.append((km, kmi))
-		# kmi = km.keymap_items.new("anim.keyframe_insert_menu", "W", "PRESS", shift = True)
-		# kmi.properties.type = 'Location'
-		# KeyMaps.append((km, kmi))
-		# kmi = km.keymap_items.new("anim.keyframe_insert_menu", "E", "PRESS", shift = True)
-		# kmi.properties.type = 'Rotation'
-		# KeyMaps.append((km, kmi))
-		# kmi = km.keymap_items.new("anim.keyframe_insert_menu", "R", "PRESS", shift = True)
-		# kmi.properties.type = 'Scaling'
-		# KeyMaps.append((km, kmi))
-
+		km.new(space,"object.hide_view_clear","S","PRESS",[])
+		# km.new(space,"anim.keyframe_insert_menu","W","PRESS",[('type','Location')],shift=True)
+		# km.new(space,"anim.keyframe_insert_menu","E","PRESS",[('type','Rotation')],shift=True)
+		# km.new(space,"anim.keyframe_insert_menu","R","PRESS",[('type','Scaling')],shift=True)
 		# Pivot tools
-		kmi = km.keymap_items.new("wm.search_menu", "X", "PRESS")
-		KeyMaps.append((km, kmi))
-		kmi = km.keymap_items.new("object.modifypivotpoint", "INSERT", "PRESS")
-		KeyMaps.append((km, kmi))
-		kmi = km.keymap_items.new("wm.call_menu", "INSERT", "PRESS", ctrl = True)
-		kmi.properties.name = "BSMAX_MT_SetPivotPoint"
-		KeyMaps.append((km, kmi))
-
+		km.new(space,"wm.search_menu","X","PRESS",[])
+		km.new(space,"object.modifypivotpoint","INSERT","PRESS",[])
+		km.new(space,"wm.call_menu","INSERT","PRESS",[('name',"BSMAX_MT_SetPivotPoint")],ctrl=True)
 		# Mesh -----------------------------------------------------------------
-		km = kcfg.keymaps.new(name = 'Mesh', space_type = 'EMPTY')
-
+		space = km.space('Mesh','EMPTY','WINDOW')
 		# Global
-		kmi = km.keymap_items.new("wm.search_menu", "X", "PRESS")
-		KeyMaps.append((km, kmi))
-		kmi = km.keymap_items.new("ed.undo", "Z", "PRESS")
-		KeyMaps.append((km, kmi))
-		kmi = km.keymap_items.new("ed.undo", "Z", "PRESS", ctrl = True)
-		KeyMaps.append((km, kmi))
-		kmi = km.keymap_items.new("ed.redo", "Z", "PRESS", shift = True)
-		KeyMaps.append((km, kmi))
-
+		km.new(space,"wm.search_menu","X","PRESS",[])
+		km.new(space,"ed.undo","Z","PRESS",[])
+		km.new(space,"ed.undo","Z","PRESS",[],ctrl=True)
+		km.new(space,"ed.redo","Z","PRESS",[],shift=True)
 		# Curve ----------------------------------------------------------------
-		km = kcfg.keymaps.new(name = 'Curve', space_type = 'EMPTY')
-
+		space = km.space('Curve','EMPTY','WINDOW')
 		# Global
-		kmi = km.keymap_items.new("wm.search_menu", "X", "PRESS")
-		KeyMaps.append((km, kmi))
-		kmi = km.keymap_items.new("ed.undo", "Z", "PRESS")
-		KeyMaps.append((km, kmi))
-		kmi = km.keymap_items.new("ed.undo", "Z", "PRESS", ctrl = True)
-		KeyMaps.append((km, kmi))
-		kmi = km.keymap_items.new("ed.redo", "Z", "PRESS", shift = True)
-		KeyMaps.append((km, kmi))
-
+		km.new(space,"wm.search_menu","X","PRESS",[])
+		km.new(space,"ed.undo","Z","PRESS",[])
+		km.new(space,"ed.undo","Z","PRESS",[],ctrl=True)
+		km.new(space,"ed.redo","Z","PRESS",[],shift=True)
 		# Armature -------------------------------------------------------------
-		km = kcfg.keymaps.new(name = 'Armature', space_type = 'EMPTY')
-
+		space = km.space('Armature','EMPTY','WINDOW')
 		# Global
-		kmi = km.keymap_items.new("wm.search_menu", "X", "PRESS")
-		KeyMaps.append((km, kmi))
-		kmi = km.keymap_items.new("ed.undo", "Z", "PRESS")
-		KeyMaps.append((km, kmi))
-		kmi = km.keymap_items.new("ed.undo", "Z", "PRESS", ctrl = True)
-		KeyMaps.append((km, kmi))
-		kmi = km.keymap_items.new("ed.redo", "Z", "PRESS", shift = True)
-		KeyMaps.append((km, kmi))
-
+		km.new(space,"wm.search_menu","X","PRESS",[])
+		km.new(space,"ed.undo","Z","PRESS",[])
+		km.new(space,"ed.undo","Z","PRESS",[],ctrl=True)
+		km.new(space,"ed.redo","Z","PRESS",[],shift=True)
 		# Metaball -------------------------------------------------------------
-		km = kcfg.keymaps.new(name = 'Metaball', space_type = 'EMPTY')
-
+		space = km.space('Metaball','EMPTY','WINDOW')
 		# Global
-		kmi = km.keymap_items.new("wm.search_menu", "X", "PRESS")
-		KeyMaps.append((km, kmi))
-		kmi = km.keymap_items.new("ed.undo", "Z", "PRESS")
-		KeyMaps.append((km, kmi))
-		kmi = km.keymap_items.new("ed.undo", "Z", "PRESS", ctrl = True)
-		KeyMaps.append((km, kmi))
-		kmi = km.keymap_items.new("ed.redo", "Z", "PRESS", shift = True)
-		KeyMaps.append((km, kmi))
-
+		km.new(space,"wm.search_menu","X","PRESS",[])
+		km.new(space,"ed.undo","Z","PRESS",[])
+		km.new(space,"ed.undo","Z","PRESS",[],ctrl=True)
+		km.new(space,"ed.redo","Z","PRESS",[],shift=True)
 		# Lattice --------------------------------------------------------------
-		km = kcfg.keymaps.new(name = 'Lattice', space_type = 'EMPTY')
-
+		space = km.space('Lattice','EMPTY','WINDOW')
 		# Global
-		kmi = km.keymap_items.new("wm.search_menu", "X", "PRESS")
-		KeyMaps.append((km, kmi))
-		kmi = km.keymap_items.new("ed.undo", "Z", "PRESS")
-		KeyMaps.append((km, kmi))
-		kmi = km.keymap_items.new("ed.undo", "Z", "PRESS", ctrl = True)
-		KeyMaps.append((km, kmi))
-		kmi = km.keymap_items.new("ed.redo", "Z", "PRESS", shift = True)
-		KeyMaps.append((km, kmi))
-
+		km.new(space,"wm.search_menu","X","PRESS",[])
+		km.new(space,"ed.undo","Z","PRESS",[])
+		km.new(space,"ed.undo","Z","PRESS",[],ctrl = True)
+		km.new(space,"ed.redo","Z","PRESS",[],shift = True)
 		# Font -----------------------------------------------------------------
-
 		# Pose -----------------------------------------------------------------
-		km = kcfg.keymaps.new(name = 'Pose', space_type = 'EMPTY')
-
+		# space = km.space('Pose','EMPTY','WINDOW')
 		# GRAPH_EDITOR ----------------------------------------------------------------
-
 		# DOPESHEET_EDITOR (Timeline)--------------------------------------------------
-		km = kcfg.keymaps.new(name = "Dopesheet", space_type = "DOPESHEET_EDITOR")
-
+		# space = km.space("Dopesheet","DOPESHEET_EDITOR,'WINDOW'")
 		# Screen ----------------------------------------------------------------------
-		km = kcfg.keymaps.new(name = 'Screen', space_type = 'EMPTY')
+		space = km.space('Screen','EMPTY','WINDOW')
+		km.new(space,"screen.repeat_last","G","PRESS",[])
+		# km.new(space,"render.render","F9","PRESS",[('use_viewport',True)])
+		# km.new(space,"render.render","Q","PRESS",[('use_viewport',True),('animation',True)],shift=True)
+		km.new(space,"ed.undo","Z","PRESS",[])
+		km.new(space,"ed.undo","Z","PRESS",[],ctrl=True)
+		km.new(space,"ed.redo","Z","PRESS",[],shift=True)
 
-		kmi = km.keymap_items.new("screen.repeat_last", "G", "PRESS")
-		KeyMaps.append((km, kmi))
-
-		"""
-		kmi = km.keymap_items.new("render.render", "F9", "PRESS")
-		kmi.properties.use_viewport = True
-		BsMax_KeyMaps.append((km, kmi))
-		kmi = km.keymap_items.new("render.render", "Q", "PRESS", shift = True)
-		kmi.properties.use_viewport = True
-		kmi.properties.animation = True
-		BsMax_KeyMaps.append((km, kmi))
-		"""
-		kmi = km.keymap_items.new("ed.undo", "Z", "PRESS")
-		KeyMaps.append((km, kmi))
-		kmi = km.keymap_items.new("ed.undo", "Z", "PRESS", ctrl = True)
-		KeyMaps.append((km, kmi))
-		kmi = km.keymap_items.new("ed.redo", "Z", "PRESS", shift = True)
-		KeyMaps.append((km, kmi))
-
-def remove_maya_keymaps():
-	for km, kmi in KeyMaps:
-		km.keymap_items.remove(kmi)
-	KeyMaps.clear()
+keymaps = KeyMaps()
 
 def maya_keys(register):
+	keymaps.reset()
 	if register:
-		remove_maya_keymaps()
-		create_maya_keymaps()
-	else:
-		remove_maya_keymaps()
+		create_keymaps(keymaps)
+		collect_mute_keymaps(keymaps)
+	keymaps.set_mute(not register)
 
 if __name__ == '__main__':
 	maya_keys(True)
@@ -265,7 +163,7 @@ Display Settings ------------------------------------------
 6 	Shaded and Textured display
 7 	Use All Lights
 
-Displaying Objects (Show, Hide)----------------------------
+Displaying Objects (Show,Hide)----------------------------
 Ctrl + H 	Hide > Hide Selection
 Alt + H 	Hide > Hide Unselected Objects
 Shift + l 	Isolate Select > View Selected (in the panel menus)
@@ -342,8 +240,8 @@ Up 	Walk up current
 Playback Control ----------------------------------------
 Alt+Shift + V 	Go to Min Frame
 . 	Go to Next key
-, 	Go to Previous key
-Alt + , 	Move backward one frame in time
+,	Go to Previous key
+Alt + ,	Move backward one frame in time
 Alt + . 	Move forward one frame in time
 Alt + V 	Turn Playback on or off
 K + Middle mouse button 	Virtual Time Slider mode (press and hold and scrub timeline)
@@ -376,8 +274,8 @@ Alt + F9 	Vertex Face
 
 
 Snapping Operations ----------------------------------------
-Shift + J 	Move, Rotate, Scale Tool relative snapping (press and release)
-J 	Move, Rotate, Scale Tool snapping (press and release)
+Shift + J 	Move,Rotate,Scale Tool relative snapping (press and release)
+J 	Move,Rotate,Scale Tool snapping (press and release)
 C 	Snap to curves (press and release)
 X 	Snap to grids (press and release)
 V 	Snap to points (press and release)
@@ -387,21 +285,21 @@ Tool Operations --------------------------------
 Return 	Complete current tool
 - 	Decrease manipulator size
 Insert 	Enter tool Edit mode
-=, + 	Increase manipulator size
-W 	Move Tool, or with left mouse button for Move Tool marking menu
-J 	Move, Rotate, Scale Tool Snapping (press and release)
-E 	Rotate Tool, or with left mouse button for Rotate Tool marking menu
-R 	Scale Tool, or with left mouse button for Scale Tool marking menu
-Shift + Q 	Select Tool, or with left mouse button for Component marking menu
-Alt + Q 	Select Tool, or with left mouse button for Polygon marking menu
-Q 	Select Tool, or with left mouse button for Selection Mask marking menu
-Y 	Selects the last used tool that is not one of Select, Move, Rotate, or Scale
+=,+ 	Increase manipulator size
+W 	Move Tool,or with left mouse button for Move Tool marking menu
+J 	Move,Rotate,Scale Tool Snapping (press and release)
+E 	Rotate Tool,or with left mouse button for Rotate Tool marking menu
+R 	Scale Tool,or with left mouse button for Scale Tool marking menu
+Shift + Q 	Select Tool,or with left mouse button for Component marking menu
+Alt + Q 	Select Tool,or with left mouse button for Polygon marking menu
+Q 	Select Tool,or with left mouse button for Selection Mask marking menu
+Y 	Selects the last used tool that is not one of Select,Move,Rotate,or Scale
 T 	Show manipulator tool
 Ctrl + T 	Show universal manipulator tool
 Insert 	Switches between move pivot and move object (Move Tool)
 D 	With left mouse button move pivot (Move Tool)
 
-Tumble, Track or Dolly ---------------------------------
+Tumble,Track or Dolly ---------------------------------
 Alt + Right mouse button 	Dolly Tool (press and release)
 Alt + Middle mouse button 	Track Tool (press and release)
 Alt + Left mouse button 	Tumble Tool (press and release)
@@ -409,7 +307,7 @@ Alt + Left mouse button 	Tumble Tool (press and release)
 Window and View Operations ------------------------
 Space 	(When tapped) Switch between the active window in multi-pane display and single pane display
 Alt + Ctrl + Middle mouse button 	Fast pan in the Outliner
-A 	Frame All in active panel, or with left mouse button for History Operations marking menu
+A 	Frame All in active panel,or with left mouse button for History Operations marking menu
 Shift + A 	Frame All in all views
 F 	Frame Selected in active panel
 Shift + F 	Frame Selected in all views
@@ -417,7 +315,7 @@ F1 	Maya Help
 Alt + Middle mouse button 	Pan in the Attribute Editor
 Alt + Middle mouse button 	Pan in the Outliner
 ] 	Redo view change
-Alt + B 	Switch between a gradient, black, dark gray, or light gray background color
+Alt + B 	Switch between a gradient,black,dark gray,or light gray background color
 Ctrl + Space 	Switch between the standard view and full-screen view of the current panels
 Ctrl + A 	Switches between Attribute Editor or Channel Box–displays the Attribute Editor if neither is shown
 [ 	Undo view change
@@ -448,7 +346,7 @@ Hypershade ------------------------
 Ctrl + . 	Graph Remove Downstream
 Ctrl + L 	Graph Remove Selected
 Ctrl + / 	Graph Remove Unselected
-Ctrl + , 	Graph Remove Upstream
+Ctrl + ,	Graph Remove Upstream
 ? 	Graph Up Downstream
 < 	Graph Upstream
 1 	Hypdershade Hide Attributes
@@ -460,7 +358,7 @@ P 	Pin Selected
 # 	Remove Material Soloing
 / 	Select Connected
 . 	Select Down Stream
-, 	Select Up Stream
+,	Select Up Stream
 3 	Show All Attrs
 2 	Show Connected Attrs
 4 	Show Custom Attrs
@@ -476,7 +374,7 @@ Enter 	Dive Into Compound
 > 	Graph Downstream
 Ctrl + . 	Graph Remove Downstream
 Ctrl + L 	Graph Remove Selected
-Ctrl + , 	Graph Remove Upsream
+Ctrl + ,	Graph Remove Upsream
 ? 	Graph Up Downstream
 < 	Graph Upstream
 X 	Grid Toggle Snap
@@ -498,7 +396,7 @@ V 	Toggle Node Swatch Size
 C 	Toggle Synced Selection
 = 	Toggle Zoom In
 - 	Toggle Zoom Out
-, 	Up Stream
+,	Up Stream
 
 Outliner -------------------------------
 Enter 	Rename Selected Item

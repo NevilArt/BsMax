@@ -1,337 +1,150 @@
-import bpy, rna_keymap_ui
-from time import sleep
-from _thread import start_new_thread
+############################################################################
+#	This program is free software: you can redistribute it and/or modify
+#	it under the terms of the GNU General Public License as published by
+#	the Free Software Foundation, either version 3 of the License, or
+#	(at your option) any later version.
+#
+#	This program is distributed in the hope that it will be useful,
+#	but WITHOUT ANY WARRANTY; without even the implied warranty of
+#	MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+#	GNU General Public License for more details.
+#
+#	You should have received a copy of the GNU General Public License
+#	along with this program.  If not, see <https://www.gnu.org/licenses/>.
+############################################################################
 
-KeyMaps = []
+import bpy
+from .classes import KeyMaps
 
-def is_in_keymaps(key,keymaps):
-	for k in keymaps:
-		if key.idname == k[0]:
-			if key.type == k[1] and key.value == k[2] and \
-			   key.alt  == k[3] and key.ctrl  == k[4] and key.shift == k[5]:
-			   return True
-	return False
-
-def set_extera_keymaps(space,keymaps,state):
-	try:
-		sleep(0.1)
-		kdif = bpy.context.window_manager.keyconfigs.default
-		km = kdif.keymaps[space]
-		for k in km.keymap_items:
-			if is_in_keymaps(k,keymaps):
-				k.active = state
-	except:
-		pass
-		#set_extera_keymaps(space,keymaps,state)
-
-def max_dif_keys_set(state):
+def collect_mute_keymaps(km):
 	# Disable/Enable Unwanted Default ShortKeys
-	sks = []
-		   #(    idname     ,   type  , value , alt ,ctrl ,shift)
-	keys = [('view3d.select','LEFTMOUSE','CLICK',False,False,False),
-			('view3d.select','LEFTMOUSE','CLICK',True ,False,False),
-			('view3d.select','LEFTMOUSE','CLICK',False,True ,False),
-			('view3d.select','LEFTMOUSE','CLICK',False,False,True )]
-	sks.append(('3D View',keys))
+	km.mute('3D View','view3d.select','LEFTMOUSE','CLICK',False,False,False,False)
+	km.mute('3D View','view3d.select','LEFTMOUSE','CLICK',True,False,False,False)
+	km.mute('3D View','view3d.select','LEFTMOUSE','CLICK',False,True,False,False)
+	km.mute('3D View','view3d.select','LEFTMOUSE','CLICK',False,False,True,False)
+	km.mute('3D View Generic','wm.context_toggle','T','ANY',False,False,False,False)
+	km.mute('3D View Tool: Select Box','view3d.select_box','EVT_TWEAK_L','ANY',False,True,False,False)
+	km.mute('3D View Tool: Select Circle','view3d.select_circle','LEFTMOUSE','PRESS',False,True,False,False)
+	km.mute('3D View Tool: Select Lasso','view3d.select_lasso','EVT_TWEAK_L','ANY',False,True,False,False)
+	km.mute('Mesh','mesh.shortest_path_pick','LEFTMOUSE','CLICK',False,True,False,False)
+	km.mute('Window','wm.quit_blender','Q','PRESS',False,True,False,False)
 
-	keys = [('wm.context_toggle','T','ANY',False,False,False)]
-	sks.append(('3D View Generic',keys))
+def create_subobject_mode_keymap(km,space):
+	km.new(space,"bsmax.subobjectlevel","ONE","PRESS",[("level",1)])
+	km.new(space,"bsmax.subobjectlevel","TWO","PRESS",[("level",2)])
+	km.new(space,"bsmax.subobjectlevel","THREE","PRESS",[("level",3)])
+	km.new(space,"bsmax.subobjectlevel","FOUR","PRESS",[("level",4)])
+	km.new(space,"bsmax.subobjectlevel","FIVE","PRESS",[("level",5)])
+	km.new(space,"bsmax.subobjectlevel","SIX","PRESS",[("level",6)])
+	km.new(space,"bsmax.subobjectlevel","SEVEN","PRESS",[("level",7)])
+	km.new(space,"bsmax.subobjectlevel","EIGHT","PRESS",[("level",8)])
+	km.new(space,"bsmax.subobjectlevel","NINE","PRESS",[("level",9)])
+	km.new(space,"bsmax.subobjectlevel","ZERO","PRESS",[("level",0)])
 
-	keys = [('view3d.select_box','EVT_TWEAK_L','ANY',False,True,False)]
-	sks.append(('3D View Tool: Select Box',keys))
+def create_switch_view_keymap(km,space):
+	km.new(space,"view3d.view_persportho","P","PRESS",[])
+	km.new(space,"view3d.view_axis","F","PRESS",[("type","FRONT")])
+	km.new(space,"view3d.view_axis","L","PRESS",[("type","LEFT")])
+	km.new(space,"view3d.view_axis","T","PRESS",[("type","TOP")])
+	km.new(space,"view3d.view_axis","B","PRESS",[("type","BOTTOM")])
 
-	keys = [('view3d.select_circle','LEFTMOUSE','PRESS',False,True,False)]
-	sks.append(('3D View Tool: Select Circle',keys))
+def create_view3d_click_celection_keymap(km,space):
+	km.new(space,"view3d.select","LEFTMOUSE","CLICK",[("deselect_all",True)])
+	km.new(space,"view3d.select","LEFTMOUSE","CLICK",[("toggle",True)],ctrl=True)
+	km.new(space,"view3d.select","LEFTMOUSE","CLICK",[("deselect",True)],alt=True)
 
-	keys = [('view3d.select_lasso','EVT_TWEAK_L','ANY',False,True,False)]
-	sks.append(('3D View Tool: Select Lasso',keys))
-
-	keys = [('mesh.shortest_path_pick','LEFTMOUSE','CLICK',False,True,False)]
-	sks.append(('Mesh',keys))
-
-	keys = [('wm.quit_blender','Q','PRESS',False,True,False)]
-	sks.append(('Window',keys))
-	
-	for space,keys in sks:
-		set_extera_keymaps(space,keys,state)
-
-def create_subobject_mode_keymap(km):
-	kmi = km.keymap_items.new("bsmax.subobjectlevel","ONE","PRESS")
-	kmi.properties.level = 1
-	KeyMaps.append((km,kmi))
-	kmi = km.keymap_items.new("bsmax.subobjectlevel","TWO","PRESS")
-	kmi.properties.level = 2
-	KeyMaps.append((km,kmi))
-	kmi = km.keymap_items.new("bsmax.subobjectlevel","THREE","PRESS")
-	kmi.properties.level = 3
-	KeyMaps.append((km,kmi))
-	kmi = km.keymap_items.new("bsmax.subobjectlevel","FOUR","PRESS")
-	kmi.properties.level = 4
-	KeyMaps.append((km,kmi))
-	kmi = km.keymap_items.new("bsmax.subobjectlevel","FIVE","PRESS")
-	kmi.properties.level = 5
-	KeyMaps.append((km,kmi))
-	kmi = km.keymap_items.new("bsmax.subobjectlevel","SIX","PRESS")
-	kmi.properties.level = 6
-	KeyMaps.append((km,kmi))
-	kmi = km.keymap_items.new("bsmax.subobjectlevel","SEVEN","PRESS")
-	kmi.properties.level = 7
-	KeyMaps.append((km,kmi))
-	kmi = km.keymap_items.new("bsmax.subobjectlevel","EIGHT","PRESS")
-	kmi.properties.level = 8
-	KeyMaps.append((km,kmi))
-	kmi = km.keymap_items.new("bsmax.subobjectlevel","NINE","PRESS")
-	kmi.properties.level = 9
-	KeyMaps.append((km,kmi))
-	kmi = km.keymap_items.new("bsmax.subobjectlevel","ZERO","PRESS")
-	kmi.properties.level = 0
-	KeyMaps.append((km,kmi))
-
-def create_switch_view_keymap(km):
-	kmi = km.keymap_items.new("view3d.view_persportho","P","PRESS")
-	KeyMaps.append((km,kmi))
-	kmi = km.keymap_items.new("view3d.view_axis","F","PRESS")
-	kmi.properties.type = "FRONT"
-	KeyMaps.append((km,kmi))
-	kmi = km.keymap_items.new("view3d.view_axis","L","PRESS")
-	kmi.properties.type = "LEFT"
-	KeyMaps.append((km,kmi))
-	kmi = km.keymap_items.new("view3d.view_axis","T","PRESS")
-	kmi.properties.type = "TOP"
-	KeyMaps.append((km,kmi))
-	kmi = km.keymap_items.new("view3d.view_axis","B","PRESS")
-	kmi.properties.type = "BOTTOM"
-	KeyMaps.append((km,kmi))
-
-def create_view3d_click_celection_keymap(km):
-	kmi = km.keymap_items.new("view3d.select","LEFTMOUSE","CLICK")
-	kmi.properties.deselect_all = True
-	KeyMaps.append((km,kmi))
-	kmi = km.keymap_items.new("view3d.select","LEFTMOUSE","CLICK",ctrl=True)
-	kmi.properties.toggle = True
-	KeyMaps.append((km,kmi))
-	kmi = km.keymap_items.new("view3d.select","LEFTMOUSE","CLICK",alt=True)
-	kmi.properties.deselect = True
-	KeyMaps.append((km,kmi))
-
-def create_view3d_tweak_selection_keymap(km):
-	kmi = km.keymap_items.new("view3d.select_box","EVT_TWEAK_L","ANY")
-	kmi.properties.mode = 'SET'
-	KeyMaps.append((km,kmi))
-	kmi = km.keymap_items.new("view3d.select_box","EVT_TWEAK_L","ANY",ctrl=True )
-	kmi.properties.mode = 'ADD'
-	KeyMaps.append((km,kmi))
-	kmi = km.keymap_items.new("view3d.select_box","EVT_TWEAK_L","ANY",alt=True )
-	kmi.properties.mode = 'SUB'
-	KeyMaps.append((km,kmi))
+def create_view3d_tweak_selection_keymap(km,space):
+	km.new(space,"view3d.select_box","EVT_TWEAK_L","ANY",[("mode",'SET')])
+	km.new(space,"view3d.select_box","EVT_TWEAK_L","ANY",[("mode",'ADD')],ctrl=True )
+	km.new(space,"view3d.select_box","EVT_TWEAK_L","ANY",[("mode",'SUB')],alt=True )
 
 # Create Keymaps
-def create_3dsmax_keymaps():
-	kcfg = bpy.context.window_manager.keyconfigs.addon
-	if kcfg:
+def create_keymaps(km):
+	if bpy.context.window_manager.keyconfigs.addon:
 		# Window ---------------------------------------------------------------
-		km = kcfg.keymaps.new(name ='Window',space_type ='EMPTY')
-
-		kmi = km.keymap_items.new("wm.search_menu","X","PRESS")
-		KeyMaps.append((km,kmi))
-
+		space = km.space('Window','EMPTY','WINDOW')
+		km.new(space,"wm.search_menu","X","PRESS",[])
 		# 2D View --------------------------------------------------------------
-		# km = kcfg.keymaps.new(name='View2D',space_type='EMPTY',region_type='WINDOW')
-
-		# kmi = km.keymap_items.new("view2d.zoom","MIDDLEMOUSE","PRESS",ctrl=True,alt=True)
-		# KeyMaps.append((km,kmi))
-
+		# space = km.space('View2D','EMPTY','WINDOW')
+		# km.new(space,"view2d.zoom","MIDDLEMOUSE","PRESS",[],ctrl=True,alt=True)
 		# 3D View --------------------------------------------------------------
-		km = kcfg.keymaps.new(name='3D View',space_type='VIEW_3D')
-
-		kmi = km.keymap_items.new("wm.search_menu","X","PRESS")
-		KeyMaps.append((km,kmi))
-
-		kmi = km.keymap_items.new("screen.header","SIX","PRESS",alt=True)
-		KeyMaps.append((km,kmi))
-
-		kmi = km.keymap_items.new("screen.region_quadview","W","PRESS",alt=True)
-		KeyMaps.append((km,kmi))
-
-		kmi = km.keymap_items.new("bsmax.transformgizmosize","EQUAL","PRESS")
-		kmi.properties.step = 10
-		KeyMaps.append((km,kmi))
-		kmi = km.keymap_items.new("bsmax.transformgizmosize","MINUS","PRESS")
-		kmi.properties.step = -10
-		KeyMaps.append((km,kmi))
-
+		space = km.space('3D View','VIEW_3D','WINDOW')
+		km.new(space,"wm.search_menu","X","PRESS",[])
+		km.new(space,"screen.header","SIX","PRESS",[],alt=True)
+		km.new(space,"screen.region_quadview","W","PRESS",[],alt=True)
+		km.new(space,"bsmax.transformgizmosize","EQUAL","PRESS",[('step',10)])
+		km.new(space,"bsmax.transformgizmosize","MINUS","PRESS",[('step',-10)])
 		# View
-		create_switch_view_keymap(km)
-
+		create_switch_view_keymap(km,space)
 		# Display
-		kmi = km.keymap_items.new("view3d.localview","Q","PRESS",alt=True)
-		KeyMaps.append((km,kmi))
-
+		km.new(space,"view3d.localview","Q","PRESS",[],alt=True)
 		# Set tools
-		kmi = km.keymap_items.new("wm.tool_set_by_id","Q","PRESS")
-		kmi.properties.name="builtin.select_box"
-		kmi.properties.cycle = True
-		KeyMaps.append((km,kmi))
-		kmi = km.keymap_items.new("bsmax.move","W","PRESS")
-		KeyMaps.append((km,kmi))
-		kmi = km.keymap_items.new("bsmax.rotate","E","PRESS")
-		KeyMaps.append((km,kmi))
-		kmi = km.keymap_items.new("bsmax.scale","R","PRESS")
-		KeyMaps.append((km,kmi))
-		kmi = km.keymap_items.new("bsmax.scale","E","PRESS",ctrl=True)
-		KeyMaps.append((km,kmi))
-
+		km.new(space,"wm.tool_set_by_id","Q","PRESS",[('name',"builtin.select_box"),('cycle',True)])
+		km.new(space,"bsmax.move","W","PRESS",[])
+		km.new(space,"bsmax.rotate","E","PRESS",[])
+		km.new(space,"bsmax.scale","R","PRESS",[])
+		km.new(space,"bsmax.scale","E","PRESS",[],ctrl=True)
 		# selection
-		kmi = km.keymap_items.new("view3d.select","LEFTMOUSE","CLICK",ctrl=True)
-		kmi.properties.extend = True
-		KeyMaps.append((km,kmi))
-		kmi = km.keymap_items.new("view3d.select","LEFTMOUSE","CLICK",alt=True)
-		kmi.properties.deselect = True
-		KeyMaps.append((km,kmi))
-
-		create_view3d_tweak_selection_keymap(km)
-
+		km.new(space,"view3d.select","LEFTMOUSE","CLICK",[('extend',True)],ctrl=True)
+		km.new(space,"view3d.select","LEFTMOUSE","CLICK",[('deselect',True)],alt=True)
+		create_view3d_tweak_selection_keymap(km,space)
 		# Tools From BsMax
-		kmi = km.keymap_items.new("bsmax.zoomextended","Z","PRESS")
-		KeyMaps.append((km,kmi))
-		kmi = km.keymap_items.new("bsmax.setasactivecamera","C","PRESS")
-		KeyMaps.append((km,kmi))
-		kmi = km.keymap_items.new("bsmax.showhidegride","G","PRESS")
-		KeyMaps.append((km,kmi))
-		kmi = km.keymap_items.new("bsmax.showstatistics","Y","PRESS") #Temprary
-		KeyMaps.append((km,kmi))
-		kmi = km.keymap_items.new("object.batchrename","F2","PRESS")
-		KeyMaps.append((km,kmi))
-		kmi = km.keymap_items.new("bsmax.wireframetoggle","F3","PRESS")
-		KeyMaps.append((km,kmi))
-		kmi = km.keymap_items.new("bsmax.edgefacestoggle","F4","PRESS")
-		KeyMaps.append((km,kmi))
-		kmi = km.keymap_items.new("bsmax.lightingtoggle","L","PRESS",ctrl=True)
-		KeyMaps.append((km,kmi))
-		kmi = km.keymap_items.new("bsmax.snaptoggle","S","PRESS")
-		KeyMaps.append((km,kmi))
-		kmi = km.keymap_items.new("bsmax.angelsnap","A","PRESS")
-		KeyMaps.append((km,kmi))
-		kmi = km.keymap_items.new("bsmax.viewport_background","B","PRESS",alt=True)
-		KeyMaps.append((km,kmi))
-		kmi = km.keymap_items.new("bsmax.subobjectlevel","B","PRESS",ctrl=True)
-		kmi.properties.level = 6
-		KeyMaps.append((km,kmi))
-		kmi = km.keymap_items.new("bsmax.show_safe_areas","F","PRESS",shift=True)
-		KeyMaps.append((km,kmi))
-
-		kmi = km.keymap_items.new("bsmax.setframe","HOME","PRESS")
-		kmi.properties.frame = 'First'
-		KeyMaps.append((km,kmi))
-		kmi = km.keymap_items.new("bsmax.setframe","END","PRESS")
-		kmi.properties.frame = 'Last'
-		KeyMaps.append((km,kmi))
-		kmi = km.keymap_items.new("bsmax.setframe","PERIOD","PRESS")
-		kmi.properties.frame = 'Next'
-		KeyMaps.append((km,kmi))
-		kmi = km.keymap_items.new("bsmax.setframe","COMMA","PRESS")
-		kmi.properties.frame = 'Previous'
-		KeyMaps.append((km,kmi))
-
-		kmi = km.keymap_items.new("bsmax.hold","H","PRESS",ctrl=True,alt=True)
-		KeyMaps.append((km,kmi))
-		kmi = km.keymap_items.new("bsmax.fetch","F","PRESS",ctrl=True,alt=True)
-		KeyMaps.append((km,kmi))
-
-		kmi = km.keymap_items.new("wm.call_menu","A","PRESS",ctrl=True,shift=True)
-		kmi.properties.name="BSMAX_MT_createmenu"
-		KeyMaps.append((km,kmi))
-
-		kmi = km.keymap_items.new("bsmax.homeview","HOME","PRESS",alt=True)
-		KeyMaps.append((km,kmi))
-
-		# kmi = km.keymap_items.new("bsmax.droptool", "RIGHTMOUSE", "PRESS")
-		# KeyMaps.append((km, kmi))
-
-		kmi = km.keymap_items.new("view.undoredo","Z","PRESS",shift=True)
-		kmi.properties.redo=False
-		KeyMaps.append((km,kmi))
-
-		kmi = km.keymap_items.new("view.undoredo","Y","PRESS",shift=True)
-		kmi.properties.redo=True
-		KeyMaps.append((km,kmi))
-
+		km.new(space,"bsmax.zoomextended","Z","PRESS",[])
+		km.new(space,"bsmax.setasactivecamera","C","PRESS",[])
+		km.new(space,"bsmax.showhidegride","G","PRESS",[])
+		km.new(space,"bsmax.showstatistics","Y","PRESS",[]) #Temprary
+		km.new(space,"object.batchrename","F2","PRESS",[])
+		km.new(space,"bsmax.wireframetoggle","F3","PRESS",[])
+		km.new(space,"bsmax.edgefacestoggle","F4","PRESS",[])
+		km.new(space,"bsmax.lightingtoggle","L","PRESS",[],ctrl=True)
+		km.new(space,"bsmax.snaptoggle","S","PRESS",[])
+		km.new(space,"bsmax.angelsnap","A","PRESS",[])
+		km.new(space,"bsmax.viewport_background","B","PRESS",[],alt=True)
+		km.new(space,"bsmax.subobjectlevel","B","PRESS",[('level',6)],ctrl=True)
+		km.new(space,"bsmax.show_safe_areas","F","PRESS",[],shift=True)
+		km.new(space,"bsmax.setframe","HOME","PRESS",[('frame','First')])
+		km.new(space,"bsmax.setframe","END","PRESS",[('frame','Last')])
+		km.new(space,"bsmax.setframe","PERIOD","PRESS",[('frame','Next')])
+		km.new(space,"bsmax.setframe","COMMA","PRESS",[('frame','Previous')])
+		km.new(space,"bsmax.hold","H","PRESS",[],ctrl=True,alt=True)
+		km.new(space,"bsmax.fetch","F","PRESS",[],ctrl=True,alt=True)
+		km.new(space,"wm.call_menu","A","PRESS",[('name',"BSMAX_MT_createmenu")],ctrl=True,shift=True)
+		km.new(space,"bsmax.homeview","HOME","PRESS",[],alt=True)
+		# km.new(space,"bsmax.droptool", "RIGHTMOUSE", "PRESS")
+		km.new(space,"view.undoredo","Z","PRESS",[('redo',False)],shift=True)
+		km.new(space,"view.undoredo","Y","PRESS",[('redo',True)],shift=True)
 		# Float Editors
-		kmi = km.keymap_items.new("bsmax.openmaterialeditor","M","PRESS")
-		KeyMaps.append((km,kmi))
-
+		km.new(space,"bsmax.openmaterialeditor","M","PRESS",[])
 		# 3D View Tool: Select ------------------------------------------------
-		km = kcfg.keymaps.new(name='3D View Tool: Select',space_type='VIEW_3D')
-
-		kmi = km.keymap_items.new("bsmax.tweakbetter","EVT_TWEAK_L","ANY")
-		KeyMaps.append((km,kmi))
-
-		create_view3d_tweak_selection_keymap(km)
-
+		space = km.space('3D View Tool: Select','VIEW_3D','WINDOW')
+		km.new(space,"bsmax.tweakbetter","EVT_TWEAK_L","ANY",[])
+		create_view3d_tweak_selection_keymap(km,space)
 		# 3D View Tool: Transform ---------------------------------------------
-		km = kcfg.keymaps.new(name='3D View Tool: Transform',space_type='VIEW_3D')
-
-		kmi = km.keymap_items.new("view3d.select_box","EVT_TWEAK_L","ANY")
-		kmi.properties.mode = 'SET'
-		KeyMaps.append((km,kmi))
-
+		space = km.space('3D View Tool: Transform','VIEW_3D','WINDOW')
+		km.new(space,"view3d.select_box","EVT_TWEAK_L","ANY",[('mode','SET')])
 		# 3D View Tool: Move ---------------------------------------------------
-		km = kcfg.keymaps.new(name='3D View Tool: Move',space_type='VIEW_3D')
-		
-		kmi = km.keymap_items.new("view3d.select_box","EVT_TWEAK_L","ANY")
-		kmi.properties.mode = 'SET'
-		KeyMaps.append((km,kmi))
-
+		space = km.space('3D View Tool: Move','VIEW_3D','WINDOW')
+		km.new(space,"view3d.select_box","EVT_TWEAK_L","ANY",[('mode','SET')])
 		# 3D View Tool: Rotate -------------------------------------------------
-		km = kcfg.keymaps.new(name='3D View Tool: Rotate',space_type='VIEW_3D')
-
-		kmi = km.keymap_items.new("view3d.select_box","EVT_TWEAK_L","ANY")
-		kmi.properties.mode = 'SET'
-		KeyMaps.append((km,kmi))
-
+		space = km.space('3D View Tool: Rotate','VIEW_3D','WINDOW')
+		km.new(space,"view3d.select_box","EVT_TWEAK_L","ANY",[('mode','SET')])
 		# 3D View Tool: Scale --------------------------------------------------        
-		km = kcfg.keymaps.new(name='3D View Tool: Scale',space_type='VIEW_3D')
-
-		kmi = km.keymap_items.new("view3d.select_box","EVT_TWEAK_L","ANY")
-		kmi.properties.mode = 'SET'
-		KeyMaps.append((km,kmi))
-
+		space = km.space('3D View Tool: Scale','VIEW_3D','WINDOW')
+		km.new(space,"view3d.select_box","EVT_TWEAK_L","ANY",[('mode','SET')])
 		# 3D View Tool: Select Box ---------------------------------------------
-		km = kcfg.keymaps.new(name='3D View Tool: Select Box',space_type='VIEW_3D')
-
-		kmi = km.keymap_items.new("view3d.select_box","EVT_TWEAK_L","ANY",ctrl=True )
-		kmi.properties.mode = 'ADD'
-		KeyMaps.append((km,kmi))
-
+		space = km.space('3D View Tool: Select Box','VIEW_3D','WINDOW')
+		km.new(space,"view3d.select_box","EVT_TWEAK_L","ANY",[('mode','ADD')],ctrl=True)
 		# 3D View Tool: Select Circle ------------------------------------------
-		km = kcfg.keymaps.new(name='3D View Tool: Select Circle',space_type='VIEW_3D')
-
-		kmi = km.keymap_items.new("view3d.select_circle","EVT_TWEAK_L","ANY",ctrl=True )
-		kmi.properties.mode = 'ADD'
-		KeyMaps.append((km,kmi))
-
-		kmi = km.keymap_items.new("view3d.select_circle","EVT_TWEAK_L","ANY",alt=True )
-		kmi.properties.mode = 'SUB'
-		KeyMaps.append((km,kmi))
-
+		space = km.space('3D View Tool: Select Circle','VIEW_3D','WINDOW')
+		km.new(space,"view3d.select_circle","EVT_TWEAK_L","ANY",[('mode','ADD')],ctrl=True)
+		km.new(space,"view3d.select_circle","EVT_TWEAK_L","ANY",[('mode','SUB')],alt=True)
 		# 3D View Tool: Select Lasso -------------------------------------------
-		km = kcfg.keymaps.new(name='3D View Tool: Select Lasso',space_type='VIEW_3D')
-
-		kmi = km.keymap_items.new("view3d.select_lasso","EVT_TWEAK_L","ANY",ctrl=True )
-		kmi.properties.mode = 'ADD'
-		KeyMaps.append((km,kmi))
-
-		kmi = km.keymap_items.new("view3d.select_lasso","EVT_TWEAK_L","ANY",alt=True )
-		kmi.properties.mode = 'SUB'
-		KeyMaps.append((km,kmi))
-
+		space = km.space('3D View Tool: Select Lasso','VIEW_3D','WINDOW')
+		km.new(space,"view3d.select_lasso","EVT_TWEAK_L","ANY",[('mode','ADD')],ctrl=True)
+		km.new(space,"view3d.select_lasso","EVT_TWEAK_L","ANY",[("mode",'SUB')],alt=True)
 		# Transform Modal Map --------------------------------------------------
-		km = kcfg.keymaps.new(name='Transform Modal Map',space_type='EMPTY',
-							  region_type='WINDOW',      modal = True)
-
-		# kmi = km.keymap_items.new("AXIS_X","F5","ANY")
-		# KeyMaps.append((km,kmi))
-
+		space = km.space('Transform Modal Map','EMPTY','WINDOW',modal=True)
+		# km.new(space,"AXIS_X","F5","ANY",[])
 		"""
 		("AXIS_X",{"type": 'X',"value": 'PRESS',"ctrl": True},None),
 		("AXIS_Y",{"type": 'Y',"value": 'PRESS'},None),
@@ -341,959 +154,422 @@ def create_3dsmax_keymaps():
 		("PLANE_Z",{"type": 'Z',"value": 'PRESS',"shift": True},None),
 		{"type": 'F12',"value": 'PRESS',"ctrl": True},
 		"""
-
 		# Object Non-modal --------------------------------------------------------------------
-		km = kcfg.keymaps.new(name='Object Non-modal',space_type='EMPTY',region_type='WINDOW')
-
-		kmi = km.keymap_items.new("bsmax.mode_set",'TAB',"PRESS")
-		KeyMaps.append((km,kmi))
-		
+		space = km.space('Object Non-modal','EMPTY','WINDOW')
+		km.new(space,"bsmax.mode_set",'TAB',"PRESS",[])
 		# Object Mode -------------------------------------------------------------------------
-		km = kcfg.keymaps.new(name='Object Mode',space_type='EMPTY',region_type='WINDOW')
-
+		space = km.space('Object Mode','EMPTY','WINDOW')
 		# Global
-		kmi = km.keymap_items.new("wm.search_menu","X","PRESS")
-		KeyMaps.append((km,kmi))
-
+		km.new(space,"wm.search_menu","X","PRESS",[])
 		# selection
-		create_view3d_tweak_selection_keymap(km)
-		create_view3d_click_celection_keymap(km)
-		kmi = km.keymap_items.new("view3d.select","LEFTMOUSE","RELEASE",shift=True)
-		kmi.properties.enumerate = True
-		KeyMaps.append((km,kmi))
-
-		kmi = km.keymap_items.new("object.select_all","A","PRESS",ctrl=True )
-		kmi.properties.action = 'SELECT'
-		KeyMaps.append((km,kmi))
-		kmi = km.keymap_items.new("object.select_all","D","PRESS",ctrl=True )
-		kmi.properties.action = 'DESELECT'
-		KeyMaps.append((km,kmi))
-		kmi = km.keymap_items.new("object.select_all","I","PRESS",ctrl=True )
-		kmi.properties.action = 'INVERT'
-		KeyMaps.append((km,kmi))
-
-		kmi = km.keymap_items.new("object.select_hierarchy","PAGE_UP","PRESS")
-		kmi.properties.direction = 'PARENT'
-		kmi.properties.extend  = False
-		KeyMaps.append((km,kmi))
-		kmi = km.keymap_items.new("object.select_hierarchy","PAGE_UP","PRESS",ctrl=True)
-		kmi.properties.direction = 'PARENT'
-		kmi.properties.extend  = True
-		KeyMaps.append((km,kmi))
-		kmi = km.keymap_items.new("object.select_hierarchy","PAGE_DOWN","PRESS")
-		kmi.properties.direction = 'CHILD'
-		kmi.properties.extend  = False
-		KeyMaps.append((km,kmi))
-		kmi = km.keymap_items.new("object.select_hierarchy","PAGE_DOWN","PRESS",ctrl=True)
-		kmi.properties.direction = 'CHILD'
-		kmi.properties.extend  = True
-		KeyMaps.append((km,kmi))
-
-		#kmi = km.keymap_items.new("object.select_similar","Q","PRESS",ctrl=True)
-		kmi = km.keymap_items.new("bsmax.select_similar","Q","PRESS",ctrl=True)
-		KeyMaps.append((km,kmi))
-
+		create_view3d_tweak_selection_keymap(km,space)
+		create_view3d_click_celection_keymap(km,space)
+		km.new(space,"view3d.select","LEFTMOUSE","RELEASE",[('enumerate',True)],shift=True)
+		km.new(space,"object.select_all","A","PRESS",[('action','SELECT')],ctrl=True )
+		km.new(space,"object.select_all","D","PRESS",[('action','DESELECT')],ctrl=True )
+		km.new(space,"object.select_all","I","PRESS",[('action','INVERT')],ctrl=True )
+		km.new(space,"object.select_hierarchy","PAGE_UP","PRESS",[('direction','PARENT'),('extend',False)])
+		km.new(space,"object.select_hierarchy","PAGE_UP","PRESS",[('direction','PARENT'),('extend',True)],ctrl=True)
+		km.new(space,"object.select_hierarchy","PAGE_DOWN","PRESS",[('direction','CHILD'),('extend',False)])
+		km.new(space,"object.select_hierarchy","PAGE_DOWN","PRESS",[('direction','CHILD'),('extend',True)],ctrl=True)
+		#km.new(space,"object.select_similar","Q","PRESS",ctrl=True)
+		km.new(space,"bsmax.select_similar","Q","PRESS",[],ctrl=True)
 		# Hide/Unhide
-		kmi = km.keymap_items.new("object.hide_view_set","H","PRESS",alt=True)
-		KeyMaps.append((km,kmi))
-		kmi = km.keymap_items.new("object.hide_view_set","I","PRESS",alt=True)
-		kmi.properties.unselected = True
-		KeyMaps.append((km,kmi))
-		kmi = km.keymap_items.new("object.hide_view_clear","U","PRESS",alt=True)
-		KeyMaps.append((km,kmi))
-		
-		kmi = km.keymap_items.new("bsmax.showgeometrytoggle","G","PRESS",shift=True)
-		KeyMaps.append((km,kmi))
-		kmi = km.keymap_items.new("bsmax.showhelpertoggle",  "H","PRESS",shift=True)
-		KeyMaps.append((km,kmi))
-		kmi = km.keymap_items.new("bsmax.showshapetoggle",   "S","PRESS",shift=True)
-		KeyMaps.append((km,kmi))
-		kmi = km.keymap_items.new("bsmax.showlighttoggle",   "L","PRESS",shift=True)
-		KeyMaps.append((km,kmi))
-		kmi = km.keymap_items.new("bsmax.showbonetoggle",    "B","PRESS",shift=True)
-		KeyMaps.append((km,kmi))
-		kmi = km.keymap_items.new("bsmax.showcameratoggle",  "C","PRESS",shift=True)
-		KeyMaps.append((km,kmi))
-
-		kmi = km.keymap_items.new("object.modifypivotpoint","INSERT","PRESS")
-		KeyMaps.append((km,kmi))
-		kmi = km.keymap_items.new("wm.call_menu","INSERT","PRESS",ctrl=True)
-		kmi.properties.name="BSMAX_MT_SetPivotPoint"
-		KeyMaps.append((km,kmi))
-
+		km.new(space,"object.hide_view_set","H","PRESS",[],alt=True)
+		km.new(space,"object.hide_view_set","I","PRESS",[('unselected',True)],alt=True)
+		km.new(space,"object.hide_view_clear","U","PRESS",[],alt=True)
+		km.new(space,"bsmax.showgeometrytoggle","G","PRESS",[],shift=True)
+		km.new(space,"bsmax.showhelpertoggle","H","PRESS",[],shift=True)
+		km.new(space,"bsmax.showshapetoggle","S","PRESS",[],shift=True)
+		km.new(space,"bsmax.showlighttoggle","L","PRESS",[],shift=True)
+		km.new(space,"bsmax.showbonetoggle","B","PRESS",[],shift=True)
+		km.new(space,"bsmax.showcameratoggle","C","PRESS",[],shift=True)
+		km.new(space,"object.modifypivotpoint","INSERT","PRESS",[])
+		km.new(space,"wm.call_menu","INSERT","PRESS",[('name',"BSMAX_MT_SetPivotPoint")],ctrl=True)
 		# Float Editors
-		kmi = km.keymap_items.new("bsmax.openmaterialeditor","M","PRESS")
-		KeyMaps.append((km,kmi))
-
+		km.new(space,"bsmax.openmaterialeditor","M","PRESS",[])
 		# Tools
-		kmi = km.keymap_items.new("bsmax.alignselectedobjects","A","PRESS",alt=True)
-		KeyMaps.append((km,kmi))
-		kmi = km.keymap_items.new("bsmax.setkeys","K","PRESS")
-		KeyMaps.append((km,kmi))
-		kmi = km.keymap_items.new("bsmax.autokeymodetoggle","N","PRESS")
-		KeyMaps.append((km,kmi))
-		kmi = km.keymap_items.new("bsmax.transformtypein","F12","PRESS")
-		KeyMaps.append((km,kmi))
-		kmi = km.keymap_items.new("bsmax.angelsnap","A","PRESS")
-		KeyMaps.append((km,kmi))
-		kmi = km.keymap_items.new("bsmax.lightingtoggle","L","PRESS",ctrl=True)
-		KeyMaps.append((km,kmi))
-
-		kmi = km.keymap_items.new("bsmax.jumptofirstframe","HOME","PRESS")
-		KeyMaps.append((km,kmi))
-		kmi = km.keymap_items.new("bsmax.jumptolastframe","END","PRESS")
-		KeyMaps.append((km,kmi))
-		kmi = km.keymap_items.new("bsmax.nextframe","PERIOD","PRESS")
-		KeyMaps.append((km,kmi))
-		kmi = km.keymap_items.new("bsmax.previousframe","COMMA","PRESS")
-		KeyMaps.append((km,kmi))
-		kmi = km.keymap_items.new("screen.animation_play","SLASH","PRESS")
-		KeyMaps.append((km,kmi))
-		kmi = km.keymap_items.new("bsmax.selectcamera","C","PRESS")
-		KeyMaps.append((km,kmi))
-
-		# kmi = km.keymap_items.new("bsmax.droptool", "RIGHTMOUSE", "PRESS")
-		# KeyMaps.append((km, kmi))
-		
+		km.new(space,"bsmax.alignselectedobjects","A","PRESS",[],alt=True)
+		km.new(space,"bsmax.setkeys","K","PRESS",[])
+		km.new(space,"bsmax.autokeymodetoggle","N","PRESS",[])
+		km.new(space,"bsmax.transformtypein","F12","PRESS",[])
+		km.new(space,"bsmax.angelsnap","A","PRESS",[])
+		km.new(space,"bsmax.lightingtoggle","L","PRESS",[],ctrl=True)
+		km.new(space,"bsmax.jumptofirstframe","HOME","PRESS",[])
+		km.new(space,"bsmax.jumptolastframe","END","PRESS",[])
+		km.new(space,"bsmax.nextframe","PERIOD","PRESS",[])
+		km.new(space,"bsmax.previousframe","COMMA","PRESS",[])
+		km.new(space,"screen.animation_play","SLASH","PRESS",[])
+		km.new(space,"bsmax.selectcamera","C","PRESS",[])
+		# km.new(space,"bsmax.droptool","RIGHTMOUSE","PRESS",[])
 		# Set Subobject Mode
-		create_subobject_mode_keymap(km)
-
+		create_subobject_mode_keymap(km,space)
 		# Mesh -----------------------------------------------------------------
-		km = kcfg.keymaps.new(name='Mesh',space_type='EMPTY')
-
+		space = km.space('Mesh','EMPTY','WINDOW')
 		# Global
-		kmi = km.keymap_items.new("wm.search_menu","X","PRESS")
-		KeyMaps.append((km,kmi))
-
+		km.new(space,"wm.search_menu","X","PRESS",[])
 		# Selection
-		kmi = km.keymap_items.new("mesh.select_all","A","PRESS",ctrl=True)
-		kmi.properties.action = "SELECT"
-		KeyMaps.append((km,kmi))
-		kmi = km.keymap_items.new("mesh.select_all","D","PRESS",ctrl=True)
-		kmi.properties.action = "DESELECT"
-		KeyMaps.append((km,kmi))
-		kmi = km.keymap_items.new("mesh.select_all","I","PRESS",ctrl=True)
-		kmi.properties.action = "INVERT"
-		KeyMaps.append((km,kmi))
-
-		create_view3d_click_celection_keymap(km)
-		create_view3d_tweak_selection_keymap(km)
-		
-		kmi = km.keymap_items.new("mesh.shortest_path_pick","LEFTMOUSE","PRESS",shift=True)
-		KeyMaps.append((km,kmi))
-
-		kmi = km.keymap_items.new("mesh.select_more","PAGE_UP","PRESS",ctrl=True)
-		KeyMaps.append((km,kmi))
-		kmi = km.keymap_items.new("mesh.select_less","PAGE_DOWN","PRESS",ctrl=True)
-		KeyMaps.append((km,kmi))
-
-		kmi = km.keymap_items.new("mesh.smart_select_loop","LEFTMOUSE","DOUBLE_CLICK")
-		KeyMaps.append((km,kmi))
-		kmi = km.keymap_items.new("mesh.smart_select_loop","L","PRESS",alt=True)
-		KeyMaps.append((km,kmi))
-		kmi = km.keymap_items.new("mesh.smart_select_ring","R","PRESS",alt=True)
-		KeyMaps.append((km,kmi))
-
-		kmi = km.keymap_items.new("mesh.select_similar","Q","PRESS",ctrl=True)
-		KeyMaps.append((km,kmi))
-
+		km.new(space,"mesh.select_all","A","PRESS",[('action',"SELECT")],ctrl=True)
+		km.new(space,"mesh.select_all","D","PRESS",[('action',"DESELECT")],ctrl=True)
+		km.new(space,"mesh.select_all","I","PRESS",[('action',"INVERT")],ctrl=True)
+		create_view3d_click_celection_keymap(km,space)
+		create_view3d_tweak_selection_keymap(km,space)
+		km.new(space,"mesh.shortest_path_pick","LEFTMOUSE","PRESS",[],shift=True)
+		km.new(space,"mesh.select_more","PAGE_UP","PRESS",[],ctrl=True)
+		km.new(space,"mesh.select_less","PAGE_DOWN","PRESS",[],ctrl=True)
+		km.new(space,"mesh.smart_select_loop","LEFTMOUSE","DOUBLE_CLICK",[])
+		km.new(space,"mesh.smart_select_loop","L","PRESS",[],alt=True)
+		km.new(space,"mesh.smart_select_ring","R","PRESS",[],alt=True)
+		km.new(space,"mesh.select_similar","Q","PRESS",[],ctrl=True)
 		# View
-		create_switch_view_keymap(km)
-
-		kmi = km.keymap_items.new("screen.screen_full_area","X","PRESS",ctrl=True)
-		KeyMaps.append((km,kmi))
-
+		create_switch_view_keymap(km,space)
+		km.new(space,"screen.screen_full_area","X","PRESS",[],ctrl=True)
 		# Hide/Unhide
-		kmi = km.keymap_items.new("mesh.hide","H","PRESS",alt=True)
-		KeyMaps.append((km,kmi))
-		kmi = km.keymap_items.new("mesh.hide","I","PRESS",alt=True)
-		kmi.properties.unselected = True
-		KeyMaps.append((km,kmi))
-		kmi = km.keymap_items.new("mesh.reveal","U","PRESS",alt=True)
-		KeyMaps.append((km,kmi))
-
+		km.new(space,"mesh.hide","H","PRESS",[],alt=True)
+		km.new(space,"mesh.hide","I","PRESS",[('unselected',True)],alt=True)
+		km.new(space,"mesh.reveal","U","PRESS",[],alt=True)
 		# Edit
-		kmi = km.keymap_items.new("bsmax.connectpoly","E","PRESS",ctrl=True,shift=True)
-		KeyMaps.append((km,kmi))
-		kmi = km.keymap_items.new("view3d.edit_mesh_extrude_move_normal","E","PRESS",shift=True)
-		KeyMaps.append((km,kmi)) 
-		kmi = km.keymap_items.new("mesh.knife_tool","C","PRESS",alt=True)
-		kmi.properties.use_occlude_geometry = True
-		KeyMaps.append((km,kmi))
-		kmi = km.keymap_items.new("mesh.bevel","C","PRESS",ctrl=True,shift=True)
-		kmi.properties.vertex_only= False
-		KeyMaps.append((km,kmi))
-		kmi = km.keymap_items.new("transform.vert_slide","X","PRESS",shift=True)
-		KeyMaps.append((km,kmi))
-		kmi = km.keymap_items.new("mesh.merge","C","PRESS",alt=True,ctrl=True)
-		kmi.properties.type = 'CENTER'
-		KeyMaps.append((km,kmi))
-		#kmi = km.keymap_items.new("mesh.edge_face_add","P","PRESS",alt=True)
-		kmi = km.keymap_items.new("mesh.smart_create","P","PRESS",alt=True)
-		KeyMaps.append((km,kmi))
-		#kmi = km.keymap_items.new("Bevel","B","PRESS",ctrl=True,shift=True)
-		#KeyMaps.append((km,kmi))
-		#kmi = km.keymap_items.new("spline extrud ","E","PRESS",alt=True)
-		#KeyMaps.append((km,kmi))
-		kmi = km.keymap_items.new("wm.context_toggle","I","PRESS",shift=True,ctrl=True)
-		kmi.properties.data_path = "space_data.shading.show_xray"
-		KeyMaps.append((km,kmi))
-		#kmi = km.keymap_items.new("smooth ","M","PRESS",ctrl=True)
-		#KeyMaps.append((km,kmi))
-		#kmi = km.keymap_items.new("wm.tool_set_by_name","Q","PRESS",shift=True,ctrl=True)
-		#kmi.properties.name="Bisect"
-		#KeyMaps.append((km,kmi))
-		#kmi = km.keymap_items.new("mesh.remove_doubles","W","PRESS",shift=True,ctrl=True)
-		kmi = km.keymap_items.new("bsmax.targetweld","W","PRESS",shift=True,ctrl=True)
+		km.new(space,"bsmax.connectpoly","E","PRESS",[],ctrl=True,shift=True)
+		km.new(space,"view3d.edit_mesh_extrude_move_normal","E","PRESS",[],shift=True)
+		km.new(space,"mesh.knife_tool","C","PRESS",[('use_occlude_geometry',True)],alt=True)
+		km.new(space,"mesh.bevel","C","PRESS",[('vertex_only',False)],ctrl=True,shift=True)
+		km.new(space,"transform.vert_slide","X","PRESS",[],shift=True)
+		km.new(space,"mesh.merge","C","PRESS",[('type','CENTER')],alt=True,ctrl=True)
+		#km.new(space,"mesh.edge_face_add","P","PRESS",[],alt=True)
+		km.new(space,"mesh.smart_create","P","PRESS",[],alt=True)
 		
-		KeyMaps.append((km,kmi))
-		kmi = km.keymap_items.new("bsmax.removemesh","BACK_SPACE","PRESS")
-		kmi.properties.vert = False
-		KeyMaps.append((km,kmi))
-		kmi = km.keymap_items.new("bsmax.removemesh","BACK_SPACE","PRESS",ctrl=True)
-		kmi.properties.vert = True
-		KeyMaps.append((km,kmi))
-		kmi = km.keymap_items.new("bsmax.deletemesh","DEL","PRESS")
-		KeyMaps.append((km,kmi))
-		kmi = km.keymap_items.new("bsmax.transformtypein","F12","PRESS")
-		KeyMaps.append((km,kmi))
-
+		#km.new(space,"Bevel","B","PRESS",[],ctrl=True,shift=True)
+		#km.new(space,"spline extrud ","E","PRESS",[],alt=True)
+		km.new(space,"wm.context_toggle","I","PRESS",[('data_path',"space_data.shading.show_xray")],shift=True,ctrl=True)
+		#km.new(space,"smooth","M","PRESS",[],ctrl=True)
+		#km.new(space,"wm.tool_set_by_name","Q","PRESS",[('name',"Bisect")],shift=True,ctrl=True)
+		#km.new(space,"mesh.remove_doubles","W","PRESS",[],shift=True,ctrl=True)
+		km.new(space,"bsmax.targetweld","W","PRESS",[],shift=True,ctrl=True)
+		km.new(space,"bsmax.removemesh","BACK_SPACE","PRESS",[('vert',False)])
+		km.new(space,"bsmax.removemesh","BACK_SPACE","PRESS",[('vert',True)],ctrl=True)
+		km.new(space,"bsmax.deletemesh","DEL","PRESS",[])
+		km.new(space,"bsmax.transformtypein","F12","PRESS",[])
 		# Set Subobject Mode
-		create_subobject_mode_keymap(km)
-
+		create_subobject_mode_keymap(km,space)
 		# Tools
-		kmi = km.keymap_items.new("bsmax.shadeselectedfaces","F2","PRESS")
-		KeyMaps.append((km,kmi))
-		kmi = km.keymap_items.new("bsmax.autokeymodetoggle","N","PRESS")
-		KeyMaps.append((km,kmi))
-		kmi = km.keymap_items.new("bsmax.selectcamera","C","PRESS")
-		KeyMaps.append((km,kmi))
-		kmi = km.keymap_items.new("wm.tool_set_by_id","E","PRESS")
-		kmi.properties.name="builtin.rotate"
-		KeyMaps.append((km,kmi))
-		kmi = km.keymap_items.new("wm.tool_set_by_id","R","PRESS")
-		kmi.properties.name="builtin.scale"
-		kmi.properties.cycle = True
-		# kmi = km.keymap_items.new("bsmax.droptool", "RIGHTMOUSE", "PRESS")
-		KeyMaps.append((km, kmi))
-
+		km.new(space,"bsmax.shadeselectedfaces","F2","PRESS",[])
+		km.new(space,"bsmax.autokeymodetoggle","N","PRESS",[])
+		km.new(space,"bsmax.selectcamera","C","PRESS",[])
+		km.new(space,"wm.tool_set_by_id","E","PRESS",[('name',"builtin.rotate")])
+		km.new(space,"wm.tool_set_by_id","R","PRESS",[('name',"builtin.scale"),('cycle',True)])
+		# km.new(space,"bsmax.droptool","RIGHTMOUSE","PRESS",[])
 		# Curve ----------------------------------------------------------------
-		km = kcfg.keymaps.new(name='Curve',space_type='EMPTY')
-
+		space = km.space('Curve','EMPTY','WINDOW')
 		# Global
-		kmi = km.keymap_items.new("wm.search_menu","X","PRESS")
-		KeyMaps.append((km,kmi))
-
+		km.new(space,"wm.search_menu","X","PRESS",[])
 		# Selection
-		kmi = km.keymap_items.new("curve.select_all","A","PRESS",ctrl=True)
-		kmi.properties.action = "SELECT"
-		KeyMaps.append((km,kmi))
-		kmi = km.keymap_items.new("curve.select_all","D","PRESS",ctrl=True)
-		kmi.properties.action = "DESELECT"
-		KeyMaps.append((km,kmi))
-		kmi = km.keymap_items.new("curve.select_all","I","PRESS",ctrl=True)
-		kmi.properties.action = "INVERT"
-		KeyMaps.append((km,kmi))
-		create_view3d_click_celection_keymap(km)
-		create_view3d_tweak_selection_keymap(km)
-
-		kmi = km.keymap_items.new("curve.select_more","PAGE_UP","PRESS",ctrl=True)
-		KeyMaps.append((km,kmi))
-		kmi = km.keymap_items.new("curve.select_less","PAGE_DOWN","PRESS",ctrl=True)
-		KeyMaps.append((km,kmi))
-
-		kmi = km.keymap_items.new("curve.select_similar","Q","PRESS",ctrl=True)
-		KeyMaps.append((km,kmi)) 
-
+		km.new(space,"curve.select_all","A","PRESS",[('action',"SELECT")],ctrl=True)
+		km.new(space,"curve.select_all","D","PRESS",[('action',"DESELECT")],ctrl=True)
+		km.new(space,"curve.select_all","I","PRESS",[('action',"INVERT")],ctrl=True)
+		create_view3d_click_celection_keymap(km,space)
+		create_view3d_tweak_selection_keymap(km,space)
+		km.new(space,"curve.select_more","PAGE_UP","PRESS",[],ctrl=True)
+		km.new(space,"curve.select_less","PAGE_DOWN","PRESS",[],ctrl=True)
+		km.new(space,"curve.select_similar","Q","PRESS",[],ctrl=True)
 		# Set Subobject Mode
-		create_subobject_mode_keymap(km)
-
+		create_subobject_mode_keymap(km,space)
 		# View
-		create_switch_view_keymap(km)
-		kmi = km.keymap_items.new("screen.screen_full_area","X","PRESS",ctrl=True)
-		KeyMaps.append((km,kmi))
-
+		create_switch_view_keymap(km,space)
+		km.new(space,"screen.screen_full_area","X","PRESS",[],ctrl=True)
 		# Tools
-		kmi = km.keymap_items.new("bsmax.autokeymodetoggle","N","PRESS")
-		KeyMaps.append((km,kmi))
-		kmi = km.keymap_items.new("bsmax.selectcamera","C","PRESS")
-		KeyMaps.append((km,kmi))
-		kmi = km.keymap_items.new("wm.tool_set_by_id","E","PRESS")
-		kmi.properties.name="builtin.rotate"
-		KeyMaps.append((km,kmi))
-		# kmi = km.keymap_items.new("bsmax.droptool", "RIGHTMOUSE", "PRESS")
-		KeyMaps.append((km, kmi))
-
+		km.new(space,"bsmax.autokeymodetoggle","N","PRESS",[])
+		km.new(space,"bsmax.selectcamera","C","PRESS",[])
+		km.new(space,"wm.tool_set_by_id","E","PRESS",[('name',"builtin.rotate")])
+		# km.new(space,"bsmax.droptool","RIGHTMOUSE","PRESS",[])
 		# Armature -------------------------------------------------------------
-		km = kcfg.keymaps.new(name='Armature',space_type='EMPTY')
-
+		space = km.space('Armature','EMPTY','WINDOW')
 		# Global
-		kmi = km.keymap_items.new("wm.search_menu","X","PRESS")
-		KeyMaps.append((km,kmi))
-
+		km.new(space,"wm.search_menu","X","PRESS",[])
 		# Selection
-		create_view3d_click_celection_keymap(km)
-
-		kmi = km.keymap_items.new("armature.select_all","A","PRESS",ctrl=True)
-		kmi.properties.action = "SELECT"
-		KeyMaps.append((km,kmi))
-		kmi = km.keymap_items.new("armature.select_all","D","PRESS",ctrl=True)
-		kmi.properties.action = "DESELECT"
-		KeyMaps.append((km,kmi))
-		kmi = km.keymap_items.new("armature.select_all","I","PRESS",ctrl=True)
-		kmi.properties.action = "INVERT"
-		KeyMaps.append((km,kmi))
-
-		kmi = km.keymap_items.new("armature.select_more","PAGE_UP","PRESS",ctrl=True,shift=True)
-		KeyMaps.append((km,kmi))
-		kmi = km.keymap_items.new("armature.select_less","PAGE_DOWN","PRESS",ctrl=True,shift=True)
-		KeyMaps.append((km,kmi))
-
-		kmi = km.keymap_items.new("armature.select_hierarchy","PAGE_UP","PRESS")
-		kmi.properties.direction = 'PARENT'
-		kmi.properties.extend  = False
-		KeyMaps.append((km,kmi))
-		kmi = km.keymap_items.new("armature.select_hierarchy","PAGE_UP","PRESS",ctrl=True)
-		kmi.properties.direction = 'PARENT'
-		kmi.properties.extend  = True
-		KeyMaps.append((km,kmi))
-		kmi = km.keymap_items.new("armature.select_hierarchy","PAGE_DOWN","PRESS")
-		kmi.properties.direction = 'CHILD'
-		kmi.properties.extend  = False
-		KeyMaps.append((km,kmi))
-		kmi = km.keymap_items.new("armature.select_hierarchy","PAGE_DOWN","PRESS",ctrl=True)
-		kmi.properties.direction = 'CHILD'
-		kmi.properties.extend  = True
-		KeyMaps.append((km,kmi))
-
-		kmi = km.keymap_items.new("armature.select_similar","Q","PRESS",ctrl=True)
-		KeyMaps.append((km,kmi))
-
+		create_view3d_click_celection_keymap(km,space)
+		km.new(space,"armature.select_all","A","PRESS",[('action',"SELECT")],ctrl=True)
+		km.new(space,"armature.select_all","D","PRESS",[('action',"DESELECT")],ctrl=True)
+		km.new(space,"armature.select_all","I","PRESS",[('action',"INVERT")],ctrl=True)
+		km.new(space,"armature.select_more","PAGE_UP","PRESS",[],ctrl=True,shift=True)
+		km.new(space,"armature.select_less","PAGE_DOWN","PRESS",[],ctrl=True,shift=True)
+		km.new(space,"armature.select_hierarchy","PAGE_UP","PRESS",[('direction','PARENT'),('extend',False)])
+		km.new(space,"armature.select_hierarchy","PAGE_UP","PRESS",[('direction','PARENT'),('extend',True)],ctrl=True)
+		km.new(space,"armature.select_hierarchy","PAGE_DOWN","PRESS",[('direction','CHILD'),('extend',False)])
+		km.new(space,"armature.select_hierarchy","PAGE_DOWN","PRESS",[('direction','CHILD'),('extend',True)],ctrl=True)
+		km.new(space,"armature.select_similar","Q","PRESS",[],ctrl=True)
 		# Hide/Unhide
-		kmi = km.keymap_items.new("armature.hide","H","PRESS",alt=True)
-		KeyMaps.append((km,kmi))
-		kmi = km.keymap_items.new("armature.hide","I","PRESS",alt=True)
-		kmi.properties.unselected = True
-		KeyMaps.append((km,kmi))
-		kmi = km.keymap_items.new("armature.reveal","U","PRESS",alt=True)
-		KeyMaps.append((km,kmi))
-
+		km.new(space,"armature.hide","H","PRESS",[],alt=True)
+		km.new(space,"armature.hide","I","PRESS",[('unselected',True)],alt=True)
+		km.new(space,"armature.reveal","U","PRESS",[],alt=True)
 		# Set Subobject Mode
-		create_subobject_mode_keymap(km)
-
+		create_subobject_mode_keymap(km,space)
 		# View
-		create_switch_view_keymap(km)
-		kmi = km.keymap_items.new("screen.screen_full_area","X","PRESS",ctrl=True)
-		KeyMaps.append((km,kmi))
-		kmi = km.keymap_items.new("armature.batchrename","F2","PRESS")
-		KeyMaps.append((km,kmi))
-
+		create_switch_view_keymap(km,space)
+		km.new(space,"screen.screen_full_area","X","PRESS",[],ctrl=True)
+		km.new(space,"armature.batchrename","F2","PRESS",[])
 		# Tools
-		kmi = km.keymap_items.new("bsmax.autokeymodetoggle","N","PRESS")
-		KeyMaps.append((km,kmi))
-		kmi = km.keymap_items.new("bsmax.selectcamera","C","PRESS")
-		KeyMaps.append((km,kmi))
-		kmi = km.keymap_items.new("wm.tool_set_by_id","E","PRESS")
-		kmi.properties.name="builtin.rotate"
-		KeyMaps.append((km,kmi))
-		# kmi = km.keymap_items.new("bsmax.droptool", "RIGHTMOUSE", "PRESS")
-		# KeyMaps.append((km, kmi))
-
+		km.new(space,"bsmax.autokeymodetoggle","N","PRESS",[])
+		km.new(space,"bsmax.selectcamera","C","PRESS",[])
+		km.new(space,"wm.tool_set_by_id","E","PRESS",[('name',"builtin.rotate")])
+		# km.new(space,"bsmax.droptool","RIGHTMOUSE","PRESS",[])
 		# Metaball -------------------------------------------------------------
-		km = kcfg.keymaps.new(name='Metaball',space_type='EMPTY')
-
+		space = km.space('Metaball','EMPTY','WINDOW')
 		# Global
-		kmi = km.keymap_items.new("wm.search_menu","X","PRESS")
-		KeyMaps.append((km,kmi))
-
+		km.new(space,"wm.search_menu","X","PRESS",[])
 		# Selection
-		kmi = km.keymap_items.new("mball.select_all","A","PRESS",ctrl=True)
-		kmi.properties.action = "SELECT"
-		KeyMaps.append((km,kmi))
-		kmi = km.keymap_items.new("mball.select_all","D","PRESS",ctrl=True)
-		kmi.properties.action = "DESELECT"
-		KeyMaps.append((km,kmi))
-		kmi = km.keymap_items.new("mball.select_all","I","PRESS",ctrl=True)
-		kmi.properties.action = "INVERT"
-		KeyMaps.append((km,kmi))
-
-		kmi = km.keymap_items.new("mball.select_similar","Q","PRESS",ctrl=True)
-		KeyMaps.append((km,kmi))
-
+		km.new(space,"mball.select_all","A","PRESS",[('action',"SELECT")],ctrl=True)
+		km.new(space,"mball.select_all","D","PRESS",[('action',"DESELECT")],ctrl=True)
+		km.new(space,"mball.select_all","I","PRESS",[('action',"INVERT")],ctrl=True)
+		km.new(space,"mball.select_similar","Q","PRESS",[],ctrl=True)
 		# Set Subobject Mode
-		create_subobject_mode_keymap(km)
-
+		create_subobject_mode_keymap(km,space)
 		#View
-		kmi = km.keymap_items.new("screen.screen_full_area","X","PRESS",ctrl=True)
-		KeyMaps.append((km,kmi))
-
+		km.new(space,"screen.screen_full_area","X","PRESS",[],ctrl=True)
 		# Tools
-		kmi = km.keymap_items.new("bsmax.autokeymodetoggle","N","PRESS")
-		KeyMaps.append((km,kmi))
-		kmi = km.keymap_items.new("bsmax.selectcamera","C","PRESS")
-		KeyMaps.append((km,kmi))
-		# kmi = km.keymap_items.new("bsmax.droptool", "RIGHTMOUSE", "PRESS")
-		# KeyMaps.append((km, kmi))
-
+		km.new(space,"bsmax.autokeymodetoggle","N","PRESS",[])
+		km.new(space,"bsmax.selectcamera","C","PRESS",[])
+		# km.new(space,"bsmax.droptool","RIGHTMOUSE","PRESS",[])
 		# Lattice --------------------------------------------------------------
-		km = kcfg.keymaps.new(name='Lattice',space_type='EMPTY')
-
+		space = km.space('Lattice','EMPTY','WINDOW')
 		# Global
-		kmi = km.keymap_items.new("wm.search_menu","X","PRESS")
-		KeyMaps.append((km,kmi))
-
+		km.new(space,"wm.search_menu","X","PRESS",[])
 		# Selection
-		kmi = km.keymap_items.new("lattice.select_all","A","PRESS",ctrl=True)
-		kmi.properties.action = "SELECT"
-		KeyMaps.append((km,kmi))
-		kmi = km.keymap_items.new("lattice.select_all","D","PRESS",ctrl=True)
-		kmi.properties.action = "DESELECT"
-		KeyMaps.append((km,kmi))
-		kmi = km.keymap_items.new("lattice.select_all","I","PRESS",ctrl=True)
-		kmi.properties.action = "INVERT"
-		KeyMaps.append((km,kmi))
-
-		kmi = km.keymap_items.new("lattice.select_more","PAGE_UP","PRESS",ctrl=True)
-		KeyMaps.append((km,kmi))
-		kmi = km.keymap_items.new("lattice.select_less","PAGE_DOWN","PRESS",ctrl=True)
-		KeyMaps.append((km,kmi))
-
-		kmi = km.keymap_items.new("lattice.select_similar","Q","PRESS",ctrl=True)
-		KeyMaps.append((km,kmi))
-
+		km.new(space,"lattice.select_all","A","PRESS",[('action',"SELECT")],ctrl=True)
+		km.new(space,"lattice.select_all","D","PRESS",[('action',"DESELECT")],ctrl=True)
+		km.new(space,"lattice.select_all","I","PRESS",[('action',"INVERT")],ctrl=True)
+		km.new(space,"lattice.select_more","PAGE_UP","PRESS",[],ctrl=True)
+		km.new(space,"lattice.select_less","PAGE_DOWN","PRESS",[],ctrl=True)
+		km.new(space,"lattice.select_similar","Q","PRESS",[],ctrl=True)
 		# Set Subobject Mode
-		create_subobject_mode_keymap(km)
-
+		create_subobject_mode_keymap(km,space)
 		#View
-		kmi = km.keymap_items.new("screen.screen_full_area","X","PRESS",ctrl=True)
-		KeyMaps.append((km,kmi))
-
+		km.new(space,"screen.screen_full_area","X","PRESS",[],ctrl=True)
 		# Tools
-		kmi = km.keymap_items.new("bsmax.autokeymodetoggle","N","PRESS")
-		KeyMaps.append((km,kmi))
-		kmi = km.keymap_items.new("bsmax.selectcamera","C","PRESS")
-		KeyMaps.append((km,kmi))
-		# kmi = km.keymap_items.new("bsmax.droptool", "RIGHTMOUSE", "PRESS")
-		# KeyMaps.append((km, kmi))
-
+		km.new(space,"bsmax.autokeymodetoggle","N","PRESS",[])
+		km.new(space,"bsmax.selectcamera","C","PRESS",[])
+		# km.new(space,"bsmax.droptool","RIGHTMOUSE","PRESS",[])
 		# Font -----------------------------------------------------------------
-
 		# Pose -----------------------------------------------------------------
-		km = kcfg.keymaps.new(name='Pose',space_type='EMPTY')
-
+		space = km.space('Pose','EMPTY','WINDOW')
 		# Selection
-		create_view3d_click_celection_keymap(km)
-
-		kmi = km.keymap_items.new("pose.select_all","A","PRESS",ctrl=True)
-		kmi.properties.action = "SELECT"
-		KeyMaps.append((km,kmi))
-		kmi = km.keymap_items.new("pose.select_all","D","PRESS",ctrl=True)
-		kmi.properties.action = "DESELECT"
-		KeyMaps.append((km,kmi))
-		kmi = km.keymap_items.new("pose.select_all","I","PRESS",ctrl=True)
-		kmi.properties.action = "INVERT"
-		KeyMaps.append((km,kmi))
-
-		kmi = km.keymap_items.new("pose.select_more","PAGE_UP","PRESS",ctrl=True,shift=True)
-		KeyMaps.append((km,kmi))
-		kmi = km.keymap_items.new("pose.select_less","PAGE_DOWN","PRESS",ctrl=True,shift=True)
-		KeyMaps.append((km,kmi))
-
-		kmi = km.keymap_items.new("pose.select_hierarchy","PAGE_UP","PRESS")
-		kmi.properties.direction = 'PARENT'
-		kmi.properties.extend  = False
-		KeyMaps.append((km,kmi))
-		kmi = km.keymap_items.new("pose.select_hierarchy","PAGE_UP","PRESS",ctrl=True)
-		kmi.properties.direction = 'PARENT'
-		kmi.properties.extend  = True
-		KeyMaps.append((km,kmi))
-		kmi = km.keymap_items.new("pose.select_hierarchy","PAGE_DOWN","PRESS")
-		kmi.properties.direction = 'CHILD'
-		kmi.properties.extend  = False
-		KeyMaps.append((km,kmi))
-		kmi = km.keymap_items.new("pose.select_hierarchy","PAGE_DOWN","PRESS",ctrl=True)
-		kmi.properties.direction = 'CHILD'
-		kmi.properties.extend  = True
-		KeyMaps.append((km,kmi))
-
-		kmi = km.keymap_items.new("pose.select_similar","Q","PRESS",ctrl=True)
-		KeyMaps.append((km,kmi))
-
+		create_view3d_click_celection_keymap(km,space)
+		km.new(space,"pose.select_all","A","PRESS",[('action',"SELECT")],ctrl=True)
+		km.new(space,"pose.select_all","D","PRESS",[('action',"DESELECT")],ctrl=True)
+		km.new(space,"pose.select_all","I","PRESS",[('action',"INVERT")],ctrl=True)
+		km.new(space,"pose.select_more","PAGE_UP","PRESS",[],ctrl=True,shift=True)
+		km.new(space,"pose.select_less","PAGE_DOWN","PRESS",[],ctrl=True,shift=True)
+		km.new(space,"pose.select_hierarchy","PAGE_UP","PRESS",[('direction','PARENT'),('extend',False)])
+		km.new(space,"pose.select_hierarchy","PAGE_UP","PRESS",[('direction','PARENT'),('extend',True)],ctrl=True)
+		km.new(space,"pose.select_hierarchy","PAGE_DOWN","PRESS",[('direction','CHILD'),('extend',False)])
+		km.new(space,"pose.select_hierarchy","PAGE_DOWN","PRESS",[('direction','CHILD'),('extend',True)],ctrl=True)
+		km.new(space,"pose.select_similar","Q","PRESS",[],ctrl=True)
 		# Set Subobject Mode
-		create_subobject_mode_keymap(km)
-
+		create_subobject_mode_keymap(km,space)
 		#View
-		kmi = km.keymap_items.new("screen.screen_full_area","X","PRESS",ctrl=True)
-		KeyMaps.append((km,kmi))
-
+		km.new(space,"screen.screen_full_area","X","PRESS",[],ctrl=True)
 		# Tools
-		kmi = km.keymap_items.new("bsmax.autokeymodetoggle","N","PRESS")
-		KeyMaps.append((km,kmi))
-		kmi = km.keymap_items.new("bsmax.selectcamera","C","PRESS")
-		KeyMaps.append((km,kmi))
-		kmi = km.keymap_items.new("bsmax.setkeys","K","PRESS")
-		KeyMaps.append((km,kmi))
-		# kmi = km.keymap_items.new("bsmax.droptool", "RIGHTMOUSE", "PRESS")
-		# KeyMaps.append((km, kmi))
-
+		km.new(space,"bsmax.autokeymodetoggle","N","PRESS",[])
+		km.new(space,"bsmax.selectcamera","C","PRESS",[])
+		km.new(space,"bsmax.setkeys","K","PRESS",[])
+		# km.new(space,"bsmax.droptool","RIGHTMOUSE","PRESS",[])
 		# Vertex Paint
-		km = kcfg.keymaps.new(name='Vertex Paint',space_type='EMPTY')
-
-		create_switch_view_keymap(km)
-		kmi = km.keymap_items.new("bsmax.showcameratoggle",  "C","PRESS",shift=True)
-		KeyMaps.append((km,kmi))
-
+		space = km.space('Vertex Paint','EMPTY','WINDOW')
+		create_switch_view_keymap(km,space)
+		km.new(space,"bsmax.showcameratoggle","C","PRESS",[],shift=True)
 		# Weight Paint
-		km = kcfg.keymaps.new(name='Weight Paint',space_type='EMPTY')
-
-		create_switch_view_keymap(km)
-		kmi = km.keymap_items.new("bsmax.showcameratoggle",  "C","PRESS",shift=True)
-		KeyMaps.append((km,kmi))
-
+		space = km.space('Weight Paint','EMPTY','WINDOW')
+		create_switch_view_keymap(km,space)
+		km.new(space,"bsmax.showcameratoggle","C","PRESS",[],shift=True)
 		# Whight Paint Vertex Selection
-
 		# Face Mask
-
 		# Image Paint
-
 		# Sculpt
-		km = kcfg.keymaps.new(name='Sculpt',space_type='EMPTY')
-
-		create_switch_view_keymap(km)
-
-		kmi = km.keymap_items.new("bsmax.showcameratoggle",  "C","PRESS",shift=True)
-		KeyMaps.append((km,kmi))
-
+		space = km.space('Sculpt','EMPTY','WINDOW')
+		create_switch_view_keymap(km,space)
+		km.new(space,"bsmax.showcameratoggle","C","PRESS",[],shift=True)
 		# Particle
-
 		# 3D View Generic ------------------------------------------------------------
-		km = kcfg.keymaps.new(name='3D View Generic',space_type='VIEW_3D',region_type='WINDOW')
-
-		kmi = km.keymap_items.new("view3d.properties","LEFT_BRACKET","PRESS")
-		KeyMaps.append((km,kmi))
-		kmi = km.keymap_items.new("view3d.toolshelf","RIGHT_BRACKET","PRESS")
-		KeyMaps.append((km,kmi))
-
+		space = km.space('3D View Generic','VIEW_3D','WINDOW')
+		km.new(space,"view3d.properties","LEFT_BRACKET","PRESS",[])
+		km.new(space,"view3d.toolshelf","RIGHT_BRACKET","PRESS",[])
 		# Outliner --------------------------------------------------------------------
-		km = kcfg.keymaps.new(name='Outliner',space_type='OUTLINER',region_type='WINDOW')
-
+		space = km.space('Outliner','OUTLINER','WINDOW')
 		# Global
-		kmi = km.keymap_items.new("wm.search_menu","X","PRESS")
-		KeyMaps.append((km,kmi))
-
+		km.new(space,"wm.search_menu","X","PRESS",[])
 		# upper than 2.80 do not need this part
 		if bpy.app.version[1] == 80:
 			# Selection
-			kmi = km.keymap_items.new("outliner.item_activate","LEFTMOUSE","PRESS",ctrl=True)
-			kmi.properties.extend = True
-			KeyMaps.append((km,kmi))
-
-			kmi = km.keymap_items.new("outliner.select_box","EVT_TWEAK_L","EAST")
-			kmi.properties.mode = "SET"
-			KeyMaps.append((km,kmi))
-			kmi = km.keymap_items.new("outliner.select_box","EVT_TWEAK_L","SOUTH_EAST")
-			kmi.properties.mode = "SET"
-			KeyMaps.append((km,kmi))
-			kmi = km.keymap_items.new("outliner.select_box","EVT_TWEAK_L","NORTH_EAST")
-			kmi.properties.mode = "SET"
-			KeyMaps.append((km,kmi))
-
-			kmi = km.keymap_items.new("outliner.select_box","EVT_TWEAK_L","EAST",ctrl=True )
-			kmi.properties.mode = "ADD"
-			KeyMaps.append((km,kmi))
-			kmi = km.keymap_items.new("outliner.select_box","EVT_TWEAK_L","SOUTH_EAST",ctrl=True )
-			kmi.properties.mode = "ADD"
-			KeyMaps.append((km,kmi))
-			kmi = km.keymap_items.new("outliner.select_box","EVT_TWEAK_L","NORTH_EAST",ctrl=True )
-			kmi.properties.mode = "ADD"
-			KeyMaps.append((km,kmi))
-
-			kmi = km.keymap_items.new("outliner.select_box","EVT_TWEAK_L","EAST",alt=True )
-			kmi.properties.mode = "SUB"
-			KeyMaps.append((km,kmi))
-			kmi = km.keymap_items.new("outliner.select_box","EVT_TWEAK_L","SOUTH_EAST",alt=True )
-			kmi.properties.mode = "SUB"
-			KeyMaps.append((km,kmi))
-			kmi = km.keymap_items.new("outliner.select_box","EVT_TWEAK_L","NORTH_EAST",alt=True )
-			kmi.properties.mode = "SUB"
-			KeyMaps.append((km,kmi))
-
-			kmi = km.keymap_items.new("outliner.select_all","A","PRESS",ctrl=True)
-			kmi.properties.action = "SELECT"
-			KeyMaps.append((km,kmi))
-			kmi = km.keymap_items.new("outliner.select_all","D","PRESS",ctrl=True)
-			kmi.properties.action = "DESELECT"
-			KeyMaps.append((km,kmi))
-			kmi = km.keymap_items.new("outliner.select_all","I","PRESS",ctrl=True)
-			kmi.properties.action = "INVERT"
-			KeyMaps.append((km,kmi))
-
-			kmi = km.keymap_items.new("outliner.collection_objects_select","LEFTMOUSE","DOUBLE_CLICK")
-			KeyMaps.append((km,kmi))
-
+			km.new(space,"outliner.item_activate","LEFTMOUSE","PRESS",[('extend',True)],ctrl=True)
+			km.new(space,"outliner.select_box","EVT_TWEAK_L","EAST",[('mode',"SET")])
+			km.new(space,"outliner.select_box","EVT_TWEAK_L","SOUTH_EAST",[('mode',"SET")])
+			km.new(space,"outliner.select_box","EVT_TWEAK_L","NORTH_EAST",[('mode',"SET")])
+			km.new(space,"outliner.select_box","EVT_TWEAK_L","EAST",[('mode',"ADD")],ctrl=True )
+			km.new(space,"outliner.select_box","EVT_TWEAK_L","SOUTH_EAST",[('mode',"ADD")],ctrl=True )
+			km.new(space,"outliner.select_box","EVT_TWEAK_L","NORTH_EAST",[('mode',"ADD")],ctrl=True)
+			km.new(space,"outliner.select_box","EVT_TWEAK_L","EAST",[('mode',"SUB")],alt=True)
+			km.new(space,"outliner.select_box","EVT_TWEAK_L","SOUTH_EAST",[('mode',"SUB")],alt=True)
+			km.new(space,"outliner.select_box","EVT_TWEAK_L","NORTH_EAST",[('mode',"SUB")],alt=True)
+			km.new(space,"outliner.select_all","A","PRESS",[('action',"SELECT")],ctrl=True)
+			km.new(space,"outliner.select_all","D","PRESS",[('action',"DESELECT")],ctrl=True)
+			km.new(space,"outliner.select_all","I","PRESS",[('action',"INVERT")],ctrl=True)
+			km.new(space,"outliner.collection_objects_select","LEFTMOUSE","DOUBLE_CLICK",[])
 			# Tools
-			kmi = km.keymap_items.new("outliner.item_rename","F2","PRESS")
-			KeyMaps.append((km,kmi))
-
-			kmi = km.keymap_items.new("outliner.collection_new","N","PRESS",ctrl=True)
-			KeyMaps.append((km,kmi))
-
-			# TODO need a outliner delete object
-			kmi = km.keymap_items.new("object.delete","DEL","PRESS",ctrl=True)
-			kmi.properties.confirm = False
-			KeyMaps.append((km,kmi))
-
-			kmi = km.keymap_items.new("outliner.hide","H","PRESS",alt=True)
-			KeyMaps.append((km,kmi))
-			# kmi = km.keymap_items.new("outliner.hide_unselected","I","PRESS",alt=True)
-			# KeyMaps.append((km,kmi)) # had to write in bsmax
-			kmi = km.keymap_items.new("outliner.unhide_all","U","PRESS",alt=True)
-			KeyMaps.append((km,kmi))
-
+			km.new(space,"outliner.item_rename","F2","PRESS",[])
+			km.new(space,"outliner.collection_new","N","PRESS",[],ctrl=True)
+			km.new(space,"object.delete","DEL","PRESS",[('confirm',False)],ctrl=True)
+			km.new(space,"outliner.hide","H","PRESS",[],alt=True)
+			# km.new(space,"outliner.hide_unselected","I","PRESS",[],alt=True)
+			km.new(space,"outliner.unhide_all","U","PRESS",[],alt=True)
 		# Node Editor -----------------------------------------------------------------
-		km = kcfg.keymaps.new(name="Node Editor",space_type="NODE_EDITOR",region_type='WINDOW')
-
+		space = km.space("Node Editor","NODE_EDITOR",'WINDOW')
 		# Global
-		kmi = km.keymap_items.new("wm.search_menu","X","PRESS")
-		KeyMaps.append((km,kmi))
-		kmi = km.keymap_items.new("node.batchrename","F2","PRESS")
-		KeyMaps.append((km,kmi))
-
+		km.new(space,"wm.search_menu","X","PRESS",[])
+		km.new(space,"node.batchrename","F2","PRESS",[])
 		# Selection
-		kmi = km.keymap_items.new("node.select","LEFTMOUSE","PRESS",ctrl=True)
-		kmi.properties.extend = True
-		KeyMaps.append((km,kmi))
-
-		kmi = km.keymap_items.new("node.select_all","A","PRESS",ctrl=True)
-		kmi.properties.action = "SELECT"
-		KeyMaps.append((km,kmi))
-		kmi = km.keymap_items.new("node.select_all","D","PRESS",ctrl=True)
-		kmi.properties.action = "DESELECT"
-		KeyMaps.append((km,kmi))
-		kmi = km.keymap_items.new("node.select_all","I","PRESS",ctrl=True)
-		kmi.properties.action = "INVERT"
-		KeyMaps.append((km,kmi))
-
+		km.new(space,"node.select","LEFTMOUSE","PRESS",[('extend',True)],ctrl=True)
+		km.new(space,"node.select_all","A","PRESS",[('action',"SELECT")],ctrl=True)
+		km.new(space,"node.select_all","D","PRESS",[('action',"DESELECT")],ctrl=True)
+		km.new(space,"node.select_all","I","PRESS",[('action',"INVERT")],ctrl=True)
 		# tools
-		kmi = km.keymap_items.new("node.view_selected","Z","PRESS")
-		KeyMaps.append((km,kmi))
-
-		kmi = km.keymap_items.new("wm.call_menu","RIGHTMOUSE","PRESS")
-		kmi.properties.name="NODE_MT_add"
-		KeyMaps.append((km,kmi))
-
-		kmi = km.keymap_items.new("node.duplicate_move","EVT_TWEAK_L","ANY",shift=True )
-		KeyMaps.append((km,kmi))
-
+		km.new(space,"node.view_selected","Z","PRESS",[])
+		km.new(space,"wm.call_menu","RIGHTMOUSE","PRESS",[('name',"NODE_MT_add")])
+		km.new(space,"node.duplicate_move","EVT_TWEAK_L","ANY",[],shift=True)
 		#node.links_cut
-
 		# Screen ----------------------------------------------------------------------
-		km = kcfg.keymaps.new(name='Screen',space_type='EMPTY')
-
-		kmi = km.keymap_items.new("render.render","F9","PRESS")
-		kmi.properties.use_viewport = True
-		KeyMaps.append((km,kmi))
-		kmi = km.keymap_items.new("render.render","Q","PRESS",shift=True)
-		kmi.properties.use_viewport = True
-		kmi.properties.animation = True
-		KeyMaps.append((km,kmi))
-		kmi = km.keymap_items.new("screen.repeat_last","SEMI_COLON","PRESS")
-		KeyMaps.append((km,kmi))
-		kmi = km.keymap_items.new("screen.screen_full_area","X","PRESS",ctrl=True)
-		KeyMaps.append((km,kmi))
-		kmi = km.keymap_items.new("screen.screen_full_area","X","PRESS",alt=True,ctrl=True)
-		kmi.properties.use_hide_panels = True
-		KeyMaps.append((km,kmi))
-		kmi = km.keymap_items.new("bsmax.scriptlistener","F11","PRESS")
-		KeyMaps.append((km,kmi))
-		kmi = km.keymap_items.new("ed.redo","Y","PRESS",ctrl=True)
-		KeyMaps.append((km,kmi))
-
+		space = km.space('Screen','EMPTY','WINDOW')
+		km.new(space,"render.render","F9","PRESS",[('use_viewport',True)])
+		km.new(space,"render.render","Q","PRESS",[('use_viewport',True),('animation',True)],shift=True)
+		km.new(space,"screen.repeat_last","SEMI_COLON","PRESS",[])
+		km.new(space,"screen.screen_full_area","X","PRESS",[],ctrl=True)
+		km.new(space,"screen.screen_full_area","X","PRESS",[('use_hide_panels',True)],alt=True,ctrl=True)
+		km.new(space,"bsmax.scriptlistener","F11","PRESS",[])
+		km.new(space,"ed.redo","Y","PRESS",[],ctrl=True)
 		# Text ----------------------------------------------------------------------
-		km = kcfg.keymaps.new(name='Text',space_type='TEXT_EDITOR',region_type='WINDOW')
-
-		kmi = km.keymap_items.new("text.run_script","E","PRESS",ctrl=True)
-		KeyMaps.append((km,kmi))
-		kmi = km.keymap_items.new("text.run_script","F5","PRESS") # From MVS
-		KeyMaps.append((km,kmi))
-		kmi = km.keymap_items.new("text.autocomplete","RET","PRESS",ctrl=True)
-		KeyMaps.append((km,kmi))
-
-		kmi = km.keymap_items.new("text.new","N","PRESS",ctrl=True)
-		KeyMaps.append((km,kmi))
-		kmi = km.keymap_items.new("text.open","O","PRESS",ctrl=True)
-		KeyMaps.append((km,kmi))
-		kmi = km.keymap_items.new("text.save","S","PRESS",ctrl=True)
-		KeyMaps.append((km,kmi))
-		kmi = km.keymap_items.new("text.save_as","S","PRESS",ctrl=True,shift=True)
-		KeyMaps.append((km,kmi))
-		kmi = km.keymap_items.new("text.reload","R","PRESS",ctrl=True)
-		KeyMaps.append((km,kmi))
-		kmi = km.keymap_items.new("text.unlink","W","PRESS",ctrl=True)
-		KeyMaps.append((km,kmi))
-
+		space = km.space('Text','TEXT_EDITOR','WINDOW')
+		km.new(space,"text.run_script","E","PRESS",[],ctrl=True)
+		km.new(space,"text.run_script","F5","PRESS",[]) # From MVS
+		km.new(space,"text.autocomplete","RET","PRESS",[],ctrl=True)
+		km.new(space,"text.new","N","PRESS",[],ctrl=True)
+		km.new(space,"text.open","O","PRESS",[],ctrl=True)
+		km.new(space,"text.save","S","PRESS",[],ctrl=True)
+		km.new(space,"text.save_as","S","PRESS",[],ctrl=True,shift=True)
+		km.new(space,"text.reload","R","PRESS",[],ctrl=True)
+		km.new(space,"text.unlink","W","PRESS",[],ctrl=True)
 		# Console ---------------------------------------------------------------------
-		km = kcfg.keymaps.new(name='Console',space_type='CONSOLE',region_type='WINDOW')
-
-		kmi = km.keymap_items.new("text.new","N","PRESS",ctrl=True)
-		KeyMaps.append((km,kmi))
-		kmi = km.keymap_items.new("text.open","O","PRESS",ctrl=True)
-		KeyMaps.append((km,kmi))
-		kmi = km.keymap_items.new("text.save","S","PRESS",ctrl=True)
-		KeyMaps.append((km,kmi))
-
-		kmi = km.keymap_items.new("console.autocomplete","RET","PRESS",ctrl=True)
-		KeyMaps.append((km,kmi))
-		kmi = km.keymap_items.new("console.autocomplete","SPACE","PRESS",ctrl=True)
-		KeyMaps.append((km,kmi))
-
+		space = km.space('Console','CONSOLE','WINDOW')
+		km.new(space,"text.new","N","PRESS",[],ctrl=True)
+		km.new(space,"text.open","O","PRESS",[],ctrl=True)
+		km.new(space,"text.save","S","PRESS",[],ctrl=True)
+		km.new(space,"console.autocomplete","RET","PRESS",[],ctrl=True)
+		km.new(space,"console.autocomplete","SPACE","PRESS",[],ctrl=True)
 		# Info ------------------------------------------------------------------------
-		km = kcfg.keymaps.new(name='Info',space_type='INFO',region_type='WINDOW')
-
+		space = km.space('Info','INFO','WINDOW')
 		# TODO Replase with if text editor not open create new else just new text
-		kmi = km.keymap_items.new("text.new","N","PRESS",ctrl=True)
-		KeyMaps.append((km,kmi))
-		kmi = km.keymap_items.new("text.open","O","PRESS",ctrl=True)
-		KeyMaps.append((km,kmi))
-		kmi = km.keymap_items.new("text.save","S","PRESS",ctrl=True)
-		KeyMaps.append((km,kmi))
-
-		kmi = km.keymap_items.new("info.select_box","EVT_TWEAK_L","ANY")
-		kmi.properties.mode = "SET"
-		KeyMaps.append((km,kmi))
-		kmi = km.keymap_items.new("info.select_box","EVT_TWEAK_L","ANY",ctrl=True)
-		kmi.properties.mode = "ADD"
-		KeyMaps.append((km,kmi))
-		kmi = km.keymap_items.new("info.select_box","EVT_TWEAK_L","ANY",alt=True)
-		kmi.properties.mode = "SUB"
-		KeyMaps.append((km,kmi))
+		km.new(space,"text.new","N","PRESS",[],ctrl=True)
+		km.new(space,"text.open","O","PRESS",[],ctrl=True)
+		km.new(space,"text.save","S","PRESS",[],ctrl=True)
+		km.new(space,"info.select_box","EVT_TWEAK_L","ANY",[('mode',"SET")])
+		km.new(space,"info.select_box","EVT_TWEAK_L","ANY",[('mode',"ADD")],ctrl=True)
+		km.new(space,"info.select_box","EVT_TWEAK_L","ANY",[('mode',"SUB")],alt=True)
 		# TODO replase with select all
-		kmi = km.keymap_items.new("info.select_all_toggle","A","PRESS",ctrl=True)
-		KeyMaps.append((km,kmi))
+		km.new(space,"info.select_all_toggle","A","PRESS",[],ctrl=True)
 		# TODO repelase with delete all
-		kmi = km.keymap_items.new("info.report_delete","D","PRESS",ctrl=True)
-		KeyMaps.append((km,kmi))
-
+		km.new(space,"info.report_delete","D","PRESS",[],ctrl=True)
 		# Frames ----------------------------------------------------------------------
-		km = kcfg.keymaps.new(name='Frames',space_type='EMPTY',region_type='WINDOW')
-
-		kmi = km.keymap_items.new("bsmax.jumptofirstframe","HOME","PRESS")
-		KeyMaps.append((km,kmi))
-		kmi = km.keymap_items.new("bsmax.jumptolastframe","END","PRESS")
-		KeyMaps.append((km,kmi))
-		kmi = km.keymap_items.new("bsmax.nextframe","PERIOD","PRESS")
-		KeyMaps.append((km,kmi))
-		kmi = km.keymap_items.new("bsmax.previousframe","COMMA","PRESS")
-		KeyMaps.append((km,kmi))
-
+		space = km.space('Frames','EMPTY','WINDOW')
+		km.new(space,"bsmax.jumptofirstframe","HOME","PRESS",[])
+		km.new(space,"bsmax.jumptolastframe","END","PRESS",[])
+		km.new(space,"bsmax.nextframe","PERIOD","PRESS",[])
+		km.new(space,"bsmax.previousframe","COMMA","PRESS",[])
 		# GRAPH_EDITOR ----------------------------------------------------------------
-		km = kcfg.keymaps.new(name="Graph Editor",space_type="GRAPH_EDITOR",region_type='WINDOW')
-		
+		space = km.space("Graph Editor","GRAPH_EDITOR",'WINDOW')
 		# Global
-		kmi = km.keymap_items.new("wm.search_menu","X","PRESS")
-		KeyMaps.append((km,kmi))
-
+		km.new(space,"wm.search_menu","X","PRESS",[])
 		# Selection
-		kmi = km.keymap_items.new("graph.clickselect","LEFTMOUSE","PRESS")
-		KeyMaps.append((km,kmi))
-
-		kmi = km.keymap_items.new("graph.select_box","EVT_TWEAK_L","ANY")
-		kmi.properties.mode = "SET"
-		KeyMaps.append((km,kmi))
-		kmi = km.keymap_items.new("graph.select_box","EVT_TWEAK_L","ANY",ctrl=True )
-		kmi.properties.mode = "ADD"
-		KeyMaps.append((km,kmi))
-		kmi = km.keymap_items.new("graph.select_box","EVT_TWEAK_L","ANY",alt=True )
-		kmi.properties.mode = "SUB"
-		KeyMaps.append((km,kmi))  
-
-		kmi = km.keymap_items.new("graph.select_all","A","PRESS",ctrl=True)
-		kmi.properties.action = "SELECT"
-		KeyMaps.append((km,kmi))
-		kmi = km.keymap_items.new("graph.select_all","D","PRESS",ctrl=True)
-		kmi.properties.action = "DESELECT"
-		KeyMaps.append((km,kmi))
-		kmi = km.keymap_items.new("graph.select_all","I","PRESS",ctrl=True)
-		kmi.properties.action = "INVERT"
-		KeyMaps.append((km,kmi))
-
-		kmi = km.keymap_items.new("graph.select_more","PAGE_UP","PRESS",ctrl=True)
-		KeyMaps.append((km,kmi))
-		kmi = km.keymap_items.new("graph.select_less","PAGE_DOWN","PRESS",ctrl=True)
-		KeyMaps.append((km,kmi))
-
+		km.new(space,"graph.clickselect","LEFTMOUSE","PRESS",[])
+		km.new(space,"graph.select_box","EVT_TWEAK_L","ANY",[('mode',"SET")])
+		km.new(space,"graph.select_box","EVT_TWEAK_L","ANY",[('mode',"ADD")],ctrl=True )
+		km.new(space,"graph.select_box","EVT_TWEAK_L","ANY",[('mode',"SUB")],alt=True )
+		km.new(space,"graph.select_all","A","PRESS",[('action',"SELECT")],ctrl=True)
+		km.new(space,"graph.select_all","D","PRESS",[('action',"DESELECT")],ctrl=True)
+		km.new(space,"graph.select_all","I","PRESS",[('action',"INVERT")],ctrl=True)
+		km.new(space,"graph.select_more","PAGE_UP","PRESS",[],ctrl=True)
+		km.new(space,"graph.select_less","PAGE_DOWN","PRESS",[],ctrl=True)
 		# Translate 
 		# TODO for test
-		kmi = km.keymap_items.new("transform.translate","EVT_TWEAK_L","ANY")
-		KeyMaps.append((km,kmi))
-
+		km.new(space,"transform.translate","EVT_TWEAK_L","ANY",[])
 		# Tools
-		kmi = km.keymap_items.new("bsmax.setkeys","K","PRESS")
-		KeyMaps.append((km,kmi))
-		kmi = km.keymap_items.new("bsmax.autokeymodetoggle","N","PRESS")
-		KeyMaps.append((km,kmi))
-		
+		km.new(space,"bsmax.setkeys","K","PRESS",[])
+		km.new(space,"bsmax.autokeymodetoggle","N","PRESS",[])
 		# DOPESHEET_EDITOR (Timeline)--------------------------------------------------
-		km = kcfg.keymaps.new(name="Dopesheet",space_type="DOPESHEET_EDITOR")
-
+		space = km.space("Dopesheet","DOPESHEET_EDITOR",'WINDOW')
 		# Global
-		kmi = km.keymap_items.new("wm.search_menu","X","PRESS")
-		KeyMaps.append((km,kmi))
-
+		km.new(space,"wm.search_menu","X","PRESS",[])
 		# Tools
-		kmi = km.keymap_items.new("bsmax.setkeys","K","PRESS")
-		KeyMaps.append((km,kmi))
-		kmi = km.keymap_items.new("bsmax.autokeymodetoggle","N","PRESS")
-		KeyMaps.append((km,kmi))
-		kmi = km.keymap_items.new("bsmax.settimelinerange","LEFTMOUSE","PRESS",alt=True,ctrl=True)
-		kmi.properties.mode = 'First'
-		KeyMaps.append((km,kmi))
-		kmi = km.keymap_items.new("bsmax.settimelinerange","RIGHTMOUSE","PRESS",alt=True,ctrl=True)
-		kmi.properties.mode = 'End'
-		KeyMaps.append((km,kmi))
-		kmi = km.keymap_items.new("bsmax.settimelinerange","MIDDLEMOUSE","PRESS",alt=True,ctrl=True)
-		kmi.properties.mode = 'Shift'
-		KeyMaps.append((km,kmi))
-
+		km.new(space,"bsmax.setkeys","K","PRESS",[])
+		km.new(space,"bsmax.autokeymodetoggle","N","PRESS",[])
+		km.new(space,"bsmax.settimelinerange","LEFTMOUSE","PRESS",[('mode','First')],alt=True,ctrl=True)
+		km.new(space,"bsmax.settimelinerange","RIGHTMOUSE","PRESS",[('mode','End')],alt=True,ctrl=True)
+		km.new(space,"bsmax.settimelinerange","MIDDLEMOUSE","PRESS",[('mode','Shift')],alt=True,ctrl=True)
 		# Menu
-		# kmi = km.keymap_items.new("wm.call_menu","RIGHTMOUSE","PRESS",alt=True)
-		# kmi.properties.name="bsmax.coordinatesmenu"
-		# KeyMaps.append((km,kmi))
-
+		# km.new(space,"wm.call_menu","RIGHTMOUSE","PRESS",,[('name',"bsmax.coordinatesmenu")],alt=True)
 		# Selection
-		kmi = km.keymap_items.new("action.select_box","EVT_TWEAK_L","ANY")
-		kmi.properties.mode = "SET"
-		KeyMaps.append((km,kmi))
-		kmi = km.keymap_items.new("action.select_box","EVT_TWEAK_L","ANY",ctrl=True )
-		kmi.properties.mode = "ADD"
-		KeyMaps.append((km,kmi))
-		kmi = km.keymap_items.new("action.select_box","EVT_TWEAK_L","ANY",alt=True )
-		kmi.properties.mode = "SUB"
-		KeyMaps.append((km,kmi))
-
-		kmi = km.keymap_items.new("action.select_all","A","PRESS",ctrl=True)
-		kmi.properties.action = "SELECT"
-		KeyMaps.append((km,kmi))
-		kmi = km.keymap_items.new("action.select_all","D","PRESS",ctrl=True)
-		kmi.properties.action = "DESELECT"
-		KeyMaps.append((km,kmi))
-		kmi = km.keymap_items.new("action.select_all","I","PRESS",ctrl=True)
-		kmi.properties.action = "INVERT"
-		KeyMaps.append((km,kmi))
-
-		kmi = km.keymap_items.new("action.select_more","PAGE_UP","PRESS",ctrl=True)
-		KeyMaps.append((km,kmi))
-		kmi = km.keymap_items.new("action.select_less","PAGE_DOWN","PRESS",ctrl=True)
-		KeyMaps.append((km,kmi))
-
-		kmi = km.keymap_items.new("screen.animation_play","SLASH","PRESS")
-		KeyMaps.append((km,kmi))
-
+		km.new(space,"action.select_box","EVT_TWEAK_L","ANY",[('mode',"SET")])
+		km.new(space,"action.select_box","EVT_TWEAK_L","ANY",[('mode',"ADD")],ctrl=True )
+		km.new(space,"action.select_box","EVT_TWEAK_L","ANY",[('mode',"SUB")],alt=True )
+		km.new(space,"action.select_all","A","PRESS",[('action',"SELECT")],ctrl=True)
+		km.new(space,"action.select_all","D","PRESS",[('action',"DESELECT")],ctrl=True)
+		km.new(space,"action.select_all","I","PRESS",[('action',"INVERT")],ctrl=True)
+		km.new(space,"action.select_more","PAGE_UP","PRESS",[],ctrl=True)
+		km.new(space,"action.select_less","PAGE_DOWN","PRESS",[],ctrl=True)
+		km.new(space,"screen.animation_play","SLASH","PRESS",[])
 		# UV Editor--------------------------------------------------------------------
-		km = kcfg.keymaps.new(name='UV Editor',space_type='EMPTY',region_type='WINDOW')
-
+		space = km.space('UV Editor','EMPTY','WINDOW')
 		# Selection
-		kmi = km.keymap_items.new("bsmax.move","W","PRESS")
-		KeyMaps.append((km,kmi))
-		kmi = km.keymap_items.new("bsmax.rotate","E","PRESS")
-		KeyMaps.append((km,kmi))
-		kmi = km.keymap_items.new("bsmax.scale","R","PRESS")
-		KeyMaps.append((km,kmi))
-
-		#create_view3d_click_celection_keymap(km)
-		create_view3d_tweak_selection_keymap(km)
-
-		kmi = km.keymap_items.new("wm.tool_set_by_id","Q","PRESS")
-		kmi.properties.name="builtin.select_box"
-		kmi.properties.cycle = True
-		KeyMaps.append((km,kmi))
-
-		kmi = km.keymap_items.new("uv.select","EVT_TWEAK_L","ANY")
-		kmi.properties.extend = True
-		KeyMaps.append((km,kmi))
-
-		kmi = km.keymap_items.new("uv.select_box","EVT_TWEAK_L","ANY")
-		kmi.properties.mode = 'SET'
-		KeyMaps.append((km,kmi))
-		kmi = km.keymap_items.new("uv.select_box","EVT_TWEAK_L","ANY",ctrl=True )
-		kmi.properties.mode = 'ADD'
-		KeyMaps.append((km,kmi))
-		kmi = km.keymap_items.new("uv.select_box","EVT_TWEAK_L","ANY",alt=True )
-		kmi.properties.mode = 'SUB'
-		KeyMaps.append((km,kmi))
-
-		kmi = km.keymap_items.new("uv.select_more","PAGE_UP","PRESS",ctrl=True)
-		KeyMaps.append((km,kmi))
-		kmi = km.keymap_items.new("uv.select_less","PAGE_DOWN","PRESS",ctrl=True)
-		KeyMaps.append((km,kmi))
-
-		kmi = km.keymap_items.new("uv.select_all","A","PRESS",ctrl=True)
-		kmi.properties.action = "SELECT"
-		KeyMaps.append((km,kmi))
-		kmi = km.keymap_items.new("uv.select_all","D","PRESS",ctrl=True)
-		kmi.properties.action = "DESELECT"
-		KeyMaps.append((km,kmi))
-		kmi = km.keymap_items.new("uv.select_all","I","PRESS",ctrl=True)
-		kmi.properties.action = "INVERT"
-		KeyMaps.append((km,kmi))
-
+		km.new(space,"bsmax.move","W","PRESS",[])
+		km.new(space,"bsmax.rotate","E","PRESS",[])
+		km.new(space,"bsmax.scale","R","PRESS",[])
+		#create_view3d_click_celection_keymap(space)
+		create_view3d_tweak_selection_keymap(km,space)
+		km.new(space,"wm.tool_set_by_id","Q","PRESS",[('name',"builtin.select_box"),('cycle',True)])
+		km.new(space,"uv.select","EVT_TWEAK_L","ANY",[('extend',True)])
+		km.new(space,"uv.select_box","EVT_TWEAK_L","ANY",[('mode','SET')])
+		km.new(space,"uv.select_box","EVT_TWEAK_L","ANY",[('mode','ADD')],ctrl=True )
+		km.new(space,"uv.select_box","EVT_TWEAK_L","ANY",[('mode','SUB')],alt=True )
+		km.new(space,"uv.select_more","PAGE_UP","PRESS",[],ctrl=True)
+		km.new(space,"uv.select_less","PAGE_DOWN","PRESS",[],ctrl=True)
+		km.new(space,"uv.select_all","A","PRESS",[('action',"SELECT")],ctrl=True)
+		km.new(space,"uv.select_all","D","PRESS",[('action',"DESELECT")],ctrl=True)
+		km.new(space,"uv.select_all","I","PRESS",[('action',"INVERT")],ctrl=True)
 		#Note: multi loop command not working on uv yet
-		#kmi = km.keymap_items.new("bsmax.uvloopselect","L","PRESS",alt=True)
-		#KeyMaps.append((km,kmi))
-		#kmi = km.keymap_items.new("bsmax.uvringselect","R","PRESS",alt=True)
-		#KeyMaps.append((km,kmi))
-
+		#km.new(space,"bsmax.uvloopselect","L","PRESS",[],alt=True)
+		#km.new(space,"bsmax.uvringselect","R","PRESS",[],alt=True)
 		# Hide/Unhide
-		kmi = km.keymap_items.new("uv.hide","H","PRESS",alt=True)
-		KeyMaps.append((km,kmi))
-		kmi = km.keymap_items.new("uv.hide","I","PRESS",alt=True)
-		kmi.properties.unselected = True
-		KeyMaps.append((km,kmi))
-		kmi = km.keymap_items.new("uv.reveal","U","PRESS",alt=True)
-		KeyMaps.append((km,kmi))
-
-		#
-		kmi = km.keymap_items.new("uv.select_split","B","PRESS",ctrl=True)
-		KeyMaps.append((km,kmi))
-		kmi = km.keymap_items.new("uv.weld","W","PRESS",ctrl=True)
-		KeyMaps.append((km,kmi))
-
+		km.new(space,"uv.hide","H","PRESS",[],alt=True)
+		km.new(space,"uv.hide","I","PRESS",[('unselected',True)],alt=True)
+		km.new(space,"uv.reveal","U","PRESS",[],alt=True)
+		km.new(space,"uv.select_split","B","PRESS",[],ctrl=True)
+		km.new(space,"uv.weld","W","PRESS",[],ctrl=True)
 		# SEQUENCE_EDITOR--------------------------------------------------------------------
-		km = kcfg.keymaps.new(name='Sequencer',space_type='SEQUENCE_EDITOR',region_type='WINDOW')
-
-		kmi = km.keymap_items.new("sequencer.batchrename","F2","PRESS")
-		KeyMaps.append((km,kmi))
-
+		space = km.space('Sequencer','SEQUENCE_EDITOR','WINDOW')
+		km.new(space,"sequencer.batchrename","F2","PRESS",[])
 		# File Browser ----------------------------------------------------------------
-		km = kcfg.keymaps.new(name='File Browser',space_type='FILE_BROWSER',region_type='WINDOW')
-
-		kmi = km.keymap_items.new("filebrowser.scaleicons","WHEELUPMOUSE",'PRESS',ctrl=True)
-		kmi.properties.up = True
-		KeyMaps.append((km,kmi))
-		kmi = km.keymap_items.new("filebrowser.scaleicons","WHEELDOWNMOUSE",'PRESS',ctrl=True)
-		kmi.properties.up = False
-		KeyMaps.append((km,kmi))
-
+		space = km.space('File Browser','FILE_BROWSER','WINDOW')
+		km.new(space,"filebrowser.scaleicons","WHEELUPMOUSE",'PRESS',[('up',True)],ctrl=True)
+		km.new(space,"filebrowser.scaleicons","WHEELDOWNMOUSE",'PRESS',[('up',False)],ctrl=True)
 		# Knife Tool Modal Map --------------------------------------------------------
-		#km = kcfg.keymaps.new(name='Knife Tool Modal Map',space_type='EMPTY',region_type='WINDOW',modal = True)
-
-		#kmi = km.keymap_items.new("CONFIRM","RIGHTMOUSE","PRESS",any = True)
-		#KeyMaps.append((km,kmi))
+		#space = km.space('Knife Tool Modal Map','EMPTY','WINDOW',modal=True)
+		#km.new(space,"CONFIRM","RIGHTMOUSE","PRESS",[],any=True)
 		#------------------------------------------------------------------------------
 
-def remove_3dsmax_keymaps():
-	for km,kmi in KeyMaps:
-		km.keymap_items.remove(kmi)
-	KeyMaps.clear()
-	max_dif_keys_set(True)
+keymaps = KeyMaps()
 
 def max_keys(register):
+	keymaps.reset()
 	if register:
-		remove_3dsmax_keymaps()
-		create_3dsmax_keymaps()
-		start_new_thread(max_dif_keys_set,tuple([False]))
-	else:
-		remove_3dsmax_keymaps()
+		create_keymaps(keymaps)
+		collect_mute_keymaps(keymaps)
+	keymaps.set_mute(not register)
 
 if __name__ == '__main__':
 	max_keys(True)

@@ -18,7 +18,6 @@ class BsMax_OT_SubobjectLevel(Operator):
 
 	def execute(self, ctx):  
 		activeobj = ctx.active_object
-		objops = bpy.ops.object
 		mode = ctx.mode
 		if activeobj != None:
 			v,e,f = ctx.tool_settings.mesh_select_mode

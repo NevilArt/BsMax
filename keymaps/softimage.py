@@ -1,27 +1,39 @@
-import bpy, rna_keymap_ui
+############################################################################
+#	This program is free software: you can redistribute it and/or modify
+#	it under the terms of the GNU General Public License as published by
+#	the Free Software Foundation, either version 3 of the License, or
+#	(at your option) any later version.
+#
+#	This program is distributed in the hope that it will be useful,
+#	but WITHOUT ANY WARRANTY; without even the implied warranty of
+#	MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+#	GNU General Public License for more details.
+#
+#	You should have received a copy of the GNU General Public License
+#	along with this program.  If not, see <https://www.gnu.org/licenses/>.
+############################################################################
 
-KeyMaps = []
+import bpy
+from .classes import KeyMaps
 
-def create_softimage_keymaps():
-	kcfg = bpy.context.window_manager.keyconfigs.addon
-	if kcfg:
+def collect_mute_keymaps(km):
+	pass
+
+def create_keymaps(km):
+	if bpy.context.window_manager.keyconfigs.addon:
 		print("add Softimage keymaps")
 		# Window ---------------------------------------------------------------
-		#km = kcfg.keymaps.new(name ='Window', space_type ='EMPTY')
-		#kmi = km.keymap_items.new("wm.search_menu", "X", "PRESS")
-		#KeyMaps.append((km, kmi))
+		# space = km.space('Object Non-modal','EMPTY','WINDOW')
+		# km.new(space,"bsmax.mode_set",'F9',"PRESS",[])
 		
-def remove_softimage_keymaps():
-	for km, kmi in KeyMaps:
-		km.keymap_items.remove(kmi)
-	KeyMaps.clear()
+keymaps = KeyMaps()
 
 def softimage_keys(register):
+	keymaps.reset()
 	if register:
-		remove_softimage_keymaps()
-		create_softimage_keymaps()
-	else:
-		remove_softimage_keymaps()
+		create_keymaps(keymaps)
+		collect_mute_keymaps(keymaps)
+	keymaps.set_mute(not register)
 
 if __name__ == '__main__':
 	softimage_keys(True)

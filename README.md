@@ -2,6 +2,7 @@
 (Works on Blender 2.80 ~ 2.83)
 
 Recent Updates
+* Keymap system optimized
 * Works on Blender2.83 Beta
 * Camera lock toggle added to Quad menu
 * BUI added inside the BsMax will use for tools UI
