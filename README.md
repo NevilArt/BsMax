@@ -1,7 +1,8 @@
 # BsMax_2_80
-(Works on Blender 2.80 ~ 2.83)
+(Works on Blender 2.80 ~ 2.90)
 
 Recent Updates
+* Light lister added (Active Render in Assistance Pack) under render menue on viewport
 * Keymap system optimized
 * Works on Blender2.83 Beta
 * Camera lock toggle added to Quad menu

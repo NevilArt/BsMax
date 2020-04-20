@@ -72,8 +72,7 @@ class BsMax_OT_SetKeyFilters(Operator):
 		# self.Key_Materials = KeyData.Key_Materials
 		# self.Key_Other = KeyData.Key_Other
 		self.Cast = True
-		wm = ctx.window_manager
-		return wm.invoke_props_dialog(self, width = 140)\
+		return ctx.window_manager.invoke_props_dialog(self,width=140)
 
 #obj.modifiers[0].keyframe_insert(data_path="thickness")
 

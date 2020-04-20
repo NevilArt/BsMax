@@ -56,7 +56,6 @@ class BsMax_OT_CloseLine(Operator):
 	bl_options = {'REGISTER', 'INTERNAL'}
 	def execute(self, ctx):
 		LineData.close = True
-		print(LineData.close)
 		return {'FINISHED'}
 	def invoke(self, ctx, event):
 		return ctx.window_manager.invoke_confirm(self, event)
