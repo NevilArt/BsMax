@@ -79,14 +79,10 @@ class BsMax_TO_LightLister(Operator):
 		self.lights = [o for o in bpy.data.objects if o.type == 'LIGHT']
 		return ctx.window_manager.invoke_props_dialog(self,width=600)
 
-def lightlister_cls(register):
-	classes = [BsMax_TO_LightLister,BsMax_TO_SelectLightByName]
-	if register:
-		[bpy.utils.register_class(c) for c in classes]
-	else:
-		[bpy.utils.unregister_class(c) for c in classes]
+classes = [BsMax_TO_LightLister,BsMax_TO_SelectLightByName]
 
-if __name__ == '__main__':
-	lightlister_cls(True)
+def register_lightlister():
+	[bpy.utils.register_class(c) for c in classes]
 
-__all__ = ["lightlister_cls"]
+def unregister_lightlister():
+	[bpy.utils.unregister_class(c) for c in classes]

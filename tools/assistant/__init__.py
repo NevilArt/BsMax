@@ -13,13 +13,19 @@
 #	along with this program.  If not, see <https://www.gnu.org/licenses/>.
 ############################################################################
 
-from .lightlister import register_lightlister,unregister_lightlister
+from .animation import register_animation,unregister_animation
+from .render import register_render,unregister_render
+from .rigg import register_rigg,unregister_rigg
 from .menu import register_menu,unregister_menu
 
-def register_render():
-	register_lightlister()
+def register_assistant():
+	register_animation()
+	register_render()
+	register_rigg()
 	register_menu()
 
-def unregister_render():
-	unregister_lightlister()
+def unregister_assistant():
+	unregister_animation()
+	unregister_render()
+	unregister_rigg()
 	unregister_menu()

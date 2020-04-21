@@ -1,3 +1,18 @@
+############################################################################
+#	This program is free software: you can redistribute it and/or modify
+#	it under the terms of the GNU General Public License as published by
+#	the Free Software Foundation, either version 3 of the License, or
+#	(at your option) any later version.
+#
+#	This program is distributed in the hope that it will be useful,
+#	but WITHOUT ANY WARRANTY; without even the implied warranty of
+#	MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+#	GNU General Public License for more details.
+#
+#	You should have received a copy of the GNU General Public License
+#	along with this program.  If not, see <https://www.gnu.org/licenses/>.
+############################################################################
+
 import bpy
 from bpy.types import Operator
 from mathutils import Vector
@@ -85,14 +100,8 @@ class BsMax_TO_EyeTargetCreator(Operator):
 		bpy.ops.object.parent_set(type='OBJECT', keep_transform=True)
 		return {"FINISHED"}
 
-def eyetarget_cls(register):
-	classes = [BsMax_TO_EyeTargetCreator]
-	if register: 
-		[bpy.utils.register_class(c) for c in classes]
-	else:
-		[bpy.utils.unregister_class(c) for c in classes]
+def register_eyetarget():
+	bpy.utils.register_class(BsMax_TO_EyeTargetCreator)
 
-if __name__ == '__main__':
-	eyetarget_cls(True)
-
-__all__ = ["eyetarget_cls"]
+def unregister_eyetarget():
+	bpy.utils.unregister_class(BsMax_TO_EyeTargetCreator)

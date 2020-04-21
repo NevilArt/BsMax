@@ -13,13 +13,22 @@
 #	along with this program.  If not, see <https://www.gnu.org/licenses/>.
 ############################################################################
 
-from .lightlister import register_lightlister,unregister_lightlister
-from .menu import register_menu,unregister_menu
+from .assistant import register_assistant,unregister_assistant
+from .public import public_cls
+from .special import special_cls
 
-def register_render():
-	register_lightlister()
-	register_menu()
+def register_tools(pref):
+	register_assistant()
+	public_cls(True,pref)
+	special_cls(True,pref)
 
-def unregister_render():
-	unregister_lightlister()
-	unregister_menu()
+def unregister_tools(pref):
+	unregister_assistant()
+	public_cls(False,pref)
+	special_cls(False,pref)
+
+def tools_cls(reg, pref):
+	if reg:
+		register_tools(pref)
+	else:
+		unregister_tools(pref)

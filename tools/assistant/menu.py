@@ -17,9 +17,9 @@ import bpy
 from bpy.types import Menu
 from bsmax.state import is_object_mode
 
-class BsMax_MT_Render_Tools(Menu):
-	bl_idname = "BSMAX_MT_rendertools"
-	bl_label = "Render"
+class BsMax_MT_View3D_tools(Menu):
+	bl_idname = "BSMAX_MT_view3dtools"
+	bl_label = "Tools"
 	bl_context = "objectmode"
 
 	@classmethod
@@ -28,13 +28,17 @@ class BsMax_MT_Render_Tools(Menu):
 
 	def draw(self, ctx):
 		layout=self.layout
-		layout.operator("render.lightlister",text="Light Lister",icon='LIGHT_SUN')
+		layout.menu("BSMAX_MT_animationtools",icon='ARMATURE_DATA')
+		layout.menu("BSMAX_MT_rendertools",icon='RENDER_ANIMATION')
+		layout.menu("BSMAX_MT_riggtools",icon='TOOL_SETTINGS')
 
-def render_menu(self, ctx):
-	self.layout.menu("BSMAX_MT_rendertools")
+def tools_menu(self, ctx):
+	self.layout.menu("BSMAX_MT_view3dtools")
 
 def register_menu():
-	bpy.utils.register_class(BsMax_MT_Render_Tools)
+	bpy.utils.register_class(BsMax_MT_View3D_tools)
+	bpy.types.VIEW3D_MT_editor_menus.append(tools_menu)
 
 def unregister_menu():
-	bpy.utils.unregister_class(BsMax_MT_Render_Tools)
+	bpy.utils.unregister_class(BsMax_MT_View3D_tools)
+	bpy.types.VIEW3D_MT_editor_menus.remove(tools_menu)

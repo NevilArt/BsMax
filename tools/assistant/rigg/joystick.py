@@ -1,9 +1,24 @@
+############################################################################
+#	This program is free software: you can redistribute it and/or modify
+#	it under the terms of the GNU General Public License as published by
+#	the Free Software Foundation, either version 3 of the License, or
+#	(at your option) any later version.
+#
+#	This program is distributed in the hope that it will be useful,
+#	but WITHOUT ANY WARRANTY; without even the implied warranty of
+#	MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+#	GNU General Public License for more details.
+#
+#	You should have received a copy of the GNU General Public License
+#	along with this program.  If not, see <https://www.gnu.org/licenses/>.
+############################################################################
+
 import bpy
 from bpy.types import Operator
 from bpy.props import IntProperty
 from mathutils import Vector
 from bsmax.state import has_constraint,get_obj_class
-from bsmax.actions import link_to, set_origen
+from bsmax.actions import link_to,set_origen
 
 def get_joystic_mode(width, length):
 	if length < width / 2:
@@ -235,14 +250,10 @@ class BsMax_TO_JoyStickShapeKeyConnector(Operator):
 			JoyStickCreator.direction = self.mode
 		return {'CANCELLED'}
 
-def joystick_cls(register):
-	classes = [BsMax_TO_JoyStickCreator, BsMax_TO_JoyStickShapeKeyConnector]
-	if register: 
-		[bpy.utils.register_class(c) for c in classes]
-	else:
-		[bpy.utils.unregister_class(c) for c in classes]
+classes = [BsMax_TO_JoyStickCreator, BsMax_TO_JoyStickShapeKeyConnector]
 
-if __name__ == '__main__':
-	joystick_cls(True)
+def register_joystic():
+	[bpy.utils.register_class(c) for c in classes]
 
-__all__ = ["joystick_cls"]
+def unregister_joystic():
+	[bpy.utils.unregister_class(c) for c in classes]

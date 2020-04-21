@@ -18,10 +18,10 @@
 
 bl_info = {
 	"name": "BsMax",
-	"description": "BsMax for Blender 2.80 ~ 2.83",
+	"description": "BsMax for Blender 2.80 ~ 2.90",
 	"author": "Naser Merati (Nevil)",
-	"version": (0, 1, 0, 20200420),
-	"blender": (2, 80, 0),# 2.80~2.83
+	"version": (0, 1, 0, 20200421),
+	"blender": (2, 80, 0),# 2.80~2.90
 	"location": "Almost Everywhere in Blender",
 	"wiki_url": "https://github.com/NevilArt/BsMax_2_80/wiki",
 	"doc_url": "https://github.com/NevilArt/BsMax_2_80/wiki",
@@ -40,11 +40,11 @@ if path not in sys.path:
 
 import templates
 
-from .keymaps.init import keymaps_keys,navigation_keys,public_keys
-from .menu.init import menu_cls
-from .primitive.init import primitive_cls
-from .startup.init import startup_cls
-from .tools.init import public_cls,assistant_cls,special_cls
+from .keymaps import keymaps_keys,navigation_keys,public_keys
+from .menu import menu_cls
+from .primitive import primitive_cls
+from .startup import startup_cls
+from .tools import tools_cls,special_cls
 
 # Addon preferences
 def fix_option(self):
@@ -53,20 +53,17 @@ def fix_option(self):
 			self.toolpack = self.keymaps
 
 def update_navigation(self, ctx):
-	navigation_keys(True, get_pret())
+	navigation_keys(True, get_pref())
 
 def update_toolpack(self, ctx):
-	special_cls(True, get_pret())
+	special_cls(True, get_pref())
 
 def update_floatmenu(self, ctx):
-	menu_cls(True, get_pret())
+	menu_cls(True, get_pref())
 
 def update_keymaps(self, ctx):
 	fix_option(self)
-	keymaps_keys(True, get_pret())
-
-def update_assistpack(self, ctx):
-	assistant_cls(True, get_pret())
+	keymaps_keys(True, get_pref())
 
 class BsMax_AddonPreferences(AddonPreferences):
 	bl_idname = __name__
@@ -108,14 +105,6 @@ class BsMax_AddonPreferences(AddonPreferences):
 		description='Overide Full Keymap',
 		update=update_keymaps,items=apppack)
 
-	assistpack: EnumProperty(name='Assistance Pack',update=update_assistpack,
-		default='None',
-		description='More Tools',
-		items=[('Rigg','Rigg',''),
-			('Animate','Animate',''),
-			('Render','Render',''),
-			('None','None','')])
-
 	def draw(self, ctx):
 		layout = self.layout
 		fix_option(self)
@@ -125,33 +114,32 @@ class BsMax_AddonPreferences(AddonPreferences):
 		col.prop(self, "keymaps")
 		col.prop(self, "floatmenus")
 		col.prop(self, "toolpack")
-		col.prop(self, "assistpack")
 
-def get_pret():
+def get_pref():
 	return bpy.context.preferences.addons[__name__].preferences
-
-def bsmax_cls(register, pref):
-	navigation_keys(register, pref)
-	menu_cls(register, pref)
-	primitive_cls(register, pref)
-	special_cls(register, pref)
-	assistant_cls(register, pref)
-	public_cls(register, pref)
-	keymaps_keys(register, pref)
-	public_keys(register, pref)
-	startup_cls(register, pref)
 
 def register():
 	bpy.utils.register_class(BsMax_AddonPreferences)
-	bsmax_cls(True, get_pret())
+	pref = get_pref()
+	primitive_cls(True, pref)
+	tools_cls(True,pref)
+	startup_cls(True, pref)
+	menu_cls(True, pref)
+	navigation_keys(True, pref)
+	keymaps_keys(True, pref)
+	public_keys(True, pref)
 	templates.register()
 	
 def unregister():
-	bsmax_cls(False, get_pret())
+	pref = get_pref()
+	navigation_keys(False, pref)
+	keymaps_keys(False, pref)
+	public_keys(False, pref)
+	menu_cls(False, pref)
+	primitive_cls(False, pref)
+	tools_cls(False,pref)
+	startup_cls(False, pref)
 	bpy.utils.unregister_class(BsMax_AddonPreferences)
 	templates.unregister()
 	if path not in sys.path:
 		sys.path.remove(path)
-
-if __name__ == "__main__":
-	register()
