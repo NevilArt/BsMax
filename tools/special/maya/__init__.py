@@ -13,13 +13,13 @@
 #	along with this program.  If not, see <https://www.gnu.org/licenses/>.
 ############################################################################
 
-from .lightlister import register_lightlister,unregister_lightlister
+from .modifier import register_modifier,unregister_modifier
 from .menu import register_menu,unregister_menu
 
-def register_render():
-	register_lightlister()
+def register_maya():
+	register_modifier()
 	register_menu()
 
-def unregister_render():
-	unregister_lightlister()
+def unregister_maya():
 	unregister_menu()
+	unregister_modifier()

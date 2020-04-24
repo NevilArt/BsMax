@@ -1,7 +1,22 @@
+############################################################################
+#	This program is free software: you can redistribute it and/or modify
+#	it under the terms of the GNU General Public License as published by
+#	the Free Software Foundation,either version 3 of the License,or
+#	(at your option) any later version.
+#
+#	This program is distributed in the hope that it will be useful,
+#	but WITHOUT ANY WARRANTY; without even the implied warranty of
+#	MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+#	GNU General Public License for more details.
+#
+#	You should have received a copy of the GNU General Public License
+#	along with this program.  If not,see <https://www.gnu.org/licenses/>.
+############################################################################
+
 import bpy
 from bpy.types import PropertyGroup
 from bpy.app.handlers import persistent
-from bpy.props import * # StringProperty,IntProperty,FloatProperty,BoolProperty,EnumProperty
+from bpy.props import StringProperty,IntProperty,FloatProperty,BoolProperty,EnumProperty,PointerProperty
 from primitive.box import Box
 from primitive.capsule import Capsule
 from primitive.cylinder import Cylinder, Cone
@@ -34,7 +49,7 @@ def get_class(name):
 	elif name == "Capsule": return Capsule()
 	elif name == "Cone": return Cone()
 	elif name == "Cylinder": return Cylinder()
-	elif name == "GeoSphere": return GeoSphere()
+	# elif name == "GeoSphere": return GeoSphere()
 	elif name == "Icosphere": return Icosphere()
 	elif name == "Mesher": return Mesher()
 	elif name == "Monkey": return Monkey()
@@ -148,16 +163,11 @@ class PrimitiveData(PropertyGroup):
 		update = primitive_update,
 		items =[('Curve','Curve',''),('Manual','Manual',''),('Optimized','Optimized',''),('Adaptive','Adaptive','')])
 
-def update_cls(register):
-	if register:
-		bpy.utils.register_class(PrimitiveData)
-		bpy.types.Mesh.primitivedata = PointerProperty(type=PrimitiveData)
-		bpy.types.Curve.primitivedata = PointerProperty(type=PrimitiveData)
-		bpy.app.handlers.frame_change_post.append(primities_update)
-	else:
-		bpy.utils.unregister_class(PrimitiveData)
+def register_update():
+	bpy.utils.register_class(PrimitiveData)
+	bpy.types.Mesh.primitivedata = PointerProperty(type=PrimitiveData)
+	bpy.types.Curve.primitivedata = PointerProperty(type=PrimitiveData)
+	bpy.app.handlers.frame_change_post.append(primities_update)
 
-if __name__ == '__main__':
-	update_cls(True)
-	
-__all_ = ["update_cls"]
+def unregister_update():
+	bpy.utils.unregister_class(PrimitiveData)

@@ -1,3 +1,18 @@
+############################################################################
+#	This program is free software: you can redistribute it and/or modify
+#	it under the terms of the GNU General Public License as published by
+#	the Free Software Foundation, either version 3 of the License, or
+#	(at your option) any later version.
+#
+#	This program is distributed in the hope that it will be useful,
+#	but WITHOUT ANY WARRANTY; without even the implied warranty of
+#	MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+#	GNU General Public License for more details.
+#
+#	You should have received a copy of the GNU General Public License
+#	along with this program.  If not, see <https://www.gnu.org/licenses/>.
+############################################################################
+
 import bpy
 from bpy.types import Operator
 from bpy.props import BoolProperty,StringProperty,IntProperty,EnumProperty
@@ -270,16 +285,11 @@ class Node_OT_BatchRename(Operator):
 			return createdialog(self, ctx)
 		return {'FINISHED'}
 
-def batchrename_cls(register):
-	classes = [Objects_OT_BatchRename, Armature_OT_BatchRename,
+classes = [Objects_OT_BatchRename, Armature_OT_BatchRename,
 			Sequences_OT_BatchRename, Node_OT_BatchRename]
 
-	if register:
-		[bpy.utils.register_class(c) for c in classes]
-	else:
-		[bpy.utils.unregister_class(c) for c in classes]
+def register_batchrename():
+	[bpy.utils.register_class(c) for c in classes]
 
-if __name__ == '__main__':
-	batchrename_cls(True)
-
-__all__ = ["batchrename_cls"]
+def unregister_batchrename():
+	[bpy.utils.unregister_class(c) for c in classes]

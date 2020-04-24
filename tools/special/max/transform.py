@@ -1,3 +1,18 @@
+############################################################################
+#	This program is free software: you can redistribute it and/or modify
+#	it under the terms of the GNU General Public License as published by
+#	the Free Software Foundation, either version 3 of the License, or
+#	(at your option) any later version.
+#
+#	This program is distributed in the hope that it will be useful,
+#	but WITHOUT ANY WARRANTY; without even the implied warranty of
+#	MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+#	GNU General Public License for more details.
+#
+#	You should have received a copy of the GNU General Public License
+#	along with this program.  If not, see <https://www.gnu.org/licenses/>.
+############################################################################
+
 import bpy
 from bpy.types import Operator
 
@@ -37,17 +52,13 @@ class BsMax_OT_RotationToZero(Operator):
 		bpy.ops.object.rotation_clear()
 		return{"FINISHED"}
 
-def transform_cls(register):
-	classes = [BsMax_OT_FreezeTransform,
-		BsMax_OT_FreezeRotation,
-		BsMax_OT_TransformToZero,
-		BsMax_OT_RotationToZero]
-	for c in classes:
-		if register: bpy.utils.register_class(c)
-		else: bpy.utils.unregister_class(c)
-	return classes
+classes = [BsMax_OT_FreezeTransform,
+	BsMax_OT_FreezeRotation,
+	BsMax_OT_TransformToZero,
+	BsMax_OT_RotationToZero]
 
-if __name__ == '__main__':
-	transform_cls(True)
+def register_transform():
+	[bpy.utils.register_class(c) for c in classes]
 
-__all__ = ["transform_cls"]
+def unregister_transform():
+	[bpy.utils.unregister_class(c) for c in classes]

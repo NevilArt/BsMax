@@ -1,3 +1,18 @@
+############################################################################
+#	This program is free software: you can redistribute it and/or modify
+#	it under the terms of the GNU General Public License as published by
+#	the Free Software Foundation,either version 3 of the License,or
+#	(at your option) any later version.
+#
+#	This program is distributed in the hope that it will be useful,
+#	but WITHOUT ANY WARRANTY; without even the implied warranty of
+#	MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+#	GNU General Public License for more details.
+#
+#	You should have received a copy of the GNU General Public License
+#	along with this program.  If not,see <https://www.gnu.org/licenses/>.
+############################################################################
+
 import bpy
 from bpy.types import Operator
 
@@ -15,12 +30,8 @@ def BsMax_MT_PrimitiveDataCleanerMenu(self, context):
 	self.layout.separator()
 	self.layout.operator("bsmax.clearprimitivedta")
 
-def ui_cls(register):
-	c = BsMax_OT_ClearPrimitiveData
-	if register: bpy.utils.register_class(c)
-	else: bpy.utils.unregister_class(c)
+def register_ui():
+	bpy.utils.register_class(BsMax_OT_ClearPrimitiveData)
 
-if __name__ == '__main__':
-	ui_cls(True)
-
-__all__ = ["ui_cls", "BsMax_MT_PrimitiveDataCleanerMenu"]
+def unregister_ui():
+	bpy.utils.unregister_class(BsMax_OT_ClearPrimitiveData)

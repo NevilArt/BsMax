@@ -1,3 +1,21 @@
+############################################################################
+#	BsMax, 3D apps inteface simulator and tools pack for Blender
+#	Copyright (C) 2020  Naser Merati (Nevil)
+#
+#	This program is free software: you can redistribute it and/or modify
+#	it under the terms of the GNU General Public License as published by
+#	the Free Software Foundation, either version 3 of the License, or
+#	(at your option) any later version.
+#
+#	This program is distributed in the hope that it will be useful,
+#	but WITHOUT ANY WARRANTY; without even the implied warranty of
+#	MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+#	GNU General Public License for more details.
+#
+#	You should have received a copy of the GNU General Public License
+#	along with this program.  If not, see <https://www.gnu.org/licenses/>.
+############################################################################
+
 import bpy
 from bpy.types import Operator
 from bpy.props import BoolProperty, EnumProperty
@@ -224,20 +242,15 @@ class BsMax_OT_TimeLineRangeChange(Operator):
 		ctx.window_manager.modal_handler_add(self)
 		return {'RUNNING_MODAL'}
 
-def animationkey_cls(register):
-	classes = [BsMax_OT_SetKeyFilters,
+classes = [BsMax_OT_SetKeyFilters,
 			BsMax_OT_AutoKeyModeToggle,
 			BsMax_OT_SetKeys,
 			BsMax_OT_DeleteSelectedAnimation,
 			BsMax_OT_SetFrame,
 			BsMax_OT_TimeLineRangeChange]
 
-	if register:
-		[bpy.utils.register_class(c) for c in classes]
-	else:
-		[bpy.utils.unregister_class(c) for c in classes]
+def register_animationkey():
+	[bpy.utils.register_class(c) for c in classes]
 
-if __name__ == '__main__':
-	animationkey_cls(True)
-
-__all__ = ["animationkey_cls"]
+def unregister_animationkey():
+	[bpy.utils.unregister_class(c) for c in classes]

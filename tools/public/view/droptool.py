@@ -1,6 +1,20 @@
+############################################################################
+#	This program is free software: you can redistribute it and/or modify
+#	it under the terms of the GNU General Public License as published by
+#	the Free Software Foundation, either version 3 of the License, or
+#	(at your option) any later version.
+#
+#	This program is distributed in the hope that it will be useful,
+#	but WITHOUT ANY WARRANTY; without even the implied warranty of
+#	MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+#	GNU General Public License for more details.
+#
+#	You should have received a copy of the GNU General Public License
+#	along with this program.  If not, see <https://www.gnu.org/licenses/>.
+############################################################################
+
 import bpy
 from bpy.types import Operator
-from bsmax.state import get_pref
 
 class BsMax_OT_BlenderDefaultMenueCall(Operator):
 	bl_idname = "bsmax.blenderdefaultmenucall"
@@ -35,6 +49,8 @@ class BsMax_OT_DropTool(Operator):
 	bl_idname = "bsmax.droptool"
 	bl_label = "Drop Tool"
 
+	preferences = None
+
 	def drop_tool(self, ctx):
 		tools = ctx.workspace.tools
 		tool = tools.from_space_view3d_mode(ctx.mode, create=False).idname
@@ -53,9 +69,11 @@ class BsMax_OT_DropTool(Operator):
 		return False
 
 	def call_menu(self, ctx):
-		pref = get_pref(ctx)
-		if pref.floatmenus == "QuadMenu_st_andkey":
-			bpy.ops.bsmax.view3dquadmenue('INVOKE_DEFAULT',menu='default',space='View3D')
+		if self.preferences != None:
+			if self.preferences.floatmenus == "QuadMenu_st_andkey":
+				bpy.ops.bsmax.view3dquadmenue('INVOKE_DEFAULT',menu='default',space='View3D')
+			else:
+				bpy.ops.bsmax.blenderdefaultmenucall('INVOKE_DEFAULT')
 		else:
 			bpy.ops.bsmax.blenderdefaultmenucall('INVOKE_DEFAULT')
 
@@ -64,23 +82,11 @@ class BsMax_OT_DropTool(Operator):
 			self.call_menu(ctx)
 		return{"FINISHED"}
 
-	# def modal(self, ctx, event):
-	# 	if not self.drop_tool(ctx):
-	# 		return {'PASS_THROUGH'}
-	# 	return {'CANCELLED'}
+classes = [BsMax_OT_BlenderDefaultMenueCall,BsMax_OT_DropTool]
 
-	# def invoke(self, ctx, event):
-	# 	ctx.window_manager.modal_handler_add(self)
-	# 	return {'RUNNING_MODAL'}
+def register_droptool(preferences):
+	BsMax_OT_DropTool.preferences = preferences
+	[bpy.utils.register_class(c) for c in classes]
 
-def droptool_cls(register, pref):
-	classes = [BsMax_OT_BlenderDefaultMenueCall, BsMax_OT_DropTool]
-	if register:
-		[bpy.utils.register_class(c) for c in classes]
-	else:
-		[bpy.utils.unregister_class(c) for c in classes]
-
-if __name__ == '__main__':
-	droptool_cls(True)
-
-__all__ = ["droptool_cls"]
+def unregister_droptool():
+	[bpy.utils.unregister_class(c) for c in classes]

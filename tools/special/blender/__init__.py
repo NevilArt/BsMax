@@ -13,13 +13,13 @@
 #	along with this program.  If not, see <https://www.gnu.org/licenses/>.
 ############################################################################
 
-from .parent import register_parent,unregister_parent
+from .modifier import register_modifier,unregister_modifier
 from .menu import register_menu,unregister_menu
 
-def register_animation():
-	register_parent()
+def register_blender():
+	register_modifier()
 	register_menu()
 
-def unregister_animation():
-	unregister_parent()
+def unregister_blender():
 	unregister_menu()
+	unregister_modifier()

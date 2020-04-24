@@ -1,3 +1,21 @@
+############################################################################
+#	BsMax, 3D apps inteface simulator and tools pack for Blender
+#	Copyright (C) 2020  Naser Merati (Nevil)
+#
+#	This program is free software: you can redistribute it and/or modify
+#	it under the terms of the GNU General Public License as published by
+#	the Free Software Foundation, either version 3 of the License, or
+#	(at your option) any later version.
+#
+#	This program is distributed in the hope that it will be useful,
+#	but WITHOUT ANY WARRANTY; without even the implied warranty of
+#	MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+#	GNU General Public License for more details.
+#
+#	You should have received a copy of the GNU General Public License
+#	along with this program.  If not, see <https://www.gnu.org/licenses/>.
+############################################################################
+
 import bpy
 
 v3camera, v3empty, v3light = None, None, None
@@ -20,9 +38,10 @@ def set_3dsmax_theme():
 	bpy.context.preferences.themes[0].view_3d.empty = (0.054,1,0.007)
 	bpy.context.preferences.themes[0].view_3d.light = (1,0.898,0,1)
 
-def set_custom_theme(mode):
+def register_theme(mode):
 	store_original_theme()
 	if mode == '3DsMax':
 		set_3dsmax_theme()
 
-__all__ = ["restore_original_theme", "set_custom_theme"]
+def unregister_theme():
+	store_original_theme()

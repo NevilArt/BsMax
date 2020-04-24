@@ -1,8 +1,35 @@
-from .animationkey import *
-from .frameupdate import *
+############################################################################
+#	BsMax, 3D apps inteface simulator and tools pack for Blender
+#	Copyright (C) 2020  Naser Merati (Nevil)
+#
+#	This program is free software: you can redistribute it and/or modify
+#	it under the terms of the GNU General Public License as published by
+#	the Free Software Foundation, either version 3 of the License, or
+#	(at your option) any later version.
+#
+#	This program is distributed in the hope that it will be useful,
+#	but WITHOUT ANY WARRANTY; without even the implied warranty of
+#	MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+#	GNU General Public License for more details.
+#
+#	You should have received a copy of the GNU General Public License
+#	along with this program.  If not, see <https://www.gnu.org/licenses/>.
+############################################################################
 
-def animation_cls(register, pref):
-	animationkey_cls(register)
-	frameupdate_cls(register)
+from .animationkey import register_animationkey,unregister_animationkey
+from .frameupdate import register_frameupdate,unregister_frameupdate
+from .parent import register_parent,unregister_parent
+from .menu import register_menu,unregister_menu
 
-__all__ = ["animation_cls"]
+def register_animation():
+	register_animationkey()
+	register_frameupdate()
+	register_parent()
+	register_menu()
+
+def unregister_animation():
+	unregister_animationkey()
+	unregister_frameupdate()
+	unregister_menu()
+	unregister_parent()
+	

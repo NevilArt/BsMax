@@ -1,3 +1,18 @@
+############################################################################
+#	This program is free software: you can redistribute it and/or modify
+#	it under the terms of the GNU General Public License as published by
+#	the Free Software Foundation,either version 3 of the License,or
+#	(at your option) any later version.
+#
+#	This program is distributed in the hope that it will be useful,
+#	but WITHOUT ANY WARRANTY; without even the implied warranty of
+#	MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+#	GNU General Public License for more details.
+#
+#	You should have received a copy of the GNU General Public License
+#	along with this program.  If not,see <https://www.gnu.org/licenses/>.
+############################################################################
+
 import bpy
 from bpy.props import *
 from bpy.types import Panel,Operator
@@ -497,14 +512,10 @@ class BsMax_OT_SetObjectMode(Operator):
 				bpy.ops.object.editmode_toggle()
 		return {"FINISHED"}
 
-def panel_cls(register):
-	classes = [BsMax_PT_PrimitivePanel,	BsMax_OT_EditPrimitive, BsMax_OT_SetObjectMode]
-	if register:
-		[bpy.utils.register_class(c) for c in classes]
-	else:
-		[bpy.utils.unregister_class(c) for c in classes]
+classes = [BsMax_PT_PrimitivePanel,	BsMax_OT_EditPrimitive, BsMax_OT_SetObjectMode]
 
-if __name__ == '__main__':
-	panel_cls(True)
+def register_panel():
+	[bpy.utils.register_class(c) for c in classes]
 
-__all__ = ["panel_cls"]
+def unregister_panel():
+	[bpy.utils.unregister_class(c) for c in classes]

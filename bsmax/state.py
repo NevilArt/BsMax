@@ -1,3 +1,18 @@
+############################################################################
+#	This program is free software: you can redistribute it and/or modify
+#	it under the terms of the GNU General Public License as published by
+#	the Free Software Foundation, either version 3 of the License, or
+#	(at your option) any later version.
+#
+#	This program is distributed in the hope that it will be useful,
+#	but WITHOUT ANY WARRANTY; without even the implied warranty of
+#	MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+#	GNU General Public License for more details.
+#
+#	You should have received a copy of the GNU General Public License
+#	along with this program.  If not, see <https://www.gnu.org/licenses/>.
+############################################################################
+
 import bpy
 
 # def active_object_is_ready(ctx):
@@ -64,24 +79,7 @@ def get_active_type(ctx):
 	active_obj = ctx.active_object
 	return None if active_obj == None else active_obj.type
 
-def get_pref(ctx):
-	for pr in ctx.preferences.addons:
-		addon = str(pr)
-		st = addon.find('BsMax')
-		if st != -1:
-			return ctx.preferences.addons[addon[st:-3]].preferences
-	return None
-
 def get_obj_class(obj):
 	if obj.type in ['MESH', 'CURVE']:
 		return obj.data.primitivedata.classname
 	return ""
-
-__all__ = ["is_active_object",
-		"is_active_primitive",
-		"is_objects_selected",
-		"is_object_mode",
-		"has_constraint",
-		"get_active_type",
-		"get_pref",
-		"get_obj_class"]

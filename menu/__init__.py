@@ -1,35 +1,41 @@
-#from .blender.init import *
-from .quad import *
+############################################################################
+#	This program is free software: you can redistribute it and/or modify
+#	it under the terms of the GNU General Public License as published by
+#	the Free Software Foundation, either version 3 of the License, or
+#	(at your option) any later version.
+#
+#	This program is distributed in the hope that it will be useful,
+#	but WITHOUT ANY WARRANTY; without even the implied warranty of
+#	MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+#	GNU General Public License for more details.
+#
+#	You should have received a copy of the GNU General Public License
+#	along with this program.  If not, see <https://www.gnu.org/licenses/>.
+############################################################################
+
+from .blender import register_blenderdefault,unregister_blenderdefault
+from .quad import register_quad,unregister_quad
 # from .marking.init import *
 
-current = None
+class RegisterData:
+	def __init__(self):
+		self.pack = ''
+reg = RegisterData()
 
-def menu_cls(register, pref):
-	global current
+def register_menu(preferences):
+	unregister_menu()
 
-	# Unregister older #
-	if register and current != None:
-		if current == "QuadMenu_st_andkey":
-			quad_cls(False, pref, False)
-		elif current == "QuadMenu_st_nokey":
-			quad_cls(False, pref, False)
-		elif current == "Marking_Menu":
-			# markmenu_cls(False, pref)
-			pass
-
-	# if pref.floatmenus == "Blender":
-	#  	blender_cls(register, pref)
-
-	if pref.floatmenus == "QuadMenu_st_nokey":
-		quad_cls(register, pref, False)
-
-	elif pref.floatmenus == "QuadMenu_st_andkey":
-		quad_cls(register, pref, True)
-
-	elif pref.floatmenus == "Marking_Menu":
-		#markmenu_cls(register, pref)
+	floatmenus = preferences.floatmenus
+	if floatmenus == "QuadMenu_st_nokey":
+		register_quad(preferences)
+	elif floatmenus == "QuadMenu_st_andkey":
+		register_quad(preferences)
+	elif floatmenus == "Marking_Menu":
 		pass
+	
+	reg.pack = floatmenus
 
-	current = pref.floatmenus
-
-__all__ = ["menu_cls"]
+def unregister_menu():
+	if reg.pack == "QuadMenu_st_andkey" or reg.pack == "QuadMenu_st_nokey":
+		unregister_quad()
+	reg.pack = ''

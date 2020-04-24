@@ -1,3 +1,18 @@
+############################################################################
+#	This program is free software: you can redistribute it and/or modify
+#	it under the terms of the GNU General Public License as published by
+#	the Free Software Foundation,either version 3 of the License,or
+#	(at your option) any later version.
+#
+#	This program is distributed in the hope that it will be useful,
+#	but WITHOUT ANY WARRANTY; without even the implied warranty of
+#	MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+#	GNU General Public License for more details.
+#
+#	You should have received a copy of the GNU General Public License
+#	along with this program.  If not,see <https://www.gnu.org/licenses/>.
+############################################################################
+
 import bpy
 from math import pi, sin, cos, radians
 from primitive.primitive import CreatePrimitive, PrimitiveGeometryClass
@@ -158,12 +173,8 @@ class BsMax_OT_CreateSphere(CreatePrimitive):
 	def finish(self):
 		pass
 
-def sphere_cls(register):
-	c = BsMax_OT_CreateSphere
-	if register: bpy.utils.register_class(c)
-	else: bpy.utils.unregister_class(c)
-
-if __name__ == '__main__':
-	sphere_cls(True)
-
-__all__ = ["sphere_cls", "Sphere"]
+def register_sphere():
+	bpy.utils.register_class(BsMax_OT_CreateSphere)
+	
+def unregister_sphere():	
+	bpy.utils.unregister_class(BsMax_OT_CreateSphere)

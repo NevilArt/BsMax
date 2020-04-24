@@ -1,3 +1,18 @@
+############################################################################
+#	This program is free software: you can redistribute it and/or modify
+#	it under the terms of the GNU General Public License as published by
+#	the Free Software Foundation,either version 3 of the License,or
+#	(at your option) any later version.
+#
+#	This program is distributed in the hope that it will be useful,
+#	but WITHOUT ANY WARRANTY; without even the implied warranty of
+#	MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+#	GNU General Public License for more details.
+#
+#	You should have received a copy of the GNU General Public License
+#	along with this program.  If not,see <https://www.gnu.org/licenses/>.
+############################################################################
+
 import bpy
 from primitive.primitive import CreatePrimitive, PrimitiveGeometryClass
 from bsmax.actions import delete_objects
@@ -171,12 +186,8 @@ class BsMax_OT_CreatePyramid(CreatePrimitive):
 	def finish(self):
 		pass
 
-def pyramid_cls(register):
-	c = BsMax_OT_CreatePyramid
-	if register: bpy.utils.register_class(c)
-	else: bpy.utils.unregister_class(c)
+def register_pyramid():
+	bpy.utils.register_class(BsMax_OT_CreatePyramid)
 
-if __name__ == '__main__':
-	pyramid_cls(True)
-
-__all__ = ["pyramid_cls", "Pyramid"]
+def unregister_pyramid():
+	bpy.utils.unregister_class(BsMax_OT_CreatePyramid)

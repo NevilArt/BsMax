@@ -14,7 +14,7 @@
 ############################################################################
 
 import bpy
-from .classes import KeyMaps
+from bsmax.keymaps import KeyMaps
 
 def collect_mute_keymaps(km):
 	pass
@@ -28,14 +28,11 @@ def create_keymaps(km):
 		
 keymaps = KeyMaps()
 
-def softimage_keys(register):
+def register_softimage():
 	keymaps.reset()
-	if register:
-		create_keymaps(keymaps)
-		collect_mute_keymaps(keymaps)
-	keymaps.set_mute(not register)
+	create_keymaps(keymaps)
+	collect_mute_keymaps(keymaps)
+	keymaps.set_mute(False)
 
-if __name__ == '__main__':
-	softimage_keys(True)
-
-__all__=["softimage_keys"]
+def unregister_softimage():
+	keymaps.reset()

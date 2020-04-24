@@ -1,3 +1,18 @@
+############################################################################
+#	This program is free software: you can redistribute it and/or modify
+#	it under the terms of the GNU General Public License as published by
+#	the Free Software Foundation,either version 3 of the License,or
+#	(at your option) any later version.
+#
+#	This program is distributed in the hope that it will be useful,
+#	but WITHOUT ANY WARRANTY; without even the implied warranty of
+#	MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+#	GNU General Public License for more details.
+#
+#	You should have received a copy of the GNU General Public License
+#	along with this program.  If not,see <https://www.gnu.org/licenses/>.
+############################################################################
+
 import bpy
 from bpy.props import BoolProperty
 from math import pi, sin, cos
@@ -160,15 +175,11 @@ class BsMax_OT_CreateAreaLight(CreatePrimitive):
 	def finish(self):
 		pass
 
-
-def light_cls(register):
-	classes = [BsMax_OT_CreatePointLight, BsMax_OT_CreateSunLight,
+classes = [BsMax_OT_CreatePointLight, BsMax_OT_CreateSunLight,
 			BsMax_OT_CreateSpotLight, BsMax_OT_CreateAreaLight]
-	for c in classes:
-		if register: bpy.utils.register_class(c)
-		else: bpy.utils.unregister_class(c)
 
-if __name__ == '__main__':
-	light_cls(True)
+def register_light():
+	[bpy.utils.register_class(c) for c in classes]
 
-__all__ = ["light_cls", "Compass"]
+def unregister_light():
+	[bpy.utils.unregister_class(c) for c in classes]

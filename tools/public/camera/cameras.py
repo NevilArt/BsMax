@@ -1,3 +1,21 @@
+############################################################################
+#	BsMax, 3D apps inteface simulator and tools pack for Blender
+#	Copyright (C) 2020  Naser Merati (Nevil)
+#
+#	This program is free software: you can redistribute it and/or modify
+#	it under the terms of the GNU General Public License as published by
+#	the Free Software Foundation, either version 3 of the License, or
+#	(at your option) any later version.
+#
+#	This program is distributed in the hope that it will be useful,
+#	but WITHOUT ANY WARRANTY; without even the implied warranty of
+#	MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+#	GNU General Public License for more details.
+#
+#	You should have received a copy of the GNU General Public License
+#	along with this program.  If not, see <https://www.gnu.org/licenses/>.
+############################################################################
+
 import bpy, mathutils
 from bpy.props import EnumProperty, BoolProperty
 from bpy.types import Operator
@@ -170,23 +188,18 @@ def camera_menu(self, ctx):
 	layout.operator("bsmax.createcamerafromview")
 	layout.operator("bsmax.searchcamera")
 
-def cameras_cls(register):
-	classes = [BsMax_OT_SetAsActiveCamera,
+classes = [BsMax_OT_SetAsActiveCamera,
 			BsMax_OT_CreateCameraFromView,
 			BsMax_OT_SearchCamera,
 			BsMax_OT_SelectCamera,
 			BsMax_OT_LockCameraToViewToggle,
 			BsMax_OT_SelectActiveCamera,
 			BsMax_OT_ShowSafeAreaToggle]
-	
-	if register:
-		bpy.types.VIEW3D_MT_view_cameras.append(camera_menu)
-		[bpy.utils.register_class(c) for c in classes]
-	else:
-		bpy.types.VIEW3D_MT_view_cameras.remove(camera_menu)
-		[bpy.utils.unregister_class(c) for c in classes]
 
-if __name__ == '__main__':
-	cameras_cls(True)
+def register_cameras():
+	[bpy.utils.register_class(c) for c in classes]
+	bpy.types.VIEW3D_MT_view_cameras.append(camera_menu)
 
-__all__ = ["cameras_cls"]
+def unregister_cameras():
+	bpy.types.VIEW3D_MT_view_cameras.remove(camera_menu)	
+	[bpy.utils.unregister_class(c) for c in classes]

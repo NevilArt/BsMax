@@ -14,7 +14,7 @@
 ############################################################################
 
 import bpy
-from .classes import KeyMaps
+from bsmax.keymaps import KeyMaps
 
 def collect_mute_keymaps(km):
 	pass
@@ -60,14 +60,11 @@ def create_keymaps(km):
 
 keymaps = KeyMaps()
 
-def public_keys(register,pref):
+def register_public():
 	keymaps.reset()
-	if register:
-		create_keymaps(keymaps)
-		collect_mute_keymaps(keymaps)
-	keymaps.set_mute(not register)
+	create_keymaps(keymaps)
+	collect_mute_keymaps(keymaps)
+	keymaps.set_mute(False)
 
-if __name__ == '__main__':
-	public_keys(True,"")
-
-__all__=["public_keys"]
+def unregister_public():
+	keymaps.reset()

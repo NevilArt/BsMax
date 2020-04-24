@@ -1,3 +1,18 @@
+############################################################################
+#	This program is free software: you can redistribute it and/or modify
+#	it under the terms of the GNU General Public License as published by
+#	the Free Software Foundation, either version 3 of the License, or
+#	(at your option) any later version.
+#
+#	This program is distributed in the hope that it will be useful,
+#	but WITHOUT ANY WARRANTY; without even the implied warranty of
+#	MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+#	GNU General Public License for more details.
+#
+#	You should have received a copy of the GNU General Public License
+#	along with this program.  If not, see <https://www.gnu.org/licenses/>.
+############################################################################
+
 import bpy
 from bpy.types import Operator
 from bsmax.actions import modifier_add
@@ -605,69 +620,64 @@ class BsMax_OT_SOFT_BODY_Add(Operator):
 		modifier_add(ctx,ctx.selected_objects,'SOFT_BODY')
 		return {'FINISHED'}
 
-def modifier_cls(register):
-	classes = [BsMax_OT_Lattice_2x2x2_Set,
-			BsMax_OT_Lattice_3x3x3_Set,
-			BsMax_OT_Lattice_4x4x4_Set,
-			BsMax_OT_DATA_TRANSFER_Add,
-			BsMax_OT_MESH_CACHE_Add,
-			BsMax_OT_MESH_SEQUENCE_CACHE_Add,
-			BsMax_OT_NORMAL_EDIT_Add,
-			BsMax_OT_WEIGHTED_NORMAL_Add,
-			BsMax_OT_UV_PROJECT_Add,
-			BsMax_OT_UV_WARP_Add,
-			BsMax_OT_VERTEX_WEIGHT_EDIT_Add,
-			BsMax_OT_VERTEX_WEIGHT_MIX_Add,
-			BsMax_OT_VERTEX_WEIGHT_PROXIMITY_Add,
-			BsMax_OT_ARRAY_Add,
-			BsMax_OT_BEVEL_Add,
-			BsMax_OT_BOOLEAN_Add,
-			BsMax_OT_BUILD_Add,
-			BsMax_OT_DECIMATE_Add,
-			BsMax_OT_EDGE_SPLIT_Add,
-			BsMax_OT_Mask_Add,
-			BsMax_OT_MIRROR_Add,
-			BsMax_OT_MULTIRES_Add,
-			BsMax_OT_REMESH_Add,
-			BsMax_OT_Screw_Add,
-			BsMax_OT_SKIN_Add,
-			BsMax_OT_SOLIDIFY_Add,
-			BsMax_OT_SUBSURF_Add,
-			BsMax_OT_TRIANGULATE_Add,
-			BsMax_OT_WIREFRAME_Add,
-			BsMax_OT_ARMATURE_Add,
-			BsMax_OT_CAST_Add,
-			BsMax_OT_CURVE_Add,
-			BsMax_OT_DISPLACE_Add,
-			BsMax_OT_HOOK_Add,
-			BsMax_OT_LAPLACIANDEFORM_Add,
-			BsMax_OT_LATTICE_Add,
-			BsMax_OT_MESH_DEFORM_Add,
-			BsMax_OT_SHRINKWRAP_Add,
-			BsMax_OT_SIMPLE_DEFORM_Add,
-			BsMax_OT_SMOOTH_Add,
-			BsMax_OT_CORRECTIVE_SMOOTH_Add,
-			BsMax_OT_LAPLACIANSMOOTH_Add,
-			BsMax_OT_SURFACE_DEFORM_Add,
-			BsMax_OT_WARP_Add,
-			BsMax_OT_WAVE_Add,
-			BsMax_OT_CLOTH_Add,
-			BsMax_OT_COLLISION_Add,
-			BsMax_OT_DYNAMIC_PAINT_Add,
-			BsMax_OT_EXPLODE_Add,
-			BsMax_OT_FLUID_SIMULATION_Add,
-			BsMax_OT_OCEAN_Add,
-			BsMax_OT_PARTICLE_INSTANCE_Add,
-			BsMax_OT_PARTICLE_SYSTEM_Add,
-			BsMax_OT_SMOKE_Add,
-			BsMax_OT_SOFT_BODY_Add]
+classes = [BsMax_OT_Lattice_2x2x2_Set,
+		BsMax_OT_Lattice_3x3x3_Set,
+		BsMax_OT_Lattice_4x4x4_Set,
+		BsMax_OT_DATA_TRANSFER_Add,
+		BsMax_OT_MESH_CACHE_Add,
+		BsMax_OT_MESH_SEQUENCE_CACHE_Add,
+		BsMax_OT_NORMAL_EDIT_Add,
+		BsMax_OT_WEIGHTED_NORMAL_Add,
+		BsMax_OT_UV_PROJECT_Add,
+		BsMax_OT_UV_WARP_Add,
+		BsMax_OT_VERTEX_WEIGHT_EDIT_Add,
+		BsMax_OT_VERTEX_WEIGHT_MIX_Add,
+		BsMax_OT_VERTEX_WEIGHT_PROXIMITY_Add,
+		BsMax_OT_ARRAY_Add,
+		BsMax_OT_BEVEL_Add,
+		BsMax_OT_BOOLEAN_Add,
+		BsMax_OT_BUILD_Add,
+		BsMax_OT_DECIMATE_Add,
+		BsMax_OT_EDGE_SPLIT_Add,
+		BsMax_OT_Mask_Add,
+		BsMax_OT_MIRROR_Add,
+		BsMax_OT_MULTIRES_Add,
+		BsMax_OT_REMESH_Add,
+		BsMax_OT_Screw_Add,
+		BsMax_OT_SKIN_Add,
+		BsMax_OT_SOLIDIFY_Add,
+		BsMax_OT_SUBSURF_Add,
+		BsMax_OT_TRIANGULATE_Add,
+		BsMax_OT_WIREFRAME_Add,
+		BsMax_OT_ARMATURE_Add,
+		BsMax_OT_CAST_Add,
+		BsMax_OT_CURVE_Add,
+		BsMax_OT_DISPLACE_Add,
+		BsMax_OT_HOOK_Add,
+		BsMax_OT_LAPLACIANDEFORM_Add,
+		BsMax_OT_LATTICE_Add,
+		BsMax_OT_MESH_DEFORM_Add,
+		BsMax_OT_SHRINKWRAP_Add,
+		BsMax_OT_SIMPLE_DEFORM_Add,
+		BsMax_OT_SMOOTH_Add,
+		BsMax_OT_CORRECTIVE_SMOOTH_Add,
+		BsMax_OT_LAPLACIANSMOOTH_Add,
+		BsMax_OT_SURFACE_DEFORM_Add,
+		BsMax_OT_WARP_Add,
+		BsMax_OT_WAVE_Add,
+		BsMax_OT_CLOTH_Add,
+		BsMax_OT_COLLISION_Add,
+		BsMax_OT_DYNAMIC_PAINT_Add,
+		BsMax_OT_EXPLODE_Add,
+		BsMax_OT_FLUID_SIMULATION_Add,
+		BsMax_OT_OCEAN_Add,
+		BsMax_OT_PARTICLE_INSTANCE_Add,
+		BsMax_OT_PARTICLE_SYSTEM_Add,
+		BsMax_OT_SMOKE_Add,
+		BsMax_OT_SOFT_BODY_Add]
+		
+def register_modifier():
+	[bpy.utils.register_class(c) for c in classes]
 
-	if register:
-		[bpy.utils.register_class(c) for c in classes]
-	else:
-		[bpy.utils.unregister_class(c) for c in classes]
-
-if __name__ == '__main__':
-	modifier_cls(True)
-
-__all__ = ["modifier_cls"]
+def unregister_modifier():
+	[bpy.utils.unregister_class(c) for c in classes]

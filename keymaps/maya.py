@@ -14,7 +14,7 @@
 ############################################################################
 
 import bpy
-from .classes import KeyMaps
+from bsmax.keymaps import KeyMaps
 
 # https://www.autodesk.com/shortcuts/maya
 # TODO
@@ -125,17 +125,14 @@ def create_keymaps(km):
 
 keymaps = KeyMaps()
 
-def maya_keys(register):
+def register_maya():
 	keymaps.reset()
-	if register:
-		create_keymaps(keymaps)
-		collect_mute_keymaps(keymaps)
-	keymaps.set_mute(not register)
+	create_keymaps(keymaps)
+	collect_mute_keymaps(keymaps)
+	keymaps.set_mute(False)
 
-if __name__ == '__main__':
-	maya_keys(True)
-
-__all__=["maya_keys"]
+def unregister_maya():
+	keymaps.reset()
 
 
 """

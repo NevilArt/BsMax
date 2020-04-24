@@ -13,22 +13,13 @@
 #	along with this program.  If not, see <https://www.gnu.org/licenses/>.
 ############################################################################
 
-from .assistant import register_assistant,unregister_assistant
-from .public import public_cls
-from .special import special_cls
+from .public import register_public,unregister_public
+from .special import register_special,Unregister_special
 
-def register_tools(pref):
-	register_assistant()
-	public_cls(True,pref)
-	special_cls(True,pref)
+def register_tools(preferences):
+	register_public(preferences)
+	register_special(preferences)
 
-def unregister_tools(pref):
-	unregister_assistant()
-	public_cls(False,pref)
-	special_cls(False,pref)
-
-def tools_cls(reg, pref):
-	if reg:
-		register_tools(pref)
-	else:
-		unregister_tools(pref)
+def unregister_tools():
+	unregister_public()
+	Unregister_special()

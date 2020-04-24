@@ -1,14 +1,34 @@
-from .meshs import *
-from .smartcreate import *
-from .smartloop import *
-from .smartring import *
-from .weld import *
+############################################################################
+#	This program is free software: you can redistribute it and/or modify
+#	it under the terms of the GNU General Public License as published by
+#	the Free Software Foundation, either version 3 of the License, or
+#	(at your option) any later version.
+#
+#	This program is distributed in the hope that it will be useful,
+#	but WITHOUT ANY WARRANTY; without even the implied warranty of
+#	MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+#	GNU General Public License for more details.
+#
+#	You should have received a copy of the GNU General Public License
+#	along with this program.  If not, see <https://www.gnu.org/licenses/>.
+############################################################################
 
-def mesh_cls(register, pref):
-	meshs_cls(register)
-	smartcreate_cls(register)
-	smartloop_cls(register)
-	smartring_cls(register)
-	weld_cls(register)
+from .meshs import register_meshs,unregister_meshs
+from .smartcreate import register_smartcreate,unregister_smartcreate
+from .smartloop import register_smartloop,unregister_smartloop
+from .smartring import register_smartring,unregister_smartring
+from .weld import register_weld,unregister_weld
 
-__all__ = ["mesh_cls"]
+def register_mesh():
+	register_meshs()
+	register_smartcreate()
+	register_smartloop()
+	register_smartring()
+	register_weld()
+
+def unregister_mesh():
+	unregister_meshs()
+	unregister_smartcreate()
+	unregister_smartloop()
+	unregister_smartring()
+	unregister_weld()

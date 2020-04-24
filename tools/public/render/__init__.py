@@ -1,8 +1,31 @@
-from .frames import *
-from .proxy import *
+############################################################################
+#	This program is free software: you can redistribute it and/or modify
+#	it under the terms of the GNU General Public License as published by
+#	the Free Software Foundation, either version 3 of the License, or
+#	(at your option) any later version.
+#
+#	This program is distributed in the hope that it will be useful,
+#	but WITHOUT ANY WARRANTY; without even the implied warranty of
+#	MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+#	GNU General Public License for more details.
+#
+#	You should have received a copy of the GNU General Public License
+#	along with this program.  If not, see <https://www.gnu.org/licenses/>.
+############################################################################
 
-def render_cls(register, pref):
-	frames_cls(register)
-	proxy_cls(register)
+from .frames import register_frames,unregister_frames
+# from .proxy import register_proxy,unregister_proxy
+from .lightlister import register_lightlister,unregister_lightlister
+# from .menu import register_menu,unregister_menu
 
-__all__ = ["render_cls"]
+def register_render():
+	register_frames()
+	# register_proxy()
+	register_lightlister()
+	# register_menu()
+
+def unregister_render():
+	unregister_frames()
+	# unregister_proxy()
+	unregister_lightlister()
+	# unregister_menu()

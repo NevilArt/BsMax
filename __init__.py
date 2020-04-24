@@ -20,7 +20,7 @@ bl_info = {
 	"name": "BsMax",
 	"description": "BsMax for Blender 2.80 ~ 2.90",
 	"author": "Naser Merati (Nevil)",
-	"version": (0, 1, 0, 20200421),
+	"version": (0, 1, 0, 20200424),
 	"blender": (2, 80, 0),# 2.80~2.90
 	"location": "Almost Everywhere in Blender",
 	"wiki_url": "https://github.com/NevilArt/BsMax_2_80/wiki",
@@ -29,7 +29,7 @@ bl_info = {
 	"category": "Interface"
 }
 
-import bpy, sys, os
+import bpy,sys,os
 from bpy.props import EnumProperty
 from bpy.types import Operator, AddonPreferences
 
@@ -40,30 +40,26 @@ if path not in sys.path:
 
 import templates
 
-from .keymaps import keymaps_keys,navigation_keys,public_keys
-from .menu import menu_cls
-from .primitive import primitive_cls
-from .startup import startup_cls
-from .tools import tools_cls,special_cls
+from .keymaps import register_keymaps,unregister_keymaps,register_navigation,unregister_navigation
+from .menu import register_menu,unregister_menu
+from .primitive import register_primitives,unregister_primitives
+from .startup import register_startup,unregister_startup
+from .tools import register_tools,unregister_tools,register_special
 
+addons = bpy.context.preferences.addons
 # Addon preferences
-def fix_option(self):
-	if self.keymaps != "Blender":
-		if self.toolpack != self.keymaps:
-			self.toolpack = self.keymaps
-
 def update_navigation(self, ctx):
-	navigation_keys(True, get_pref())
+	register_navigation(addons[__name__].preferences)
 
 def update_toolpack(self, ctx):
-	special_cls(True, get_pref())
+	register_special(addons[__name__].preferences)
 
 def update_floatmenu(self, ctx):
-	menu_cls(True, get_pref())
+	register_menu(addons[__name__].preferences)
 
 def update_keymaps(self, ctx):
-	fix_option(self)
-	keymaps_keys(True, get_pref())
+	self.arreng()
+	register_keymaps(addons[__name__].preferences)
 
 class BsMax_AddonPreferences(AddonPreferences):
 	bl_idname = __name__
@@ -104,10 +100,18 @@ class BsMax_AddonPreferences(AddonPreferences):
 		default='Blender',
 		description='Overide Full Keymap',
 		update=update_keymaps,items=apppack)
+	
+	def arreng(self):
+		if self.keymaps != "Blender":
+			if self.toolpack != self.keymaps:
+				self.toolpack = self.keymaps
+		if self.floatmenus == 'QuadMenu_st_andkey' or self.floatmenus == 'QuadMenu_st_nokey':
+			if self.toolpack != '3DsMax':
+				self.toolpack = '3DsMax'
 
 	def draw(self, ctx):
+		self.arreng()
 		layout = self.layout
-		fix_option(self)
 		row = layout.row()
 		col = row.column()
 		col.prop(self, "navigation")
@@ -115,30 +119,24 @@ class BsMax_AddonPreferences(AddonPreferences):
 		col.prop(self, "floatmenus")
 		col.prop(self, "toolpack")
 
-def get_pref():
-	return bpy.context.preferences.addons[__name__].preferences
-
 def register():
 	bpy.utils.register_class(BsMax_AddonPreferences)
-	pref = get_pref()
-	primitive_cls(True, pref)
-	tools_cls(True,pref)
-	startup_cls(True, pref)
-	menu_cls(True, pref)
-	navigation_keys(True, pref)
-	keymaps_keys(True, pref)
-	public_keys(True, pref)
+	preferences = bpy.context.preferences.addons[__name__].preferences
+	register_primitives()
+	register_tools(preferences)
+	register_startup(preferences)
+	register_menu(preferences)
+	register_navigation(preferences)
+	register_keymaps(preferences)
 	templates.register()
 	
 def unregister():
-	pref = get_pref()
-	navigation_keys(False, pref)
-	keymaps_keys(False, pref)
-	public_keys(False, pref)
-	menu_cls(False, pref)
-	primitive_cls(False, pref)
-	tools_cls(False,pref)
-	startup_cls(False, pref)
+	unregister_keymaps()
+	unregister_navigation()
+	unregister_menu()
+	unregister_primitives()
+	unregister_tools()
+	unregister_startup()
 	bpy.utils.unregister_class(BsMax_AddonPreferences)
 	templates.unregister()
 	if path not in sys.path:

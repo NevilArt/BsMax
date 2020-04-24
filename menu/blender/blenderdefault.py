@@ -1,3 +1,18 @@
+############################################################################
+#	This program is free software: you can redistribute it and/or modify
+#	it under the terms of the GNU General Public License as published by
+#	the Free Software Foundation, either version 3 of the License, or
+#	(at your option) any later version.
+#
+#	This program is distributed in the hope that it will be useful,
+#	but WITHOUT ANY WARRANTY; without even the implied warranty of
+#	MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+#	GNU General Public License for more details.
+#
+#	You should have received a copy of the GNU General Public License
+#	along with this program.  If not, see <https://www.gnu.org/licenses/>.
+############################################################################
+
 import bpy
 from bpy.types import Operator
 
@@ -7,7 +22,7 @@ class BsMax_OT_BlenderDefaultMenueCall(Operator):
 	def execute(self, ctx):
 		mode = ctx.mode
 		if mode == 'OBJECT':
-			mt = "VIEW3D_MT_object_context_menu"	
+			mt = "VIEW3D_MT_object_context_menu"
 		elif mode == 'EDIT_MESH':
 			mt = "VIEW3D_MT_edit_mesh_context_menu"
 		elif mode == 'EDIT_CURVE':
@@ -29,15 +44,12 @@ class BsMax_OT_BlenderDefaultMenueCall(Operator):
 		bpy.ops.wm.call_menu(name = mt)
 		return{"FINISHED"}
 
-def blenderdefault_cls(register):
-	c = BsMax_OT_BlenderDefaultMenueCall
-	if register: bpy.utils.register_class(c)
-	else: bpy.utils.unregister_class(c)
+def register_blenderdefault():
+	bpy.utils.register_class(BsMax_OT_BlenderDefaultMenueCall)
 
-if __name__ == '__main__':
-	blenderdefault_cls(True)
+def unregister_blenderdefault():
+	bpy.utils.unregister_class(BsMax_OT_BlenderDefaultMenueCall)
 
-__all__ = ["blenderdefault_cls"]
 
 # VIEW3D_PT_gpencil_draw_context_menu
 # VIEW3D_PT_gpencil_sculpt_context_menu
@@ -51,6 +63,3 @@ __all__ = ["blenderdefault_cls"]
 
 # TEXT_MT_toolbox
 # CLIP_MT_tracking_context_menu
-
-
-

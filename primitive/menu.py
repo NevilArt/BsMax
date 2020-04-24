@@ -1,3 +1,18 @@
+############################################################################
+#	This program is free software: you can redistribute it and/or modify
+#	it under the terms of the GNU General Public License as published by
+#	the Free Software Foundation,either version 3 of the License,or
+#	(at your option) any later version.
+#
+#	This program is distributed in the hope that it will be useful,
+#	but WITHOUT ANY WARRANTY; without even the implied warranty of
+#	MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+#	GNU General Public License for more details.
+#
+#	You should have received a copy of the GNU General Public License
+#	along with this program.  If not,see <https://www.gnu.org/licenses/>.
+############################################################################
+
 import bpy
 from bpy.types import Menu
 from bsmax.state import is_object_mode
@@ -282,41 +297,30 @@ def objects_context_menu(self, ctx):
 def CreateMenu_CallBack(self,ctx):
 	self.layout.menu("BSMAX_MT_createmenu")
 
-def Prepend_Create_Menu():
+classes = [BsMax_MT_VertexCreate,
+		BsMax_MT_MeshCreate,
+		BsMax_MT_CurveCreate,
+		BsMax_MT_SurfaceCreate,
+		BsMax_MT_MetaballCreate,
+		BsMax_MT_TextCreate,
+		BsMax_MT_GreacePencilCreate,
+		BsMax_MT_ArmatureCreate,
+		BsMax_MT_LatticeCreate,
+		BsMax_MT_EmptyCreate,
+		BsMax_MT_ImageCreate,
+		BsMax_MT_LightCreate,
+		BsMax_MT_LightProbsCreate,
+		BsMax_MT_CameraCreate,
+		BsMax_MT_SpeakerCreate,
+		BsMax_MT_ForceFieldCreate,
+		BsMax_MT_Create]
+
+def register_menu():
+	[bpy.utils.register_class(c) for c in classes]
 	bpy.types.VIEW3D_MT_editor_menus.prepend(CreateMenu_CallBack)
+	bpy.types.VIEW3D_MT_object_context_menu.append(objects_context_menu)
 
-def Remove_Create_Menu():
+def unregister_menu():
 	bpy.types.VIEW3D_MT_editor_menus.remove(CreateMenu_CallBack)  
-
-def menu_cls(register):
-	classes = [BsMax_MT_VertexCreate,
-			BsMax_MT_MeshCreate,
-			BsMax_MT_CurveCreate,
-			BsMax_MT_SurfaceCreate,
-			BsMax_MT_MetaballCreate,
-			BsMax_MT_TextCreate,
-			BsMax_MT_GreacePencilCreate,
-			BsMax_MT_ArmatureCreate,
-			BsMax_MT_LatticeCreate,
-			BsMax_MT_EmptyCreate,
-			BsMax_MT_ImageCreate,
-			BsMax_MT_LightCreate,
-			BsMax_MT_LightProbsCreate,
-			BsMax_MT_CameraCreate,
-			BsMax_MT_SpeakerCreate,
-			BsMax_MT_ForceFieldCreate,
-			BsMax_MT_Create]
-
-	if register:
-		[bpy.utils.register_class(c) for c in classes]
-		Prepend_Create_Menu()
-		bpy.types.VIEW3D_MT_object_context_menu.append(objects_context_menu)
-	else:
-		[bpy.utils.unregister_class(c) for c in classes]
-		Remove_Create_Menu()
-		bpy.types.VIEW3D_MT_object_context_menu.remove(objects_context_menu)
-
-if __name__ == '__main__':
-	menu_cls(True)
-
-__all__ = ["menu_cls"]
+	bpy.types.VIEW3D_MT_object_context_menu.remove(objects_context_menu)
+	[bpy.utils.unregister_class(c) for c in classes]

@@ -1,8 +1,22 @@
+############################################################################
+#	This program is free software: you can redistribute it and/or modify
+#	it under the terms of the GNU General Public License as published by
+#	the Free Software Foundation, either version 3 of the License, or
+#	(at your option) any later version.
+#
+#	This program is distributed in the hope that it will be useful,
+#	but WITHOUT ANY WARRANTY; without even the implied warranty of
+#	MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+#	GNU General Public License for more details.
+#
+#	You should have received a copy of the GNU General Public License
+#	along with this program.  If not, see <https://www.gnu.org/licenses/>.
+############################################################################
+
 import bpy
-from bpy.props import *
+from bpy.props import BoolProperty,FloatProperty,EnumProperty
 from bsmax.curve import Curve
-#from .operator import CurveTool
-from tools.public.curve.operator import CurveTool
+from .operator import CurveTool
 
 class BsMax_OT_BooleanCurve(CurveTool):
 	bl_idname = "curve.boolean"
@@ -37,10 +51,7 @@ class BsMax_OT_BooleanCurve(CurveTool):
 			index2 = indexes[1]
 		if len(indexes) == 2:
 			curve.boolean(index1, index2, self.mode, self.value)
-			#curve.merge_gaps_by_distance(0.00001)
 		curve.update()
-		# temprary solution
-		# bpy.ops.curve.mergebydistance('INVOKE_DEFAULT')
 
 	def draw(self, ctx):
 		layout = self.layout
@@ -51,14 +62,8 @@ class BsMax_OT_BooleanCurve(CurveTool):
 			col = layout.column(align=True)
 			col.prop(self,"value")
 
-def boolean_cls(register):
-	classes = [BsMax_OT_BooleanCurve]
-	if register: 
-		[bpy.utils.register_class(c) for c in classes]
-	else: 
-		[bpy.utils.unregister_class(c) for c in classes]
+def register_boolean():
+	bpy.utils.register_class(BsMax_OT_BooleanCurve)
 
-if __name__ == '__main__':
-	boolean_cls(True)
-
-__all__ = ["boolean_cls"]
+def unregister_boolean():
+	bpy.utils.unregister_class(BsMax_OT_BooleanCurve)

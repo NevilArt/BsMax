@@ -1,32 +1,45 @@
-from .blender.init import *
-from .max.init import *
-from .maya.init import *
+############################################################################
+#	This program is free software: you can redistribute it and/or modify
+#	it under the terms of the GNU General Public License as published by
+#	the Free Software Foundation, either version 3 of the License, or
+#	(at your option) any later version.
+#
+#	This program is distributed in the hope that it will be useful,
+#	but WITHOUT ANY WARRANTY; without even the implied warranty of
+#	MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+#	GNU General Public License for more details.
+#
+#	You should have received a copy of the GNU General Public License
+#	along with this program.  If not, see <https://www.gnu.org/licenses/>.
+############################################################################
 
-current = None
+from .blender import register_blender,unregister_blender
+from .max import register_max,unregister_max
+from .maya import register_maya,unregister_maya
 
-def special_cls(register, pref):
-	global current
+class RegisterData:
+	def __init__(self):
+		self.pack = ''
+reg = RegisterData()
 
-	if pref.toolpack != current:
-		# Unregister older #
-		if register and current != None:
-			if current == "Blender":
-				blender_cls(False, pref)
-			elif current == "3DsMax":
-				max_cls(False, pref)
-			elif current == "Maya":
-				maya_cls(False, pref)
+def register_special(preferences):
+	Unregister_special()
 
-		# register new #
-		if pref.toolpack == "Blender":
-			blender_cls(register, pref)
+	toolpack = preferences.toolpack
+	if toolpack == 'Blender':
+		register_blender()
+	elif toolpack == '3DsMax':
+		register_max()
+	elif toolpack == 'Maya':
+		register_maya()
 
-		if pref.toolpack == "3DsMax":
-			max_cls(register, pref)
+	reg.pack = toolpack
 
-		if pref.toolpack == "Maya":
-			maya_cls(register, pref)
-
-	current = pref.toolpack
-
-__all__ = ["special_cls"]
+def Unregister_special():
+	if reg.pack == 'Blender':
+		unregister_blender()
+	elif reg.pack == '3DsMax':
+		unregister_max()
+	elif reg.pack == 'Maya':
+		unregister_maya()
+	reg.pack = ''

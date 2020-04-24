@@ -1,3 +1,18 @@
+############################################################################
+#	This program is free software: you can redistribute it and/or modify
+#	it under the terms of the GNU General Public License as published by
+#	the Free Software Foundation, either version 3 of the License, or
+#	(at your option) any later version.
+#
+#	This program is distributed in the hope that it will be useful,
+#	but WITHOUT ANY WARRANTY; without even the implied warranty of
+#	MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+#	GNU General Public License for more details.
+#
+#	You should have received a copy of the GNU General Public License
+#	along with this program.  If not, see <https://www.gnu.org/licenses/>.
+############################################################################
+
 def get_rectangle(width, height, x, y):
 	verts = ((x,y),(x+width,y),(x+width,y+height),(x,y+height))
 	faces = ((0,1,2),(2,3,0))
@@ -29,5 +44,3 @@ def get_arrow(size, x, y, riverce):
 	verts = [(s[0]*size+x,s[1]*size+y) for s in shape]
 	faces =[(0,1,2)]
 	return verts, faces
-
-__all__ = ["get_rectangle", "get_frame", "get_setting_button", "get_checkmark", "get_arrow"]

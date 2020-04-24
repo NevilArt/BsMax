@@ -13,7 +13,7 @@
 #	along with this program.  If not, see <https://www.gnu.org/licenses/>.
 ############################################################################
 
-import bpy#, rna_keymap_ui
+import bpy
 from time import sleep
 from _thread import start_new_thread
 
@@ -61,7 +61,7 @@ class KeyMaps:
 			for key in km.keymap_items:
 				for mk in self.mutekeys:
 					if mk == key:
-						key.active = state
+						key.active = not state
 		except:
 			start_new_thread(self.set_mute,tuple([state]))
 
@@ -70,5 +70,3 @@ class KeyMaps:
 			km.keymap_items.remove(kmi)
 		self.keymaps.clear()
 		self.set_mute(False)
-
-__all__ = ["KeyMaps"]

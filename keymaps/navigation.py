@@ -14,7 +14,7 @@
 ############################################################################
 
 import bpy
-from .classes import KeyMaps
+from bsmax.keymaps import KeyMaps
 
 def collect_mute_keymaps(km):
 	pass
@@ -100,14 +100,12 @@ def create_keymaps(km,app):
 
 keymaps = KeyMaps()
 
-def navigation_keys(register,pref):
+def register_navigation(preferences):
+	navigation = preferences.navigation
 	keymaps.reset()
-	if register:
-		create_keymaps(keymaps,pref.navigation)
-		collect_mute_keymaps(keymaps)
-	keymaps.set_mute(not register)
+	create_keymaps(keymaps,navigation)
+	collect_mute_keymaps(keymaps)
+	keymaps.set_mute(False)
 
-if __name__ == '__main__':
-	navigation_keys(True,"3DsMax")
-
-__all__=["navigation_keys"]
+def unregister_navigation():
+	keymaps.reset()

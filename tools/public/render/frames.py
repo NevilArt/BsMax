@@ -1,3 +1,18 @@
+############################################################################
+#	This program is free software: you can redistribute it and/or modify
+#	it under the terms of the GNU General Public License as published by
+#	the Free Software Foundation, either version 3 of the License, or
+#	(at your option) any later version.
+#
+#	This program is distributed in the hope that it will be useful,
+#	but WITHOUT ANY WARRANTY; without even the implied warranty of
+#	MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+#	GNU General Public License for more details.
+#
+#	You should have received a copy of the GNU General Public License
+#	along with this program.  If not, see <https://www.gnu.org/licenses/>.
+############################################################################
+
 import bpy
 from bpy.types import Operator, Panel
 from bpy.props import StringProperty
@@ -77,21 +92,14 @@ class RENDER_PT_frames(Panel):
 		col.prop(ctx.scene, "frames", text="")
 		col.operator("render.renderframes")
 
-def frames_cls(register):
+classes = [BsMax_OT_RenderFrames,RENDER_PT_frames]
+
+def register_frames():
 	bpy.types.Scene.frames = StringProperty()
-	classes = [BsMax_OT_RenderFrames, RENDER_PT_frames]
+	[bpy.utils.register_class(c) for c in classes]
 
-	if register:
-		[bpy.utils.register_class(c) for c in classes]
-	else:
-		[bpy.utils.unregister_class(c) for c in classes]
-
-if __name__ == '__main__':
-	frames_cls(True)
-
-__all__ = ["frames_cls"]
-
-
+def unregister_frames():
+	[bpy.utils.unregister_class(c) for c in classes]
 
 #bpy.app.handlers.frame_change_post.append(frame_Update)render_cancel
 # render_complete

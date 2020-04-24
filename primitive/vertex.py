@@ -1,6 +1,21 @@
+############################################################################
+#	This program is free software: you can redistribute it and/or modify
+#	it under the terms of the GNU General Public License as published by
+#	the Free Software Foundation,either version 3 of the License,or
+#	(at your option) any later version.
+#
+#	This program is distributed in the hope that it will be useful,
+#	but WITHOUT ANY WARRANTY; without even the implied warranty of
+#	MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+#	GNU General Public License for more details.
+#
+#	You should have received a copy of the GNU General Public License
+#	along with this program.  If not,see <https://www.gnu.org/licenses/>.
+############################################################################
+
 import bpy
 from bpy.props import EnumProperty
-from primitive.primitive import CreatePrimitive, PrimitiveGeometryClass
+from primitive.primitive import CreatePrimitive,PrimitiveGeometryClass
 
 def GetVertexMesh(verts, mode):
 	edges,faces = [],[]
@@ -67,12 +82,8 @@ class BsMax_OT_CreateVertex(CreatePrimitive):
 		bpy.ops.object.origin_set(type='ORIGIN_GEOMETRY',center='MEDIAN')
 		self.subclass.reset()
 
-def vertex_cls(register):
-	c = BsMax_OT_CreateVertex
-	if register: bpy.utils.register_class(c)
-	else: bpy.utils.unregister_class(c)
-
-if __name__ == '__main__':
-	vertex_cls(True)
-
-__all__ = ["vertex_cls"]
+def register_vertex():
+	bpy.utils.register_class(BsMax_OT_CreateVertex)
+	
+def unregister_vertex():
+	bpy.utils.unregister_class(BsMax_OT_CreateVertex)

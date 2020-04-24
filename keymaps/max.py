@@ -14,7 +14,7 @@
 ############################################################################
 
 import bpy
-from .classes import KeyMaps
+from bsmax.keymaps import KeyMaps
 
 def collect_mute_keymaps(km):
 	# Disable/Enable Unwanted Default ShortKeys
@@ -564,14 +564,11 @@ def create_keymaps(km):
 
 keymaps = KeyMaps()
 
-def max_keys(register):
+def register_max():
 	keymaps.reset()
-	if register:
-		create_keymaps(keymaps)
-		collect_mute_keymaps(keymaps)
-	keymaps.set_mute(not register)
+	create_keymaps(keymaps)
+	collect_mute_keymaps(keymaps)
+	keymaps.set_mute(False)
 
-if __name__ == '__main__':
-	max_keys(True)
-
-__all__=["max_keys"]
+def unregister_max():
+	keymaps.reset()

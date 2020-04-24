@@ -1,3 +1,18 @@
+############################################################################
+#	This program is free software: you can redistribute it and/or modify
+#	it under the terms of the GNU General Public License as published by
+#	the Free Software Foundation, either version 3 of the License, or
+#	(at your option) any later version.
+#
+#	This program is distributed in the hope that it will be useful,
+#	but WITHOUT ANY WARRANTY; without even the implied warranty of
+#	MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+#	GNU General Public License for more details.
+#
+#	You should have received a copy of the GNU General Public License
+#	along with this program.  If not, see <https://www.gnu.org/licenses/>.
+############################################################################
+
 import bpy
 from bpy.types import Operator
 
@@ -196,25 +211,21 @@ class BsMax_OT_ShowCameraToggle(Operator):
 		ctx.space_data.show_object_viewport_camera = not state
 		return{"FINISHED"}
 
-def viewport_cls(register):
-	classes = [BsMax_OT_WireframeToggle,
-		BsMax_OT_EdgeFaceToggle,
-		BsMax_OT_ShadeSelectedFaces,
-		BsMax_OT_ShowHideGride,
-		BsMax_OT_ShowStatistics,
-		BsMax_OT_ShowGeometryToggle,
-		BsMax_OT_ShowHelperToggle,
-		BsMax_OT_ShowShapeToggle,
-		BsMax_OT_ShowLightToggle,
-		BsMax_OT_ShowBoneToggle,
-		BsMax_OT_ShowCameraToggle,
-		BsMax_OT_LightingToggle]
-	for c in classes:
-		if register: bpy.utils.register_class(c)
-		else: bpy.utils.unregister_class(c)
-	return classes
+classes = [BsMax_OT_WireframeToggle,
+	BsMax_OT_EdgeFaceToggle,
+	BsMax_OT_ShadeSelectedFaces,
+	BsMax_OT_ShowHideGride,
+	BsMax_OT_ShowStatistics,
+	BsMax_OT_ShowGeometryToggle,
+	BsMax_OT_ShowHelperToggle,
+	BsMax_OT_ShowShapeToggle,
+	BsMax_OT_ShowLightToggle,
+	BsMax_OT_ShowBoneToggle,
+	BsMax_OT_ShowCameraToggle,
+	BsMax_OT_LightingToggle]
+	
+def register_viewport():
+	[bpy.utils.register_class(c) for c in classes]
 
-if __name__ == '__main__':
-	viewport_cls(True)
-
-__all__ =  ["viewport_cls"]
+def unregister_viewport():
+	[bpy.utils.unregister_class(c) for c in classes]

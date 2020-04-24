@@ -1,3 +1,18 @@
+############################################################################
+#	This program is free software: you can redistribute it and/or modify
+#	it under the terms of the GNU General Public License as published by
+#	the Free Software Foundation, either version 3 of the License, or
+#	(at your option) any later version.
+#
+#	This program is distributed in the hope that it will be useful,
+#	but WITHOUT ANY WARRANTY; without even the implied warranty of
+#	MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+#	GNU General Public License for more details.
+#
+#	You should have received a copy of the GNU General Public License
+#	along with this program.  If not, see <https://www.gnu.org/licenses/>.
+############################################################################
+
 import bpy
 from bpy.types import Operator
 from bpy.props import BoolProperty
@@ -35,7 +50,6 @@ class BsMax_OT_test(Operator):
 				return {'FINISHED'}
 		return {'CANCELLED'}
 
-
 # class BsMax_OT_test(Operator):
 # 	bl_idname = "test.test"
 # 	bl_label = "Test"
@@ -48,16 +62,10 @@ class BsMax_OT_test(Operator):
 #         wm = context.window_manager
 #         return wm.window_manager.invoke_props_dialog(operator, width=300, height=20)
 
+classes = [BsMax_OT_TurnUV, BsMax_OT_test]
 
-def edit_cls(register):
-	classes = [BsMax_OT_TurnUV, BsMax_OT_test]
-	if register:
-		[bpy.utils.register_class(c) for c in classes]
-	else:
-		[bpy.utils.unregister_class(c) for c in classes]
+def register_edit():
+	[bpy.utils.register_class(c) for c in classes]
 
-if __name__ == '__main__':
-	edit_cls(True)
-
-__all__ = ["edit_cls"]
-
+def unregister_edit():
+	[bpy.utils.unregister_class(c) for c in classes]

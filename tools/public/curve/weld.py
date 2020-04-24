@@ -1,3 +1,18 @@
+############################################################################
+#	This program is free software: you can redistribute it and/or modify
+#	it under the terms of the GNU General Public License as published by
+#	the Free Software Foundation, either version 3 of the License, or
+#	(at your option) any later version.
+#
+#	This program is distributed in the hope that it will be useful,
+#	but WITHOUT ANY WARRANTY; without even the implied warranty of
+#	MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+#	GNU General Public License for more details.
+#
+#	You should have received a copy of the GNU General Public License
+#	along with this program.  If not, see <https://www.gnu.org/licenses/>.
+############################################################################
+
 import bpy
 from bpy.types import Operator
 from bpy.props import BoolProperty, FloatProperty
@@ -76,14 +91,10 @@ class BsMax_OT_CurveMergeByDistance(CurveTool):
 		col.prop(self,"selectedonly")
 		col.prop(self,"gapsonly")
 
-def weld_cls(register):
-	classes = [BsMax_OT_CurveMergeByDistance, BsMax_OT_CurveBreak, BsMax_OT_MakeFirst]
-	if register: 
-		[bpy.utils.register_class(c) for c in classes]
-	else: 
-		[bpy.utils.unregister_class(c) for c in classes]
+classes = [BsMax_OT_CurveMergeByDistance, BsMax_OT_CurveBreak, BsMax_OT_MakeFirst]
 
-if __name__ == '__main__':
-	weld_cls(True)
+def register_weld():
+	[bpy.utils.register_class(c) for c in classes]
 
-__all__ = ["weld_cls"]
+def unregister_weld():
+	[bpy.utils.unregister_class(c) for c in classes]

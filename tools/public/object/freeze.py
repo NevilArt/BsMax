@@ -1,3 +1,18 @@
+############################################################################
+#	This program is free software: you can redistribute it and/or modify
+#	it under the terms of the GNU General Public License as published by
+#	the Free Software Foundation, either version 3 of the License, or
+#	(at your option) any later version.
+#
+#	This program is distributed in the hope that it will be useful,
+#	but WITHOUT ANY WARRANTY; without even the implied warranty of
+#	MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+#	GNU General Public License for more details.
+#
+#	You should have received a copy of the GNU General Public License
+#	along with this program.  If not, see <https://www.gnu.org/licenses/>.
+############################################################################
+
 import bpy
 from bpy.types import Operator
 
@@ -17,15 +32,10 @@ class BsMax_OT_UnFreezeAll(Operator):
 			obj.hide_select = False
 		return{"FINISHED"}
 
-def freeze_cls(register):
-	classes = [BsMax_OT_FreezeSelected, BsMax_OT_UnFreezeAll]
+classes = [BsMax_OT_FreezeSelected, BsMax_OT_UnFreezeAll]
 
-	if register:
-		[bpy.utils.register_class(c) for c in classes]
-	else:
-		[bpy.utils.unregister_class(c) for c in classes]
+def register_freeze():
+	[bpy.utils.register_class(c) for c in classes]
 
-if __name__ == '__main__':
-	freeze_cls(True)
-
-__all__ = ["freeze_cls"]
+def unregister_freeze():
+	[bpy.utils.unregister_class(c) for c in classes]

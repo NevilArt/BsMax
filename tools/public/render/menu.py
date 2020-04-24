@@ -31,10 +31,15 @@ class BsMax_MT_Render_Tools(Menu):
 		layout.operator("render.lightlister",text="Light Lister",icon='LIGHT_SUN')
 
 def render_menu(self, ctx):
-	self.layout.menu("BSMAX_MT_rendertools")
+	# self.layout.menu("BSMAX_MT_rendertools")
+	layout = self.layout
+	layout.separator()
+	layout.operator("render.lightlister",text="Light Lister",icon='LIGHT_SUN')
 
 def register_menu():
 	bpy.utils.register_class(BsMax_MT_Render_Tools)
+	bpy.types.TOPBAR_MT_render.append(render_menu)
 
 def unregister_menu():
+	bpy.types.TOPBAR_MT_render.remove(render_menu)
 	bpy.utils.unregister_class(BsMax_MT_Render_Tools)

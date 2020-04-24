@@ -29,7 +29,7 @@ class BsMax_MT_View3D_tools(Menu):
 	def draw(self, ctx):
 		layout=self.layout
 		layout.menu("BSMAX_MT_animationtools",icon='ARMATURE_DATA')
-		layout.menu("BSMAX_MT_rendertools",icon='RENDER_ANIMATION')
+		# layout.menu("BSMAX_MT_rendertools",icon='RENDER_ANIMATION')
 		layout.menu("BSMAX_MT_riggtools",icon='TOOL_SETTINGS')
 
 def tools_menu(self, ctx):

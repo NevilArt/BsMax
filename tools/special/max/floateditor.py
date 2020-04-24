@@ -1,3 +1,18 @@
+############################################################################
+#	This program is free software: you can redistribute it and/or modify
+#	it under the terms of the GNU General Public License as published by
+#	the Free Software Foundation, either version 3 of the License, or
+#	(at your option) any later version.
+#
+#	This program is distributed in the hope that it will be useful,
+#	but WITHOUT ANY WARRANTY; without even the implied warranty of
+#	MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+#	GNU General Public License for more details.
+#
+#	You should have received a copy of the GNU General Public License
+#	along with this program.  If not, see <https://www.gnu.org/licenses/>.
+############################################################################
+
 import bpy
 from bpy.types import Operator
 
@@ -26,13 +41,10 @@ class BsMax_OT_ScriptListenerOpen(Operator):
 		area.type = 'INFO'
 		return{"FINISHED"}
 
-def floateditor_cls(register):
-	classes = [BsMax_OT_MaterialEditorOpen, BsMax_OT_ScriptListenerOpen]
-	for c in classes:
-		if register: bpy.utils.register_class(c)
-		else: bpy.utils.unregister_class(c)
+classes = [BsMax_OT_MaterialEditorOpen, BsMax_OT_ScriptListenerOpen]
 
-if __name__ == '__main__':
-	floateditor_cls(True)
+def register_floateditor():
+	[bpy.utils.register_class(c) for c in classes]
 
-__all__ = ["floateditor_cls"]
+def unregister_floateditor():
+	[bpy.utils.unregister_class(c) for c in classes]

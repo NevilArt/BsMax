@@ -1,3 +1,18 @@
+############################################################################
+#	This program is free software: you can redistribute it and/or modify
+#	it under the terms of the GNU General Public License as published by
+#	the Free Software Foundation, either version 3 of the License, or
+#	(at your option) any later version.
+#
+#	This program is distributed in the hope that it will be useful,
+#	but WITHOUT ANY WARRANTY; without even the implied warranty of
+#	MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+#	GNU General Public License for more details.
+#
+#	You should have received a copy of the GNU General Public License
+#	along with this program.  If not, see <https://www.gnu.org/licenses/>.
+############################################################################
+
 import bpy
 from bpy.types import Operator
 from bpy.props import StringProperty
@@ -149,18 +164,10 @@ class BsMax_OT_View3D_QuadMenu(Operator):
 		ctx.window_manager.modal_handler_add(self)
 		return {'RUNNING_MODAL'}
 
-def quadmenu_cls(register):
-	classes = [BsMax_OT_View3D_QuadMenu]
-	for c in classes:
-		if register:
-			bpy.utils.register_class(c)
-		else:
-			try:
-				bpy.utils.unregister_class(c)
-			except:
-				pass
+def register_quadmenu():
+	# if not hasattr(bpy.types, "BsMax_OT_View3D_QuadMenu"):
+	bpy.utils.register_class(BsMax_OT_View3D_QuadMenu)
 
-if __name__ == '__main__':
-	quadmenu_cls(True)
-
-__all__ = ["quadmenu_cls"]
+def unregister_quadmenu():
+	# if hasattr(bpy.types, "BsMax_OT_View3D_QuadMenu"):
+	bpy.utils.unregister_class(BsMax_OT_View3D_QuadMenu)

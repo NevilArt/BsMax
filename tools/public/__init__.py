@@ -1,38 +1,63 @@
-from .animation import *
-from .armature import *
-from .camera import *
-from .curve import *
-from .font import *
-from .ligth import *
-from .mesh import *
-from .object import *
-from .render import *
-from .select import *
-from .transform import *
-from .uv import *
-from .view import *
+############################################################################
+#	This program is free software: you can redistribute it and/or modify
+#	it under the terms of the GNU General Public License as published by
+#	the Free Software Foundation, either version 3 of the License, or
+#	(at your option) any later version.
+#
+#	This program is distributed in the hope that it will be useful,
+#	but WITHOUT ANY WARRANTY; without even the implied warranty of
+#	MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+#	GNU General Public License for more details.
+#
+#	You should have received a copy of the GNU General Public License
+#	along with this program.  If not, see <https://www.gnu.org/licenses/>.
+############################################################################
 
-registered = False
+from .animation import register_animation,unregister_animation
+from .armature import register_armature,unregister_armature
+from .camera import register_camera,unregister_camera
+from .curve import register_curve,unregister_curve
+# from .font import 
+from .ligth import register_light,unregister_light
+from .mesh import register_mesh,unregister_mesh
+from .object import register_object,unregister_object
+from .render import register_render,unregister_render
+from .select import register_select,unregister_select
+from .transform import register_transform,unregister_transform
+from .uv import register_uv,unregister_uv
+from .view import register_view,unregister_view
 
-def public_cls(register, pref):
-	global registered
+from .rigg import register_rigg,unregister_rigg
+from .menu import register_menu,unregister_menu
 
-	# register and unregister just once #
-	if registered != register:
-		animation_cls(register, pref)
-		armature_cls(register, pref)
-		camera_cls(register, pref)
-		curve_cls(register, pref)
-		font_cls(register, pref)
-		ligth_cls(register, pref)
-		mesh_cls(register, pref)
-		object_cls(register, pref)
-		render_cls(register, pref)
-		select_cls(register, pref)
-		transform_cls(register, pref)
-		uv_cls(register, pref)
-		view_cls(register, pref)
+def register_public(preferences):
+	register_animation()
+	register_armature()
+	register_camera()
+	register_curve()
+	register_light()
+	register_mesh()
+	register_object()
+	register_render()
+	register_select()
+	register_transform()
+	register_uv()
+	register_view(preferences)
+	register_rigg()
+	register_menu()
 
-	registered = register
-
-__all__ = ["public_cls"]
+def unregister_public():
+	unregister_animation()
+	unregister_armature()
+	unregister_camera()
+	unregister_curve()
+	unregister_light()
+	unregister_mesh()
+	unregister_object()
+	unregister_render()
+	unregister_select()
+	unregister_transform()
+	unregister_uv()
+	unregister_view()
+	unregister_rigg()
+	unregister_menu()

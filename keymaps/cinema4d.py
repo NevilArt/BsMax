@@ -14,7 +14,7 @@
 ############################################################################
 
 import bpy
-from .classes import KeyMaps
+from bsmax.keymaps import KeyMaps
 
 def collect_mute_keymaps(km):
 	pass
@@ -28,14 +28,11 @@ def create_keymaps(km):
 		
 keymaps = KeyMaps()
 
-def cinema4d_keys(register):
+def register_cinema4d():
 	keymaps.reset()
-	if register:
-		create_keymaps(keymaps)
-		collect_mute_keymaps(keymaps)
-	keymaps.set_mute(not register)
+	create_keymaps(keymaps)
+	collect_mute_keymaps(keymaps)
+	keymaps.set_mute(True)
 
-if __name__ == '__main__':
-	cinema4d_keys(True)
-
-__all__=["cinema4d_keys"]
+def unregister_cinema4d():
+	keymaps.reset()

@@ -1,3 +1,21 @@
+############################################################################
+#	BsMax, 3D apps inteface simulator and tools pack for Blender
+#	Copyright (C) 2020  Naser Merati (Nevil)
+#
+#	This program is free software: you can redistribute it and/or modify
+#	it under the terms of the GNU General Public License as published by
+#	the Free Software Foundation, either version 3 of the License, or
+#	(at your option) any later version.
+#
+#	This program is distributed in the hope that it will be useful,
+#	but WITHOUT ANY WARRANTY; without even the implied warranty of
+#	MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+#	GNU General Public License for more details.
+#
+#	You should have received a copy of the GNU General Public License
+#	along with this program.  If not, see <https://www.gnu.org/licenses/>.
+############################################################################
+
 import bpy
 from bpy.app.handlers import persistent
 
@@ -5,13 +23,8 @@ from bpy.app.handlers import persistent
 def frame_Update(scene):
 	pass
 
-def frameupdate_cls(register):
-	if register:
-		bpy.app.handlers.frame_change_pre.append(frame_Update)
-	else:
-		bpy.app.handlers.frame_change_pre.remove(frame_Update)
+def register_frameupdate():
+	bpy.app.handlers.frame_change_pre.append(frame_Update)
 
-if __name__ == '__main__':
-	frameupdate_cls(True)
-
-__all__ = ["frameupdate_cls"]
+def unregister_frameupdate():
+	bpy.app.handlers.frame_change_pre.remove(frame_Update)

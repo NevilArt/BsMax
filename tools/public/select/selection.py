@@ -1,3 +1,18 @@
+############################################################################
+#	This program is free software: you can redistribute it and/or modify
+#	it under the terms of the GNU General Public License as published by
+#	the Free Software Foundation, either version 3 of the License, or
+#	(at your option) any later version.
+#
+#	This program is distributed in the hope that it will be useful,
+#	but WITHOUT ANY WARRANTY; without even the implied warranty of
+#	MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+#	GNU General Public License for more details.
+#
+#	You should have received a copy of the GNU General Public License
+#	along with this program.  If not, see <https://www.gnu.org/licenses/>.
+############################################################################
+
 import bpy
 from bpy.types import Operator
 
@@ -77,17 +92,13 @@ def select_menu(self, ctx):
 	layout.operator("bsmax.select_instance")
 	layout.operator("bsmax.select_similar")
 
-def selection_cls(register):
-	classes = [BsMax_OT_SelectInstance, BsMax_OT_SelectSimilar]
+classes = [BsMax_OT_SelectInstance,BsMax_OT_SelectSimilar]
 
-	if register:
-		[bpy.utils.register_class(c) for c in classes]
-		bpy.types.VIEW3D_MT_select_object.append(select_menu)
-	else:
-		bpy.types.VIEW3D_MT_select_object.remove(select_menu)
-		[bpy.utils.unregister_class(c) for c in classes]
+def register_selection():
+	[bpy.utils.register_class(c) for c in classes]
+	bpy.types.VIEW3D_MT_select_object.append(select_menu)
 
-if __name__ == '__main__':
-	selection_cls(True)
 
-__all__ = ["selection_cls"]
+def unregister_selection():
+	bpy.types.VIEW3D_MT_select_object.remove(select_menu)
+	[bpy.utils.unregister_class(c) for c in classes]

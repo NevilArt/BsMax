@@ -1,3 +1,18 @@
+############################################################################
+#	This program is free software: you can redistribute it and/or modify
+#	it under the terms of the GNU General Public License as published by
+#	the Free Software Foundation, either version 3 of the License, or
+#	(at your option) any later version.
+#
+#	This program is distributed in the hope that it will be useful,
+#	but WITHOUT ANY WARRANTY; without even the implied warranty of
+#	MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+#	GNU General Public License for more details.
+#
+#	You should have received a copy of the GNU General Public License
+#	along with this program.  If not, see <https://www.gnu.org/licenses/>.
+############################################################################
+
 import bpy
 from bpy.app.handlers import persistent
 
@@ -15,7 +30,6 @@ def load_hi_res(scene):
 		#autoselect=True)
 	#hires = bpy.context.active_object
 	#hires.location = proxy.location
-
 
 def restor_proxys(scene):
 	print("Restore")
@@ -53,26 +67,22 @@ def render_cancel(scene):
 # def render_write(scene):
 # 	print("render write")
 
-def proxy_cls(register):
+def register_proxy():
 	handlers = bpy.app.handlers
-	if register:
-		handlers.render_init.append(render_init)
-		handlers.render_complete.append(render_complete)
-		handlers.render_cancel.append(render_cancel)
-		# handlers.render_pre.append(render_pre)
-		# handlers.render_post.append(render_post)
-		# handlers.render_stats.append(render_stats)
-		# handlers.render_write.append(render_write)
-	else:
-		handlers.render_init.remove(render_init)
-		handlers.render_complete.remove(render_complete)
-		handlers.render_cancel.remove(render_cancel)
-		# handlers.render_pre.remove(render_pre)
-		# handlers.render_post.remove(render_post)
-		# handlers.render_stats.remove(render_stats)
-		# handlers.render_write.remove(render_write)
+	handlers.render_init.append(render_init)
+	handlers.render_complete.append(render_complete)
+	handlers.render_cancel.append(render_cancel)
+	# handlers.render_pre.append(render_pre)
+	# handlers.render_post.append(render_post)
+	# handlers.render_stats.append(render_stats)
+	# handlers.render_write.append(render_write)
 
-if __name__ == '__main__':
-	proxy_cls(True)
-
-__all__ = ["proxy_cls"]
+def unregister_proxy():
+	handlers = bpy.app.handlers
+	handlers.render_init.remove(render_init)
+	handlers.render_complete.remove(render_complete)
+	handlers.render_cancel.remove(render_cancel)
+	# handlers.render_pre.remove(render_pre)
+	# handlers.render_post.remove(render_post)
+	# handlers.render_stats.remove(render_stats)
+	# handlers.render_write.remove(render_write)

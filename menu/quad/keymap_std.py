@@ -1,88 +1,74 @@
-import bpy, rna_keymap_ui
+############################################################################
+#	This program is free software: you can redistribute it and/or modify
+#	it under the terms of the GNU General Public License as published by
+#	the Free Software Foundation,either version 3 of the License,or
+#	(at your option) any later version.
+#
+#	This program is distributed in the hope that it will be useful,
+#	but WITHOUT ANY WARRANTY; without even the implied warranty of
+#	MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+#	GNU General Public License for more details.
+#
+#	You should have received a copy of the GNU General Public License
+#	along with this program.  If not,see <https://www.gnu.org/licenses/>.
+############################################################################
 
-KeyMaps = []
+import bpy
+from bsmax.keymaps import KeyMaps
 
-def create_view3d_quads(km, navigation):
-	kmi = km.keymap_items.new("bsmax.view3dquadmenue", "V", "PRESS")
-	kmi.properties.menu = 'viewport'
-	kmi.properties.space = 'View3D'
-	KeyMaps.append((km, kmi))
+def collect_mute_keymaps(km):
+	pass
 
+def create_quads(km,space,navigation):
+	km.new(space,"bsmax.view3dquadmenue","V","PRESS",[('menu','viewport'),('space','View3D')])
 	# This not needed drop tool can call this
-	# kmi = km.keymap_items.new("bsmax.view3dquadmenue", "RIGHTMOUSE", "PRESS")
-	# kmi.properties.menu = 'default'
-	# kmi.properties.space = 'View3D'
-	# KeyMaps.append((km, kmi))
-
+	# km.new(space,"bsmax.view3dquadmenue","RIGHTMOUSE","PRESS",[('menu','default'),('space','View3D')])
 	# ignore alt + RMB if maya navigation was selected
 	if navigation != 'Maya':
-		kmi = km.keymap_items.new("bsmax.view3dquadmenue", "RIGHTMOUSE", "PRESS", alt = True)
-		kmi.properties.menu = 'coordinate'
-		kmi.properties.space = 'View3D'
-		KeyMaps.append((km, kmi))
-
-	kmi = km.keymap_items.new("bsmax.view3dquadmenue", "RIGHTMOUSE", "PRESS", ctrl = True)
-	kmi.properties.menu = 'create'
-	kmi.properties.space = 'View3D'
-	KeyMaps.append((km, kmi))
-	kmi = km.keymap_items.new("bsmax.view3dquadmenue", "RIGHTMOUSE", "PRESS", shift = True)
-	kmi.properties.menu = 'snap'
-	kmi.properties.space = 'View3D'
-	KeyMaps.append((km, kmi))
-	kmi = km.keymap_items.new("bsmax.view3dquadmenue", "RIGHTMOUSE", "PRESS", alt = True, ctrl = True)
-	kmi.properties.menu = 'render'
-	kmi.properties.space = 'View3D'
-	KeyMaps.append((km, kmi))
-	kmi = km.keymap_items.new("bsmax.view3dquadmenue", "RIGHTMOUSE", "PRESS", alt = True, shift = True)
-	kmi.properties.menu = 'fx'
-	kmi.properties.space = 'View3D'
-	KeyMaps.append((km, kmi))
-	kmi = km.keymap_items.new("bsmax.view3dquadmenue", "RIGHTMOUSE", "PRESS", ctrl = True, shift = True)
-	kmi.properties.menu = 'Selection'
-	kmi.properties.space = 'View3D'
-	KeyMaps.append((km, kmi))
-	kmi = km.keymap_items.new("bsmax.view3dquadmenue", "RIGHTMOUSE", "PRESS", alt = True, ctrl = True, shift = True)
-	kmi.properties.menu = 'custom'
-	kmi.properties.space = 'View3D'
-	KeyMaps.append((km, kmi))
+		km.new(space,"bsmax.view3dquadmenue","RIGHTMOUSE","PRESS",[('menu','coordinate'),('space','View3D')],alt=True)
+	km.new(space,"bsmax.view3dquadmenue","RIGHTMOUSE","PRESS",[('menu','create'),('space','View3D')],ctrl=True)
+	km.new(space,"bsmax.view3dquadmenue","RIGHTMOUSE","PRESS",[('menu','snap'),('space','View3D')],shift=True)
+	km.new(space,"bsmax.view3dquadmenue","RIGHTMOUSE","PRESS",[('menu','render'),('space','View3D')],alt=True,ctrl=True)
+	km.new(space,"bsmax.view3dquadmenue","RIGHTMOUSE","PRESS",[('menu','fx'),('space','View3D')],alt=True,shift=True)
+	km.new(space,"bsmax.view3dquadmenue","RIGHTMOUSE","PRESS",[('menu','Selection'),('space','View3D')],ctrl=True,shift=True)
+	km.new(space,"bsmax.view3dquadmenue","RIGHTMOUSE","PRESS",[('menu','custom'),('space','View3D')],alt=True,ctrl=True,shift=True)
 
 # Create Keymaps
-def create_standard_quadmenue(navigation):
+def create_keymaps(km,navigation):
 	kcfg = bpy.context.window_manager.keyconfigs.addon
 	if kcfg:
+		space = km.space('3D View','VIEW_3D','WINDOW')
+		km.new(space,"wm.search_menu","X","PRESS",[])
 		# Window ---------------------------------------------------------------
-		#km = kcfg.keymaps.new(name='Window',space_type='EMPTY')
+		# space = km.space('Window','EMPTY','WINDOW')
 		# 2D View --------------------------------------------------------------
-		#km = kcfg.keymaps.new(name='View2D',space_type='EMPTY',region_type='WINDOW')
+		# space = km.space('View2D','EMPTY','WINDOW')
 		# 3D View --------------------------------------------------------------
-		km = kcfg.keymaps.new(name='3D View',space_type='VIEW_3D')
-		create_view3d_quads(km, navigation)
+		space = km.space('3D View','VIEW_3D','WINDOW')
+		create_quads(km,space,navigation)
 		# Object Mode -------------------------------------------------------------------------
-		km = kcfg.keymaps.new(name='Object Mode',space_type='EMPTY',region_type='WINDOW')
-		create_view3d_quads(km, navigation)
+		space = km.space('Object Mode','EMPTY','WINDOW')
+		create_quads(km,space,navigation)
 		# Mesh -----------------------------------------------------------------
-		km = kcfg.keymaps.new(name='Mesh',space_type='EMPTY')
-		create_view3d_quads(km, navigation)
+		space = km.space('Mesh','EMPTY','WINDOW')
+		create_quads(km,space,navigation)
 		# Curve ----------------------------------------------------------------
-		km = kcfg.keymaps.new(name='Curve',space_type='EMPTY')
-		create_view3d_quads(km, navigation)
+		space = km.space('Curve','EMPTY','WINDOW')
+		create_quads(km,space,navigation)
 		# Armature -------------------------------------------------------------
-		km = kcfg.keymaps.new(name='Armature',space_type='EMPTY')
-		create_view3d_quads(km, navigation)
+		space = km.space('Armature','EMPTY','WINDOW')
+		create_quads(km,space,navigation)
 		# Pose -----------------------------------------------------------------
-		km = kcfg.keymaps.new(name='Pose',space_type='EMPTY')
-		create_view3d_quads(km, navigation)
+		space = km.space('Pose','EMPTY','WINDOW')
+		create_quads(km,space,navigation)
 
-def remove_standard_quadmenue():
-	for km, kmi in KeyMaps:
-		km.keymap_items.remove(kmi)
-	KeyMaps.clear()
+keymaps = KeyMaps()
 
-def keymap_std_keys(register, pref):
-	if register:
-		remove_standard_quadmenue()
-		create_standard_quadmenue(pref.navigation)
-	else:
-		remove_standard_quadmenue()
+def register_keymap(preferences):
+	keymaps.reset()
+	create_keymaps(keymaps,preferences.navigation)
+	collect_mute_keymaps(keymaps)
+	keymaps.set_mute(False)
 
-__all__=["keymap_std_keys"]
+def unregister_keypam():
+	keymaps.reset()

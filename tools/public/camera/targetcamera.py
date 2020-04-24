@@ -1,3 +1,21 @@
+############################################################################
+#	BsMax, 3D apps inteface simulator and tools pack for Blender
+#	Copyright (C) 2020  Naser Merati (Nevil)
+#
+#	This program is free software: you can redistribute it and/or modify
+#	it under the terms of the GNU General Public License as published by
+#	the Free Software Foundation, either version 3 of the License, or
+#	(at your option) any later version.
+#
+#	This program is distributed in the hope that it will be useful,
+#	but WITHOUT ANY WARRANTY; without even the implied warranty of
+#	MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+#	GNU General Public License for more details.
+#
+#	You should have received a copy of the GNU General Public License
+#	along with this program.  If not, see <https://www.gnu.org/licenses/>.
+############################################################################
+
 import bpy, mathutils
 from bpy.types import Operator
 from mathutils import Matrix
@@ -70,20 +88,14 @@ def camera_menu(self, ctx):
 	layout.operator("bsmax.makefreecamera")
 	layout.operator("bsmax.selecttarget")
 
-def targetcamera_cls(register):
-	classes = [BsMax_OT_MakeTargetCamera,
+classes = [BsMax_OT_MakeTargetCamera,
 		BsMax_OT_MakeFreeCamera,
 		BsMax_OT_SelectTarget]
 
-	if register:
-		[bpy.utils.register_class(c) for c in classes]
-		bpy.types.VIEW3D_MT_view_cameras.append(camera_menu)
-	else:
-		bpy.types.VIEW3D_MT_view_cameras.remove(camera_menu)
-		[bpy.utils.unregister_class(c) for c in classes]
-		
+def register_tergetcamera():
+	[bpy.utils.register_class(c) for c in classes]
+	bpy.types.VIEW3D_MT_view_cameras.append(camera_menu)
 
-if __name__ == '__main__':
-	targetcamera_cls(True)
-
-__all__ = ["targetcamera_cls"]
+def unregister_tergetcamera():
+	bpy.types.VIEW3D_MT_view_cameras.remove(camera_menu)
+	[bpy.utils.unregister_class(c) for c in classes]
