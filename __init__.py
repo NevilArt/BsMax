@@ -20,7 +20,7 @@ bl_info = {
 	"name": "BsMax",
 	"description": "BsMax for Blender 2.80 ~ 2.90",
 	"author": "Naser Merati (Nevil)",
-	"version": (0, 1, 0, 20200424),
+	"version": (0, 1, 0, 20200423),
 	"blender": (2, 80, 0),# 2.80~2.90
 	"location": "Almost Everywhere in Blender",
 	"wiki_url": "https://github.com/NevilArt/BsMax_2_80/wiki",
@@ -134,8 +134,8 @@ def unregister():
 	unregister_keymaps()
 	unregister_navigation()
 	unregister_menu()
-	unregister_primitives()
 	unregister_tools()
+	unregister_primitives()
 	unregister_startup()
 	bpy.utils.unregister_class(BsMax_AddonPreferences)
 	templates.unregister()

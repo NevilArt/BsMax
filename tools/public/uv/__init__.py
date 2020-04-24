@@ -22,4 +22,4 @@ def register_uv():
 
 def unregister_uv():
 	unregister_menu()
-	unregister_uv()
+	unregister_edit()
