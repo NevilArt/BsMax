@@ -20,7 +20,7 @@ bl_info = {
 	"name": "BsMax",
 	"description": "BsMax for Blender 2.80 ~ 2.90",
 	"author": "Naser Merati (Nevil)",
-	"version": (0, 1, 0, 20200423),
+	"version": (0, 1, 0, 20200425),
 	"blender": (2, 80, 0),# 2.80~2.90
 	"location": "Almost Everywhere in Blender",
 	"wiki_url": "https://github.com/NevilArt/BsMax_2_80/wiki",
@@ -32,6 +32,8 @@ bl_info = {
 import bpy,sys,os
 from bpy.props import EnumProperty
 from bpy.types import Operator, AddonPreferences
+from time import sleep
+from _thread import start_new_thread
 
 # Add public classes, variables and functions path.
 path = os.path.dirname(os.path.realpath(__file__))
@@ -119,6 +121,11 @@ class BsMax_AddonPreferences(AddonPreferences):
 		col.prop(self, "floatmenus")
 		col.prop(self, "toolpack")
 
+def register_keymaps_delay(preferences):
+	sleep(0.1)
+	""" Wait For Load Blender Defualt Keymaps First """
+	register_keymaps(preferences)
+
 def register():
 	bpy.utils.register_class(BsMax_AddonPreferences)
 	preferences = bpy.context.preferences.addons[__name__].preferences
@@ -127,8 +134,8 @@ def register():
 	register_startup(preferences)
 	register_menu(preferences)
 	register_navigation(preferences)
-	register_keymaps(preferences)
 	templates.register()
+	start_new_thread(register_keymaps_delay,tuple([preferences]))
 	
 def unregister():
 	unregister_keymaps()

@@ -16,6 +16,7 @@
 import bpy
 from bpy.types import Operator
 from bpy.props import StringProperty
+from bsmax.actions import set_as_active_object
 
 class BsMax_TO_SelectLightByName(Operator):
 	bl_idname = "light.selectbyname"
@@ -29,7 +30,7 @@ class BsMax_TO_SelectLightByName(Operator):
 	def execute(self,ctx):
 		bpy.ops.object.select_all(action='DESELECT')
 		if self.name != "":
-			bpy.data.objects[self.name].select_set(True)
+			set_as_active_object(ctx,bpy.data.objects[self.name])
 		return{"FINISHED"}
 
 class BsMax_TO_LightLister(Operator):

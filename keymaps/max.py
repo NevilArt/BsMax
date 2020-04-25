@@ -18,16 +18,17 @@ from bsmax.keymaps import KeyMaps
 
 def collect_mute_keymaps(km):
 	# Disable/Enable Unwanted Default ShortKeys
-	km.mute('3D View','view3d.select','LEFTMOUSE','CLICK',False,False,False,False)
-	km.mute('3D View','view3d.select','LEFTMOUSE','CLICK',True,False,False,False)
-	km.mute('3D View','view3d.select','LEFTMOUSE','CLICK',False,True,False,False)
-	km.mute('3D View','view3d.select','LEFTMOUSE','CLICK',False,False,True,False)
-	km.mute('3D View Generic','wm.context_toggle','T','ANY',False,False,False,False)
-	km.mute('3D View Tool: Select Box','view3d.select_box','EVT_TWEAK_L','ANY',False,True,False,False)
-	km.mute('3D View Tool: Select Circle','view3d.select_circle','LEFTMOUSE','PRESS',False,True,False,False)
-	km.mute('3D View Tool: Select Lasso','view3d.select_lasso','EVT_TWEAK_L','ANY',False,True,False,False)
-	km.mute('Mesh','mesh.shortest_path_pick','LEFTMOUSE','CLICK',False,True,False,False)
-	km.mute('Window','wm.quit_blender','Q','PRESS',False,True,False,False)
+	km.mute('3D View Generic','wm.context_toggle','T','PRESS')
+	km.mute('3D View','view3d.select','LEFTMOUSE','CLICK')
+	km.mute('3D View','view3d.select','LEFTMOUSE','CLICK',alt=True)
+	km.mute('3D View','view3d.select','LEFTMOUSE','CLICK',ctrl=True)
+	km.mute('3D View','view3d.select','LEFTMOUSE','CLICK',shift=True)
+	km.mute('3D View Generic','wm.context_toggle','T','ANY')
+	km.mute('3D View Tool: Select Box','view3d.select_box','EVT_TWEAK_L','ANY',ctrl=True)
+	km.mute('3D View Tool: Select Circle','view3d.select_circle','LEFTMOUSE','PRESS',ctrl=True)
+	km.mute('3D View Tool: Select Lasso','view3d.select_lasso','EVT_TWEAK_L','ANY',ctrl=True)
+	km.mute('Mesh','mesh.shortest_path_pick','LEFTMOUSE','CLICK',ctrl=True)
+	km.mute('Window','wm.quit_blender','Q','PRESS',ctrl=True)
 
 def create_subobject_mode_keymap(km,space):
 	km.new(space,"bsmax.subobjectlevel","ONE","PRESS",[("level",1)])
@@ -565,10 +566,9 @@ def create_keymaps(km):
 keymaps = KeyMaps()
 
 def register_max():
-	keymaps.reset()
 	create_keymaps(keymaps)
 	collect_mute_keymaps(keymaps)
-	keymaps.set_mute(False)
+	keymaps.register()
 
 def unregister_max():
-	keymaps.reset()
+	keymaps.unregister()

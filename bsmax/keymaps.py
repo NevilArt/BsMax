@@ -14,25 +14,38 @@
 ############################################################################
 
 import bpy
-from time import sleep
-from _thread import start_new_thread
 
 class KeyMap:
-	def __init__(self,space,idname,inputtype,value,alt,ctrl,shift,any):
+	def __init__(self,space,idname,type,value,alt,ctrl,shift,any):
 		self.space = space
 		self.idname = idname
-		self.inputtype = inputtype
+		self.type = type
 		self.value = value
 		self.any = any
 		self.alt = alt
 		self.ctrl = ctrl
 		self.shift = shift
-	def __eq__(self, key):
-		return self.idname == key.idname and self.inputtype == key.type and self.value == key.value and \
-			self.alt == key.alt and self.ctrl == key.ctrl and self.shift == key.shift and self.any == key.any
+		self.properties = []
+		self._key = None
+
+	@property
+	def key(self):
+		if self._key == None:
+			keymaps = bpy.context.window_manager.keyconfigs.default.keymaps
+			if self.space in keymaps:
+				keymap_items = keymaps[self.space].keymap_items
+				for k in keymap_items:
+					if self.idname == k.idname:
+						if self.type == k.type and self.value == k.value and \
+							self.any == k.any and self.alt == k.alt and \
+							self.ctrl == k.ctrl and self.shift == k.shift:
+							self._key = k
+							break
+		return self._key
 
 class KeyMaps:
 	def __init__(self):
+		self.newkeys = []
 		self.keymaps = []
 		self.mutekeys = []
 
@@ -40,33 +53,34 @@ class KeyMaps:
 		kcfg = bpy.context.window_manager.keyconfigs.addon
 		return kcfg.keymaps.new(name=name,space_type=space_type,region_type=region_type)
 	
-	def new(self,space,idname,inputtype,value,properties,
+	def new(self,space,idname,type,value,properties,
 			alt=False,ctrl=False,shift=False,any=False):
-		keymapitem = space.keymap_items.new(idname, inputtype, value,
-								alt=alt, ctrl=ctrl, shift=shift, any=any)
-		self.keymaps.append((space, keymapitem))
-		for p in properties:
-			kama = "'" if type(p[1]) == str else ""
-			exec("keymapitem.properties." + p[0] + "=" + kama + str(p[1]) + kama)
+		newkey = KeyMap(space,idname,type,value,alt,ctrl,shift,any)
+		newkey.properties = properties
+		self.newkeys.append(newkey)
 	
 	def mute(self,space,idname,inputtype,value,alt=False,ctrl=False,shift=False,any=False):
 		newkey = KeyMap(space,idname,inputtype,value,alt=alt,ctrl=ctrl,shift=shift,any=any)
 		self.mutekeys.append(newkey)
 	
-	def set_mute(self,state):
-		try:
-			sleep(0.1)
-			kdif = bpy.context.window_manager.keyconfigs.default
-			km = kdif.keymaps[space]
-			for key in km.keymap_items:
-				for mk in self.mutekeys:
-					if mk == key:
-						key.active = not state
-		except:
-			start_new_thread(self.set_mute,tuple([state]))
+	def set_mute(self,state,delay):
+		for mutekey in self.mutekeys:
+			if mutekey.key != None:
+				mutekey.key.active = not state
 
-	def reset(self):
+	def register(self):
+		self.unregister()
+		for k in self.newkeys:
+			keymapitem = k.space.keymap_items.new(k.idname, k.type, k.value,
+						alt=k.alt, ctrl=k.ctrl, shift=k.shift, any=k.any)
+			for p in k.properties:
+				kama = "'" if type(p[1]) == str else ""
+				exec("keymapitem.properties." + p[0] + "=" + kama + str(p[1]) + kama)
+			self.keymaps.append((k.space, keymapitem))
+		self.set_mute(True,0)
+
+	def unregister(self):
 		for km,kmi in self.keymaps:
 			km.keymap_items.remove(kmi)
 		self.keymaps.clear()
-		self.set_mute(False)
+		self.set_mute(False,0)

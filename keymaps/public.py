@@ -22,15 +22,11 @@ def collect_mute_keymaps(km):
 def create_keymaps(km):
 	kc = bpy.context.window_manager.keyconfigs
 
-	#TODO this just a temprary solution
-	""" this command not working on version 2.81a & 2.82b """
+	""" ignore this if right click select mode active """
 	try:
 		rcsm = kc['blender'].preferences['select_mouse'] == 0
 	except:
-		rcsm = True	
-	# blacklist = [(2,81,16),(2,82,7)]
-	# v = bpy.app.version[0]*100+bpy.app.version[1]
-	# rcsm = True if v > 281 else kc['blender'].preferences['select_mouse'] == 0
+		rcsm = kc['blender'].preferences.select_mouse != 'RIGHT'
 
 	if kc.addon and rcsm:
 		# 3D View --------------------------------------------------------------
@@ -61,10 +57,9 @@ def create_keymaps(km):
 keymaps = KeyMaps()
 
 def register_public():
-	keymaps.reset()
 	create_keymaps(keymaps)
 	collect_mute_keymaps(keymaps)
-	keymaps.set_mute(False)
+	keymaps.register()
 
 def unregister_public():
-	keymaps.reset()
+	keymaps.unregister()

@@ -126,14 +126,12 @@ def create_keymaps(km):
 keymaps = KeyMaps()
 
 def register_maya():
-	keymaps.reset()
 	create_keymaps(keymaps)
 	collect_mute_keymaps(keymaps)
-	keymaps.set_mute(False)
+	keymaps.register()
 
 def unregister_maya():
-	keymaps.reset()
-
+	keymaps.unregister()
 
 """
 2D Pan/Zoom

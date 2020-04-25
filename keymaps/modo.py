@@ -29,10 +29,9 @@ def create_keymaps(km):
 keymaps = KeyMaps()
 
 def register_modo():
-	keymaps.reset()
 	create_keymaps(keymaps)
 	collect_mute_keymaps(keymaps)
-	keymaps.set_mute(False)
+	keymaps.register()
 
 def unregister_modo():
-	keymaps.reset()
+	keymaps.unregister()

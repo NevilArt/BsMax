@@ -1,10 +1,14 @@
 # BsMax_2_80
 (Works on Blender 2.80 ~ 2.90)
 
+Solved:
+* new keymap system bugs fixed
+* light lister active the selected light too
+
 Recent Updates
 * Pivot to first besierpoint for curve objects (View3D/Object/snap/Pivot to First Point)
 * Assistance pack option removed and all tools puted under Tools menu on View3D.
-* Light lister added View3D/Tools/Render/Light lister.
+* Light lister added (Render/Light lister).
 * Keymap system optimized.
 * Works on Blender2.83 Beta.
 * Camera lock toggle added to Quad menu.

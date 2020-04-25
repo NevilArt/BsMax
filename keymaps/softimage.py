@@ -29,10 +29,9 @@ def create_keymaps(km):
 keymaps = KeyMaps()
 
 def register_softimage():
-	keymaps.reset()
 	create_keymaps(keymaps)
 	collect_mute_keymaps(keymaps)
-	keymaps.set_mute(False)
+	keymaps.register()
 
 def unregister_softimage():
-	keymaps.reset()
+	keymaps.unregister()

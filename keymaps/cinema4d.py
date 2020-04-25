@@ -29,10 +29,9 @@ def create_keymaps(km):
 keymaps = KeyMaps()
 
 def register_cinema4d():
-	keymaps.reset()
 	create_keymaps(keymaps)
 	collect_mute_keymaps(keymaps)
-	keymaps.set_mute(True)
+	keymaps.register()
 
 def unregister_cinema4d():
-	keymaps.reset()
+	keymaps.unregister()

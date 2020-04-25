@@ -101,11 +101,9 @@ def create_keymaps(km,app):
 keymaps = KeyMaps()
 
 def register_navigation(preferences):
-	navigation = preferences.navigation
-	keymaps.reset()
-	create_keymaps(keymaps,navigation)
+	create_keymaps(keymaps,preferences.navigation)
 	collect_mute_keymaps(keymaps)
-	keymaps.set_mute(False)
+	keymaps.register()
 
 def unregister_navigation():
-	keymaps.reset()
+	keymaps.unregister()

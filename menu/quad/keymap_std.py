@@ -39,36 +39,35 @@ def create_keymaps(km,navigation):
 	if kcfg:
 		space = km.space('3D View','VIEW_3D','WINDOW')
 		km.new(space,"wm.search_menu","X","PRESS",[])
-		# Window ---------------------------------------------------------------
+		# Window -------------------------------------
 		# space = km.space('Window','EMPTY','WINDOW')
-		# 2D View --------------------------------------------------------------
+		# 2D View ------------------------------------
 		# space = km.space('View2D','EMPTY','WINDOW')
-		# 3D View --------------------------------------------------------------
+		# 3D View ------------------------------------
 		space = km.space('3D View','VIEW_3D','WINDOW')
 		create_quads(km,space,navigation)
-		# Object Mode -------------------------------------------------------------------------
+		# Object Mode --------------------------------
 		space = km.space('Object Mode','EMPTY','WINDOW')
 		create_quads(km,space,navigation)
-		# Mesh -----------------------------------------------------------------
+		# Mesh ---------------------------------------
 		space = km.space('Mesh','EMPTY','WINDOW')
 		create_quads(km,space,navigation)
-		# Curve ----------------------------------------------------------------
+		# Curve --------------------------------------
 		space = km.space('Curve','EMPTY','WINDOW')
 		create_quads(km,space,navigation)
-		# Armature -------------------------------------------------------------
+		# Armature -----------------------------------
 		space = km.space('Armature','EMPTY','WINDOW')
 		create_quads(km,space,navigation)
-		# Pose -----------------------------------------------------------------
+		# Pose ---------------------------------------
 		space = km.space('Pose','EMPTY','WINDOW')
 		create_quads(km,space,navigation)
 
 keymaps = KeyMaps()
 
 def register_keymap(preferences):
-	keymaps.reset()
 	create_keymaps(keymaps,preferences.navigation)
 	collect_mute_keymaps(keymaps)
-	keymaps.set_mute(False)
+	keymaps.register()
 
 def unregister_keypam():
-	keymaps.reset()
+	keymaps.unregister()
