@@ -95,7 +95,7 @@ def record_navigation(ctx, event):
 		state = is_changed(current, VP.view[index].last)
 		if state:
 			extera = (len(VP.view[index].direction) - 1) - VP.view[index].index
-			for i in range(extera):
+			for i in range(extera): # ignore the i
 				VP.view[index].direction.pop()
 			VP.view[index].direction.append(current.copy())
 			if len(VP.view[index].direction) > VP.count:
@@ -107,13 +107,17 @@ class View3D_OT_MoveCover(Operator):
 	bl_idname = "view3d.movecover"
 	bl_label = "Pan View (Cover)"
 	@classmethod
-	def poll(self, ctx):
+	def poll(self,ctx):
 		return ctx.area.type == 'VIEW_3D'
-	def modal(self, ctx, event):
-		record_navigation(ctx, event)
-		bpy.ops.view3d.move('INVOKE_DEFAULT')
+	def modal(self,ctx,event):
+		x, y = event.mouse_region_x, event.mouse_region_y
+		if self.x != x or self.y != y:
+			record_navigation(ctx, event)
+			bpy.ops.view3d.move('INVOKE_DEFAULT')
+		self.x,self.y = x,y
 		return {'CANCELLED'}
-	def invoke(self, ctx, event):
+	def invoke(self,ctx,event):
+		self.x, self.y = event.mouse_region_x, event.mouse_region_y
 		ctx.window_manager.modal_handler_add(self)
 		return {'RUNNING_MODAL'}
 
@@ -124,10 +128,14 @@ class View3D_OT_RotateCover(Operator):
 	def poll(self, ctx):
 		return ctx.area.type == 'VIEW_3D'
 	def modal(self, ctx, event):
-		record_navigation(ctx, event)
-		bpy.ops.view3d.rotate('INVOKE_DEFAULT')
+		x, y = event.mouse_region_x, event.mouse_region_y
+		if self.x != x or self.y != y:
+			record_navigation(ctx, event)
+			bpy.ops.view3d.rotate('INVOKE_DEFAULT')
+		self.x,self.y = x,y
 		return {'CANCELLED'}
 	def invoke(self, ctx, event):
+		self.x, self.y = event.mouse_region_x, event.mouse_region_y
 		ctx.window_manager.modal_handler_add(self)
 		return {'RUNNING_MODAL'}
 
@@ -138,10 +146,14 @@ class View3D_OT_ZoomCover(Operator):
 	def poll(self, ctx):
 		return ctx.area.type == 'VIEW_3D'
 	def modal(self, ctx, event):
-		record_navigation(ctx, event)
-		bpy.ops.view3d.zoom('INVOKE_DEFAULT')
+		x, y = event.mouse_region_x, event.mouse_region_y
+		if self.x != x or self.y != y:
+			record_navigation(ctx, event)
+			bpy.ops.view3d.zoom('INVOKE_DEFAULT')
+		self.x,self.y = x,y
 		return {'CANCELLED'}
 	def invoke(self, ctx, event):
+		self.x, self.y = event.mouse_region_x, event.mouse_region_y
 		ctx.window_manager.modal_handler_add(self)
 		return {'RUNNING_MODAL'}
 

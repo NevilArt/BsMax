@@ -2,8 +2,7 @@
 (Works on Blender 2.80 ~ 2.90)
 
 Solved:
-* new keymap system bugs fixed
-* light lister active the selected light too
+* Navigation issue solved
 
 Recent Updates
 * Pivot to first besierpoint for curve objects (View3D/Object/snap/Pivot to First Point)
