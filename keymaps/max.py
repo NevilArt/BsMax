@@ -23,6 +23,7 @@ def collect_mute_keymaps(km):
 	km.mute('3D View','view3d.select','LEFTMOUSE','CLICK',alt=True)
 	km.mute('3D View','view3d.select','LEFTMOUSE','CLICK',ctrl=True)
 	km.mute('3D View','view3d.select','LEFTMOUSE','CLICK',shift=True)
+	km.mute('3D View','view3d.view_center_pick','MIDDLEMOUSE','CLICK',alt=True)
 	km.mute('3D View Generic','wm.context_toggle','T','ANY')
 	km.mute('3D View Tool: Select Box','view3d.select_box','EVT_TWEAK_L','ANY',ctrl=True)
 	km.mute('3D View Tool: Select Circle','view3d.select_circle','LEFTMOUSE','PRESS',ctrl=True)

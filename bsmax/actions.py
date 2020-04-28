@@ -67,7 +67,12 @@ def link_to_scene(ctx, obj):
 		collection = ctx.scene.collection
 	else:
 		collection = bpy.data.collections[activelayername]
-	collection.objects.link(obj)
+	# apply if collection was not same
+	# for now 
+	try:
+		collection.objects.link(obj)
+	except:
+		pass
 
 def set_as_active_object(ctx, obj):
 	if obj != None:
