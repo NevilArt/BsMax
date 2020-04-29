@@ -22,6 +22,7 @@ from bsmax.state import has_constraint
 class BsMax_OT_CreateCameraFromView(Operator):
 	bl_idname = "bsmax.createcamerafromview"
 	bl_label = "Create Camera From View"
+	bl_description = "Create New Camera From View"
 
 	@classmethod
 	def poll(self, ctx):
@@ -47,6 +48,7 @@ class BsMax_OT_CreateCameraFromView(Operator):
 class BsMax_OT_SetAsActiveCamera(Operator):
 	bl_idname = "bsmax.setasactivecamera"
 	bl_label = "Set as Active Camera"
+	bl_description = "Set Selected Camera As Active Camera"
 	def execute(self, ctx):
 		if ctx.active_object != None:
 			if ctx.active_object.type == "CAMERA":
@@ -93,6 +95,7 @@ class BsMax_OT_SearchCamera(Operator):
 class BsMax_OT_SelectCamera(Operator):
 	bl_idname = "bsmax.selectcamera"
 	bl_label = "Select Camera"
+	bl_description = "Select Active Camera"
 
 	@classmethod
 	def poll(self, ctx):
@@ -134,8 +137,9 @@ class BsMax_OT_SelectCamera(Operator):
 class BsMax_OT_LockCameraToViewToggle(Operator):
 	bl_idname = "bsmax.lockcameratoviewtoggle"
 	bl_label = "Lock Camera to view (Toggle)"
-
+	bl_description = "Lock Active Camera to view"
 	@classmethod
+
 	def poll(self, ctx):
 		return ctx.area.type == 'VIEW_3D'
 
@@ -143,9 +147,28 @@ class BsMax_OT_LockCameraToViewToggle(Operator):
 		ctx.space_data.lock_camera = not ctx.space_data.lock_camera
 		return {'FINISHED'}
 
+class BsMAx_OT_LockActiveCameraTransform(Operator):
+	bl_idname = "camera.lockcameratransform"
+	bl_label = "Lock Camera Transform"
+	bl_description = "Lock active camera transform"
+
+	@classmethod
+	def poll(self, ctx):
+		return ctx.area.type == 'VIEW_3D'
+
+	def execute(self, ctx):
+		cam = ctx.scene.camera
+		if cam != None:
+			state = not cam.lock_location[0]
+			cam.lock_location = [state,state,state]
+			cam.lock_rotation = [state,state,state]
+			cam.lock_scale = [state,state,state]
+		return {'FINISHED'}
+
 class BsMax_OT_SelectActiveCamera(Operator):
 	bl_idname = "bsmax.selectactivecamera"
 	bl_label = "Select Active Camera/Target"
+	bl_description = "Select Acitve Camera/Target"
 	selcam: BoolProperty(name="Select Camera")
 	seltrg: BoolProperty(name="Select Target")
 
@@ -168,6 +191,7 @@ class BsMax_OT_SelectActiveCamera(Operator):
 class BsMax_OT_ShowSafeAreaToggle(Operator):
 	bl_idname = "bsmax.show_safe_areas"
 	bl_label = "Show Safe Area"
+	bl_description = "Show Safe Area"
 
 	@classmethod
 	def poll(self, ctx):
@@ -190,6 +214,7 @@ classes = [BsMax_OT_SetAsActiveCamera,
 			BsMax_OT_SearchCamera,
 			BsMax_OT_SelectCamera,
 			BsMax_OT_LockCameraToViewToggle,
+			BsMAx_OT_LockActiveCameraTransform,
 			BsMax_OT_SelectActiveCamera,
 			BsMax_OT_ShowSafeAreaToggle]
 

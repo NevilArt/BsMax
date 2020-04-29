@@ -20,7 +20,7 @@ bl_info = {
 	"name": "BsMax",
 	"description": "BsMax for Blender 2.80 ~ 2.90",
 	"author": "Naser Merati (Nevil)",
-	"version": (0, 1, 0, 20200428),
+	"version": (0, 1, 0, 20200429),
 	"blender": (2, 80, 0),# 2.80~2.90
 	"location": "Almost Everywhere in Blender",
 	"wiki_url": "https://github.com/NevilArt/BsMax_2_80/wiki",
@@ -121,21 +121,20 @@ class BsMax_AddonPreferences(AddonPreferences):
 		col.prop(self, "floatmenus")
 		col.prop(self, "toolpack")
 
-def register_keymaps_delay(preferences):
+def register_delay(preferences):
 	sleep(0.1)
-	""" Wait For Load Blender Defualt Keymaps First """
 	register_keymaps(preferences)
+	register_startup(preferences)
 
 def register():
 	bpy.utils.register_class(BsMax_AddonPreferences)
 	preferences = bpy.context.preferences.addons[__name__].preferences
 	register_primitives()
 	register_tools(preferences)
-	register_startup(preferences)
 	register_menu(preferences)
 	register_navigation(preferences)
-	templates.register()
-	start_new_thread(register_keymaps_delay,tuple([preferences]))
+	# templates.register()
+	start_new_thread(register_delay,tuple([preferences]))
 	
 def unregister():
 	unregister_keymaps()
@@ -145,6 +144,6 @@ def unregister():
 	unregister_primitives()
 	unregister_startup()
 	bpy.utils.unregister_class(BsMax_AddonPreferences)
-	templates.unregister()
+	# templates.unregister()
 	if path not in sys.path:
 		sys.path.remove(path)

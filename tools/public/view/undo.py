@@ -114,7 +114,7 @@ class View3D_OT_MoveCover(Operator):
 		if self.x != x or self.y != y:
 			record_navigation(ctx, event)
 			bpy.ops.view3d.move('INVOKE_DEFAULT')
-		self.x,self.y = x,y
+			self.x,self.y = x,y
 		return {'CANCELLED'}
 	def invoke(self,ctx,event):
 		self.x, self.y = event.mouse_region_x, event.mouse_region_y
@@ -132,7 +132,7 @@ class View3D_OT_RotateCover(Operator):
 		if self.x != x or self.y != y:
 			record_navigation(ctx, event)
 			bpy.ops.view3d.rotate('INVOKE_DEFAULT')
-		self.x,self.y = x,y
+			self.x,self.y = x,y
 		return {'CANCELLED'}
 	def invoke(self, ctx, event):
 		self.x, self.y = event.mouse_region_x, event.mouse_region_y
@@ -150,7 +150,7 @@ class View3D_OT_ZoomCover(Operator):
 		if self.x != x or self.y != y:
 			record_navigation(ctx, event)
 			bpy.ops.view3d.zoom('INVOKE_DEFAULT')
-		self.x,self.y = x,y
+			self.x,self.y = x,y
 		return {'CANCELLED'}
 	def invoke(self, ctx, event):
 		self.x, self.y = event.mouse_region_x, event.mouse_region_y

@@ -75,7 +75,7 @@ class BsMax_OT_DetachMesh(Operator):
 				"cursor_transform":False,
 				"texture_space":False,
 				"remove_on_cancel":False,
-				"release_confirm":False,
+				# "release_confirm":False,
 				"use_accurate":False})
 		if self.element:
 			bpy.ops.mesh.split('INVOKE_DEFAULT')

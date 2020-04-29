@@ -13,14 +13,28 @@
 #	along with this program.  If not, see <https://www.gnu.org/licenses/>.
 ############################################################################
 
-from _thread import start_new_thread
-from .default import register_default,unregister_default
-from .theme import register_theme,unregister_theme
+import bpy
+from bpy.types import Operator
 
-def register_startup(preferences):
-	register_default(preferences)
-	register_theme(preferences)
+# TODO extend and unselect for element select
 
-def unregister_startup():
-	unregister_default()
-	unregister_theme()
+class BsMax_OT_SelectElement(Operator):
+	bl_idname = "mesh.selectelement"
+	bl_label = "Select Element"
+	def execute(self, ctx):
+		if ctx.active_object != None:
+			if ctx.mode == "EDIT_MESH":
+				v,e,f = ctx.tool_settings.mesh_select_mode
+				if v:
+					pass
+				if e:
+					bpy.ops.mesh.smart_select_loop('INVOKE_DEFAULT')
+				if f:
+					bpy.ops.mesh.select_linked_pick('INVOKE_DEFAULT')
+		return{"FINISHED"}
+	
+def register_select():
+	bpy.utils.register_class(BsMax_OT_SelectElement)
+
+def unregister_select():
+	bpy.utils.unregister_class(BsMax_OT_SelectElement)

@@ -56,7 +56,7 @@ def bmaxMirror_Execute_OM(self, ctx):
 		bpy.ops.transform.mirror(constraint_axis = c_ax,
 			constraint_orientation = self.dlg_csys.transform_orientation,
 			proportional = 'DISABLED', proportional_edit_falloff = 'SMOOTH',
-			proportional_size = 1, release_confirm = False)
+			proportional_size = 1)#, release_confirm = False)
 		#offset
 		bpy.ops.transform.translate(
 			value = (self.v_offs,self.v_offs,self.v_offs),
@@ -71,8 +71,8 @@ def bmaxMirror_Execute_OM(self, ctx):
 			snap_point = (0,0,0),
 			snap_align = False,
 			snap_normal = (0,0,0),
-			texture_space = False,
-			release_confirm = False)
+			texture_space = False)
+			# ,release_confirm = False)
 
 class BsMax_OT_Mirror(Operator):
 	bl_idname = "bsmax.mirror_tool"

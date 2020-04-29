@@ -18,6 +18,7 @@ import bpy
 v3camera, v3empty, v3light = None, None, None
 
 def store_original_theme():
+	#TODO save to ini file and read again
 	v3camera = bpy.context.preferences.themes[0].view_3d.camera
 	v3empty = bpy.context.preferences.themes[0].view_3d.empty
 	v3light = bpy.context.preferences.themes[0].view_3d.light
@@ -35,9 +36,9 @@ def set_3dsmax_theme():
 	bpy.context.preferences.themes[0].view_3d.empty = (0.054,1,0.007)
 	bpy.context.preferences.themes[0].view_3d.light = (1,0.898,0,1)
 
-def register_theme(mode):
+def register_theme(preferences):
 	store_original_theme()
-	if mode == '3DsMax':
+	if preferences.keymaps == '3DsMax':
 		set_3dsmax_theme()
 
 def unregister_theme():

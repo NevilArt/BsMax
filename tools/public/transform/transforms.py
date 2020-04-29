@@ -84,8 +84,7 @@ class BsMax_OT_TweakBetter(Operator):
 
 	def modal(self, ctx, event):
 		if event.type == 'MOUSEMOVE':
-			bpy.ops.transform.transform('INVOKE_DEFAULT',mode=self.tmode,
-										release_confirm=self.release)
+			bpy.ops.transform.transform('INVOKE_DEFAULT',mode=self.tmode)#,release_confirm=self.release)
 			return {'FINISHED'}
 		return {'RUNNING_MODAL'}
 

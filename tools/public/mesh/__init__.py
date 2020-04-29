@@ -17,6 +17,7 @@ from .meshs import register_meshs,unregister_meshs
 from .smartcreate import register_smartcreate,unregister_smartcreate
 from .smartloop import register_smartloop,unregister_smartloop
 from .smartring import register_smartring,unregister_smartring
+from .select import register_select,unregister_select
 from .weld import register_weld,unregister_weld
 
 def register_mesh():
@@ -24,6 +25,7 @@ def register_mesh():
 	register_smartcreate()
 	register_smartloop()
 	register_smartring()
+	register_select()
 	register_weld()
 
 def unregister_mesh():
@@ -31,4 +33,5 @@ def unregister_mesh():
 	unregister_smartcreate()
 	unregister_smartloop()
 	unregister_smartring()
+	unregister_select()
 	unregister_weld()

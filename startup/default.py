@@ -14,14 +14,17 @@
 ############################################################################
 
 import bpy
-from time import sleep
 
-def register_default(mode):
-	sleep(0.1)	
-	if mode == '3DsMax':
+def register_default(preferences):
+	if preferences.keymaps == '3DsMax':
 		try:
-			bpy.context.space_data.overlay.show_cursor = False
-			bpy.context.space_data.overlay.show_annotation = False
+			for area in bpy.context.screen.areas:
+				if area.type == 'VIEW_3D':
+					ctx = bpy.context
+					ctx.space_data.overlay.show_cursor = False
+					ctx.space_data.overlay.show_annotation = False
+					ctx.space_data.lens = 45
+					ctx.space_data.clip_start = 0.001
 		except:
 			pass
 
