@@ -14,32 +14,46 @@
 ############################################################################
 
 import bpy
-from bpy.types import Operator
+from bpy.types import Operator,Menu
 
 class BsMax_OT_AssignToSelection(Operator):
 	bl_idname = "material.assigntoselection"
 	bl_label = "Assign to selected objects"
 	bl_description = "Assign Material to selected objects"
 
-	# @classmethod
-	# def poll(self, ctx):
-	# 	return len(ctx.selected_objects) > 1
+	@classmethod
+	def poll(self, ctx):
+		if ctx.space_data.type == "NODE_EDITOR":
+			return ctx.space_data.shader_type == 'OBJECT'
+		return False
 
 	def execute(self, ctx):
+		# this is temprary tool
+		# pinied node on node editor will be source material
+		material = ctx.active_object.active_material
 		for o in ctx.selected_objects:
-			pass
-		print(ctx.area.type)
-		print(ctx.space_data.type)
+			o.active_material = material
 		return{"FINISHED"}
 
-def matt_cls(register):
-	classes = [BsMax_OT_AssignToSelection]
-	if register: 
-		[bpy.utils.register_class(c) for c in classes]
-	else:
-		[bpy.utils.unregister_class(c) for c in classes]
+class BsMax_MT_material_Tools(Menu):
+	bl_idname = "BSMAX_MT_materialtools"
+	bl_label = "Tools"
 
-if __name__ == '__main__':
-	matt_cls(True)
+	def draw(self, ctx):
+		layout=self.layout
+		if ctx.space_data.type == "NODE_EDITOR":
+			if ctx.space_data.shader_type == 'OBJECT':
+				layout.operator("material.assigntoselection",text="Assign to selected")
 
-__all__ = ["matt_cls"]
+def matt_menu(self, ctx):
+	self.layout.menu("BSMAX_MT_materialtools")
+
+classes = [BsMax_OT_AssignToSelection,BsMax_MT_material_Tools]
+
+def register_matt():
+	[bpy.utils.register_class(c) for c in classes]
+	bpy.types.NODE_MT_editor_menus.append(matt_menu)
+
+def unregister_matt():
+	bpy.types.NODE_MT_editor_menus.remove(matt_menu)
+	[bpy.utils.unregister_class(c) for c in classes]

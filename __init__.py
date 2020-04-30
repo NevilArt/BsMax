@@ -20,7 +20,7 @@ bl_info = {
 	"name": "BsMax",
 	"description": "BsMax for Blender 2.80 ~ 2.90",
 	"author": "Naser Merati (Nevil)",
-	"version": (0, 1, 0, 20200429),
+	"version": (0, 1, 0, 20200430),
 	"blender": (2, 80, 0),# 2.80~2.90
 	"location": "Almost Everywhere in Blender",
 	"wiki_url": "https://github.com/NevilArt/BsMax_2_80/wiki",
@@ -40,7 +40,7 @@ path = os.path.dirname(os.path.realpath(__file__))
 if path not in sys.path:
 	sys.path.append(path)
 
-import templates
+# import templates
 
 from .keymaps import register_keymaps,unregister_keymaps,register_navigation,unregister_navigation
 from .menu import register_menu,unregister_menu

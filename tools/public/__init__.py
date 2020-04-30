@@ -17,8 +17,8 @@ from .animation import register_animation,unregister_animation
 from .armature import register_armature,unregister_armature
 from .camera import register_camera,unregister_camera
 from .curve import register_curve,unregister_curve
-# from .font import 
 from .ligth import register_light,unregister_light
+from .material import register_material,unregister_material
 from .mesh import register_mesh,unregister_mesh
 from .object import register_object,unregister_object
 from .render import register_render,unregister_render
@@ -36,6 +36,7 @@ def register_public(preferences):
 	register_camera()
 	register_curve()
 	register_light()
+	register_material()
 	register_mesh()
 	register_object()
 	register_render()
@@ -52,6 +53,7 @@ def unregister_public():
 	unregister_camera()
 	unregister_curve()
 	unregister_light()
+	unregister_material()
 	unregister_mesh()
 	unregister_object()
 	unregister_render()

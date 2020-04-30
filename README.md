@@ -2,7 +2,7 @@
 (Works on Blender 2.80 ~ 2.90)
 
 Recent Updates
-* Some menu and Keymap improvement.
+* Shader editor assign material to selected objects. (shader editor menu/ tools/ assign to selection).
 * Move selected objects to active layer(collection) (header of outliner button with + icon).
 * Pivot to first besierpoint for curve objects (View3D/Object/snap/Pivot to First Point).
 * Assistance pack option removed and all tools puted under Tools menu on View3D.
