@@ -16,9 +16,14 @@
 import bpy
 from bpy.types import Operator
 
+class View3DData:
+	def __init__(self):
+		self._shading_type = 'SOLID'
+v3dd = View3DData()
+
 # new one will cretae for NewStyle mode
 class BsMax_OT_WireframeToggle(Operator):
-	bl_idname = "bsmax.wireframetoggle"
+	bl_idname = "view3d.wireframetoggle"
 	bl_label = "Wireframe Toggle"
 
 	@classmethod
@@ -28,8 +33,9 @@ class BsMax_OT_WireframeToggle(Operator):
 	def execute(self, ctx):
 		shading = ctx.area.spaces[0].shading
 		if shading.type == 'WIREFRAME':
-			shading.type = 'MATERIAL' #'SOLID''RENDERED'
+			shading.type = v3dd._shading_type #'SOLID''MATERIAL''RENDERED'
 		else:
+			v3dd._shading_type = shading.type
 			shading.type = 'WIREFRAME'
 		return{"FINISHED"}
 
@@ -50,7 +56,7 @@ class BsMax_OT_LightingToggle(Operator):
 		return{"FINISHED"}
 
 class BsMax_OT_EdgeFaceToggle(Operator):
-	bl_idname = "bsmax.edgefacestoggle"
+	bl_idname = "view3d.edgefacestoggle"
 	bl_label = "Edge Shaded Toggle"
 
 	@classmethod

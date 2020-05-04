@@ -29,7 +29,7 @@ def clear_collections(ctx, obj):
 		collection.objects.unlink(obj)
 
 class BsMax_OT_MoveToActiveCollection(Operator):
-	bl_idname = "collection.movetoactivecollection"
+	bl_idname = "collection.move_to_active_collection"
 	bl_label = "Move to active collection"
 	bl_description = "Move selected objects in to active collection"
 
@@ -47,7 +47,7 @@ class BsMax_OT_MoveToActiveCollection(Operator):
 		return{"FINISHED"}
 
 def outliner_header(self,ctx):
-	self.layout.operator("collection.movetoactivecollection", text="", icon='ADD')
+	self.layout.operator("collection.move_to_active_collection",text="",icon='ADD')
 
 def register_collection():
 	bpy.utils.register_class(BsMax_OT_MoveToActiveCollection)

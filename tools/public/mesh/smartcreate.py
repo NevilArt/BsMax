@@ -34,7 +34,6 @@ class BsMax_OT_SmartCreate(Operator):
 				ordered_selection.append(vert)
 		for item in bm.select_history:
 			ordered_selection.append(item)
-			print(item)
 		for vert in ordered_selection:
 			select_from_item([vert,ordered_selection[-1]], verts = True, replace= True)
 			bpy.ops.mesh.vert_connect()
@@ -47,9 +46,9 @@ class BsMax_OT_SmartCreate(Operator):
 		new_selection = [edge for vert in vert_list for edge in vert.link_edges if edge not in new_selection]
 		select_from_item(new_selection, edges = True, replace = True)
 
-	def super_smart_create(self):
+	def super_smart_create(self,ctx):
 		bm = get_bmesh()
-		selectionMode = (tuple(bpy.context.scene.tool_settings.mesh_select_mode))
+		selectionMode = (tuple(ctx.scene.tool_settings.mesh_select_mode))
 		#if Vertex is selected
 		if selectionMode[0]:
 			selection = get_selected(verts = True, get_item = True)
@@ -66,7 +65,7 @@ class BsMax_OT_SmartCreate(Operator):
 				split_edge_select_vert(change_selection = True) 					
 			elif is_border(selection):
 				bpy.ops.mesh.edge_face_add()
-				bpy.context.scene.tool_settings.mesh_select_mode = [False,False,True]
+				ctx.scene.tool_settings.mesh_select_mode = [False,True,False]
 			elif is_ring(selection):
 				bpy.ops.mesh.subdivide_edgering(number_cuts = 1,
 												interpolation = 'LINEAR',
@@ -75,10 +74,10 @@ class BsMax_OT_SmartCreate(Operator):
 				self.select_rings_inner_loop()
 			elif is_adjacent(selection):
 				bpy.ops.mesh.edge_face_add()
-				bpy.context.scene.tool_settings.mesh_select_mode = [False,True,False]
+				ctx.scene.tool_settings.mesh_select_mode = [False,True,False]
 			else:
 				bpy.ops.mesh.bridge_edge_loops()
-				bpy.context.scene.tool_settings.mesh_select_mode = [False,True, False]
+				ctx.scene.tool_settings.mesh_select_mode = [False,True, False]
 		#if Face is selected		   
 		elif selectionMode[2]:
 			selection = get_selected(faces = True, get_item = True)
@@ -87,8 +86,8 @@ class BsMax_OT_SmartCreate(Operator):
 			if len(selection) > 1:
 				bpy.ops.mesh.bridge_edge_loops()
 
-	def execute(self, ctx):
-		self.super_smart_create()
+	def execute(self,ctx):
+		self.super_smart_create(ctx)
 		return{'FINISHED'}
 
 def register_smartcreate():

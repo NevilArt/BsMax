@@ -101,8 +101,8 @@ def create_keymaps(km):
 		km.new(space,"bsmax.showhidegride","G","PRESS",[])
 		km.new(space,"bsmax.showstatistics","Y","PRESS",[]) #Temprary
 		km.new(space,"object.batchrename","F2","PRESS",[])
-		km.new(space,"bsmax.wireframetoggle","F3","PRESS",[])
-		km.new(space,"bsmax.edgefacestoggle","F4","PRESS",[])
+		km.new(space,"view3d.wireframetoggle","F3","PRESS",[])
+		km.new(space,"view3d.edgefacestoggle","F4","PRESS",[])
 		km.new(space,"bsmax.lightingtoggle","L","PRESS",[],ctrl=True)
 		km.new(space,"bsmax.snaptoggle","S","PRESS",[])
 		km.new(space,"bsmax.angelsnap","A","PRESS",[])
@@ -564,6 +564,8 @@ def create_keymaps(km):
 		space = km.space('File Browser','FILE_BROWSER','WINDOW')
 		km.new(space,"filebrowser.scaleicons","WHEELUPMOUSE",'PRESS',[('up',True)],ctrl=True)
 		km.new(space,"filebrowser.scaleicons","WHEELDOWNMOUSE",'PRESS',[('up',False)],ctrl=True)
+		km.new(space,"file.select_all",'A','PRESS',[('action','SELECT')],ctrl=True)
+		km.new(space,"file.select_all",'D','PRESS',[('action','DESELECT')],ctrl=True)
 		# Knife Tool Modal Map --------------------------------------------------------
 		#space = km.space('Knife Tool Modal Map','EMPTY','WINDOW',modal=True)
 		#km.new(space,"CONFIRM","RIGHTMOUSE","PRESS",[],any=True)

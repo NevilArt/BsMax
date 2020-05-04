@@ -32,7 +32,23 @@ class BsMax_OT_UnFreezeAll(Operator):
 			obj.hide_select = False
 		return{"FINISHED"}
 
-classes = [BsMax_OT_FreezeSelected, BsMax_OT_UnFreezeAll]
+class BsMax_OT_UnHideAll(Operator):
+	bl_idname = "object.unhide_all"
+	bl_label = "Unhide All"
+	bl_description = ""
+
+	def execute(self, ctx):
+		bpy.ops.object.hide_view_clear('INVOKE_DEFAULT')
+		# enable on future version
+		# for collection in bpy.data.collections:
+		# 	collection.hide_render = False
+		# 	collection.hide_viewport = False
+		# for obj in bpy.data.objects:
+		# 	obj.hide_render = False
+		# 	obj.hide_viewport = False
+		return{"FINISHED"}
+
+classes = [BsMax_OT_FreezeSelected,BsMax_OT_UnFreezeAll,BsMax_OT_UnHideAll]
 
 def register_freeze():
 	[bpy.utils.register_class(c) for c in classes]
