@@ -130,8 +130,9 @@ class BsMax_OT_SelectCamera(Operator):
 				bpy.ops.bsmax.searchcamera('INVOKE_DEFAULT')
 		# if camera actived go to camera view 
 		if CamActived:
-			area = next(area for area in ctx.screen.areas if area.type == 'VIEW_3D')
-			area.spaces[0].region_3d.view_perspective = 'CAMERA'
+			# area = next(area for area in ctx.screen.areas if area.type == 'VIEW_3D')
+			# area.spaces[0].region_3d.view_perspective = 'CAMERA'
+			ctx.area.spaces[0].region_3d.view_perspective = 'CAMERA'
 		return{"FINISHED"}
 
 class BsMax_OT_LockCameraToViewToggle(Operator):

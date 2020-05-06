@@ -21,7 +21,7 @@ from mathutils import Matrix
 # Zoom on armator if no bone selected
 
 class BsMax_OT_HomeView(Operator):
-	bl_idname = "bsmax.homeview"
+	bl_idname = "view3d.homeview"
 	bl_label = "Home View"
 	@classmethod
 	def poll(self, ctx):
@@ -34,14 +34,14 @@ class BsMax_OT_HomeView(Operator):
 
 # simulate zoom extended in 3d max
 class BsMax_OT_ZoomExtended(Operator):
-	bl_idname = "bsmax.zoomextended"
+	bl_idname = "view3d.zoomextended"
 	bl_label = "Zoom Extended"
 	@classmethod
 	def poll(self, ctx):
 		return ctx.area.type == 'VIEW_3D'
 	def execute(self, ctx):
 		if len(ctx.scene.objects) == 0:
-			bpy.ops.bsmax.homeview('INVOKE_DEFAULT')
+			bpy.ops.view3d.homeview('INVOKE_DEFAULT')
 		elif len(ctx.selected_objects) == 0:
 			bpy.ops.view3d.view_all(use_all_regions=False,center=False)
 		else:

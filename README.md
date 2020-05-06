@@ -2,7 +2,8 @@
 (Works on Blender 2.80 ~ 2.90)
 
 Recent Updates
-* wireframe toggle restore the previews type (F3 in 3DsMax mode)
+* Prespective toggle works better (P in 3DsMax mode).
+* wireframe toggle restore the previews type (F3 in 3DsMax mode).
 * Shader editor assign material to selected objects. (shader editor menu/ tools/ assign to selection).
 * Move selected objects to active layer(collection) (header of outliner button with + icon).
 * Pivot to first besierpoint for curve objects (View3D/Object/snap/Pivot to First Point).

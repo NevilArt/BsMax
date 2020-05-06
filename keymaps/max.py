@@ -49,7 +49,8 @@ def create_subobject_mode_keymap(km,space):
 	km.new(space,"bsmax.subobjectlevel","ZERO","PRESS",[("level",0)])
 
 def create_switch_view_keymap(km,space):
-	km.new(space,"view3d.view_persportho","P","PRESS",[])
+	# km.new(space,"view3d.view_persportho","P","PRESS",[])
+	km.new(space,"view3d.perespective_toggle","P","PRESS",[])
 	km.new(space,"view3d.view_axis","F","PRESS",[("type","FRONT")])
 	km.new(space,"view3d.view_axis","L","PRESS",[("type","LEFT")])
 	km.new(space,"view3d.view_axis","T","PRESS",[("type","TOP")])
@@ -96,7 +97,7 @@ def create_keymaps(km):
 		km.new(space,"view3d.select","LEFTMOUSE","CLICK",[('deselect',True)],alt=True)
 		create_view3d_tweak_selection_keymap(km,space)
 		# Tools From BsMax
-		km.new(space,"bsmax.zoomextended","Z","PRESS",[])
+		km.new(space,"view3d.zoomextended","Z","PRESS",[])
 		km.new(space,"bsmax.setasactivecamera","C","PRESS",[])
 		km.new(space,"bsmax.showhidegride","G","PRESS",[])
 		km.new(space,"bsmax.showstatistics","Y","PRESS",[]) #Temprary
@@ -116,8 +117,7 @@ def create_keymaps(km):
 		km.new(space,"bsmax.hold","H","PRESS",[],ctrl=True,alt=True)
 		km.new(space,"bsmax.fetch","F","PRESS",[],ctrl=True,alt=True)
 		km.new(space,"wm.call_menu","A","PRESS",[('name',"BSMAX_MT_createmenu")],ctrl=True,shift=True)
-		km.new(space,"bsmax.homeview","HOME","PRESS",[],alt=True)
-		# km.new(space,"bsmax.droptool", "RIGHTMOUSE", "PRESS")
+		km.new(space,"view3d.homeview","HOME","PRESS",[],alt=True)
 		km.new(space,"view.undoredo","Z","PRESS",[('redo',False)],shift=True)
 		km.new(space,"view.undoredo","Y","PRESS",[('redo',True)],shift=True)
 		# Float Editors

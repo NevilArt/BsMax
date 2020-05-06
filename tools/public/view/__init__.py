@@ -16,13 +16,16 @@
 from .droptool import register_droptool,unregister_droptool
 from .filebrowser import register_filebrowser,unregister_filebrowser
 from .undo import register_undo,unregister_undo
+from .view3d import register_view3d,unregister_view3d
 
 def register_view(preferences):
 	register_droptool(preferences)
 	register_filebrowser()
 	register_undo()
+	register_view3d()
 
 def unregister_view():
 	unregister_droptool()
 	unregister_filebrowser()
 	unregister_undo()
+	unregister_view3d()
