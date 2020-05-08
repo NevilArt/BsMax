@@ -14,9 +14,8 @@
 ############################################################################
 
 import bpy
-from bpy.types import Menu
 
-class BsMax_MT_UV_Edit(Menu):
+class BsMax_MT_UV_Edit(bpy.types.Menu):
 	bl_idname = "BSMAX_MT_uvedit"
 	bl_label = "Edit"
 

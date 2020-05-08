@@ -2,6 +2,8 @@
 (Works on Blender 2.80 ~ 2.90)
 
 Recent Updates
+* PrimitiveData register error issu fixed
+* Info and Console key map update (More like 3DsMax)
 * Prespective toggle works better (P in 3DsMax mode).
 * wireframe toggle restore the previews type (F3 in 3DsMax mode).
 * Shader editor assign material to selected objects. (shader editor menu/ tools/ assign to selection).

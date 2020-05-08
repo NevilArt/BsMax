@@ -164,6 +164,8 @@ class PrimitiveData(PropertyGroup):
 		items =[('Curve','Curve',''),('Manual','Manual',''),('Optimized','Optimized',''),('Adaptive','Adaptive','')])
 
 def register_update():
+	if hasattr(bpy.types.Mesh,'primitivedata') or hasattr(bpy.types.Curve,'primitivedata'):
+		unregister_update()
 	bpy.utils.register_class(PrimitiveData)
 	bpy.types.Mesh.primitivedata = PointerProperty(type=PrimitiveData)
 	bpy.types.Curve.primitivedata = PointerProperty(type=PrimitiveData)

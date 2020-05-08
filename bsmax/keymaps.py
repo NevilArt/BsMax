@@ -73,9 +73,9 @@ class KeyMaps:
 		for k in self.newkeys:
 			keymapitem = k.space.keymap_items.new(k.idname, k.type, k.value,
 						alt=k.alt, ctrl=k.ctrl, shift=k.shift, any=k.any)
-			for p in k.properties:
-				kama = "'" if type(p[1]) == str else ""
-				exec("keymapitem.properties." + p[0] + "=" + kama + str(p[1]) + kama)
+			for key,val in k.properties:
+				if hasattr(keymapitem.properties,key):
+					setattr(keymapitem.properties,key,val)
 			self.keymaps.append((k.space, keymapitem))
 		self.set_mute(True,0)
 

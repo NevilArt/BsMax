@@ -23,6 +23,7 @@ from .mesh import register_mesh,unregister_mesh
 from .object import register_object,unregister_object
 from .render import register_render,unregister_render
 from .select import register_select,unregister_select
+from .text import register_text,unregister_text
 from .transform import register_transform,unregister_transform
 from .uv import register_uv,unregister_uv
 from .view import register_view,unregister_view
@@ -41,6 +42,7 @@ def register_public(preferences):
 	register_object()
 	register_render()
 	register_select()
+	register_text()
 	register_transform()
 	register_uv()
 	register_view(preferences)
@@ -58,6 +60,7 @@ def unregister_public():
 	unregister_object()
 	unregister_render()
 	unregister_select()
+	unregister_text()
 	unregister_transform()
 	unregister_uv()
 	unregister_view()
