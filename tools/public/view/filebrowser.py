@@ -28,20 +28,24 @@ class BsMax_OT_ScaleIcons(Operator):
 
 	def execute(self, ctx):
 		params = ctx.space_data.params
+		old = bpy.app.version[1] < 81
+		small = 'LIST_SHORT' if old else 'LIST_VERTICAL'
+		medium = 'LIST_LONG' if old else 'LIST_HORIZONTAL'
+		large = 'THUMBNAIL'
 		if self.up:
-			if params.display_type == 'THUMBNAIL':
-				params.display_type = 'LIST_SHORT'
-			elif params.display_type == 'LIST_LONG':
-				params.display_type = 'THUMBNAIL'
-			elif params.display_type == 'LIST_SHORT':
-				params.display_type = 'LIST_LONG'
+			if params.display_type == large:
+				params.display_type = small
+			elif params.display_type == medium:
+				params.display_type = large
+			elif params.display_type == small:
+				params.display_type = medium
 		else:
-			if params.display_type == 'THUMBNAIL':
-				params.display_type = 'LIST_LONG'
-			elif params.display_type == 'LIST_LONG':
-				params.display_type = 'LIST_SHORT'
-			elif params.display_type == 'LIST_SHORT':
-				params.display_type = 'THUMBNAIL'
+			if params.display_type == large:
+				params.display_type = medium
+			elif params.display_type == medium:
+				params.display_type = small
+			elif params.display_type == small:
+				params.display_type = large
 		return{"FINISHED"}
 
 def register_filebrowser():

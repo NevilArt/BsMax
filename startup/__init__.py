@@ -13,7 +13,6 @@
 #	along with this program.  If not, see <https://www.gnu.org/licenses/>.
 ############################################################################
 
-from _thread import start_new_thread
 from .default import register_default,unregister_default
 from .theme import register_theme,unregister_theme
 

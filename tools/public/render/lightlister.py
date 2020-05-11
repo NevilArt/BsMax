@@ -15,13 +15,12 @@
 
 import bpy
 from bpy.types import Operator
-from bpy.props import StringProperty
 from bsmax.actions import set_as_active_object
 
 class BsMax_TO_SelectLightByName(Operator):
 	bl_idname = "light.selectbyname"
 	bl_label = "select light by name"
-	name: StringProperty(default="")
+	name: bpy.props.StringProperty(default="")
 	
 	@classmethod
 	def poll(self, ctx):

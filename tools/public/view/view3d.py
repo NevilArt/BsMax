@@ -16,9 +16,11 @@
 import bpy
 from bpy.types import Operator
 
-class View3D_OT_perespectivetoggle(Operator):
-	bl_idname = "view3d.perespective_toggle"
-	bl_label = "Perespective Toggle"
+class View3D_OT_perespective(Operator):
+	bl_idname = 'view3d.perespective'
+	bl_label = 'Perespective'
+
+	mode: bpy.props.StringProperty(default='Toggle')
 	
 	@classmethod
 	def poll(self, ctx):
@@ -26,18 +28,23 @@ class View3D_OT_perespectivetoggle(Operator):
 	
 	def execute(self, ctx):
 		r3d = ctx.area.spaces[0].region_3d
-		if r3d.view_perspective == 'CAMERA':
-			view_matrix = ctx.area.spaces.active.region_3d.view_matrix
+		if self.mode == 'Toggle':
+			if r3d.view_perspective == 'CAMERA':
+				view_matrix = ctx.area.spaces.active.region_3d.view_matrix
+				r3d.view_perspective = 'PERSP'
+				ctx.area.spaces.active.region_3d.view_matrix = view_matrix
+			elif r3d.view_perspective == 'PERSP':
+				r3d.view_perspective = 'ORTHO'
+			elif r3d.view_perspective == 'ORTHO':
+				r3d.view_perspective = 'PERSP'
+		elif self.mode == 'Perspective':
 			r3d.view_perspective = 'PERSP'
-			ctx.area.spaces.active.region_3d.view_matrix = view_matrix
-		elif r3d.view_perspective == 'PERSP':
+		elif self.mode == 'Orthographic':
 			r3d.view_perspective = 'ORTHO'
-		elif r3d.view_perspective == 'ORTHO':
-			r3d.view_perspective = 'PERSP'
-		return{"FINISHED"}
+		return{'FINISHED'}
 
 def register_view3d():
-	bpy.utils.register_class(View3D_OT_perespectivetoggle)
+	bpy.utils.register_class(View3D_OT_perespective)
 
 def unregister_view3d():
-	bpy.utils.unregister_class(View3D_OT_perespectivetoggle)
+	bpy.utils.unregister_class(View3D_OT_perespective)

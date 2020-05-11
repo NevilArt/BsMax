@@ -14,34 +14,41 @@
 ############################################################################
 
 import bpy
-from bpy.types import Operator
 
-# Open a Material editor
-class BsMax_OT_MaterialEditorOpen(Operator):
-	bl_idname = "bsmax.openmaterialeditor"
-	bl_label = "Material Editor(Open)"
-	def execute(self, contecxt):
-		Area = bpy.context.area
-		Editor = Area.type
-		Area.type = 'NODE_EDITOR' #'ShaderNodeTree'
+class Editor_OT_NodeEditorFloat(bpy.types.Operator):
+	bl_idname = "editor.open_node_ditor"
+	bl_label = "Node Editor(Float)"
+	mode: bpy.props.StringProperty()
+
+	def execute(self,ctx):
+		area = ctx.area
+		original_type = ctx.area.type
+		if self.mode == 'Material':
+			ctx.area.ui_type = 'ShaderNodeTree'
+			ctx.space_data.shader_type = 'OBJECT'
+		elif self.mode == 'Environment':
+			ctx.area.ui_type = 'ShaderNodeTree'
+			ctx.space_data.shader_type = 'WORLD'
+		elif self.mode == 'Composit':
+			area.ui_type = 'CompositorNodeTree'
+
 		bpy.ops.screen.area_dupli('INVOKE_DEFAULT')
-		Area.type = Editor
+		area.type = original_type
 		return{"FINISHED"}
 
-# Open a Script listener
-class BsMax_OT_ScriptListenerOpen(Operator):
-	bl_idname = "bsmax.scriptlistener"
-	bl_label = "Script Listener(Open)"
-	def execute(self, contecxt):
+class Editor_OT_ScriptListenerOpen(bpy.types.Operator):
+	bl_idname = "editor.script_listener"
+	bl_label = "Script Listener(Float)"
+	def execute(self,ctx):
 		bpy.ops.screen.userpref_show('INVOKE_DEFAULT')
-		area = bpy.context.window_manager.windows[-1].screen.areas[0]
+		area = ctx.window_manager.windows[-1].screen.areas[0]
 		area.type = 'CONSOLE'
-		bpy.ops.screen.area_split(direction='HORIZONTAL', factor=0.5)
-		area = bpy.context.window_manager.windows[-1].screen.areas[0]
+		bpy.ops.screen.area_split(direction='HORIZONTAL',factor=0.5)
+		area = ctx.window_manager.windows[-1].screen.areas[0]
 		area.type = 'INFO'
 		return{"FINISHED"}
 
-classes = [BsMax_OT_MaterialEditorOpen, BsMax_OT_ScriptListenerOpen]
+classes = [Editor_OT_NodeEditorFloat,Editor_OT_ScriptListenerOpen]
 
 def register_floateditor():
 	[bpy.utils.register_class(c) for c in classes]

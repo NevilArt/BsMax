@@ -18,27 +18,38 @@ from bpy.types import Menu
 from bsmax.state import is_object_mode
 
 class BsMax_MT_View3D_tools(Menu):
-	bl_idname = "BSMAX_MT_view3dtools"
-	bl_label = "Tools"
-	bl_context = "objectmode"
+	bl_idname = 'BSMAX_MT_view3dtools'
+	bl_label = 'Tools'
+	bl_context = 'objectmode'
 
 	@classmethod
-	def poll(self, ctx):
+	def poll(self,ctx):
 		return is_object_mode(ctx)
 
-	def draw(self, ctx):
+	def draw(self,ctx):
 		layout=self.layout
-		layout.menu("BSMAX_MT_animationtools",icon='ARMATURE_DATA')
-		# layout.menu("BSMAX_MT_rendertools",icon='RENDER_ANIMATION')
-		layout.menu("BSMAX_MT_riggtools",icon='TOOL_SETTINGS')
+		layout.menu('BSMAX_MT_animationtools',icon='ARMATURE_DATA')
+		# layout.menu('BSMAX_MT_rendertools',icon='RENDER_ANIMATION')
+		layout.menu('BSMAX_MT_riggtools',icon='TOOL_SETTINGS')
 
-def tools_menu(self, ctx):
-	self.layout.menu("BSMAX_MT_view3dtools")
+def tools_menu(self,ctx):
+	self.layout.menu('BSMAX_MT_view3dtools')
+
+def default_key(self,ctx):
+	self.layout.prop(ctx.preferences.edit,'keyframe_new_interpolation_type',text='')
 
 def register_menu():
 	bpy.utils.register_class(BsMax_MT_View3D_tools)
 	bpy.types.VIEW3D_MT_editor_menus.append(tools_menu)
+	bpy.types.TIME_MT_editor_menus.append(default_key)
+	bpy.types.DOPESHEET_MT_editor_menus.append(default_key)
+	bpy.types.GRAPH_MT_editor_menus.append(default_key)
+	bpy.types.NLA_MT_view.append(default_key)
 
 def unregister_menu():
 	bpy.utils.unregister_class(BsMax_MT_View3D_tools)
 	bpy.types.VIEW3D_MT_editor_menus.remove(tools_menu)
+	bpy.types.TIME_MT_editor_menus.remove(default_key)
+	bpy.types.DOPESHEET_MT_editor_menus.remove(default_key)
+	bpy.types.GRAPH_MT_editor_menus.remove(default_key)
+	bpy.types.NLA_MT_view.remove(default_key)

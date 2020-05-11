@@ -2,9 +2,12 @@
 (Works on Blender 2.80 ~ 2.90)
 
 Recent Updates
-* PrimitiveData register error issu fixed
-* Info and Console key map update (More like 3DsMax)
-* Prespective toggle works better (P in 3DsMax mode).
+* Specific frames render replaced but not complete yet.
+* 'p' for Perspective toggle removed, 'P' for Perspective and 'U' for Orthographic in 3DsMax Mode.
+* Default key mode added to time line.
+* keymap changes '7' view statistic, '8' open environment setting (in 3DsMax mode).
+* PrimitiveData register error issue fixed.
+* Info and Console key map update (More like 3DsMax).
 * wireframe toggle restore the previews type (F3 in 3DsMax mode).
 * Shader editor assign material to selected objects. (shader editor menu/ tools/ assign to selection).
 * Move selected objects to active layer(collection) (header of outliner button with + icon).
@@ -23,3 +26,4 @@ Recent Updates
 * Extrud shape object added to Create/Curve menu (Genarate a curve object).
 * Convert to regular object added to contex menu and primitive parameters panel.
 * Ask for close the Line if click on first point while drawing.
+* ...
