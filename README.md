@@ -2,6 +2,8 @@
 (Works on Blender 2.80 ~ 2.90)
 
 Recent Updates
+* 'Z' for find active object in outliner (3DsMax mode).
+* Zoom extended updated, works in edit mode too (3DsMax mode).
 * Specific frames render replaced but not complete yet.
 * 'p' for Perspective toggle removed, 'P' for Perspective and 'U' for Orthographic in 3DsMax Mode.
 * Default key mode added to time line.

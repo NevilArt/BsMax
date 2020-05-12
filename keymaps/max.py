@@ -414,7 +414,7 @@ def create_keymaps(km):
 		# Global
 		create_search_shortkey(km,space)
 		# upper than 2.80 do not need this part
-		if bpy.app.version[1] == 80:
+		if bpy.app.version[1] < 81:
 			# Selection
 			km.new(space,'outliner.item_activate','LEFTMOUSE','PRESS',[('extend',True)],ctrl=True)
 			km.new(space,'outliner.select_box','EVT_TWEAK_L','EAST',[('mode','SET')])
@@ -435,8 +435,9 @@ def create_keymaps(km):
 			km.new(space,'outliner.collection_new','N','PRESS',[],ctrl=True)
 			km.new(space,'object.delete','DEL','PRESS',[('confirm',False)],ctrl=True)
 			km.new(space,'outliner.hide','H','PRESS',[],alt=True)
-			# km.new(space,'outliner.hide_unselected','I','PRESS',[],alt=True)
 			km.new(space,'outliner.unhide_all','U','PRESS',[],alt=True)
+		else:
+			km.new(space,'outliner.show_active','Z','PRESS',[])
 		# Node Editor -----------------------------------------------------------------
 		space = km.space('Node Editor','NODE_EDITOR','WINDOW')
 		# Global
