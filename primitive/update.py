@@ -91,10 +91,10 @@ def update(ctx, data):
 def primities_update(scene):
 	for data in bpy.data.meshes:
 		if data.primitivedata.animatable:
-			update(ctx, data)
+			update(bpy.context, data)
 	for data in bpy.data.curves:
 		if data.primitivedata.animatable:
-			update(ctx, data)
+			update(bpy.context, data)
 
 class PrimitiveData(PropertyGroup):
 	classname: StringProperty()

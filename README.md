@@ -2,6 +2,8 @@
 (Works on Blender 2.80 ~ 2.90)
 
 Recent Updates
+* Object Properties added to Quad menu (not perfect but some thing better than nothing).
+* Split Edge added to quad menu.
 * 'Z' for find active object in outliner (3DsMax mode).
 * Zoom extended updated, works in edit mode too (3DsMax mode).
 * Specific frames render replaced but not complete yet.

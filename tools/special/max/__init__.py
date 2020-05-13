@@ -21,7 +21,7 @@ from .hold import register_hold,unregister_hold
 from .menu import register_menu,unregister_menu
 from .modifier import register_modifier,unregister_modifier
 from .navigation import register_navigation,unregister_navigation
-# from .objectproperties import *
+from .objectproperties import register_objectproperties,unregister_objectproperties
 from .snap import register_snap,unregister_snap
 from .subobjectlevel import register_subobjectlevel,unregister_subobjectlevel
 from .transform import register_transform,unregister_transform
@@ -37,6 +37,7 @@ def register_max():
 	register_menu()
 	register_modifier()
 	# register_navigation()
+	register_objectproperties()
 	register_snap()
 	register_subobjectlevel()
 	register_transform()
@@ -52,6 +53,7 @@ def unregister_max():
 	unregister_menu()
 	unregister_modifier()
 	# unregister_navigation()
+	unregister_objectproperties()
 	unregister_snap()
 	unregister_subobjectlevel()
 	unregister_transform()

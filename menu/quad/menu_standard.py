@@ -53,7 +53,7 @@ def get_view3d_transform(ctx):
 	items.append(QuadItem("Clone",f,(len(ctx.selected_objects) > 0),n,c0011,n))
 	items.append(QuadItem("Align Objects...",f,(len(ctx.selected_objects) > 0),n,c0144,n))
 	items.append(seprator())
-	items.append(QuadItem("Object Properties",f,f,n,"",n))
+	items.append(QuadItem("Object Properties...",f,t,n,c0166,n))
 	items.append(seprator())
 	items.append(QuadItem("Curve Editor..",f,f,n,"",n))
 	items.append(QuadItem("Dope sheet...",f,f,n,"",n))
@@ -168,7 +168,7 @@ def get_view3d_tool2(ctx):
 				items.append(QuadItem("Remove Isolated Vertexs",f,t,n,c0135,n))
 			if E:
 				items.append(QuadItem("Remove",f,t,n,c0043,n))
-				items.append(QuadItem("Split",f,f,n,c0044,n))
+				items.append(QuadItem("Split",f,t,n,c0165,n))
 				items.append(QuadItem("Connect",f,t,n,c0045,n))
 				items.append(QuadItem("Bridge",f,t,n,c0143,n))
 				items.append(seprator())
