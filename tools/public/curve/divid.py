@@ -31,7 +31,7 @@ class BsMax_OT_dividplus(CurveTool):
 		curve = self.curve
 		curve.restore()
 
-		splines = curve.splines
+		# splines = curve.splines
 		for selection in curve.selection('segment'):
 			spline = curve.splines[selection[0]]
 			selection[1].sort(reverse=True)

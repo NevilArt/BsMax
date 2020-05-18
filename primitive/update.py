@@ -14,7 +14,6 @@
 ############################################################################
 
 import bpy
-from bpy.types import PropertyGroup
 from bpy.app.handlers import persistent
 from bpy.props import StringProperty,IntProperty,FloatProperty,BoolProperty,EnumProperty,PointerProperty
 from primitive.box import Box
@@ -74,29 +73,28 @@ def get_class(name):
 	elif name == "Compass": return Compass()
 	else: return None
 
-def primitive_update(self, ctx):
-	obj = ctx.object
-	subclass = get_class(obj.data.primitivedata.classname)
+def primitive_update(self,ctx):
+	subclass = get_class(ctx.object.data.primitivedata.classname)
 	if subclass != None:
-		subclass.data = obj.data
-		subclass.update(ctx)
+		subclass.data = ctx.object.data
+		subclass.update()
 
-def update(ctx, data):
+def update(data):
 	subclass = get_class(data.primitivedata.classname)
 	if subclass != None:
 		subclass.data = data
-		subclass.update(ctx)
+		subclass.update()
 
 @persistent
-def primities_update(scene):
+def primitive_frame_update(scene):
 	for data in bpy.data.meshes:
 		if data.primitivedata.animatable:
-			update(bpy.context, data)
+			update(data)
 	for data in bpy.data.curves:
 		if data.primitivedata.animatable:
-			update(bpy.context, data)
+			update(data)
 
-class PrimitiveData(PropertyGroup):
+class PrimitiveData(bpy.types.PropertyGroup):
 	classname: StringProperty()
 	animatable: BoolProperty(update=primitive_update)
 	width: FloatProperty(unit='LENGTH', update=primitive_update, min= 0)
@@ -169,7 +167,7 @@ def register_update():
 	bpy.utils.register_class(PrimitiveData)
 	bpy.types.Mesh.primitivedata = PointerProperty(type=PrimitiveData)
 	bpy.types.Curve.primitivedata = PointerProperty(type=PrimitiveData)
-	bpy.app.handlers.frame_change_post.append(primities_update)
+	bpy.app.handlers.frame_change_post.append(primitive_frame_update)
 
 def unregister_update():
 	bpy.utils.unregister_class(PrimitiveData)

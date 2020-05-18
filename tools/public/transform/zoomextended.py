@@ -14,9 +14,10 @@
 ############################################################################
 
 import bpy
+from bpy.types import Operator
 from mathutils import Matrix
 
-class View3d_OT_HomeView(bpy.types.Operator):
+class View3d_OT_HomeView(Operator):
 	bl_idname = 'view3d.homeview'
 	bl_label = 'Home View'
 	@classmethod
@@ -29,7 +30,7 @@ class View3d_OT_HomeView(bpy.types.Operator):
 		return{'FINISHED'}
 
 # simulate zoom extended in 3d max
-class View3d_OT_ZoomExtended(bpy.types.Operator):
+class View3d_OT_ZoomExtended(Operator):
 	bl_idname = 'view3d.zoomextended'
 	bl_label = 'Zoom Extended'
 
@@ -38,7 +39,6 @@ class View3d_OT_ZoomExtended(bpy.types.Operator):
 		return ctx.area.type == 'VIEW_3D'
 
 	def execute(self, ctx):
-		print(ctx.mode)
 		if ctx.mode == 'OBJECT':
 			if len(ctx.scene.objects) == 0:
 				bpy.ops.view3d.homeview('INVOKE_DEFAULT')

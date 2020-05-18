@@ -14,10 +14,9 @@
 ############################################################################
 
 import bpy
-from bpy.types import Menu
 from bsmax.state import is_object_mode
 
-class BsMax_MT_View3D_tools(Menu):
+class BsMax_MT_View3D_tools(bpy.types.Menu):
 	bl_idname = 'BSMAX_MT_view3dtools'
 	bl_label = 'Tools'
 	bl_context = 'objectmode'

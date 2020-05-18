@@ -49,17 +49,3 @@ def register_blenderdefault():
 
 def unregister_blenderdefault():
 	bpy.utils.unregister_class(BsMax_OT_BlenderDefaultMenueCall)
-
-
-# VIEW3D_PT_gpencil_draw_context_menu
-# VIEW3D_PT_gpencil_sculpt_context_menu
-# VIEW3D_PT_paint_texture_context_menu
-# VIEW3D_PT_paint_vertex_context_menu
-# VIEW3D_PT_paint_weight_context_menu
-# VIEW3D_PT_sculpt_context_menu
-
-# DOPESHEET_MT_context_menu
-# DOPESHEET_MT_channel_context_menu
-
-# TEXT_MT_toolbox
-# CLIP_MT_tracking_context_menu

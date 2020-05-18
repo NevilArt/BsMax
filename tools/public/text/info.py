@@ -14,8 +14,9 @@
 ############################################################################
 
 import bpy
+from bpy.types import Operator
 
-class Info_OT_Clear(bpy.types.Operator):
+class Info_OT_Clear(Operator):
 	bl_idname = "info.clear"
 	bl_label = "Clear"
 	def execute(self, ctx):
@@ -23,7 +24,7 @@ class Info_OT_Clear(bpy.types.Operator):
 		bpy.ops.info.report_delete('INVOKE_DEFAULT')
 		return {'FINISHED'}
 
-class Info_OT_NewScript(bpy.types.Operator):
+class Info_OT_NewScript(Operator):
 	bl_idname = "info.new_script"
 	bl_label = "New Script"
 	def execute(self, ctx):

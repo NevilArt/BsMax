@@ -21,7 +21,7 @@ from .view3d import register_view3d,unregister_view3d
 def register_view(preferences):
 	register_droptool(preferences)
 	register_filebrowser()
-	register_undo()
+	register_undo(preferences)
 	register_view3d()
 
 def unregister_view():

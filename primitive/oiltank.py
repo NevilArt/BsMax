@@ -147,7 +147,7 @@ class OilTank(PrimitiveGeometryClass):
 		pd.classname = self.classname
 		pd.ssegs, pd.csegs, pd.hsegs = 18,8,3
 		pd.center = True
-	def update(self, ctx):
+	def update(self):
 		pd = self.data.primitivedata
 		csegs = pd.csegs if not pd.seglock else pd.ssegs-2
 		if pd.center:
@@ -166,7 +166,7 @@ class OilTank(PrimitiveGeometryClass):
 			pd.thickness, pd.chamfer1, # capheight, blend
 			pd.ssegs, csegs, pd.hsegs,
 			pd.sliceon, pd.sfrom, pd.sto)
-		self.update_mesh(ctx, mesh)
+		self.update_mesh(mesh)
 	def abort(self):
 		delete_objects([self.owner])
 
@@ -188,7 +188,7 @@ class BsMax_OT_CreateOilTank(CreatePrimitive):
 		elif clickcount == 3:
 			self.params.thickness = dimantion.height
 		if clickcount > 0:
-			self.subclass.update(ctx)
+			self.subclass.update()
 	def finish(self):
 		pass
 

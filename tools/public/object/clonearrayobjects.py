@@ -15,7 +15,6 @@
 
 import bpy
 from bpy.props import StringProperty,BoolProperty,FloatProperty,IntProperty
-from bpy.types import Operator
 from math import radians
 
 # TODO
@@ -93,7 +92,7 @@ def BsMax_Clone_SetTransform(self, ctx):
 			if self.mirror_z and i % 2 == 0:
 				N[j].scale.z = -N[j].scale.z
 
-class BsMax_OT_CloneArrayObjects(Operator):
+class BsMax_OT_CloneArrayObjects(bpy.types.Operator):
 	bl_idname = "bsmax.cloneselectedobjects"
 	bl_label = "Clone / Array"
 	bl_description = "Clone object dialog box"

@@ -14,7 +14,6 @@
 ############################################################################
 
 import bpy
-from bpy.types import Operator
 from bpy.props import IntProperty
 
 def set(mode):
@@ -22,7 +21,7 @@ def set(mode):
 def mesh(ctx,v,e,f):
 	ctx.tool_settings.mesh_select_mode = v,e,f
 
-class BsMax_OT_SubobjectLevel(Operator):
+class BsMax_OT_SubobjectLevel(bpy.types.Operator):
 	bl_idname = "bsmax.subobjectlevel"
 	bl_label = "Subobject Level"
 	level: IntProperty(name="SubobjectLevel")

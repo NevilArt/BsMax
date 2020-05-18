@@ -349,14 +349,14 @@ class Profilo(PrimitiveCurveClass):
 		pd = self.data.primitivedata
 		pd.classname = self.classname
 		pd.profilo_mode = mode
-	def update(self, ctx):
+	def update(self):
 		pd = self.data.primitivedata
 		shapes = get_profilo_shape(pd.profilo_mode,pd.length, pd.width, pd.thickness,
 					pd.chamfer1, pd.chamfer2, pd.chamfer3,
 					pd.radius1, pd.sfrom, pd.sto, pd.outline, pd.corner,
 					pd.offset_x, pd.offset_y, pd.mirror_x, pd.mirror_y,
 					pd.rotation, pd.pivotaligne)
-		self.update_curve(ctx, shapes)
+		self.update_curve(shapes)
 	def abort(self):
 		delete_objects([self.owner])
 
@@ -377,7 +377,7 @@ class BsMax_OT_CreateProfilo(CreatePrimitive):
 			self.params.thickness = min(width, length) / 5
 			self.subclass.owner.location = dimantion.center
 		if clickcount > 0:
-			self.subclass.update(ctx)
+			self.subclass.update()
 	def finish(self):
 		pass
 

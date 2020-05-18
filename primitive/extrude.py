@@ -127,10 +127,10 @@ class Extrude_Curve(PrimitiveCurveClass):
 		pd = self.data.primitivedata
 		pd.classname = self.classname
 		pd.height = 1
-	def update(self, ctx):
+	def update(self):
 		pd = self.data.primitivedata
 		shapes = get_extrude_curve(pd.height,pd.hsegs,pd.chamfer2,pd.chamfer1)
-		self.update_curve(ctx, shapes)
+		self.update_curve(shapes)
 	def abort(self):
 		delete_objects([self.owner])
 
@@ -158,7 +158,7 @@ class Extrude_Mesh(PrimitiveGeometryClass):
 		mesh = get_extrude_mesh(target,pd.height,pd.hsegs,pd.csegs,
 								pd.extrude_segmode,pd.bool1,pd.bool2,
 								pd.chamfer2,pd.chamfer1)
-		self.update_mesh(ctx, mesh)
+		self.update_mesh(mesh)
 	def abort(self):
 		delete_objects([self.owner])
 

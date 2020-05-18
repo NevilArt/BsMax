@@ -22,14 +22,14 @@ class BsMax_OT_AttachMesh(Operator):
 	bl_label = "Attach (Mesh)"
 	#custom_property: PointerProperty(type = bpy.types.Object)
 	def execute(self, ctx):
-		print("Attach by eyedrop working on progress")
+		# print("Attach by eyedrop working on progress")
 		return{"FINISHED"}
 
 class BsMax_OT_AttachListMesh(Operator):
 	bl_idname = "bsmax.attachlistmesh"
 	bl_label = "Attach List (Mesh)"
 	def execute(self, ctx):
-		print("Attach by list working on progress")
+		# print("Attach by list working on progress")
 		return{"FINISHED"}
 
 class BsMax_OT_DetachMesh(Operator):

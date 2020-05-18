@@ -14,10 +14,9 @@
 ############################################################################
 
 import bpy
-from bpy.types import Operator
 from bsmax.curve import Curve
 
-class CurveTool(Operator):
+class CurveTool(bpy.types.Operator):
 	bl_options = {'REGISTER','UNDO'}
 	curve,obj = None,None
 	start,finish = False,False

@@ -14,10 +14,9 @@
 ############################################################################
 
 import bpy
-from bpy.types import Menu
 from bsmax.state import is_object_mode
 
-class BsMax_MT_Render_Tools(Menu):
+class BsMax_MT_Render_Tools(bpy.types.Menu):
 	bl_idname = "BSMAX_MT_rendertools"
 	bl_label = "Render"
 	bl_context = "objectmode"

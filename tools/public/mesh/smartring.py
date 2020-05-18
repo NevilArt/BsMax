@@ -14,13 +14,12 @@
 ############################################################################
 
 import bpy, bmesh, itertools
-from bpy.types import Operator
 from .bsmesh  import *
 
 # Original code from https://blenderartists.org/u/maxiv94
 # https://blenderartists.org/t/interactive-tools-for-blender-2-8/1164932
 
-class BsMax_OT_SmartSelectRing(Operator):
+class BsMax_OT_SmartSelectRing(bpy.types.Operator):
 	bl_idname = "mesh.smart_select_ring"
 	bl_label = "Smart Select Ring"
 	bl_description = "Context sensitive smart ring selection"
@@ -123,7 +122,7 @@ class BsMax_OT_SmartSelectRing(Operator):
 		elif faces:
 			sel_set = [False, False, True]
 		if len(elements_selection) > 2:
-			selection_results = []
+			# selection_results = []
 			results = []
 			for element_a in elements_selection:
 				min = []

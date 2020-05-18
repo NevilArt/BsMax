@@ -91,13 +91,16 @@ class Arc(PrimitiveCurveClass):
 		self.p2 = None
 		self.p3 = None
 		self.orient = None
+
 	def reset(self):
 		self.__init__()
+
 	def create(self, ctx):
 		shapes = GetArcShape(0, 0, 360, False)
 		self.create_curve(ctx, shapes, self.classname)
 		pd = self.data.primitivedata
 		pd.classname = self.classname
+
 	def draw(self, ctx):
 		pd = self.data.primitivedata
 		if self.p3 == None:
@@ -112,12 +115,14 @@ class Arc(PrimitiveCurveClass):
 			self.owner.location = center
 			self.close = pd.sliceon = True
 			shapes = GetArcShape(pd.radius1, pd.sfrom, pd.sto, pd.sliceon)
-		self.update_curve(ctx, shapes)
-	def update(self, ctx):
+		self.update_curve(shapes)
+
+	def update(self):
 		pd = self.data.primitivedata
 		self.close = pd.sliceon
 		shapes = GetArcShape(pd.radius1, pd.sfrom, pd.sto, pd.sliceon)
-		self.update_curve(ctx, shapes)
+		self.update_curve(shapes)
+
 	def abort(self):
 		delete_objects([self.owner])
 

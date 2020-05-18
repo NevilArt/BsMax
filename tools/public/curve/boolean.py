@@ -39,7 +39,7 @@ class BsMax_OT_BooleanCurve(CurveTool):
 		curve = self.curve
 		curve.restore()
 
-		splines = curve.splines
+		# splines = curve.splines
 		indexes = curve.selection('close')
 		active = curve.active()
 		index1, index2 = None, None

@@ -47,10 +47,10 @@ class Circle(PrimitiveCurveClass):
 		self.create_curve(ctx, shapes, self.classname)
 		pd = self.data.primitivedata
 		pd.classname = self.classname
-	def update(self, ctx):
+	def update(self):
 		pd = self.data.primitivedata
 		shapes = GetCircleShape(pd.radius1)
-		self.update_curve(ctx, shapes)
+		self.update_curve(shapes)
 	def abort(self):
 		delete_objects([self.owner])
 
@@ -68,7 +68,7 @@ class BsMax_OT_CreateCircle(CreatePrimitive):
 		if clickcount == 1:
 			self.params.radius1 = dimantion.radius
 		if clickcount > 0:
-			self.subclass.update(ctx)
+			self.subclass.update()
 	def finish(self):
 		pass
 

@@ -333,10 +333,10 @@ class SegmentDivisions:
 		self.cos.clear()
 		self.times.sort(reverse=reverse)
 		""" sort correction point as time sort """
-		print("times", len(times),len(self.times))
-		print("cos", len(cos),len(self.cos))
+		# print("times", len(times),len(self.times))
+		# print("cos", len(cos),len(self.cos))
 		for time in self.times:
-			print("-->",time,times.index(time))
+			# print("-->",time,times.index(time))
 			self.cos.append(cos[times.index(time)])
 
 class SplineDivisions:

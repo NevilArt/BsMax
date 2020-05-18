@@ -16,35 +16,6 @@
 import bpy
 from bpy.app.handlers import persistent
 
-# class BsMax_OT_RenderFrames(bpy.types.Operator):
-# 	bl_idname = "render.renderframes"
-# 	bl_label = "Render Frames"
-
-# 	frames = []
-# 	filepath = ""
-# 	index = 0
-
-# 	def modal(self, ctx, event):
-# 		if event.type == 'ESC' or self.index >= len(self.frames):
-# 			ctx.scene.render.filepath = self.filepath
-# 			return {'CANCELLED'}
-# 		if ctx.scene.camera != None:
-# 			frame = self.frames[self.index]
-# 			ctx.scene.frame_set(frame)
-# 			bpy.ops.wm.redraw_timer(type='DRAW', iterations=1, time_limit=0)
-# 			ctx.scene.render.filepath = self.filepath + get_str_from_int(frame, 4)
-# 			bpy.ops.render.render(write_still=True)
-# 			self.index += 1
-# 		return {'RUNNING_MODAL'}
-
-# 	def invoke(self, ctx, event):
-# 		scene = ctx.scene
-# 		self.filepath = scene.render.filepath
-# 		scene.frames = fix_string_intarray(scene.frames)
-# 		self.frames = get_int_array_from_string(scene.frames)
-# 		ctx.window_manager.modal_handler_add(self)
-# 		return {'RUNNING_MODAL'}
-
 class RENDER_PT_frames(bpy.types.Panel):
 	bl_space_type = 'PROPERTIES'
 	bl_region_type = 'WINDOW'
@@ -110,7 +81,7 @@ def frames_render_init(scene):
 		ba.get_string(scene.frames)
 		scene.frame_current = scene.frame_start = min(ba.ints)
 		scene.frame_start = min(ba.ints)
-		scene.frame_end = max(ba.ints)
+		scene.frame_end = max(ba.ints)*10
 
 @persistent
 def frames_render_complete(scene):
@@ -121,11 +92,8 @@ def frames_render_complete(scene):
 def check_render_frame(scene):
 	if scene.use_frames:
 		if len(ba.ints) > 0:
-			# TODO some thing goin wrong whit this function and skeep end part
-			# fr = ba.ints[0]
 			scene.frame_current = ba.ints[0]
 			ba.ints.pop(0)
-			# print("current frame",fr,ba.ints)
 		
 def register_frames():
 	bpy.types.Scene.frames = bpy.props.StringProperty()

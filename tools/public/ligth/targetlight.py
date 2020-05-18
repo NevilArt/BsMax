@@ -15,7 +15,7 @@
 
 import bpy, mathutils
 from bpy.types import Operator
-from mathutils import Matrix
+# from mathutils import Matrix
 from bsmax.actions import set_create_target, set_as_active_object, delete_objects
 from bsmax.state import has_constraint
 

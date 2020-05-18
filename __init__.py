@@ -20,7 +20,7 @@ bl_info = {
 	"name": "BsMax",
 	"description": "BsMax for Blender 2.80 ~ 2.90",
 	"author": "Naser Merati (Nevil)",
-	"version": (0, 1, 0, 20200513),
+	"version": (0, 1, 0, 20200518),
 	"blender": (2, 80, 0),# 2.80~2.90
 	"location": "Almost Everywhere in Blender",
 	"wiki_url": "https://github.com/NevilArt/BsMax_2_80/wiki",
@@ -30,8 +30,7 @@ bl_info = {
 }
 
 import bpy,sys,os
-from bpy.props import EnumProperty
-from bpy.types import Operator, AddonPreferences
+from bpy.props import EnumProperty,BoolProperty
 from time import sleep
 from _thread import start_new_thread
 
@@ -40,15 +39,15 @@ path = os.path.dirname(os.path.realpath(__file__))
 if path not in sys.path:
 	sys.path.append(path)
 
-# import templates
-
 from .keymaps import register_keymaps,unregister_keymaps,register_navigation,unregister_navigation
 from .menu import register_menu,unregister_menu
 from .primitive import register_primitives,unregister_primitives
 from .startup import register_startup,unregister_startup
 from .tools import register_tools,unregister_tools,register_special
+# import templates
 
 addons = bpy.context.preferences.addons
+
 # Addon preferences
 def update_navigation(self, ctx):
 	register_navigation(addons[__name__].preferences)
@@ -63,7 +62,7 @@ def update_keymaps(self, ctx):
 	self.arreng()
 	register_keymaps(addons[__name__].preferences)
 
-class BsMax_AddonPreferences(AddonPreferences):
+class BsMax_AddonPreferences(bpy.types.AddonPreferences):
 	bl_idname = __name__
 
 	navigation: EnumProperty(name='Navigation',update=update_navigation,
@@ -103,6 +102,8 @@ class BsMax_AddonPreferences(AddonPreferences):
 		description='Overide Full Keymap',
 		update=update_keymaps,items=apppack)
 	
+	viewundo: BoolProperty(name="View Undo",default=False,update=update_keymaps)
+	
 	def arreng(self):
 		if self.keymaps != "Blender":
 			if self.toolpack != self.keymaps:
@@ -116,10 +117,11 @@ class BsMax_AddonPreferences(AddonPreferences):
 		layout = self.layout
 		row = layout.row()
 		col = row.column()
-		col.prop(self, "navigation")
-		col.prop(self, "keymaps")
-		col.prop(self, "floatmenus")
-		col.prop(self, "toolpack")
+		col.prop(self,"navigation")
+		col.prop(self,"keymaps")
+		col.prop(self,"floatmenus")
+		col.prop(self,"toolpack")
+		col.prop(self,"viewundo")
 
 def register_delay(preferences):
 	sleep(0.1)
@@ -128,7 +130,8 @@ def register_delay(preferences):
 
 def register():
 	bpy.utils.register_class(BsMax_AddonPreferences)
-	preferences = bpy.context.preferences.addons[__name__].preferences
+	# preferences = bpy.context.preferences.addons[__name__].preferences
+	preferences = addons[__name__].preferences
 	register_primitives()
 	register_tools(preferences)
 	register_menu(preferences)

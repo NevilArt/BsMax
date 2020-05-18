@@ -52,6 +52,7 @@ class CurveChamferTool(WorkSpaceTool):
 	bl_description = ("This is a tooltip")
 	#bl_icon = "ops.generic.select_lasso"
 	bl_widget = None
+
 	def draw_settings(ctx, layout, tool):
 		# props = tool.operator_properties("view3d.select_lasso")
 		# layout.prop(props, "mode")

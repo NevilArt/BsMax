@@ -29,12 +29,14 @@ def collect_mute_keymaps(km):
 	km.mute('3D View','view3d.view_axis','EVT_TWEAK_M','EAST',alt=True)
 	km.mute('3D View','view3d.view_axis','EVT_TWEAK_M','WEST',alt=True)
 	km.mute('3D View','view3d.localview_remove_from','M','PRESS',ctrl=True)
+	km.mute('3D View','wm.call_menu_pie','Z','PRESS')
 	km.mute('3D View Tool: Select Box','view3d.select_box','EVT_TWEAK_L','ANY',ctrl=True)
 	km.mute('3D View Tool: Select Circle','view3d.select_circle','LEFTMOUSE','PRESS',ctrl=True)
 	km.mute('3D View Tool: Select Lasso','view3d.select_lasso','EVT_TWEAK_L','ANY',ctrl=True)
 	km.mute('3D View Generic','wm.context_toggle','T','ANY')
 	km.mute('Mesh','mesh.shortest_path_pick','LEFTMOUSE','CLICK',ctrl=True)
 	km.mute('Mesh','mesh.loop_select','LEFTMOUSE','CLICK',alt=True)
+	km.mute('Mesh','mesh.select_all','A','PRESS')
 	km.mute('Window','wm.quit_blender','Q','PRESS',ctrl=True)
 
 def create_subobject_mode_keymap(km,space):
@@ -106,7 +108,7 @@ def create_keymaps(km):
 		create_view3d_tweak_selection_keymap(km,space)
 		# Tools From BsMax
 		km.new(space,'view3d.zoomextended','Z','PRESS',[])
-		km.new(space,'bsmax.setasactivecamera','C','PRESS',[])
+		km.new(space,'camera.set_active','C','PRESS',[])
 		km.new(space,'bsmax.showhidegride','G','PRESS',[])
 		km.new(space,'bsmax.showstatistics','SEVEN','PRESS',[])
 		km.new(space,'object.batchrename','F2','PRESS',[])
@@ -117,7 +119,7 @@ def create_keymaps(km):
 		km.new(space,'bsmax.angelsnap','A','PRESS',[])
 		km.new(space,'bsmax.viewport_background','B','PRESS',[],alt=True)
 		km.new(space,'bsmax.subobjectlevel','B','PRESS',[('level',6)],ctrl=True)
-		km.new(space,'bsmax.show_safe_areas','F','PRESS',[],shift=True)
+		km.new(space,'camera.show_safe_areas','F','PRESS',[],shift=True)
 		km.new(space,'bsmax.setframe','HOME','PRESS',[('frame','First')])
 		km.new(space,'bsmax.setframe','END','PRESS',[('frame','Last')])
 		km.new(space,'bsmax.setframe','PERIOD','PRESS',[('frame','Next')])
@@ -217,7 +219,7 @@ def create_keymaps(km):
 		km.new(space,'bsmax.nextframe','PERIOD','PRESS',[])
 		km.new(space,'bsmax.previousframe','COMMA','PRESS',[])
 		km.new(space,'screen.animation_play','SLASH','PRESS',[])
-		km.new(space,'bsmax.selectcamera','C','PRESS',[])
+		km.new(space,'camera.select','C','PRESS',[])
 		
 		# Set Subobject Mode
 		create_subobject_mode_keymap(km,space)
@@ -271,7 +273,7 @@ def create_keymaps(km):
 		# Tools
 		km.new(space,'bsmax.shadeselectedfaces','F2','PRESS',[])
 		km.new(space,'bsmax.autokeymodetoggle','N','PRESS',[])
-		km.new(space,'bsmax.selectcamera','C','PRESS',[])
+		km.new(space,'camera.select','C','PRESS',[])
 		km.new(space,'wm.tool_set_by_id','E','PRESS',[('name','builtin.rotate')])
 		km.new(space,'wm.tool_set_by_id','R','PRESS',[('name','builtin.scale'),('cycle',True)])
 		
@@ -295,7 +297,7 @@ def create_keymaps(km):
 		km.new(space,'screen.screen_full_area','X','PRESS',[],ctrl=True)
 		# Tools
 		km.new(space,'bsmax.autokeymodetoggle','N','PRESS',[])
-		km.new(space,'bsmax.selectcamera','C','PRESS',[])
+		km.new(space,'camera.select','C','PRESS',[])
 		km.new(space,'wm.tool_set_by_id','E','PRESS',[('name','builtin.rotate')])
 		
 		# Armature -------------------------------------------------------------
@@ -326,7 +328,7 @@ def create_keymaps(km):
 		km.new(space,'armature.batchrename','F2','PRESS',[])
 		# Tools
 		km.new(space,'bsmax.autokeymodetoggle','N','PRESS',[])
-		km.new(space,'bsmax.selectcamera','C','PRESS',[])
+		km.new(space,'camera.select','C','PRESS',[])
 		km.new(space,'wm.tool_set_by_id','E','PRESS',[('name','builtin.rotate')])
 		
 		# Metaball -------------------------------------------------------------
@@ -344,7 +346,7 @@ def create_keymaps(km):
 		km.new(space,'screen.screen_full_area','X','PRESS',[],ctrl=True)
 		# Tools
 		km.new(space,'bsmax.autokeymodetoggle','N','PRESS',[])
-		km.new(space,'bsmax.selectcamera','C','PRESS',[])
+		km.new(space,'camera.select','C','PRESS',[])
 		
 		# Lattice --------------------------------------------------------------
 		space = km.space('Lattice','EMPTY','WINDOW')
@@ -363,7 +365,7 @@ def create_keymaps(km):
 		km.new(space,'screen.screen_full_area','X','PRESS',[],ctrl=True)
 		# Tools
 		km.new(space,'bsmax.autokeymodetoggle','N','PRESS',[])
-		km.new(space,'bsmax.selectcamera','C','PRESS',[])
+		km.new(space,'camera.select','C','PRESS',[])
 		
 		# Font -----------------------------------------------------------------
 		# Pose -----------------------------------------------------------------
@@ -386,7 +388,7 @@ def create_keymaps(km):
 		km.new(space,'screen.screen_full_area','X','PRESS',[],ctrl=True)
 		# Tools
 		km.new(space,'bsmax.autokeymodetoggle','N','PRESS',[])
-		km.new(space,'bsmax.selectcamera','C','PRESS',[])
+		km.new(space,'camera.select','C','PRESS',[])
 		km.new(space,'bsmax.setkeys','K','PRESS',[])
 		
 		# Vertex Paint

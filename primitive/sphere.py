@@ -143,7 +143,7 @@ class Sphere(PrimitiveGeometryClass):
 		pd = self.data.primitivedata
 		pd.classname = self.classname
 		pd.ssegs, pd.hsegs, pd.seglock = 32,30,True
-	def update(self, ctx):
+	def update(self):
 		pd = self.data.primitivedata
 		hsegs = pd.hsegs if not pd.seglock else pd.ssegs - 2
 		#radius, ssegs, hsegs, hemisphere, chop, sliceon, sfrom, sto, base
@@ -151,7 +151,7 @@ class Sphere(PrimitiveGeometryClass):
 				pd.bias, False, #hemisphere, chop
 				pd.sliceon, pd.sfrom, pd.sto,
 				pd.base)
-		self.update_mesh(ctx, mesh)
+		self.update_mesh(mesh)
 	def abort(self):
 		delete_objects([self.owner])
 
@@ -169,7 +169,7 @@ class BsMax_OT_CreateSphere(CreatePrimitive):
 		if clickcount == 1:
 			self.params.radius1 = dimantion.radius
 		if clickcount > 0:
-			self.subclass.update(ctx)
+			self.subclass.update()
 	def finish(self):
 		pass
 

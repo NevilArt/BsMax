@@ -63,7 +63,7 @@ class Compass(PrimitiveCurveClass):
 	def update(self, ctx):
 		pd = self.data.primitivedata
 		shapes = GetCompassShape(pd.radius1)
-		self.update_curve(ctx, shapes)
+		self.update_curve(shapes)
 	def abort(self):
 		delete_objects([self.owner])
 

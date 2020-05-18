@@ -14,7 +14,6 @@
 ############################################################################
 
 import bpy
-from bpy.types import Menu
 
 def lattice_menu(self, ctx):
 	layout = self.layout

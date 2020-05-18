@@ -213,10 +213,12 @@ classes = [BsMax_OT_ViewUndoRedo,
 		View3D_OT_ZoomOutCover,
 		View3D_OT_DollyCover]
 
-def register_undo():
+def register_undo(preferences):
 	[bpy.utils.register_class(c) for c in classes]
-	bpy.types.VIEW3D_MT_view.prepend(view_undorido_menu)
+	if preferences.viewundo:
+		bpy.types.VIEW3D_MT_view.prepend(view_undorido_menu)
 
 def unregister_undo():
-	bpy.types.VIEW3D_MT_view.remove(view_undorido_menu)
+	if view_undorido_menu in bpy.types.VIEW3D_MT_view:
+		bpy.types.VIEW3D_MT_view.remove(view_undorido_menu)
 	[bpy.utils.unregister_class(c) for c in classes]

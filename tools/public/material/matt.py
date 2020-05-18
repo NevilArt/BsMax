@@ -14,9 +14,8 @@
 ############################################################################
 
 import bpy
-from bpy.types import Operator,Menu
 
-class BsMax_OT_AssignToSelection(Operator):
+class BsMax_OT_AssignToSelection(bpy.types.Operator):
 	bl_idname = "material.assigntoselection"
 	bl_label = "Assign to selected objects"
 	bl_description = "Assign Material to selected objects"
@@ -35,7 +34,7 @@ class BsMax_OT_AssignToSelection(Operator):
 			o.active_material = material
 		return{"FINISHED"}
 
-class BsMax_MT_material_Tools(Menu):
+class BsMax_MT_material_Tools(bpy.types.Menu):
 	bl_idname = "BSMAX_MT_materialtools"
 	bl_label = "Tools"
 

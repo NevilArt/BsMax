@@ -16,13 +16,12 @@
 import bpy,sys
 from os import path
 from glob import glob
-from bpy.types import Menu, Operator
 
 tmpdir = path.dirname(__file__)
 tmplst = [path.splitext(path.basename(f))[0] for f in glob(tmpdir+"/*.py")]
 tmplst.remove('__init__')
 
-class BUI_OT_Template(Operator):
+class BUI_OT_Template(bpy.types.Operator):
 	bl_idname = "bui.template"
 	bl_label = "BUI Template"
 	name: bpy.props.StringProperty()
@@ -36,7 +35,7 @@ class BUI_OT_Template(Operator):
 			bpy.ops.text.paste()
 		return{"FINISHED"}
 
-class BUI_MT_Samples(Menu):
+class BUI_MT_Samples(bpy.types.Menu):
 	bl_idname = "BUI_MT_samplesmenu"
 	bl_label = "BUI"
 	def draw(self,ctx):
@@ -47,6 +46,7 @@ def Menu_CallBack(self,ctx):
 	self.layout.menu("BUI_MT_samplesmenu")
 
 classes = [BUI_MT_Samples,BUI_OT_Template]
+
 def register():
 	for c in classes:
 		bpy.utils.register_class(c)
@@ -56,8 +56,3 @@ def unregister():
 	for c in classes:
 		bpy.utils.unregister_class(c)
 	bpy.types.TEXT_MT_templates.remove(Menu_CallBack)
-
-__all__ = ["register","unregister"]
-
-if __name__ == "__main__":
-	register()

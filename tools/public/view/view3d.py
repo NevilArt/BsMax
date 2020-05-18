@@ -14,9 +14,8 @@
 ############################################################################
 
 import bpy
-from bpy.types import Operator
 
-class View3D_OT_perespective(Operator):
+class View3D_OT_perespective(bpy.types.Operator):
 	bl_idname = 'view3d.perespective'
 	bl_label = 'Perespective'
 

@@ -225,13 +225,13 @@ class Cylinder(PrimitiveGeometryClass):
 		pd = self.data.primitivedata
 		pd.classname = self.classname
 		pd.hsegs, pd.csegs, pd.ssegs = 1, 1, 18
-	def update(self, ctx):
+	def update(self):
 		pd = self.data.primitivedata
 		radius = pd.radius1
 		mesh = GetCylinderMesh(radius, radius, pd.height, 
 						pd.hsegs, pd.csegs, pd.ssegs,
 						pd.sliceon, pd.sfrom, pd.sto)
-		self.update_mesh(ctx, mesh)
+		self.update_mesh(mesh)
 	def abort(self):
 		delete_objects([self.owner])
 
@@ -254,7 +254,7 @@ class Cone(PrimitiveGeometryClass):
 		mesh = GetCylinderMesh(pd.radius1, pd.radius2, pd.height,
 				pd.hsegs, pd.csegs, pd.ssegs,
 				pd.sliceon, pd.sfrom, pd.sto)
-		self.update_mesh(ctx, mesh)
+		self.update_mesh(mesh)
 		#self.data.use_auto_smooth = True
 		#bpy.ops.object.shade_smooth() TODO find related data info
 	def abort(self):
@@ -276,7 +276,7 @@ class BsMax_OT_CreateCylinder(CreatePrimitive):
 		elif clickcount == 2:
 			self.params.height = dimantion.height
 		if clickcount > 0:
-			self.subclass.update(ctx)
+			self.subclass.update()
 	def finish(self):
 		pass
 
@@ -300,7 +300,7 @@ class BsMax_OT_CreateCone(CreatePrimitive):
 			radius2 = self.params.radius1 + dimantion.height_np
 			self.params.radius2 = 0 if radius2 < 0 else radius2
 		if clickcount > 0:
-			self.subclass.update(ctx)
+			self.subclass.update()
 	def finish(self):
 		pass
 

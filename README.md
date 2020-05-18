@@ -1,7 +1,13 @@
+
 # BsMax_2_80
+
 (Works on Blender 2.80 ~ 2.90)
 
 Recent Updates
+
+* View undo can disable now (some times cause the viewport leg).
+* Camera lister updated ('P' in max mode).
+* Animated primitives problem solved.
 * Object Properties added to Quad menu (not perfect but some thing better than nothing).
 * Split Edge added to quad menu.
 * 'Z' for find active object in outliner (3DsMax mode).
@@ -19,7 +25,7 @@ Recent Updates
 * Assistance pack option removed and all tools puted under Tools menu on View3D.
 * Light lister added (Render/Light lister).
 * Keymap system optimized.
-* Works on Blender2.83 Beta.
+* Works on Blender 2.83 Beta.
 * Camera lock toggle added to Quad menu.
 * BUI added inside the BsMax will use for tools UI.
 * Rightclick Droptool disabled when rightclick select is active.

@@ -14,16 +14,14 @@
 ############################################################################
 
 import bpy
-from bpy.types import Operator
-from bpy.props import EnumProperty
 from bsmax.state import has_constraint
 
-class BsMax_OT_linkConstraint(Operator):
+class BsMax_OT_linkConstraint(bpy.types.Operator):
 	bl_idname="animation.linkconstraint"
 	bl_label="Link Constraint"
 	bl_description="Link/Unlink constraint"
 	bl_options={'REGISTER', 'UNDO'}
-	linkto: EnumProperty(name='Link To',default='OBJECT',
+	linkto: bpy.props.EnumProperty(name='Link To',default='OBJECT',
 		items =[('WORLD','World',''),('OBJECT','Active Object','')])
 
 	@classmethod

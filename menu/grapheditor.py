@@ -14,13 +14,13 @@
 ############################################################################
 
 import bpy
-from bpy.types import Menu
 
 # Graph Editor Right-Click Menu
 # Ozzkar 2018
-class BsMax_EM_EditAlignGraph_MT(Menu):
+class BsMax_EM_EditAlignGraph_MT(bpy.types.Menu):
 	bl_label = "Align Special"
 	bl_description = "Align selection to specified point"
+
 	def draw(self, ctx):
 		layout = self.layout
 		layout.operator("graph.snap", text = "Flatten Handles").type='HORIZONTAL'
@@ -33,7 +33,7 @@ class BsMax_EM_EditAlignGraph_MT(Menu):
 		layout.separator()
 		layout.operator("graph.frame_jump", text = "Cursor To Selection")
 
-class BsMax_MT_ToolMenuGraph(Menu):
+class BsMax_MT_ToolMenuGraph(bpy.types.Menu):
 	bl_label = "BMax Graph Tools"
 	bl_description = "BMax right-click menu"
 
@@ -59,14 +59,12 @@ class BsMax_MT_ToolMenuGraph(Menu):
 			layout.operator("screen.screen_full_area", text="Restore Viewport", icon="SPLITSCREEN")
 		else:
 			layout.operator("screen.screen_full_area", text="Maximize Viewport", icon="FULLSCREEN")
-	
-def grapheditor_menu(register):
-	classes = [BsMax_EM_EditAlignGraph_MT, BsMax_MT_ToolMenuGraph]
-	for c in classes:
-		if register: bpy.utils.register_class(c)
-		else: bpy.utils.unregister_class(c)
 
-if __name__ == '__main__':
-	grapheditor_menu(True)
 
-__all__ = ["grapheditor_menu"]
+classes = [BsMax_EM_EditAlignGraph_MT, BsMax_MT_ToolMenuGraph]
+
+def grapheditor_register():
+	[bpy.utils.register_class(c) for c in classes]
+
+def grapheditor_unregister():
+	[bpy.utils.unregister_class(c) for c in classes]

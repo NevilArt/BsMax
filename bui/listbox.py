@@ -92,6 +92,7 @@ class ListBox(BUI):
 			self.first = maxval
 
 	def item_clicked(self):
-		print(self.active.caption.text)
+		# print(self.active.caption.text)
+		pass
 
 __all__ = ["ListBox"]

@@ -210,7 +210,7 @@ class BsMax_MT_CameraCreate(Menu):
 	def draw(self,ctx):
 		layout = self.layout
 		layout.operator("bsmax.createcamera",text="Camera Free/Target",icon="OUTLINER_OB_CAMERA")
-		layout.operator("bsmax.createcamerafromview",icon="OUTLINER_OB_CAMERA")
+		layout.operator("camera.create_from_view",icon="OUTLINER_OB_CAMERA")
 
 # Speaker create menu
 class BsMax_MT_SpeakerCreate(Menu):

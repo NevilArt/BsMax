@@ -97,11 +97,11 @@ class Torus(PrimitiveGeometryClass):
 		pd = self.data.primitivedata
 		pd.classname = self.classname
 		pd.ssegs, pd.ssegs_b = 24, 12
-	def update(self, ctx):
+	def update(self):
 		pd = self.data.primitivedata
 		mesh = GetTorusMesh(pd.radius1, pd.radius2, pd.rotation, pd.twist, 
 				pd.ssegs, pd.ssegs_b, pd.sliceon, pd.sfrom, pd.sto)
-		self.update_mesh(ctx, mesh)
+		self.update_mesh(mesh)
 	def abort(self):
 		delete_objects([self.owner])
 
@@ -122,7 +122,7 @@ class BsMax_OT_CreateTorus(CreatePrimitive):
 		elif clickcount == 2:
 			self.params.radius2 = dimantion.radius
 		if clickcount > 0:
-			self.subclass.update(ctx)
+			self.subclass.update()
 	def finish(self):
 		pass
 

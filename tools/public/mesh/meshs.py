@@ -73,7 +73,7 @@ class BsMax_OT_DotLoop(Operator):
 	def poll(self, ctx):
 		return ctx.area.type == 'VIEW_3D'
 	def execute(self, ctx):
-		if bpy.context.mode == 'EDIT_MESH':
+		if ctx.mode == 'EDIT_MESH':
 			bpy.ops.bmax.loopselect()
 			bpy.ops.mesh.select_nth()
 		return{"FINISHED"}

@@ -14,7 +14,6 @@
 ############################################################################
 
 import bpy
-from bpy.types import Operator
 from bpy_extras.view3d_utils import region_2d_to_location_3d,location_3d_to_region_2d
 
 # def obj_ray_cast(obj, matrix):
@@ -75,7 +74,7 @@ def view_zoom(ctx,x,y):
 	val = 1 if val < 1 else val
 	ctx.space_data.lens = val
 
-class BsMax_OT_3DsMaxNavigation(Operator):
+class BsMax_OT_3DsMaxNavigation(bpy.types.Operator):
 	bl_idname = "bsmax.maxnavigation"
 	bl_label = "3DsMax Navigation"
 	alt = False

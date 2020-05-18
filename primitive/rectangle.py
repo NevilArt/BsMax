@@ -62,10 +62,10 @@ class Rectangle(PrimitiveCurveClass):
 		self.create_curve(ctx, shapes, self.classname)
 		pd = self.data.primitivedata
 		pd.classname = self.classname
-	def update(self, ctx):
+	def update(self):
 		pd = self.data.primitivedata
 		shapes = GetRectangleShapes(pd.width, pd.length, pd.chamfer1)
-		self.update_curve(ctx, shapes)
+		self.update_curve(shapes)
 	def abort(self):
 		delete_objects([self.owner])
 
@@ -85,7 +85,7 @@ class BsMax_OT_CreateRectangle(CreatePrimitive):
 			self.params.length = dimantion.length
 			self.subclass.owner.location = dimantion.center
 		if clickcount > 0:
-			self.subclass.update(ctx)
+			self.subclass.update()
 	def finish(self):
 		pass
 

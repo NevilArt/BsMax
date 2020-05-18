@@ -14,7 +14,7 @@
 ############################################################################
 
 import bpy
-from primitive.primitive import CreatePrimitive, PrimitiveGeometryClass
+from primitive.primitive import CreatePrimitive,PrimitiveGeometryClass
 from bsmax.actions import delete_objects
 from bsmax.math import get_axis_constraint
 

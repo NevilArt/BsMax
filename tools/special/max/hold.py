@@ -20,14 +20,14 @@ class BsMax_OT_Hold(Operator):
 		bl_idname = "bsmax.hold"
 		bl_label = "Hold"
 		def execute(self, ctx):
-			print("Hold coming soon")
+			# print("Hold coming soon")
 			return{"FINISHED"}
 
 class BsMax_OT_Fetch(Operator):
 		bl_idname = "bsmax.fetch"
 		bl_label = "Fetch"
 		def execute(self, ctx):
-				print("Fetch coming soon")
+				# print("Fetch coming soon")
 				return{"FINISHED"}
 
 classes = [BsMax_OT_Hold, BsMax_OT_Fetch]

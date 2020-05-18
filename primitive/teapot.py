@@ -214,10 +214,10 @@ class Teapot(PrimitiveGeometryClass):
 		pd.classname = self.classname
 		pd.csegs = 4
 		pd.bool1,pd.bool2,pd.bool3,pd.bool4 = True,True,True,True
-	def update(self, ctx):
+	def update(self):
 		pd = self.data.primitivedata
 		mesh = get_teapot_mesh(pd.radius1,pd.csegs,pd.bool1,pd.bool2,pd.bool3,pd.bool4)
-		self.update_mesh(ctx, mesh)
+		self.update_mesh(mesh)
 	def abort(self):
 		delete_objects([self.owner])
 
@@ -235,7 +235,7 @@ class BsMax_OT_CreateTeapot(CreatePrimitive):
 		if clickcount == 1:
 			self.params.radius1 = dimantion.radius
 		if clickcount > 0:
-			self.subclass.update(ctx)
+			self.subclass.update()
 	def finish(self):
 		pass
 

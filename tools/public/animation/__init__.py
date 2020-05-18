@@ -14,19 +14,19 @@
 ############################################################################
 
 from .animationkey import register_animationkey,unregister_animationkey
-from .frameupdate import register_frameupdate,unregister_frameupdate
+# from .frameupdate import register_frameupdate,unregister_frameupdate
 from .parent import register_parent,unregister_parent
 from .menu import register_menu,unregister_menu
 
 def register_animation():
 	register_animationkey()
-	register_frameupdate()
+	# register_frameupdate()
 	register_parent()
 	register_menu()
 
 def unregister_animation():
 	unregister_animationkey()
-	unregister_frameupdate()
+	# unregister_frameupdate()
 	unregister_menu()
 	unregister_parent()
 	

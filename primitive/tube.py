@@ -213,12 +213,12 @@ class Tube(PrimitiveGeometryClass):
 		pd = self.data.primitivedata
 		pd.classname = self.classname
 		pd.ssegs = 18
-	def update(self, ctx):
+	def update(self):
 		pd = self.data.primitivedata
 		mesh = GetTubeMesh(pd.radius1, pd.radius2, pd.height,
 			pd.hsegs, pd.csegs, pd.ssegs,
 			pd.sliceon, pd.sfrom, pd.sto)
-		self.update_mesh(ctx, mesh)
+		self.update_mesh(mesh)
 	def abort(self):
 		delete_objects([self.owner])
 
@@ -241,7 +241,7 @@ class BsMax_OT_CreateTube(CreatePrimitive):
 		elif clickcount == 3:
 			self.params.height = dimantion.height
 		if clickcount > 0:
-			self.subclass.update(ctx)
+			self.subclass.update()
 	def finish(self):
 		pass
 

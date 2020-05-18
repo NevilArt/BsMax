@@ -52,7 +52,7 @@ class Line(PrimitiveCurveClass):
 		self.create_curve(ctx,shapes,"")
 	def update(self, ctx):
 		shapes = GetLineShape(self.knots + self.lastknot)
-		self.update_curve(ctx, shapes)
+		self.update_curve(shapes)
 	def abort(self):
 		if len(self.knots) < 2:
 			delete_objects([self.owner])
@@ -130,7 +130,7 @@ class BsMax_OT_CreateLine(CreatePrimitive):
 		self.subclass.knots[-1] = newknot
 		self.subclass.lastknot = [knot(dim.view, dim.view, dim.view, "VECTOR")]
 
-		self.subclass.update(ctx)
+		self.subclass.update()
 
 	def event(self, event, value):
 		if event == 'BACK_SPACE':

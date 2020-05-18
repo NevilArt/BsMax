@@ -14,7 +14,6 @@
 ############################################################################
 
 import bpy
-from bpy.types import Operator,Menu
 
 def get_active_collection(ctx):
 	active_layer_name = ctx.view_layer.active_layer_collection.name
@@ -28,7 +27,7 @@ def clear_collections(ctx, obj):
 	for collection in obj.users_collection:
 		collection.objects.unlink(obj)
 
-class BsMax_OT_MoveToActiveCollection(Operator):
+class BsMax_OT_MoveToActiveCollection(bpy.types.Operator):
 	bl_idname = "collection.move_to_active_collection"
 	bl_label = "Move to active collection"
 	bl_description = "Move selected objects in to active collection"
@@ -39,7 +38,7 @@ class BsMax_OT_MoveToActiveCollection(Operator):
 
 	def execute(self, ctx):
 		active_collection = get_active_collection(ctx)
-		active_layer = bpy.context.view_layer.active_layer_collection
+		active_layer = ctx.view_layer.active_layer_collection
 		for obj in ctx.selected_objects:
 			clear_collections(ctx,obj)
 			active_collection.objects.link(obj)

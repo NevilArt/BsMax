@@ -19,8 +19,8 @@ from bpy.types import Operator
 from bsmax.state import has_constraint
 
 # create a camera from view 
-class BsMax_OT_CreateCameraFromView(Operator):
-	bl_idname = "bsmax.createcamerafromview"
+class Camera_OT_Create_From_View(Operator):
+	bl_idname = "camera.create_from_view"
 	bl_label = "Create Camera From View"
 	bl_description = "Create New Camera From View"
 
@@ -45,8 +45,8 @@ class BsMax_OT_CreateCameraFromView(Operator):
 		return{"FINISHED"}
 
 # Set as sctive camera
-class BsMax_OT_SetAsActiveCamera(Operator):
-	bl_idname = "bsmax.setasactivecamera"
+class Camera_OT_Set_Active(Operator):
+	bl_idname = "camera.set_active"
 	bl_label = "Set as Active Camera"
 	bl_description = "Set Selected Camera As Active Camera"
 	def execute(self, ctx):
@@ -62,8 +62,8 @@ class BsMax_OT_SetAsActiveCamera(Operator):
 		return{"FINISHED"}
 
 # Select Camera
-class BsMax_OT_SearchCamera(Operator):
-	bl_idname = "bsmax.searchcamera"
+class Camera_OT_Search(Operator):
+	bl_idname = "camera.search"
 	bl_label = "Serch Camera"
 	bl_property = "SceneCameras"
 
@@ -91,52 +91,46 @@ class BsMax_OT_SearchCamera(Operator):
 		wm.invoke_search_popup(self)
 		return {'FINISHED'}
 
-# switch viewport to camera view
-class BsMax_OT_SelectCamera(Operator):
-	bl_idname = "bsmax.selectcamera"
+class Camera_OT_Select(Operator):
+	bl_idname = "camera.select"
 	bl_label = "Select Camera"
 	bl_description = "Select Active Camera"
 
 	@classmethod
-	def poll(self, ctx):
+	def poll(self,ctx):
 		return ctx.area.type == 'VIEW_3D'
 
-	def execute(self, ctx):
-		CamActived = False
-		# Active Object is Camera
-		if ctx.active_object != None:
+	def set_cam(self,ctx,cameras):
+		if len(cameras) == 1:
+			ctx.scene.camera = cameras[0]
+		elif len(cameras) > 1:
+			bpy.ops.camera.search('INVOKE_DEFAULT')
+
+	def execute(self,ctx):
+		if ctx.active_object:
 			if ctx.active_object.type == "CAMERA":
-				ctx.scene.camera = ctx.active_object
-				CamActived = True
-		# one selected object is camera
-		if len(ctx.selected_objects) == 1:
-			if ctx.selected_objects[0].type == 'CAMERA':
-				ctx.scene.camera = ctx.selected_objects[0]
-				CamActived = True
-		# serch in scene
-		if not CamActived:
-			CameraList = []
-			for Obj in bpy.data.objects:
-				if Obj.type == 'CAMERA':
-					CameraList.append(Obj.name)
-			# when only one camera on scene
-			if len(CameraList) == 1:
-				camname = CameraList[0]
-				cam = bpy.data.objects[camname]
-				ctx.scene.camera = cam
-				CamActived = True
-			# if many cameras on scene
-			elif len(CameraList) > 0:
-				bpy.ops.bsmax.searchcamera('INVOKE_DEFAULT')
-		# if camera actived go to camera view 
-		if CamActived:
-			# area = next(area for area in ctx.screen.areas if area.type == 'VIEW_3D')
-			# area.spaces[0].region_3d.view_perspective = 'CAMERA'
+				if ctx.active_object.select_get():
+					ctx.scene.camera = ctx.active_object
+				else:
+					cameras = [obj for obj in bpy.data.objects if obj.type == 'CAMERA']
+					self.set_cam(ctx,cameras)
+			else:
+				cameras = [obj for obj in bpy.data.objects if obj.type == 'CAMERA']
+				self.set_cam(ctx,cameras)
+		else:
+			if ctx.selected_objects:
+				cameras = [obj for obj in ctx.selected_objects if obj.type == 'CAMERA']
+				self.set_cam(ctx,cameras)
+			else:
+				cameras = [obj for obj in bpy.data.objects if obj.type == 'CAMERA']
+				self.set_cam(ctx,cameras)
+		
+		if ctx.scene.camera:
 			ctx.area.spaces[0].region_3d.view_perspective = 'CAMERA'
 		return{"FINISHED"}
 
-class BsMax_OT_LockCameraToViewToggle(Operator):
-	bl_idname = "bsmax.lockcameratoviewtoggle"
+class Camera_OT_Lock_To_View_Toggle(Operator):
+	bl_idname = "camera.lock_to_view_toggle"
 	bl_label = "Lock Camera to view (Toggle)"
 	bl_description = "Lock Active Camera to view"
 	@classmethod
@@ -148,8 +142,8 @@ class BsMax_OT_LockCameraToViewToggle(Operator):
 		ctx.space_data.lock_camera = not ctx.space_data.lock_camera
 		return {'FINISHED'}
 
-class BsMAx_OT_LockActiveCameraTransform(Operator):
-	bl_idname = "camera.lockcameratransform"
+class Camera_OT_Lock_Transform(Operator):
+	bl_idname = "camera.lock_transform"
 	bl_label = "Lock Camera Transform"
 	bl_description = "Lock active camera transform"
 
@@ -166,8 +160,8 @@ class BsMAx_OT_LockActiveCameraTransform(Operator):
 			cam.lock_scale = [state,state,state]
 		return {'FINISHED'}
 
-class BsMax_OT_SelectActiveCamera(Operator):
-	bl_idname = "bsmax.selectactivecamera"
+class Camera_OT_Select_Active_Camera(Operator):
+	bl_idname = "camera.select_active_camera"
 	bl_label = "Select Active Camera/Target"
 	bl_description = "Select Acitve Camera/Target"
 	selcam: BoolProperty(name="Select Camera")
@@ -189,8 +183,8 @@ class BsMax_OT_SelectActiveCamera(Operator):
 					targ.select_set(state=True)
 		return {'FINISHED'}
 
-class BsMax_OT_ShowSafeAreaToggle(Operator):
-	bl_idname = "bsmax.show_safe_areas"
+class Camera_OT_Show_Safe_Area(Operator):
+	bl_idname = "camera.show_safe_areas"
 	bl_label = "Show Safe Area"
 	bl_description = "Show Safe Area"
 
@@ -207,17 +201,17 @@ class BsMax_OT_ShowSafeAreaToggle(Operator):
 def camera_menu(self, ctx):
 	layout = self.layout
 	layout.separator()
-	layout.operator("bsmax.createcamerafromview")
-	layout.operator("bsmax.searchcamera")
+	layout.operator("camera.create_from_view")
+	layout.operator("camera.search")
 
-classes = [BsMax_OT_SetAsActiveCamera,
-			BsMax_OT_CreateCameraFromView,
-			BsMax_OT_SearchCamera,
-			BsMax_OT_SelectCamera,
-			BsMax_OT_LockCameraToViewToggle,
-			BsMAx_OT_LockActiveCameraTransform,
-			BsMax_OT_SelectActiveCamera,
-			BsMax_OT_ShowSafeAreaToggle]
+classes = [Camera_OT_Set_Active,
+			Camera_OT_Create_From_View,
+			Camera_OT_Search,
+			Camera_OT_Select,
+			Camera_OT_Lock_To_View_Toggle,
+			Camera_OT_Lock_Transform,
+			Camera_OT_Select_Active_Camera,
+			Camera_OT_Show_Safe_Area]
 
 def register_cameras():
 	[bpy.utils.register_class(c) for c in classes]

@@ -14,12 +14,11 @@
 ############################################################################
 
 import bpy
-from bpy.types import Operator
 from bsmax.state import is_objects_selected
 from bsmax.mouse import ClickPoint, get_click_point_info
 from bsmax.math import get_axis_constraint
 
-class BsMax_OT_Drag_Clone_Object(Operator):
+class BsMax_OT_Drag_Clone_Object(bpy.types.Operator):
 	bl_idname = "bsmax.dragclone"
 	bl_label = "Drag Clone (Object)"
 

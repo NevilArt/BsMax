@@ -160,8 +160,8 @@ class PrimitiveGeometryClass:
 		link_to_scene(ctx, self.owner)
 		set_as_active_object(ctx,self.owner)
 		self.data = self.owner.data
-	def update_mesh(self, ctx, meshdata):
-		if self.data != None and ctx.mode == 'OBJECT':
+	def update_mesh(self, meshdata):
+		if self.data != None and bpy.context.mode == 'OBJECT':
 			verts,edges,faces, = meshdata
 			if bpy.app.version[1] == 80:
 				""" old method for V2.80 """
@@ -189,8 +189,8 @@ class PrimitiveCurveClass:
 		link_to_scene(ctx, self.owner)
 		set_as_active_object(ctx, self.owner)
 		self.data = self.owner.data
-	def update_curve(self, ctx, shapes):
-		if self.data != None and ctx.mode == 'OBJECT':
+	def update_curve(self, shapes):
+		if self.data != None and bpy.context.mode == 'OBJECT':
 			curve = bpy.data.curves[self.data.name]
 			CurveFromShapes(curve, shapes, self.close)
 

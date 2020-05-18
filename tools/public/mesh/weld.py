@@ -14,7 +14,6 @@
 ############################################################################
 
 import bpy, bgl, gpu
-from bpy.types import Menu,Operator
 from gpu_extras.batch import batch_for_shader
 
 # TARGET WELD
@@ -43,7 +42,7 @@ def SelectVert(ctx, event, started):
 		bpy.ops.mesh.select_all(action='DESELECT')
 
 
-class BsMax_OT_TargetWeldToggle(Operator):
+class BsMax_OT_TargetWeldToggle(bpy.types.Operator):
 	bl_idname = "bsmax.targetweld"
 	bl_label = "Target Weld"
 	bl_options = {'REGISTER', 'UNDO'}

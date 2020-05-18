@@ -121,8 +121,6 @@ class BsMax_OT_SetKeys(Operator):
 	# 	return len(ctx.selected_objects) > 0
 
 	def execute(self, ctx):
-		print("set key")
-		print(ctx.mode)
 		if ctx.mode in ['OBJECT', 'POSE']:
 			#objs=ctx.selected_objects
 			if KeyData.Key_All:

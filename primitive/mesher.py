@@ -59,15 +59,14 @@ class Mesher(PrimitiveGeometryClass):
 		self.create_mesh(ctx, mesh, self.classname)
 		pd = self.data.primitivedata
 		pd.classname = self.classname
-	def update(self, ctx):
+	def update(self):
 		pd = self.data.primitivedata
 		if pd.target == "":
 			mesh = get_mesher_mesh(pd.radius1)
-			self.update_mesh(ctx, mesh)
+			self.update_mesh(mesh)
 		else:
 			self.target = pd.target
-			ctx = bpy.context
-			update_mesher(self, ctx)
+			update_mesher(self, bpy.context)
 	def abort(self):
 		delete_objects([self.owner])
 

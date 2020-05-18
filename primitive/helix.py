@@ -30,7 +30,8 @@ def GetHelixshape(radius1, radius2, height, turns, segs, bias, ccw):
 	piece = totatdig/(segs*turns)
 	hpiece = height/(segs*turns)
 	rpiece = (r1-r2)/(segs*turns)
-	for i in range(int(segs*turns)):
+	segments = int(segs*turns)
+	for i in range(segments):
 		x = sin(piece*i)*(r1-(rpiece*i))
 		y = cos(piece*i)*(r1-(rpiece*i))
 		if height > 0:
@@ -39,7 +40,8 @@ def GetHelixshape(radius1, radius2, height, turns, segs, bias, ccw):
 			percent = 0
 		z = height*get_bias(bias,percent)
 		p = (x,y,z)
-		shape.append((p,p,'ALIGNED',p,'ALIGNED'))
+		vector_type = 'FREE' if 0 < i > segments else 'AUTO'#'ALIGNED'
+		shape.append((p,p,vector_type,p,vector_type))
 	return [shape]
 
 class Helix(PrimitiveCurveClass):
@@ -58,12 +60,12 @@ class Helix(PrimitiveCurveClass):
 		pd.classname = self.classname
 		pd.turns = 3
 		pd.ssegs = 20
-	def update(self, ctx):
+	def update(self):
 		pd = self.data.primitivedata
 		# radius1, radius2, height, turns, segs, bias, ccw
 		shapes = GetHelixshape(pd.radius1, pd.radius2, pd.height,
 					pd.turns, pd.ssegs, pd.bias_np, pd.ccw)
-		self.update_curve(ctx, shapes)
+		self.update_curve(shapes)
 	def abort(self):
 		delete_objects([self.owner])
 
@@ -87,7 +89,7 @@ class BsMax_OT_CreateHelix(CreatePrimitive):
 			radius = self.params.radius1 + dimantion.height_np
 			self.params.radius2 = 0 if radius < 0 else radius
 		if clickcount > 0:
-			self.subclass.update(ctx)
+			self.subclass.update()
 	def finish(self):
 		pass
 

@@ -14,8 +14,9 @@
 ############################################################################
 
 import bpy
+from bpy.types import Operator
 
-class Editor_OT_NodeEditorFloat(bpy.types.Operator):
+class Editor_OT_NodeEditorFloat(Operator):
 	bl_idname = "editor.open_node_ditor"
 	bl_label = "Node Editor(Float)"
 	mode: bpy.props.StringProperty()
@@ -36,7 +37,7 @@ class Editor_OT_NodeEditorFloat(bpy.types.Operator):
 		area.type = original_type
 		return{"FINISHED"}
 
-class Editor_OT_ScriptListenerOpen(bpy.types.Operator):
+class Editor_OT_ScriptListenerOpen(Operator):
 	bl_idname = "editor.script_listener"
 	bl_label = "Script Listener(Float)"
 	def execute(self,ctx):

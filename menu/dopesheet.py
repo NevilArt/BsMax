@@ -14,11 +14,10 @@
 ############################################################################
 
 import bpy
-from bpy.types import Menu
 
 # Dopesheet Right-Click Menu
 # Ozzkar 06-Sep-2013
-class BsMax_MT_EditAlignDopesheet(Menu):
+class BsMax_MT_EditAlignDopesheet(bpy.types.Menu):
 	bl_idname = "bsmax.editaligndopesheet"
 	bl_label = "Align Special"
 	bl_description = "Align selection to specified point"
@@ -32,7 +31,7 @@ class BsMax_MT_EditAlignDopesheet(Menu):
 		layout.separator()
 		layout.operator("action.frame_jump", text = "Cursor To Selection")
 
-class BsMax_MT_ToolMenuDopesheet(Menu):
+class BsMax_MT_ToolMenuDopesheet(bpy.types.Menu):
 	bl_idname = "bmax.dopesheetrcmenu"
 	bl_label = "BMax Dopesheet Tools"
 	bl_description = "BMax right-click menu"
@@ -57,14 +56,12 @@ class BsMax_MT_ToolMenuDopesheet(Menu):
 			layout.operator("screen.screen_full_area", text="Restore Viewport", icon="SPLITSCREEN")
 		else:
 			layout.operator("screen.screen_full_area", text="Maximize Viewport", icon="FULLSCREEN")
-			
-def dopesheet_menu(register):
-	classes = [BsMax_MT_EditAlignDopesheet, BsMax_MT_ToolMenuDopesheet]
-	for c in classes:
-		if register: bpy.utils.register_class(c)
-		else: bpy.utils.unregister_class(c)
 
-if __name__ == '__main__':
-	dopesheet_menu(True)
 
-__all__ = ["dopesheet_menu"]
+classes = [BsMax_MT_EditAlignDopesheet, BsMax_MT_ToolMenuDopesheet]
+
+def dopesheet_register():
+	[bpy.utils.register_class(c) for c in classes]
+
+def dopesheet_unregister():
+	[bpy.utils.unregister_class(c) for c in classes]

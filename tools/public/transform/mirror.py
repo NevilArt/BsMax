@@ -14,7 +14,6 @@
 ############################################################################
 
 import bpy
-from bpy.types import Operator
 from bpy.props import FloatProperty, EnumProperty
 
 # Object Mode: Mirror
@@ -74,7 +73,7 @@ def bmaxMirror_Execute_OM(self, ctx):
 			texture_space = False)
 			# ,release_confirm = False)
 
-class BsMax_OT_Mirror(Operator):
+class BsMax_OT_Mirror(bpy.types.Operator):
 	bl_idname = "bsmax.mirror_tool"
 	bl_label = "Mirror"
 	bl_description = "Mirror object dialog box"

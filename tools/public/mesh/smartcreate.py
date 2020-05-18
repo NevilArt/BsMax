@@ -47,13 +47,14 @@ class BsMax_OT_SmartCreate(Operator):
 		select_from_item(new_selection, edges = True, replace = True)
 
 	def super_smart_create(self,ctx):
-		bm = get_bmesh()
+		# bm = get_bmesh()
 		selectionMode = (tuple(ctx.scene.tool_settings.mesh_select_mode))
 		#if Vertex is selected
 		if selectionMode[0]:
 			selection = get_selected(verts = True, get_item = True)
 			if len(selection) == 1 or (verts_share_edge(selection) and are_border_verts(selection)):
-				mesh_f2.bpy.ops.mesh.f2('INVOKE_DEFAULT')
+				# mesh_f2.bpy.ops.mesh.f2('INVOKE_DEFAULT')
+				bpy.ops.mesh.f2('INVOKE_DEFAULT')
 			elif verts_share_face(selection):
 				self.connect_verts_to_last(selection)
 			else:    

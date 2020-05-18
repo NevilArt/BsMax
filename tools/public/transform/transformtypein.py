@@ -15,11 +15,10 @@
 
 import bpy, math
 from bpy.props import FloatProperty,BoolProperty
-from bpy.types import Operator
 from math import radians,degrees
 from mathutils import Vector
 
-class BsMax_OT_TransformTypeIn(Operator):
+class BsMax_OT_TransformTypeIn(bpy.types.Operator):
 	bl_idname = "bsmax.transformtypein"
 	bl_label = "Transform Type-in"
 	pos_abs_x: FloatProperty(name="X")

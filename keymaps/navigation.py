@@ -20,40 +20,66 @@ def collect_mute_keymaps(km):
 	pass
 
 # public Keymaps added anyway
-def public_keymaps(km):
+def public_keymaps(km,preferences):
 	space = km.space('3D View','VIEW_3D','WINDOW')
-	km.new(space,"view3d.zoomincover","WHEELINMOUSE","PRESS",[])
-	km.new(space,"view3d.zoomoutcover","WHEELOUTMOUSE","PRESS",[])
+	if preferences.viewundo:
+		km.new(space,"view3d.zoomincover","WHEELINMOUSE","PRESS",[])
+		km.new(space,"view3d.zoomoutcover","WHEELOUTMOUSE","PRESS",[])
+	else:
+		km.new(space,"view3d.zoom","WHEELINMOUSE","PRESS",[('delta',1)])
+		km.new(space,"view3d.zoom","WHEELOUTMOUSE","PRESS",[('delta',-1)])
 
 # Create Keymaps
-def navigation_Blender(km):
+def navigation_Blender(km,preferences):
 	# 3D View --------------------------------------------------------------
 	space = km.space('3D View','VIEW_3D','WINDOW')
-	km.new(space,"view3d.movecover","MIDDLEMOUSE","PRESS",[],shift=True)
-	km.new(space,"view3d.rotatecover","MIDDLEMOUSE","PRESS",[])
-	km.new(space,"view3d.zoomcover","MIDDLEMOUSE","PRESS",[],ctrl=True)
-	km.new(space,"view3d.dollycover","MIDDLEMOUSE","PRESS",[],ctrl=True,shift=True)
+	if preferences.viewundo:
+		km.new(space,"view3d.movecover","MIDDLEMOUSE","PRESS",[],shift=True)
+		km.new(space,"view3d.rotatecover","MIDDLEMOUSE","PRESS",[])
+		km.new(space,"view3d.zoomcover","MIDDLEMOUSE","PRESS",[],ctrl=True)
+		km.new(space,"view3d.dollycover","MIDDLEMOUSE","PRESS",[],ctrl=True,shift=True)
+	else:
+		km.new(space,"view3d.move","MIDDLEMOUSE","PRESS",[],shift=True)
+		km.new(space,"view3d.rotate","MIDDLEMOUSE","PRESS",[])
+		km.new(space,"view3d.zoom","MIDDLEMOUSE","PRESS",[],ctrl=True)
+		km.new(space,"view3d.dolly","MIDDLEMOUSE","PRESS",[],ctrl=True,shift=True)
 
-def navigation_3dsmax(km):
+def navigation_3dsmax(km,preferences):
 	# 3D View --------------------------------------------------------------
 	space = km.space('3D View','VIEW_3D','WINDOW')
-	km.new(space,"view3d.movecover","MIDDLEMOUSE","PRESS",[])
-	km.new(space,"view3d.rotatecover","MIDDLEMOUSE","PRESS",[],alt=True)
-	km.new(space,"view3d.zoomcover","MIDDLEMOUSE","PRESS",[],ctrl=True,alt=True)
+	if preferences.viewundo:
+		km.new(space,"view3d.movecover","MIDDLEMOUSE","PRESS",[])
+		km.new(space,"view3d.rotatecover","MIDDLEMOUSE","PRESS",[],alt=True)
+		km.new(space,"view3d.zoomcover","MIDDLEMOUSE","PRESS",[],ctrl=True,alt=True)
+	else:
+		km.new(space,"view3d.move","MIDDLEMOUSE","PRESS",[])
+		km.new(space,"view3d.rotate","MIDDLEMOUSE","PRESS",[],alt=True)
+		km.new(space,"view3d.zoom","MIDDLEMOUSE","PRESS",[],ctrl=True,alt=True)
 
-def navigation_maya(km):
+def navigation_maya(km,preferences):
 	# 3D View --------------------------------------------------------------
 	space = km.space('3D View','VIEW_3D','WINDOW')
-	km.new(space,"view3d.movecover","MIDDLEMOUSE","PRESS",[],alt=True)
-	km.new(space,"view3d.rotatecover","LEFTMOUSE","PRESS",[],alt=True)
-	km.new(space,"view3d.zoomcover","RIGHTMOUSE","PRESS",[],alt=True)
+	if preferences.viewundo:
+		km.new(space,"view3d.movecover","MIDDLEMOUSE","PRESS",[],alt=True)
+		km.new(space,"view3d.rotatecover","LEFTMOUSE","PRESS",[],alt=True)
+		km.new(space,"view3d.zoomcover","RIGHTMOUSE","PRESS",[],alt=True)
+	else:
+		km.new(space,"view3d.move","MIDDLEMOUSE","PRESS",[],alt=True)
+		km.new(space,"view3d.rotate","LEFTMOUSE","PRESS",[],alt=True)
+		km.new(space,"view3d.zoom","RIGHTMOUSE","PRESS",[],alt=True)
 
-def navigation_modo(km):
+def navigation_modo(km,preferences):
 	# 3D View --------------------------------------------------------------
 	space = km.space('3D View','VIEW_3D','WINDOW')
-	km.new(space,"view3d.rotatecover","LEFTMOUSE","PRESS",[],alt=True)
-	km.new(space,"view3d.movecover","LEFTMOUSE","PRESS",[],shift=True)
-	km.new(space,"view3d.zoomcover","LEFTMOUSE","PRESS",[],ctrl=True)
+	if preferences.viewundo:
+		km.new(space,"view3d.rotatecover","LEFTMOUSE","PRESS",[],alt=True)
+		km.new(space,"view3d.movecover","LEFTMOUSE","PRESS",[],shift=True)
+		km.new(space,"view3d.zoomcover","LEFTMOUSE","PRESS",[],ctrl=True)
+	else:
+		km.new(space,"view3d.rotate","LEFTMOUSE","PRESS",[],alt=True)
+		km.new(space,"view3d.move","LEFTMOUSE","PRESS",[],shift=True)
+		km.new(space,"view3d.zoom","LEFTMOUSE","PRESS",[],ctrl=True)
+
 	#km.new(space,"view3d.rotate","MIDDLEMOUSE","PRESS",[],alt=True) #roll
 	# Orbit mode
 	#km.new(space,"view3d.zoomcover","RIGHTMOUSE","PRESS",[],alt=True) #rotate camera
@@ -68,40 +94,52 @@ def navigation_modo(km):
 	#x.system.use_region_overlap=True # enable: Region Overlap (makes Tool Shelf transparent)
 	#bpy.ops.wm.save_userpref()
 
-def navigation_softimage(km):
+def navigation_softimage(km,preferences):
 	# 3D View --------------------------------------------------------------
 	space = km.space('3D View','VIEW_3D','WINDOW')
-	km.new(space,"view3d.movecover","MIDDLEMOUSE","PRESS",[],alt=True)
-	km.new(space,"view3d.rotatecover","LEFTMOUSE","PRESS",[],alt=True)
-	km.new(space,"view3d.zoomcover","RIGHTMOUSE","PRESS",[],alt=True)
+	if preferences.viewundo:
+		km.new(space,"view3d.movecover","MIDDLEMOUSE","PRESS",[],alt=True)
+		km.new(space,"view3d.rotatecover","LEFTMOUSE","PRESS",[],alt=True)
+		km.new(space,"view3d.zoomcover","RIGHTMOUSE","PRESS",[],alt=True)
+	else:
+		km.new(space,"view3d.move","MIDDLEMOUSE","PRESS",[],alt=True)
+		km.new(space,"view3d.rotate","LEFTMOUSE","PRESS",[],alt=True)
+		km.new(space,"view3d.zoom","RIGHTMOUSE","PRESS",[],alt=True)
 
-def navigation_cinema4d(km):
+def navigation_cinema4d(km,preferences):
 	# 3D View --------------------------------------------------------------
 	space = km.space('3D View','VIEW_3D','WINDOW')
-	km.new(space,"view3d.movecover","MIDDLEMOUSE","PRESS",[],alt=True)
-	km.new(space,"view3d.rotatecover","LEFTMOUSE","PRESS",[],alt=True)
-	km.new(space,"view3d.zoomcover","RIGHTMOUSE","PRESS",[],alt=True)
+	if preferences.viewundo:
+		km.new(space,"view3d.movecover","MIDDLEMOUSE","PRESS",[],alt=True)
+		km.new(space,"view3d.rotatecover","LEFTMOUSE","PRESS",[],alt=True)
+		km.new(space,"view3d.zoomcover","RIGHTMOUSE","PRESS",[],alt=True)
+	else:
+		km.new(space,"view3d.move","MIDDLEMOUSE","PRESS",[],alt=True)
+		km.new(space,"view3d.rotate","LEFTMOUSE","PRESS",[],alt=True)
+		km.new(space,"view3d.zoom","RIGHTMOUSE","PRESS",[],alt=True)
 
-def create_keymaps(km,app):
+def create_keymaps(km,preferences):
 	if bpy.context.window_manager.keyconfigs.addon:
+		app = preferences.navigation
 		if app == 'Blender':
-			navigation_Blender(km)
+			navigation_Blender(km,preferences)
 		elif app == '3DsMax':
-			navigation_3dsmax(km)
+			navigation_3dsmax(km,preferences)
 		elif app == 'Maya':
-			navigation_maya(km)
+			navigation_maya(km,preferences)
 		elif app == 'Modo':
-			navigation_modo(km)
+			navigation_modo(km,preferences)
 		elif app == 'Softimage':
-			navigation_softimage(km)
+			navigation_softimage(km,preferences)
 		elif app == 'Cinema4D':
-			navigation_cinema4d(km)
-		public_keymaps(km)
+			navigation_cinema4d(km,preferences)
+		public_keymaps(km,preferences)
 
 keymaps = KeyMaps()
 
 def register_navigation(preferences):
-	create_keymaps(keymaps,preferences.navigation)
+	keymaps.unregister()
+	create_keymaps(keymaps,preferences)
 	collect_mute_keymaps(keymaps)
 	keymaps.register()
 

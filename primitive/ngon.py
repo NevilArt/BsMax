@@ -57,11 +57,11 @@ class NGon(PrimitiveCurveClass):
 		pd = self.data.primitivedata
 		pd.classname = self.classname
 		pd.ssegs = 5
-	def update(self, ctx):
+	def update(self):
 		pd = self.data.primitivedata
 		# radius, sides, cornerradius, circular
 		shapes = GetNGonShape(pd.radius1, pd.ssegs, pd.chamfer1, pd.smooth)
-		self.update_curve(ctx, shapes)
+		self.update_curve(shapes)
 	def abort(self):
 		delete_objects([self.owner])
 
@@ -79,7 +79,7 @@ class BsMax_OT_CreateNGon(CreatePrimitive):
 		if clickcount == 1:
 			self.params.radius1 = dimantion.radius
 		if clickcount > 0:
-			self.subclass.update(ctx)
+			self.subclass.update()
 	def finish(self):
 		pass
 

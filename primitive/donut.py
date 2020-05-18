@@ -47,10 +47,10 @@ class Donut(PrimitiveCurveClass):
 		self.create_curve(ctx, shapes, self.classname)
 		pd = self.data.primitivedata
 		pd.classname = self.classname
-	def update(self, ctx):
+	def update(self):
 		pd = self.data.primitivedata
 		shapes = GetDonutShape(pd.radius1, pd.radius2)
-		self.update_curve(ctx, shapes)
+		self.update_curve(shapes)
 	def abort(self):
 		delete_objects([self.owner])
 
@@ -70,7 +70,7 @@ class BsMax_OT_CreateDonut(CreatePrimitive):
 		if clickcount == 2:
 			self.params.radius2 = dimantion.radius_from_start_point
 		if clickcount > 0:
-			self.subclass.update(ctx)
+			self.subclass.update()
 	def finish(self):
 		pass
 

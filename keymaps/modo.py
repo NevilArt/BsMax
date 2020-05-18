@@ -21,7 +21,8 @@ def collect_mute_keymaps(km):
 
 def create_keymaps(km):
 	if bpy.context.window_manager.keyconfigs.addon:
-		print("add Modo keymaps")
+		# print("add Modo keymaps")
+		pass
 		# Window ---------------------------------------------------------------
 		# space = km.space('Object Non-modal','EMPTY','WINDOW')
 		# km.new(space,"bsmax.mode_set",'F9',"PRESS",[])

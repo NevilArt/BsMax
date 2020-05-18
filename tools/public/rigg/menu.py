@@ -14,10 +14,9 @@
 ############################################################################
 
 import bpy
-from bpy.types import Menu
 from bsmax.state import is_object_mode
 
-class BsMax_MT_rigg_tools(Menu):
+class BsMax_MT_rigg_tools(bpy.types.Menu):
 	bl_idname = "BSMAX_MT_riggtools"
 	bl_label = "Rigg"
 	bl_context = "objectmode"

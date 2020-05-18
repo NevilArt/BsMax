@@ -14,7 +14,6 @@
 ############################################################################
 
 import bpy
-from bpy.types import Operator
 from mathutils import Vector
 from bsmax.math import get_distance
 from bsmax.actions import link_to,set_create_target,freeze_transform
@@ -45,7 +44,7 @@ def create_holder(ctx, location, radius, target):
 	set_create_target(holder, target)
 	return holder
 
-class BsMax_TO_EyeTargetCreator(Operator):
+class BsMax_TO_EyeTargetCreator(bpy.types.Operator):
 	bl_idname = "bsmax.eyetargetcreator"
 	bl_label = "Eye Target Creator"
 	bl_description = "Create Eyetarget For 2 Selected Objects"

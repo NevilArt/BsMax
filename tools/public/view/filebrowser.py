@@ -14,13 +14,11 @@
 ############################################################################
 
 import bpy
-from bpy.types import Operator
-from bpy.props import BoolProperty
 
-class BsMax_OT_ScaleIcons(Operator):
+class BsMax_OT_ScaleIcons(bpy.types.Operator):
 	bl_idname = "filebrowser.scaleicons"
 	bl_label = "Scale Icons"
-	up: BoolProperty(name="scaleup",default=True)
+	up: bpy.props.BoolProperty(name="scaleup",default=True)
 	
 	@classmethod
 	def poll(self, ctx):

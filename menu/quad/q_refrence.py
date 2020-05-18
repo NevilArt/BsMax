@@ -35,7 +35,7 @@ class QuadMenuRef:
 			try:
 				exec(action)
 			except:
-				print("An exception occurred with " + action) 
+				print("An exception occurred with " + action)
 
 # def getsize():
 #     # | System              | Value      |
