@@ -6,7 +6,7 @@
 Recent Updates
 
 * View undo can disable now (some times cause the viewport leg).
-* Camera lister updated ('P' in max mode).
+* Camera lister updated ('C' in max mode).
 * Animated primitives problem solved.
 * Object Properties added to Quad menu (not perfect but some thing better than nothing).
 * Split Edge added to quad menu.

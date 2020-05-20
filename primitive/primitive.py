@@ -163,7 +163,8 @@ class PrimitiveGeometryClass:
 	def update_mesh(self, meshdata):
 		if self.data != None and bpy.context.mode == 'OBJECT':
 			verts,edges,faces, = meshdata
-			if bpy.app.version[1] == 80:
+			# if bpy.app.version[1] == 80:
+			if True:
 				""" old method for V2.80 """
 				orgmesh = bpy.data.meshes[self.data.name]
 				tmpmesh = bpy.data.meshes.new("_NewTempMesh_")
@@ -177,6 +178,8 @@ class PrimitiveGeometryClass:
 				""" new method for V2.81 and above """
 				self.data.clear_geometry()
 				self.data.from_pydata(verts,edges,faces)
+				""" Note this method is faster but clear the keyframes too """
+				""" Ihad to skip this part till I find a solution for this """
 
 class PrimitiveCurveClass:
 	def create_curve(self, ctx, shapes, classname):

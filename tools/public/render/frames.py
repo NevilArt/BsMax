@@ -81,7 +81,7 @@ def frames_render_init(scene):
 		ba.get_string(scene.frames)
 		scene.frame_current = scene.frame_start = min(ba.ints)
 		scene.frame_start = min(ba.ints)
-		scene.frame_end = max(ba.ints)*10
+		scene.frame_end = max(ba.ints)
 
 @persistent
 def frames_render_complete(scene):
