@@ -28,6 +28,7 @@ class BsMax_OT_TransformGizmoSize(Operator):
 class BsMax_OT_Move(Operator):
 	bl_idname = "bsmax.move"
 	bl_label = "Move"
+	smax: BoolProperty()
 	def execute(self, ctx):
 		space_type = ctx.area.spaces.active.type
 		if space_type == "VIEW_3D":
@@ -42,11 +43,13 @@ class BsMax_OT_Move(Operator):
 			ctx.space_data.show_gizmo_object_scale = False
 		else:
 			bpy.ops.wm.tool_set_by_id(name="builtin.move")
+		bpy.ops.bsmax.snaptoggle(auto=self.smax)
 		return{"FINISHED"}
 
 class BsMax_OT_Rotate(Operator):
 	bl_idname = "bsmax.rotate"
 	bl_label = "Rotate"
+	smax: BoolProperty()
 	def execute(self, ctx):
 		mode = ctx.mode
 		tool = ctx.workspace.tools.from_space_view3d_mode(mode,create=False).idname
@@ -56,6 +59,7 @@ class BsMax_OT_Rotate(Operator):
 			ctx.space_data.show_gizmo_object_scale = False
 		else:
 			bpy.ops.wm.tool_set_by_id(name="builtin.rotate")
+		bpy.ops.bsmax.angelsnap(auto=self.smax)
 		return{"FINISHED"}
 
 class BsMax_OT_Scale(Operator):

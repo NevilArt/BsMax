@@ -5,6 +5,7 @@
 
 Recent Updates
 
+* Snap automaticly changes on Move Rotate tool call viea short cut(act more max like)
 * View undo can disable now (some times cause the viewport leg).
 * Camera lister updated ('C' in max mode).
 * Animated primitives problem solved.

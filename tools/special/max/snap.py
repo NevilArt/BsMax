@@ -15,6 +15,7 @@
 
 import bpy
 from bpy.types import Operator
+from bpy.props import BoolProperty
 
 class BsMax_OT_SnapSetting(Operator):
 	bl_idname = "bsmax.snapsetting"
@@ -83,34 +84,50 @@ class snap_setting:
 class BsMax_OT_SnapToggle(Operator):
 	bl_idname = "bsmax.snaptoggle"
 	bl_label = "Snap Toggle"
+	auto: BoolProperty(default=False)
 	def execute(self, ctx):
 		t = ctx.scene.tool_settings
-		if t.use_snap_translate and t.use_snap:
-			snap_setting.move.store(ctx)
-			t.use_snap = False
-			t.use_snap_translate = False
+		if self.auto:
+			if t.use_snap and t.use_snap_rotate:
+				snap_setting.rotate.store(ctx)
+				snap_setting.move.restore(ctx)
+				t.use_snap_translate = True
+				t.use_snap_rotate = False
 		else:
-			t.use_snap = True
-			snap_setting.move.restore(ctx)
-			t.use_snap_translate = t.use_snap
+			if t.use_snap_translate and t.use_snap:
+				snap_setting.move.store(ctx)
+				t.use_snap = False
+				t.use_snap_translate = False
+			else:
+				t.use_snap = True
+				snap_setting.move.restore(ctx)
+				t.use_snap_translate = t.use_snap
 		return{"FINISHED"}
 
 class BsMax_OT_AngelSnap(Operator):
 	bl_idname = "bsmax.angelsnap"
 	bl_label = "Angel Snap"
+	auto: BoolProperty(default=False)
 	def execute(self, ctx):
 		t = ctx.scene.tool_settings
-		if t.use_snap_translate and t.use_snap:
-			snap_setting.move.store(ctx)
-			t.use_snap_translate = False
-
-		if t.use_snap_rotate and t.use_snap:
-			t.use_snap = False
-			t.use_snap_rotate = False
+		if self.auto:
+			if t.use_snap:
+				snap_setting.move.store(ctx)
+				snap_setting.rotate.restore(ctx)
+				t.use_snap_translate = False
+				t.use_snap_rotate = True
 		else:
-			t.use_snap = True
-			snap_setting.rotate.restore(ctx)
-			t.use_snap_rotate = True
+			if t.use_snap_translate and t.use_snap:
+				snap_setting.move.store(ctx)
+				t.use_snap_translate = False
+
+			if t.use_snap_rotate and t.use_snap:
+				t.use_snap = False
+				t.use_snap_rotate = False
+			else:
+				t.use_snap = True
+				snap_setting.rotate.restore(ctx)
+				t.use_snap_rotate = True
 		return{"FINISHED"}
 
 classes = [BsMax_OT_SnapSetting,BsMax_OT_SnapToggle,BsMax_OT_AngelSnap]

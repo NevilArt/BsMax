@@ -98,8 +98,8 @@ def create_keymaps(km):
 		km.new(space,'view3d.localview','Q','PRESS',[],alt=True)
 		# Set tools
 		km.new(space,'wm.tool_set_by_id','Q','PRESS',[('name','builtin.select_box'),('cycle',True)])
-		km.new(space,'bsmax.move','W','PRESS',[])
-		km.new(space,'bsmax.rotate','E','PRESS',[])
+		km.new(space,'bsmax.move','W','PRESS',[('smax',True)])
+		km.new(space,'bsmax.rotate','E','PRESS',[('smax',True)])
 		km.new(space,'bsmax.scale','R','PRESS',[])
 		km.new(space,'bsmax.scale','E','PRESS',[],ctrl=True)
 		# selection
