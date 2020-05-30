@@ -15,14 +15,18 @@
 
 import bpy
 from bpy.types import Operator,Panel
+from bpy.props import BoolProperty,StringProperty
 
-class BsMax_OT_CopyModifiers(Operator):
+class Modifier_OT_CopyToSelection(Operator):
 	bl_idname = "modifier.copy_to_selection"
 	bl_label = "Copy to Selection"
+
+	expanded_only: BoolProperty()
+
 	def execute(self, ctx):
 		modifiers = []
 		for modifier in ctx.active_object.modifiers:
-			if modifier.show_expanded:
+			if modifier.show_expanded or self.expanded_only:
 				properties = []
 				for prop in modifier.bl_rna.properties:
 					if not prop.is_readonly:
@@ -38,11 +42,42 @@ class BsMax_OT_CopyModifiers(Operator):
 
 		return{"FINISHED"}
 
+class Modifier_OT_MatchSelection(Operator):
+	bl_idname = "modifier.match_selection"
+	bl_label = "Match Selection"
+
+	name: StringProperty()
+
+	def execute(self, ctx):
+		if self.name in ctx.active_object.modifiers:
+			modifier = ctx.active_object.modifiers[self.name]
+			properties = []
+			for prop in modifier.bl_rna.properties:
+				if not prop.is_readonly:
+					properties.append(prop.identifier)
+		else:
+			return{"FINISHED"}
+
+		for obj in ctx.selected_objects:
+			if obj != ctx.active_object:
+				for m in obj.modifiers:
+					if m.type == modifier.type:
+						for prop in properties:
+							setattr(m, prop, getattr(modifier, prop))
+		
+		return{"FINISHED"}
+
+
 # TODO add to modifire panel
 # More tools copy props, delet modifiers
 
-def register_modifier():
-	bpy.utils.register_class(BsMax_OT_CopyModifiers)
+classes = [Modifier_OT_CopyToSelection, Modifier_OT_MatchSelection]
 
-def unregister_modifier():
-	bpy.utils.unregister_class(BsMax_OT_CopyModifiers)
+def register_clone():
+	[bpy.utils.register_class(c) for c in classes]
+
+def unregister_clone():
+	[bpy.utils.unregister_class(c) for c in classes]
+
+if __name__ == '__main__':
+	register_clone()

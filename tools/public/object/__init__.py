@@ -19,7 +19,6 @@ from .clonearrayobjects import register_cloneobject,unregister_cloneobject
 from .collection import register_collection,unregister_collection
 from .freeze import register_freeze,unregister_freeze
 from .lattice import register_lattice,unregister_lattice
-from .modifier import register_modifier,unregister_modifier
 from .pivotpoint import register_pivotpoint,unregister_pivotpoint
 
 def register_object():
@@ -29,7 +28,6 @@ def register_object():
 	register_collection()
 	register_freeze()
 	register_lattice()
-	register_modifier()
 	register_pivotpoint()
 
 def unregister_object():
@@ -39,5 +37,4 @@ def unregister_object():
 	unregister_collection()
 	unregister_freeze()
 	unregister_lattice()
-	unregister_modifier
 	unregister_pivotpoint()

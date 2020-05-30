@@ -170,4 +170,6 @@ def register_update():
 	bpy.app.handlers.frame_change_post.append(primitive_frame_update)
 
 def unregister_update():
+	del bpy.types.Mesh.primitivedata
+	del bpy.types.Curve.primitivedata
 	bpy.utils.unregister_class(PrimitiveData)
