@@ -22,7 +22,10 @@ class BsMax_OT_TransformGizmoSize(Operator):
 	bl_label = "Transform Gizmo Size"
 	step: FloatProperty()
 	def execute(self, ctx):
-		ctx.user_preferences.view.gizmo_size += self.step
+		if bpy.app.version[1] < 81:
+			ctx.user_preferences.view.gizmo_size += self.step
+		else:
+			ctx.preferences.view.gizmo_size += self.step
 		return{"FINISHED"}
 
 class BsMax_OT_Move(Operator):

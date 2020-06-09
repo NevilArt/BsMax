@@ -130,7 +130,7 @@ class BsMax_OT_CreateLine(CreatePrimitive):
 		self.subclass.knots[-1] = newknot
 		self.subclass.lastknot = [knot(dim.view, dim.view, dim.view, "VECTOR")]
 
-		self.subclass.update()
+		self.subclass.update(ctx)
 
 	def event(self, event, value):
 		if event == 'BACK_SPACE':
