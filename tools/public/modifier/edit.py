@@ -1831,7 +1831,7 @@ class Modifier_OT_MultiEdit(Operator):
 
 	def cancel(self, ctx):
 		return None
-  
+
 	def invoke(self, ctx, event):
 		return ctx.window_manager.invoke_props_dialog(self,width=400)
 
@@ -1841,8 +1841,9 @@ def register_edit():
 	bpy.utils.register_class(Modifier_OT_MultiEdit)
 
 def unregister_edit():
-	bpy.utils.register_class(Modifier_OT_MultiEdit)
+	bpy.utils.unregister_class(Modifier_OT_MultiEdit)
 	del bpy.types.Scene.active_modifiers
+	bpy.utils.unregister_class(modifiers_list)
 
 if __name__ == '__main__':
 	register_edit()

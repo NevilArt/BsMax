@@ -164,7 +164,10 @@ class PrimitiveData(bpy.types.PropertyGroup):
 def register_update():
 	if hasattr(bpy.types.Mesh,'primitivedata') or hasattr(bpy.types.Curve,'primitivedata'):
 		unregister_update()
-	bpy.utils.register_class(PrimitiveData)
+	try:
+		bpy.utils.register_class(PrimitiveData)
+	except:
+		pass
 	bpy.types.Mesh.primitivedata = PointerProperty(type=PrimitiveData)
 	bpy.types.Curve.primitivedata = PointerProperty(type=PrimitiveData)
 	bpy.app.handlers.frame_change_post.append(primitive_frame_update)

@@ -219,6 +219,9 @@ def register_undo(preferences):
 		bpy.types.VIEW3D_MT_view.prepend(view_undorido_menu)
 
 def unregister_undo():
-	if view_undorido_menu in bpy.types.VIEW3D_MT_view:
-		bpy.types.VIEW3D_MT_view.remove(view_undorido_menu)
+	try: # temprary solution
+		if view_undorido_menu in bpy.types.VIEW3D_MT_view:
+			bpy.types.VIEW3D_MT_view.remove(view_undorido_menu)
+	except:
+		pass
 	[bpy.utils.unregister_class(c) for c in classes]
