@@ -5,7 +5,7 @@
 
 Recent Updates
 
-* some minor bug fixing
+* Startup navigation key binding issue solved.
 * Float modifire editor can match only selected modifier with selected objects if had same modifier (for now search for "Edit multi Modifiers").
 * Snap automaticly changes on Move Rotate tool call viea short cut(act more max like)
 * View undo can disable now (some times cause the viewport leg).

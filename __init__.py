@@ -20,7 +20,7 @@ bl_info = {
 	"name": "BsMax",
 	"description": "BsMax for Blender 2.80 ~ 2.90",
 	"author": "Naser Merati (Nevil)",
-	"version": (0, 1, 0, 20200610),
+	"version": (0, 1, 0, 20200618),
 	"blender": (2, 80, 0),# 2.80~2.90
 	"location": "Almost Everywhere in Blender",
 	"wiki_url": "https://github.com/NevilArt/BsMax_2_80/wiki",
@@ -124,18 +124,18 @@ class BsMax_AddonPreferences(bpy.types.AddonPreferences):
 		col.prop(self,"viewundo")
 
 def register_delay(preferences):
-	sleep(0.1)
+	sleep(0.2)
+	register_navigation(preferences)
 	register_keymaps(preferences)
 	register_startup(preferences)
 
 def register():
 	bpy.utils.register_class(BsMax_AddonPreferences)
-	# preferences = bpy.context.preferences.addons[__name__].preferences
 	preferences = addons[__name__].preferences
 	register_primitives()
 	register_tools(preferences)
 	register_menu(preferences)
-	register_navigation(preferences)
+	# register_navigation(preferences)
 	# templates.register()
 	start_new_thread(register_delay,tuple([preferences]))
 	
