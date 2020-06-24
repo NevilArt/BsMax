@@ -53,11 +53,6 @@ def duplicate_copy(ctx, obj):
 	return ctx.view_layer.objects.active
 
 def modifier_add(ctx, objs, modifier):
-	# activeobject = ctx.active_object
-	# for obj in objs:
-	# 	ctx.view_layer.objects.active = obj
-	# 	bpy.ops.object.modifier_add(type=modifier)
-	# ctx.view_layer.objects.active = activeobject
 	for obj in objs:
 		obj.modifiers.new(name=modifier, type=modifier)
 

@@ -300,7 +300,7 @@ class BsMax_OT_CreateCone(CreatePrimitive):
 			radius2 = self.params.radius1 + dimantion.height_np
 			self.params.radius2 = 0 if radius2 < 0 else radius2
 		if clickcount > 0:
-			self.subclass.update()
+			self.subclass.update(ctx)
 	def finish(self):
 		pass
 

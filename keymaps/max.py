@@ -69,6 +69,10 @@ def create_view3d_tweak_selection_keymap(km,space):
 	km.new(space,'view3d.select_box','EVT_TWEAK_L','ANY',[('mode','ADD')],ctrl=True )
 	km.new(space,'view3d.select_box','EVT_TWEAK_L','ANY',[('mode','SUB')],alt=True )
 
+def create_snap_keymaps(km,space):
+	km.new(space,'bsmax.snaptoggle','S','PRESS',[])
+	km.new(space,'bsmax.angelsnap','A','PRESS',[])
+
 def create_search_shortkey(km,space):
 	if bpy.app.version[1] < 90:
 		km.new(space,'wm.search_menu','X','PRESS',[])
@@ -115,8 +119,6 @@ def create_keymaps(km):
 		km.new(space,'view3d.wireframetoggle','F3','PRESS',[])
 		km.new(space,'view3d.edgefacestoggle','F4','PRESS',[])
 		km.new(space,'bsmax.lightingtoggle','L','PRESS',[],ctrl=True)
-		km.new(space,'bsmax.snaptoggle','S','PRESS',[])
-		km.new(space,'bsmax.angelsnap','A','PRESS',[])
 		km.new(space,'bsmax.viewport_background','B','PRESS',[],alt=True)
 		km.new(space,'bsmax.subobjectlevel','B','PRESS',[('level',6)],ctrl=True)
 		km.new(space,'camera.show_safe_areas','F','PRESS',[],shift=True)
@@ -130,6 +132,7 @@ def create_keymaps(km):
 		km.new(space,'view3d.homeview','HOME','PRESS',[],alt=True)
 		km.new(space,'view.undoredo','Z','PRESS',[('redo',False)],shift=True)
 		km.new(space,'view.undoredo','Y','PRESS',[('redo',True)],shift=True)
+		create_snap_keymaps(km,space)
 		# Float Editors
 		km.new(space,'editor.open_node_ditor','M','PRESS',[('mode','Material')])
 		km.new(space,'editor.open_node_ditor','EIGHT','PRESS',[('mode','Environment')])
@@ -554,6 +557,7 @@ def create_keymaps(km):
 		km.new(space,'bsmax.scale','R','PRESS',[])
 		#create_view3d_click_celection_keymap(space)
 		create_view3d_tweak_selection_keymap(km,space)
+		create_snap_keymaps(km,space)
 		km.new(space,'wm.tool_set_by_id','Q','PRESS',[('name','builtin.select_box'),('cycle',True)])
 		km.new(space,'uv.select','EVT_TWEAK_L','ANY',[('extend',True)])
 		km.new(space,'uv.select_box','EVT_TWEAK_L','ANY',[('mode','SET')])

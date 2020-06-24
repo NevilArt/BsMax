@@ -14,11 +14,14 @@
 ############################################################################
 
 import bpy
+from bpy.types import Operator
+from bpy.props import BoolProperty
+from bsmax.actions import set_as_active_object,link_to_scene
 
-class UV_OT_Turn(bpy.types.Operator):
+class UV_OT_Turn(Operator):
 	bl_idname = "uv.turn"
-	bl_label = "Turn (UV)"
-	ccw: bpy.props.BoolProperty(name="CCW")
+	bl_label = "Turn"
+	ccw: BoolProperty(name="CCW")
 
 	@classmethod
 	def poll(self, ctx):
@@ -34,8 +37,34 @@ class UV_OT_Turn(bpy.types.Operator):
 						use_proportional_projected=False)
 		return{"FINISHED"}
 
+# not done yet
+class UV_OT_PlaneProjection(Operator):
+	bl_idname = "uv.planeprojection"
+	bl_label = "Plane Projection"
+	quick: BoolProperty(name="Quick",default=True)
+
+	@classmethod
+	def poll(self, ctx):
+		return False # ctx.mode == 'EDIT'
+
+	def execute(self, ctx):
+		# working on not complete yet
+		obj = ctx.active_object
+		mod = obj.modifiers.new(name="BoxUVProjector", type='UV_PROJECT')
+		bpy.ops.object.empty_add(type='ARROWS', align='WORLD', location=(0, 0, 0), scale=(1, 1, 1))
+		gizmo = ctx.active_object
+		# mod.object = gizmo
+		bpy.context.object.object = bpy.data.objects["Empty"]
+		bpy.ops.object.mode_set(mode='OBJECT')
+		bpy.ops.object.modifier_apply(apply_as='DATA', modifier="BoxUVProjector")
+		bpy.ops.object.delete({"selected_objects":[gizmo]})
+		set_as_active_object(ctx,obj)
+		bpy.ops.object.mode_set(mode='EDIT')
+
+classes = [UV_OT_Turn,UV_OT_PlaneProjection]
+
 def register_edit():
-	bpy.utils.register_class(UV_OT_Turn)
+	[bpy.utils.register_class(c) for c in classes]
 
 def unregister_edit():
-	bpy.utils.unregister_class(UV_OT_Turn)
+	[bpy.utils.unregister_class(c) for c in classes]

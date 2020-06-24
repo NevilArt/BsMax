@@ -14,9 +14,10 @@
 ############################################################################
 
 import bpy
+from bpy.types import Menu
 
-class BsMax_MT_UV_Edit(bpy.types.Menu):
-	bl_idname = "BSMAX_MT_uvedit"
+class UV_MT_Edit(Menu):
+	bl_idname = "UV_MT_edit"
 	bl_label = "Edit"
 
 	def draw(self, ctx):
@@ -24,20 +25,21 @@ class BsMax_MT_UV_Edit(bpy.types.Menu):
 		if ctx.space_data.show_uvedit:
 			layout.operator("uv.turn",text="-90",icon="LOOP_BACK").ccw = False
 			layout.operator("uv.turn",text="+90",icon="LOOP_FORWARDS").ccw = True
-			#layout.separator()
-		# elif ctx.space_data.show_uvedit:# image editor
-		# 	layout.operator("image.turn",text="-90",icon="LOOP_BACK").ccw = False
-		# 	layout.operator("image.turn",text="+90",icon="LOOP_FORWARDS").ccw = True
+			layout.separator()
+			layout.operator("uv.cylinder_project",text="Cylinder Project",icon="MESH_CYLINDER")
+			layout.operator("uv.cube_project",text="Cube Project",icon="MESH_CUBE")
+			layout.operator("uv.sphere_project",text="Sphere Project",icon="MESH_UVSPHERE")
+			# layout.lable(text="Plane Project")
 
 def uv_edit_menu(self, ctx):
-	self.layout.menu("BSMAX_MT_uvedit")
+	self.layout.menu("UV_MT_edit")
 
 mnu = bpy.types.MASK_MT_editor_menus if bpy.app.version[1] < 83 else bpy.types.IMAGE_MT_editor_menus
 
 def register_menu():
-	bpy.utils.register_class(BsMax_MT_UV_Edit)
+	bpy.utils.register_class(UV_MT_Edit)
 	mnu.append(uv_edit_menu)
 
 def unregister_menu():
 	mnu.remove(uv_edit_menu)
-	bpy.utils.unregister_class(BsMax_MT_UV_Edit)
+	bpy.utils.unregister_class(UV_MT_Edit)
