@@ -5,12 +5,14 @@
 
 Recent Updates
 
+* (Ctrl + shift + C) Flet/chamfer in Curve Edit mode.
+* (Ctrl + Tab) Multi Modifier Editor.
 * UV projections added to UV Edit menu.
 * Startup navigation key binding issue solved.
-* Float modifire editor can match only selected modifier with selected objects if had same modifier (for now search for "Edit multi Modifiers").
-* Snap automaticly changes on Move Rotate tool call viea short cut(act more max like)
+* Float modifire editor can match only selected modifier with selected objects if had same modifier.
+* Snap automaticly changes on Move Rotate tool call viea short cut(act more max like).
 * View undo can disable now (some times cause the viewport leg).
-* Camera lister updated ('C' in max mode).
+* Camera lister updated ('C' in Max mode).
 * Animated primitives problem solved.
 * Object Properties added to Quad menu (not perfect but some thing better than nothing).
 * Split Edge added to quad menu.

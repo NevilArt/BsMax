@@ -223,7 +223,7 @@ def create_keymaps(km):
 		km.new(space,'bsmax.previousframe','COMMA','PRESS',[])
 		km.new(space,'screen.animation_play','SLASH','PRESS',[])
 		km.new(space,'camera.select','C','PRESS',[])
-		
+		km.new(space,'modifier.edit_multi','TAB','PRESS',[],ctrl=True)
 		# Set Subobject Mode
 		create_subobject_mode_keymap(km,space)
 		# Mesh -----------------------------------------------------------------
@@ -259,7 +259,6 @@ def create_keymaps(km):
 		km.new(space,'mesh.merge','C','PRESS',[('type','CENTER')],alt=True,ctrl=True)
 		#km.new(space,'mesh.edge_face_add','P','PRESS',[],alt=True)
 		km.new(space,'mesh.smart_create','P','PRESS',[],alt=True)
-		
 		#km.new(space,'Bevel','B','PRESS',[],ctrl=True,shift=True)
 		#km.new(space,'spline extrud ','E','PRESS',[],alt=True)
 		km.new(space,'wm.context_toggle','I','PRESS',[('data_path','space_data.shading.show_xray')],shift=True,ctrl=True)
@@ -302,7 +301,8 @@ def create_keymaps(km):
 		km.new(space,'bsmax.autokeymodetoggle','N','PRESS',[])
 		km.new(space,'camera.select','C','PRESS',[])
 		km.new(space,'wm.tool_set_by_id','E','PRESS',[('name','builtin.rotate')])
-		
+		km.new(space,'curve.chamfer','C','PRESS',[('fillet',True),('typein',False)],ctrl=True,shift=True)
+		# km.new(space,'curve.chamfer','C','DOUBLE_CLICK',[('fillet',True),('typein',True)],ctrl=True,shift=True)
 		# Armature -------------------------------------------------------------
 		space = km.space('Armature','EMPTY','WINDOW')
 		# Global
