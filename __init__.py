@@ -20,7 +20,7 @@ bl_info = {
 	"name": "BsMax",
 	"description": "BsMax for Blender 2.80 ~ 2.90",
 	"author": "Naser Merati (Nevil)",
-	"version": (0, 1, 0, 20200626),
+	"version": (0, 1, 0, 20200628),
 	"blender": (2, 80, 0),# 2.80~2.90
 	"location": "Almost Everywhere in Blender",
 	"wiki_url": "https://github.com/NevilArt/BsMax_2_80/wiki",
@@ -135,7 +135,6 @@ def register():
 	register_primitives()
 	register_tools(preferences)
 	register_menu(preferences)
-	# register_navigation(preferences)
 	# templates.register()
 	start_new_thread(register_delay,tuple([preferences]))
 	

@@ -14,6 +14,7 @@
 ############################################################################
 
 from .arrange import register_arrange,unregister_arrange
+# from .bake import register_bake,unregister_bake
 from .batchrename import register_batchrename,unregister_batchrename
 from .clonearrayobjects import register_cloneobject,unregister_cloneobject
 from .collection import register_collection,unregister_collection
@@ -23,6 +24,7 @@ from .pivotpoint import register_pivotpoint,unregister_pivotpoint
 
 def register_object():
 	register_arrange()
+	# register_bake()
 	register_batchrename()
 	register_cloneobject()
 	register_collection()
@@ -32,6 +34,7 @@ def register_object():
 
 def unregister_object():
 	unregister_arrange()
+	# unregister_bake()
 	unregister_batchrename()
 	unregister_cloneobject()
 	unregister_collection()

@@ -5,6 +5,7 @@
 
 Recent Updates
 
+* Transform type in fixed (Max mode F12)(Object mode only)
 * (Ctrl + shift + C) Flet/chamfer in Curve Edit mode.
 * (Ctrl + Tab) Multi Modifier Editor.
 * UV projections added to UV Edit menu.

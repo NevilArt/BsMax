@@ -18,191 +18,202 @@ from bpy.props import FloatProperty,BoolProperty
 from math import radians,degrees
 from mathutils import Vector
 
+def pos_abs_x(self, ctx):
+	for obj in ctx.selected_objects:
+		obj.location[0] = self.pos_abs_x
+def pos_abs_y(self, ctx):
+	for obj in ctx.selected_objects:
+		obj.location[1] = self.pos_abs_y
+def pos_abs_z(self, ctx):
+	for obj in ctx.selected_objects:
+		obj.location[2] = self.pos_abs_z
+
+def rot_abs_x(self, ctx):
+	for obj in ctx.selected_objects:
+		obj.rotation_euler[0] = radians(self.rot_abs_x)
+def rot_abs_y(self, ctx):
+	for obj in ctx.selected_objects:
+		obj.rotation_euler[1] = radians(self.rot_abs_y)
+def rot_abs_z(self, ctx):
+	for obj in ctx.selected_objects:
+		obj.rotation_euler[2] = radians(self.rot_abs_z)
+
+def scl_abs_x(self, ctx):
+	for obj in ctx.selected_objects:
+		obj.scale[0] = self.scl_abs_x / 100.0
+def scl_abs_y(self, ctx):
+	for obj in ctx.selected_objects:
+		obj.scale[1] = self.scl_abs_y / 100.0
+def scl_abs_z(self, ctx):
+	for obj in ctx.selected_objects:
+		obj.scale[2] = self.scl_abs_z / 100.0
+
+pos,rot,scl = [],[],[]
+
+def pos_off_x(self, ctx):
+	if len(ctx.selected_objects) == len(scl):
+		for index, obj in enumerate(ctx.selected_objects):
+			obj.location[0] = pos[index].x+self.pos_off_x
+def pos_off_y(self, ctx):
+	if len(ctx.selected_objects) == len(scl):
+		for index, obj in enumerate(ctx.selected_objects):
+			obj.location[1] = pos[index].y+self.pos_off_y
+def pos_off_z(self, ctx):
+	if len(ctx.selected_objects) == len(scl):
+		for index, obj in enumerate(ctx.selected_objects):
+			obj.location[2] = pos[index].z+self.pos_off_z
+
+def rot_off_x(self, ctx):
+	if len(ctx.selected_objects) == len(scl):
+		for index, obj in enumerate(ctx.selected_objects):
+			obj.rotation_euler[0] = rot[index].x+radians(self.rot_off_x)
+def rot_off_y(self, ctx):
+	if len(ctx.selected_objects) == len(scl):
+		for index, obj in enumerate(ctx.selected_objects):
+			obj.rotation_euler[1] = rot[index].y+radians(self.rot_off_y)
+def rot_off_z(self, ctx):
+	if len(ctx.selected_objects) == len(scl):
+		for index, obj in enumerate(ctx.selected_objects):
+			obj.rotation_euler[2] = rot[index].z+radians(self.rot_off_z)
+
+def scl_off_x(self, ctx):
+	if len(ctx.selected_objects) == len(scl):
+		for index, obj in enumerate(ctx.selected_objects):
+			obj.scale[0] = scl[index].x*self.scl_off_x/100
+def scl_off_y(self, ctx):
+	if len(ctx.selected_objects) == len(scl):
+		for index, obj in enumerate(ctx.selected_objects):
+			obj.scale[1] = scl[index].y*self.scl_off_y/100
+def scl_off_z(self, ctx):
+	if len(ctx.selected_objects) == len(scl):
+		for index, obj in enumerate(ctx.selected_objects):
+			obj.scale[2] = scl[index].z*self.scl_off_z/100
+
+def percent(self, ctx):
+	if len(ctx.selected_objects) == len(scl):
+		for index, obj in enumerate(ctx.selected_objects):
+			obj.scale[0] = scl[index][0] * self.percent/100
+			obj.scale[1] = scl[index][1] * self.percent/100
+			obj.scale[2] = scl[index][2] * self.percent/100
+
+def read_objects_values(self, ctx):
+	selection = ctx.selected_objects
+	if len(selection) == 1:
+		location = selection[0].location
+		self.pos_abs_x = location.x
+		self.pos_abs_y = location.y
+		self.pos_abs_z = location.z
+		sre = selection[0].rotation_euler
+		self.rot_abs_x = degrees(sre.x)
+		self.rot_abs_y = degrees(sre.y)
+		self.rot_abs_z = degrees(sre.z)
+		scale = selection[0].scale
+		self.scl_abs_x = scale.x * 100
+		self.scl_abs_y = scale.y * 100
+		self.scl_abs_z = scale.z * 100
+		self.percent = 100
+
+	pos.clear()
+	rot.clear()
+	scl.clear()
+	for obj in selection:
+		pos.append(obj.location.copy())
+		rot.append(obj.rotation_euler.copy())
+		scl.append(obj.scale.copy())
+
 class BsMax_OT_TransformTypeIn(bpy.types.Operator):
 	bl_idname = "bsmax.transformtypein"
 	bl_label = "Transform Type-in"
-	pos_abs_x: FloatProperty(name="X")
-	pos_abs_y: FloatProperty(name="Y")
-	pos_abs_z: FloatProperty(name="Z")
-	pos_off_x: FloatProperty(name="X")
-	pos_off_y: FloatProperty(name="Y")
-	pos_off_z: FloatProperty(name="Z")
-	rot_abs_x: FloatProperty(name="X")
-	rot_abs_y: FloatProperty(name="Y")
-	rot_abs_z: FloatProperty(name="Z")
-	rot_off_x: FloatProperty(name="X")
-	rot_off_y: FloatProperty(name="Y")
-	rot_off_z: FloatProperty(name="Z")
-	scl_abs_x: FloatProperty(name="X")
-	scl_abs_y: FloatProperty(name="Y")
-	scl_abs_z: FloatProperty(name="Z")
-	scl_off_x: FloatProperty(name="X",default=100)
-	scl_off_y: FloatProperty(name="Y",default=100)
-	scl_off_z: FloatProperty(name="Z",default=100)
-	percent: FloatProperty(name="%",default=100)
+
+	pos_abs_x: FloatProperty(name="X",update=pos_abs_x)
+	pos_abs_y: FloatProperty(name="Y",update=pos_abs_y)
+	pos_abs_z: FloatProperty(name="Z",update=pos_abs_z)
+
+	pos_off_x: FloatProperty(name="X",update=pos_off_x)
+	pos_off_y: FloatProperty(name="Y",update=pos_off_y)
+	pos_off_z: FloatProperty(name="Z",update=pos_off_z)
+
+	rot_abs_x: FloatProperty(name="X",update=rot_abs_x)
+	rot_abs_y: FloatProperty(name="Y",update=rot_abs_y)
+	rot_abs_z: FloatProperty(name="Z",update=rot_abs_z)
+
+	rot_off_x: FloatProperty(name="X",update=rot_off_x)
+	rot_off_y: FloatProperty(name="Y",update=rot_off_y)
+	rot_off_z: FloatProperty(name="Z",update=rot_off_z)
+
+	scl_abs_x: FloatProperty(name="X",default=100,update=scl_abs_x)
+	scl_abs_y: FloatProperty(name="Y",default=100,update=scl_abs_y)
+	scl_abs_z: FloatProperty(name="Z",default=100,update=scl_abs_z)
+
+	scl_off_x: FloatProperty(name="X",default=100,update=scl_off_x)
+	scl_off_y: FloatProperty(name="Y",default=100,update=scl_off_y)
+	scl_off_z: FloatProperty(name="Z",default=100,update=scl_off_z)
+
+	percent: FloatProperty(name="%",default=100,update=percent)
 
 	squash: BoolProperty(name="Squash")
-	pos,rot,scl = [],[],[]
-	objects,abss,offs = [],[],[]
-	tool = None
 
 	def draw(self, ctx):
-		self.tool = ctx.workspace.tools.from_space_view3d_mode(ctx.mode,create=False).idname
-		label = "" #ctx.scene.type
+		tool = ctx.workspace.tools.from_space_view3d_mode(ctx.mode,create=False).idname
 		layout = self.layout
 		row = layout.row()
 		box = row.box()
 		col = box.column(align=True)
-		col.label(text="Absolute:"+label)
-		if len(self.objects) == 1:
-			if self.tool == 'builtin.move':
-				col.prop(self,"pos_abs_x")
-				col.prop(self,"pos_abs_y")
-				col.prop(self,"pos_abs_z")
-			elif self.tool == 'builtin.rotate':
-				col.prop(self,"rot_abs_x")
-				col.prop(self,"rot_abs_y")
-				col.prop(self,"rot_abs_z")
-			elif self.tool == 'builtin.scale':
-				col.prop(self,"scl_abs_x")
-				col.prop(self,"scl_abs_y")
-				col.prop(self,"scl_abs_z")
-		if self.tool == 'builtin.scale':
+		col.label(text="Absolute:")
+
+		if tool == 'builtin.move':
+			col.prop(self,"pos_abs_x")
+			col.prop(self,"pos_abs_y")
+			col.prop(self,"pos_abs_z")
+		elif tool == 'builtin.rotate':
+			col.prop(self,"rot_abs_x")
+			col.prop(self,"rot_abs_y")
+			col.prop(self,"rot_abs_z")
+		elif tool == 'builtin.scale':
+			col.prop(self,"scl_abs_x")
+			col.prop(self,"scl_abs_y")
+			col.prop(self,"scl_abs_z")
 			box.prop(self,"squash")
+
 		box = row.box()
 		col = box.column(align=True)
-		col.label(text="Offset:"+label)
-		if self.tool == 'builtin.move':
+		col.label(text="Offset:")
+
+		if tool == 'builtin.move':
 			col.prop(self,"pos_off_x")
 			col.prop(self,"pos_off_y")
 			col.prop(self,"pos_off_z")
-		elif self.tool == 'builtin.rotate':
+		elif tool == 'builtin.rotate':
 			col.prop(self,"rot_off_x")
 			col.prop(self,"rot_off_y")
 			col.prop(self,"rot_off_z")
-		elif self.tool == 'builtin.scale':
+		elif tool == 'builtin.scale':
 			col.prop(self,"scl_off_x")
 			col.prop(self,"scl_off_y")
 			col.prop(self,"scl_off_z")
 			col.prop(self,"percent")
 
-		self.getdata(ctx)
+		read_objects_values(self, ctx)
 		self.pos_off_x,self.pos_off_y,self.pos_off_z = 0,0,0
 		self.rot_off_x,self.rot_off_y,self.rot_off_z = 0,0,0
 		self.scl_off_x,self.scl_off_y,self.scl_off_z = 100,100,100
 		self.percent = 100
 
-	def update_abs(self):
-		if self.tool == 'builtin.move':
-			location = self.objects[0].location
-			location[0] = self.pos_abs_x
-			location[1] = self.pos_abs_y
-			location[2] = self.pos_abs_z
-		elif self.tool == 'builtin.rotate':
-			rotation = self.objects[0].rotation_euler
-			rotation[0] = radians(self.rot_abs_x)
-			rotation[1] = radians(self.rot_abs_y)
-			rotation[2] = radians(self.rot_abs_z)
-		elif self.tool == 'builtin.scale':
-			scale = self.objects[0].scale
-			scale[0] = self.scl_abs_x / 100.0
-			scale[1] = self.scl_abs_y / 100.0
-			scale[2] = self.scl_abs_z / 100.0
-
-	def update_off(self):
-		for i in range(len(self.objects)):
-			obj = self.objects[i]
-			if self.tool == 'builtin.move':
-				obj.location[0] = self.pos[i].x+self.pos_off_x
-				obj.location[1] = self.pos[i].y+self.pos_off_y
-				obj.location[2] = self.pos[i].z+self.pos_off_z
-				
-			elif self.tool == 'builtin.rotate':
-				obj.rotation_euler[0] = self.rot[i].x+radians(self.rot_off_x)
-				obj.rotation_euler[1] = self.rot[i].y+radians(self.rot_off_y)
-				obj.rotation_euler[2] = self.rot[i].z+radians(self.rot_off_z)
-
-			elif self.tool == 'builtin.scale':
-				obj.scale[0] = self.scl[i].x*self.scl_off_x/100
-				obj.scale[1] = self.scl[i].y*self.scl_off_y/100
-				obj.scale[2] = self.scl[i].z*self.scl_off_z/100
-
-				obj.scale[0] *= self.percent/100
-				obj.scale[1] *= self.percent/100
-				obj.scale[2] *= self.percent/100
-
-	def check(self, ctx):
-		mode = self.get_ui()
-		if mode == 'abs':
-			self.update_abs()
-		elif mode == 'off':
-			self.update_off()
-		return True
-
-	def getdata(self, ctx):
-		selection = ctx.selected_objects
-		if len(selection) == 1:
-			location = selection[0].location
-			self.pos_abs_x = location.x
-			self.pos_abs_y = location.y
-			self.pos_abs_z = location.z
-			sre = selection[0].rotation_euler
-			self.rot_abs_x = degrees(sre.x)
-			self.rot_abs_y = degrees(sre.y)
-			self.rot_abs_z = degrees(sre.z)
-			scale = selection[0].scale
-			self.scl_abs_x = scale.x * 100
-			self.scl_abs_y = scale.y * 100
-			self.scl_abs_z = scale.z * 100
-			self.percent = 100
-
-		self.pos,self.rot,self.scl = [],[],[]
-
-		for obj in selection:
-			self.pos.append(obj.location)
-			self.rot.append(obj.rotation_euler)
-			self.scl.append(obj.scale)
-
 	def execute(self, ctx):
 		return {'FINISHED'}
 
 	def cancel(self, ctx):
-		return None # {'CANCELED'}
-
-	def get_ui(self):
-		ret = "None"
-		# read ui values
-		abss = [self.pos_abs_x, self.pos_abs_y, self.pos_abs_z,
-				self.rot_abs_x, self.rot_abs_y, self.rot_abs_z,
-				self.scl_abs_x, self.scl_abs_y, self.scl_abs_z]
-		offs = abss.copy() + [self.percent]
-
-		# compar values with olders
-		if len(abss) == len(self.abss):
-			for i in range(len(abss)):
-				if abss[i] != self.abss[i]:
-					ret = "abs"
-					break
-		if len(offs) == len(self.offs):
-			for i in range(len(offs)):
-				if offs[i] != self.offs[i]:
-					ret = "off"
-					break
-
-		# update values
-		self.abss = abss.copy()
-		self.offs = offs.copy()
-		return ret
-	   
+		return None
+  
 	def invoke(self, ctx, event):
-		self.objects = ctx.selected_objects
-		self.getdata(ctx)
-		self.get_ui()
-		wm = ctx.window_manager
-		return wm.invoke_props_dialog(self)
+		read_objects_values(self, ctx)
+		return ctx.window_manager.invoke_props_dialog(self)
 
 def register_transformtypein():
 	bpy.utils.register_class(BsMax_OT_TransformTypeIn)
 
 def unregister_transformtypein():
 	bpy.utils.unregister_class(BsMax_OT_TransformTypeIn)
+
+if __name__ == "__main__":
+	register_transformtypein()
