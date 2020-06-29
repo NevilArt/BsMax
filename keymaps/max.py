@@ -211,7 +211,7 @@ def create_keymaps(km):
 		km.new(space,'editor.open_node_ditor','M','PRESS',[('mode','Material')])
 		km.new(space,'editor.open_node_ditor','EIGHT','PRESS',[('mode','Environment')])
 		# Tools
-		km.new(space,'bsmax.alignselectedobjects','A','PRESS',[],alt=True)
+		km.new(space,'object.align_selected_to_target','A','PRESS',[],alt=True)
 		km.new(space,'bsmax.setkeys','K','PRESS',[])
 		km.new(space,'bsmax.autokeymodetoggle','N','PRESS',[])
 		km.new(space,'bsmax.transformtypein','F12','PRESS',[])

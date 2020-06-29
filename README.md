@@ -5,7 +5,8 @@
 
 Recent Updates
 
-* Transform type in fixed (Max mode F12)(Object mode only)
+* Align opjects acts as 3DsMax now. (Select objects, press 'Alt + A' then pick Target).
+* Transform type in fixed (Max mode F12)(Object mode only).
 * (Ctrl + shift + C) Flet/chamfer in Curve Edit mode.
 * (Ctrl + Tab) Multi Modifier Editor.
 * UV projections added to UV Edit menu.

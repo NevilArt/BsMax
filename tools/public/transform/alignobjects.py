@@ -16,30 +16,25 @@
 import bpy
 from bpy.props import EnumProperty, BoolProperty
 from mathutils import Vector, Matrix
-from bpy.types import Panel, Menu, UIList, Operator, PropertyGroup
+from bpy.types import Operator
 
 # Original Code by Ozzkar
 # Edit by Nevil
 
-def GetPosData(obj):
+def get_pos_data(obj):
 	cld = []
 	msh = obj.data
 	if obj.type == 'MESH' and len(msh.vertices) > 0:
-		# for vert in msh.vertices:
-		# 	cld.append(obj.matrix_world @ vert.co)
 		cld = [obj.matrix_world @ vert.co for vert in msh.vertices]
 	elif obj.type == 'CURVE' and len(msh.splines) > 0:
 		for spn in msh.splines:
-			for pts in spn.bezier_points:
-				cld.append(obj.matrix_world @ pts.co)
+			cld += [obj.matrix_world @ pts.co for pts in spn.bezier_points]
 	elif obj.type == 'SURFACE' and len(msh.splines) > 0:
 		for spn in msh.splines:
-			for pts in spn.points:
-				cld.append(obj.matrix_world @ pts.co)
+			cld += [obj.matrix_world @ pts.co for pts in spn.points]
 	elif obj.type == 'FONT' and len(msh.splines) > 0:
-		for s in msh.splines:
-			for pts in s.bezier_points:
-				cld.append(obj.matrix_world @ pts.co)
+		for spn in msh.splines:
+			cld += [obj.matrix_world @ pts.co for pts in spn.bezier_points]
 	# get min/max/center/pivot data
 	if len(cld) == 0 or obj.type not in {'MESH', 'CURVE', 'SURFACE', 'FONT'}:
 		return obj.location.copy(), obj.location.copy(), obj.location.copy(), obj.location.copy()
@@ -60,18 +55,18 @@ def GetPosData(obj):
 			p_max.z = v.z
 	return p_min, (p_min+p_max)/2, obj.location.copy(), p_max
 
-def StoreFormData(self, ctx):
+def store_form_data(self, ctx):
 	self.pos_curs = ctx.scene.cursor.location.copy()
 	self.rot_curs = ctx.scene.cursor.rotation_euler.copy()
 
 	for obj in ctx.selected_objects:
-		p_min,p_mid,p_piv,p_max = GetPosData(obj)
+		p_min,p_mid,p_piv,p_max = get_pos_data(obj)
 		self.pos_list.append([p_min,p_mid,p_piv,p_max])
 		self.rot_list.append(obj.rotation_euler.copy())
 		self.scl_list.append(obj.scale.copy())
 
-def AlignObject_Execute(self, ctx):
-	a_box = GetPosData(ctx.active_object)
+def align_object_execute(self, ctx):
+	a_box = get_pos_data(ctx.active_object)
 	a_rot = ctx.active_object.rotation_euler
 	a_scl = ctx.active_object.scale
 
@@ -163,7 +158,7 @@ def AlignObject_Execute(self, ctx):
 			if self.scl_z:
 				obj.scale.z = a_scl.z
 
-def BsMaxAlign_Reset(self, ctx):
+def align_reset(self, ctx):
 	cursor,pos_curs,rot_curs = ctx.scene.cursor,self.pos_curs,self.rot_curs
 	cursor.location = pos_curs.x,pos_curs.y,pos_curs.z
 	cursor.rotation_euler = rot_curs.x,rot_curs.y,rot_curs.z
@@ -181,12 +176,27 @@ def BsMaxAlign_Reset(self, ctx):
 		obj.scale.x = self.scl_list[i].x
 		obj.scale.y = self.scl_list[i].y
 		obj.scale.z = self.scl_list[i].z
-	#ctx.scene.update()
 
-class BsMax_OT_AlignObjects(Operator):
-	bl_idname = "bsmax.alignselectedobjects"
-	bl_label = "Align Selected Objects"
+class Align_object_Data:
+	def __init__(self):
+		self.px = False
+		self.py = False
+		self.pz = False
+		self.rx = False
+		self.ry = False
+		self.rz = False
+		self.sx = False
+		self.sy = False
+		self.sz = False
+		self.cm = 'MIN'
+		self.tm = 'MIN'
+abd = Align_object_Data()
+
+class Object_OT_Align_Selected_to_Active(Operator):
+	bl_idname = "object.align_selected_to_active"
+	bl_label = "Align Selected to Active object"
 	bl_options = {'REGISTER','UNDO'}
+
 	pos_curs,rot_curs = Vector((0,0,0)),Vector((0,0,0))
 	pos_list,rot_list,scl_list = [],[],[]
 	items = [('MIN','Minimum','Minimum'),('MID','Center','Center'),
@@ -203,17 +213,14 @@ class BsMax_OT_AlignObjects(Operator):
 	scl_x: BoolProperty()
 	scl_y: BoolProperty()
 	scl_z: BoolProperty()
-
+	
 	@classmethod
 	def poll(self, ctx):
 		return len(ctx.selected_objects) > 0 and ctx.active_object != None
 
-	def __init__(self):
-		pass
-
 	def check(self, ctx):
-		BsMaxAlign_Reset(self,ctx)
-		AlignObject_Execute(self,ctx)
+		align_reset(self,ctx)
+		align_object_execute(self,ctx)
 		return True
 
 	def draw(self, ctx):
@@ -246,22 +253,110 @@ class BsMax_OT_AlignObjects(Operator):
 		row.prop(self,"scl_y",text="Y Axis")
 		row.prop(self,"scl_z",text="Z Axis")
 
+	def store_setting(self):
+		abd.cm = self.c_mode
+		abd.tm = self.t_mode
+		abd.px = self.pos_x
+		abd.py = self.pos_y
+		abd.pz = self.pos_z
+		abd.rx = self.rot_x
+		abd.ry = self.rot_y
+		abd.rz = self.rot_z
+		abd.sx = self.scl_x
+		abd.sy = self.scl_y
+		abd.sz = self.scl_z
+	
+	def restore_setting(self):
+		self.c_mode = abd.cm
+		self.t_mode = abd.tm
+		self.pos_x = abd.px
+		self.pos_y = abd.py
+		self.pos_z = abd.pz
+		self.rot_x = abd.rx
+		self.rot_y = abd.ry
+		self.rot_z = abd.rz
+		self.scl_x = abd.sx
+		self.scl_y = abd.sy
+		self.scl_z = abd.sz
+
 	def execute(self, ctx):
+		self.store_setting()
+		self.report({'INFO'},'bpy.ops.object.align_selected_to_target()')
 		return {'FINISHED'}
 
 	def cancel(self, ctx):
-		BsMaxAlign_Reset(self, ctx)
+		align_reset(self, ctx)
+		return None
 
 	def invoke(self, ctx, event):
+		self.restore_setting()
 		self.pos_curs,self.rot_curs = Vector((0,0,0)),Vector((0,0,0))
 		self.pos_list,self.rot_list,self.scl_list = [],[],[]
-		StoreFormData(self,ctx)
-		AlignObject_Execute(self,ctx)
-		wm = ctx.window_manager
-		return wm.invoke_props_dialog(self)
+		store_form_data(self,ctx)
+		align_object_execute(self,ctx)
+		return ctx.window_manager.invoke_props_dialog(self)
+
+class Object_OT_Align_Selected_to_Target(Operator):
+	bl_idname = "object.align_selected_to_target"
+	bl_label = "Align Selected Objects"
+	bl_options = {'REGISTER', 'UNDO'}
+
+	selected_objects = []
+
+	@classmethod
+	def poll(self, ctx):
+		return len(ctx.selected_objects) > 0
+
+	def modal(self, ctx, event):
+		if not event.type in {'LEFTMOUSE','RIGHTMOUSE','ESC'}:
+			return {'PASS_THROUGH'}
+
+		elif event.type == 'LEFTMOUSE':
+			if event.value == 'PRESS':
+				""" remove all selected and active object """
+				bpy.ops.object.select_all(action='DESELECT')
+				ctx.view_layer.objects.active = None
+				
+				""" Pick new object as target """
+				coord = event.mouse_region_x, event.mouse_region_y
+				bpy.ops.view3d.select(extend=False,location=coord)
+
+				""" Ignore selected obects as target """
+				if ctx.active_object in self.selected_objects:
+					ctx.view_layer.objects.active = None
+
+			if event.value =='RELEASE':
+
+				""" Restore selection """
+				for obj in self.selected_objects:
+					if obj != ctx.active_object:
+						obj.select_set(True)
+				
+				""" if target selected call the operator """
+				if ctx.view_layer.objects.active != None:
+					bpy.ops.object.align_selected_to_active('INVOKE_DEFAULT')
+					return {'CANCELLED'}
+
+			return {'RUNNING_MODAL'}
+
+		elif event.type in {'RIGHTMOUSE','ESC'}:
+			return {'CANCELLED'}
+
+		return {'RUNNING_MODAL'}
+
+	def invoke(self, ctx, event):
+		""" Store selected objects """
+		self.selected_objects = ctx.selected_objects.copy()
+		ctx.window_manager.modal_handler_add(self)
+		return {'RUNNING_MODAL'}
+
+classes = [Object_OT_Align_Selected_to_Active,Object_OT_Align_Selected_to_Target]
 
 def register_alignobjects():
-	bpy.utils.register_class(BsMax_OT_AlignObjects)
+	[bpy.utils.register_class(c) for c in classes]
 
 def unregister_alignobjects():
-	bpy.utils.unregister_class(BsMax_OT_AlignObjects)
+	[bpy.utils.unregister_class(c) for c in classes]
+
+if __name__ == "__main__":
+	register_alignobjects()

@@ -18,8 +18,8 @@ from bpy.props import BoolProperty,EnumProperty
 def bake(self,ctx,hi,low,cage,bake_type):
 	bpy.ops.object.select_all(action='DESELECT')
 	source, target = bpy.data.objects[hi], bpy.data.objects[low]
-	source.select_set(action='SELECT')
-	target.select_set(action='SELECT')
+	source.select_set(True)
+	target.select_set(True)
 	ctx.view_layer.objects.active = target
 	
 	ctx.scene.render.bake.use_selected_to_active = True

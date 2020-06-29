@@ -157,7 +157,7 @@ c0140="bpy.ops.camera.select_active_camera('INVOKE_DEFAULT',selcam=True,seltrg=T
 c0141="bpy.ops.bsmax.maketargetlight('INVOKE_DEFAULT')"
 c0142="bpy.ops.bsmax.makefreelight('INVOKE_DEFAULT')"
 c0143="bpy.ops.mesh.bridge_edge_loops('INVOKE_DEFAULT',twist_offset=0)"
-c0144="bpy.ops.bsmax.alignselectedobjects('INVOKE_DEFAULT')"
+c0144="bpy.ops.object.align_selected_to_target('INVOKE_DEFAULT')"
 c0145="bpy.ops.curve.chamfer('INVOKE_DEFAULT',typein=True)"
 c0146="bpy.ops.curve.chamfer('INVOKE_DEFAULT',fillet=True,typein=True)"
 c0147="bpy.ops.bsmax.selecttarget('INVOKE_DEFAULT')"

@@ -118,6 +118,47 @@ def navigation_cinema4d(km,preferences):
 		km.new(space,"view3d.rotate","LEFTMOUSE","PRESS",[],alt=True)
 		km.new(space,"view3d.zoom","RIGHTMOUSE","PRESS",[],alt=True)
 
+
+def navigation_unrealengin(km,preferences):
+	# 3D View --------------------------------------------------------------
+	space = km.space('3D View','VIEW_3D','WINDOW')
+	if preferences.viewundo:
+		km.new(space,"view3d.movecover","MIDDLEMOUSE","PRESS",[],alt=True)
+		km.new(space,"view3d.rotatecover","LEFTMOUSE","PRESS",[],alt=True)
+		km.new(space,"view3d.zoomcover","RIGHTMOUSE","PRESS",[],alt=True)
+	else:
+		km.new(space,"view3d.move","MIDDLEMOUSE","PRESS",[],alt=True)
+		km.new(space,"view3d.rotate","LEFTMOUSE","PRESS",[],alt=True)
+		km.new(space,"view3d.zoom","RIGHTMOUSE","PRESS",[],alt=True)
+
+		# because of some API limitation not possble for now but planed 
+		# lmb + twaak up move forward
+		# lmb + tweak down move backward
+		# lmb + tweak left turn left
+		# lmb + tweak right turn right
+
+		# rmb + tweak up look up
+		# rmb + twead down look down
+		# rmb + twead left look left
+		# rmb + twead right look right
+
+		# mmb + tweak up move up (pan)
+		# mmb + tweak left and right look left and right
+	
+		# w move forward
+		# s move backward
+		# a move left
+		# d move rigth
+
+		# e move up (z up)
+		# q move down (z down)
+		# c fov to zoom in (release mouse back to origen)
+		# z fov zoom back (release mouse back to origen)
+
+		# mwb changes movment speed
+
+		# f zoom extended
+
 def create_keymaps(km,preferences):
 	if bpy.context.window_manager.keyconfigs.addon:
 		app = preferences.navigation
@@ -133,6 +174,8 @@ def create_keymaps(km,preferences):
 			navigation_softimage(km,preferences)
 		elif app == 'Cinema4D':
 			navigation_cinema4d(km,preferences)
+		elif app == 'UnrealEngin':
+			navigation_unrealengin(km,preferences)
 		public_keymaps(km,preferences)
 
 keymaps = KeyMaps()
