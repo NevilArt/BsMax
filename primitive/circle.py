@@ -17,7 +17,7 @@ import bpy
 from primitive.primitive import CreatePrimitive, PrimitiveCurveClass
 from bsmax.actions import delete_objects
 
-def GetCircleShape(radius):
+def get_circle_shape(radius):
 	Shapes = []
 	r = radius
 	t = r * 0.551786
@@ -43,20 +43,20 @@ class Circle(PrimitiveCurveClass):
 	def reset(self):
 		self.__init__()
 	def create(self, ctx):
-		shapes = GetCircleShape(0)
+		shapes = get_circle_shape(0)
 		self.create_curve(ctx, shapes, self.classname)
 		pd = self.data.primitivedata
 		pd.classname = self.classname
 	def update(self):
 		pd = self.data.primitivedata
-		shapes = GetCircleShape(pd.radius1)
+		shapes = get_circle_shape(pd.radius1)
 		self.update_curve(shapes)
 	def abort(self):
 		delete_objects([self.owner])
 
-class BsMax_OT_CreateCircle(CreatePrimitive):
-	bl_idname = "bsmax.createcircle"
-	bl_label = "Circle (Create)"
+class Create_OT_Circle(CreatePrimitive):
+	bl_idname = "create.circle"
+	bl_label = "Circle"
 	subclass = Circle()
 
 	def create(self, ctx, clickpoint):
@@ -73,7 +73,7 @@ class BsMax_OT_CreateCircle(CreatePrimitive):
 		pass
 
 def register_circle():
-	bpy.utils.register_class(BsMax_OT_CreateCircle)
+	bpy.utils.register_class(Create_OT_Circle)
 
 def unregister_circle():
-	bpy.utils.unregister_class(BsMax_OT_CreateCircle)
+	bpy.utils.unregister_class(Create_OT_Circle)

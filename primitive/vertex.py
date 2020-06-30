@@ -17,7 +17,7 @@ import bpy
 from bpy.props import EnumProperty
 from primitive.primitive import CreatePrimitive,PrimitiveGeometryClass
 
-def GetVertexMesh(verts, mode):
+def get_vertex_mesh(verts, mode):
 	edges,faces = [],[]
 	if mode == "EDGE" and len(verts) > 1 or len(verts) == 2:
 		for i in range(len(verts) - 1):
@@ -45,18 +45,18 @@ class Vertex(PrimitiveGeometryClass):
 		self.__init__()
 		self.mode = mode
 	def create(self, ctx):
-		mesh = GetVertexMesh([], self.mode)
+		mesh = get_vertex_mesh([], self.mode)
 		self.create_mesh(ctx, mesh, self.classname)
 	def update(self):
-		mesh = GetVertexMesh(self.verts, self.mode)
+		mesh = get_vertex_mesh(self.verts, self.mode)
 		self.update_mesh(mesh)
 	def abort(self):
 		if self.owner != None:
 			bpy.ops.object.origin_set(type='ORIGIN_GEOMETRY', center='MEDIAN')
 
-class BsMax_OT_CreateVertex(CreatePrimitive):
-	bl_idname="bsmax.createvertex"
-	bl_label="Vertex (Create)"
+class Create_OT_Vertex(CreatePrimitive):
+	bl_idname="create.vertex"
+	bl_label="Vertex"
 	subclass = Vertex()
 	lastclick = 1
 	fill_type: EnumProperty(name='Fill Mode',default='NONE',
@@ -83,7 +83,7 @@ class BsMax_OT_CreateVertex(CreatePrimitive):
 		self.subclass.reset()
 
 def register_vertex():
-	bpy.utils.register_class(BsMax_OT_CreateVertex)
+	bpy.utils.register_class(Create_OT_Vertex)
 	
 def unregister_vertex():
-	bpy.utils.unregister_class(BsMax_OT_CreateVertex)
+	bpy.utils.unregister_class(Create_OT_Vertex)

@@ -70,9 +70,9 @@ class Mesher(PrimitiveGeometryClass):
 	def abort(self):
 		delete_objects([self.owner])
 
-class BsMax_OT_CreateMesher(CreatePrimitive):
-	bl_idname = "bsmax.createmesher"
-	bl_label = "Mesher (Create)"
+class Create_OT_Mesher(CreatePrimitive):
+	bl_idname = "create.mesher"
+	bl_label = "Mesher"
 	subclass = Mesher()
 
 	def create(self, ctx, clickpoint):
@@ -90,7 +90,7 @@ class BsMax_OT_CreateMesher(CreatePrimitive):
 		pass
 
 def register_mesher():
-	bpy.utils.register_class(BsMax_OT_CreateMesher)
+	bpy.utils.register_class(Create_OT_Mesher)
 
 def unregister_mesher():
-	bpy.utils.unregister_class(BsMax_OT_CreateMesher)
+	bpy.utils.unregister_class(Create_OT_Mesher)

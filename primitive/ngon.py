@@ -18,7 +18,7 @@ from math import pi, sqrt, sin, cos
 from primitive.primitive import PrimitiveCurveClass, CreatePrimitive
 from bsmax.actions import delete_objects
 
-def GetNGonShape(radius, sides, cornerradius, circular):
+def get_ngon_shape(radius, sides, cornerradius, circular):
 	Shape = []
 	kappa = 4 * (sqrt(2) - 1) / 3
 	step = (pi*2) / sides
@@ -52,7 +52,7 @@ class NGon(PrimitiveCurveClass):
 	def reset(self):
 		self.__init__()
 	def create(self, ctx):
-		shapes = GetNGonShape(0,5,0,False)
+		shapes = get_ngon_shape(0,5,0,False)
 		self.create_curve(ctx, shapes, self.classname)
 		pd = self.data.primitivedata
 		pd.classname = self.classname
@@ -60,14 +60,14 @@ class NGon(PrimitiveCurveClass):
 	def update(self):
 		pd = self.data.primitivedata
 		# radius, sides, cornerradius, circular
-		shapes = GetNGonShape(pd.radius1, pd.ssegs, pd.chamfer1, pd.smooth)
+		shapes = get_ngon_shape(pd.radius1, pd.ssegs, pd.chamfer1, pd.smooth)
 		self.update_curve(shapes)
 	def abort(self):
 		delete_objects([self.owner])
 
-class BsMax_OT_CreateNGon(CreatePrimitive):
-	bl_idname = "bsmax.createngon"
-	bl_label = "NGon (Create)"
+class Create_OT_NGon(CreatePrimitive):
+	bl_idname = "create.ngon"
+	bl_label = "NGon"
 	subclass = NGon()
 
 	def create(self, ctx, clickpoint):
@@ -84,7 +84,7 @@ class BsMax_OT_CreateNGon(CreatePrimitive):
 		pass
 
 def register_ngon():
-	bpy.utils.register_class(BsMax_OT_CreateNGon)
+	bpy.utils.register_class(Create_OT_NGon)
 	
 def unregister_ngon():
-	bpy.utils.unregister_class(BsMax_OT_CreateNGon)
+	bpy.utils.unregister_class(Create_OT_NGon)

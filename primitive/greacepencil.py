@@ -34,9 +34,9 @@ class GreacePencil:
 	def abort(self):
 		delete_objects([self.owner])
 
-class BsMax_OT_CreateGreacePencil(CreatePrimitive):
-	bl_idname="bsmax.creategreacepencil"
-	bl_label="GreacePencil (Create)"
+class Create_OT_GreacePencil(CreatePrimitive):
+	bl_idname="create.greacepencil"
+	bl_label="GreacePencil"
 	subclass = GreacePencil()
 
 	gpencil_type: EnumProperty(name='Type',default='EMPTY',
@@ -59,7 +59,7 @@ class BsMax_OT_CreateGreacePencil(CreatePrimitive):
 		pass
 
 def register_greacepencil():
-	bpy.utils.register_class(BsMax_OT_CreateGreacePencil)
+	bpy.utils.register_class(Create_OT_GreacePencil)
 
 def unregister_greacepencil():
-	bpy.utils.unregister_class(BsMax_OT_CreateGreacePencil)
+	bpy.utils.unregister_class(Create_OT_GreacePencil)

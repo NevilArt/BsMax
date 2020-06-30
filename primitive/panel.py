@@ -375,17 +375,17 @@ def get_profilo_panel(self,layout):
 	col.prop(self,"rotation",text="Angle")
 	col = layout.column(align=True)
 	row = col.row(align = True)
-	row.operator("bsmax.setprofilopivotaligne",text="",icon="BLANK1").pivotaligne = 1
-	row.operator("bsmax.setprofilopivotaligne",text="",icon="TRIA_UP").pivotaligne = 2
-	row.operator("bsmax.setprofilopivotaligne",text="",icon="BLANK1").pivotaligne = 3
+	row.operator("create.set_profilo_pivotaligne",text="",icon="BLANK1").pivotaligne = 1
+	row.operator("create.set_profilo_pivotaligne",text="",icon="TRIA_UP").pivotaligne = 2
+	row.operator("create.set_profilo_pivotaligne",text="",icon="BLANK1").pivotaligne = 3
 	row = col.row(align = True)
-	row.operator("bsmax.setprofilopivotaligne",text="",icon="TRIA_LEFT").pivotaligne = 4
-	row.operator("bsmax.setprofilopivotaligne",text="",icon='DOT').pivotaligne = 5
-	row.operator("bsmax.setprofilopivotaligne",text="",icon="TRIA_RIGHT").pivotaligne = 6
+	row.operator("create.set_profilo_pivotaligne",text="",icon="TRIA_LEFT").pivotaligne = 4
+	row.operator("create.set_profilo_pivotaligne",text="",icon='DOT').pivotaligne = 5
+	row.operator("create.set_profilo_pivotaligne",text="",icon="TRIA_RIGHT").pivotaligne = 6
 	row = col.row(align = True)
-	row.operator("bsmax.setprofilopivotaligne",text="",icon="BLANK1").pivotaligne = 7
-	row.operator("bsmax.setprofilopivotaligne",text="",icon="TRIA_DOWN").pivotaligne = 8
-	row.operator("bsmax.setprofilopivotaligne",text="",icon="BLANK1").pivotaligne = 9
+	row.operator("create.set_profilo_pivotaligne",text="",icon="BLANK1").pivotaligne = 7
+	row.operator("create.set_profilo_pivotaligne",text="",icon="TRIA_DOWN").pivotaligne = 8
+	row.operator("create.set_profilo_pivotaligne",text="",icon="BLANK1").pivotaligne = 9
 
 def get_compass_panel(self,layout):
 	layout.label(text="Compass",icon='LIGHT_SUN')
@@ -448,7 +448,7 @@ def get_panel(self,layout):
 	col = layout.column(align=True)
 	col.prop(self,"animatable",text="Animatable")
 
-class BsMax_PT_PrimitivePanel(Panel):
+class Primitive_PT_Panel(Panel):
 	bl_label = "Parameters"
 	bl_idname = "DATA_PT_Primitives"
 	bl_space_type = 'PROPERTIES'
@@ -468,8 +468,8 @@ class BsMax_PT_PrimitivePanel(Panel):
 		col = layout.column(align=True)
 		col.operator("bsmax.clearprimitivedta",text="Convert to Ragular Object")
 
-class BsMax_OT_EditPrimitive(Operator):
-	bl_idname = "bsmax.editprimitive"
+class Primitive_OT_Edit(Operator):
+	bl_idname = "primitive.edit"
 	bl_label = "Edit Primitive"
 	bl_options = {"UNDO"}
 
@@ -504,15 +504,16 @@ class BsMax_OT_SetObjectMode(Operator):
 		if ctx.active_object.type in {'MESH', 'CURVE'}:
 			classname = ctx.active_object.data.primitivedata.classname
 		if classname != "":
-			bpy.ops.bsmax.editprimitive('INVOKE_DEFAULT')
+			bpy.ops.primitive.edit('INVOKE_DEFAULT')
 		else:
 			if ctx.active_object.type == 'GPENCIL':
 				bpy.ops.gpencil.editmode_toggle()
-			else:
+			elif ctx.active_object.type in {'MESH','CURVE','SURFACE','META','FONT','ARMATURE','LATTICE'}:
 				bpy.ops.object.editmode_toggle()
+			# ignor this types {'EMPTY','LIGHT','LIGHT_PROBE','CAMERA','SPEAKER',}
 		return {"FINISHED"}
 
-classes = [BsMax_PT_PrimitivePanel,	BsMax_OT_EditPrimitive, BsMax_OT_SetObjectMode]
+classes = [Primitive_PT_Panel,	Primitive_OT_Edit, BsMax_OT_SetObjectMode]
 
 def register_panel():
 	[bpy.utils.register_class(c) for c in classes]

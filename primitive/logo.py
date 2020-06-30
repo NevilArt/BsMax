@@ -19,7 +19,7 @@ from bpy.props import *
 from primitive.primitive import *
 from bsmax.actions import delete_objects
 
-def BsMax_GetSnakeShape(scale):
+def get_snake_shape(scale):
 	S1, S2, S3, s = [], [], [], scale
 	S1.append(([ 0.342151*s, 0.491310*s,0],[  0.165044*s,  0.447320*s,0],'FREE',[  0.345222*s, 0.448056*s,0],'FREE'))
 	S1.append(([ 0.351363*s, 0.360185*s,0],[  0.348292*s,  0.403438*s,0],'FREE',[  0.166411*s, 0.369848*s,0],'FREE'))
@@ -43,7 +43,7 @@ def BsMax_GetSnakeShape(scale):
 	S3.append(([ 0.023546*s,-0.209099*s,0],[ 0.0328697*s, -0.179263*s,0],'FREE',[  0.073637*s,-0.188136*s,0],'FREE'))
 	return (S1, S2, S3)
 
-def BsMax_GetBlenderShape(scale):
+def get_blender_shape(scale):
 	S1, S2, S3, s = [], [], [], scale
 	S1.append(([ 0.0481047*s,  0.428945*s,0],[ 0.0080356*s,  0.453882*s,0],'FREE',[   0.11761*s,   0.38239*s,0],'FREE'))
 	S1.append(([  0.428365*s,  0.133274*s,0],[  0.307372*s,  0.240382*s,0],'FREE',[  0.595795*s,-0.0499471*s,0],'FREE'))
@@ -66,9 +66,9 @@ def BsMax_GetBlenderShape(scale):
 	S3.append(([-0.0602312*s,-0.0276166*s,0],[-0.0603059*s, -0.142835*s,0],'FREE',[-0.0601519*s, 0.0947218*s,0],'FREE'))
 	return (S1, S2, S3)
 
-class BsMax_OT_Logo(Operator):
-	bl_idname = "bsmax.createblender"
-	bl_label = "Blender"
+class Create_OT_Logo(Operator):
+	bl_idname = "create.logo"
+	bl_label = "Logo"
 	bl_options = {"UNDO"}
 
 	radius = 0.0
@@ -90,7 +90,7 @@ class BsMax_OT_Logo(Operator):
 					self.Step = 1
 					self.Start_x = mx
 					self.Start_y = my
-					Shapes = GetBlenderShape(self.radius)
+					Shapes = get_blender_shape(self.radius)
 					self.obj = CreatePrimitiveCurve(Shapes, "Blender", True)
 					self.obj.location = (mx, my, 0)
 
@@ -107,7 +107,7 @@ class BsMax_OT_Logo(Operator):
 
 				if self.Step > 0:
 					# Update Curve
-					Shapes = GetBlenderShape( self.radius )
+					Shapes = get_blender_shape( self.radius )
 					UpdateCurveData(self.obj, Shapes, True)
 
 			if self.Step == 2:
@@ -126,7 +126,7 @@ class BsMax_OT_Logo(Operator):
 		return {'RUNNING_MODAL'}
 
 def register_logo():
-	bpy.utils.register_class(BsMax_OT_Logo)
+	bpy.utils.register_class(Create_OT_Logo)
 
 def unregister_logo():
-	bpy.utils.unregister_class(BsMax_OT_Logo)
+	bpy.utils.unregister_class(Create_OT_Logo)

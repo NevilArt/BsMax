@@ -17,7 +17,7 @@ import bpy
 from primitive.primitive import CreatePrimitive, PrimitiveGeometryClass
 from bsmax.actions import delete_objects
 
-def GetBoxMesh(width, length, height, wsegs, lsegs, hsegs):
+def get_box_mesh(width, length, height, wsegs, lsegs, hsegs):
 	verts, edges, faces = [], [], []
 	# Control the input values
 	if wsegs < 1: wsegs = 1
@@ -215,22 +215,22 @@ class Box(PrimitiveGeometryClass):
 	def reset(self):
 		self.__init__()
 	def create(self, ctx):
-		mesh = GetBoxMesh(0,0,0,1,1,1)
+		mesh = get_box_mesh(0,0,0,1,1,1)
 		self.create_mesh(ctx, mesh, self.classname)
 		pd = self.data.primitivedata
 		pd.classname = self.classname
 		pd.wsegs, pd.lsegs, pd.hsegs = 1,1,1
 	def update(self):
 		pd = self.data.primitivedata
-		mesh = GetBoxMesh(pd.width, pd.length, pd.height,
+		mesh = get_box_mesh(pd.width, pd.length, pd.height,
 					pd.wsegs, pd.lsegs, pd.hsegs)
 		self.update_mesh(mesh)
 	def abort(self):
 		delete_objects([self.owner])
 
-class BsMax_OT_CreateBox(CreatePrimitive):
-	bl_idname = "bsmax.createbox"
-	bl_label = "Box (Create)"
+class Create_OT_Box(CreatePrimitive):
+	bl_idname = "create.box"
+	bl_label = "Box"
 	subclass = Box()
 
 	def create(self, ctx, clickpoint):
@@ -252,7 +252,7 @@ class BsMax_OT_CreateBox(CreatePrimitive):
 		pass
 
 def register_box():
-	bpy.utils.register_class(BsMax_OT_CreateBox)
+	bpy.utils.register_class(Create_OT_Box)
 
 def unregister_box():
-	bpy.utils.unregister_class(BsMax_OT_CreateBox)
+	bpy.utils.unregister_class(Create_OT_Box)

@@ -19,7 +19,7 @@ from math import pi, sin, cos
 from primitive.primitive import PrimitiveCurveClass, CreatePrimitive
 from bsmax.actions import set_create_target, delete_objects
 
-def GetCompassShape(radius):
+def get_compass_shape(radius):
 	r = radius
 	verts = [(0,r,0),(0.1*r,0.2*r,0),(0.3*r,0.3*r,0),(0.2*r,0.1*r,0),
 			(r,0,0),(0.2*r,-0.1*r,0),(0.3*r,-0.3*r,0),(0.1*r,-0.2*r,0),
@@ -56,20 +56,20 @@ class Compass(PrimitiveCurveClass):
 	def reset(self):
 		self.__init__()
 	def create(self, ctx):
-		shapes = GetCompassShape(0)
+		shapes = get_compass_shape(0)
 		self.create_curve(ctx, shapes, self.classname)
 		pd = self.data.primitivedata
 		pd.classname = self.classname
 	def update(self, ctx):
 		pd = self.data.primitivedata
-		shapes = GetCompassShape(pd.radius1)
+		shapes = get_compass_shape(pd.radius1)
 		self.update_curve(shapes)
 	def abort(self):
 		delete_objects([self.owner])
 
-class BsMax_OT_CreatePointLight(CreatePrimitive):
-	bl_idname="bsmax.createpointlight"
-	bl_label="Point Light (Create)"
+class Create_OT_PointLight(CreatePrimitive):
+	bl_idname="create.pointlight"
+	bl_label="Point Light"
 	subclass = Light()
 
 	def create(self, ctx, clickpoint):
@@ -82,8 +82,8 @@ class BsMax_OT_CreatePointLight(CreatePrimitive):
 	def finish(self):
 		pass
 
-class BsMax_OT_CreateSpotLight(CreatePrimitive):
-	bl_idname="bsmax.createspotlight"
+class Create_OT_SpotLight(CreatePrimitive):
+	bl_idname="create.spotlight"
 	bl_label="Spot Light (Create)"
 	subclass = Light()
 	subclass.finishon = 2
@@ -101,9 +101,9 @@ class BsMax_OT_CreateSpotLight(CreatePrimitive):
 	def finish(self):
 		pass
 
-class BsMax_OT_CreateSunLight(CreatePrimitive):
-	bl_idname="bsmax.creatsunlight"
-	bl_label="Sun Light (Create)"
+class Create_OT_SunLight(CreatePrimitive):
+	bl_idname="create.sunlight"
+	bl_label="Sun Light"
 	subclass = Light()
 	compass = Compass()
 	distance = 0
@@ -145,9 +145,9 @@ class BsMax_OT_CreateSunLight(CreatePrimitive):
 		self.subclass.owner.parent = self.subclass.target
 		self.subclass.owner.matrix_parent_inverse = self.subclass.target.matrix_world.inverted()
 
-class BsMax_OT_CreateAreaLight(CreatePrimitive):
-	bl_idname="bsmax.createarealight"
-	bl_label="Area Light (Create)"
+class Create_OT_AreaLight(CreatePrimitive):
+	bl_idname="create.arealight"
+	bl_label="Area Light"
 	subclass = Light()
 	free: BoolProperty(name="Free", default=False)
 
@@ -175,8 +175,8 @@ class BsMax_OT_CreateAreaLight(CreatePrimitive):
 	def finish(self):
 		pass
 
-classes = [BsMax_OT_CreatePointLight, BsMax_OT_CreateSunLight,
-			BsMax_OT_CreateSpotLight, BsMax_OT_CreateAreaLight]
+classes = [Create_OT_PointLight, Create_OT_SunLight,
+			Create_OT_SpotLight, Create_OT_AreaLight]
 
 def register_light():
 	[bpy.utils.register_class(c) for c in classes]

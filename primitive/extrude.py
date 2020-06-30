@@ -162,9 +162,9 @@ class Extrude_Mesh(PrimitiveGeometryClass):
 	def abort(self):
 		delete_objects([self.owner])
 
-class BsMax_OT_CreateExtrude(Operator):
-	bl_idname = "bsmax.createextrude"
-	bl_label = "Extrude (Create)"
+class Create_OT_Extrude(Operator):
+	bl_idname = "create.extrude"
+	bl_label = "Extrude"
 	bl_options = {"UNDO"}
 	subclass = None
 	mode: EnumProperty(name='Type',default='Mesh',
@@ -192,7 +192,7 @@ class BsMax_OT_CreateExtrude(Operator):
 		return{"FINISHED"}
 
 def register_extrude():
-	bpy.utils.register_class(BsMax_OT_CreateExtrude)
+	bpy.utils.register_class(Create_OT_Extrude)
 	
 def unregister_extrude():
-	bpy.utils.unregister_class(BsMax_OT_CreateExtrude)
+	bpy.utils.unregister_class(Create_OT_Extrude)

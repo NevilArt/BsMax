@@ -50,9 +50,9 @@ class Armature(PrimitiveGeometryClass):
 			delete_objects([self.owner])
 		self.reset()
 
-class BsMax_OT_CreateBone(CreatePrimitive):
-	bl_idname="bsmax.createbone"
-	bl_label="Bone (Create)"
+class Create_OT_Bone(CreatePrimitive):
+	bl_idname="create.bone"
+	bl_label="Bone"
 	subclass = Armature()
 	lastclick = 1
 	startpoint = None
@@ -97,7 +97,7 @@ class BsMax_OT_CreateBone(CreatePrimitive):
 		pass
 
 def register_bone():
-	bpy.utils.register_class(BsMax_OT_CreateBone)
+	bpy.utils.register_class(Create_OT_Bone)
 
 def unregister_bone():
-	bpy.utils.unregister_class(BsMax_OT_CreateBone)
+	bpy.utils.unregister_class(Create_OT_Bone)

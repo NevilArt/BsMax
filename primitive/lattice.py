@@ -36,9 +36,9 @@ class Lattice:
 	def abort(self):
 		delete_objects([self.owner])
 
-class BsMax_OT_CreateLattice(CreatePrimitive):
-	bl_idname = "bsmax.createlattice"
-	bl_label = "Lattice (Create)"
+class Create_OT_Lattice(CreatePrimitive):
+	bl_idname = "create.lattice"
+	bl_label = "Lattice"
 	subclass = Lattice()
 
 	resolution: IntProperty(name="Resolation", min= 2, max= 64)
@@ -65,8 +65,8 @@ class BsMax_OT_CreateLattice(CreatePrimitive):
 	def finish(self):
 		pass
 
-class BsMax_OT_EditLattice(Operator):
-	bl_idname = "bsmax.editlattice"
+class Lattice_OT_Edit(Operator):
+	bl_idname = "lattice.edit"
 	bl_label = "Edit Lattice"
 	bl_options = {"UNDO"}
 
@@ -124,7 +124,7 @@ class BsMax_OT_EditLattice(Operator):
 		wm = ctx.window_manager
 		return wm.invoke_props_dialog(self, width = 140)
 
-classes = [BsMax_OT_CreateLattice,BsMax_OT_EditLattice]
+classes = [Create_OT_Lattice,Lattice_OT_Edit]
 
 def register_lattice():
 	[bpy.utils.register_class(c) for c in classes]

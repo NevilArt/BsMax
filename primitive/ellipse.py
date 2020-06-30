@@ -17,7 +17,7 @@ import bpy
 from primitive.primitive import PrimitiveCurveClass, CreatePrimitive
 from bsmax.actions import delete_objects
 
-def GetEllipseShape(length, width, outline, Thickness):
+def get_ellipse_shape(length, width, outline, Thickness):
 	Shapes = []
 	el = [[length, width]]
 	if outline:
@@ -46,21 +46,21 @@ class Ellipse(PrimitiveCurveClass):
 	def reset(self):
 		self.__init__()
 	def create(self, ctx):
-		shapes = GetEllipseShape(0, 0, False, 0)
+		shapes = get_ellipse_shape(0, 0, False, 0)
 		self.create_curve(ctx, shapes, self.classname)
 		pd = self.data.primitivedata
 		pd.classname = self.classname
 	def update(self):
 		pd = self.data.primitivedata
 		# length, width, outline, Thickness
-		shapes = GetEllipseShape(pd.width, pd.length, pd.outline, pd.thickness)
+		shapes = get_ellipse_shape(pd.width, pd.length, pd.outline, pd.thickness)
 		self.update_curve(shapes)
 	def abort(self):
 		delete_objects([self.owner])
 
-class BsMax_OT_CreateEllipse(CreatePrimitive):
-	bl_idname = "bsmax.createellipse"
-	bl_label = "Ellipse (Create)"
+class Create_OT_Ellipse(CreatePrimitive):
+	bl_idname = "create.ellipse"
+	bl_label = "Ellipse"
 	subclass = Ellipse()
 
 	def create(self, ctx, clickpoint):
@@ -78,7 +78,7 @@ class BsMax_OT_CreateEllipse(CreatePrimitive):
 		pass
 
 def register_ellipse():
-	bpy.utils.register_class(BsMax_OT_CreateEllipse)
+	bpy.utils.register_class(Create_OT_Ellipse)
 
 def unregister_ellipse():
-	bpy.utils.unregister_class(BsMax_OT_CreateEllipse)
+	bpy.utils.unregister_class(Create_OT_Ellipse)

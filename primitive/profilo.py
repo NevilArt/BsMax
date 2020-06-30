@@ -266,7 +266,7 @@ def Elipse(length, width, outline, thickness):
 
 def get_volum_dimantion(pcos):
 	findmin = lambda l: min(l)
-	findCenter = lambda l: ( max(l) + min(l) ) / 2
+	# findCenter = lambda l: ( max(l) + min(l) ) / 2
 	findmax = lambda l: max(l)
 	x,y,z = [[v[i] for v in pcos] for i in range(3)]
 	pmin = Vector([findmin(axis) for axis in [x,y,z]])
@@ -300,8 +300,8 @@ def get_profilo_shape(Mode, length, width, thickness,
 
 	#[p_0, p_1, 'FREE', p_3, 'FREE']
 	angel = math.radians(angel)
-	sa = math.sin(angel)
-	ca = math.cos(angel)
+	# sa = math.sin(angel)
+	# ca = math.cos(angel)
 	# Rotation
 			#p[0].x,p[1].x,p[3].x = (p[0].x*sa),(p[1].x*sa),(p[3].x*sa)
 			#p[0].y,p[1].y,p[3].y = (p[0].y*ca),(p[1].y*ca),(p[3].y*ca)
@@ -360,9 +360,9 @@ class Profilo(PrimitiveCurveClass):
 	def abort(self):
 		delete_objects([self.owner])
 
-class BsMax_OT_CreateProfilo(CreatePrimitive):
-	bl_idname = "bsmax.createprofilo"
-	bl_label = "Profilo (Create)"
+class Create_OT_Profilo(CreatePrimitive):
+	bl_idname = "create.profilo"
+	bl_label = "Profilo"
 	subclass = Profilo()
 
 	def create(self, ctx, clickpoint):
@@ -381,9 +381,9 @@ class BsMax_OT_CreateProfilo(CreatePrimitive):
 	def finish(self):
 		pass
 
-class BsMax_OT_SetProfiloPivotAligne(Operator):
-	bl_idname = "bsmax.setprofilopivotaligne"
-	bl_label = "Profilo (Create)"
+class Create_OT_Set_Profilo_Pivot_Aligne(Operator):
+	bl_idname = "create.set_profilo_pivotaligne"
+	bl_label = "Profilo"
 	pivotaligne: IntProperty(min= 1, max= 9, default= 5)
 	@classmethod
 	def poll(self, ctx):
@@ -398,7 +398,7 @@ class BsMax_OT_SetProfiloPivotAligne(Operator):
 		pd.pivotaligne = self.pivotaligne
 		return {'FINISHED'}
 
-classes = [BsMax_OT_CreateProfilo, BsMax_OT_SetProfiloPivotAligne]
+classes = [Create_OT_Profilo, Create_OT_Set_Profilo_Pivot_Aligne]
 
 def register_profilo():
 	[bpy.utils.register_class(c) for c in classes]

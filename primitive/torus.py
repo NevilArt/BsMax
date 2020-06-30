@@ -18,7 +18,7 @@ from math import sin, cos, pi, radians
 from primitive.primitive import CreatePrimitive, PrimitiveGeometryClass
 from bsmax.actions import delete_objects
 
-def GetTorusMesh( radius1, radius2, rotation, twist, 
+def get_torus_mesh( radius1, radius2, rotation, twist, 
 				segments, sides, sliceon, sfrom, sto):
 	verts,edges,faces,segs = [],[],[],[]
 	rotation, twist = radians(rotation), radians(twist)
@@ -92,22 +92,22 @@ class Torus(PrimitiveGeometryClass):
 	def reset(self):
 		self.__init__()
 	def create(self, ctx):
-		mesh = GetTorusMesh(0, 0, 0, 0, 24, 12, False, 0, 360)
+		mesh = get_torus_mesh(0, 0, 0, 0, 24, 12, False, 0, 360)
 		self.create_mesh(ctx, mesh, self.classname)
 		pd = self.data.primitivedata
 		pd.classname = self.classname
 		pd.ssegs, pd.ssegs_b = 24, 12
 	def update(self):
 		pd = self.data.primitivedata
-		mesh = GetTorusMesh(pd.radius1, pd.radius2, pd.rotation, pd.twist, 
+		mesh = get_torus_mesh(pd.radius1, pd.radius2, pd.rotation, pd.twist, 
 				pd.ssegs, pd.ssegs_b, pd.sliceon, pd.sfrom, pd.sto)
 		self.update_mesh(mesh)
 	def abort(self):
 		delete_objects([self.owner])
 
-class BsMax_OT_CreateTorus(CreatePrimitive):
-	bl_idname = "bsmax.createtorus"
-	bl_label = "Torus (Create)"
+class Create_OT_Torus(CreatePrimitive):
+	bl_idname = "create.torus"
+	bl_label = "Torus"
 	subclass = Torus()
 
 	def create(self, ctx, clickpoint):
@@ -127,7 +127,7 @@ class BsMax_OT_CreateTorus(CreatePrimitive):
 		pass
 
 def register_torus():
-	bpy.utils.register_class(BsMax_OT_CreateTorus)
+	bpy.utils.register_class(Create_OT_Torus)
 
 def unregister_torus():
-	bpy.utils.unregister_class(BsMax_OT_CreateTorus)
+	bpy.utils.unregister_class(Create_OT_Torus)

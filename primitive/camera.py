@@ -27,9 +27,9 @@ class Camera:
 	def abort(self):
 		delete_objects([self.owner])
 
-class BsMax_OT_CreateCamera(CreatePrimitive):
-	bl_idname="bsmax.createcamera"
-	bl_label="Camera Free/Target (Create)"
+class Create_OT_Camera(CreatePrimitive):
+	bl_idname="create.camera"
+	bl_label="Camera Free/Target"
 	subclass = Camera()
 
 	def create(self, ctx, clickpoint):
@@ -45,7 +45,7 @@ class BsMax_OT_CreateCamera(CreatePrimitive):
 		pass
 
 def register_camera():
-	bpy.utils.register_class(BsMax_OT_CreateCamera)
+	bpy.utils.register_class(Create_OT_Camera)
 
 def unregister_camera():
-	bpy.utils.unregister_class(BsMax_OT_CreateCamera)
+	bpy.utils.unregister_class(Create_OT_Camera)

@@ -28,9 +28,9 @@ class Empty:
 	def abort(self):
 		delete_objects([self.owner])
 
-class BsMax_OT_CreateEmpty(CreatePrimitive):
-	bl_idname="bsmax.createempty"
-	bl_label="Empty (Create)"
+class Create_OT_Empty(CreatePrimitive):
+	bl_idname="create.empty"
+	bl_label="Empty"
 	subclass = Empty()
 
 	empty_type: EnumProperty(name='Type',default='PLAIN_AXES',
@@ -54,9 +54,9 @@ class BsMax_OT_CreateEmpty(CreatePrimitive):
 	def finish(self):
 		pass
 
-class BsMax_OT_CreateImage(Operator):
-	bl_idname="bsmax.createimage"
-	bl_label="Image (Create)"
+class Create_OT_Image(Operator):
+	bl_idname="create.image"
+	bl_label="Image"
 	bl_options={"UNDO"}
 	image_type: EnumProperty(name='Type',default='REFERENCE',
 		items =[('REFERENCE','Reference',''),('BACKGROUND','Background','')])
@@ -65,12 +65,12 @@ class BsMax_OT_CreateImage(Operator):
 		return ctx.area.type == 'VIEW_3D'
 	def execute(self, ctx):
 		if self.image_type == "REFERENCE":
-			bpy.ops.bsmax.createempty('INVOKE_DEFAULT',empty_type="IMAGE",depth="DEFAULT")
+			bpy.ops.create.empty('INVOKE_DEFAULT',empty_type="IMAGE",depth="DEFAULT")
 		else:
-			bpy.ops.bsmax.createempty('INVOKE_DEFAULT',empty_type="IMAGE",depth="BACK")
+			bpy.ops.create.empty('INVOKE_DEFAULT',empty_type="IMAGE",depth="BACK")
 		return {'FINISHED'}
 
-classes = [BsMax_OT_CreateEmpty, BsMax_OT_CreateImage]
+classes = [Create_OT_Empty, Create_OT_Image]
 
 def register_empty():
 	[bpy.utils.register_class(c) for c in classes]

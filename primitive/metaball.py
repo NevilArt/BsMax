@@ -34,9 +34,9 @@ class Metaball:
 	def abort(self):
 		delete_objects([self.owner])
 
-class BsMax_OT_CreateMetaball(CreatePrimitive):
-	bl_idname="bsmax.createmetaball"
-	bl_label="Metaball (Create)"
+class Create_OT_Metaball(CreatePrimitive):
+	bl_idname="create.metaball"
+	bl_label="Metaball"
 	subclass = Metaball()
 
 	metaball_type: EnumProperty(name='Type', default='BALL',
@@ -115,7 +115,7 @@ class BsMax_OT_CreateMetaball(CreatePrimitive):
 		pass
 
 def register_metaball():
-	bpy.utils.register_class(BsMax_OT_CreateMetaball)
+	bpy.utils.register_class(Create_OT_Metaball)
 
 def unregister_metaball():
-	bpy.utils.unregister_class(BsMax_OT_CreateMetaball)
+	bpy.utils.unregister_class(Create_OT_Metaball)

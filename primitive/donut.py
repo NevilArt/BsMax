@@ -17,7 +17,7 @@ import bpy
 from primitive.primitive import PrimitiveCurveClass, CreatePrimitive
 from bsmax.actions import delete_objects
 
-def GetDonutShape(radius1, radius2):
+def get_donut_shape(radius1, radius2):
 	shapes = []
 	for radius in [radius1, radius2]:
 		r = radius
@@ -43,20 +43,20 @@ class Donut(PrimitiveCurveClass):
 	def reset(self):
 		self.__init__()
 	def create(self, ctx):
-		shapes = GetDonutShape(0, 0)
+		shapes = get_donut_shape(0, 0)
 		self.create_curve(ctx, shapes, self.classname)
 		pd = self.data.primitivedata
 		pd.classname = self.classname
 	def update(self):
 		pd = self.data.primitivedata
-		shapes = GetDonutShape(pd.radius1, pd.radius2)
+		shapes = get_donut_shape(pd.radius1, pd.radius2)
 		self.update_curve(shapes)
 	def abort(self):
 		delete_objects([self.owner])
 
-class BsMax_OT_CreateDonut(CreatePrimitive):
-	bl_idname = "bsmax.createdonut"
-	bl_label = "Donut (Create)"
+class Create_OT_Donut(CreatePrimitive):
+	bl_idname = "create.donut"
+	bl_label = "Donut"
 	subclass = Donut()
 
 	def create(self, ctx, clickpoint):
@@ -75,7 +75,7 @@ class BsMax_OT_CreateDonut(CreatePrimitive):
 		pass
 
 def register_donut():
-	bpy.utils.register_class(BsMax_OT_CreateDonut)
+	bpy.utils.register_class(Create_OT_Donut)
 
 def unregister_donut():
-	bpy.utils.unregister_class(BsMax_OT_CreateDonut)
+	bpy.utils.unregister_class(Create_OT_Donut)

@@ -29,9 +29,9 @@ class LightProbe:
 	def abort(self):
 		delete_objects([self.owner])
 
-class BsMax_OT_CreateLightProbeGrid(CreatePrimitive):
-	bl_idname="bsmax.createlightprobegrid"
-	bl_label="Irradiance Volume (Create)"
+class Create_OT_Light_Probe_Grid(CreatePrimitive):
+	bl_idname="create.light_probe_grid"
+	bl_label="Irradiance Volume"
 	subclass = LightProbe()
 	width,length,height,distance = 0,0,0,0
 	location = Vector((0,0,0))
@@ -60,9 +60,9 @@ class BsMax_OT_CreateLightProbeGrid(CreatePrimitive):
 	def finish(self):
 		self.width,self.length,self.height,self.distance = 0,0,0,0
 
-class BsMax_OT_CreateLightProbePlaner(CreatePrimitive):
-	bl_idname="bsmax.createlightprobeplaner"
-	bl_label="Reflection Plane (Create)"
+class Create_OT_Light_Probe_Planer(CreatePrimitive):
+	bl_idname="create.light_probe_planer"
+	bl_label="Reflection Plane"
 	subclass = LightProbe()
 	width,length,distance = 0,0,0
 
@@ -84,9 +84,9 @@ class BsMax_OT_CreateLightProbePlaner(CreatePrimitive):
 	def finish(self):
 		pass
 
-class BsMax_OT_CreateLightProbeCubemap(CreatePrimitive):
-	bl_idname = "bsmax.createlightprobecubemap"
-	bl_label = "Reflection Cubemap (Create)"
+class Create_OT_Light_Probe_Cubemap(CreatePrimitive):
+	bl_idname = "create.light_probe_cubemap"
+	bl_label = "Reflection Cubemap"
 	subclass = LightProbe()
 
 	def create(self, ctx, clickpoint):
@@ -101,9 +101,9 @@ class BsMax_OT_CreateLightProbeCubemap(CreatePrimitive):
 	def finish(self):
 		pass
 
-classes = [BsMax_OT_CreateLightProbeGrid,
-			BsMax_OT_CreateLightProbePlaner,
-			BsMax_OT_CreateLightProbeCubemap]
+classes = [Create_OT_Light_Probe_Grid,
+			Create_OT_Light_Probe_Planer,
+			Create_OT_Light_Probe_Cubemap]
 
 def register_lightprobe():
 	[bpy.utils.register_class(c) for c in classes]

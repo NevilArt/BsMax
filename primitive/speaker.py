@@ -26,9 +26,9 @@ class Speaker:
 	def abort(self):
 		delete_objects([self.owner])
 
-class BsMax_OT_CreateSpeaker(CreatePrimitive):
-	bl_idname="bsmax.createspeaker"
-	bl_label="Speaker (Create)"
+class Create_OT_Speaker(CreatePrimitive):
+	bl_idname="create.speaker"
+	bl_label="Speaker"
 	subclass = Speaker()
 
 	def create(self, ctx, clickpoint):
@@ -42,7 +42,7 @@ class BsMax_OT_CreateSpeaker(CreatePrimitive):
 		pass
 
 def register_speaker():
-	bpy.utils.register_class(BsMax_OT_CreateSpeaker)
+	bpy.utils.register_class(Create_OT_Speaker)
 
 def unregister_speaker():	
-	bpy.utils.unregister_class(BsMax_OT_CreateSpeaker)
+	bpy.utils.unregister_class(Create_OT_Speaker)

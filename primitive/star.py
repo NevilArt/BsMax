@@ -62,9 +62,9 @@ class Star(PrimitiveCurveClass):
 	def abort(self):
 		delete_objects([self.owner])
 
-class BsMax_OT_CreateStar(CreatePrimitive):
-	bl_idname = "bsmax.createstar"
-	bl_label = "Star (Create)"
+class Create_OT_Star(CreatePrimitive):
+	bl_idname = "create.star"
+	bl_label = "Star"
 	subclass = Star()
 
 	def create(self, ctx, clickpoint):
@@ -84,7 +84,7 @@ class BsMax_OT_CreateStar(CreatePrimitive):
 		pass
 
 def register_star():
-	bpy.utils.register_class(BsMax_OT_CreateStar)
+	bpy.utils.register_class(Create_OT_Star)
 
 def unregister_star():
-	bpy.utils.unregister_class(BsMax_OT_CreateStar)
+	bpy.utils.unregister_class(Create_OT_Star)

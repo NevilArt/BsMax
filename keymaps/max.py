@@ -122,10 +122,10 @@ def create_keymaps(km):
 		km.new(space,'bsmax.viewport_background','B','PRESS',[],alt=True)
 		km.new(space,'bsmax.subobjectlevel','B','PRESS',[('level',6)],ctrl=True)
 		km.new(space,'camera.show_safe_areas','F','PRESS',[],shift=True)
-		km.new(space,'bsmax.setframe','HOME','PRESS',[('frame','First')])
-		km.new(space,'bsmax.setframe','END','PRESS',[('frame','Last')])
-		km.new(space,'bsmax.setframe','PERIOD','PRESS',[('frame','Next')])
-		km.new(space,'bsmax.setframe','COMMA','PRESS',[('frame','Previous')])
+		km.new(space,'anim.frame_set','HOME','PRESS',[('frame','First')])
+		km.new(space,'anim.frame_set','END','PRESS',[('frame','Last')])
+		km.new(space,'anim.frame_set','PERIOD','PRESS',[('frame','Next')])
+		km.new(space,'anim.frame_set','COMMA','PRESS',[('frame','Previous')])
 		km.new(space,'bsmax.hold','H','PRESS',[],ctrl=True,alt=True)
 		km.new(space,'bsmax.fetch','F','PRESS',[],ctrl=True,alt=True)
 		km.new(space,'wm.call_menu','A','PRESS',[('name','BSMAX_MT_createmenu')],ctrl=True,shift=True)
@@ -212,8 +212,8 @@ def create_keymaps(km):
 		km.new(space,'editor.open_node_ditor','EIGHT','PRESS',[('mode','Environment')])
 		# Tools
 		km.new(space,'object.align_selected_to_target','A','PRESS',[],alt=True)
-		km.new(space,'bsmax.setkeys','K','PRESS',[])
-		km.new(space,'bsmax.autokeymodetoggle','N','PRESS',[])
+		km.new(space,'anim.set_key','K','PRESS',[])
+		km.new(space,'anim.auto_key_toggle','N','PRESS',[])
 		km.new(space,'bsmax.transformtypein','F12','PRESS',[])
 		km.new(space,'bsmax.angelsnap','A','PRESS',[])
 		km.new(space,'bsmax.lightingtoggle','L','PRESS',[],ctrl=True)
@@ -274,7 +274,7 @@ def create_keymaps(km):
 		create_subobject_mode_keymap(km,space)
 		# Tools
 		km.new(space,'bsmax.shadeselectedfaces','F2','PRESS',[])
-		km.new(space,'bsmax.autokeymodetoggle','N','PRESS',[])
+		km.new(space,'anim.auto_key_toggle','N','PRESS',[])
 		km.new(space,'camera.select','C','PRESS',[])
 		km.new(space,'wm.tool_set_by_id','E','PRESS',[('name','builtin.rotate')])
 		km.new(space,'wm.tool_set_by_id','R','PRESS',[('name','builtin.scale'),('cycle',True)])
@@ -298,7 +298,7 @@ def create_keymaps(km):
 		create_switch_view_keymap(km,space)
 		km.new(space,'screen.screen_full_area','X','PRESS',[],ctrl=True)
 		# Tools
-		km.new(space,'bsmax.autokeymodetoggle','N','PRESS',[])
+		km.new(space,'anim.auto_key_toggle','N','PRESS',[])
 		km.new(space,'camera.select','C','PRESS',[])
 		km.new(space,'wm.tool_set_by_id','E','PRESS',[('name','builtin.rotate')])
 		km.new(space,'curve.chamfer','C','PRESS',[('fillet',True),('typein',False)],ctrl=True,shift=True)
@@ -330,7 +330,7 @@ def create_keymaps(km):
 		km.new(space,'screen.screen_full_area','X','PRESS',[],ctrl=True)
 		km.new(space,'armature.batchrename','F2','PRESS',[])
 		# Tools
-		km.new(space,'bsmax.autokeymodetoggle','N','PRESS',[])
+		km.new(space,'anim.auto_key_toggle','N','PRESS',[])
 		km.new(space,'camera.select','C','PRESS',[])
 		km.new(space,'wm.tool_set_by_id','E','PRESS',[('name','builtin.rotate')])
 		
@@ -348,7 +348,7 @@ def create_keymaps(km):
 		#View
 		km.new(space,'screen.screen_full_area','X','PRESS',[],ctrl=True)
 		# Tools
-		km.new(space,'bsmax.autokeymodetoggle','N','PRESS',[])
+		km.new(space,'anim.auto_key_toggle','N','PRESS',[])
 		km.new(space,'camera.select','C','PRESS',[])
 		
 		# Lattice --------------------------------------------------------------
@@ -367,7 +367,7 @@ def create_keymaps(km):
 		#View
 		km.new(space,'screen.screen_full_area','X','PRESS',[],ctrl=True)
 		# Tools
-		km.new(space,'bsmax.autokeymodetoggle','N','PRESS',[])
+		km.new(space,'anim.auto_key_toggle','N','PRESS',[])
 		km.new(space,'camera.select','C','PRESS',[])
 		
 		# Font -----------------------------------------------------------------
@@ -390,9 +390,9 @@ def create_keymaps(km):
 		#View
 		km.new(space,'screen.screen_full_area','X','PRESS',[],ctrl=True)
 		# Tools
-		km.new(space,'bsmax.autokeymodetoggle','N','PRESS',[])
+		km.new(space,'anim.auto_key_toggle','N','PRESS',[])
 		km.new(space,'camera.select','C','PRESS',[])
-		km.new(space,'bsmax.setkeys','K','PRESS',[])
+		km.new(space,'anim.set_key','K','PRESS',[])
 		
 		# Vertex Paint
 		space = km.space('Vertex Paint','EMPTY','WINDOW')
@@ -525,18 +525,18 @@ def create_keymaps(km):
 		# Translate 
 		km.new(space,'transform.translate','EVT_TWEAK_L','ANY',[])
 		# Tools
-		km.new(space,'bsmax.setkeys','K','PRESS',[])
-		km.new(space,'bsmax.autokeymodetoggle','N','PRESS',[])
+		km.new(space,'anim.set_key','K','PRESS',[])
+		km.new(space,'anim.auto_key_toggle','N','PRESS',[])
 		# DOPESHEET_EDITOR (Timeline)--------------------------------------------------
 		space = km.space('Dopesheet','DOPESHEET_EDITOR','WINDOW')
 		# Global
 		create_search_shortkey(km,space)
 		# Tools
-		km.new(space,'bsmax.setkeys','K','PRESS',[])
-		km.new(space,'bsmax.autokeymodetoggle','N','PRESS',[])
-		km.new(space,'bsmax.settimelinerange','LEFTMOUSE','PRESS',[('mode','First')],alt=True,ctrl=True)
-		km.new(space,'bsmax.settimelinerange','RIGHTMOUSE','PRESS',[('mode','End')],alt=True,ctrl=True)
-		km.new(space,'bsmax.settimelinerange','MIDDLEMOUSE','PRESS',[('mode','Shift')],alt=True,ctrl=True)
+		km.new(space,'anim.set_key','K','PRESS',[])
+		km.new(space,'anim.auto_key_toggle','N','PRESS',[])
+		km.new(space,'anim.set_timeline_range','LEFTMOUSE','PRESS',[('mode','First')],alt=True,ctrl=True)
+		km.new(space,'anim.set_timeline_range','RIGHTMOUSE','PRESS',[('mode','End')],alt=True,ctrl=True)
+		km.new(space,'anim.set_timeline_range','MIDDLEMOUSE','PRESS',[('mode','Shift')],alt=True,ctrl=True)
 		# Menu
 		# km.new(space,'wm.call_menu','RIGHTMOUSE','PRESS',,[('name','bsmax.coordinatesmenu')],alt=True)
 		# Selection

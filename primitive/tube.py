@@ -18,7 +18,7 @@ from math import pi, sin, cos, radians
 from primitive.primitive import CreatePrimitive, PrimitiveGeometryClass
 from bsmax.actions import delete_objects
 
-def GetTubeMesh(radius1, radius2, height, hsegs, csegs, ssegs, sliceon, sfrom, sto):
+def get_tube_mesh(radius1, radius2, height, hsegs, csegs, ssegs, sliceon, sfrom, sto):
 	Sides = []
 	r1, r2 = radius1, radius2
 	sfrom, sto = radians(sfrom), radians(sto)
@@ -208,23 +208,23 @@ class Tube(PrimitiveGeometryClass):
 	def reset(self):
 		self.__init__()
 	def create(self, ctx):
-		mesh = GetTubeMesh(0, 0, 0, 1, 1, 18, False, 0, 360)
+		mesh = get_tube_mesh(0, 0, 0, 1, 1, 18, False, 0, 360)
 		self.create_mesh(ctx, mesh, self.classname)
 		pd = self.data.primitivedata
 		pd.classname = self.classname
 		pd.ssegs = 18
 	def update(self):
 		pd = self.data.primitivedata
-		mesh = GetTubeMesh(pd.radius1, pd.radius2, pd.height,
+		mesh = get_tube_mesh(pd.radius1, pd.radius2, pd.height,
 			pd.hsegs, pd.csegs, pd.ssegs,
 			pd.sliceon, pd.sfrom, pd.sto)
 		self.update_mesh(mesh)
 	def abort(self):
 		delete_objects([self.owner])
 
-class BsMax_OT_CreateTube(CreatePrimitive):
-	bl_idname = "bsmax.createtube"
-	bl_label = "Tube (Create)"
+class Create_OT_Tube(CreatePrimitive):
+	bl_idname = "create.tube"
+	bl_label = "Tube"
 	subclass = Tube()
 
 	def create(self, ctx, clickpoint):
@@ -246,7 +246,7 @@ class BsMax_OT_CreateTube(CreatePrimitive):
 		pass
 
 def register_tube():
-	bpy.utils.register_class(BsMax_OT_CreateTube)
+	bpy.utils.register_class(Create_OT_Tube)
 
 def unregister_tube():
-	bpy.utils.unregister_class(BsMax_OT_CreateTube)
+	bpy.utils.unregister_class(Create_OT_Tube)

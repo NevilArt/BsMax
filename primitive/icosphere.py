@@ -27,7 +27,6 @@ class Icosphere(PrimitiveGeometryClass):
 	def reset(self):
 		self.__init__()
 	def create(self, ctx):
-		scene = ctx.scene
 		# Create an empty mesh and the object.
 		newmesh = bpy.data.meshes.new(self.classname)
 		self.owner = bpy.data.objects.new(self.classname, newmesh)
@@ -56,9 +55,9 @@ class Icosphere(PrimitiveGeometryClass):
 	def abort(self):
 		delete_objects([self.owner])
 
-class BsMax_OT_CreateIcosphere(CreatePrimitive):
-	bl_idname = "bsmax.createuicosphere"
-	bl_label = "Create Icosphere (Create)"
+class Create_OT_Icosphere(CreatePrimitive):
+	bl_idname = "create.uicosphere"
+	bl_label = "Icosphere"
 	subclass = Icosphere()
 
 	def create(self, ctx, clickpoint):
@@ -75,7 +74,7 @@ class BsMax_OT_CreateIcosphere(CreatePrimitive):
 		pass
 
 def register_icosphere():
-	bpy.utils.register_class(BsMax_OT_CreateIcosphere)
+	bpy.utils.register_class(Create_OT_Icosphere)
 
 def unregister_icosphere():
-	bpy.utils.unregister_class(BsMax_OT_CreateIcosphere)
+	bpy.utils.unregister_class(Create_OT_Icosphere)

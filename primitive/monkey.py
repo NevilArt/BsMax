@@ -305,9 +305,9 @@ class Monkey(PrimitiveGeometryClass):
 	def abort(self):
 		delete_objects([self.owner])
 
-class BsMax_OT_CreateMonkey(CreatePrimitive):
-	bl_idname = "bsmax.createmonkey"
-	bl_label = "Monkey (Create)"
+class Create_OT_Monkey(CreatePrimitive):
+	bl_idname = "create.monkey"
+	bl_label = "Monkey"
 	subclass = Monkey()
 
 	def create(self, ctx, clickpoint):
@@ -324,7 +324,7 @@ class BsMax_OT_CreateMonkey(CreatePrimitive):
 		pass
 
 def register_monkey():
-	bpy.utils.register_class(BsMax_OT_CreateMonkey)
+	bpy.utils.register_class(Create_OT_Monkey)
 	
 def unregister_monkey():
-	bpy.utils.unregister_class(BsMax_OT_CreateMonkey)
+	bpy.utils.unregister_class(Create_OT_Monkey)

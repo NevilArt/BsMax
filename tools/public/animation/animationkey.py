@@ -17,24 +17,27 @@ import bpy
 from bpy.types import Operator
 from bpy.props import BoolProperty, EnumProperty
 
-class KeyData(Operator):
-	Key_All = False
-	Key_Available = True
-	Key_Position = True
-	Key_Rotation = True
-	Key_Scale = True
-	# Key_IKParams = False
-	# Key_ObjParams = False
-	# Key_CusAttributes = False
-	# Key_Modifiers = False
-	# Key_Materials = False
-	# Key_Other = False
+class KeyData:
+	def __init__(self):
+		self.Key_All = False
+		self.Key_Available = True
+		self.Key_Position = True
+		self.Key_Rotation = True
+		self.Key_Scale = True
+		# self.Key_IKParams = False
+		# self.Key_ObjParams = False
+		# self.Key_CusAttributes = False
+		# self.Key_Modifiers = False
+		# self.Key_Materials = False
+		# self.Key_Other = False
+kd = KeyData()
 
-class BsMax_OT_SetKeyFilters(Operator):
-	bl_idname="bsmax.setkeyfilters"
+class Anim_OT_Set_Key_Filters(Operator):
+	bl_idname="anim.set_key_filters"
 	bl_label="Set Key Filters"
 	bl_description="Set Key Filter"
 	bl_options={'REGISTER', 'UNDO'}
+
 	Key_All: BoolProperty(name="All")
 	Key_Available: BoolProperty(name="Available",default=True)
 	Key_Position: BoolProperty(name="Position",default=True)
@@ -63,36 +66,36 @@ class BsMax_OT_SetKeyFilters(Operator):
 		# row.prop(self, "Key_Other")
 		
 	def execute(self, ctx):
-		KeyData.Key_All = self.Key_All
-		KeyData.Key_Available = self.Key_Available
-		KeyData.Key_Position = self.Key_Position
-		KeyData.Key_Rotation = self.Key_Rotation
-		KeyData.Key_Scale = self.Key_Scale
-		# KeyData.Key_ObjParams = self.Key_ObjParams
-		# KeyData.Key_CusAttributes = self.Key_CusAttributes
-		# KeyData.Key_Modifiers = self.Key_Modifiers
-		# KeyData.Key_Materials = self.Key_Materials
-		# KeyData.Key_Other = self.Key_Other
+		kd.Key_All = self.Key_All
+		kd.Key_Available = self.Key_Available
+		kd.Key_Position = self.Key_Position
+		kd.Key_Rotation = self.Key_Rotation
+		kd.Key_Scale = self.Key_Scale
+		# kd.Key_ObjParams = self.Key_ObjParams
+		# kd.Key_CusAttributes = self.Key_CusAttributes
+		# kd.Key_Modifiers = self.Key_Modifiers
+		# kd.Key_Materials = self.Key_Materials
+		# kd.Key_Other = self.Key_Other
 		return {'FINISHED'}
 
 	def invoke(self, ctx, event):
-		self.Key_All = KeyData.Key_All
-		self.Key_Available = KeyData.Key_Available
-		self.Key_Position = KeyData.Key_Position
-		self.Key_Rotation = KeyData.Key_Rotation
-		self.Key_Scale = KeyData.Key_Scale
-		# self.Key_ObjParams = KeyData.Key_ObjParams
-		# self.Key_CusAttributes = KeyData.Key_CusAttributes
-		# self.Key_Modifiers = KeyData.Key_Modifiers
-		# self.Key_Materials = KeyData.Key_Materials
-		# self.Key_Other = KeyData.Key_Other
+		self.Key_All = kd.Key_All
+		self.Key_Available = kd.Key_Available
+		self.Key_Position = kd.Key_Position
+		self.Key_Rotation = kd.Key_Rotation
+		self.Key_Scale = kd.Key_Scale
+		# self.Key_ObjParams = kd.Key_ObjParams
+		# self.Key_CusAttributes = kd.Key_CusAttributes
+		# self.Key_Modifiers = kd.Key_Modifiers
+		# self.Key_Materials = kd.Key_Materials
+		# self.Key_Other = kd.Key_Other
 		self.Cast = True
 		return ctx.window_manager.invoke_props_dialog(self,width=140)
 
 #obj.modifiers[0].keyframe_insert(data_path="thickness")
 
-class BsMax_OT_AutoKeyModeToggle(Operator):
-	bl_idname = "bsmax.autokeymodetoggle"
+class Anim_OT_Auto_Key_Toggle(Operator):
+	bl_idname = "anim.auto_key_toggle"
 	bl_label = "Auto Key Mode Toggle"
 
 	def execute(self, ctx):
@@ -112,8 +115,8 @@ def set_key(objs, key):
 	for obj in objs:
 		obj.keyframe_insert(data_path=key)
 
-class BsMax_OT_SetKeys(Operator):
-	bl_idname = "bsmax.setkeys"
+class Anim_OT_Set_Key(Operator):
+	bl_idname = "anim.set_key"
 	bl_label = "Set Keys"
 
 	# @classmethod
@@ -123,34 +126,33 @@ class BsMax_OT_SetKeys(Operator):
 	def execute(self, ctx):
 		if ctx.mode in ['OBJECT', 'POSE']:
 			#objs=ctx.selected_objects
-			if KeyData.Key_All:
+			if kd.Key_All:
 				bpy.ops.anim.keyframe_insert_menu(type='Location')
 				bpy.ops.anim.keyframe_insert_menu(type='Rotation')
 				bpy.ops.anim.keyframe_insert_menu(type='Scaling')
 			else:
-				if KeyData.Key_Available:
+				if kd.Key_Available:
 					try:
 						bpy.ops.anim.keyframe_insert_menu(type='Available')
 					except:
 						pass
-				if KeyData.Key_Position:
+				if kd.Key_Position:
 					bpy.ops.anim.keyframe_insert_menu(type='Location')
-				if KeyData.Key_Rotation:
+				if kd.Key_Rotation:
 					bpy.ops.anim.keyframe_insert_menu(type='Rotation')
-				if KeyData.Key_Scale:
+				if kd.Key_Scale:
 					bpy.ops.anim.keyframe_insert_menu(type='Scaling')
-				# if KeyData.Key_ObjParams:
+				# if kd.Key_ObjParams:
 				# 	print("Key object params on progress")
-				# if KeyData.Key_CusAttributes:
+				# if kd.Key_CusAttributes:
 				# 	print("Key object params on progress")
-				# if KeyData.Key_Modifiers:
+				# if kd.Key_Modifiers:
 				# 	print("Key object params on progress")
-				# if KeyData.Key_Materials:
+				# if kd.Key_Materials:
 				# 	print("Key object params on progress")
-				# if KeyData.Key_Other:
+				# if kd.Key_Other:
 				# 	print("Key object params on progress")
 		#elif ctx.mode == 'POSE':
-			# print("-->   pose")
 			# #set_key(ctx.selected_bones,"scale")
 			# #ctx.active_bone.keyframe_insert("Location")#, index=2)
 			# ctx.active_bone.keyframe_insert("rotation_euler")#, index=2)
@@ -158,16 +160,16 @@ class BsMax_OT_SetKeys(Operator):
 		return{"FINISHED"}
 
 # Delete selected objects animation
-class BsMax_OT_DeleteSelectedAnimation(Operator):
-	bl_idname = "bsmax.deleteselectedanimation"
+class Anim_OT_Delete_Selected_Animation(Operator):
+	bl_idname = "anim.delete_selected_animation"
 	bl_label = "Delete Selected Animation"
 	def execute(self, ctx):
 		for obj in ctx.selected_objects:
 			obj.animation_data_clear()
 		return{"FINISHED"}
 
-class BsMax_OT_SetFrame(Operator):
-	bl_idname = "bsmax.setframe"
+class Anim_OT_Set_Frame(Operator):
+	bl_idname = "anim.frame_set"
 	bl_label = "Set Frame"
 	frame: EnumProperty(name='Frame', default='Next',
 		items =[('Next','Next',''),('Previous','Previous',''),
@@ -191,9 +193,9 @@ class BsMax_OT_SetFrame(Operator):
 		ctx.scene.frame_current = frame
 		return{"FINISHED"}
 
-class BsMax_OT_TimeLineRangeChange(Operator):
-	bl_idname = "bsmax.settimelinerange"
-	bl_label = "TimeLine Range Change"
+class Anim_OT_Set_TimeLine_Range(Operator):
+	bl_idname = "anim.set_timeline_range"
+	bl_label = "Set TimeLine Range"
 	start = False
 	mouse_x = 0
 	mode: EnumProperty(name='Mode',default='Shift',
@@ -237,12 +239,12 @@ class BsMax_OT_TimeLineRangeChange(Operator):
 		ctx.window_manager.modal_handler_add(self)
 		return {'RUNNING_MODAL'}
 
-classes = [BsMax_OT_SetKeyFilters,
-			BsMax_OT_AutoKeyModeToggle,
-			BsMax_OT_SetKeys,
-			BsMax_OT_DeleteSelectedAnimation,
-			BsMax_OT_SetFrame,
-			BsMax_OT_TimeLineRangeChange]
+classes = [Anim_OT_Set_Key_Filters,
+			Anim_OT_Auto_Key_Toggle,
+			Anim_OT_Set_Key,
+			Anim_OT_Delete_Selected_Animation,
+			Anim_OT_Set_Frame,
+			Anim_OT_Set_TimeLine_Range]
 
 def register_animationkey():
 	[bpy.utils.register_class(c) for c in classes]

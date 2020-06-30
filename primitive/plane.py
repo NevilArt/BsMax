@@ -17,7 +17,7 @@ import bpy
 from primitive.primitive import PrimitiveGeometryClass, CreatePrimitive
 from bsmax.actions import delete_objects
 
-def GetPlaneMesh(width, length, WSegs, LSegs):
+def get_plane_mesh(width, length, WSegs, LSegs):
 	verts, edges, faces = [], [], []
 	# Create vertexes
 	w = width / WSegs
@@ -47,20 +47,20 @@ class Plane(PrimitiveGeometryClass):
 	def reset(self):
 		self.__init__()
 	def create(self, ctx):
-		mesh = GetPlaneMesh(0, 0, 1, 1)
+		mesh = get_plane_mesh(0, 0, 1, 1)
 		self.create_mesh(ctx, mesh, self.classname)
 		pd = self.data.primitivedata
 		pd.classname = self.classname
 	def update(self):
 		pd = self.data.primitivedata
-		mesh = GetPlaneMesh(pd.width, pd.length, pd.wsegs, pd.lsegs)
+		mesh = get_plane_mesh(pd.width, pd.length, pd.wsegs, pd.lsegs)
 		self.update_mesh(mesh)
 	def abort(self):
 		delete_objects([self.owner])
 
-class BsMax_OT_CreatePlane(CreatePrimitive):
-	bl_idname = "bsmax.createplane"
-	bl_label = "Plane (Create)"
+class Create_OT_Plane(CreatePrimitive):
+	bl_idname = "create.plane"
+	bl_label = "Plane"
 	subclass = Plane()
 
 	def create(self, ctx, clickpoint):
@@ -79,7 +79,7 @@ class BsMax_OT_CreatePlane(CreatePrimitive):
 		pass
 
 def register_plane():
-	bpy.utils.register_class(BsMax_OT_CreatePlane)
+	bpy.utils.register_class(Create_OT_Plane)
 
 def unregister_plane():
-	bpy.utils.unregister_class(BsMax_OT_CreatePlane)
+	bpy.utils.unregister_class(Create_OT_Plane)

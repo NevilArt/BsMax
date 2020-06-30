@@ -17,7 +17,7 @@ import bpy
 from primitive.primitive import CreatePrimitive, PrimitiveGeometryClass
 from bsmax.actions import delete_objects
 
-def GetPyramidMesh(width, depth, height, wsegs, dsegs, hsegs):
+def get_pyramid_mesh(width, depth, height, wsegs, dsegs, hsegs):
 	verts, edges, faces = [], [], []
 	w, d, h = width / 2.0, depth / 2.0, height
 	ws, ds, hs = width / wsegs, depth / dsegs, height / hsegs
@@ -151,21 +151,21 @@ class Pyramid(PrimitiveGeometryClass):
 	def reset(self):
 		self.__init__()
 	def create(self, ctx):
-		mesh = GetPyramidMesh(0, 0, 0, 1, 1, 1)
+		mesh = get_pyramid_mesh(0, 0, 0, 1, 1, 1)
 		self.create_mesh(ctx, mesh, self.classname)
 		pd = self.data.primitivedata
 		pd.classname = self.classname
 		pd.wsegs, pd.lsegs, pd.hsegs = 1, 1, 1
 	def update(self):
 		pd = self.data.primitivedata
-		mesh = GetPyramidMesh(pd.width, pd.length, pd.height,
+		mesh = get_pyramid_mesh(pd.width, pd.length, pd.height,
 					pd.wsegs, pd.lsegs, pd.hsegs)
 		self.update_mesh(mesh)
 	def abort(self):
 		delete_objects([self.owner])
 
-class BsMax_OT_CreatePyramid(CreatePrimitive):
-	bl_idname = "bsmax.createpyramid"
+class Create_OT_Pyramid(CreatePrimitive):
+	bl_idname = "create.pyramid"
 	bl_label = "Pyramid (Create)"
 	subclass = Pyramid()
 
@@ -187,7 +187,7 @@ class BsMax_OT_CreatePyramid(CreatePrimitive):
 		pass
 
 def register_pyramid():
-	bpy.utils.register_class(BsMax_OT_CreatePyramid)
+	bpy.utils.register_class(Create_OT_Pyramid)
 
 def unregister_pyramid():
-	bpy.utils.unregister_class(BsMax_OT_CreatePyramid)
+	bpy.utils.unregister_class(Create_OT_Pyramid)

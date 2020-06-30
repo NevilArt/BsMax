@@ -28,7 +28,7 @@ class knot:
 		self.outvec = outvec
 		self.mode = mode
 
-def GetLineShape(knots):
+def get_line_shape(knots):
 	shape = []
 	for k in knots:
 		shape.append((k.pos, k.invec, k.mode, k.outvec, k.mode))
@@ -48,10 +48,10 @@ class Line(PrimitiveCurveClass):
 		self.__init__()
 	def create(self, ctx):
 		self.ctx = ctx
-		shapes = GetLineShape([])
+		shapes = get_line_shape([])
 		self.create_curve(ctx,shapes,"")
 	def update(self, ctx):
-		shapes = GetLineShape(self.knots + self.lastknot)
+		shapes = get_line_shape(self.knots + self.lastknot)
 		self.update_curve(shapes)
 	def abort(self):
 		if len(self.knots) < 2:
@@ -65,7 +65,7 @@ class Line(PrimitiveCurveClass):
 class LineData:
 	close = False
 
-class BsMax_OT_CloseLine(Operator):
+class Curve_OT_CloseLine(Operator):
 	bl_idname = "curve.closeline"
 	bl_label = "Close Line?"
 	bl_options = {'REGISTER', 'INTERNAL'}
@@ -84,9 +84,9 @@ def check_for_close(self):
 		if abs(p0.x-pl.x) < 10 and abs(p0.y-pl.y) < 10:
 			bpy.ops.curve.closeline('INVOKE_DEFAULT')
 
-class BsMax_OT_CreateLine(CreatePrimitive):
-	bl_idname = "bsmax.createline"
-	bl_label = "Line (Create)"
+class Create_OT_Line(CreatePrimitive):
+	bl_idname = "create.line"
+	bl_label = "Line"
 	subclass = Line()
 	lastclick = 1
 
@@ -140,7 +140,7 @@ class BsMax_OT_CreateLine(CreatePrimitive):
 	def finish(self):
 		pass
 
-classes = [BsMax_OT_CreateLine, BsMax_OT_CloseLine]
+classes = [Create_OT_Line, Curve_OT_CloseLine]
 
 def register_line():
 	[bpy.utils.register_class(c) for c in classes]

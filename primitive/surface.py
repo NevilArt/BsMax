@@ -43,8 +43,8 @@ class Surface(PrimitiveGeometryClass):
 		#delete_objects([self.owner])
 		#self.reset()
 
-class BsMax_OT_CreateSurface(CreatePrimitive):
-	bl_idname="bsmax.createsurface"
+class Create_OT_Surface(CreatePrimitive):
+	bl_idname="create.surface"
 	bl_label="Surface (Create)"
 	subclass = Surface()
 
@@ -58,7 +58,7 @@ class BsMax_OT_CreateSurface(CreatePrimitive):
 		pass
 
 def register_surface():
-	bpy.utils.register_class(BsMax_OT_CreateSurface)
+	bpy.utils.register_class(Create_OT_Surface)
 	
 def unregister_surface():
-	bpy.utils.unregister_class(BsMax_OT_CreateSurface)
+	bpy.utils.unregister_class(Create_OT_Surface)

@@ -18,7 +18,7 @@ from math import pi, sin, cos, radians
 from primitive.primitive import CreatePrimitive, PrimitiveGeometryClass
 from bsmax.actions import delete_objects
 
-def GetSphereMesh(radius, ssegs, hsegs, hemisphere, chop, sliceon, sfrom, sto, base):
+def get_sphere_mesh(radius, ssegs, hsegs, hemisphere, chop, sliceon, sfrom, sto, base):
 	verts, edges, faces = [], [], []
 	sides = []
 
@@ -138,7 +138,7 @@ class Sphere(PrimitiveGeometryClass):
 	def reset(self):
 		self.__init__()
 	def create(self, ctx):
-		mesh = GetSphereMesh(0,32,32,0,False,False,0,360,False)
+		mesh = get_sphere_mesh(0,32,32,0,False,False,0,360,False)
 		self.create_mesh(ctx, mesh, self.classname)
 		pd = self.data.primitivedata
 		pd.classname = self.classname
@@ -147,7 +147,7 @@ class Sphere(PrimitiveGeometryClass):
 		pd = self.data.primitivedata
 		hsegs = pd.hsegs if not pd.seglock else pd.ssegs - 2
 		#radius, ssegs, hsegs, hemisphere, chop, sliceon, sfrom, sto, base
-		mesh = GetSphereMesh(pd.radius1, pd.ssegs, hsegs,
+		mesh = get_sphere_mesh(pd.radius1, pd.ssegs, hsegs,
 				pd.bias, False, #hemisphere, chop
 				pd.sliceon, pd.sfrom, pd.sto,
 				pd.base)
@@ -155,9 +155,9 @@ class Sphere(PrimitiveGeometryClass):
 	def abort(self):
 		delete_objects([self.owner])
 
-class BsMax_OT_CreateSphere(CreatePrimitive):
-	bl_idname = "bsmax.createsphere"
-	bl_label = "Sphere (Create)"
+class Create_OT_Sphere(CreatePrimitive):
+	bl_idname = "create.sphere"
+	bl_label = "Sphere"
 	subclass = Sphere()
 
 	def create(self, ctx, clickpoint):
@@ -174,7 +174,7 @@ class BsMax_OT_CreateSphere(CreatePrimitive):
 		pass
 
 def register_sphere():
-	bpy.utils.register_class(BsMax_OT_CreateSphere)
+	bpy.utils.register_class(Create_OT_Sphere)
 	
 def unregister_sphere():	
-	bpy.utils.unregister_class(BsMax_OT_CreateSphere)
+	bpy.utils.unregister_class(Create_OT_Sphere)

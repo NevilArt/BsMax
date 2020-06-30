@@ -23,10 +23,10 @@ class BsMax_MT_VertexCreate(Menu):
 	bl_label = "Vertex"
 	def draw(self,ctx):
 		layout=self.layout
-		layout.operator("bsmax.createvertex",text="Vertex",icon="DOT").fill_type='NONE'
-		layout.operator("bsmax.createvertex",text="Vertexs",icon="STICKY_UVS_DISABLE").fill_type='VERT'
-		layout.operator("bsmax.createvertex",text="Edge",icon="CON_TRACKTO").fill_type='EDGE'
-		layout.operator("bsmax.createvertex",text="Face",icon="LIGHTPROBE_PLANAR").fill_type='FACE'
+		layout.operator("create.vertex",text="Vertex",icon="DOT").fill_type='NONE'
+		layout.operator("create.vertex",text="Vertexs",icon="STICKY_UVS_DISABLE").fill_type='VERT'
+		layout.operator("create.vertex",text="Edge",icon="CON_TRACKTO").fill_type='EDGE'
+		layout.operator("create.vertex",text="Face",icon="LIGHTPROBE_PLANAR").fill_type='FACE'
 
 # Mesh create menu
 class BsMax_MT_MeshCreate(Menu):
@@ -34,25 +34,25 @@ class BsMax_MT_MeshCreate(Menu):
 	bl_label = "Mesh"
 	def draw(self,ctx):
 		layout=self.layout
-		layout.operator("bsmax.createplane",text="Plane",icon="MESH_PLANE")
-		layout.operator("bsmax.createbox",text="Box",icon="MESH_CUBE")
-		layout.operator("bsmax.createcone",text="Cone",icon="MESH_CONE")
-		layout.operator("bsmax.createsphere",text="Sphere",icon="MESH_UVSPHERE")
+		layout.operator("create.plane",text="Plane",icon="MESH_PLANE")
+		layout.operator("create.box",text="Box",icon="MESH_CUBE")
+		layout.operator("create.cone",text="Cone",icon="MESH_CONE")
+		layout.operator("create.sphere",text="Sphere",icon="MESH_UVSPHERE")
 		#layout.operator("bsmax.creategeosphere",icon="MESH_ICOSPHERE")
-		layout.operator("bsmax.createuicosphere",text="IcoSphere",icon="MESH_ICOSPHERE")
-		layout.operator("bsmax.createcapsule",text="Capsule",icon="META_CAPSULE")
-		layout.operator("bsmax.createoiltank",text="OilTank",icon="META_CAPSULE")
-		layout.operator("bsmax.createcylinder",text="Cylinder",icon="MESH_CYLINDER")
-		layout.operator("bsmax.createtube",text="Tube",icon="MESH_TORUS")
-		layout.operator("bsmax.createtorus",text="Torus",icon="MESH_TORUS")
-		layout.operator("bsmax.createpyramid",text="Pyramid",icon="MARKER")
-		layout.operator("bsmax.createteapot",text="Teapot",icon="NODE_MATERIAL")
-		layout.operator("bsmax.createmonkey",text="Monkey",icon="MESH_MONKEY")
+		layout.operator("create.uicosphere",text="IcoSphere",icon="MESH_ICOSPHERE")
+		layout.operator("create.capsule",text="Capsule",icon="META_CAPSULE")
+		layout.operator("create.oiltank",text="OilTank",icon="META_CAPSULE")
+		layout.operator("create.cylinder",text="Cylinder",icon="MESH_CYLINDER")
+		layout.operator("create.tube",text="Tube",icon="MESH_TORUS")
+		layout.operator("create.torus",text="Torus",icon="MESH_TORUS")
+		layout.operator("create.pyramid",text="Pyramid",icon="MARKER")
+		layout.operator("create.teapot",text="Teapot",icon="NODE_MATERIAL")
+		layout.operator("create.monkey",text="Monkey",icon="MESH_MONKEY")
 		layout.separator()
 		layout.menu("BSMAX_MT_vertexcreatemenu",icon='DOT')
 		layout.separator()
-		#layout.operator("bsmax.createmesher",text="Mesher",icon="META_CUBE")
-		layout.operator("bsmax.createextrude",text="Extrude Mesh (Add)",icon="EXPORT").mode='Mesh'
+		#layout.operator("create.mesher",text="Mesher",icon="META_CUBE")
+		layout.operator("create.extrude",text="Extrude Mesh (Add)",icon="EXPORT").mode='Mesh'
 		
 # curve / shape / spline create menu
 class BsMax_MT_CurveCreate(Menu):
@@ -60,18 +60,18 @@ class BsMax_MT_CurveCreate(Menu):
 	bl_label = "Curve"
 	def draw(self,ctx):
 		layout = self.layout
-		layout.operator("bsmax.createline",text="Line",icon="CURVE_PATH")
-		layout.operator("bsmax.createrectangle",text="Rectangle",icon="META_PLANE")
-		layout.operator("bsmax.createcircle",text="Circle",icon="MESH_CIRCLE")
-		layout.operator("bsmax.createellipse",text="Ellipse",icon="MESH_CAPSULE")
-		layout.operator("bsmax.createarc",text="Arc",icon="SPHERECURVE")
-		layout.operator("bsmax.createdonut",text="Donut",icon="MESH_CIRCLE")
-		layout.operator("bsmax.createngon",text="Ngon",icon="SEQ_CHROMA_SCOPE")
-		layout.operator("bsmax.createstar",text="Start",icon="SOLO_OFF")
-		layout.operator("bsmax.createhelix",text="Helix",icon="FORCE_VORTEX")
-		layout.operator("bsmax.createprofilo",text="Profilo",icon="MOD_BOOLEAN")
+		layout.operator("create.line",text="Line",icon="CURVE_PATH")
+		layout.operator("create.rectangle",text="Rectangle",icon="META_PLANE")
+		layout.operator("create.circle",text="Circle",icon="MESH_CIRCLE")
+		layout.operator("create.ellipse",text="Ellipse",icon="MESH_CAPSULE")
+		layout.operator("create.arc",text="Arc",icon="SPHERECURVE")
+		layout.operator("create.donut",text="Donut",icon="MESH_CIRCLE")
+		layout.operator("create.ngon",text="Ngon",icon="SEQ_CHROMA_SCOPE")
+		layout.operator("create.star",text="Start",icon="SOLO_OFF")
+		layout.operator("create.helix",text="Helix",icon="FORCE_VORTEX")
+		layout.operator("create.profilo",text="Profilo",icon="MOD_BOOLEAN")
 		layout.separator()
-		layout.operator("bsmax.createextrude",text="Extrude Curve (Add)",icon="EXPORT").mode='Curve'
+		layout.operator("create.extrude",text="Extrude Curve (Add)",icon="EXPORT").mode='Curve'
 
 # Surface create menu
 class BsMax_MT_SurfaceCreate(Menu):
@@ -87,15 +87,15 @@ class BsMax_MT_MetaballCreate(Menu):
 	bl_label = "Metaball"
 	def draw(self,ctx):
 		layout = self.layout
-		layout.operator("bsmax.createmetaball",text="Ball",
+		layout.operator("create.metaball",text="Ball",
 						icon="META_BALL").metaball_type='BALL'
-		layout.operator("bsmax.createmetaball",text="Capcule",
+		layout.operator("create.metaball",text="Capcule",
 						icon="META_CAPSULE").metaball_type='CAPSULE'
-		layout.operator("bsmax.createmetaball",text="Plane",
+		layout.operator("create.metaball",text="Plane",
 						icon="META_PLANE").metaball_type='PLANE'
-		layout.operator("bsmax.createmetaball",text="Ellipsoid",
+		layout.operator("create.metaball",text="Ellipsoid",
 						icon="META_ELLIPSOID").metaball_type='ELLIPSOID'
-		layout.operator("bsmax.createmetaball",text="Cube",
+		layout.operator("create.metaball",text="Cube",
 						icon="META_CUBE").metaball_type='CUBE'
 
 # Text create menu
@@ -104,9 +104,9 @@ class BsMax_MT_TextCreate(Menu):
 	bl_label = "Text"
 	def draw(self,ctx):
 		layout = self.layout
-		layout.operator("bsmax.createtext",text="Text",
+		layout.operator("create.text",text="Text",
 			icon="OUTLINER_OB_FONT").fill_mode='BOTH'
-		layout.operator("bsmax.createtext",text="Text",
+		layout.operator("create.text",text="Text",
 			icon="FONT_DATA").fill_mode="NONE"
 
 # Greace Pencil create menu
@@ -115,11 +115,11 @@ class BsMax_MT_GreacePencilCreate(Menu):
 	bl_label = "Greace Pencil"
 	def draw(self,ctx):
 		layout = self.layout
-		layout.operator("bsmax.creategreacepencil",text="Blank",
+		layout.operator("create.greacepencil",text="Blank",
 				icon="EMPTY_AXIS").gpencil_type="EMPTY"
-		layout.operator("bsmax.creategreacepencil",text="Stroke",
+		layout.operator("create.greacepencil",text="Stroke",
 				icon="OUTLINER_OB_GREASEPENCIL").gpencil_type='STROKE'
-		layout.operator("bsmax.creategreacepencil",text="Monkey",
+		layout.operator("create.greacepencil",text="Monkey",
 				icon="MESH_MONKEY").gpencil_type="MONKEY"
 
 # Armature create menu
@@ -128,8 +128,8 @@ class BsMax_MT_ArmatureCreate(Menu):
 	bl_label = "Armature"
 	def draw(self,ctx):
 		layout = self.layout
-		layout.operator("bsmax.createbone",text="Bone",icon="BONE_DATA")
-		#layout.operator("bsmax.createbone",text="Armature",icon="ARMATURE_DATA")
+		layout.operator("create.bone",text="Bone",icon="BONE_DATA")
+		#layout.operator("create.bone",text="Armature",icon="ARMATURE_DATA")
 
 # Lattice create menu
 class BsMax_MT_LatticeCreate(Menu):
@@ -137,11 +137,11 @@ class BsMax_MT_LatticeCreate(Menu):
 	bl_label = "Lattice"
 	def draw(self,ctx):
 		layout = self.layout
-		layout.operator("bsmax.createlattice",text='Lattice 2x2x2 (Create)',
+		layout.operator("create.lattice",text='Lattice 2x2x2 (Create)',
 						icon="OUTLINER_OB_LATTICE").resolution=2
-		layout.operator("bsmax.createlattice",text='Lattice 3x3x3 (Create)',
+		layout.operator("create.lattice",text='Lattice 3x3x3 (Create)',
 						icon="OUTLINER_OB_LATTICE").resolution=3
-		layout.operator("bsmax.createlattice",text='Lattice 4x4x4 (Create)',
+		layout.operator("create.lattice",text='Lattice 4x4x4 (Create)',
 						icon="OUTLINER_OB_LATTICE").resolution=4
 
 # Empty create menu
@@ -150,21 +150,21 @@ class BsMax_MT_EmptyCreate(Menu):
 	bl_label = "Empty"
 	def draw(self,ctx):
 		layout = self.layout
-		layout.operator("bsmax.createempty",text="Plane Axis",
+		layout.operator("create.empty",text="Plane Axis",
 						icon="EMPTY_AXIS").empty_type='PLAIN_AXES'
-		layout.operator("bsmax.createempty",text="Arrows",
+		layout.operator("create.empty",text="Arrows",
 						icon="EMPTY_ARROWS").empty_type='ARROWS'
-		layout.operator("bsmax.createempty",text="Single Arrows",
+		layout.operator("create.empty",text="Single Arrows",
 						icon="EMPTY_SINGLE_ARROW").empty_type='SINGLE_ARROW'
-		layout.operator("bsmax.createempty",text="Circle",
+		layout.operator("create.empty",text="Circle",
 						icon="MESH_CIRCLE").empty_type='CIRCLE'
-		layout.operator("bsmax.createempty",text="Cube",
+		layout.operator("create.empty",text="Cube",
 						icon="CUBE").empty_type='CUBE'
-		layout.operator("bsmax.createempty",text="Sphere",
+		layout.operator("create.empty",text="Sphere",
 						icon="SPHERE").empty_type='SPHERE'
-		layout.operator("bsmax.createempty",text="Cone",
+		layout.operator("create.empty",text="Cone",
 						icon="CONE").empty_type='CONE'
-		layout.operator("bsmax.createempty",text="Image",
+		layout.operator("create.empty",text="Image",
 						icon="FILE_IMAGE").empty_type='IMAGE'
 
 # Image create menu
@@ -173,9 +173,9 @@ class BsMax_MT_ImageCreate(Menu):
 	bl_label = "Image"
 	def draw(self,ctx):
 		layout = self.layout
-		layout.operator("bsmax.createimage",text="Refrence",
+		layout.operator("create.image",text="Refrence",
 						icon="IMAGE_REFERENCE").image_type='REFERENCE'
-		layout.operator("bsmax.createimage",text="BackGround",
+		layout.operator("create.image",text="BackGround",
 						icon="IMAGE_BACKGROUND").image_type='BACKGROUND'
 
 # Light create menu
@@ -184,11 +184,11 @@ class BsMax_MT_LightCreate(Menu):
 	bl_label = "Light"
 	def draw(self,ctx):
 		layout = self.layout
-		layout.operator("bsmax.createpointlight",text="Point",icon="LIGHT_POINT")
-		layout.operator("bsmax.creatsunlight",text="Sun",icon="LIGHT_SUN")
-		layout.operator("bsmax.createspotlight",text="Spot Light Free/Target",icon="LIGHT_SPOT")
-		layout.operator("bsmax.createarealight",text="Free Area",icon="LIGHT_AREA").free = True
-		layout.operator("bsmax.createarealight",text="Target Area",icon="LIGHT_AREA")
+		layout.operator("create.pointlight",text="Point",icon="LIGHT_POINT")
+		layout.operator("create.sunlight",text="Sun",icon="LIGHT_SUN")
+		layout.operator("create.spotlight",text="Spot Light Free/Target",icon="LIGHT_SPOT")
+		layout.operator("create.arealight",text="Free Area",icon="LIGHT_AREA").free = True
+		layout.operator("create.arealight",text="Target Area",icon="LIGHT_AREA")
 
 # Light Probs create menu
 class BsMax_MT_LightProbsCreate(Menu):
@@ -196,11 +196,11 @@ class BsMax_MT_LightProbsCreate(Menu):
 	bl_label = "Light Probe"
 	def draw(self,ctx):
 		layout = self.layout
-		layout.operator("bsmax.createlightprobecubemap",
+		layout.operator("create.light_probe_cubemap",
 			text="Reflection Cubemap",icon="LIGHTPROBE_CUBEMAP")
-		layout.operator("bsmax.createlightprobeplaner",
+		layout.operator("create.light_probe_planer",
 			text="Reflection Plane",icon="LIGHTPROBE_PLANAR")
-		layout.operator("bsmax.createlightprobegrid",
+		layout.operator("create.light_probe_grid",
 			text="Irradiance Volume",icon="LIGHTPROBE_GRID")
 
 # Camera create menu
@@ -209,7 +209,7 @@ class BsMax_MT_CameraCreate(Menu):
 	bl_label = "Camera"
 	def draw(self,ctx):
 		layout = self.layout
-		layout.operator("bsmax.createcamera",text="Camera Free/Target",icon="OUTLINER_OB_CAMERA")
+		layout.operator("create.camera",text="Camera Free/Target",icon="OUTLINER_OB_CAMERA")
 		layout.operator("camera.create_from_view",icon="OUTLINER_OB_CAMERA")
 
 # Speaker create menu
@@ -218,7 +218,7 @@ class BsMax_MT_SpeakerCreate(Menu):
 	bl_label = "Speaker"
 	def draw(self,ctx):
 		layout = self.layout
-		layout.operator("bsmax.createspeaker",text="Speaker",icon="OUTLINER_OB_SPEAKER")
+		layout.operator("create.speaker",text="Speaker",icon="OUTLINER_OB_SPEAKER")
 
 # Force field create menu
 class BsMax_MT_ForceFieldCreate(Menu):
@@ -226,31 +226,31 @@ class BsMax_MT_ForceFieldCreate(Menu):
 	bl_label = "Force field"
 	def draw(self,ctx):
 		layout = self.layout
-		layout.operator("bsmax.createeffector",text="Force",
+		layout.operator("create.effector",text="Force",
 			icon="FORCE_FORCE").effector_type = 'FORCE'
-		layout.operator("bsmax.createeffector",	text="Wind",
+		layout.operator("create.effector",	text="Wind",
 			icon="FORCE_WIND").effector_type = 'WIND'
-		layout.operator("bsmax.createeffector",text="Vortex",
+		layout.operator("create.effector",text="Vortex",
 			icon="FORCE_VORTEX").effector_type = 'VORTEX'
-		layout.operator("bsmax.createeffector",	text="Magnet",
+		layout.operator("create.effector",	text="Magnet",
 			icon="FORCE_MAGNETIC").effector_type = 'MAGNET'
-		layout.operator("bsmax.createeffector",	text="Harmonic",
+		layout.operator("create.effector",	text="Harmonic",
 			icon="FORCE_HARMONIC").effector_type = 'HARMONIC'
-		layout.operator("bsmax.createeffector",	text="Charge",
+		layout.operator("create.effector",	text="Charge",
 			icon="FORCE_CHARGE").effector_type = 'CHARGE'
-		layout.operator("bsmax.createeffector",text="Lennardj",
+		layout.operator("create.effector",text="Lennardj",
 			icon="FORCE_LENNARDJONES").effector_type = 'LENNARDJ'
-		layout.operator("bsmax.createeffector",	text="Texture",
+		layout.operator("create.effector",	text="Texture",
 			icon="FORCE_TEXTURE").effector_type = 'TEXTURE'
-		layout.operator("bsmax.createeffector",text="Guide",
+		layout.operator("create.effector",text="Guide",
 			icon="FORCE_CURVE").effector_type = 'GUIDE'
-		layout.operator("bsmax.createeffector",text="Boid",
+		layout.operator("create.effector",text="Boid",
 			icon="FORCE_BOID").effector_type = 'BOID'
-		layout.operator("bsmax.createeffector",text="Turbulence",
+		layout.operator("create.effector",text="Turbulence",
 			icon="FORCE_TURBULENCE").effector_type = 'TURBULENCE'
-		layout.operator("bsmax.createeffector",text="Drag",
+		layout.operator("create.effector",text="Drag",
 			icon="FORCE_DRAG").effector_type = 'DRAG'
-		layout.operator("bsmax.createeffector",	text="Smoke",
+		layout.operator("create.effector",	text="Smoke",
 			icon="FORCE_SMOKEFLOW").effector_type = 'SMOKE'
 
 # View 3D Create Menu
@@ -284,7 +284,7 @@ class BsMax_MT_Create(Menu):
 		layout.menu("BSMAX_MT_cameracreatemenu",icon='OUTLINER_OB_CAMERA')
 		layout.separator()
 		#layout.menu("BSMAX_MT_speakercreatemenu",icon='OUTLINER_OB_SPEAKER')
-		layout.operator("bsmax.createspeaker",icon="OUTLINER_OB_SPEAKER")
+		layout.operator("create.speaker",icon="OUTLINER_OB_SPEAKER")
 		layout.separator()
 		layout.menu("BSMAX_MT_forcefieldcecreatemenu",icon='OUTLINER_OB_FORCE_FIELD')
 		# OUTLINER_OB_GROUP_INSTANCE

@@ -19,7 +19,7 @@ from math import pi, sin, cos, radians
 from primitive.primitive import PrimitiveGeometryClass, CreatePrimitive
 from bsmax.actions import delete_objects
 
-def GetCapsuleMesh(radius, height, ssegs, csegs, hsegs, sliceon, sfrom, sto):
+def get_capsule_mesh(radius, height, ssegs, csegs, hsegs, sliceon, sfrom, sto):
 	verts, edges, faces = [], [], []
 	sides, heights = [], []
 	arcrange, slicestep, r = pi*2, 0, radius
@@ -128,7 +128,7 @@ class Capsule(PrimitiveGeometryClass):
 	def reset(self):
 		self.__init__()
 	def create(self, ctx):
-		mesh = GetCapsuleMesh(0, 0, 18, 8, 6, False, 0, 360)
+		mesh = get_capsule_mesh(0, 0, 18, 8, 6, False, 0, 360)
 		self.create_mesh(ctx, mesh, self.classname)
 		pd = self.data.primitivedata
 		pd.classname = self.classname
@@ -144,16 +144,16 @@ class Capsule(PrimitiveGeometryClass):
 			if pd.height < diameter:
 				pd.height = diameter
 			height = pd.height - pd.radius1 * 2
-		mesh = GetCapsuleMesh(pd.radius1, height,
+		mesh = get_capsule_mesh(pd.radius1, height,
 			pd.ssegs, csegs, pd.hsegs,
 			pd.sliceon, pd.sfrom, pd.sto)
 		self.update_mesh(mesh)
 	def abort(self):
 		delete_objects([self.owner])
 
-class BsMax_OT_CreateCapsule(CreatePrimitive):
-	bl_idname = "bsmax.createcapsule"
-	bl_label = "Capsule (Create)"
+class Create_OT_Capsule(CreatePrimitive):
+	bl_idname = "create.capsule"
+	bl_label = "Capsule"
 	subclass = Capsule()
 
 	def create(self, ctx, clickpoint):
@@ -172,7 +172,7 @@ class BsMax_OT_CreateCapsule(CreatePrimitive):
 		pass
 
 def register_capsule():
-	bpy.utils.register_class(BsMax_OT_CreateCapsule)
+	bpy.utils.register_class(Create_OT_Capsule)
 	
 def unregister_capsule():
-	bpy.utils.unregister_class(BsMax_OT_CreateCapsule)
+	bpy.utils.unregister_class(Create_OT_Capsule)

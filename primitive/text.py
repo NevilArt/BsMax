@@ -30,8 +30,8 @@ class Text:
 	def abort(self):
 		delete_objects([self.owner])
 
-class BsMax_OT_CreateText(CreatePrimitive):
-	bl_idname="bsmax.createtext"
+class Create_OT_Text(CreatePrimitive):
+	bl_idname="create.text"
 	bl_label="Text (Create)"
 	subclass = Text()
 
@@ -54,7 +54,7 @@ class BsMax_OT_CreateText(CreatePrimitive):
 		pass
 
 def register_text():
-	bpy.utils.register_class(BsMax_OT_CreateText)
+	bpy.utils.register_class(Create_OT_Text)
 
 def unregister_text():
-	bpy.utils.unregister_class(BsMax_OT_CreateText)
+	bpy.utils.unregister_class(Create_OT_Text)

@@ -221,9 +221,9 @@ class Teapot(PrimitiveGeometryClass):
 	def abort(self):
 		delete_objects([self.owner])
 
-class BsMax_OT_CreateTeapot(CreatePrimitive):
-	bl_idname = "bsmax.createteapot"
-	bl_label = "Teapot (Create)"
+class Create_OT_Teapot(CreatePrimitive):
+	bl_idname = "create.teapot"
+	bl_label = "Teapot"
 	subclass = Teapot()
 
 	def create(self, ctx, clickpoint):
@@ -240,7 +240,7 @@ class BsMax_OT_CreateTeapot(CreatePrimitive):
 		pass
 
 def register_teapot():
-	bpy.utils.register_class(BsMax_OT_CreateTeapot)
+	bpy.utils.register_class(Create_OT_Teapot)
 
 def unregister_teapot():
-	bpy.utils.unregister_class(BsMax_OT_CreateTeapot)
+	bpy.utils.unregister_class(Create_OT_Teapot)

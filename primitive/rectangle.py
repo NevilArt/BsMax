@@ -17,7 +17,7 @@ import bpy
 from primitive.primitive import CreatePrimitive, PrimitiveCurveClass
 from bsmax.actions import delete_objects
 
-def GetRectangleShapes(width, length, corner):
+def get_rectangle_shapes(width, length, corner):
 	Shapes = []
 	w, l = width / 2, length / 2
 	r, c = corner, corner - (corner * 0.551786)
@@ -58,20 +58,20 @@ class Rectangle(PrimitiveCurveClass):
 	def reset(self):
 		self.__init__()
 	def create(self, ctx):
-		shapes = GetRectangleShapes(0, 0, 0)
+		shapes = get_rectangle_shapes(0, 0, 0)
 		self.create_curve(ctx, shapes, self.classname)
 		pd = self.data.primitivedata
 		pd.classname = self.classname
 	def update(self):
 		pd = self.data.primitivedata
-		shapes = GetRectangleShapes(pd.width, pd.length, pd.chamfer1)
+		shapes = get_rectangle_shapes(pd.width, pd.length, pd.chamfer1)
 		self.update_curve(shapes)
 	def abort(self):
 		delete_objects([self.owner])
 
-class BsMax_OT_CreateRectangle(CreatePrimitive):
-	bl_idname = "bsmax.createrectangle"
-	bl_label = "Rectangle (Create)"
+class Create_OT_Rectangle(CreatePrimitive):
+	bl_idname = "create.rectangle"
+	bl_label = "Rectangle"
 	subclass = Rectangle()
 
 	def create(self, ctx, clickpoint):
@@ -90,7 +90,7 @@ class BsMax_OT_CreateRectangle(CreatePrimitive):
 		pass
 
 def register_rectangle():
-	bpy.utils.register_class(BsMax_OT_CreateRectangle)
+	bpy.utils.register_class(Create_OT_Rectangle)
 
 def unregister_rectangle():
-	bpy.utils.unregister_class(BsMax_OT_CreateRectangle)
+	bpy.utils.unregister_class(Create_OT_Rectangle)

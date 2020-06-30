@@ -27,9 +27,9 @@ class Effector:
 	def abort(self):
 		delete_objects([self.owner])
 
-class BsMax_OT_CreateEffector(CreatePrimitive):
-	bl_idname="bsmax.createeffector"
-	bl_label="Effector (Create)"
+class Create_OT_Effector(CreatePrimitive):
+	bl_idname="create.effector"
+	bl_label="Effector"
 	subclass = Effector()
 
 	effector_type: EnumProperty(name='Type',default='FORCE',
@@ -52,7 +52,7 @@ class BsMax_OT_CreateEffector(CreatePrimitive):
 		pass
 
 def register_effector():
-	bpy.utils.register_class(BsMax_OT_CreateEffector)
+	bpy.utils.register_class(Create_OT_Effector)
 
 def unregister_effector():
-	bpy.utils.unregister_class(BsMax_OT_CreateEffector)
+	bpy.utils.unregister_class(Create_OT_Effector)

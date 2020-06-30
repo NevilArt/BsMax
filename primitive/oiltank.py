@@ -19,7 +19,7 @@ from math import pi, sin, cos, radians
 from primitive.primitive import PrimitiveGeometryClass, CreatePrimitive
 from bsmax.actions import delete_objects
 
-def Get_oiltank_Mesh(radius,height,capheight,blend,ssegs,csegs,hsegs,sliceon,sfrom,sto):
+def get_oiltank_mesh(radius,height,capheight,blend,ssegs,csegs,hsegs,sliceon,sfrom,sto):
 	verts,edges,faces = [],[],[]
 	sides,heights = [],[]
 	arcrange,slicestep,r = pi*2,0,radius
@@ -141,7 +141,7 @@ class OilTank(PrimitiveGeometryClass):
 	def reset(self):
 		self.__init__()
 	def create(self, ctx):
-		mesh = Get_oiltank_Mesh(0,0,0,0,18,8,6,False,0,360)
+		mesh = get_oiltank_mesh(0,0,0,0,18,8,6,False,0,360)
 		self.create_mesh(ctx, mesh, self.classname)
 		pd = self.data.primitivedata
 		pd.classname = self.classname
@@ -162,7 +162,7 @@ class OilTank(PrimitiveGeometryClass):
 			pd.thickness = height/2
 		if pd.thickness*2 < -height:
 			pd.thickness = -height/2
-		mesh = Get_oiltank_Mesh(pd.radius1, height,
+		mesh = get_oiltank_mesh(pd.radius1, height,
 			pd.thickness, pd.chamfer1, # capheight, blend
 			pd.ssegs, csegs, pd.hsegs,
 			pd.sliceon, pd.sfrom, pd.sto)
@@ -170,9 +170,9 @@ class OilTank(PrimitiveGeometryClass):
 	def abort(self):
 		delete_objects([self.owner])
 
-class BsMax_OT_CreateOilTank(CreatePrimitive):
-	bl_idname = "bsmax.createoiltank"
-	bl_label = "OilTank (Create)"
+class Create_OT_OilTank(CreatePrimitive):
+	bl_idname = "create.oiltank"
+	bl_label = "OilTank"
 	subclass = OilTank()
 
 	def create(self, ctx, clickpoint):
@@ -193,7 +193,7 @@ class BsMax_OT_CreateOilTank(CreatePrimitive):
 		pass
 
 def register_oiltank():
-	bpy.utils.register_class(BsMax_OT_CreateOilTank)
+	bpy.utils.register_class(Create_OT_OilTank)
 	
 def unregister_oiltank():
-	bpy.utils.unregister_class(BsMax_OT_CreateOilTank)
+	bpy.utils.unregister_class(Create_OT_OilTank)

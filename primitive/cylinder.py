@@ -18,7 +18,7 @@ from math import pi, sin, cos, radians
 from primitive.primitive import CreatePrimitive, PrimitiveGeometryClass
 from bsmax.actions import delete_objects
 
-def GetCylinderMesh(radius1, radius2, height, hsegs, csegs, ssegs, sliceon, sfrom, sto):
+def get_cylinder_mesh(radius1, radius2, height, hsegs, csegs, ssegs, sliceon, sfrom, sto):
 	verts,edges,faces = [],[],[]
 	sides,heights = [],[]
 	sfrom,sto = radians(sfrom),radians(sto)
@@ -220,7 +220,7 @@ class Cylinder(PrimitiveGeometryClass):
 	def reset(self):
 		self.__init__()
 	def create(self, ctx):
-		mesh = GetCylinderMesh(0,0,0,1,1,18,False,0,360)
+		mesh = get_cylinder_mesh(0,0,0,1,1,18,False,0,360)
 		self.create_mesh(ctx, mesh, self.classname)
 		pd = self.data.primitivedata
 		pd.classname = self.classname
@@ -228,7 +228,7 @@ class Cylinder(PrimitiveGeometryClass):
 	def update(self):
 		pd = self.data.primitivedata
 		radius = pd.radius1
-		mesh = GetCylinderMesh(radius, radius, pd.height, 
+		mesh = get_cylinder_mesh(radius, radius, pd.height, 
 						pd.hsegs, pd.csegs, pd.ssegs,
 						pd.sliceon, pd.sfrom, pd.sto)
 		self.update_mesh(mesh)
@@ -244,14 +244,14 @@ class Cone(PrimitiveGeometryClass):
 	def reset(self):
 		self.__init__()
 	def create(self, ctx):
-		mesh = GetCylinderMesh(0,0,0,1,1,18,False,0,360)
+		mesh = get_cylinder_mesh(0,0,0,1,1,18,False,0,360)
 		self.create_mesh(ctx, mesh, self.classname)
 		pd = self.data.primitivedata
 		pd.classname = self.classname
 		pd.hsegs, pd.csegs, pd.ssegs = 1, 1, 18
 	def update(self, ctx):
 		pd = self.data.primitivedata
-		mesh = GetCylinderMesh(pd.radius1, pd.radius2, pd.height,
+		mesh = get_cylinder_mesh(pd.radius1, pd.radius2, pd.height,
 				pd.hsegs, pd.csegs, pd.ssegs,
 				pd.sliceon, pd.sfrom, pd.sto)
 		self.update_mesh(mesh)
@@ -260,9 +260,9 @@ class Cone(PrimitiveGeometryClass):
 	def abort(self):
 		delete_objects([self.owner])
 
-class BsMax_OT_CreateCylinder(CreatePrimitive):
-	bl_idname = "bsmax.createcylinder"
-	bl_label = "Cylinder (Create)"
+class Create_OT_Cylinder(CreatePrimitive):
+	bl_idname = "create.cylinder"
+	bl_label = "Cylinder"
 	subclass = Cylinder()
 
 	def create(self, ctx, clickpoint):
@@ -280,9 +280,9 @@ class BsMax_OT_CreateCylinder(CreatePrimitive):
 	def finish(self):
 		pass
 
-class BsMax_OT_CreateCone(CreatePrimitive):
-	bl_idname = "bsmax.createcone"
-	bl_label = "Cone (Create)"
+class Create_OT_Cone(CreatePrimitive):
+	bl_idname = "create.cone"
+	bl_label = "Cone"
 	subclass = Cone()
 
 	def create(self, ctx, clickpoint):
@@ -305,9 +305,9 @@ class BsMax_OT_CreateCone(CreatePrimitive):
 		pass
 
 def register_cylinder():
-	classes = [BsMax_OT_CreateCylinder, BsMax_OT_CreateCone]
+	classes = [Create_OT_Cylinder, Create_OT_Cone]
 	[bpy.utils.register_class(c) for c in classes]
 
 def unregister_cylinder():
-	classes = [BsMax_OT_CreateCylinder, BsMax_OT_CreateCone]
+	classes = [Create_OT_Cylinder, Create_OT_Cone]
 	[bpy.utils.unregister_class(c) for c in classes]

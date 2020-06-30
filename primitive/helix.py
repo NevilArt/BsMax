@@ -19,7 +19,7 @@ from primitive.primitive import PrimitiveCurveClass, CreatePrimitive
 from bsmax.actions import delete_objects
 from bsmax.math import get_bias
 
-def GetHelixshape(radius1, radius2, height, turns, segs, bias, ccw):
+def get_helix_shape(radius1, radius2, height, turns, segs, bias, ccw):
 	shape = []
 	r1,r2 = radius1,radius2
 	totatdig = (pi*2)*turns
@@ -54,7 +54,7 @@ class Helix(PrimitiveCurveClass):
 	def reset(self):
 		self.__init__()
 	def create(self, ctx):
-		shapes = GetHelixshape(0,0,0,3,20,0,False)
+		shapes = get_helix_shape(0,0,0,3,20,0,False)
 		self.create_curve(ctx, shapes, self.classname)
 		pd = self.data.primitivedata
 		pd.classname = self.classname
@@ -63,15 +63,15 @@ class Helix(PrimitiveCurveClass):
 	def update(self):
 		pd = self.data.primitivedata
 		# radius1, radius2, height, turns, segs, bias, ccw
-		shapes = GetHelixshape(pd.radius1, pd.radius2, pd.height,
+		shapes = get_helix_shape(pd.radius1, pd.radius2, pd.height,
 					pd.turns, pd.ssegs, pd.bias_np, pd.ccw)
 		self.update_curve(shapes)
 	def abort(self):
 		delete_objects([self.owner])
 
-class BsMax_OT_CreateHelix(CreatePrimitive):
-	bl_idname = "bsmax.createhelix"
-	bl_label = "Helix (Create)"
+class Create_OT_Helix(CreatePrimitive):
+	bl_idname = "create.helix"
+	bl_label = "Helix"
 	subclass = Helix()
 
 	def create(self, ctx, clickpoint):
@@ -94,7 +94,7 @@ class BsMax_OT_CreateHelix(CreatePrimitive):
 		pass
 
 def register_helix():
-	bpy.utils.register_class(BsMax_OT_CreateHelix)
+	bpy.utils.register_class(Create_OT_Helix)
 	
 def unregister_helix():
-	bpy.utils.unregister_class(BsMax_OT_CreateHelix)
+	bpy.utils.unregister_class(Create_OT_Helix)
