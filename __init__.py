@@ -20,7 +20,7 @@ bl_info = {
 	"name": "BsMax",
 	"description": "BsMax for Blender 2.80 ~ 2.90",
 	"author": "Naser Merati (Nevil)",
-	"version": (0, 1, 0, 20200630),
+	"version": (0, 1, 0, 20200701),
 	"blender": (2, 80, 0),# 2.80~2.90
 	"location": "Almost Everywhere in Blender",
 	"wiki_url": "https://github.com/NevilArt/BsMax_2_80/wiki",
@@ -44,6 +44,7 @@ from .menu import register_menu,unregister_menu
 from .primitive import register_primitives,unregister_primitives
 from .startup import register_startup,unregister_startup
 from .tools import register_tools,unregister_tools,register_special
+
 # import templates
 
 addons = bpy.context.preferences.addons
@@ -123,6 +124,36 @@ class BsMax_AddonPreferences(bpy.types.AddonPreferences):
 		col.prop(self,"toolpack")
 		col.prop(self,"viewundo")
 
+def save_preferences(preferences):
+	filename = bpy.utils.user_resource('SCRIPTS', "addons") + "/BsMax.ini"
+	string = ""
+	for prop in preferences.bl_rna.properties:
+		if not prop.is_readonly:
+			key = prop.identifier
+			if key != 'bl_idname':
+				val = str(getattr(preferences, key))
+				string += key + "=" + val + os.linesep
+	ini = open(filename, "w")
+	ini.write(string)
+	ini.close()
+
+def load_preferences(preferences):
+	filename = bpy.utils.user_resource('SCRIPTS', "addons") + "/BsMax.ini"
+	if os.path.exists(filename):
+		string = open(filename).read()
+		props = string.splitlines()
+		for prop in props:
+			key = prop.split("=")
+			if len(key) == 2:
+				if key[1] in {'True','False'}:
+					value = key[1] == 'True'
+				else:
+					value = key[1]
+				try:
+					setattr(preferences, key[0], value)
+				except:
+					pass
+
 def register_delay(preferences):
 	sleep(0.2)
 	register_navigation(preferences)
@@ -137,8 +168,10 @@ def register():
 	register_menu(preferences)
 	# templates.register()
 	start_new_thread(register_delay,tuple([preferences]))
+	load_preferences(preferences)
 	
 def unregister():
+	save_preferences(addons[__name__].preferences)
 	unregister_keymaps()
 	unregister_navigation()
 	unregister_menu()

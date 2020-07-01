@@ -5,8 +5,7 @@
 
 Recent Updates
 
-* Just some code cleaning and bug fixing.
-
+* Keep Prefrence settng when add-on has Disable/Enable or Updated.
 * Align objects acts as 3DsMax now. (Select objects, press 'Alt + A' then pick Target).
 * Transform type in fixed (Max mode F12)(Object mode only).
 * (Ctrl + shift + C) Flet/chamfer in Curve Edit mode.
