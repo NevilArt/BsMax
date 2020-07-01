@@ -19,7 +19,7 @@ from bpy.types import Operator
 # Act like Convert to in 3ds Max
 class BsMax_OT_ClearPrimitiveData(Operator):
 	# TODO replace this with a smart conver tool
-	bl_idname="bsmax.clearprimitivedta"
+	bl_idname="primitive.cleardata"
 	bl_label="Clear Primitive Data"
 	def execute(self, ctx):
 		for obj in ctx.selected_objects:
@@ -28,7 +28,7 @@ class BsMax_OT_ClearPrimitiveData(Operator):
 
 def BsMax_MT_PrimitiveDataCleanerMenu(self, context):
 	self.layout.separator()
-	self.layout.operator("bsmax.clearprimitivedta")
+	self.layout.operator("primitive.cleardata")
 
 def register_ui():
 	bpy.utils.register_class(BsMax_OT_ClearPrimitiveData)

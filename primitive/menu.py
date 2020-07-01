@@ -292,7 +292,7 @@ class BsMax_MT_Create(Menu):
 def objects_context_menu(self, ctx):
 	layout = self.layout
 	layout.separator()
-	layout.operator("bsmax.clearprimitivedta",text="Convert to Ragular Object")
+	layout.operator("primitive.cleardata",text="Convert to Ragular Object")
 
 def CreateMenu_CallBack(self,ctx):
 	self.layout.menu("BSMAX_MT_createmenu")

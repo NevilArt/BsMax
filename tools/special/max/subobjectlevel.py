@@ -21,8 +21,8 @@ def set(mode):
 def mesh(ctx,v,e,f):
 	ctx.tool_settings.mesh_select_mode = v,e,f
 
-class BsMax_OT_SubobjectLevel(bpy.types.Operator):
-	bl_idname = "bsmax.subobjectlevel"
+class Object_OT_SubobjectLevel(bpy.types.Operator):
+	bl_idname = "object.subobjectlevel"
 	bl_label = "Subobject Level"
 	level: IntProperty(name="SubobjectLevel")
 
@@ -167,7 +167,7 @@ class BsMax_OT_SubobjectLevel(bpy.types.Operator):
 		return{"FINISHED"}
 
 def register_subobjectlevel():
-	bpy.utils.register_class(BsMax_OT_SubobjectLevel)
+	bpy.utils.register_class(Object_OT_SubobjectLevel)
 
 def unregister_subobjectlevel():
-	bpy.utils.unregister_class(BsMax_OT_SubobjectLevel)
+	bpy.utils.unregister_class(Object_OT_SubobjectLevel)

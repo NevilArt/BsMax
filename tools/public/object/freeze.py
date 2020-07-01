@@ -15,43 +15,70 @@
 
 import bpy
 from bpy.types import Operator
+from bpy.props import EnumProperty,BoolProperty
 
-class BsMax_OT_FreezeSelected(Operator):
-	bl_idname = "bsmax.freezeselectedobjects"
-	bl_label = "Freeze Objects"
-	def execute(self, ctx):
-		for obj in ctx.selected_objects:
-			obj.hide_select = True
-		return{"FINISHED"}
+class Object_OT_Freeze(Operator):
+	bl_idname = "object.freeze"
+	bl_label = "Freeze/Unfreeze"
+	# bl_description = ""
 
-class BsMax_OT_UnFreezeAll(Operator):
-	bl_idname = "bsmax.unfreezeallobjects"
-	bl_label = "Freeze Objects"
-	def execute(self, ctx):
-		for obj in bpy.data.objects:
-			obj.hide_select = False
-		return{"FINISHED"}
-
-class BsMax_OT_UnHideAll(Operator):
-	bl_idname = "object.unhide_all"
-	bl_label = "Unhide All"
-	bl_description = ""
+	mode: EnumProperty(default='selection',
+		items=[('selection','Freeze Selection',''),
+			('unselected','Freeze Unselected',''),
+			('clear','Unfreezee All','')])
 
 	def execute(self, ctx):
-		bpy.ops.object.hide_view_clear('INVOKE_DEFAULT')
-		# enable on future version
-		# for collection in bpy.data.collections:
-		# 	collection.hide_render = False
-		# 	collection.hide_viewport = False
-		# for obj in bpy.data.objects:
-		# 	obj.hide_render = False
-		# 	obj.hide_viewport = False
+		if self.mode == 'selection':
+			for obj in ctx.selected_objects:
+				obj.hide_select = True
+		elif self.mode == 'unselected':
+			for obj in bpy.data.objects:
+				if not obj.select_get():
+					obj.hide_select = True
+		elif self.mode == 'clear':
+			for obj in bpy.data.objects:
+				obj.hide_select = False
 		return{"FINISHED"}
 
-classes = [BsMax_OT_FreezeSelected,BsMax_OT_UnFreezeAll,BsMax_OT_UnHideAll]
+class Object_OT_Hide(Operator):
+	bl_idname = "object.hide"
+	bl_label = "Hide/Unhide"
+	# bl_description = ""
+
+	mode: EnumProperty(default='selection',
+		items=[('selection','Hide Selection',''),
+			('unselected','Hide Unselected',''),
+			('clear','Unhide All','')])
+	collection: BoolProperty(default=False)
+
+	def execute(self, ctx):
+		if self.mode == 'selection':
+			for obj in ctx.selected_objects:
+				obj.hide_render = True
+				obj.hide_viewport = True
+		elif self.mode == 'unselected':
+			for obj in bpy.data.objects:
+				if not obj.select_get():
+					obj.hide_render = True
+					obj.hide_viewport = True
+		elif self.mode == 'clear':
+			if self.collection:
+				for collection in bpy.data.collections:
+					collection.hide_render = False
+					collection.hide_viewport = False
+			for obj in bpy.data.objects:
+				obj.hide_render = False
+				obj.hide_viewport = False
+			bpy.ops.object.hide_view_clear('INVOKE_DEFAULT')
+		return{"FINISHED"}
+
+classes = [Object_OT_Freeze,Object_OT_Hide]
 
 def register_freeze():
 	[bpy.utils.register_class(c) for c in classes]
 
 def unregister_freeze():
 	[bpy.utils.unregister_class(c) for c in classes]
+
+if __name__ == "__main__":
+	register_freeze()

@@ -39,7 +39,7 @@ def get_cylinder_mesh(radius1, radius2, height, hsegs, csegs, ssegs, sliceon, sf
 	# add one more step if sclise is on
 	ssegs += slicestep
 	# Create vertexes data
-	step = (pi*2)/ssegs
+	# step = (pi*2)/ssegs
 	# first vertex
 	if csegs > 1 or sliceon:
 		verts.append([0,0,0])
@@ -59,8 +59,8 @@ def get_cylinder_mesh(radius1, radius2, height, hsegs, csegs, ssegs, sliceon, sf
 		if sliceon:
 			for j in range(1, csegs):
 				s = (r/csegs)*(csegs - j)
-				X = s*x
-				Y = s*y
+				# X = s*x
+				# Y = s*y
 			verts.append([0,0,Z]) # the center point
 			# for j in range(1, csegs):
 			# 	s = (r/csegs)*j
@@ -217,14 +217,17 @@ class Cylinder(PrimitiveGeometryClass):
 		self.finishon = 3
 		self.owner = None
 		self.data = None
+
 	def reset(self):
 		self.__init__()
+
 	def create(self, ctx):
 		mesh = get_cylinder_mesh(0,0,0,1,1,18,False,0,360)
 		self.create_mesh(ctx, mesh, self.classname)
 		pd = self.data.primitivedata
 		pd.classname = self.classname
 		pd.hsegs, pd.csegs, pd.ssegs = 1, 1, 18
+
 	def update(self):
 		pd = self.data.primitivedata
 		radius = pd.radius1
@@ -232,6 +235,7 @@ class Cylinder(PrimitiveGeometryClass):
 						pd.hsegs, pd.csegs, pd.ssegs,
 						pd.sliceon, pd.sfrom, pd.sto)
 		self.update_mesh(mesh)
+
 	def abort(self):
 		delete_objects([self.owner])
 
@@ -241,22 +245,24 @@ class Cone(PrimitiveGeometryClass):
 		self.finishon = 4
 		self.owner = None
 		self.data = None
+
 	def reset(self):
 		self.__init__()
+
 	def create(self, ctx):
 		mesh = get_cylinder_mesh(0,0,0,1,1,18,False,0,360)
 		self.create_mesh(ctx, mesh, self.classname)
 		pd = self.data.primitivedata
 		pd.classname = self.classname
 		pd.hsegs, pd.csegs, pd.ssegs = 1, 1, 18
-	def update(self, ctx):
+
+	def update(self):
 		pd = self.data.primitivedata
 		mesh = get_cylinder_mesh(pd.radius1, pd.radius2, pd.height,
 				pd.hsegs, pd.csegs, pd.ssegs,
 				pd.sliceon, pd.sfrom, pd.sto)
 		self.update_mesh(mesh)
-		#self.data.use_auto_smooth = True
-		#bpy.ops.object.shade_smooth() TODO find related data info
+
 	def abort(self):
 		delete_objects([self.owner])
 
@@ -270,6 +276,7 @@ class Create_OT_Cylinder(CreatePrimitive):
 		self.params = self.subclass.owner.data.primitivedata
 		self.subclass.owner.location = clickpoint.view
 		self.subclass.owner.rotation_euler = clickpoint.orient
+
 	def update(self, ctx, clickcount, dimantion):
 		if clickcount == 1:
 			self.params.radius1 = dimantion.radius
@@ -277,6 +284,7 @@ class Create_OT_Cylinder(CreatePrimitive):
 			self.params.height = dimantion.height
 		if clickcount > 0:
 			self.subclass.update()
+
 	def finish(self):
 		pass
 
@@ -290,6 +298,7 @@ class Create_OT_Cone(CreatePrimitive):
 		self.params = self.subclass.owner.data.primitivedata
 		self.subclass.owner.location = clickpoint.view
 		self.subclass.owner.rotation_euler = clickpoint.orient
+
 	def update(self, ctx, clickcount, dimantion):
 		if clickcount == 1:
 			self.params.radius1 = dimantion.radius
@@ -300,14 +309,15 @@ class Create_OT_Cone(CreatePrimitive):
 			radius2 = self.params.radius1 + dimantion.height_np
 			self.params.radius2 = 0 if radius2 < 0 else radius2
 		if clickcount > 0:
-			self.subclass.update(ctx)
+			self.subclass.update()
+
 	def finish(self):
 		pass
 
+classes = [Create_OT_Cylinder, Create_OT_Cone]
+
 def register_cylinder():
-	classes = [Create_OT_Cylinder, Create_OT_Cone]
 	[bpy.utils.register_class(c) for c in classes]
 
 def unregister_cylinder():
-	classes = [Create_OT_Cylinder, Create_OT_Cone]
 	[bpy.utils.unregister_class(c) for c in classes]

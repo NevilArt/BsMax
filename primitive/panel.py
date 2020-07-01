@@ -461,12 +461,13 @@ class Primitive_PT_Panel(Panel):
 			if ctx.object.data.primitivedata.classname != "":
 				return True
 		return False
+
 	def draw(this,ctx):
 		layout = this.layout
 		self = ctx.object.data.primitivedata
 		get_panel(self,layout)
 		col = layout.column(align=True)
-		col.operator("bsmax.clearprimitivedta",text="Convert to Ragular Object")
+		col.operator("primitive.cleardata",text="Convert to Ragular Object")
 
 class Primitive_OT_Edit(Operator):
 	bl_idname = "primitive.edit"
@@ -482,11 +483,12 @@ class Primitive_OT_Edit(Operator):
 		return False
 
 	def draw(this,ctx):
-		layout = this.layout
 		self = ctx.active_object.data.primitivedata
-		get_panel(self,layout)
+		get_panel(self,this.layout)
+
 	def execute(self,ctx):
 		return {'FINISHED'}
+
 	def invoke(self,ctx,event):
 		wm = ctx.window_manager
 		return wm.invoke_props_dialog(self,width=200)

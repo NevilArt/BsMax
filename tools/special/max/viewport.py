@@ -22,8 +22,8 @@ class View3DData:
 v3dd = View3DData()
 
 # new one will cretae for NewStyle mode
-class BsMax_OT_WireframeToggle(Operator):
-	bl_idname = "view3d.wireframetoggle"
+class View3D_OT_Wireframe_Toggle(Operator):
+	bl_idname = "view3d.wireframe_toggle"
 	bl_label = "Wireframe Toggle"
 
 	@classmethod
@@ -39,8 +39,8 @@ class BsMax_OT_WireframeToggle(Operator):
 			shading.type = 'WIREFRAME'
 		return{"FINISHED"}
 
-class BsMax_OT_LightingToggle(Operator):
-	bl_idname = "bsmax.lightingtoggle"
+class View3D_OT_Lighting_Toggle(Operator):
+	bl_idname = "view3d.lighting_toggle"
 	bl_label = "Lighting Toggle"
 
 	@classmethod
@@ -55,8 +55,8 @@ class BsMax_OT_LightingToggle(Operator):
 			shading.type = 'RENDERED'
 		return{"FINISHED"}
 
-class BsMax_OT_EdgeFaceToggle(Operator):
-	bl_idname = "view3d.edgefacestoggle"
+class View3D_OT_Edge_Face_Toggle(Operator):
+	bl_idname = "view3d.edge_faces_toggle"
 	bl_label = "Edge Shaded Toggle"
 
 	@classmethod
@@ -73,8 +73,8 @@ class BsMax_OT_EdgeFaceToggle(Operator):
 			overlay.wireframe_threshold = 1
 		return{"FINISHED"}
 
-class BsMax_OT_ShadeSelectedFaces(Operator):
-	bl_idname = "bsmax.shadeselectedfaces"
+class View3D_OT_Shade_Selected_Faces(Operator):
+	bl_idname = "view3d.shade_selected_faces"
 	bl_label = "Shade Selected Faces"
 
 	@classmethod
@@ -89,8 +89,8 @@ class BsMax_OT_ShadeSelectedFaces(Operator):
 			FaceShade.face_select = (0.8156, 0.0, 0.0, 0.5)
 		return{"FINISHED"}
 
-class BsMax_OT_ShowHideGride(Operator):
-	bl_idname = "bsmax.showhidegride"
+class View3D_OT_Show_Hide_Gride(Operator):
+	bl_idname = "view3d.show_hide_gride"
 	bl_label = "Show Hide Gride"
 
 	@classmethod
@@ -106,8 +106,8 @@ class BsMax_OT_ShowHideGride(Operator):
 		overlay.show_axis_z = False
 		return{"FINISHED"}
 
-class BsMax_OT_ShowStatistics(Operator):
-	bl_idname = "bsmax.showstatistics"
+class View3D_OT_Show_Statistics(Operator):
+	bl_idname = "view3d.show_statistics"
 	bl_label = "Show Statistics Toggle"
 
 	@classmethod
@@ -119,8 +119,8 @@ class BsMax_OT_ShowStatistics(Operator):
 		overlay.show_text = not overlay.show_text
 		return{"FINISHED"}
 
-class BsMax_OT_XrayToggle(Operator):
-	bl_idname = "bsmax.xraytoggle"
+class Object_OT_Xray_Toggle(Operator):
+	bl_idname = "object.xray_toggle"
 	bl_label = "Xray Mode"
 
 	@classmethod
@@ -131,8 +131,8 @@ class BsMax_OT_XrayToggle(Operator):
 		# TODO Xray Toggle mode for selection
 		return{"FINISHED"}
 
-class BsMax_OT_ShowGeometryToggle(Operator):
-	bl_idname = "bsmax.showgeometrytoggle"
+class View3D_OT_Show_Geometry_Toggle(Operator):
+	bl_idname = "view3d.show_geometry_toggle"
 	bl_label = "Show Geometry Toggle"
 
 	@classmethod
@@ -144,8 +144,8 @@ class BsMax_OT_ShowGeometryToggle(Operator):
 		ctx.space_data.show_object_viewport_mesh = not state
 		return{"FINISHED"}
 
-class BsMax_OT_ShowHelperToggle(Operator):
-	bl_idname = "bsmax.showhelpertoggle"
+class View3D_OT_Show_Helper_Toggle(Operator):
+	bl_idname = "view3d.show_helper_toggle"
 	bl_label = "Show Helper Toggle"
 
 	@classmethod
@@ -165,8 +165,8 @@ class BsMax_OT_ShowHelperToggle(Operator):
 		data.show_object_viewport_lattice = not state
 		return{"FINISHED"}
 
-class BsMax_OT_ShowShapeToggle(Operator):
-	bl_idname = "bsmax.showshapetoggle"
+class View3D_OT_Show_Shape_Toggle(Operator):
+	bl_idname = "view3d.show_shape_toggle"
 	bl_label = "Show Shape Toggle"
 
 	@classmethod
@@ -178,8 +178,8 @@ class BsMax_OT_ShowShapeToggle(Operator):
 		ctx.space_data.show_object_viewport_curve = not state
 		return{"FINISHED"}
 
-class BsMax_OT_ShowLightToggle(Operator):
-	bl_idname = "bsmax.showlighttoggle"
+class View3D_OT_Show_Light_Toggle(Operator):
+	bl_idname = "view3d.show_light_toggle"
 	bl_label = "Show Light Toggle"
 
 	@classmethod
@@ -191,8 +191,8 @@ class BsMax_OT_ShowLightToggle(Operator):
 		ctx.space_data.show_object_viewport_light = not state
 		return{"FINISHED"}
 
-class BsMax_OT_ShowBoneToggle(Operator):
-	bl_idname = "bsmax.showbonetoggle"
+class View3D_OT_Show_Bone_Toggle(Operator):
+	bl_idname = "view3d.show_bone_toggle"
 	bl_label = "Show Bone Toggle"
 
 	@classmethod
@@ -204,8 +204,8 @@ class BsMax_OT_ShowBoneToggle(Operator):
 		ctx.space_data.show_object_viewport_armature = not state
 		return{"FINISHED"}
 
-class BsMax_OT_ShowCameraToggle(Operator):
-	bl_idname = "bsmax.showcameratoggle"
+class View3D_OT_Show_Camera_Toggle(Operator):
+	bl_idname = "view3d.show_camera_toggle"
 	bl_label = "Show Camera Toggle"
 
 	@classmethod
@@ -217,18 +217,18 @@ class BsMax_OT_ShowCameraToggle(Operator):
 		ctx.space_data.show_object_viewport_camera = not state
 		return{"FINISHED"}
 
-classes = [BsMax_OT_WireframeToggle,
-	BsMax_OT_EdgeFaceToggle,
-	BsMax_OT_ShadeSelectedFaces,
-	BsMax_OT_ShowHideGride,
-	BsMax_OT_ShowStatistics,
-	BsMax_OT_ShowGeometryToggle,
-	BsMax_OT_ShowHelperToggle,
-	BsMax_OT_ShowShapeToggle,
-	BsMax_OT_ShowLightToggle,
-	BsMax_OT_ShowBoneToggle,
-	BsMax_OT_ShowCameraToggle,
-	BsMax_OT_LightingToggle]
+classes = [View3D_OT_Wireframe_Toggle,
+	View3D_OT_Edge_Face_Toggle,
+	View3D_OT_Shade_Selected_Faces,
+	View3D_OT_Show_Hide_Gride,
+	View3D_OT_Show_Statistics,
+	View3D_OT_Show_Geometry_Toggle,
+	View3D_OT_Show_Helper_Toggle,
+	View3D_OT_Show_Shape_Toggle,
+	View3D_OT_Show_Light_Toggle,
+	View3D_OT_Show_Bone_Toggle,
+	View3D_OT_Show_Camera_Toggle,
+	View3D_OT_Lighting_Toggle]
 	
 def register_viewport():
 	[bpy.utils.register_class(c) for c in classes]

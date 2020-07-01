@@ -16,8 +16,8 @@
 import bpy
 from bpy.types import Operator
 
-class BsMax_OT_SelectInstance(Operator):
-	bl_idname = "bsmax.select_instance"
+class Object_OT_Select_Instance(Operator):
+	bl_idname = "object.select_instance"
 	bl_label = "Select Instance"
 	@classmethod
 	def poll(self, ctx):
@@ -37,8 +37,8 @@ def BsMax_ReadPrimitiveData(obj):
 		params = obj.PrimitiveData.split(' ,')
 	return params
 
-class BsMax_OT_SelectSimilar(Operator):
-	bl_idname = "bsmax.select_similar"
+class Object_OT_Select_Similar(Operator):
+	bl_idname = "object.select_similar"
 	bl_label = "Select Similar"
 	@classmethod
 	def poll(self, ctx):
@@ -89,10 +89,10 @@ class BsMax_OT_SelectSimilar(Operator):
 def select_menu(self, ctx):
 	layout = self.layout
 	layout.separator()
-	layout.operator("bsmax.select_instance")
-	layout.operator("bsmax.select_similar")
+	layout.operator("object.select_instance")
+	layout.operator("object.select_similar")
 
-classes = [BsMax_OT_SelectInstance,BsMax_OT_SelectSimilar]
+classes = [Object_OT_Select_Instance,Object_OT_Select_Similar]
 
 def register_selection():
 	[bpy.utils.register_class(c) for c in classes]

@@ -18,6 +18,7 @@ from .arrange import register_arrange,unregister_arrange
 from .batchrename import register_batchrename,unregister_batchrename
 from .clonearrayobjects import register_cloneobject,unregister_cloneobject
 from .collection import register_collection,unregister_collection
+from .convert import register_convert,unregister_convert
 from .freeze import register_freeze,unregister_freeze
 from .lattice import register_lattice,unregister_lattice
 from .pivotpoint import register_pivotpoint,unregister_pivotpoint
@@ -28,6 +29,7 @@ def register_object():
 	register_batchrename()
 	register_cloneobject()
 	register_collection()
+	register_convert()
 	register_freeze()
 	register_lattice()
 	register_pivotpoint()
@@ -38,6 +40,7 @@ def unregister_object():
 	unregister_batchrename()
 	unregister_cloneobject()
 	unregister_collection()
+	unregister_convert()
 	unregister_freeze()
 	unregister_lattice()
 	unregister_pivotpoint()

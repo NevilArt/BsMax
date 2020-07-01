@@ -121,8 +121,8 @@ def read_objects_values(self, ctx):
 		rot.append(obj.rotation_euler.copy())
 		scl.append(obj.scale.copy())
 
-class BsMax_OT_TransformTypeIn(bpy.types.Operator):
-	bl_idname = "bsmax.transformtypein"
+class Object_OT_Transform_Type_In(bpy.types.Operator):
+	bl_idname = "object.transform_type_in"
 	bl_label = "Transform Type-in"
 
 	pos_abs_x: FloatProperty(name="X",update=pos_abs_x)
@@ -210,10 +210,10 @@ class BsMax_OT_TransformTypeIn(bpy.types.Operator):
 		return ctx.window_manager.invoke_props_dialog(self)
 
 def register_transformtypein():
-	bpy.utils.register_class(BsMax_OT_TransformTypeIn)
+	bpy.utils.register_class(Object_OT_Transform_Type_In)
 
 def unregister_transformtypein():
-	bpy.utils.unregister_class(BsMax_OT_TransformTypeIn)
+	bpy.utils.unregister_class(Object_OT_Transform_Type_In)
 
 if __name__ == "__main__":
 	register_transformtypein()
