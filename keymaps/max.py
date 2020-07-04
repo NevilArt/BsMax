@@ -107,8 +107,8 @@ def create_keymaps(km):
 		create_search_shortkey(km,space)
 		km.new(space,'screen.header','SIX','PRESS',[],alt=True)
 		km.new(space,'screen.region_quadview','W','PRESS',[],alt=True)
-		km.new(space,'bsmax.transformgizmosize','EQUAL','PRESS',[('step',10)])
-		km.new(space,'bsmax.transformgizmosize','MINUS','PRESS',[('step',-10)])
+		km.new(space,'view3d.transformgizmosize','EQUAL','PRESS',[('step',10)])
+		km.new(space,'view3d.transformgizmosize','MINUS','PRESS',[('step',-10)])
 		# View
 		create_switch_view_keymap(km,space)
 		create_side_panel_keymaps(km,space)
@@ -116,10 +116,10 @@ def create_keymaps(km):
 		km.new(space,'view3d.localview','Q','PRESS',[],alt=True)
 		# Set tools
 		km.new(space,'wm.tool_set_by_id','Q','PRESS',[('name','builtin.select_box'),('cycle',True)])
-		km.new(space,'bsmax.move','W','PRESS',[('smax',True)])
-		km.new(space,'bsmax.rotate','E','PRESS',[('smax',True)])
-		km.new(space,'bsmax.scale','R','PRESS',[])
-		km.new(space,'bsmax.scale','E','PRESS',[],ctrl=True)
+		km.new(space,'object.move','W','PRESS',[('smax',True)])
+		km.new(space,'object.rotate','E','PRESS',[('smax',True)])
+		km.new(space,'object.scale','R','PRESS',[('cage',False)])
+		km.new(space,'object.scale','E','PRESS',[('cage',True)],ctrl=True)
 		# selection
 		km.new(space,'view3d.select','LEFTMOUSE','CLICK',[('extend',True)],ctrl=True)
 		km.new(space,'view3d.select','LEFTMOUSE','CLICK',[('deselect',True)],alt=True)
@@ -149,7 +149,7 @@ def create_keymaps(km):
 		km.new(space,'editor.open_node_ditor','EIGHT','PRESS',[('mode','Environment')])
 		# 3D View Tool: Select ------------------------------------------------
 		space = km.space('3D View Tool: Select','VIEW_3D','WINDOW')
-		km.new(space,'bsmax.tweakbetter','EVT_TWEAK_L','ANY',[])
+		km.new(space,'view3d.tweak_better','EVT_TWEAK_L','ANY',[])
 		create_view3d_tweak_selection_keymap(km,space)
 		# 3D View Tool: Transform ---------------------------------------------
 		space = km.space('3D View Tool: Transform','VIEW_3D','WINDOW')
@@ -573,9 +573,9 @@ def create_keymaps(km):
 		# UV Editor--------------------------------------------------------------------
 		space = km.space('UV Editor','EMPTY','WINDOW')
 		# Selection
-		km.new(space,'bsmax.move','W','PRESS',[])
-		km.new(space,'bsmax.rotate','E','PRESS',[])
-		km.new(space,'bsmax.scale','R','PRESS',[])
+		km.new(space,'object.move','W','PRESS',[])
+		km.new(space,'object.rotate','E','PRESS',[])
+		km.new(space,'object.scale','R','PRESS',[])
 		#create_view3d_click_celection_keymap(space)
 		create_view3d_tweak_selection_keymap(km,space)
 		create_snap_keymaps(km,space)

@@ -5,10 +5,11 @@
 
 Recent Updates
 
-* Code cleaning, bug fixing and some keymaps update.
+* Press the 'W','E','R' again toggles between Global/Local coordinate (Max,Maya mode).
+* light lister ignore the instance lights to simplify the list.
+
 * "Clear primitive data" combined with "Convert to" command (Max Mode only)
 * Hide/Undide updated but not fine yet (because of python limitation for now)
-
 * Keep Prefrence settng when add-on has Disable/Enable or Updated.
 * Align objects acts as 3DsMax now. (Select objects, press 'Alt + A' then pick Target).
 * Transform type in fixed (Max mode F12)(Object mode only).

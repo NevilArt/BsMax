@@ -74,9 +74,22 @@ class BsMax_TO_LightLister(Operator):
 	
 	def cancel(self,ctx):
 		return None
+	
+	def get_lights(self):
+		lights = []
+		for light in bpy.data.objects:
+			if light.type == 'LIGHT':
+				isnew = True
+				for l in lights:
+					if light.data == l.data:
+						isnew = False
+						break
+				if isnew:
+					lights.append(light)
+		return lights
 
 	def invoke(self,ctx,event):
-		self.lights = [o for o in bpy.data.objects if o.type == 'LIGHT']
+		self.lights = self.get_lights() 
 		return ctx.window_manager.invoke_props_dialog(self,width=600)
 
 def render_menu(self, ctx):
@@ -93,3 +106,6 @@ def register_lightlister():
 def unregister_lightlister():
 	bpy.types.TOPBAR_MT_render.remove(render_menu)
 	[bpy.utils.unregister_class(c) for c in classes]
+
+if __name__ == "__main__":
+	register_lightlister()

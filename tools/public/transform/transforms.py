@@ -17,8 +17,8 @@ import bpy
 from bpy.props import StringProperty,BoolProperty,FloatProperty
 from bpy.types import Operator
 
-class BsMax_OT_TransformGizmoSize(Operator):
-	bl_idname = "bsmax.transformgizmosize"
+class View3D_OT_Transform_Gizmo_Size(Operator):
+	bl_idname = "view3d.transformgizmosize"
 	bl_label = "Transform Gizmo Size"
 	step: FloatProperty()
 	def execute(self, ctx):
@@ -28,63 +28,83 @@ class BsMax_OT_TransformGizmoSize(Operator):
 			ctx.preferences.view.gizmo_size += self.step
 		return{"FINISHED"}
 
-class BsMax_OT_Move(Operator):
-	bl_idname = "bsmax.move"
+def get_tool(ctx):
+	space_type = ctx.area.spaces.active.type
+	if space_type == "VIEW_3D":
+		return ctx.workspace.tools.from_space_view3d_mode(ctx.mode,create=False).idname
+	elif space_type == "IMAGE_EDITOR":
+		return ctx.workspace.tools.from_space_image_mode("UV",create=False).idname
+	else:
+		return ""
+
+def set_gizmo(ctx,translate,rotate,scale):
+	ctx.space_data.show_gizmo_object_translate = translate
+	ctx.space_data.show_gizmo_object_rotate = rotate
+	ctx.space_data.show_gizmo_object_scale = scale
+
+def coordinate_toggle(ctx):
+	coord = ctx.window.scene.transform_orientation_slots[0]
+	if coord.type == 'LOCAL':
+		coord.type = 'GLOBAL'
+	elif coord.type == 'GLOBAL':
+		coord.type = 'LOCAL'
+
+class Object_OT_Move(Operator):
+	bl_idname = "object.move"
 	bl_label = "Move"
 	smax: BoolProperty()
 	def execute(self, ctx):
-		space_type = ctx.area.spaces.active.type
-		if space_type == "VIEW_3D":
-			tool = ctx.workspace.tools.from_space_view3d_mode(ctx.mode,create=False).idname
-		elif space_type == "IMAGE_EDITOR":
-			tool = ctx.workspace.tools.from_space_image_mode("UV",create=False).idname
-		else:
-			tool = ""
+		tool = get_tool(ctx)
 		if tool == "builtin.select":
-			ctx.space_data.show_gizmo_object_translate = True
-			ctx.space_data.show_gizmo_object_rotate = False
-			ctx.space_data.show_gizmo_object_scale = False
+			set_gizmo(ctx,True,False,False)
 		else:
-			bpy.ops.wm.tool_set_by_id(name="builtin.move")
+			if tool == "builtin.move":
+				coordinate_toggle(ctx)
+			else:	
+				bpy.ops.wm.tool_set_by_id(name="builtin.move")
 		bpy.ops.bsmax.snaptoggle(auto=self.smax)
 		return{"FINISHED"}
 
-class BsMax_OT_Rotate(Operator):
-	bl_idname = "bsmax.rotate"
+class Object_OT_Rotate(Operator):
+	bl_idname = "object.rotate"
 	bl_label = "Rotate"
 	smax: BoolProperty()
 	def execute(self, ctx):
-		mode = ctx.mode
-		tool = ctx.workspace.tools.from_space_view3d_mode(mode,create=False).idname
+		tool = get_tool(ctx)
 		if tool == "builtin.select":
-			ctx.space_data.show_gizmo_object_translate = False
-			ctx.space_data.show_gizmo_object_rotate = True
-			ctx.space_data.show_gizmo_object_scale = False
+			set_gizmo(ctx,False,True,False)
 		else:
-			bpy.ops.wm.tool_set_by_id(name="builtin.rotate")
+			if tool == "builtin.rotate":
+				coordinate_toggle(ctx)
+			else:
+				bpy.ops.wm.tool_set_by_id(name="builtin.rotate")
 		bpy.ops.bsmax.angelsnap(auto=self.smax)
 		return{"FINISHED"}
 
-class BsMax_OT_Scale(Operator):
-	bl_idname = "bsmax.scale"
+class Object_OT_Scale(Operator):
+	bl_idname = "object.scale"
 	bl_label = "Scale"
+	cage: BoolProperty(default=False)
 	def execute(self, ctx):
-		mode = ctx.mode
-		tool = ctx.workspace.tools.from_space_view3d_mode(mode,create=False).idname
+		tool = get_tool(ctx)
 		if tool == "builtin.select":
-			ctx.space_data.show_gizmo_object_translate = False
-			ctx.space_data.show_gizmo_object_rotate = False
-			ctx.space_data.show_gizmo_object_scale = True
+			set_gizmo(ctx,False,False,True)
 		else:
-			bpy.ops.wm.tool_set_by_id(name="builtin.scale",cycle=True)
+			if self.cage:
+				if tool == "builtin.scale":
+					coordinate_toggle(ctx)
+				else:
+					bpy.ops.wm.tool_set_by_id(name="builtin.scale",cycle=True)
+			else:
+				bpy.ops.wm.tool_set_by_id(name="builtin.scale",cycle=True)
 		return{"FINISHED"}
 
 # "TweakBetter" created by Dan Pool (dpdp)
 # original addon "qwer_addon"
 # https://blenderartists.org/t/qwer-addon-or-how-i-stopped-using-the-transform-active-tools/1157507
-class BsMax_OT_TweakBetter(Operator):
+class View3D_OT_Tweak_Better(Operator):
 	"""Fix the select active tool"""
-	bl_idname = "bsmax.tweakbetter"
+	bl_idname = "view3d.tweak_better"
 	bl_label = "Tweak Better"
 	tmode: StringProperty(name="Transform Mode")
 	release: BoolProperty(name="Confirm on Release")
@@ -110,11 +130,14 @@ class BsMax_OT_TweakBetter(Operator):
 			self.report({'WARNING'}, "No active object, could not finish")
 			return {'CANCELLED'}
 
-classes = [BsMax_OT_TransformGizmoSize,BsMax_OT_TweakBetter,
-			BsMax_OT_Move,BsMax_OT_Rotate,BsMax_OT_Scale]
+classes = [View3D_OT_Transform_Gizmo_Size,View3D_OT_Tweak_Better,
+			Object_OT_Move,Object_OT_Rotate,Object_OT_Scale]
 
 def register_transforms():
 	[bpy.utils.register_class(c) for c in classes]
 
 def unregister_transforms():
 	[bpy.utils.unregister_class(c) for c in classes]
+
+if __name__ == "__main__":
+	register_transforms()
