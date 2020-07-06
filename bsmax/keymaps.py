@@ -42,6 +42,33 @@ class KeyMap:
 							self._key = k
 							break
 		return self._key
+	
+	def compar(self,space,idname,type,value,alt,ctrl,shift,any,properties):
+		if self.space != space:
+			return False
+		if self.idname != idname:
+			return False
+		if self.type != type:
+			return False
+		if self.value != value:
+			return False
+		if self.any != any:
+			return False
+		if self.alt != alt:
+			return False
+		if self.ctrl != ctrl:
+			return False
+		if self.shift != shift:
+			return False
+		prop_copmp = []
+		for p in properties:
+			for sp in self.properties:
+				if p[0] == sp[0] and p[1] == sp[1]:
+					prop_copmp += [p]
+					break
+		if len(prop_copmp) != len(prop_copmp):
+			return False
+		return True
 
 class KeyMaps:
 	def __init__(self):
@@ -52,12 +79,20 @@ class KeyMaps:
 	def space(self,name,space_type,region_type,modal=False):
 		kcfg = bpy.context.window_manager.keyconfigs.addon
 		return kcfg.keymaps.new(name=name,space_type=space_type,region_type=region_type)
-	
+
 	def new(self,space,idname,type,value,properties,
 			alt=False,ctrl=False,shift=False,any=False):
-		newkey = KeyMap(space,idname,type,value,alt,ctrl,shift,any)
-		newkey.properties = properties
-		self.newkeys.append(newkey)
+		""" check is info uniqu """
+		isnew = True
+		for key in self.newkeys:
+			if key.compar(space,idname,type,value,alt,ctrl,shift,any,properties):
+				isnew = False
+				break
+		""" create newkey if it is uniqu """
+		if isnew:
+			newkey = KeyMap(space,idname,type,value,alt,ctrl,shift,any)
+			newkey.properties = properties
+			self.newkeys.append(newkey)
 	
 	def mute(self,space,idname,inputtype,value,alt=False,ctrl=False,shift=False,any=False):
 		newkey = KeyMap(space,idname,inputtype,value,alt=alt,ctrl=ctrl,shift=shift,any=any)

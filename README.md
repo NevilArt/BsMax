@@ -5,9 +5,10 @@
 
 Recent Updates
 
+* '[' and ']' defined to Left and Right Tool panel open/close toggle (Max Mode only).
+* Keymap system has duplication check function.
 * Press the 'W','E','R' again toggles between Global/Local coordinate (Max,Maya mode).
 * light lister ignore the instance lights to simplify the list.
-
 * "Clear primitive data" combined with "Convert to" command (Max Mode only)
 * Hide/Undide updated but not fine yet (because of python limitation for now)
 * Keep Prefrence settng when add-on has Disable/Enable or Updated.
