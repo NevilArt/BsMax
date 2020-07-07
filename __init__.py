@@ -20,7 +20,7 @@ bl_info = {
 	"name": "BsMax",
 	"description": "BsMax for Blender 2.80 ~ 2.90",
 	"author": "Naser Merati (Nevil)",
-	"version": (0, 1, 0, 20200706),
+	"version": (0, 1, 0, 20200707),
 	"blender": (2, 80, 0),# 2.80~2.90
 	"location": "Almost Everywhere in Blender",
 	"wiki_url": "https://github.com/NevilArt/BsMax_2_80/wiki",
@@ -156,8 +156,8 @@ def load_preferences(preferences):
 
 def register_delay(preferences):
 	sleep(0.2)
-	# register_navigation(preferences)
-	# register_keymaps(preferences)
+	register_navigation(preferences)
+	register_keymaps(preferences)
 	register_startup(preferences)
 
 def register():
