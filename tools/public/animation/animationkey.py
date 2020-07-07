@@ -96,21 +96,19 @@ class Anim_OT_Set_Key_Filters(Operator):
 
 class Anim_OT_Auto_Key_Toggle(Operator):
 	bl_idname = "anim.auto_key_toggle"
-	bl_label = "Auto Key Mode Toggle"
+	bl_label = "Auto Key Toggle"
 
 	def execute(self, ctx):
-		State = ctx.scene.tool_settings.use_keyframe_insert_auto
-		ctx.scene.tool_settings.use_keyframe_insert_auto = not State
-		# change dopesheet header color
-		#DSSpace = ctx.preferences.themes['Default'].dopesheet_editor.space
-		DSSpace = ctx.preferences.themes[0].dopesheet_editor.space
-		if State:
-			DSSpace.header = (0.2588, 0.2588, 0.2588, 1.0)
+		state = ctx.scene.tool_settings.use_keyframe_insert_auto
+		ctx.scene.tool_settings.use_keyframe_insert_auto = not state
+		""" change dopesheet header color """
+		dopesheet_space = ctx.preferences.themes[0].dopesheet_editor.space
+		if state:
+			dopesheet_space.header = (0.2588, 0.2588, 0.2588, 1.0)
 		else:
-			DSSpace.header = (0.5, 0.0, 0.0, 1.0)
+			dopesheet_space.header = (0.5, 0.0, 0.0, 1.0)
 		return{"FINISHED"}
 
-# Set key animation tool (K button)
 def set_key(objs, key):
 	for obj in objs:
 		obj.keyframe_insert(data_path=key)
@@ -163,20 +161,19 @@ class Anim_OT_Set_Key(Operator):
 class Anim_OT_Delete_Selected_Animation(Operator):
 	bl_idname = "anim.delete_selected_animation"
 	bl_label = "Delete Selected Animation"
+	
 	def execute(self, ctx):
 		for obj in ctx.selected_objects:
 			obj.animation_data_clear()
 		return{"FINISHED"}
 
-class Anim_OT_Set_Frame(Operator):
+class Anim_OT_Frame_Set(Operator):
 	bl_idname = "anim.frame_set"
 	bl_label = "Set Frame"
 	frame: EnumProperty(name='Frame', default='Next',
 		items =[('Next','Next',''),('Previous','Previous',''),
 				('First','First',''),('Last','Last','')])
-	@classmethod
-	def poll(self, ctx):
-		return ctx.area.type in {'VIEW_3D','TIMELINE','NLA_EDITOR','FCURVES'}
+	
 	def execute(self, ctx):
 		scene = ctx.scene
 		frame,first,last = scene.frame_current,scene.frame_start,scene.frame_end
@@ -200,15 +197,14 @@ class Anim_OT_Set_TimeLine_Range(Operator):
 	mouse_x = 0
 	mode: EnumProperty(name='Mode',default='Shift',
 		items =[('Shift','Shift',''), ('First','First',''), ('End','End','')])
+	
 	def modal(self, ctx, event):
 		if not self.start:
 			self.start = True
 			self.mouse_x = event.mouse_x
 		if event.type == 'MOUSEMOVE':
 			scene = ctx.scene
-			frame_start = scene.frame_start
-			frame_end = scene.frame_end
-			frame_current = scene.frame_current
+			frame_start,frame_end = scene.frame_start, scene.frame_end
 			if self.start:
 				scale = (frame_end - frame_start) / 100
 				scale = 1 if scale < 1 else scale
@@ -235,16 +231,35 @@ class Anim_OT_Set_TimeLine_Range(Operator):
 			self.start = False
 			return {'CANCELLED'}
 		return {'RUNNING_MODAL'}
+
 	def invoke(self, ctx, event):
 		ctx.window_manager.modal_handler_add(self)
 		return {'RUNNING_MODAL'}
+
+class Dopesheet_OT_Zoom_Extended(Operator):
+	bl_idname = 'action.zoom_extended'
+	bl_label = 'Zoom Extended'
+
+	@classmethod
+	def poll(self, ctx):
+		return ctx.area.type == 'DOPESHEET_EDITOR'
+
+	def execute(self, ctx):
+		bpy.ops.action.view_selected('INVOKE_DEFAULT')
+		# bpy.ops.action.view_all('INVOKE_DEFAULT')
+		return{'FINISHED'}
+
+# class Graph_Editor_OT_Hide(Operator):
+# 		graph.select_linked
+
 
 classes = [Anim_OT_Set_Key_Filters,
 			Anim_OT_Auto_Key_Toggle,
 			Anim_OT_Set_Key,
 			Anim_OT_Delete_Selected_Animation,
-			Anim_OT_Set_Frame,
-			Anim_OT_Set_TimeLine_Range]
+			Anim_OT_Frame_Set,
+			Anim_OT_Set_TimeLine_Range,
+			Dopesheet_OT_Zoom_Extended]
 
 def register_animationkey():
 	[bpy.utils.register_class(c) for c in classes]

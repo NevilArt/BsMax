@@ -29,9 +29,8 @@ class View3d_OT_HomeView(Operator):
 		ctx.area.spaces.active.region_3d.view_matrix = Matrix(homeview)
 		return{'FINISHED'}
 
-# simulate zoom extended in 3d max
-class View3d_OT_ZoomExtended(Operator):
-	bl_idname = 'view3d.zoomextended'
+class View3d_OT_Zoom_Extended(Operator):
+	bl_idname = 'view3d.zoom_extended'
 	bl_label = 'Zoom Extended'
 
 	@classmethod
@@ -57,7 +56,7 @@ class View3d_OT_ZoomExtended(Operator):
 			bpy.ops.view3d.view_selected(use_all_regions=False)
 		return{'FINISHED'}
 
-classes = [View3d_OT_ZoomExtended,View3d_OT_HomeView]
+classes = [View3d_OT_Zoom_Extended,View3d_OT_HomeView]
 
 def register_zoomextended():
 	[bpy.utils.register_class(c) for c in classes]

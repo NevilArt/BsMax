@@ -5,6 +5,7 @@
 
 Recent Updates
 
+* Time keys now working on all areas ('N' ',' '.' '/' 'Home' 'End' in Max mode)
 * '[' and ']' defined to Left and Right Tool panel open/close toggle (Max Mode only).
 * Keymap system has duplication check function.
 * Press the 'W','E','R' again toggles between Global/Local coordinate (Max,Maya mode).
