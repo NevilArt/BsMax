@@ -83,8 +83,8 @@ def create_lattice(ctx, u, v, w):
 	lattice.data.points_w = w
 	return lattice
 
-class BsMax_OT_Lattice_Set(Operator):
-	bl_idname = "bsmax.latticebox"
+class Lattice_OT_Set_On_Selection(Operator):
+	bl_idname = "lattice.set_on_selection"
 	bl_label = "Lattice (Set)"
 	res_u: IntProperty(name="Res X",min=2,max=1000,default=2)
 	res_v: IntProperty(name="Res Y",min=2,max=1000,default=2)
@@ -112,10 +112,11 @@ class BsMax_OT_Lattice_Set(Operator):
 				lt.parent = target
 				lt.matrix_parent_inverse = target.matrix_world.inverted()
 				lock_transform(lt,True,True,True)
+		self.report({'INFO'},'bpy.ops.lattice.set_on_selection()')
 		return{"FINISHED"}
 
 def register_lattice():
-	bpy.utils.register_class(BsMax_OT_Lattice_Set)
+	bpy.utils.register_class(Lattice_OT_Set_On_Selection)
 
 def unregister_lattice():
-	bpy.utils.unregister_class(BsMax_OT_Lattice_Set)
+	bpy.utils.unregister_class(Lattice_OT_Set_On_Selection)

@@ -16,8 +16,8 @@
 import bpy
 from bpy.types import Operator
 
-class BsMax_OT_FreezeTransform(Operator):
-	bl_idname = "bsmax.freezetransform"
+class Object_OT_Freeze_Transform(Operator):
+	bl_idname = "object.freeze_transform"
 	bl_label = "Freeze Transform"
 	def execute(self, ctx):
 		for obj in ctx.selected_objects:
@@ -25,37 +25,41 @@ class BsMax_OT_FreezeTransform(Operator):
 			obj.location = [0,0,0]
 			obj.delta_rotation_euler = obj.rotation_euler
 			obj.rotation_euler = [0,0,0]
+		self.report({'INFO'},'bpy.ops.object.freeze_transform()')
 		return{"FINISHED"}
 
-class BsMax_OT_FreezeRotation(Operator):
-	bl_idname = "bsmax.freezerotation"
+class Object_OT_Freeze_Rotation(Operator):
+	bl_idname = "object.freeze_rotation"
 	bl_label = "Freeze Rotation"
 	def execute(self, ctx):
 		for obj in ctx.selected_objects:
 			obj.delta_rotation_euler = obj.rotation_euler
 			obj.rotation_euler = [0,0,0]
+			self.report({'INFO'},'bpy.ops.object.freeze_rotation()')
 			return{"FINISHED"}
 
-class BsMax_OT_TransformToZero(Operator):
-	bl_idname = "bsmax.transformtozero"
+class Object_OT_Transform_To_Zero(Operator):
+	bl_idname = "object.transform_to_zero"
 	bl_label = "Transform To Zero"
 	def execute(self, ctx):
 		for obj in ctx.selected_objects:
 			obj.location = [0,0,0]
 			obj.rotation_euler = [0,0,0]
+		self.report({'INFO'},'bpy.ops.object.transform_to_zero()')
 		return{"FINISHED"}
 
-class BsMax_OT_RotationToZero(Operator):
-	bl_idname = "bsmax.rotationtozero"
+class Object_OT_Rotation_To_Zero(Operator):
+	bl_idname = "object.rotation_to_zero"
 	bl_label = "Rotation To Zero"
 	def execute(self, ctx):
 		bpy.ops.object.rotation_clear()
+		self.report({'INFO'},'bpy.ops.object.rotation_to_zero()')
 		return{"FINISHED"}
 
-classes = [BsMax_OT_FreezeTransform,
-	BsMax_OT_FreezeRotation,
-	BsMax_OT_TransformToZero,
-	BsMax_OT_RotationToZero]
+classes = [Object_OT_Freeze_Transform,
+	Object_OT_Freeze_Rotation,
+	Object_OT_Transform_To_Zero,
+	Object_OT_Rotation_To_Zero]
 
 def register_transform():
 	[bpy.utils.register_class(c) for c in classes]

@@ -18,9 +18,9 @@ from bsmax.state import is_objects_selected
 from bsmax.mouse import ClickPoint, get_click_point_info
 from bsmax.math import get_axis_constraint
 
-class BsMax_OT_Drag_Clone_Object(bpy.types.Operator):
-	bl_idname = "bsmax.dragclone"
-	bl_label = "Drag Clone (Object)"
+class Object_OT_Drag_Clone(bpy.types.Operator):
+	bl_idname = "object.drag_clone"
+	bl_label = "Drag Clone"
 
 	point_a = None
 	point_b = None
@@ -28,6 +28,10 @@ class BsMax_OT_Drag_Clone_Object(bpy.types.Operator):
 	@classmethod
 	def poll(self, ctx):
 		return is_objects_selected(ctx)
+	
+	def execute(self,ctx):
+		self.report({'INFO'},'bpy.ops.object.drag_clone()')
+		return{"FINISHED"}
 
 	def modal(self, ctx, event):
 		x, y = event.mouse_region_x, event.mouse_region_y
@@ -54,7 +58,7 @@ class BsMax_OT_Drag_Clone_Object(bpy.types.Operator):
 		return {'RUNNING_MODAL'}
 
 def register_dragclone():
-	bpy.utils.register_class(BsMax_OT_Drag_Clone_Object)
+	bpy.utils.register_class(Object_OT_Drag_Clone)
 
 def unregister_dragclone():
-	bpy.utils.unregister_class(BsMax_OT_Drag_Clone_Object)
+	bpy.utils.unregister_class(Object_OT_Drag_Clone)

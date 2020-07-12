@@ -74,8 +74,8 @@ def view_zoom(ctx,x,y):
 	val = 1 if val < 1 else val
 	ctx.space_data.lens = val
 
-class BsMax_OT_3DsMaxNavigation(bpy.types.Operator):
-	bl_idname = "bsmax.maxnavigation"
+class View2D_OT_3DsMax_Navigation(bpy.types.Operator):
+	bl_idname = "view3d.max_navigation"
 	bl_label = "3DsMax Navigation"
 	alt = False
 	ctrl = False
@@ -143,7 +143,7 @@ class BsMax_OT_3DsMaxNavigation(bpy.types.Operator):
 		return {'RUNNING_MODAL'}
 
 def register_navigation():
-	bpy.utils.register_class(BsMax_OT_3DsMaxNavigation)
+	bpy.utils.register_class(View2D_OT_3DsMax_Navigation)
 
 def unregister_navigation():
-	bpy.utils.unregister_class(BsMax_OT_3DsMaxNavigation)
+	bpy.utils.unregister_class(View2D_OT_3DsMax_Navigation)

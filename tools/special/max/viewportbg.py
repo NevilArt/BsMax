@@ -20,8 +20,8 @@ from bpy.props import IntProperty
 # Original code from Ozzkar Sep 2013
 # Edit by Nevil July 2019
 
-class BsMax_OT_ViewportBackground(Operator):
-	bl_idname = "bsmax.viewport_background"
+class View3D_OT_Background(Operator):
+	bl_idname = "view3d.background"
 	bl_label = "3D View Color"
 	bl_description = "Cycle 3D view background colors"
 
@@ -85,7 +85,7 @@ class BMAX_PickViewportBackground_MT(Menu):
 	bl_description = "3D viewport background color"
 	def draw(self, ctx):
 		ui = self.layout
-		vbg = "bsmax.viewport_background"
+		vbg = "view3d.background"
 		ui.operator(vbg, text="Elsyiun").index = 0
 		ui.operator(vbg, text="Black").index = 1
 		ui.operator(vbg, text="XSI").index = 2
@@ -94,7 +94,7 @@ class BMAX_PickViewportBackground_MT(Menu):
 		ui.operator(vbg, text="Grey Blue Gradient").index = 5
 
 def register_viewportbg():
-	bpy.utils.register_class(BsMax_OT_ViewportBackground)
+	bpy.utils.register_class(View3D_OT_Background)
 
 def unregister_viewportbg():
-	bpy.utils.unregister_class(BsMax_OT_ViewportBackground)
+	bpy.utils.unregister_class(View3D_OT_Background)

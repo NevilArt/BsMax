@@ -18,9 +18,15 @@ from bpy.types import Operator
 
 # TODO extend and unselect for element select
 
-class BsMax_OT_SelectElement(Operator):
-	bl_idname = "mesh.selectelement"
+class Mesh_OT_Select_Element(Operator):
+	bl_idname = "mesh.select_element"
 	bl_label = "Select Element"
+
+	@classmethod
+	def poll(self, ctx):
+		return ctx.area.type == 'VIEW_3D'
+		# return ctx.mode == "MESH_EDIT"
+	
 	def execute(self, ctx):
 		if ctx.active_object != None:
 			if ctx.mode == "EDIT_MESH":
@@ -31,10 +37,11 @@ class BsMax_OT_SelectElement(Operator):
 					bpy.ops.mesh.smart_select_loop('INVOKE_DEFAULT')
 				if f:
 					bpy.ops.mesh.select_linked_pick('INVOKE_DEFAULT')
+		self.report({'INFO'},'bpy.ops.mesh.select_element()')
 		return{"FINISHED"}
 	
 def register_select():
-	bpy.utils.register_class(BsMax_OT_SelectElement)
+	bpy.utils.register_class(Mesh_OT_Select_Element)
 
 def unregister_select():
-	bpy.utils.unregister_class(BsMax_OT_SelectElement)
+	bpy.utils.unregister_class(Mesh_OT_Select_Element)

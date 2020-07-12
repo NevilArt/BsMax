@@ -71,7 +71,7 @@ def create_keymaps(km):
 		# km.new(space,"anim.keyframe_insert_menu","R","PRESS",[('type','Scaling')],shift=True)
 		# Pivot tools
 		km.new(space,"wm.search_menu","X","PRESS",[])
-		km.new(space,"object.modifypivotpoint","INSERT","PRESS",[])
+		km.new(space,"object.modify_pivotpoint","INSERT","PRESS",[])
 		km.new(space,"wm.call_menu","INSERT","PRESS",[('name',"BSMAX_MT_SetPivotPoint")],ctrl=True)
 		# Mesh -----------------------------------------------------------------
 		space = km.space('Mesh','EMPTY','WINDOW')

@@ -101,8 +101,8 @@ def ModifyPivotPoint(ctx):
 			ops.object.delete({"selected_objects": [objAxis]})
 			ctx.scene.cursor.location = currentCursorLocation
 
-class BsMax_OT_ModifyPivot(Operator):
-	bl_idname = "object.modifypivotpoint"
+class Object_OT_Modify_Pivot(Operator):
+	bl_idname = "object.modify_pivotpoint"
 	bl_label = "Modify Pivot Point"
 
 	@classmethod
@@ -118,8 +118,10 @@ class BsMax_OT_ModifyPivot(Operator):
 			ctx.scene.tool_settings.use_transform_data_origin = not state
 		return {"FINISHED"}
 	
-class BsMax_OT_PivotToFirstPoint(Operator):
-	bl_idname = "pivot.tofirstpoint"
+
+# TODO add this for mesh objects too
+class Object_OT_Pivot_To_First_Point(Operator):
+	bl_idname = "object.pivot_to_first_point"
 	bl_label = "Pivot to First point"
 
 	@classmethod
@@ -139,6 +141,7 @@ class BsMax_OT_PivotToFirstPoint(Operator):
 					new_origin = obj.data.splines[0].bezier_points[0].co.copy()
 					obj.data.transform(mathutils.Matrix.Translation(-new_origin))
 					obj.matrix_world.translation += new_origin
+		self.report({'INFO'},'bpy.ops.object.pivot_to_first_point()')
 		return {"FINISHED"}
 				
 
@@ -152,14 +155,14 @@ class BsMax_MT_SetPivotPoint(Menu):
 		layout.operator("object.origin_set",text="Pivot to 3D Cursor").type='ORIGIN_CURSOR'
 		layout.operator("object.origin_set",text="Pivot to Center").type='ORIGIN_CENTER_OF_VOLUME'
 		layout.operator("object.origin_set",text="Pivot to Geometry").type='ORIGIN_CENTER_OF_MASS'
-		layout.operator("pivot.tofirstpoint",text="Pivot to First BezierPoint")
+		layout.operator("object.pivot_to_first_point",text="Pivot to First BezierPoint")
 
 def snap_menu(self, ctx):
 	layout = self.layout
 	layout.separator()
-	layout.operator("pivot.tofirstpoint")
+	layout.operator("object.pivot_to_first_point")
 
-classes = [BsMax_OT_PivotToFirstPoint,BsMax_MT_SetPivotPoint,BsMax_OT_ModifyPivot]
+classes = [Object_OT_Pivot_To_First_Point,BsMax_MT_SetPivotPoint,Object_OT_Modify_Pivot]
 
 def register_pivotpoint():
 	[bpy.utils.register_class(c) for c in classes]

@@ -31,7 +31,6 @@ def draw_callback_px(self):
 		batch.draw(shader)
 	bgl.glDisable(bgl.GL_BLEND)
 
-
 def SelectVert(ctx, event, started):
 	coord = event.mouse_region_x, event.mouse_region_y
 	if started:
@@ -41,11 +40,10 @@ def SelectVert(ctx, event, started):
 	if result == {'PASS_THROUGH'}:
 		bpy.ops.mesh.select_all(action='DESELECT')
 
-
-class BsMax_OT_TargetWeldToggle(bpy.types.Operator):
-	bl_idname = "bsmax.targetweld"
+class Mesh_OT_Target_Weld(bpy.types.Operator):
+	bl_idname = "mesh.target_weld"
 	bl_label = "Target Weld"
-	bl_options = {'REGISTER', 'UNDO'}
+	bl_options = {'REGISTER','UNDO'}
 	srt_vert = end_vert = None
 	_handle = None
 	drag = False
@@ -87,6 +85,10 @@ class BsMax_OT_TargetWeldToggle(bpy.types.Operator):
 
 		return {'RUNNING_MODAL'}
 
+	def execute(self,ctx):
+		self.report({'INFO'},'bpy.ops.mesh.target_weld()')
+		return{"FINISHED"}
+
 	def invoke(self, ctx, event):
 		if ctx.space_data.type == 'VIEW_3D':
 			sv3d = bpy.types.SpaceView3D
@@ -97,7 +99,7 @@ class BsMax_OT_TargetWeldToggle(bpy.types.Operator):
 		return {'CANCELLED'}
 
 def register_weld():
-	bpy.utils.register_class(BsMax_OT_TargetWeldToggle)
+	bpy.utils.register_class(Mesh_OT_Target_Weld)
 
 def unregister_weld():
-	bpy.utils.unregister_class(BsMax_OT_TargetWeldToggle)
+	bpy.utils.unregister_class(Mesh_OT_Target_Weld)

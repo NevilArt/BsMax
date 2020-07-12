@@ -92,8 +92,8 @@ def BsMax_Clone_SetTransform(self, ctx):
 			if self.mirror_z and i % 2 == 0:
 				N[j].scale.z = -N[j].scale.z
 
-class BsMax_OT_CloneArrayObjects(bpy.types.Operator):
-	bl_idname = "bsmax.cloneselectedobjects"
+class Object_OT_Clone_Array(bpy.types.Operator):
+	bl_idname = "object.clone"
 	bl_label = "Clone / Array"
 	bl_description = "Clone object dialog box"
 	bl_options = {'REGISTER', 'UNDO'}
@@ -170,7 +170,7 @@ class BsMax_OT_CloneArrayObjects(bpy.types.Operator):
 		BsMax_Clone_SetTransform(self, ctx)
 
 	def execute(self, ctx):
-		self.report({'INFO'},'bpy.ops.bsmax.cloneselectedobjects()')
+		self.report({'INFO'},'bpy.ops.object.clone()')
 		return {'FINISHED'}
 
 	def cancel(self, ctx):
@@ -186,12 +186,12 @@ class BsMax_OT_CloneArrayObjects(bpy.types.Operator):
 def object_menu(self, ctx):
 	layout = self.layout
 	layout.separator()
-	layout.operator("bsmax.cloneselectedobjects")
+	layout.operator("object.clone")
 
 def register_cloneobject():
-	bpy.utils.register_class(BsMax_OT_CloneArrayObjects)
+	bpy.utils.register_class(Object_OT_Clone_Array)
 	bpy.types.VIEW3D_MT_object.append(object_menu)
 
 def unregister_cloneobject():
 	bpy.types.VIEW3D_MT_object.remove(object_menu)
-	bpy.utils.unregister_class(BsMax_OT_CloneArrayObjects)
+	bpy.utils.unregister_class(Object_OT_Clone_Array)

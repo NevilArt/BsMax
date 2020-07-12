@@ -17,8 +17,8 @@ import bpy
 from bpy.types import Operator
 from bpy.props import BoolProperty
 
-class BsMax_OT_SnapSetting(Operator):
-	bl_idname = "bsmax.snapsetting"
+class Object_OT_Snap_Setting(Operator):
+	bl_idname = "object.snap_setting"
 	bl_label = "Snap Setting"
 	snap = ""
 
@@ -81,8 +81,8 @@ class snap_setting:
 	rotate = Snap({'INCREMENT'},False,True,False)
 	#scale = Snap(t.snap_elements,False,False,True)
 
-class BsMax_OT_SnapToggle(Operator):
-	bl_idname = "bsmax.snaptoggle"
+class Object_OT_Snap_Toggle(Operator):
+	bl_idname = "object.snap_toggle"
 	bl_label = "Snap Toggle"
 	auto: BoolProperty(default=False)
 	def execute(self, ctx):
@@ -104,8 +104,8 @@ class BsMax_OT_SnapToggle(Operator):
 				t.use_snap_translate = t.use_snap
 		return{"FINISHED"}
 
-class BsMax_OT_AngelSnap(Operator):
-	bl_idname = "bsmax.angelsnap"
+class Object_OT_Angel_Snap(Operator):
+	bl_idname = "object.angel_snap"
 	bl_label = "Angel Snap"
 	auto: BoolProperty(default=False)
 	def execute(self, ctx):
@@ -130,7 +130,7 @@ class BsMax_OT_AngelSnap(Operator):
 				t.use_snap_rotate = True
 		return{"FINISHED"}
 
-classes = [BsMax_OT_SnapSetting,BsMax_OT_SnapToggle,BsMax_OT_AngelSnap]
+classes = [Object_OT_Snap_Setting,Object_OT_Snap_Toggle,Object_OT_Angel_Snap]
 
 def register_snap():
 	[bpy.utils.register_class(c) for c in classes]

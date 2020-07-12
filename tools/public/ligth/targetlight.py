@@ -19,8 +19,8 @@ from bpy.types import Operator
 from bsmax.actions import set_create_target, set_as_active_object, delete_objects
 from bsmax.state import has_constraint
 
-class BsMax_OT_MakeTargetLight(Operator):
-	bl_idname = "bsmax.maketargetlight"
+class Light_OT_Create_Target(Operator):
+	bl_idname = "light.create_target"
 	bl_label = "Make Target Light"
 
 	@classmethod
@@ -35,10 +35,11 @@ class BsMax_OT_MakeTargetLight(Operator):
 		light = ctx.active_object
 		set_create_target(light, None)
 		set_as_active_object(ctx, light)
+		self.report({'INFO'},'bpy.ops.light.create_target()')
 		return {'FINISHED'}
 
-class BsMax_OT_MakeFreeLight(Operator):
-	bl_idname = "bsmax.makefreelight"
+class Light_OT_Clear_Target(Operator):
+	bl_idname = "light.clear_target"
 	bl_label = "Make Free Light"
 
 	@classmethod
@@ -58,9 +59,10 @@ class BsMax_OT_MakeFreeLight(Operator):
 		for c in TrackToConts:
 			obj.constraints.remove(c)
 		obj.matrix_world = transfoem
+		self.report({'INFO'},'bpy.ops.light.clear_target()')
 		return {'FINISHED'}
 
-classes = [BsMax_OT_MakeTargetLight,BsMax_OT_MakeFreeLight]
+classes = [Light_OT_Create_Target,Light_OT_Clear_Target]
 
 def register_targetlight():
 	[bpy.utils.register_class(c) for c in classes]

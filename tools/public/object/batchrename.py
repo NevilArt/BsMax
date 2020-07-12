@@ -17,6 +17,8 @@ import bpy
 from bpy.types import Operator
 from bpy.props import BoolProperty,StringProperty,IntProperty,EnumProperty
 
+#TODO simplify combine and update
+
 def arrange_selected_items(active, selected):
 	# bring the active object to first in array
 	items = selected
@@ -117,8 +119,8 @@ def createdialog(self, ctx):
 	wm = ctx.window_manager
 	return wm.invoke_props_dialog(self, width= 400)
 
-class Objects_OT_BatchRename(Operator):
-	bl_idname = "object.batchrename"
+class Objects_OT_Batch_Rename(Operator):
+	bl_idname = "object.batch_rename"
 	bl_label  = "Batch Rename"
 
 	use_set_name: BoolProperty(name="Set Name:",description="Set Name")
@@ -143,6 +145,7 @@ class Objects_OT_BatchRename(Operator):
 
 	def execute(self, ctx):
 		renameitems(self, ctx)
+		self.report({'INFO'},'bpy.ops.object.batch_rename()')
 		return {'FINISHED'}
 	   
 	def invoke(self, ctx, event):
@@ -158,9 +161,9 @@ class Objects_OT_BatchRename(Operator):
 			return createdialog(self, ctx)
 		return {'FINISHED'}
 
-class Armature_OT_BatchRename(Operator):
-	bl_idname = "armature.batchrename"
-	bl_label  = "BatchRename"
+class Armature_OT_Batch_Rename(Operator):
+	bl_idname = "armature.batch_rename"
+	bl_label  = "Batch Rename"
 	use_set_name: BoolProperty(name="Set Name:",description="Set Name")
 	set_name: StringProperty(name="",description="Base Name")
 	find_replace: BoolProperty(name="Find/Replace",description="Find/Replace")
@@ -183,6 +186,7 @@ class Armature_OT_BatchRename(Operator):
 
 	def execute(self, ctx):
 		renameitems(self, ctx)
+		self.report({'INFO'},'bpy.ops.armature.batch_rename()')
 		return {'FINISHED'}
 	   
 	def invoke(self, ctx, event):
@@ -198,9 +202,9 @@ class Armature_OT_BatchRename(Operator):
 			return createdialog(self, ctx)
 		return {'FINISHED'}
 
-class Sequences_OT_BatchRename(Operator):
-	bl_idname = "sequencer.batchrename"
-	bl_label  = "BatchRename"
+class Sequences_OT_Batch_Rename(Operator):
+	bl_idname = "sequencer.batch_rename"
+	bl_label  = "Batch Rename"
 
 	use_set_name: BoolProperty(name="Set Name:",description="Set Name")
 	set_name: StringProperty(name="",description="Base Name")
@@ -224,6 +228,7 @@ class Sequences_OT_BatchRename(Operator):
 
 	def execute(self, ctx):
 		renameitems(self, ctx)
+		self.report({'INFO'},'bpy.ops.sequencer.batch_rename()')
 		return {'FINISHED'}
 	   
 	def invoke(self, ctx, event):
@@ -240,8 +245,8 @@ class Sequences_OT_BatchRename(Operator):
 			return createdialog(self, ctx)
 		return {'FINISHED'}
 
-class Node_OT_BatchRename(Operator):
-	bl_idname = "node.batchrename"
+class Node_OT_Batch_Rename(Operator):
+	bl_idname = "node.batch_rename"
 	bl_label  = "Batch Rename"
 
 	use_set_name: BoolProperty(name="",description="Set Name")
@@ -268,6 +273,7 @@ class Node_OT_BatchRename(Operator):
 
 	def execute(self, ctx):
 		renameitems(self, ctx)
+		self.report({'INFO'},'bpy.ops.node.batch_rename()')
 		return {'FINISHED'}
 	   
 	def invoke(self, ctx, event):
@@ -285,8 +291,8 @@ class Node_OT_BatchRename(Operator):
 			return createdialog(self, ctx)
 		return {'FINISHED'}
 
-classes = [Objects_OT_BatchRename, Armature_OT_BatchRename,
-			Sequences_OT_BatchRename, Node_OT_BatchRename]
+classes = [Objects_OT_Batch_Rename, Armature_OT_Batch_Rename,
+			Sequences_OT_Batch_Rename, Node_OT_Batch_Rename]
 
 def register_batchrename():
 	[bpy.utils.register_class(c) for c in classes]

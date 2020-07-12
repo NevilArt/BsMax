@@ -19,8 +19,8 @@ from mathutils import Matrix
 from bsmax.actions import set_create_target, set_as_active_object, delete_objects
 from bsmax.state import has_constraint
 
-class BsMax_OT_MakeTargetCamera(Operator):
-	bl_idname = "bsmax.maketargetcamera"
+class Camera_OT_Create_Target(Operator):
+	bl_idname = "camera.create_target"
 	bl_label = "Make Target Camera"
 
 	@classmethod
@@ -35,10 +35,11 @@ class BsMax_OT_MakeTargetCamera(Operator):
 		cam = ctx.active_object
 		set_create_target(cam, None)
 		set_as_active_object(ctx, cam)
+		self.report({'INFO'},"bpy.ops.camera.create_target()")
 		return {'FINISHED'}
 
-class BsMax_OT_MakeFreeCamera(Operator):
-	bl_idname = "bsmax.makefreecamera"
+class Camera_OT_Clear_Target(Operator):
+	bl_idname = "camera.clear_targte"
 	bl_label = "Make Free Camera"
 
 	@classmethod
@@ -58,10 +59,11 @@ class BsMax_OT_MakeFreeCamera(Operator):
 		for c in TrackToConts:
 			cam.constraints.remove(c)
 		cam.matrix_world = transfoem
+		self.report({'INFO'},'bpy.ops.camera.clear_targte()')
 		return {'FINISHED'}
 
-class BsMax_OT_SelectTarget(Operator):
-	bl_idname = "bsmax.selecttarget"
+class Camera_OT_Select_Target(Operator):
+	bl_idname = "camera.select_target"
 	bl_label = "Select Target"
 
 	@classmethod
@@ -76,18 +78,19 @@ class BsMax_OT_SelectTarget(Operator):
 		obj = ctx.active_object
 		targ = obj.constraints["Track To"].target
 		set_as_active_object(ctx, targ)
+		self.report({'INFO'},'bpy.ops.camera.select_target()')
 		return {'FINISHED'}
 
 def camera_menu(self, ctx):
 	layout = self.layout
 	layout.separator()
-	layout.operator("bsmax.maketargetcamera")
-	layout.operator("bsmax.makefreecamera")
-	layout.operator("bsmax.selecttarget")
+	layout.operator("camera.create_target")
+	layout.operator("camera.clear_targte")
+	layout.operator("camera.select_target")
 
-classes = [BsMax_OT_MakeTargetCamera,
-		BsMax_OT_MakeFreeCamera,
-		BsMax_OT_SelectTarget]
+classes = [Camera_OT_Create_Target,
+		Camera_OT_Clear_Target,
+		Camera_OT_Select_Target]
 
 def register_tergetcamera():
 	[bpy.utils.register_class(c) for c in classes]
@@ -96,3 +99,6 @@ def register_tergetcamera():
 def unregister_tergetcamera():
 	bpy.types.VIEW3D_MT_view_cameras.remove(camera_menu)
 	[bpy.utils.unregister_class(c) for c in classes]
+
+if __name__ == "__main__":
+	register_tergetcamera()

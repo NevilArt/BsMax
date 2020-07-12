@@ -281,6 +281,7 @@ class Object_OT_Align_Selected_to_Active(Operator):
 
 	def execute(self, ctx):
 		self.store_setting()
+		# self.report({'INFO'},'bpy.ops.object.align_selected_to_active()')
 		self.report({'INFO'},'bpy.ops.object.align_selected_to_target()')
 		return {'FINISHED'}
 

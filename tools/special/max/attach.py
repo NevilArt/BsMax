@@ -17,24 +17,26 @@ import bpy
 from bpy.props import StringProperty, BoolProperty
 from bpy.types import Scene, Panel, Operator
 
-class BsMax_OT_AttachMesh(Operator):
-	bl_idname = "bsmax.attachmesh"
-	bl_label = "Attach (Mesh)"
+class Object_OT_Attach(Operator):
+	bl_idname = "object.attach"
+	bl_label = "Attach"
 	#custom_property: PointerProperty(type = bpy.types.Object)
 	def execute(self, ctx):
 		# print("Attach by eyedrop working on progress")
+		# self.report({'INFO'},'bpy.ops.object.attach()')
 		return{"FINISHED"}
 
-class BsMax_OT_AttachListMesh(Operator):
-	bl_idname = "bsmax.attachlistmesh"
-	bl_label = "Attach List (Mesh)"
+class Object_OT_Attach_List(Operator):
+	bl_idname = "object.attach_list"
+	bl_label = "Attach List"
 	def execute(self, ctx):
 		# print("Attach by list working on progress")
+		# self.report({'INFO'},'bpy.ops.object.attach_list()')
 		return{"FINISHED"}
 
-class BsMax_OT_DetachMesh(Operator):
-	bl_idname = "bsmax.detachmesh"
-	bl_label = "Detach (Mesh)"
+class Object_OT_Detach(Operator):
+	bl_idname = "object.detach"
+	bl_label = "Detach"
 
 	name:StringProperty(name="Name")
 	element:BoolProperty(default=False)
@@ -81,14 +83,16 @@ class BsMax_OT_DetachMesh(Operator):
 			bpy.ops.mesh.split('INVOKE_DEFAULT')
 		else:
 			bpy.ops.mesh.separate(type = 'SELECTED')
+		
+		self.report({'INFO'},'bpy.ops.object.detach()')
 		return{"FINISHED"}
+
 	def invoke(self, ctx, event):
 		if ctx.active_object != None:
 			self.name = ctx.active_object.name
-		wm = ctx.window_manager
-		return wm.invoke_props_dialog(self)
+		return ctx.window_manager.invoke_props_dialog(self)
 
-classes = [BsMax_OT_AttachMesh, BsMax_OT_AttachListMesh, BsMax_OT_DetachMesh]
+classes = [Object_OT_Attach, Object_OT_Attach_List, Object_OT_Detach]
 
 def register_attach():
 	[bpy.utils.register_class(c) for c in classes]

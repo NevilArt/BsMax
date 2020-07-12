@@ -73,8 +73,8 @@ def bmaxMirror_Execute_OM(self, ctx):
 			texture_space = False)
 			# ,release_confirm = False)
 
-class BsMax_OT_Mirror(bpy.types.Operator):
-	bl_idname = "bsmax.mirror_tool"
+class Object_OT_Mirror(bpy.types.Operator):
+	bl_idname = "object.mirror"
 	bl_label = "Mirror"
 	bl_description = "Mirror object dialog box"
 	bl_options = {'REGISTER', 'UNDO'}
@@ -115,6 +115,7 @@ class BsMax_OT_Mirror(bpy.types.Operator):
 		row.prop(self,"c_mode")
 
 	def execute(self, ctx):
+		self.report({'INFO'},'bpy.ops.object.mirror()')
 		return {'FINISHED'}
 
 	def invoke(self, ctx, evt):
@@ -127,7 +128,7 @@ class BsMax_OT_Mirror(bpy.types.Operator):
 		return {'RUNNING_MODAL'}
 
 def register_mirror():
-	bpy.utils.register_class(BsMax_OT_Mirror)
+	bpy.utils.register_class(Object_OT_Mirror)
 
 def unregister_mirror():
-	bpy.utils.unregister_class(BsMax_OT_Mirror)
+	bpy.utils.unregister_class(Object_OT_Mirror)

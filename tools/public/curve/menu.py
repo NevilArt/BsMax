@@ -18,9 +18,9 @@ import bpy
 def controlpoints_menu(self, ctx):
 	layout = self.layout
 	layout.separator()
-	layout.operator("curve.mergebydistance",text="Merge by Distance").typein=True
+	layout.operator("curve.merge_by_distance",text="Merge by Distance").typein=True
 	layout.operator("curve.break",text="Break")
-	layout.operator("curve.makefirst",text="Make First")
+	layout.operator("curve.make_first",text="Make First")
 	layout.operator("curve.chamfer",text="Chamfer/Fillet").typein=True
 
 def segments_menu(self, ctx):

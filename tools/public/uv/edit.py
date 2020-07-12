@@ -35,11 +35,12 @@ class UV_OT_Turn(Operator):
 						use_proportional_edit=False,proportional_edit_falloff='SMOOTH',
 						proportional_size=1,use_proportional_connected=False,
 						use_proportional_projected=False)
+		self.report({'INFO'},'bpy.ops.uv.turn()')
 		return{"FINISHED"}
 
 # not done yet
-class UV_OT_PlaneProjection(Operator):
-	bl_idname = "uv.planeprojection"
+class UV_OT_Plane_Projection(Operator):
+	bl_idname = "uv.plane_projection"
 	bl_label = "Plane Projection"
 	quick: BoolProperty(name="Quick",default=True)
 
@@ -61,7 +62,10 @@ class UV_OT_PlaneProjection(Operator):
 		set_as_active_object(ctx,obj)
 		bpy.ops.object.mode_set(mode='EDIT')
 
-classes = [UV_OT_Turn,UV_OT_PlaneProjection]
+		self.report({'INFO'},'bpy.ops.uv.plane_projection()')
+		return{"FINISHED"}
+
+classes = [UV_OT_Turn,UV_OT_Plane_Projection]
 
 def register_edit():
 	[bpy.utils.register_class(c) for c in classes]

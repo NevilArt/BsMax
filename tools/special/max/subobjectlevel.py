@@ -22,7 +22,7 @@ def mesh(ctx,v,e,f):
 	ctx.tool_settings.mesh_select_mode = v,e,f
 
 class Object_OT_SubobjectLevel(bpy.types.Operator):
-	bl_idname = "object.subobjectlevel"
+	bl_idname = "object.subobject_level"
 	bl_label = "Subobject Level"
 	level: IntProperty(name="SubobjectLevel")
 

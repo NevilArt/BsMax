@@ -173,8 +173,8 @@ def enabled(self, ctx):
 def mode(self, ctx):
 	pass
 
-class BsMax_OT_ObjectProperties(bpy.types.Operator):
-	bl_idname = "object.object_properties"
+class Object_OT_Properties(bpy.types.Operator):
+	bl_idname = "object.properties"
 	bl_label = "Object Properties"
 
 	# Object information
@@ -303,6 +303,7 @@ class BsMax_OT_ObjectProperties(bpy.types.Operator):
 	def execute(self,ctx):
 		hide(self,ctx)
 		freeze(self,ctx)
+		self.report({'INFO'},'bpy.ops.object.properties()')
 		return {'FINISHED'}
 
 	def cancel(self,ctx):
@@ -314,10 +315,10 @@ class BsMax_OT_ObjectProperties(bpy.types.Operator):
 		return ctx.window_manager.invoke_props_dialog(self)
 
 def register_objectproperties():
-	bpy.utils.register_class(BsMax_OT_ObjectProperties)
+	bpy.utils.register_class(Object_OT_Properties)
 
 def unregister_objectproperties():
-	bpy.utils.unregister_class(BsMax_OT_ObjectProperties)
+	bpy.utils.unregister_class(Object_OT_Properties)
 
 if __name__ =="__main__":
 	register_objectproperties()

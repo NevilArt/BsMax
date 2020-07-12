@@ -16,8 +16,8 @@
 import bpy
 from bsmax.state import has_constraint
 
-class BsMax_OT_linkConstraint(bpy.types.Operator):
-	bl_idname="animation.linkconstraint"
+class Anim_OT_Link_Constraint(bpy.types.Operator):
+	bl_idname="anim.link_constraint"
 	bl_label="Link Constraint"
 	bl_description="Link/Unlink constraint"
 	bl_options={'REGISTER', 'UNDO'}
@@ -85,10 +85,11 @@ class BsMax_OT_linkConstraint(bpy.types.Operator):
 		if self.linkto == 'WORLD':
 			for obj in objs:
 				self.set_free(obj, frame)
+		self.report({'INFO'},'bpy.ops.anim.link_constraint(linkto="'+ self.linkto +'")')
 		return{"FINISHED"}
 
 def register_parent():
-	bpy.utils.register_class(BsMax_OT_linkConstraint)
+	bpy.utils.register_class(Anim_OT_Link_Constraint)
 
 def unregister_parent():
-	bpy.utils.unregister_class(BsMax_OT_linkConstraint)
+	bpy.utils.unregister_class(Anim_OT_Link_Constraint)

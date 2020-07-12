@@ -5,6 +5,7 @@
 
 Recent Updates
 
+* All Operators has self report now. you can see python api of each operator in 'Info' or 'Console'.
 * Time keys now working on all areas ('N' ',' '.' '/' 'Home' 'End' in Max mode)
 * '[' and ']' defined to Left and Right Tool panel open/close toggle (Max Mode only).
 * Keymap system has duplication check function.

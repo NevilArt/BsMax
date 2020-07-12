@@ -31,28 +31,28 @@ def create_keymaps(km):
 	if kc.addon and rcsm:
 		# 3D View --------------------------------------------------------------
 		space = km.space('3D View','VIEW_3D','WINDOW')
-		km.new(space,"bsmax.droptool","RIGHTMOUSE","PRESS",[])
+		km.new(space,"view3d.drop_tool","RIGHTMOUSE","PRESS",[])
 		# Object Mode -------------------------------------------------------------------------
 		space = km.space('Object Mode','EMPTY','WINDOW')
-		km.new(space,"bsmax.droptool","RIGHTMOUSE","PRESS",[])
+		km.new(space,"view3d.drop_tool","RIGHTMOUSE","PRESS",[])
 		# Mesh -----------------------------------------------------------------
 		space = km.space('Mesh','EMPTY','WINDOW')
-		km.new(space,"bsmax.droptool","RIGHTMOUSE","PRESS",[])
+		km.new(space,"view3d.drop_tool","RIGHTMOUSE","PRESS",[])
 		# Curve ----------------------------------------------------------------
 		space = km.space('Curve','EMPTY','WINDOW')
-		km.new(space,"bsmax.droptool","RIGHTMOUSE","PRESS",[])
+		km.new(space,"view3d.drop_tool","RIGHTMOUSE","PRESS",[])
 		# Armature -------------------------------------------------------------
 		space = km.space('Armature','EMPTY','WINDOW')
-		km.new(space,"bsmax.droptool","RIGHTMOUSE","PRESS",[])
+		km.new(space,"view3d.drop_tool","RIGHTMOUSE","PRESS",[])
 		# Metaball -------------------------------------------------------------
 		space = km.space('Metaball','EMPTY','WINDOW')
-		km.new(space,"bsmax.droptool","RIGHTMOUSE","PRESS",[])
+		km.new(space,"view3d.drop_tool","RIGHTMOUSE","PRESS",[])
 		# Lattice --------------------------------------------------------------
 		space = km.space('Lattice','EMPTY','WINDOW')
-		km.new(space,"bsmax.droptool","RIGHTMOUSE","PRESS",[])
+		km.new(space,"view3d.drop_tool","RIGHTMOUSE","PRESS",[])
 		# Pose -----------------------------------------------------------------
 		space = km.space('Pose','EMPTY','WINDOW')
-		km.new(space,"bsmax.droptool","RIGHTMOUSE","PRESS",[])
+		km.new(space,"view3d.drop_tool","RIGHTMOUSE","PRESS",[])
 
 keymaps = KeyMaps()
 

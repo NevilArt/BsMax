@@ -200,6 +200,7 @@ class Object_OT_Transform_Type_In(bpy.types.Operator):
 		self.percent = 100
 
 	def execute(self, ctx):
+		self.report({'INFO'},'bpy.ops.object.transform_type_in()')
 		return {'FINISHED'}
 
 	def cancel(self, ctx):

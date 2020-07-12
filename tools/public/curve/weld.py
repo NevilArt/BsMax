@@ -20,9 +20,9 @@ from bsmax.math import get_distance
 from bsmax.curve import Curve, Spline
 from tools.public.curve.operator import CurveTool
 
-class BsMax_OT_CurveBreak(Operator):
+class Curve_OT_Break(Operator):
 	bl_idname = "curve.break"
-	bl_label = "Break (Curve)"
+	bl_label = "Break"
 	bl_options = {'REGISTER','UNDO'}
 
 	@classmethod
@@ -38,11 +38,13 @@ class BsMax_OT_CurveBreak(Operator):
 		for spline, points in curve.selection("point"):
 			curve.break_point(spline, points)
 		curve.update()
+
+		self.report({'INFO'},'bpy.ops.curve.break()')
 		return{"FINISHED"}
 
-class BsMax_OT_MakeFirst(Operator):
-	bl_idname = "curve.makefirst"
-	bl_label = "Make First (Curve)"
+class Curve_OT_Make_First(Operator):
+	bl_idname = "curve.make_first"
+	bl_label = "Make First"
 	bl_options = {'REGISTER','UNDO'}
 
 	@classmethod
@@ -60,10 +62,12 @@ class BsMax_OT_MakeFirst(Operator):
 				spline = curve.splines[splineindex]
 				spline.make_first(points[0])
 		curve.update()
+		
+		self.report({'INFO'},'bpy.ops.curve.make_first()')
 		return{"FINISHED"}
 
-class BsMax_OT_CurveMergeByDistance(CurveTool):
-	bl_idname = "curve.mergebydistance"
+class Curve_OT_Merge_By_Distance(CurveTool):
+	bl_idname = "curve.merge_by_distance"
 	bl_label = "Merge by distance"
 	singleaction = True
 	typein: BoolProperty(name="Type In:",default=True)
@@ -85,13 +89,15 @@ class BsMax_OT_CurveMergeByDistance(CurveTool):
 		curve.update()
 
 	def draw(self, ctx):
-		layout = self.layout
-		col = layout.column()
+		col = self.layout.column()
 		col.prop(self,"value")
 		col.prop(self,"selectedonly")
 		col.prop(self,"gapsonly")
+	
+	def self_report(self):
+		self.report({'INFO'},'bpy.ops.curve.merge_by_distance()')
 
-classes = [BsMax_OT_CurveMergeByDistance, BsMax_OT_CurveBreak, BsMax_OT_MakeFirst]
+classes = [Curve_OT_Merge_By_Distance, Curve_OT_Break, Curve_OT_Make_First]
 
 def register_weld():
 	[bpy.utils.register_class(c) for c in classes]

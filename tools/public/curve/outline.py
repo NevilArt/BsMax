@@ -65,6 +65,9 @@ class BsMax_OT_OutlineCurve(CurveTool):
 		if not self.close:
 			col.prop(self,"count")
 			col.prop(self,"mirror")
+	
+	def self_report(self):
+		self.report({'INFO'},'bpy.ops.curve.outline()')
 
 def register_outline():
 	bpy.utils.register_class(BsMax_OT_OutlineCurve)

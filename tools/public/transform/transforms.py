@@ -18,14 +18,16 @@ from bpy.props import StringProperty,BoolProperty,FloatProperty
 from bpy.types import Operator
 
 class View3D_OT_Transform_Gizmo_Size(Operator):
-	bl_idname = "view3d.transformgizmosize"
+	bl_idname = "view3d.transform_gizmosize"
 	bl_label = "Transform Gizmo Size"
 	step: FloatProperty()
+
 	def execute(self, ctx):
 		if bpy.app.version[1] < 81:
 			ctx.user_preferences.view.gizmo_size += self.step
 		else:
 			ctx.preferences.view.gizmo_size += self.step
+		self.report({'INFO'},'bpy.ops.view3d.transform_gizmosize()')
 		return{"FINISHED"}
 
 def get_tool(ctx):
@@ -53,6 +55,7 @@ class Object_OT_Move(Operator):
 	bl_idname = "object.move"
 	bl_label = "Move"
 	smax: BoolProperty()
+
 	def execute(self, ctx):
 		tool = get_tool(ctx)
 		if tool == "builtin.select":
@@ -62,7 +65,8 @@ class Object_OT_Move(Operator):
 				coordinate_toggle(ctx)
 			else:	
 				bpy.ops.wm.tool_set_by_id(name="builtin.move")
-		bpy.ops.bsmax.snaptoggle(auto=self.smax)
+		bpy.ops.object.snap_toggle(auto=self.smax)
+		# self.report({'INFO'},'bpy.ops.object.move()')
 		return{"FINISHED"}
 
 class Object_OT_Rotate(Operator):
@@ -78,7 +82,8 @@ class Object_OT_Rotate(Operator):
 				coordinate_toggle(ctx)
 			else:
 				bpy.ops.wm.tool_set_by_id(name="builtin.rotate")
-		bpy.ops.bsmax.angelsnap(auto=self.smax)
+		bpy.ops.object.angel_snap(auto=self.smax)
+		# self.report({'INFO'},'bpy.ops.object.rotate()')
 		return{"FINISHED"}
 
 class Object_OT_Scale(Operator):
@@ -97,6 +102,7 @@ class Object_OT_Scale(Operator):
 					bpy.ops.wm.tool_set_by_id(name="builtin.scale",cycle=True)
 			else:
 				bpy.ops.wm.tool_set_by_id(name="builtin.scale",cycle=True)
+		# self.report({'INFO'},'bpy.ops.object.scale()')
 		return{"FINISHED"}
 
 # "TweakBetter" created by Dan Pool (dpdp)
@@ -114,6 +120,10 @@ class View3D_OT_Tweak_Better(Operator):
 			bpy.ops.transform.transform('INVOKE_DEFAULT',mode=self.tmode)#,release_confirm=self.release)
 			return {'FINISHED'}
 		return {'RUNNING_MODAL'}
+
+	def execute(self,ctx):
+		self.report({'INFO'},'bpy.ops.view3d.tweak_better()')
+		return{"FINISHED"}
 
 	def invoke(self, ctx, event):
 		if ctx.object:

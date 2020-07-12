@@ -107,6 +107,7 @@ class Anim_OT_Auto_Key_Toggle(Operator):
 			dopesheet_space.header = (0.2588, 0.2588, 0.2588, 1.0)
 		else:
 			dopesheet_space.header = (0.5, 0.0, 0.0, 1.0)
+		self.report({'INFO'},"bpy.ops.anim.auto_key_toggle()")
 		return{"FINISHED"}
 
 def set_key(objs, key):
@@ -155,6 +156,7 @@ class Anim_OT_Set_Key(Operator):
 			# #ctx.active_bone.keyframe_insert("Location")#, index=2)
 			# ctx.active_bone.keyframe_insert("rotation_euler")#, index=2)
 			# #(data_path, index=-1, frame=bpy.context.scene.frame_current, group="")
+		self.report({'INFO'},"bpy.ops.anim.set_key()")
 		return{"FINISHED"}
 
 # Delete selected objects animation
@@ -165,6 +167,7 @@ class Anim_OT_Delete_Selected_Animation(Operator):
 	def execute(self, ctx):
 		for obj in ctx.selected_objects:
 			obj.animation_data_clear()
+		self.report({'INFO'},"bpy.ops.anim.delete_selected_animation()")
 		return{"FINISHED"}
 
 class Anim_OT_Frame_Set(Operator):
@@ -188,6 +191,7 @@ class Anim_OT_Frame_Set(Operator):
 		else:
 			frame = last
 		ctx.scene.frame_current = frame
+		self.report({'INFO'},'bpy.ops.anim.frame_set(frame="'+ self.frame +'")')
 		return{"FINISHED"}
 
 class Anim_OT_Set_TimeLine_Range(Operator):
@@ -247,6 +251,7 @@ class Dopesheet_OT_Zoom_Extended(Operator):
 	def execute(self, ctx):
 		bpy.ops.action.view_selected('INVOKE_DEFAULT')
 		# bpy.ops.action.view_all('INVOKE_DEFAULT')
+		self.report({'INFO'},"bpy.ops.action.zoom_extended()")
 		return{'FINISHED'}
 
 # class Graph_Editor_OT_Hide(Operator):

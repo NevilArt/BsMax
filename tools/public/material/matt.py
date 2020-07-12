@@ -15,8 +15,8 @@
 
 import bpy
 
-class BsMax_OT_AssignToSelection(bpy.types.Operator):
-	bl_idname = "material.assigntoselection"
+class Material_OT_Assign_To_Selection(bpy.types.Operator):
+	bl_idname = "material.assign_to_selection"
 	bl_label = "Assign to selected objects"
 	bl_description = "Assign Material to selected objects"
 
@@ -32,6 +32,7 @@ class BsMax_OT_AssignToSelection(bpy.types.Operator):
 		material = ctx.active_object.active_material
 		for o in ctx.selected_objects:
 			o.active_material = material
+		self.report({'INFO'},'bpy.ops.material.assign_to_selection()')
 		return{"FINISHED"}
 
 class BsMax_MT_material_Tools(bpy.types.Menu):
@@ -42,12 +43,12 @@ class BsMax_MT_material_Tools(bpy.types.Menu):
 		layout=self.layout
 		if ctx.space_data.type == "NODE_EDITOR":
 			if ctx.space_data.shader_type == 'OBJECT':
-				layout.operator("material.assigntoselection",text="Assign to selected")
+				layout.operator("material.assign_to_selection",text="Assign to selected")
 
 def matt_menu(self, ctx):
 	self.layout.menu("BSMAX_MT_materialtools")
 
-classes = [BsMax_OT_AssignToSelection,BsMax_MT_material_Tools]
+classes = [Material_OT_Assign_To_Selection,BsMax_MT_material_Tools]
 
 def register_matt():
 	[bpy.utils.register_class(c) for c in classes]

@@ -52,9 +52,10 @@ def duplicate_copy(ctx, obj):
 	bpy.ops.object.duplicate(linked=False, mode='TRANSLATION')
 	return ctx.view_layer.objects.active
 
-def modifier_add(ctx, objs, modifier):
+def modifier_add(ctx, objs, modifier, name=''):
 	for obj in objs:
-		obj.modifiers.new(name=modifier, type=modifier)
+		the_name = modifier if name == '' else name
+		obj.modifiers.new(name=the_name, type=modifier)
 
 def link_to_scene(ctx, obj):
 	activelayername = ctx.view_layer.active_layer_collection.name

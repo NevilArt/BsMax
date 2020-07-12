@@ -37,6 +37,7 @@ class View3D_OT_Wireframe_Toggle(Operator):
 		else:
 			v3dd._shading_type = shading.type
 			shading.type = 'WIREFRAME'
+		self.report({'INFO'},'bpy.ops.view3d.wireframe_toggle()')
 		return{"FINISHED"}
 
 class View3D_OT_Lighting_Toggle(Operator):
@@ -53,6 +54,7 @@ class View3D_OT_Lighting_Toggle(Operator):
 			shading.type = 'MATERIAL' #'SOLID''RENDERED'
 		else:
 			shading.type = 'RENDERED'
+		self.report({'INFO'},'bpy.ops.view3d.lighting_toggle()')
 		return{"FINISHED"}
 
 class View3D_OT_Edge_Face_Toggle(Operator):
@@ -71,6 +73,7 @@ class View3D_OT_Edge_Face_Toggle(Operator):
 		else:
 			overlay.show_wireframes = True
 			overlay.wireframe_threshold = 1
+		self.report({'INFO'},'bpy.ops.view3d.edge_faces_toggle()')
 		return{"FINISHED"}
 
 class View3D_OT_Shade_Selected_Faces(Operator):
@@ -87,6 +90,7 @@ class View3D_OT_Shade_Selected_Faces(Operator):
 			FaceShade.face_select = (0.0, 0.0, 0.0, 0.0)
 		else:
 			FaceShade.face_select = (0.8156, 0.0, 0.0, 0.5)
+		self.report({'INFO'},'bpy.ops.view3d.shade_selected_faces()')
 		return{"FINISHED"}
 
 class View3D_OT_Show_Hide_Gride(Operator):
@@ -104,6 +108,7 @@ class View3D_OT_Show_Hide_Gride(Operator):
 		overlay.show_axis_x = not state
 		overlay.show_axis_y = not state
 		overlay.show_axis_z = False
+		self.report({'INFO'},'bpy.ops.view3d.show_hide_gride()')
 		return{"FINISHED"}
 
 class View3D_OT_Show_Statistics(Operator):
@@ -117,6 +122,7 @@ class View3D_OT_Show_Statistics(Operator):
 	def execute(self, ctx):
 		overlay = ctx.space_data.overlay
 		overlay.show_text = not overlay.show_text
+		self.report({'INFO'},'bpy.ops.view3d.show_statistics()')
 		return{"FINISHED"}
 
 class Object_OT_Xray_Toggle(Operator):
@@ -129,6 +135,7 @@ class Object_OT_Xray_Toggle(Operator):
 
 	def execute(self, contecxt):
 		# TODO Xray Toggle mode for selection
+		self.report({'INFO'},'bpy.ops.object.xray_toggle()')
 		return{"FINISHED"}
 
 class View3D_OT_Show_Geometry_Toggle(Operator):
@@ -142,6 +149,7 @@ class View3D_OT_Show_Geometry_Toggle(Operator):
 	def execute(self, ctx):
 		state = ctx.space_data.show_object_viewport_mesh
 		ctx.space_data.show_object_viewport_mesh = not state
+		self.report({'INFO'},'bpy.ops.view3d.show_geometry_toggle()')
 		return{"FINISHED"}
 
 class View3D_OT_Show_Helper_Toggle(Operator):
@@ -163,6 +171,7 @@ class View3D_OT_Show_Helper_Toggle(Operator):
 		data.show_object_viewport_speaker = not state
 		data.show_object_viewport_light_probe = not state
 		data.show_object_viewport_lattice = not state
+		self.report({'INFO'},'bpy.ops.view3d.show_helper_toggle()')
 		return{"FINISHED"}
 
 class View3D_OT_Show_Shape_Toggle(Operator):
@@ -176,6 +185,7 @@ class View3D_OT_Show_Shape_Toggle(Operator):
 	def execute(self, ctx):
 		state = ctx.space_data.show_object_viewport_curve
 		ctx.space_data.show_object_viewport_curve = not state
+		self.report({'INFO'},'bpy.ops.view3d.show_shape_toggle()')
 		return{"FINISHED"}
 
 class View3D_OT_Show_Light_Toggle(Operator):
@@ -189,6 +199,7 @@ class View3D_OT_Show_Light_Toggle(Operator):
 	def execute(self, ctx):
 		state = ctx.space_data.show_object_viewport_light
 		ctx.space_data.show_object_viewport_light = not state
+		self.report({'INFO'},'bpy.ops.view3d.show_light_toggle()')
 		return{"FINISHED"}
 
 class View3D_OT_Show_Bone_Toggle(Operator):
@@ -202,6 +213,7 @@ class View3D_OT_Show_Bone_Toggle(Operator):
 	def execute(self, ctx):
 		state = ctx.space_data.show_object_viewport_armature
 		ctx.space_data.show_object_viewport_armature = not state
+		self.report({'INFO'},'bpy.ops.view3d.show_bone_toggle()')
 		return{"FINISHED"}
 
 class View3D_OT_Show_Camera_Toggle(Operator):
@@ -215,6 +227,7 @@ class View3D_OT_Show_Camera_Toggle(Operator):
 	def execute(self, ctx):
 		state = ctx.space_data.show_object_viewport_camera
 		ctx.space_data.show_object_viewport_camera = not state
+		self.report({'INFO'},'bpy.ops.view3d.show_camera_toggle()')
 		return{"FINISHED"}
 
 classes = [View3D_OT_Wireframe_Toggle,

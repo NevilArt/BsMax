@@ -38,6 +38,7 @@ class Object_OT_Freeze(Operator):
 		elif self.mode == 'clear':
 			for obj in bpy.data.objects:
 				obj.hide_select = False
+		self.report({'INFO'},'bpy.ops.object.freeze()')
 		return{"FINISHED"}
 
 class Object_OT_Hide(Operator):
@@ -70,6 +71,7 @@ class Object_OT_Hide(Operator):
 				obj.hide_render = False
 				obj.hide_viewport = False
 			bpy.ops.object.hide_view_clear('INVOKE_DEFAULT')
+		self.report({'INFO'},'bpy.ops.object.hide()')
 		return{"FINISHED"}
 
 classes = [Object_OT_Freeze,Object_OT_Hide]

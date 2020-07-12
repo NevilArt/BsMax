@@ -27,8 +27,8 @@ class BsMax_MT_Animation_Tools(bpy.types.Menu):
 
 	def draw(self, ctx):
 		layout=self.layout
-		layout.operator("animation.linkconstraint",text="Parent to Active Object",icon="LINKED").linkto = 'OBJECT'
-		layout.operator("animation.linkconstraint",text="Parent to World",icon="UNLINKED").linkto = 'WORLD'
+		layout.operator("anim.link_constraint",text="Parent to Active Object",icon="LINKED").linkto = 'OBJECT'
+		layout.operator("anim.link_constraint",text="Parent to World",icon="UNLINKED").linkto = 'WORLD'
 
 def animation_menu(self, ctx):
 	self.layout.menu("BSMAX_MT_animationtools")

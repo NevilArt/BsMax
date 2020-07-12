@@ -45,8 +45,8 @@ class BsMax_OT_BlenderDefaultMenueCall(Operator):
 		bpy.ops.wm.call_menu(name = mt)
 		return{"FINISHED"}
 
-class BsMax_OT_DropTool(Operator):
-	bl_idname = "bsmax.droptool"
+class View3D_OT_Drop_Tool(Operator):
+	bl_idname = "view3d.drop_tool"
 	bl_label = "Drop Tool"
 
 	preferences = None
@@ -82,10 +82,10 @@ class BsMax_OT_DropTool(Operator):
 			self.call_menu(ctx)
 		return{"FINISHED"}
 
-classes = [BsMax_OT_BlenderDefaultMenueCall,BsMax_OT_DropTool]
+classes = [BsMax_OT_BlenderDefaultMenueCall,View3D_OT_Drop_Tool]
 
 def register_droptool(preferences):
-	BsMax_OT_DropTool.preferences = preferences
+	View3D_OT_Drop_Tool.preferences = preferences
 	[bpy.utils.register_class(c) for c in classes]
 
 def unregister_droptool():

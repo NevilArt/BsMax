@@ -18,8 +18,8 @@ from bpy.types import Operator
 from bpy.props import StringProperty
 
 # Coordinate
-class BsMax_OT_CoordSystem(Operator):
-	bl_idname = "bsmax.coordinatesystem"
+class Object_OT_Coord_System(Operator):
+	bl_idname = "object.coordinate_system"
 	bl_label = "Coordinate System"
 	coordsys: bpy.props.StringProperty(default = 'GLOBAL')
 	def execute(self, ctx):
@@ -27,15 +27,15 @@ class BsMax_OT_CoordSystem(Operator):
 		ctx.window.scene.transform_orientation_slots[0].type = self.coordsys
 		return{"FINISHED"}
 
-class BsMax_OT_SetLocalCoordinPoseMode(Operator):
-	bl_idname = "bsmax.setlocalcoordinposemode"
+class Object_OT_Set_Local_Coord_in_Pose_Mode(Operator):
+	bl_idname = "object.set_local_coord_in_pose_mode"
 	bl_label = "Local (Pose)"
 	def execute(self, ctx):
 		ctx.window.scene.transform_orientation_slots[0].type = 'LOCAL'
 		ctx.scene.tool_settings.transform_pivot_point = 'INDIVIDUAL_ORIGINS'
 		return{"FINISHED"} 
 
-classes = [BsMax_OT_CoordSystem, BsMax_OT_SetLocalCoordinPoseMode]
+classes = [Object_OT_Coord_System, Object_OT_Set_Local_Coord_in_Pose_Mode]
 
 def register_coordinate():
 	[bpy.utils.register_class(c) for c in classes]

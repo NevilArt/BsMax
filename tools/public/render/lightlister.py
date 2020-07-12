@@ -17,8 +17,8 @@ import bpy
 from bpy.types import Operator
 from bsmax.actions import set_as_active_object
 
-class BsMax_TO_SelectLightByName(Operator):
-	bl_idname = "light.selectbyname"
+class Light_TO_Select_By_Name(Operator):
+	bl_idname = "light.select_by_name"
 	bl_label = "select light by name"
 	name: bpy.props.StringProperty(default="")
 	
@@ -30,16 +30,17 @@ class BsMax_TO_SelectLightByName(Operator):
 		bpy.ops.object.select_all(action='DESELECT')
 		if self.name != "":
 			set_as_active_object(ctx,bpy.data.objects[self.name])
+		self.report({'INFO'},'bpy.ops.light.select_by_name()')
 		return{"FINISHED"}
 
-class BsMax_TO_LightLister(Operator):
-	bl_idname = "render.lightlister"
+class Render_TO_Light_Lister(Operator):
+	bl_idname = "render.light_lister"
 	bl_label = "Light lister"
 	lights = []
 
 	def get_field(self,row,light):
 		icon = 'LIGHT_' + light.data.type
-		row.operator("light.selectbyname",icon=icon,text=light.name).name = light.name
+		row.operator("light.select_by_name",icon=icon,text=light.name).name = light.name
 		row.prop(light.data,'color',text="")
 		row.prop(light.data,'energy',text="")
 		row.prop(light.data,'specular_factor',text="")
@@ -70,6 +71,7 @@ class BsMax_TO_LightLister(Operator):
 			self.get_field(col.row(align=True),light)
 	
 	def execute(self,ctx):
+		self.report({'INFO'},'bpy.ops.render.light_lister()')
 		return{"FINISHED"}
 	
 	def cancel(self,ctx):
@@ -90,14 +92,14 @@ class BsMax_TO_LightLister(Operator):
 
 	def invoke(self,ctx,event):
 		self.lights = self.get_lights() 
-		return ctx.window_manager.invoke_props_dialog(self,width=600)
+		return ctx.window_manager.invoke_props_dialog(self,width=700)
 
 def render_menu(self, ctx):
 	layout = self.layout
 	layout.separator()
-	layout.operator("render.lightlister",text="Light Lister",icon='LIGHT_SUN')
+	layout.operator("render.light_lister",text="Light Lister",icon='LIGHT_SUN')
 
-classes = [BsMax_TO_LightLister,BsMax_TO_SelectLightByName]
+classes = [Render_TO_Light_Lister,Light_TO_Select_By_Name]
 
 def register_lightlister():
 	[bpy.utils.register_class(c) for c in classes]

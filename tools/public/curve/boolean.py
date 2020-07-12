@@ -18,7 +18,7 @@ from bpy.props import BoolProperty,FloatProperty,EnumProperty
 from bsmax.curve import Curve
 from .operator import CurveTool
 
-class BsMax_OT_BooleanCurve(CurveTool):
+class Curve_OT_Boolean(CurveTool):
 	bl_idname = "curve.boolean"
 	bl_label = "Boolean"
 	singleaction = True
@@ -61,9 +61,12 @@ class BsMax_OT_BooleanCurve(CurveTool):
 		if self.advance:
 			col = layout.column(align=True)
 			col.prop(self,"value")
+	
+	def self_report(self):
+		self.report({'INFO'},'bpy.ops.curve.boolean()')
 
 def register_boolean():
-	bpy.utils.register_class(BsMax_OT_BooleanCurve)
+	bpy.utils.register_class(Curve_OT_Boolean)
 
 def unregister_boolean():
-	bpy.utils.unregister_class(BsMax_OT_BooleanCurve)
+	bpy.utils.unregister_class(Curve_OT_Boolean)

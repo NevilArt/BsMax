@@ -37,6 +37,9 @@ class CurveTool(bpy.types.Operator):
 		self.obj = ctx.active_object
 		self.curve = Curve(self.obj)
 
+	def self_report(self):
+		pass
+
 	def apply(self):
 		pass
 
@@ -51,6 +54,7 @@ class CurveTool(bpy.types.Operator):
 			self.abort()
 		else:
 			self.apply()
+			self.self_report()
 		return{"FINISHED"}
 
 	def check(self, ctx):

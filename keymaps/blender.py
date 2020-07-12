@@ -26,17 +26,17 @@ def create_keymaps(km):
 		km.new(space,"bsmax.mode_set",'F9',"PRESS",[])
 		# 3D View --------------------------------------------------------------
 		space = km.space('3D View','VIEW_3D','WINDOW')
-		# km.new(space,"object.batchrename","F2","PRESS",[])
+		# km.new(space,"object.batch_rename","F2","PRESS",[])
 		km.new(space,"wm.call_menu","A","PRESS",[('name',"BsMax_MT_Create")],ctrl=True,shift=True)
 		# Armature -------------------------------------------------------------
 		space = km.space('Armature','EMPTY','WINDOW')
-		km.new(space,"armature.batchrename","F2","PRESS",[])
+		km.new(space,"armature.batch_rename","F2","PRESS",[])
 		# Node Editor -----------------------------------------------------------------
 		space = km.space("Node Editor","NODE_EDITOR",'WINDOW')
-		km.new(space,"node.batchrename","F2","PRESS",[])
+		km.new(space,"node.batch_rename","F2","PRESS",[])
 		# SEQUENCE_EDITOR--------------------------------------------------------------------
 		space = km.space('Sequencer','SEQUENCE_EDITOR','WINDOW')
-		km.new(space,"sequencer.batchrename","F2","PRESS",[])
+		km.new(space,"sequencer.batch_rename","F2","PRESS",[])
 
 keymaps = KeyMaps()
 

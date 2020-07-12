@@ -18,9 +18,9 @@ from bpy.props import BoolProperty, FloatProperty
 from bsmax.curve import Curve
 from .operator import CurveTool
 
-class BsMax_OT_CurveChamfer(CurveTool):
+class Curve_OT_Chamfer(CurveTool):
 	bl_idname = "curve.chamfer"
-	bl_label = "Fillet/Chamfer (Curve)"
+	bl_label = "Fillet/Chamfer"
 	fillet: BoolProperty(name="Fillet:",default=False)
 	value: FloatProperty(name="Value:",unit='LENGTH',min=0)
 	typein: BoolProperty(name="Type In:",default=False)
@@ -46,7 +46,7 @@ class BsMax_OT_CurveChamfer(CurveTool):
 		col.prop(self,"value",text="Value")
 
 def register_chamfer():
-	bpy.utils.register_class(BsMax_OT_CurveChamfer)
+	bpy.utils.register_class(Curve_OT_Chamfer)
 
 def unregister_chamfer():
-	bpy.utils.unregister_class(BsMax_OT_CurveChamfer)
+	bpy.utils.unregister_class(Curve_OT_Chamfer)

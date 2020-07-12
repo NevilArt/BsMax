@@ -19,36 +19,46 @@ from bpy.props import IntProperty, EnumProperty, BoolProperty
 from bsmax.state import is_active_object
 
 # Set Armatur bone type 
-class BsMax_OT_SetArmaturBoneType(Operator):
-	bl_idname = "bmax.armaturebonetype"
-	bl_label = "Armature Bone Type"
+class Armature_OT_Bone_Type(Operator):
+	bl_idname = "armature.bone_type"
+	bl_label = "Bone Type"
 	mode: EnumProperty(name="Bone Draw type", default='BBONE',
 			description='Armature Bone Draw Type',
 			items=[('OCTAHEDRAL','Octahedral',''),('STICK','Stick',''),
 			('BBONE','BBone',''),('ENVELOPE','Envelope',''),('WIRE','Wire','')])
+	
 	@classmethod
 	def poll(self, ctx):
 		return is_active_object(ctx, 'ARMATURE')
+	
 	def execute(self, ctx):
 		if ctx.active_object != None:
 			ctx.object.data.display_type = self.mode
+		self.report({'INFO'},'bpy.ops.armature.bone_type(mode="'+ self.mode +'")')
 		return{"FINISHED"}
 
 # Devide Bone by number dialog 
-class BsMax_OT_BoneDevide(Operator):
-	bl_idname = "bmax.bonedevide"
+class Armature_OT_Bone_Devide(Operator):
+	bl_idname = "armature.bone_devide"
 	bl_label = "Bone Devide"
 	devides: IntProperty(name="Devides",default=1)
 	typein: BoolProperty(name="Type In:",default=False)
+	
 	def draw(self, ctx):
 		layout = self.layout
 		layout.prop(self,"devides",text="Devides")
+	
 	def execute(self, ctx):
 		bpy.ops.armature.subdivide(number_cuts=self.devides)
+		d = 'devides='+ str(self.devides)
+		t = 'typein=' + str(self.typein)
+		self.report({'INFO'},'bpy.ops.armature.bone_devide('+ d +','+ t +')')
 		return {'FINISHED'}
+
 	def modal(self, ctx, event):
 		bpy.ops.armature.subdivide(number_cuts=self.devides)
 		return {'CANCELLED'}
+
 	def invoke(self, ctx, event):		
 		if self.typein:
 			wm = ctx.window_manager
@@ -57,14 +67,7 @@ class BsMax_OT_BoneDevide(Operator):
 			ctx.window_manager.modal_handler_add(self)
 			return {'RUNNING_MODAL'}
 
-class BsMax_OT_ArmatorEditMenu(Operator):
-	bl_idname = "bmax.armatoreditmenu"
-	bl_label = "Armator Edit Menu"
-	def execute(self, contecxt):
-		bpy.ops.wm.call_menu(name=CM_ArmatorEdit_Menue.bl_idname)
-		return{"FINISHED"}
-
-classes = [BsMax_OT_SetArmaturBoneType,BsMax_OT_BoneDevide,BsMax_OT_ArmatorEditMenu]
+classes = [Armature_OT_Bone_Type,Armature_OT_Bone_Devide]
 
 def register_bone():
 	[bpy.utils.register_class(c) for c in classes]

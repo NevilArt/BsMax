@@ -42,6 +42,8 @@ class Camera_OT_Create_From_View(Operator):
 			bpy.ops.object.camera_add()
 			ctx.scene.camera = bpy.data.objects[ctx.active_object.name]
 			bpy.ops.view3d.camera_to_view()
+		
+		self.report({'INFO'},'bpy.ops.camera.create_from_view()')
 		return{"FINISHED"}
 
 # Set as sctive camera
@@ -49,6 +51,7 @@ class Camera_OT_Set_Active(Operator):
 	bl_idname = "camera.set_active"
 	bl_label = "Set as Active Camera"
 	bl_description = "Set Selected Camera As Active Camera"
+	
 	def execute(self, ctx):
 		if ctx.active_object != None:
 			if ctx.active_object.type == "CAMERA":
@@ -59,6 +62,7 @@ class Camera_OT_Set_Active(Operator):
 					name = "F_" + str(cur_frame)
 					marker = ctx.scene.timeline_markers.new(name, frame = cur_frame)
 					marker.camera = ctx.active_object
+		self.report({'INFO'},'bpy.ops.camera.set_active()')
 		return{"FINISHED"}
 
 # Select Camera
@@ -85,7 +89,10 @@ class Camera_OT_Search(Operator):
 		ctx.scene.camera = SelectedCamera
 		area = next(area for area in ctx.screen.areas if area.type == 'VIEW_3D')
 		area.spaces[0].region_3d.view_perspective = 'CAMERA'
+
+		self.report({'INFO'},'bpy.ops.camera.search()')
 		return {'FINISHED'}
+	
 	def invoke(self, ctx, event):
 		wm = ctx.window_manager
 		wm.invoke_search_popup(self)
@@ -127,6 +134,8 @@ class Camera_OT_Select(Operator):
 		
 		if ctx.scene.camera:
 			ctx.area.spaces[0].region_3d.view_perspective = 'CAMERA'
+		
+		self.report({'INFO'},'bpy.ops.camera.select()')
 		return{"FINISHED"}
 
 class Camera_OT_Lock_To_View_Toggle(Operator):
@@ -140,6 +149,7 @@ class Camera_OT_Lock_To_View_Toggle(Operator):
 
 	def execute(self, ctx):
 		ctx.space_data.lock_camera = not ctx.space_data.lock_camera
+		self.report({'INFO'},'bpy.ops.camera.lock_to_view_toggle()')
 		return {'FINISHED'}
 
 class Camera_OT_Lock_Transform(Operator):
@@ -158,6 +168,7 @@ class Camera_OT_Lock_Transform(Operator):
 			cam.lock_location = [state,state,state]
 			cam.lock_rotation = [state,state,state]
 			cam.lock_scale = [state,state,state]
+		self.report({'INFO'},'bpy.ops.camera.lock_transform()')
 		return {'FINISHED'}
 
 class Camera_OT_Select_Active_Camera(Operator):
@@ -181,6 +192,7 @@ class Camera_OT_Select_Active_Camera(Operator):
 				if has_constraint(cam, 'TRACK_TO'):
 					targ = cam.constraints["Track To"].target
 					targ.select_set(state=True)
+		self.report({'INFO'},'bpy.ops.camera.select_active_camera()')
 		return {'FINISHED'}
 
 class Camera_OT_Show_Safe_Area(Operator):
@@ -196,6 +208,8 @@ class Camera_OT_Show_Safe_Area(Operator):
 		cam = ctx.scene.camera
 		if cam != None:
 			cam.data.show_safe_areas = not cam.data.show_safe_areas
+		
+		self.report({'INFO'},'bpy.ops.camera.show_safe_areas()')
 		return {'FINISHED'}
 
 def camera_menu(self, ctx):

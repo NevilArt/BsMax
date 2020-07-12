@@ -114,8 +114,8 @@ def get_arrow_panel(op, layout, mode):
 	col.label(text=text)
 
 
-class BsMax_TO_JoyStickCreator(Operator):
-	bl_idname = "bsmax.joystickcreator"
+class Rigg_TO_Joy_Stick_Creator(Operator):
+	bl_idname = "rigg.joy_stick_creator"
 	bl_label = "Joystick Creator"
 	bl_description = "Conver Selected Rectangle to Joystick"
 
@@ -131,7 +131,7 @@ class BsMax_TO_JoyStickCreator(Operator):
 
 	def draw(self, ctx):
 		layout = self.layout
-		op = "bsmax.joystickcreator"
+		op = "rigg.joy_stick_creator"
 		mode = JoyStickCreator.mode
 		get_arrow_panel(op, layout, mode)
 
@@ -139,6 +139,7 @@ class BsMax_TO_JoyStickCreator(Operator):
 		frame = ctx.active_object
 		create_joystic(ctx, frame, JoyStickCreator.mode)
 		JoyStickCreator.mode = 0
+		self.report({'INFO'},'bpy.ops.rigg.joy_stick_creator()')
 		return {"FINISHED"}
 
 	def invoke(self, ctx, event):
@@ -189,9 +190,9 @@ def add_var(driver, name, joy):
 	target.transform_space='LOCAL_SPACE'
 	return target
 
-class BsMax_TO_JoyStickShapeKeyConnector(Operator):
-	bl_idname = "bsmax.joystickshapekeyconnector"
-	bl_label = "Joystick Connecotr (Shapekey)"
+class Rigg_TO_Joystick_Shapekey_Connector(Operator):
+	bl_idname = "rigg.joystick_shapekey_connector"
+	bl_label = "Joystick Connecotr"
 	bl_description = "Connect Joystick to Shapekey"
 	mode: IntProperty()
 
@@ -234,11 +235,12 @@ class BsMax_TO_JoyStickShapeKeyConnector(Operator):
 
 				if index < len(shape.data.shape_keys.key_blocks) - 1:
 					shape.active_shape_key_index=index+1
+		self.report({'INFO'},'bpy.ops.rigg.joystick_shapekey_connector()')
 		return {"FINISHED"}
 
 	def draw(self, ctx):
 		layout = self.layout
-		op = "bsmax.joystickshapekeyconnector"
+		op = "rigg.joystick_shapekey_connector"
 		mode = JoyStickCreator.direction
 		get_arrow_panel(op, layout, mode)
 
@@ -250,7 +252,7 @@ class BsMax_TO_JoyStickShapeKeyConnector(Operator):
 			JoyStickCreator.direction = self.mode
 		return {'CANCELLED'}
 
-classes = [BsMax_TO_JoyStickCreator, BsMax_TO_JoyStickShapeKeyConnector]
+classes = [Rigg_TO_Joy_Stick_Creator, Rigg_TO_Joystick_Shapekey_Connector]
 
 def register_joystic():
 	[bpy.utils.register_class(c) for c in classes]

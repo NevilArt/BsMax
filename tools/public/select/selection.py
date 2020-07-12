@@ -19,16 +19,19 @@ from bpy.types import Operator
 class Object_OT_Select_Instance(Operator):
 	bl_idname = "object.select_instance"
 	bl_label = "Select Instance"
+	
 	@classmethod
 	def poll(self, ctx):
 		if ctx.area.type == 'VIEW_3D':
 			return len(ctx.selected_objects) > 0
 		return False
+	
 	def execute(self, ctx):
 		if ctx.active_object != None and len(ctx.selected_objects) == 1:
 			for obj in ctx.scene.objects:
 				if ctx.active_object.data == obj.data:
 					obj.select_set(True)
+		self.report({'INFO'},'bpy.ops.object.select_instance()')
 		return{"FINISHED"}
 
 def BsMax_ReadPrimitiveData(obj):
@@ -40,11 +43,13 @@ def BsMax_ReadPrimitiveData(obj):
 class Object_OT_Select_Similar(Operator):
 	bl_idname = "object.select_similar"
 	bl_label = "Select Similar"
+	
 	@classmethod
 	def poll(self, ctx):
 		if ctx.area.type == 'VIEW_3D':
 			return len(ctx.selected_objects) > 0
 		return False
+	
 	def execute(self, ctx):
 		matt,clss,inst,subcls = [],[],[],[]
 		if ctx.active_object != None and len(ctx.selected_objects) == 1:
@@ -84,6 +89,7 @@ class Object_OT_Select_Similar(Operator):
 		elif len(inst) > 0:
 			for o in inst:
 				o.select_set(True)
+		self.report({'INFO'},'bpy.ops.object.select_similar()')
 		return{"FINISHED"}
 
 def select_menu(self, ctx):

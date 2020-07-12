@@ -18,26 +18,31 @@ from bpy.types import Operator
 from bpy.props import BoolProperty
 
 # create shape from selected edges poly
-class BsMax_OT_CreateShapeFromEdges(Operator):
-	bl_idname = "bsmax.createshapefromedge"
+class Mesh_OT_Create_Curve_From_Edges(Operator):
+	bl_idname = "mesh.create_curve_from_edge"
 	bl_label = "Create Shape from Edges"
+	
 	@classmethod
 	def poll(self, ctx):
 		return ctx.area.type == 'VIEW_3D'
+	
 	def execute(self, ctx):
-		v,e,f = ctx.tool_settings.mesh_select_mode
+		# v,e,f = ctx.tool_settings.mesh_select_mode
+		e = ctx.tool_settings.mesh_select_mode[1]
 		if ctx.mode == 'EDIT_MESH' and e:
 			bpy.ops.mesh.duplicate(mode=1)
 			bpy.ops.mesh.separate(type='SELECTED')
+		self.report({'INFO'},'bpy.ops.mesh.create_curve_from_edge()')
 		return{"FINISHED"}
 
-# simulate 3d max Loop select
-class BsMax_OT_LoopSelect(Operator):
-	bl_idname = "bsmax.loopselect"
-	bl_label = "Loop Select"
+class Mesh_OT_Auto_Loop_Select(Operator):
+	bl_idname = "mesh.auto_loop_select"
+	bl_label = "Auto Loop Select"
+	
 	@classmethod
 	def poll(self, ctx):
 		return ctx.area.type == 'VIEW_3D'
+	
 	def execute(self, ctx):
 		if ctx.mode == 'EDIT_MESH':
 			v,e,f = ctx.tool_settings.mesh_select_mode
@@ -46,15 +51,17 @@ class BsMax_OT_LoopSelect(Operator):
 			elif f:
 				#TODO "Face loop"
 				pass
+		self.report({'INFO'},'bpy.ops.mesh.auto_loop_select()')
 		return{"FINISHED"}
 
-# simulate 3d max Ring select
-class BsMax_OT_RingSelect(Operator):
-	bl_idname = "bsmax.ringselect"
-	bl_label = "Ring Select"
+class Mesh_OT_Auto_Ring_Select(Operator):
+	bl_idname = "mesh.auto_ring_select"
+	bl_label = "Auto Ring Select"
+	
 	@classmethod
 	def poll(self, ctx):
 		return ctx.area.type == 'VIEW_3D'
+	
 	def execute(self, ctx):
 		if ctx.mode == 'EDIT_MESH':
 			v,e,f = ctx.tool_settings.mesh_select_mode
@@ -63,41 +70,47 @@ class BsMax_OT_RingSelect(Operator):
 			elif f:
 				# TODO face ring
 				pass
+		self.report({'INFO'},'bpy.ops.mesh.auto_ring_select()')
 		return{"FINISHED"}
 
-# DotLoop select
-class BsMax_OT_DotLoop(Operator):
-	bl_idname = "bsmax.dotloop"
-	bl_label = "Dot loop"
+class Mesh_OT_Dot_Loop_Select(Operator):
+	bl_idname = "mesh.dot_loop_select"
+	bl_label = "Dot Loop Select"
+	
 	@classmethod
 	def poll(self, ctx):
 		return ctx.area.type == 'VIEW_3D'
+	
 	def execute(self, ctx):
 		if ctx.mode == 'EDIT_MESH':
 			bpy.ops.bmax.loopselect()
 			bpy.ops.mesh.select_nth()
+		self.report({'INFO'},'bpy.ops.mesh.dot_loop_select()')
 		return{"FINISHED"}
 
-# Dotring select
-class BsMax_OT_DotRing(Operator):
-	bl_idname = "bsmax.dotring"
+class Mesh_OT_Dot_Ring_Select(Operator):
+	bl_idname = "mesh.dot_ring_select"
 	bl_label = "Dot Ring"
+	
 	@classmethod
 	def poll(self, ctx):
 		return ctx.area.type == 'VIEW_3D'
+	
 	def execute(self, ctx):
 		if ctx.mode == 'EDIT_MESH':
 			bpy.ops.bmax.ringselect()
 			bpy.ops.mesh.select_nth()
+		self.report({'INFO'},'bpy.ops.mesh.dot_ring_select()')
 		return{"FINISHED"}
 
-# Edit poly connect
-class BsMax_OT_ConnectPoly(Operator):
-	bl_idname = "bsmax.connectpoly"
-	bl_label = "Connect (Poly)"
+class Mesh_OT_Connect(Operator):
+	bl_idname = "mesh.connect"
+	bl_label = "Connect"
+	
 	@classmethod
 	def poll(self, ctx):
 		return ctx.area.type == 'VIEW_3D'
+	
 	def execute(self, ctx):
 		if ctx.mode == 'EDIT_MESH':
 			v,e,f = ctx.tool_settings.mesh_select_mode
@@ -107,16 +120,18 @@ class BsMax_OT_ConnectPoly(Operator):
 				bpy.ops.mesh.subdivide()
 				bpy.ops.mesh.select_all(action='DESELECT')
 				#TODO select new created edges
+		self.report({'INFO'},'bpy.ops.mesh.connect()')
 		return{"FINISHED"}
 
-# remove ver, edge, face
-class BsMax_OT_RemoveMesh(Operator):
-	bl_idname = "bsmax.removemesh"
-	bl_label = "Remove (Mesh)"
+class Mesh_OT_Remove(Operator):
+	bl_idname = "mesh.remove"
+	bl_label = "Remove"
 	vert: bpy.props.BoolProperty(name="Use Verts",default=False)
+	
 	@classmethod
 	def poll(self, ctx):
 		return ctx.area.type == 'VIEW_3D'
+	
 	def execute(self, ctx):
 		if ctx.mode == 'EDIT_MESH':
 			v,e,f = ctx.tool_settings.mesh_select_mode
@@ -126,14 +141,17 @@ class BsMax_OT_RemoveMesh(Operator):
 				bpy.ops.mesh.dissolve_edges(use_verts=self.vert)
 			if f:
 				bpy.ops.mesh.dissolve_faces(use_verts=self.vert)
+		self.report({'INFO'},'bpy.ops.mesh.remove(vert='+ str(self.vert) +')')
 		return{"FINISHED"}
 
-class BsMax_OT_DeleteMesh(Operator):
-	bl_idname = "bsmax.deletemesh"
-	bl_label = "Delete (Mesh)"
+class Mesh_OT_Delete_Auto(Operator):
+	bl_idname = "mesh.delete_auto"
+	bl_label = "Delete (Auto)"
+	
 	@classmethod
 	def poll(self, ctx):
 		return ctx.area.type == 'VIEW_3D'
+	
 	def execute(self, ctx):
 		if ctx.mode == 'EDIT_MESH':
 			v,e,f = ctx.tool_settings.mesh_select_mode
@@ -143,16 +161,18 @@ class BsMax_OT_DeleteMesh(Operator):
 				bpy.ops.mesh.delete(type='EDGE')
 			if f:
 				bpy.ops.mesh.delete(type='FACE')
+		self.report({'INFO'},'bpy.ops.mesh.delete_auto()')
 		return{"FINISHED"}
 
-# remove isolated geometry operator
-class BsMAx_OT_RemoveIsolatedGeometry(Operator):
-	bl_idname = "bsmax.removeisolatedgeometry"
+class Mesh_OT_Remove_Isolated_Geometry(Operator):
+	bl_idname = "mesh.remove_isolated_geometry"
 	bl_label = "Remove Isolated Geometry"
 	bl_description = "Remove isolated vertices and edges"
+	
 	@classmethod
 	def poll(self, ctx):
 		return ctx.area.type == 'VIEW_3D'
+	
 	def execute(self, ctx):
 		v,e,f = ctx.tool_settings.mesh_select_mode
 		bpy.ops.mesh.select_loose()
@@ -162,17 +182,18 @@ class BsMAx_OT_RemoveIsolatedGeometry(Operator):
 			bpy.ops.mesh.delete(type='EDGE')
 		if f:
 			bpy.ops.mesh.delete(type='FACE')
+		self.report({'INFO'},'bpy.ops.mesh.remove_isolated_geometry()')
 		return {'FINISHED'}
 
-classes = [BsMax_OT_CreateShapeFromEdges,
-		BsMax_OT_LoopSelect,
-		BsMax_OT_RingSelect,
-		BsMax_OT_DotLoop,
-		BsMax_OT_DotRing,
-		BsMax_OT_ConnectPoly,
-		BsMax_OT_RemoveMesh,
-		BsMax_OT_DeleteMesh,
-		BsMAx_OT_RemoveIsolatedGeometry]
+classes = [Mesh_OT_Create_Curve_From_Edges,
+		Mesh_OT_Auto_Loop_Select,
+		Mesh_OT_Auto_Ring_Select,
+		Mesh_OT_Dot_Loop_Select,
+		Mesh_OT_Dot_Ring_Select,
+		Mesh_OT_Connect,
+		Mesh_OT_Remove,
+		Mesh_OT_Delete_Auto,
+		Mesh_OT_Remove_Isolated_Geometry]
 
 def register_meshs():
 	[bpy.utils.register_class(c) for c in classes]

@@ -44,8 +44,8 @@ def create_holder(ctx, location, radius, target):
 	set_create_target(holder, target)
 	return holder
 
-class BsMax_TO_EyeTargetCreator(bpy.types.Operator):
-	bl_idname = "bsmax.eyetargetcreator"
+class Rigg_TO_Eye_Target_Creator(bpy.types.Operator):
+	bl_idname = "rigg.eye_target_creator"
 	bl_label = "Eye Target Creator"
 	bl_description = "Create Eyetarget For 2 Selected Objects"
 
@@ -97,10 +97,11 @@ class BsMax_TO_EyeTargetCreator(bpy.types.Operator):
 		holderr.select_set(True)
 		ctx.view_layer.objects.active = holderr
 		bpy.ops.object.parent_set(type='OBJECT', keep_transform=True)
+		self.report({'INFO'},'bpy.ops.rigg.eye_target_creator()')
 		return {"FINISHED"}
 
 def register_eyetarget():
-	bpy.utils.register_class(BsMax_TO_EyeTargetCreator)
+	bpy.utils.register_class(Rigg_TO_Eye_Target_Creator)
 
 def unregister_eyetarget():
-	bpy.utils.unregister_class(BsMax_TO_EyeTargetCreator)
+	bpy.utils.unregister_class(Rigg_TO_Eye_Target_Creator)

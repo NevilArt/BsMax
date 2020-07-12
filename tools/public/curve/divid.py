@@ -18,7 +18,7 @@ from bpy.props import BoolProperty,IntProperty,FloatProperty
 from bsmax.math import get_bias
 from .operator import CurveTool
 
-class BsMax_OT_dividplus(CurveTool):
+class Curve_OT_dividplus(CurveTool):
 	bl_idname = "curve.dividplus"
 	bl_label = "Divid plus"
 	typein: BoolProperty(name="Type In:",default=True)
@@ -52,9 +52,12 @@ class BsMax_OT_dividplus(CurveTool):
 		col.prop(self,"squeeze")
 		col.prop(self,"bias")
 		col.prop(self,"shift")
+	
+	def self_report(self):
+		self.report({'INFO'},'bpy.ops.curve.dividplus()')
 
 def register_divid():
-	bpy.utils.register_class(BsMax_OT_dividplus)
+	bpy.utils.register_class(Curve_OT_dividplus)
 
 def unregister_divid():
-	bpy.utils.unregister_class(BsMax_OT_dividplus)
+	bpy.utils.unregister_class(Curve_OT_dividplus)
