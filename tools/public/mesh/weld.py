@@ -13,23 +13,12 @@
 #	along with this program.  If not, see <https://www.gnu.org/licenses/>.
 ############################################################################
 
-import bpy, bgl, gpu
-from gpu_extras.batch import batch_for_shader
+import bpy
+from bsmax.graphic import register_line,unregister_line
 
 # TARGET WELD
 # Original Coded from Stromberg90 updated by Nevil
 # https://github.com/Stromberg90/Scripts/tree/master/Blender
-
-def draw_callback_px(self):
-	if self.srt_vert != None:
-		bgl.glEnable(bgl.GL_BLEND)
-		coords = [self.srt_vert, self.end_vert]
-		shader = gpu.shader.from_builtin('2D_UNIFORM_COLOR')
-		batch = batch_for_shader(shader, 'LINE_STRIP', {"pos": coords})
-		shader.bind()
-		shader.uniform_float("color", (1, 0.5, 0.5, 1))
-		batch.draw(shader)
-	bgl.glDisable(bgl.GL_BLEND)
 
 def SelectVert(ctx, event, started):
 	coord = event.mouse_region_x, event.mouse_region_y
@@ -44,10 +33,8 @@ class Mesh_OT_Target_Weld(bpy.types.Operator):
 	bl_idname = "mesh.target_weld"
 	bl_label = "Target Weld"
 	bl_options = {'REGISTER','UNDO'}
-	srt_vert = end_vert = None
-	_handle = None
-	drag = False
-	picked = False
+	start, end, handle = None, None, None
+	drag, picked = False, False
 
 	def modal(self, ctx, event):
 		ctx.area.tag_redraw()
@@ -55,32 +42,32 @@ class Mesh_OT_Target_Weld(bpy.types.Operator):
 			return {'PASS_THROUGH'}
 
 		elif event.type == 'MOUSEMOVE':
-			if self.srt_vert != None:
-				self.end_vert = event.mouse_region_x, event.mouse_region_y
+			if self.start != None:
+				self.end = event.mouse_region_x, event.mouse_region_y
 
 		elif event.type == 'LEFTMOUSE':
 			if event.value == 'PRESS':
-				if self.srt_vert == None:
-					self.srt_vert = event.mouse_region_x, event.mouse_region_y
+				if self.start == None:
+					self.start = event.mouse_region_x, event.mouse_region_y
 					coord = event.mouse_region_x, event.mouse_region_y
-					bpy.ops.view3d.select(extend = False, location = coord)
+					bpy.ops.view3d.select(extend=False, location=coord)
 
 			if event.value =='RELEASE':
-				self.end_vert = event.mouse_region_x, event.mouse_region_y
+				self.end = event.mouse_region_x, event.mouse_region_y
 
-				if self.srt_vert != None:
+				if self.start != None:
 					coord = event.mouse_region_x, event.mouse_region_y
 					bpy.ops.view3d.select(extend=True,location=coord)
 
-				SelectVert(ctx, event, self.srt_vert != None)
+				SelectVert(ctx, event, self.start != None)
 				if ctx.object.data.total_vert_sel == 2:
-					self.srt_vert = self.end_vert = None
+					self.start = self.end = None
 					bpy.ops.mesh.merge(type='LAST')
 					bpy.ops.mesh.select_all(action='DESELECT')
 
 			return {'RUNNING_MODAL'}
 		elif event.type in {'RIGHTMOUSE','ESC'}:
-			bpy.types.SpaceView3D.draw_handler_remove(self._handle,'WINDOW')
+			unregister_line(self.handle)
 			return {'CANCELLED'}
 
 		return {'RUNNING_MODAL'}
@@ -91,9 +78,7 @@ class Mesh_OT_Target_Weld(bpy.types.Operator):
 
 	def invoke(self, ctx, event):
 		if ctx.space_data.type == 'VIEW_3D':
-			sv3d = bpy.types.SpaceView3D
-			self._handle = sv3d.draw_handler_add(draw_callback_px, tuple([self]),
-													'WINDOW','POST_PIXEL')
+			self.handle = register_line(ctx, self, '2d', (1, 0.5, 0.5, 1))
 			ctx.window_manager.modal_handler_add(self)
 			return {'RUNNING_MODAL'}
 		return {'CANCELLED'}
@@ -103,3 +88,6 @@ def register_weld():
 
 def unregister_weld():
 	bpy.utils.unregister_class(Mesh_OT_Target_Weld)
+
+if __name__ == "__main__":
+	register_weld()

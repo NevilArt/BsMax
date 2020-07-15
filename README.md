@@ -5,6 +5,8 @@
 
 Recent Updates
 
+* Align objects draws a line to show the tool is active.
+* Max like "Link to" operator added (Max mode only) for now search the 'Link to' operator.
 * All Operators has self report now. you can see python api of each operator in 'Info' or 'Console'.
 * Time keys now working on all areas ('N' ',' '.' '/' 'Home' 'End' in Max mode)
 * '[' and ']' defined to Left and Right Tool panel open/close toggle (Max Mode only).

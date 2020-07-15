@@ -17,6 +17,7 @@ import bpy
 from bpy.props import EnumProperty, BoolProperty
 from mathutils import Vector, Matrix
 from bpy.types import Operator
+from bsmax.graphic import register_line,unregister_line,get_screen_pos
 
 # Original Code by Ozzkar
 # Edit by Nevil
@@ -296,12 +297,20 @@ class Object_OT_Align_Selected_to_Active(Operator):
 		store_form_data(self,ctx)
 		align_object_execute(self,ctx)
 		return ctx.window_manager.invoke_props_dialog(self)
+	
+def get_center(objs):
+	location = Vector((0,0,0))
+	for obj in objs:
+		location += obj.location
+	return location / len(objs)
 
 class Object_OT_Align_Selected_to_Target(Operator):
 	bl_idname = "object.align_selected_to_target"
 	bl_label = "Align Selected Objects"
 	bl_options = {'REGISTER', 'UNDO'}
 
+	center = None
+	start, end, handle = None, None, None
 	selected_objects = []
 
 	@classmethod
@@ -309,8 +318,13 @@ class Object_OT_Align_Selected_to_Target(Operator):
 		return len(ctx.selected_objects) > 0
 
 	def modal(self, ctx, event):
-		if not event.type in {'LEFTMOUSE','RIGHTMOUSE','ESC'}:
+		ctx.area.tag_redraw()
+		if not event.type in {'LEFTMOUSE','RIGHTMOUSE', 'MOUSEMOVE','ESC'}:
 			return {'PASS_THROUGH'}
+		
+		elif event.type == 'MOUSEMOVE':
+			self.start = get_screen_pos(ctx,self.center)
+			self.end = event.mouse_region_x, event.mouse_region_y
 
 		elif event.type == 'LEFTMOUSE':
 			if event.value == 'PRESS':
@@ -341,6 +355,7 @@ class Object_OT_Align_Selected_to_Target(Operator):
 			return {'RUNNING_MODAL'}
 
 		elif event.type in {'RIGHTMOUSE','ESC'}:
+			unregister_line(self.handle)
 			return {'CANCELLED'}
 
 		return {'RUNNING_MODAL'}
@@ -348,6 +363,9 @@ class Object_OT_Align_Selected_to_Target(Operator):
 	def invoke(self, ctx, event):
 		""" Store selected objects """
 		self.selected_objects = ctx.selected_objects.copy()
+		self.center = get_center(self.selected_objects)
+		self.start = self.end = event.mouse_region_x, event.mouse_region_y
+		self.handle = register_line(ctx, self, '2d', (1, 0.5, 0.5, 1))
 		ctx.window_manager.modal_handler_add(self)
 		return {'RUNNING_MODAL'}
 
