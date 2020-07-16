@@ -21,6 +21,7 @@ from .collection import register_collection,unregister_collection
 from .convert import register_convert,unregister_convert
 from .freeze import register_freeze,unregister_freeze
 from .lattice import register_lattice,unregister_lattice
+from .linkto import register_linkto, unregister_linkto
 from .pivotpoint import register_pivotpoint,unregister_pivotpoint
 
 def register_object():
@@ -32,6 +33,7 @@ def register_object():
 	register_convert()
 	register_freeze()
 	register_lattice()
+	register_linkto()
 	register_pivotpoint()
 
 def unregister_object():
@@ -43,4 +45,5 @@ def unregister_object():
 	unregister_convert()
 	unregister_freeze()
 	unregister_lattice()
+	unregister_linkto()
 	unregister_pivotpoint()

@@ -301,7 +301,7 @@ class Object_OT_Align_Selected_to_Active(Operator):
 def get_center(objs):
 	location = Vector((0,0,0))
 	for obj in objs:
-		location += obj.location
+		location += obj.matrix_world.translation
 	return location / len(objs)
 
 class Object_OT_Align_Selected_to_Target(Operator):

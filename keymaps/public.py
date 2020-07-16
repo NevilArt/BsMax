@@ -23,12 +23,12 @@ def create_keymaps(km):
 	kc = bpy.context.window_manager.keyconfigs
 
 	""" ignore this if right click select mode active """
-	try:
-		rcsm = kc['blender'].preferences['select_mouse'] == 0
-	except:
-		rcsm = kc['blender'].preferences.select_mouse != 'RIGHT'
+	# try:
+	# 	rcsm = kc['blender'].preferences['select_mouse'] == 0
+	# except:
+	# 	rcsm = kc['blender'].preferences.select_mouse != 'RIGHT'
 
-	if kc.addon and rcsm:
+	if kc.addon:# and rcsm:
 		# 3D View --------------------------------------------------------------
 		space = km.space('3D View','VIEW_3D','WINDOW')
 		km.new(space,"view3d.drop_tool","RIGHTMOUSE","PRESS",[])

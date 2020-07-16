@@ -43,4 +43,5 @@ def register_line(ctx,self,mode,color):
 		return space.draw_handler_add(draw_line,tuple([self,'3D_UNIFORM_COLOR',color]),'WINDOW','POST_VIEW')
 
 def unregister_line(handle):
-	bpy.types.SpaceView3D.draw_handler_remove(handle,'WINDOW')
+	if handle != None:
+		bpy.types.SpaceView3D.draw_handler_remove(handle,'WINDOW')

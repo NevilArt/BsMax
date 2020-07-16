@@ -18,7 +18,6 @@ from .coordinate import register_coordinate,unregister_coordinate
 from .dragclone import register_dragclone,unregister_dragclone
 from .floateditor import register_floateditor,unregister_floateditor
 from .hold import register_hold,unregister_hold
-from .linkto import register_linkto, unregister_linkto
 from .menu import register_menu,unregister_menu
 from .modifier import register_modifier,unregister_modifier
 from .navigation import register_navigation,unregister_navigation
@@ -35,7 +34,6 @@ def register_max():
 	register_dragclone()
 	register_floateditor()
 	register_hold()
-	register_linkto()
 	register_menu()
 	register_modifier()
 	# register_navigation()
@@ -52,7 +50,6 @@ def unregister_max():
 	unregister_dragclone()
 	unregister_floateditor()
 	unregister_hold()
-	unregister_linkto()
 	unregister_menu()
 	unregister_modifier()
 	# unregister_navigation()
