@@ -13,7 +13,7 @@
 #	along with this program.  If not, see <https://www.gnu.org/licenses/>.
 ############################################################################
 
-import bpy
+import bpy#,bmesh
 from bsmax.graphic import register_line,unregister_line
 
 # TARGET WELD
@@ -38,7 +38,7 @@ class Mesh_OT_Target_Weld(bpy.types.Operator):
 
 	def modal(self, ctx, event):
 		ctx.area.tag_redraw()
-		if event.type in {'MIDDLEMOUSE','WHEELUPMOUSE','WHEELDOWNMOUSE'}:
+		if not event.type in {'LEFTMOUSE','RIGHTMOUSE', 'MOUSEMOVE','ESC'}:
 			return {'PASS_THROUGH'}
 
 		elif event.type == 'MOUSEMOVE':
@@ -58,6 +58,8 @@ class Mesh_OT_Target_Weld(bpy.types.Operator):
 				if self.start != None:
 					coord = event.mouse_region_x, event.mouse_region_y
 					bpy.ops.view3d.select(extend=True,location=coord)
+					# bm = bmesh.from_edit_mesh(mesh)
+					# bm.verts[index].co
 
 				SelectVert(ctx, event, self.start != None)
 				if ctx.object.data.total_vert_sel == 2:

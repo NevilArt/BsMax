@@ -79,7 +79,7 @@ def set_as_active_object(ctx, obj):
 def delete_objects(objs):
 	bpy.ops.object.delete({"selected_objects": objs})
 
-def set_create_target(obj, targ):
+def set_create_target(obj, targ, distance=(0.0, 0.0, -2.0)):
 	cont = obj.constraints.new('TRACK_TO')
 	if targ == None:
 		targ = bpy.data.objects.new("empty", None )
@@ -91,7 +91,7 @@ def set_create_target(obj, targ):
 		targ.name = obj.name + "_target"
 		targ.location = obj.location
 		targ.rotation_euler = obj.rotation_euler
-		targ.matrix_basis @= Matrix.Translation((0.0, 0.0, -2.0))
+		targ.matrix_basis @= Matrix.Translation(distance)
 	cont.target = targ
 	cont.track_axis = 'TRACK_NEGATIVE_Z'
 	cont.up_axis = 'UP_Y'

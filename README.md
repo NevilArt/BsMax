@@ -5,6 +5,7 @@
 
 Recent Updates
 
+* Some minor bug fixing.
 * "Link to" operator updated (for now search the 'Link to' operator).
 * Align objects draws a line to show the tool is active.
 * All Operators has self report now. you can see python api of each operator in 'Info' or 'Console'.

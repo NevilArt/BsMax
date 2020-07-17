@@ -35,7 +35,7 @@ class Object_OT_Link_to(bpy.types.Operator):
 
 	def modal(self, ctx, event):
 		ctx.area.tag_redraw()
-		if not event.type in {'LEFTMOUSE','RIGHTMOUSE', 'MOUSEMOVE','ESC'}:
+		if not event.type in {'LEFTMOUSE','RIGHTMOUSE', 'MOUSEMOVE', 'ESC'}:
 			return {'PASS_THROUGH'}
 		
 		elif event.type == 'MOUSEMOVE':

@@ -16,6 +16,7 @@
 import bpy
 from primitive.primitive import CreatePrimitive
 from bsmax.actions import set_create_target, delete_objects
+from bsmax.math import get_distance
 
 class Camera:
 	def __init__(self):
@@ -36,11 +37,17 @@ class Create_OT_Camera(CreatePrimitive):
 		bpy.ops.object.camera_add(align='WORLD', location=clickpoint.view)
 		self.subclass.owner = ctx.active_object
 		self.subclass.owner.rotation_euler = clickpoint.orient
+
 	def update(self, ctx, clickcount, dimantion):
 		if clickcount == 1:
 			if self.drag and self.subclass.target == None:
 				self.subclass.target = set_create_target(self.subclass.owner, None)
 			self.subclass.target.location = dimantion.view
+
+			size = get_distance(self.subclass.owner.location,self.subclass.target.location)/3
+			self.subclass.owner.data.display_size = size
+			self.subclass.target.empty_display_size = size / 10
+
 	def finish(self):
 		pass
 

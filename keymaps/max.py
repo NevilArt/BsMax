@@ -275,8 +275,8 @@ def mesh(km):
 	km.new(space,'mesh.bevel','C','PRESS',[('vertex_only',False)],ctrl=True,shift=True)
 	km.new(space,'transform.vert_slide','X','PRESS',[],shift=True)
 	km.new(space,'mesh.merge','C','PRESS',[('type','CENTER')],alt=True,ctrl=True)
-	#km.new(space,'mesh.edge_face_add','P','PRESS',[],alt=True)
-	km.new(space,'mesh.smart_create','P','PRESS',[],alt=True)
+	km.new(space,'mesh.edge_face_add','P','PRESS',[],alt=True)
+	# km.new(space,'mesh.smart_create','P','PRESS',[],alt=True)
 	#km.new(space,'Bevel','B','PRESS',[],ctrl=True,shift=True)
 	#km.new(space,'spline extrud ','E','PRESS',[],alt=True)
 	km.new(space,'wm.context_toggle','I','PRESS',[('data_path','space_data.shading.show_xray')],shift=True,ctrl=True)
@@ -524,7 +524,6 @@ def console(km):
 	km.new(space,'console.copy','INSERT','PRESS',[],ctrl=True)
 	km.new(space,'console.cut','DEL','PRESS',[],shift=True)
 	km.new(space,'console.cut','X','PRESS',[],ctrl=True)
-	km.new(space,'console.delete','DEL','PRESS',[])
 	km.new(space,'console.clear','D','PRESS',[],shift=True)
 
 """ Clip """

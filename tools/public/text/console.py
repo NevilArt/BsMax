@@ -14,8 +14,9 @@
 ############################################################################
 
 import bpy
+from bpy.types import Operator
 
-class Console_OT_Cut(bpy.types.Operator):
+class Console_OT_Cut(Operator):
 	bl_idname = "console.cut"
 	bl_label = "Cut"
 	def execute(self, ctx):

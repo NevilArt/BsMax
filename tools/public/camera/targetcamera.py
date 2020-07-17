@@ -33,7 +33,9 @@ class Camera_OT_Create_Target(Operator):
 
 	def execute(self, ctx):
 		cam = ctx.active_object
-		set_create_target(cam, None)
+		size = cam.data.display_size
+		target = set_create_target(cam, None, distance=(0,0,-size*3))
+		target.empty_display_size = size / 10
 		set_as_active_object(ctx, cam)
 		self.report({'INFO'},"bpy.ops.camera.create_target()")
 		return {'FINISHED'}
