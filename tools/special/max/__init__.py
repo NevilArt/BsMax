@@ -16,7 +16,6 @@
 from .attach import register_attach,unregister_attach
 from .coordinate import register_coordinate,unregister_coordinate
 from .dragclone import register_dragclone,unregister_dragclone
-from .floateditor import register_floateditor,unregister_floateditor
 from .hold import register_hold,unregister_hold
 from .menu import register_menu,unregister_menu
 from .modifier import register_modifier,unregister_modifier
@@ -32,7 +31,6 @@ def register_max():
 	register_attach()
 	register_coordinate()
 	register_dragclone()
-	register_floateditor()
 	register_hold()
 	register_menu()
 	register_modifier()
@@ -48,7 +46,6 @@ def unregister_max():
 	unregister_attach()
 	unregister_coordinate()
 	unregister_dragclone()
-	unregister_floateditor()
 	unregister_hold()
 	unregister_menu()
 	unregister_modifier()

@@ -25,6 +25,7 @@ def get_center(objs):
 
 class Object_OT_Link_to(bpy.types.Operator):
 	""" this class mimics the 3DsMax link to operator """
+	#TODO add armatuar mode too
 	bl_idname = "object.link_to"
 	bl_label = "Link to"
 	bl_options = {'REGISTER', 'UNDO'}
@@ -95,6 +96,10 @@ class Object_OT_Link_to(bpy.types.Operator):
 		self.children.clear()
 		self.children.append(parent_object)
 		self.setup(ctx, event)
+	
+	def execute(self, ctx):
+		self.report({'INFO'},'bpy.ops.object.link_to()')
+		return{"FINISHED"}
 
 	def invoke(self, ctx, event):
 		self.setup(ctx, event)

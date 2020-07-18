@@ -130,7 +130,23 @@ class Object_OT_Angel_Snap(Operator):
 				t.use_snap_rotate = True
 		return{"FINISHED"}
 
-classes = [Object_OT_Snap_Setting,Object_OT_Snap_Toggle,Object_OT_Angel_Snap]
+class Object_OT_Placment(Operator):
+	bl_idname = "object.placment"
+	bl_label = "placment"
+	def execute(self, ctx):
+		ctx.scene.tool_settings.use_snap = True
+		ctx.scene.tool_settings.snap_elements = {'FACE'}
+		ctx.scene.tool_settings.use_snap_align_rotation = True
+		ctx.scene.tool_settings.use_snap_translate = True
+		ctx.scene.tool_settings.use_snap_project = True
+		bpy.ops.wm.tool_set_by_id(name='builtin.move')
+		self.report({'INFO'},'bpy.ops.object.placment()')
+		return{"FINISHED"}
+
+classes = [Object_OT_Snap_Setting,
+	Object_OT_Snap_Toggle,
+	Object_OT_Angel_Snap,
+	Object_OT_Placment]
 
 def register_snap():
 	[bpy.utils.register_class(c) for c in classes]

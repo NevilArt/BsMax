@@ -29,7 +29,7 @@ class View3D_OT_Background(Operator):
 
 	def execute(self, ctx):
 		grad = ctx.preferences.themes[0].view_3d.space.gradients
-		grad.show_grad = False
+		show_grad = False
 
 		if self.index == 1:
 			#black
@@ -48,7 +48,7 @@ class View3D_OT_Background(Operator):
 			grad.high_gradient[2] = 0.635
 		elif self.index == 4:
 			#697b8f - maya gradient
-			grad.show_grad = True
+			show_grad = True
 			grad.gradient[0] = 0.0
 			grad.gradient[1] = 0.0
 			grad.gradient[2] = 0.0
@@ -57,7 +57,7 @@ class View3D_OT_Background(Operator):
 			grad.high_gradient[2] = 0.561
 		elif self.index == 5:
 			#dark blue gradient
-			grad.show_grad = True
+			show_grad = True
 			grad.gradient[0] = 0.251
 			grad.gradient[1] = 0.251
 			grad.gradient[2] = 0.251
@@ -70,19 +70,23 @@ class View3D_OT_Background(Operator):
 			grad.high_gradient[1] = 0.294
 			grad.high_gradient[2] = 0.294
 
+		if bpy.app.version[1] <= 82:
+			grad.show_grad = show_grad
+		else:
+			grad_type = 'LINEAR' if show_grad else 'SINGLE_COLOR'
+			ctx.preferences.themes['Default'].view_3d.space.gradients.background_type = grad_type
+
 		if self.index == 5:
 			self.index = 0
 		else:
 			self.index += 1
 		return {'FINISHED'}
 
-	def invoke(self, ctx, evt):
-		return self.execute(ctx)
-
 # selection menu
 class BMAX_PickViewportBackground_MT(Menu):
 	bl_label = "Viewport Background"
 	bl_description = "3D viewport background color"
+	
 	def draw(self, ctx):
 		ui = self.layout
 		vbg = "view3d.background"

@@ -16,19 +16,19 @@
 import bpy
 from bsmax.keymaps import KeyMaps
 
-def create_subobject_mode_keymap(km,space):
+def add_subobject(km,space):
 	km.new(space,'object.subobject_level','ONE','PRESS',[('level',1)])
 	km.new(space,'object.subobject_level','TWO','PRESS',[('level',2)])
 	km.new(space,'object.subobject_level','THREE','PRESS',[('level',3)])
 	km.new(space,'object.subobject_level','FOUR','PRESS',[('level',4)])
 	km.new(space,'object.subobject_level','FIVE','PRESS',[('level',5)])
-	km.new(space,'object.subobject_level','SIX','PRESS',[('level',6)])
+	# km.new(space,'object.subobject_level','SIX','PRESS',[('level',6)])
 	# km.new(space,'object.subobject_level','SEVEN','PRESS',[('level',7)])
 	# km.new(space,'object.subobject_level','EIGHT','PRESS',[('level',8)])
 	# km.new(space,'object.subobject_level','NINE','PRESS',[('level',9)])
 	# km.new(space,'object.subobject_level','ZERO','PRESS',[('level',0)])
 
-def create_switch_view_keymap(km,space):
+def add_switch_view(km,space):
 	km.new(space,'view3d.perespective','P','PRESS',[('mode','Perspective')])
 	km.new(space,'view3d.perespective','U','PRESS',[('mode','Orthographic')])
 	km.new(space,'view3d.view_axis','F','PRESS',[('type','FRONT')])
@@ -36,21 +36,21 @@ def create_switch_view_keymap(km,space):
 	km.new(space,'view3d.view_axis','T','PRESS',[('type','TOP')])
 	km.new(space,'view3d.view_axis','B','PRESS',[('type','BOTTOM')])
 
-def create_view3d_click_celection_keymap(km,space):
+def add_view3d_click_selection(km,space):
 	km.new(space,'view3d.select','LEFTMOUSE','CLICK',[('deselect_all',True)])
 	km.new(space,'view3d.select','LEFTMOUSE','CLICK',[('toggle',True)],ctrl=True)
 	km.new(space,'view3d.select','LEFTMOUSE','CLICK',[('deselect',True)],alt=True)
 
-def create_view3d_tweak_selection_keymap(km,space):
+def add_view3d_tweak_selection(km,space):
 	km.new(space,'view3d.select_box','EVT_TWEAK_L','ANY',[('mode','SET')])
 	km.new(space,'view3d.select_box','EVT_TWEAK_L','ANY',[('mode','ADD')],ctrl=True )
 	km.new(space,'view3d.select_box','EVT_TWEAK_L','ANY',[('mode','SUB')],alt=True )
 
-def create_snap_keymaps(km,space):
+def add_snap(km,space):
 	km.new(space,'object.snap_toggle','S','PRESS',[])
 	km.new(space,'object.angel_snap','A','PRESS',[])
 
-def create_time_keymaps(km,space):
+def add_time(km,space):
 	km.new(space,'anim.frame_set','HOME','PRESS',[('frame','First')])
 	km.new(space,'anim.frame_set','END','PRESS',[('frame','Last')])
 	km.new(space,'anim.frame_set','PERIOD','PRESS',[('frame','Next')])
@@ -58,21 +58,27 @@ def create_time_keymaps(km,space):
 	km.new(space,'anim.set_key','K','PRESS',[])
 	km.new(space,'anim.auto_key_toggle','N','PRESS',[])
 
-def create_side_panel_keymaps(km,space):
+def add_side_panel(km,space):
 	km.new(space,'wm.context_toggle','LEFT_BRACKET','PRESS',[('data_path','space_data.show_region_toolbar')])
 	km.new(space,'wm.context_toggle','RIGHT_BRACKET','PRESS',[('data_path','space_data.show_region_ui')])
 
-def create_search_shortkey(km,space):
+def add_search(km,space):
 	if bpy.app.version[1] < 90:
 		km.new(space,'wm.search_menu','X','PRESS',[])
 	else:
 		km.new(space,'wm.search_menu','X','PRESS',[],ctrl=True,shift=True,alt=True)
 		km.new(space,'wm.search_operator','X','PRESS',[])
 
+def add_float_editors(km,space):
+	km.new(space,'editor.float','M','PRESS',[('ui_type','ShaderNodeTree'),('shader_type','OBJECT')])
+	km.new(space,'editor.float','EIGHT','PRESS',[('ui_type','ShaderNodeTree'),('shader_type','WORLD')])
+	# km.new(space,'editor.float','SIX','PRESS',[('ui_type','particle')])
+	# km.new(space,'editor.float','H','PRESS',[('ui_type','OUTLINER')])
+
 def window(km):
 	km.mute('Window','wm.quit_blender','Q','PRESS',ctrl=True)
 	space = km.space('Window','EMPTY','WINDOW')
-	create_search_shortkey(km,space)
+	add_search(km,space)
 
 def screen(km):
 	space = km.space('Screen','EMPTY','WINDOW')
@@ -100,11 +106,12 @@ def view3d(km):
 	km.mute('3D View','wm.call_menu_pie','Z','PRESS')
 
 	space = km.space('3D View','VIEW_3D','WINDOW')
-	create_search_shortkey(km,space)
-	create_snap_keymaps(km,space)
-	create_time_keymaps(km,space)
-	create_switch_view_keymap(km,space)
-	create_view3d_tweak_selection_keymap(km,space)
+	add_search(km,space)
+	add_snap(km,space)
+	add_time(km,space)
+	add_switch_view(km,space)
+	add_view3d_tweak_selection(km,space)
+	add_float_editors(km,space)
 
 	km.new(space,'screen.header','SIX','PRESS',[],alt=True)
 	km.new(space,'screen.region_quadview','W','PRESS',[],alt=True)
@@ -134,8 +141,6 @@ def view3d(km):
 	km.new(space,'wm.call_menu','A','PRESS',[('name','BSMAX_MT_createmenu')],ctrl=True,shift=True)
 	km.new(space,'view3d.homeview','HOME','PRESS',[],alt=True)
 	km.new(space,'screen.animation_play','SLASH','PRESS',[])
-	km.new(space,'editor.open_node_ditor','M','PRESS',[('mode','Material')])
-	km.new(space,'editor.open_node_ditor','EIGHT','PRESS',[('mode','Environment')])
 	km.new(space,'view.undoredo','Z','PRESS',[('redo',False)],shift=True)
 	km.new(space,'view.undoredo','Y','PRESS',[('redo',True)],shift=True)
 
@@ -154,7 +159,7 @@ def view3d_select(km):
 	km.mute('3D View','view3d.select','LEFTMOUSE','CLICK',shift=True)
 
 	space = km.space('3D View Tool: Select','VIEW_3D','WINDOW')
-	create_view3d_tweak_selection_keymap(km,space)
+	add_view3d_tweak_selection(km,space)
 	km.new(space,'view3d.tweak_better','EVT_TWEAK_L','ANY',[])
 	
 def view3d_transform(km):
@@ -199,12 +204,13 @@ def object_mode(km):
 	km.new(space,'bsmax.mode_set','TAB','PRESS',[])
 
 	space = km.space('Object Mode','EMPTY','WINDOW')
-	create_search_shortkey(km,space)
-	create_side_panel_keymaps(km,space)
-	create_view3d_tweak_selection_keymap(km,space)
-	create_view3d_click_celection_keymap(km,space)
-	create_snap_keymaps(km,space)
-	create_subobject_mode_keymap(km,space)
+	add_search(km,space)
+	add_side_panel(km,space)
+	add_view3d_tweak_selection(km,space)
+	add_view3d_click_selection(km,space)
+	add_snap(km,space)
+	add_subobject(km,space)
+	add_float_editors(km,space)
 	
 	km.new(space,'view3d.select','LEFTMOUSE','RELEASE',[('enumerate',True)],shift=True)
 	km.new(space,'object.select_all','A','PRESS',[('action','SELECT')],ctrl=True )
@@ -228,10 +234,6 @@ def object_mode(km):
 
 	km.new(space,'object.modify_pivotpoint','INSERT','PRESS',[])
 	km.new(space,'wm.call_menu','INSERT','PRESS',[('name','BSMAX_MT_SetPivotPoint')],ctrl=True)
-	# Float Editors #
-	km.new(space,'editor.open_node_ditor','M','PRESS',[('mode','Material')])
-	km.new(space,'editor.open_node_ditor','EIGHT','PRESS',[('mode','Environment')])
-	# km.new(space,'editor.open_node_ditor','SIX','PRESS',[('mode','Environment')]) # function editor
 	# Tools #
 	km.new(space,'object.align_selected_to_target','A','PRESS',[],alt=True)
 	km.new(space,'object.transform_type_in','F12','PRESS',[])
@@ -246,14 +248,14 @@ def mesh(km):
 
 	space = km.space('Mesh','EMPTY','WINDOW')
 	# Global #
-	create_search_shortkey(km,space)
-	create_side_panel_keymaps(km,space)
+	add_search(km,space)
+	add_side_panel(km,space)
 	# Selection #
 	km.new(space,'mesh.select_all','A','PRESS',[('action','SELECT')],ctrl=True)
 	km.new(space,'mesh.select_all','D','PRESS',[('action','DESELECT')],ctrl=True)
 	km.new(space,'mesh.select_all','I','PRESS',[('action','INVERT')],ctrl=True)
-	create_view3d_click_celection_keymap(km,space)
-	create_view3d_tweak_selection_keymap(km,space)
+	add_view3d_click_selection(km,space)
+	add_view3d_tweak_selection(km,space)
 	km.new(space,'mesh.shortest_path_pick','LEFTMOUSE','PRESS',[],shift=True)
 	km.new(space,'mesh.select_more','PAGE_UP','PRESS',[],ctrl=True)
 	km.new(space,'mesh.select_less','PAGE_DOWN','PRESS',[],ctrl=True)
@@ -262,7 +264,7 @@ def mesh(km):
 	km.new(space,'mesh.smart_select_ring','R','PRESS',[],alt=True)
 	km.new(space,'mesh.select_similar','Q','PRESS',[],ctrl=True)
 	# View #
-	create_switch_view_keymap(km,space)
+	add_switch_view(km,space)
 	km.new(space,'screen.screen_full_area','X','PRESS',[],ctrl=True)
 	# Hide/Unhide #
 	km.new(space,'mesh.hide','H','PRESS',[],alt=True)
@@ -289,7 +291,7 @@ def mesh(km):
 	km.new(space,'mesh.delete_auto','DEL','PRESS',[])
 	km.new(space,'object.transform_type_in','F12','PRESS',[])
 	# Set Subobject Mode #
-	create_subobject_mode_keymap(km,space)
+	add_subobject(km,space)
 	# Tools #
 	km.new(space,'view3d.shade_selected_faces','F2','PRESS',[])
 	km.new(space,'anim.auto_key_toggle','N','PRESS',[])
@@ -301,21 +303,21 @@ def mesh(km):
 def curve(km):
 	space = km.space('Curve','EMPTY','WINDOW')
 	# Global #
-	create_search_shortkey(km,space)
-	create_side_panel_keymaps(km,space)
+	add_search(km,space)
+	add_side_panel(km,space)
 	# Selection #
 	km.new(space,'curve.select_all','A','PRESS',[('action','SELECT')],ctrl=True)
 	km.new(space,'curve.select_all','D','PRESS',[('action','DESELECT')],ctrl=True)
 	km.new(space,'curve.select_all','I','PRESS',[('action','INVERT')],ctrl=True)
-	create_view3d_click_celection_keymap(km,space)
-	create_view3d_tweak_selection_keymap(km,space)
+	add_view3d_click_selection(km,space)
+	add_view3d_tweak_selection(km,space)
 	km.new(space,'curve.select_more','PAGE_UP','PRESS',[],ctrl=True)
 	km.new(space,'curve.select_less','PAGE_DOWN','PRESS',[],ctrl=True)
 	km.new(space,'curve.select_similar','Q','PRESS',[],ctrl=True)
 	# Set Subobject Mode #
-	create_subobject_mode_keymap(km,space)
+	add_subobject(km,space)
 	# View #
-	create_switch_view_keymap(km,space)
+	add_switch_view(km,space)
 	km.new(space,'screen.screen_full_area','X','PRESS',[],ctrl=True)
 	# Tools #
 	km.new(space,'anim.auto_key_toggle','N','PRESS',[])
@@ -327,10 +329,10 @@ def curve(km):
 def armature(km):
 	space = km.space('Armature','EMPTY','WINDOW')
 	# Global #
-	create_search_shortkey(km,space)
-	create_side_panel_keymaps(km,space)
+	add_search(km,space)
+	add_side_panel(km,space)
 	# Selection #
-	create_view3d_click_celection_keymap(km,space)
+	add_view3d_click_selection(km,space)
 	km.new(space,'armature.select_all','A','PRESS',[('action','SELECT')],ctrl=True)
 	km.new(space,'armature.select_all','D','PRESS',[('action','DESELECT')],ctrl=True)
 	km.new(space,'armature.select_all','I','PRESS',[('action','INVERT')],ctrl=True)
@@ -346,9 +348,9 @@ def armature(km):
 	km.new(space,'armature.hide','I','PRESS',[('unselected',True)],alt=True)
 	km.new(space,'armature.reveal','U','PRESS',[],alt=True)
 	# Set Subobject Mode #
-	create_subobject_mode_keymap(km,space)
+	add_subobject(km,space)
 	# View #
-	create_switch_view_keymap(km,space)
+	add_switch_view(km,space)
 	km.new(space,'screen.screen_full_area','X','PRESS',[],ctrl=True)
 	km.new(space,'armature.batch_rename','F2','PRESS',[])
 	# Tools #
@@ -359,15 +361,15 @@ def armature(km):
 def metaball(km):
 	space = km.space('Metaball','EMPTY','WINDOW')
 	# Global #
-	create_search_shortkey(km,space)
-	create_side_panel_keymaps(km,space)
+	add_search(km,space)
+	add_side_panel(km,space)
 	# Selection #
 	km.new(space,'mball.select_all','A','PRESS',[('action','SELECT')],ctrl=True)
 	km.new(space,'mball.select_all','D','PRESS',[('action','DESELECT')],ctrl=True)
 	km.new(space,'mball.select_all','I','PRESS',[('action','INVERT')],ctrl=True)
 	km.new(space,'mball.select_similar','Q','PRESS',[],ctrl=True)
 	# Set Subobject Mode #
-	create_subobject_mode_keymap(km,space)
+	add_subobject(km,space)
 	# View #
 	km.new(space,'screen.screen_full_area','X','PRESS',[],ctrl=True)
 	# Tools #
@@ -377,8 +379,8 @@ def metaball(km):
 def lattice(km):
 	space = km.space('Lattice','EMPTY','WINDOW')
 	# Global #
-	create_search_shortkey(km,space)
-	create_side_panel_keymaps(km,space)
+	add_search(km,space)
+	add_side_panel(km,space)
 	# Selection #
 	km.new(space,'lattice.select_all','A','PRESS',[('action','SELECT')],ctrl=True)
 	km.new(space,'lattice.select_all','D','PRESS',[('action','DESELECT')],ctrl=True)
@@ -387,7 +389,7 @@ def lattice(km):
 	km.new(space,'lattice.select_less','PAGE_DOWN','PRESS',[],ctrl=True)
 	km.new(space,'lattice.select_similar','Q','PRESS',[],ctrl=True)
 	# Set Subobject Mode #
-	create_subobject_mode_keymap(km,space)
+	add_subobject(km,space)
 	# View #
 	km.new(space,'screen.screen_full_area','X','PRESS',[],ctrl=True)
 	# Tools #
@@ -400,15 +402,15 @@ def lattice(km):
 def grease_pencil(km):
 	space = km.space('Grease Pencil','EMPTY','WINDOW')
 	# Global
-	create_search_shortkey(km,space)
-	create_side_panel_keymaps(km,space)
+	add_search(km,space)
+	add_side_panel(km,space)
 
 def pos(km):
 	space = km.space('Pose','EMPTY','WINDOW')
 	# Global #
-	# create_side_panel_keymaps(km,space)
+	# add_side_panel(km,space)
 	# Selection #
-	create_view3d_click_celection_keymap(km,space)
+	add_view3d_click_selection(km,space)
 	km.new(space,'pose.select_all','A','PRESS',[('action','SELECT')],ctrl=True)
 	km.new(space,'pose.select_all','D','PRESS',[('action','DESELECT')],ctrl=True)
 	km.new(space,'pose.select_all','I','PRESS',[('action','INVERT')],ctrl=True)
@@ -420,34 +422,34 @@ def pos(km):
 	km.new(space,'pose.select_hierarchy','PAGE_DOWN','PRESS',[('direction','CHILD'),('extend',True)],ctrl=True)
 	km.new(space,'pose.select_similar','Q','PRESS',[],ctrl=True)
 	# Set Subobject Mode #
-	create_subobject_mode_keymap(km,space)
+	add_subobject(km,space)
 	# View #
 	km.new(space,'screen.screen_full_area','X','PRESS',[],ctrl=True)
 	# Tools #
 	# km.new(space,'anim.auto_key_toggle','N','PRESS',[])
 	# km.new(space,'anim.set_key','K','PRESS',[])
 	km.new(space,'camera.select','C','PRESS',[])
-	create_time_keymaps(km,space)
+	add_time(km,space)
 
 def vertex_paint(km):
 	space = km.space('Vertex Paint','EMPTY','WINDOW')
-	create_switch_view_keymap(km,space)
+	add_switch_view(km,space)
 	km.new(space,'view3d.show_camera_toggle','C','PRESS',[],shift=True)
 
 def weight_paint(km):
 	space = km.space('Weight Paint','EMPTY','WINDOW')
-	create_switch_view_keymap(km,space)
+	add_switch_view(km,space)
 	km.new(space,'view3d.show_camera_toggle','C','PRESS',[],shift=True)
 	# Whight Paint Vertex Selection
 	# Face Mask
 
 def image_paint(km):
 	space = km.space('Image Paint','EMPTY','WINDOW')
-	create_side_panel_keymaps(km,space)
+	add_side_panel(km,space)
 
 def sculpt(km):
 	space = km.space('Sculpt','EMPTY','WINDOW')
-	create_switch_view_keymap(km,space)
+	add_switch_view(km,space)
 	km.new(space,'view3d.show_camera_toggle','C','PRESS',[],shift=True)
 
 def particle(km):
@@ -456,7 +458,7 @@ def particle(km):
 
 def outliner(km):
 	space = km.space('Outliner','OUTLINER','WINDOW')
-	create_search_shortkey(km,space)
+	add_search(km,space)
 	# upper than 2.80 do not need this part
 	if bpy.app.version[1] < 81:
 		# Selection #
@@ -486,8 +488,8 @@ def outliner(km):
 def node_editor(km):
 	space = km.space('Node Editor','NODE_EDITOR','WINDOW')
 	# Global #
-	create_search_shortkey(km,space)
-	create_side_panel_keymaps(km,space)
+	add_search(km,space)
+	add_side_panel(km,space)
 	km.new(space,'node.batch_rename','F2','PRESS',[])
 	# Selection #
 	km.new(space,'node.select','LEFTMOUSE','PRESS',[('extend',True)],ctrl=True)
@@ -530,7 +532,7 @@ def console(km):
 
 def info(km):
 	space = km.space('Info','INFO','WINDOW')
-	create_search_shortkey(km,space)
+	add_search(km,space)
 	km.new(space,'text.new','N','PRESS',[],ctrl=True)
 	km.new(space,'text.open','O','PRESS',[],ctrl=True)
 	km.new(space,'text.save','S','PRESS',[],ctrl=True)
@@ -545,9 +547,9 @@ def info(km):
 
 def graph_editor(km):
 	space = km.space('Graph Editor','GRAPH_EDITOR','WINDOW')
-	create_search_shortkey(km,space)
-	create_side_panel_keymaps(km,space)
-	create_time_keymaps(km,space)
+	add_search(km,space)
+	add_side_panel(km,space)
+	add_time(km,space)
 	km.new(space,'graph.select_box','EVT_TWEAK_L','ANY',[('mode','ADD'),('tweak',True)],ctrl=True)
 	km.new(space,'graph.select_box','EVT_TWEAK_L','ANY',[('mode','SUB'),('tweak',True)],alt=True)
 	km.new(space,'graph.select_all','A','PRESS',[('action','SELECT')],ctrl=True)
@@ -561,9 +563,9 @@ def graph_editor(km):
 def dopesheet_editor(km):
 	""" (Timeline) """
 	space = km.space('Dopesheet','DOPESHEET_EDITOR','WINDOW')
-	create_search_shortkey(km,space)
-	create_side_panel_keymaps(km,space)
-	create_time_keymaps(km,space)
+	add_search(km,space)
+	add_side_panel(km,space)
+	add_time(km,space)
 
 	km.new(space,'anim.set_timeline_range','LEFTMOUSE','PRESS',[('mode','First')],alt=True,ctrl=True)
 	km.new(space,'anim.set_timeline_range','RIGHTMOUSE','PRESS',[('mode','End')],alt=True,ctrl=True)
@@ -581,9 +583,9 @@ def dopesheet_editor(km):
 
 def nla_editor(km):
 	space = km.space('NLA Editor','NLA_EDITOR','WINDOW')
-	create_search_shortkey(km,space)
-	create_side_panel_keymaps(km,space)
-	create_time_keymaps(km,space)
+	add_search(km,space)
+	add_side_panel(km,space)
+	add_time(km,space)
 	# km.new(space,'nla.view_all','Z','PRESS',[])
 	km.new(space,'nla.view_selected','Z','PRESS',[])
 
@@ -593,9 +595,9 @@ def uv_editor(km):
 	km.new(space,'object.move','W','PRESS',[])
 	km.new(space,'object.rotate','E','PRESS',[])
 	km.new(space,'object.scale','R','PRESS',[])
-	create_view3d_tweak_selection_keymap(km,space)
-	create_snap_keymaps(km,space)
-	create_side_panel_keymaps(km,space)
+	add_view3d_tweak_selection(km,space)
+	add_snap(km,space)
+	add_side_panel(km,space)
 	km.new(space,'wm.tool_set_by_id','Q','PRESS',[('name','builtin.select_box'),('cycle',True)])
 	km.new(space,'uv.select','EVT_TWEAK_L','ANY',[('extend',True)])
 	km.new(space,'uv.select_box','EVT_TWEAK_L','ANY',[('mode','SET')])
@@ -619,7 +621,7 @@ def uv_editor(km):
 def sequence_editor(km):
 	space = km.space('Sequencer','SEQUENCE_EDITOR','WINDOW')
 	km.new(space,'sequencer.batch_rename','F2','PRESS',[])
-	create_side_panel_keymaps(km,space)
+	add_side_panel(km,space)
 
 def file_browser(km):
 	space = km.space('File Browser','FILE_BROWSER','WINDOW')
@@ -627,7 +629,7 @@ def file_browser(km):
 	km.new(space,'filebrowser.scaleicons','WHEELDOWNMOUSE','PRESS',[('up',False)],ctrl=True)
 	km.new(space,'file.select_all','A','PRESS',[('action','SELECT')],ctrl=True)
 	km.new(space,'file.select_all','D','PRESS',[('action','DESELECT')],ctrl=True)
-	create_side_panel_keymaps(km,space)
+	add_side_panel(km,space)
 
 def modals(km):
 	# space = km.space('Knife Tool Modal Map','EMPTY','WINDOW',modal=True)

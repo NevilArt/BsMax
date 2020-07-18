@@ -14,7 +14,7 @@
 ############################################################################
 
 import bpy, math
-from bpy.props import FloatProperty,BoolProperty
+from bpy.props import FloatProperty,BoolProperty,StringProperty
 from math import radians,degrees
 from mathutils import Vector
 
@@ -125,6 +125,8 @@ class Object_OT_Transform_Type_In(bpy.types.Operator):
 	bl_idname = "object.transform_type_in"
 	bl_label = "Transform Type-in"
 
+	switch: StringProperty()
+
 	pos_abs_x: FloatProperty(name="X",update=pos_abs_x)
 	pos_abs_y: FloatProperty(name="Y",update=pos_abs_y)
 	pos_abs_z: FloatProperty(name="Z",update=pos_abs_z)
@@ -207,6 +209,8 @@ class Object_OT_Transform_Type_In(bpy.types.Operator):
 		return None
   
 	def invoke(self, ctx, event):
+		if self.switch in {'move','rotate','scale'}:
+			bpy.ops.wm.tool_set_by_id(name='builtin.' + self.switch)
 		read_objects_values(self, ctx)
 		return ctx.window_manager.invoke_props_dialog(self)
 

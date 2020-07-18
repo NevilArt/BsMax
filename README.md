@@ -5,8 +5,9 @@
 
 Recent Updates
 
-* Some minor bug fixing.
-* "Link to" operator updated (for now search the 'Link to' operator).
+* Some minor bug fix and Updates.
+* Some New Items added to Quad menu.
+* "Link to" operator (Avalible in Quadmenu).
 * Align objects draws a line to show the tool is active.
 * All Operators has self report now. you can see python api of each operator in 'Info' or 'Console'.
 * Time keys now working on all areas ('N' ',' '.' '/' 'Home' 'End' in Max mode)

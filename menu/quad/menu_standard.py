@@ -31,7 +31,6 @@ def seprator():
 def get_view3d_transform_convert_to_sub(ctx): #Submenu
 	items = []
 	#  text, check, enabled,menu,action,setting
-	# items.append(QuadItem("Clear Primitives Data",f,t,n,c0000,n))
 	items.append(QuadItem("Convert Curve To Mesh",f,t,n,c0001,n))
 	items.append(QuadItem("Convert Mesh To Curve",f,t,n,c0002,n))
 	# NOTE Sub menus do not return text and index
@@ -40,28 +39,59 @@ def get_view3d_transform_convert_to_sub(ctx): #Submenu
 def get_view3d_transform(ctx):
 	items = []
 	#  text, check, enabled,menu,action,setting
-	# Blender original menu
 	items.append(QuadItem("Move",f,t,n,c0003,c0004))
 	items.append(QuadItem("Rotate",f,t,n,c0005,c0006))
 	items.append(QuadItem("Scale", f,t,n,c0007,c0008))
-	#items.append(QuadItem("Placment",f,f,n,"",n))
+	items.append(QuadItem("Placment",f,t,n,c0172,n))
 	items.append(QuadItem("Cursor",f,t,n,c0109,n))
+	items.append(seprator())
 	items.append(QuadItem("Select",f,t,n,c0009,n))
 	items.append(QuadItem("Select Similar",f,t,n,c0010,n))
+	items.append(QuadItem("Select Instance",f,t,n,c0001,n))
 	items.append(seprator())
-	# Clone
 	items.append(QuadItem("Clone",f,(len(ctx.selected_objects) > 0),n,c0011,n))
 	items.append(QuadItem("Align Objects...",f,(len(ctx.selected_objects) > 0),n,c0144,n))
 	items.append(seprator())
 	items.append(QuadItem("Object Properties...",f,t,n,c0166,n))
 	items.append(seprator())
-	items.append(QuadItem("Curve Editor..",f,f,n,"",n))
-	items.append(QuadItem("Dope sheet...",f,f,n,"",n))
-	#items.append(QuadItem("Wire Parameters...",f,f,n,"",n))
+	items.append(QuadItem("Curve Editor...",f,t,n,c0167,n))
+	items.append(QuadItem("Dope sheet...",f,t,n,c0168,n))
+	items.append(QuadItem("Driver Editor...",f,t,n,c0170,n))
+	items.append(QuadItem("NLA Editor...",f,t,n,c0169,n))
+	items.append(QuadItem("Text Editor...",f,t,n,c0171,n))
 	items.append(QuadItem(n,f,f,n,n,n))
 	submenu = get_view3d_transform_convert_to_sub(ctx)
 	items.append(QuadItem("Conver to",f,f,submenu,n,n))
 	return "Transform",items,1
+
+def get_view3d_lighting_sub(ctx):
+	items = []
+	#  text, check, enabled,menu,action,setting
+	items.append(QuadItem("Wire Frame",f,t,n,c0176,n))
+	items.append(QuadItem("Solid",f,t,n,c0177,n))
+	items.append(QuadItem("Material",f,t,n,c0178,n))
+	items.append(QuadItem("Rendered",f,t,n,c0179,n))
+	items.append(seprator())
+	uslr = ctx.space_data.shading.use_scene_lights_render
+	items.append(QuadItem("Use Scene Light",uslr,t,n,c0192,n))
+	uswr = ctx.space_data.shading.use_scene_world_render
+	items.append(QuadItem("Use World Light",uswr,t,n,c0193,n))
+	items.append(seprator())
+	items.append(QuadItem("Combined (Default)",f,t,n,c0180,n))
+	items.append(QuadItem("Emission",f,t,n,c0181,n))
+	items.append(QuadItem("Environment",f,t,n,c0182,n))
+	items.append(QuadItem("Shadow",f,t,n,c0183,n))
+	items.append(seprator())
+	items.append(QuadItem("Diffuse Light",f,t,n,c0184,n))
+	items.append(QuadItem("Diffuse Color",f,t,n,c0185,n))
+	items.append(QuadItem("Specular Light",f,t,n,c0186,n))
+	items.append(QuadItem("Specular Color",f,t,n,c0187,n))
+	items.append(QuadItem("Volum Transmittance",f,t,n,c0188,n))
+	items.append(QuadItem("Volum Scatter",f,t,n,c0189,n))
+	items.append(seprator())
+	items.append(QuadItem("Normal",f,t,n,c0190,n))
+	items.append(QuadItem("Mist",f,t,n,c0191,n))
+	return items
 
 def get_view3d_display(ctx):
 	items = []
@@ -79,7 +109,8 @@ def get_view3d_display(ctx):
 	items.append(seprator())
 	items.append(QuadItem("Isolate Toggle",f,t,n,c0017,n))
 	items.append(seprator())
-	items.append(QuadItem("Vieport Light and Shadows",f,f,n,"",n))
+	submenu = get_view3d_lighting_sub(ctx)
+	items.append(QuadItem("Viewport Lighting",f,t,submenu,n,n))
 	return "Display",items,2
 
 def get_view3d_tool1(ctx):
@@ -146,10 +177,15 @@ def get_view3d_tool1(ctx):
 
 def get_view3d_tool2(ctx):
 	items = []
-	V,E,F = ctx.tool_settings.mesh_select_mode
 	if ctx.mode == 'OBJECT':
-		V,E,F = False,False,False
+		items.append(QuadItem("Link To",f,t,n,c0173,n))
+		items.append(QuadItem("Unlink Selection",f,t,n,c0174,n))
+		items.append(seprator())
+		dac = ctx.scene.tool_settings.use_transform_skip_children
+		items.append(QuadItem("Don`t Affect Children",dac,t,n,c0175,n))
+		
 	if get_active_type(ctx) == 'MESH':
+		V,E,F = ctx.tool_settings.mesh_select_mode
 		if ctx.mode == "EDIT_MESH" and not is_active_primitive(ctx):
 			#  text, check, enabled,menu,action,setting
 			items.append(QuadItem("Create",f,t,n,c0035,n))
@@ -360,9 +396,9 @@ def get_view3d_snap_toggles(ctx):
 	move = tool_settings.use_snap_translate
 	rotate = tool_settings.use_snap_rotate
 	scale = tool_settings.use_snap_scale
-	items.append(QuadItem("Move",move,t,n,c0110 + str(not move),  n))
+	items.append(QuadItem("Move",move,t,n,c0110 + str(not move),n))
 	items.append(QuadItem("Rotate",rotate,t,n,c0111 + str(not rotate),n))
-	items.append(QuadItem("Scale",scale,t,n,c0112 + str(not scale), n))
+	items.append(QuadItem("Scale",scale,t,n,c0112 + str(not scale),n))
 	return "Snap Toggles",items,1
 
 def get_view3d_snap_override(ctx):
