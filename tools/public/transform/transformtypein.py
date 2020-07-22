@@ -15,7 +15,6 @@
 
 import bpy, math
 from bpy.props import FloatProperty,BoolProperty,StringProperty
-from math import radians,degrees
 from mathutils import Vector
 
 def pos_abs_x(self, ctx):
@@ -30,13 +29,13 @@ def pos_abs_z(self, ctx):
 
 def rot_abs_x(self, ctx):
 	for obj in ctx.selected_objects:
-		obj.rotation_euler[0] = radians(self.rot_abs_x)
+		obj.rotation_euler[0] = self.rot_abs_x
 def rot_abs_y(self, ctx):
 	for obj in ctx.selected_objects:
-		obj.rotation_euler[1] = radians(self.rot_abs_y)
+		obj.rotation_euler[1] = self.rot_abs_y
 def rot_abs_z(self, ctx):
 	for obj in ctx.selected_objects:
-		obj.rotation_euler[2] = radians(self.rot_abs_z)
+		obj.rotation_euler[2] = self.rot_abs_z
 
 def scl_abs_x(self, ctx):
 	for obj in ctx.selected_objects:
@@ -66,15 +65,15 @@ def pos_off_z(self, ctx):
 def rot_off_x(self, ctx):
 	if len(ctx.selected_objects) == len(scl):
 		for index, obj in enumerate(ctx.selected_objects):
-			obj.rotation_euler[0] = rot[index].x+radians(self.rot_off_x)
+			obj.rotation_euler[0] = rot[index].x + self.rot_off_x
 def rot_off_y(self, ctx):
 	if len(ctx.selected_objects) == len(scl):
 		for index, obj in enumerate(ctx.selected_objects):
-			obj.rotation_euler[1] = rot[index].y+radians(self.rot_off_y)
+			obj.rotation_euler[1] = rot[index].y + self.rot_off_y
 def rot_off_z(self, ctx):
 	if len(ctx.selected_objects) == len(scl):
 		for index, obj in enumerate(ctx.selected_objects):
-			obj.rotation_euler[2] = rot[index].z+radians(self.rot_off_z)
+			obj.rotation_euler[2] = rot[index].z + self.rot_off_z
 
 def scl_off_x(self, ctx):
 	if len(ctx.selected_objects) == len(scl):
@@ -104,9 +103,9 @@ def read_objects_values(self, ctx):
 		self.pos_abs_y = location.y
 		self.pos_abs_z = location.z
 		sre = selection[0].rotation_euler
-		self.rot_abs_x = degrees(sre.x)
-		self.rot_abs_y = degrees(sre.y)
-		self.rot_abs_z = degrees(sre.z)
+		self.rot_abs_x = sre.x
+		self.rot_abs_y = sre.y
+		self.rot_abs_z = sre.z
 		scale = selection[0].scale
 		self.scl_abs_x = scale.x * 100
 		self.scl_abs_y = scale.y * 100
@@ -127,21 +126,21 @@ class Object_OT_Transform_Type_In(bpy.types.Operator):
 
 	switch: StringProperty()
 
-	pos_abs_x: FloatProperty(name="X",update=pos_abs_x)
-	pos_abs_y: FloatProperty(name="Y",update=pos_abs_y)
-	pos_abs_z: FloatProperty(name="Z",update=pos_abs_z)
+	pos_abs_x: FloatProperty(name="X",unit='LENGTH',update=pos_abs_x)
+	pos_abs_y: FloatProperty(name="Y",unit='LENGTH',update=pos_abs_y)
+	pos_abs_z: FloatProperty(name="Z",unit='LENGTH',update=pos_abs_z)
 
-	pos_off_x: FloatProperty(name="X",update=pos_off_x)
-	pos_off_y: FloatProperty(name="Y",update=pos_off_y)
-	pos_off_z: FloatProperty(name="Z",update=pos_off_z)
+	pos_off_x: FloatProperty(name="X",unit='LENGTH',update=pos_off_x)
+	pos_off_y: FloatProperty(name="Y",unit='LENGTH',update=pos_off_y)
+	pos_off_z: FloatProperty(name="Z",unit='LENGTH',update=pos_off_z)
 
-	rot_abs_x: FloatProperty(name="X",update=rot_abs_x)
-	rot_abs_y: FloatProperty(name="Y",update=rot_abs_y)
-	rot_abs_z: FloatProperty(name="Z",update=rot_abs_z)
+	rot_abs_x: FloatProperty(name="X",unit='ROTATION',update=rot_abs_x)
+	rot_abs_y: FloatProperty(name="Y",unit='ROTATION',update=rot_abs_y)
+	rot_abs_z: FloatProperty(name="Z",unit='ROTATION',update=rot_abs_z)
 
-	rot_off_x: FloatProperty(name="X",update=rot_off_x)
-	rot_off_y: FloatProperty(name="Y",update=rot_off_y)
-	rot_off_z: FloatProperty(name="Z",update=rot_off_z)
+	rot_off_x: FloatProperty(name="X",unit='ROTATION',update=rot_off_x)
+	rot_off_y: FloatProperty(name="Y",unit='ROTATION',update=rot_off_y)
+	rot_off_z: FloatProperty(name="Z",unit='ROTATION',update=rot_off_z)
 
 	scl_abs_x: FloatProperty(name="X",default=100,update=scl_abs_x)
 	scl_abs_y: FloatProperty(name="Y",default=100,update=scl_abs_y)

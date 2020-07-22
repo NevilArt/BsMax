@@ -115,18 +115,18 @@ def get_view3d_display(ctx):
 
 def get_view3d_tool1(ctx):
 	items = []
-	V,E,F = ctx.tool_settings.mesh_select_mode
+	vert,edge,face = ctx.tool_settings.mesh_select_mode
 	if ctx.mode == 'OBJECT':
-		V,E,F = False,False,False
+		vert,edge,face = False,False,False
 	if get_active_type(ctx) == 'MESH':
 		if not is_active_primitive(ctx):
 			#  text, check, enabled,menu,action,setting
 			items.append(QuadItem("Top-level",(ctx.mode=='OBJECT'),t,n,c0018,n))
-			items.append(QuadItem("Vertex",V,t,n,c0019,n))
-			items.append(QuadItem("Edge",E,t,n,c0020,n))
-			items.append(QuadItem("Border",f,t,n,c0021,n))
-			items.append(QuadItem("Polygon",F,t,n,c0022,n))
-			items.append(QuadItem("Element",f,t,n,c0023,n))
+			items.append(QuadItem("Vertex",vert,t,n,c0019,n))
+			items.append(QuadItem("Edge",edge,t,n,c0020,n))
+			items.append(QuadItem("Border",f,f,n,c0021,n))
+			items.append(QuadItem("Polygon",face,t,n,c0022,n))
+			items.append(QuadItem("Element",f,f,n,c0023,n))
 			items.append(seprator())
 			items.append(QuadItem("Repeat",f,t,n,c0024,n))
 			IsEditMode = (ctx.mode=="EDIT_MESH")

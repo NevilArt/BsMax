@@ -141,21 +141,6 @@ class Anim_OT_Set_Key(Operator):
 					bpy.ops.anim.keyframe_insert_menu(type='Rotation')
 				if kd.Key_Scale:
 					bpy.ops.anim.keyframe_insert_menu(type='Scaling')
-				# if kd.Key_ObjParams:
-				# 	print("Key object params on progress")
-				# if kd.Key_CusAttributes:
-				# 	print("Key object params on progress")
-				# if kd.Key_Modifiers:
-				# 	print("Key object params on progress")
-				# if kd.Key_Materials:
-				# 	print("Key object params on progress")
-				# if kd.Key_Other:
-				# 	print("Key object params on progress")
-		#elif ctx.mode == 'POSE':
-			# #set_key(ctx.selected_bones,"scale")
-			# #ctx.active_bone.keyframe_insert("Location")#, index=2)
-			# ctx.active_bone.keyframe_insert("rotation_euler")#, index=2)
-			# #(data_path, index=-1, frame=bpy.context.scene.frame_current, group="")
 		self.report({'INFO'},"bpy.ops.anim.set_key()")
 		return{"FINISHED"}
 
@@ -254,6 +239,21 @@ class Dopesheet_OT_Zoom_Extended(Operator):
 		self.report({'INFO'},"bpy.ops.action.zoom_extended()")
 		return{'FINISHED'}
 
+class Anim_OT_Delete_Key(Operator):
+	bl_idname = 'anim.delete_key'
+	bl_label = 'Delete Key'
+
+	@classmethod
+	def poll(self, ctx):
+		return ctx.area.type in {'DOPESHEET_EDITOR','GRAPH_EDITOR'}
+
+	def execute(self, ctx):
+		if ctx.area.type == 'DOPESHEET_EDITOR':
+			bpy.ops.action.delete()
+		elif ctx.area.type == 'GRAPH_EDITOR':
+			bpy.ops.graph.delete()
+		return{'FINISHED'}
+
 # class Graph_Editor_OT_Hide(Operator):
 # 		graph.select_linked
 
@@ -264,7 +264,8 @@ classes = [Anim_OT_Set_Key_Filters,
 			Anim_OT_Delete_Selected_Animation,
 			Anim_OT_Frame_Set,
 			Anim_OT_Set_TimeLine_Range,
-			Dopesheet_OT_Zoom_Extended]
+			Dopesheet_OT_Zoom_Extended,
+			Anim_OT_Delete_Key]
 
 def register_animationkey():
 	[bpy.utils.register_class(c) for c in classes]

@@ -5,7 +5,7 @@
 
 Recent Updates
 
-* Some minor bug fix and Updates.
+* Keymap issue fixed on Dope sheet and Graph editor .
 * Some New Items added to Quad menu.
 * "Link to" operator (Avalible in Quadmenu).
 * Align objects draws a line to show the tool is active.

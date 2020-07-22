@@ -122,17 +122,3 @@ def freeze_transform(objs):
 		obj.location = [0,0,0]
 		obj.delta_rotation_euler = obj.rotation_euler
 		obj.rotation_euler = [0,0,0]
-
-__all__ = ["solve_missing_activeobject",
-		"lock_transform",
-		"set_transform",
-		"duplicate_linked",
-		"duplicate_copy",
-		"add_modifier",
-		"link_to_scene",
-		"delete_objects",
-		"set_as_active_object",
-		"set_create_target",
-		"link_to",
-		"set_origen",
-		"freeze_transform"]

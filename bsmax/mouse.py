@@ -93,12 +93,9 @@ def get_click_point_info(x, y, ctx):
 	cp.local = switch_axis_by_orient(view_orient, cp.view)
 	cp.orient = Vector(get_rotation_from_orient(view_orient))
 	if view_type == 'ORTHO' and view_orient == 'USER':
+		pass
 		# TODO in orthografic user view not work correctly
-		r3d = ctx.area.spaces.active.region_3d
-		view_rot = r3d.view_matrix.to_euler()
+		# r3d = ctx.area.spaces.active.region_3d
+		# view_rot = r3d.view_matrix.to_euler()
 	cp.view_name = view_orient
 	return cp
-
-#bpy.context.area.spaces.active.region_3d.view_matrix.inverted().translation
-
-__all__ = ["ClickPoint","get_click_point_info"]

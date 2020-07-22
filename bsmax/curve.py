@@ -1166,5 +1166,3 @@ class Curve:
 			self.delete_segments(index1, inner1)
 			self.delete_segments(index2, outer2)
 		self.merge_gaps_by_distance(0.0001, False)
-
-__all__ = ["Bezier_point", "Line", "Segment", "Spline", "Curve"]

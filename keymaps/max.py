@@ -129,7 +129,7 @@ def view3d(km):
 	km.new(space,'camera.set_active','C','PRESS',[])
 	km.new(space,'view3d.show_hide_gride','G','PRESS',[])
 	km.new(space,'view3d.show_statistics','SEVEN','PRESS',[])
-	km.new(space,'object.batch_rename','F2','PRESS',[])
+	km.new(space,'wm.multi_item_rename','F2','PRESS',[])
 	km.new(space,'view3d.wireframe_toggle','F3','PRESS',[])
 	km.new(space,'view3d.edge_faces_toggle','F4','PRESS',[])
 	km.new(space,'view3d.lighting_toggle','L','PRESS',[],ctrl=True)
@@ -151,6 +151,10 @@ def view3d_generic(km):
 	space = km.space('3D View Generic','VIEW_3D','WINDOW')
 	km.new(space,'view3d.properties','LEFT_BRACKET','PRESS',[])
 	km.new(space,'view3d.toolshelf','RIGHT_BRACKET','PRESS',[])
+
+def view3d_tweak(km):
+	# space = km.space('3D View Tool: Tweak','VIEW_3D','WINDOW')
+	pass
 
 def view3d_select(km):
 	km.mute('3D View','view3d.select','LEFTMOUSE','CLICK')
@@ -275,6 +279,7 @@ def mesh(km):
 	km.new(space,'view3d.edit_mesh_extrude_move_normal','E','PRESS',[],shift=True)
 	km.new(space,'mesh.knife_tool','C','PRESS',[('use_occlude_geometry',True)],alt=True)
 	km.new(space,'mesh.bevel','C','PRESS',[('vertex_only',False)],ctrl=True,shift=True)
+	# km.new(space,'mesh.chamfer','C','PRESS',[],ctrl=True,shift=True)
 	km.new(space,'transform.vert_slide','X','PRESS',[],shift=True)
 	km.new(space,'mesh.merge','C','PRESS',[('type','CENTER')],alt=True,ctrl=True)
 	km.new(space,'mesh.edge_face_add','P','PRESS',[],alt=True)
@@ -299,6 +304,8 @@ def mesh(km):
 	km.new(space,'wm.tool_set_by_id','E','PRESS',[('name','builtin.rotate')])
 	km.new(space,'wm.tool_set_by_id','R','PRESS',[('name','builtin.scale'),('cycle',True)])
 	km.new(space,'anim.set_key','K','PRESS',[])
+	# TEST #
+	km.new(space,'mesh.drag','EVT_TWEAK_L','ANY',[])
 
 def curve(km):
 	space = km.space('Curve','EMPTY','WINDOW')
@@ -352,7 +359,7 @@ def armature(km):
 	# View #
 	add_switch_view(km,space)
 	km.new(space,'screen.screen_full_area','X','PRESS',[],ctrl=True)
-	km.new(space,'armature.batch_rename','F2','PRESS',[])
+	km.new(space,'wm.multi_item_rename','F2','PRESS',[])
 	# Tools #
 	km.new(space,'anim.auto_key_toggle','N','PRESS',[])
 	km.new(space,'camera.select','C','PRESS',[])
@@ -490,7 +497,7 @@ def node_editor(km):
 	# Global #
 	add_search(km,space)
 	add_side_panel(km,space)
-	km.new(space,'node.batch_rename','F2','PRESS',[])
+	km.new(space,'wm.multi_item_rename','F2','PRESS',[])
 	# Selection #
 	km.new(space,'node.select','LEFTMOUSE','PRESS',[('extend',True)],ctrl=True)
 	km.new(space,'node.select_all','A','PRESS',[('action','SELECT')],ctrl=True)
@@ -559,6 +566,7 @@ def graph_editor(km):
 	km.new(space,'graph.select_less','PAGE_DOWN','PRESS',[],ctrl=True)
 	km.new(space,'graph.view_selected','Z','PRESS',[])
 	# km.new(space,'graph.view_all','??','PRESS',[])
+	km.new(space,'anim.delete_key','DEL','PRESS',[])
 
 def dopesheet_editor(km):
 	""" (Timeline) """
@@ -570,8 +578,8 @@ def dopesheet_editor(km):
 	km.new(space,'anim.set_timeline_range','LEFTMOUSE','PRESS',[('mode','First')],alt=True,ctrl=True)
 	km.new(space,'anim.set_timeline_range','RIGHTMOUSE','PRESS',[('mode','End')],alt=True,ctrl=True)
 	km.new(space,'anim.set_timeline_range','MIDDLEMOUSE','PRESS',[('mode','Shift')],alt=True,ctrl=True)
+	km.new(space,'anim.delete_key','DEL','PRESS',[])
 
-	km.new(space,'action.select_box','EVT_TWEAK_L','ANY',[('mode','SET')])
 	km.new(space,'action.select_box','EVT_TWEAK_L','ANY',[('mode','ADD')],ctrl=True )
 	km.new(space,'action.select_box','EVT_TWEAK_L','ANY',[('mode','SUB')],alt=True )
 	km.new(space,'action.select_all','A','PRESS',[('action','SELECT')],ctrl=True)
@@ -620,7 +628,8 @@ def uv_editor(km):
 
 def sequence_editor(km):
 	space = km.space('Sequencer','SEQUENCE_EDITOR','WINDOW')
-	km.new(space,'sequencer.batch_rename','F2','PRESS',[])
+	add_search(km,space)
+	km.new(space,'wm.multi_item_rename','F2','PRESS',[])
 	add_side_panel(km,space)
 
 def file_browser(km):
@@ -633,7 +642,7 @@ def file_browser(km):
 
 def modals(km):
 	# space = km.space('Knife Tool Modal Map','EMPTY','WINDOW',modal=True)
-	# km.new(space,'CONFIRM','RIGHTMOUSE','PRESS',[],any=True)
+	# km.new(space,'CONFIRM','RIGHTMOUSE','PRESS',[],any=True,modal=True)
 	pass
 
 def create_keymaps(km):

@@ -13,6 +13,8 @@
 #	along with this program.  If not, see <https://www.gnu.org/licenses/>.
 ############################################################################
 
+""" Note: this file is not active yet """
+
 import bpy
 from bpy.types import WorkSpaceTool
 
@@ -20,7 +22,7 @@ class CurveFilletTool(WorkSpaceTool):
 	bl_space_type='VIEW_3D'
 	bl_context_mode='EDIT_CURVE'
 
-	# The prefix of the idname should be your add-on name.
+	""" The prefix of the idname should be your add-on name """
 	bl_idname = "bsmax.curvefillet"
 	bl_label = "Fillet (Curve)"
 	bl_description = ( "This is a tooltip")
@@ -28,20 +30,7 @@ class CurveFilletTool(WorkSpaceTool):
 	bl_widget = None
 
 	def draw_settings(ctx, layout, tool):
-		#props = tool.operator_properties("view3d.select_circle")
 		props = tool.operator_properties("curve.chamfer")
-		#layout.prop(props, "mode")
-		#layout.prop(props, "radius")
-	# def execute(self, ctx):
-	# 	print("execuite")
-
-	# def modal(self, ctx, event):
-	# 	print("Haha")
-
-	# def invoke(self, ctx, event):
-	# 	wm = ctx.window_manager
-	# 	wm.modal_handler_add(self)
-	# 	return {'RUNNING_MODAL'}
 
 class CurveChamferTool(WorkSpaceTool):
 	bl_space_type='VIEW_3D'

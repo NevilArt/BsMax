@@ -15,19 +15,8 @@
 
 import bpy
 
-# def active_object_is_ready(ctx):
-# 	if ctx.area.type == 'VIEW_3D':
-# 		return ctx.active_object != None
-# 	return False
-
-# def selection_is_ready(ctx):
-# 	if ctx.area.type == 'VIEW_3D':
-# 		return True
-# 	return False
-
 def is_active_object(ctx, types):
 	if ctx.area.type == 'VIEW_3D':
-		#if len(ctx.scene.objects) > 0:
 		if ctx.active_object != None:
 			if ctx.active_object.type in types:
 				return True

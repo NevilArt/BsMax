@@ -15,6 +15,7 @@
 
 import bpy
 from bpy.types import Operator
+from bsmax.state import is_mode
 
 # TODO extend and unselect for element select
 
@@ -24,19 +25,14 @@ class Mesh_OT_Select_Element(Operator):
 
 	@classmethod
 	def poll(self, ctx):
-		return ctx.area.type == 'VIEW_3D'
-		# return ctx.mode == "MESH_EDIT"
+		return ctx.mode == "MESH_EDIT"
 	
 	def execute(self, ctx):
-		if ctx.active_object != None:
-			if ctx.mode == "EDIT_MESH":
-				v,e,f = ctx.tool_settings.mesh_select_mode
-				if v:
-					pass
-				if e:
-					bpy.ops.mesh.smart_select_loop('INVOKE_DEFAULT')
-				if f:
-					bpy.ops.mesh.select_linked_pick('INVOKE_DEFAULT')
+		vert,edge,face = ctx.tool_settings.mesh_select_mode
+		if edge:
+			bpy.ops.mesh.smart_select_loop('INVOKE_DEFAULT')
+		if face:
+			bpy.ops.mesh.select_linked_pick('INVOKE_DEFAULT')
 		self.report({'INFO'},'bpy.ops.mesh.select_element()')
 		return{"FINISHED"}
 	

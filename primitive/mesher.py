@@ -24,8 +24,7 @@ def get_mesher_mesh(radius):
 	return verts, [], faces
 
 def update_mesher(self, ctx):
-	# check is target avalible
-	#print(self.target)
+	""" check is target avalible """
 	if self.target in bpy.data.objects:
 		target = bpy.data.objects[self.target]
 		if target.type in {'MESH', 'CURVE'}:

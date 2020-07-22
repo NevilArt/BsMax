@@ -43,6 +43,7 @@ class Collection_OT_Move_To_Active(bpy.types.Operator):
 			clear_collections(ctx,obj)
 			active_collection.objects.link(obj)
 		ctx.view_layer.active_layer_collection = active_layer
+		self.report({'INFO'},'bpy.ops.collection.move_to_active()')
 		return{"FINISHED"}
 
 def outliner_header(self,ctx):

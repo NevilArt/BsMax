@@ -210,17 +210,10 @@ def shift_number(number, value, minimum, maximum):
 		number += maximum - minimum + 1
 	return number
 
-__all__ = ["point_on_line",
-		"point_on_vector",
-		"point_on_curve",
-		"split_segment",
-		"get_2_point_center",
-		"get_distance",
-		"get_segment_length",
-		"get_2_points_angel_2d",
-		"get_3_points_angle_2d",
-		"get_3_points_angle_3d",
-		"get_axis_constraint",
-		"get_offset_by_orient",
-		"get_bias",
-		"shift_number"]
+def get_index_str(count, index):
+	length = len(str(index))
+	string = ""
+	if length < count:
+		for i in range(length, count):
+			string += "0"
+	return (string + str(index))
