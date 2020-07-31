@@ -14,7 +14,7 @@
 ############################################################################
 
 import bpy
-from bpy.props import EnumProperty, BoolProperty
+from bpy.props import EnumProperty, BoolProperty, FloatProperty
 from mathutils import Vector, Matrix
 from bpy.types import Operator
 from bsmax.graphic import register_line,unregister_line,get_screen_pos
@@ -65,6 +65,9 @@ def store_form_data(self, ctx):
 		self.pos_list.append([p_min,p_mid,p_piv,p_max])
 		self.rot_list.append(obj.rotation_euler.copy())
 		self.scl_list.append(obj.scale.copy())
+
+def value_by_percent(orig,targ,percent):
+	return (targ - orig) * percent + orig
 
 def align_object_execute(self, ctx):
 	a_box = get_pos_data(ctx.active_object)
@@ -139,25 +142,28 @@ def align_object_execute(self, ctx):
 			# position
 			pos_list = self.pos_list
 			if self.pos_x:
-				obj.location.x = a_box[t_id].x+(pos_list[i][2].x-pos_list[i][c_id].x)
+				obj.location.x = value_by_percent(obj.location.x,
+					a_box[t_id].x+(pos_list[i][2].x-pos_list[i][c_id].x),self.percent)
 			if self.pos_y:
-				obj.location.y = a_box[t_id].y+(pos_list[i][2].y-pos_list[i][c_id].y)
+				obj.location.y = value_by_percent(obj.location.y,
+					a_box[t_id].y+(pos_list[i][2].y-pos_list[i][c_id].y),self.percent)
 			if self.pos_z:
-				obj.location.z = a_box[t_id].z+(pos_list[i][2].z-pos_list[i][c_id].z)
+				obj.location.z = value_by_percent(obj.location.z,
+					a_box[t_id].z+(pos_list[i][2].z-pos_list[i][c_id].z),self.percent)
 			# rotation
 			if self.rot_x:
-				obj.rotation_euler.x = a_rot.x
+				obj.rotation_euler.x = value_by_percent(obj.rotation_euler.x,a_rot.x,self.percent)
 			if self.rot_y:
-				obj.rotation_euler.y = a_rot.y
+				obj.rotation_euler.y = value_by_percent(obj.rotation_euler.y,a_rot.y,self.percent)
 			if self.rot_z:
-				obj.rotation_euler.z = a_rot.z
+				obj.rotation_euler.z = value_by_percent(obj.rotation_euler.z,a_rot.z,self.percent)
 			# scale
 			if self.scl_x:
-				obj.scale.x = a_scl.x
+				obj.scale.x = value_by_percent(obj.scale.x, a_scl.x, self.percent)
 			if self.scl_y:
-				obj.scale.y = a_scl.y
+				obj.scale.y = value_by_percent(obj.scale.y, a_scl.y, self.percent)
 			if self.scl_z:
-				obj.scale.z = a_scl.z
+				obj.scale.z = value_by_percent(obj.scale.z, a_scl.z, self.percent)
 
 def align_reset(self, ctx):
 	cursor,pos_curs,rot_curs = ctx.scene.cursor,self.pos_curs,self.rot_curs
@@ -214,6 +220,7 @@ class Object_OT_Align_Selected_to_Active(Operator):
 	scl_x: BoolProperty()
 	scl_y: BoolProperty()
 	scl_z: BoolProperty()
+	percent: FloatProperty(name="Percent",soft_min=0,soft_max=1, default=1,step=0.1)
 	
 	@classmethod
 	def poll(self, ctx):
@@ -253,6 +260,9 @@ class Object_OT_Align_Selected_to_Active(Operator):
 		row.prop(self,"scl_x",text="X Axis")
 		row.prop(self,"scl_y",text="Y Axis")
 		row.prop(self,"scl_z",text="Z Axis")
+		box = layout.box()
+		row = box.row()
+		row.prop(self,"percent",text="%")
 
 	def store_setting(self):
 		abd.cm = self.c_mode

@@ -5,7 +5,8 @@
 
 Recent Updates
 
-* Keymap issue fixed on Dope sheet and Graph editor .
+* Align Objects has percentage option now and can put in halfway or increase distance by entering negative value.
+* Keymap issue fixed on Dope Sheet and Graph Editor.
 * Some New Items added to Quad menu.
 * "Link to" operator (Avalible in Quadmenu).
 * Align objects draws a line to show the tool is active.
