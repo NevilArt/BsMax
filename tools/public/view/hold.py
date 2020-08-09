@@ -13,10 +13,29 @@
 #	along with this program.  If not, see <https://www.gnu.org/licenses/>.
 ############################################################################
 
-from .quadmenu import register_quadmenu,unregister_quadmenu
+import bpy
+from bpy.types import Operator
 
-def register_quad(preferences):
-	register_quadmenu(preferences)
+class Scene_OT_Hold(Operator):
+		bl_idname = "scene.hold"
+		bl_label = "Hold"
+		def execute(self, ctx):
+			# print("Hold coming soon")
+			# self.report({'INFO'},'bpy.ops.scene.hold()')
+			return{"FINISHED"}
 
-def unregister_quad():
-	unregister_quadmenu()
+class Scene_OT_Fetch(Operator):
+		bl_idname = "scene.fetch"
+		bl_label = "Fetch"
+		def execute(self, ctx):
+			# print("Fetch coming soon")
+			# self.report({'INFO'},'bpy.ops.scene.fetch()')
+			return{"FINISHED"}
+
+classes = [Scene_OT_Hold, Scene_OT_Fetch]
+
+def register_hold():
+	[bpy.utils.register_class(c) for c in classes]
+
+def unregister_hold():
+	[bpy.utils.unregister_class(c) for c in classes]

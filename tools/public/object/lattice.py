@@ -17,7 +17,8 @@ import bpy
 from mathutils import Vector, Matrix
 from bpy.types import Operator
 from bpy.props import IntProperty
-from bsmax.actions import solve_missing_activeobject, lock_transform
+from bsmax.actions import solve_missing_activeobject, lock_transform, modifier_add
+from bsmax.state import is_objects_selected
 
 def get_volum_dimantion(objs, selection):
 	vcos = []
@@ -115,8 +116,105 @@ class Lattice_OT_Set_On_Selection(Operator):
 		self.report({'INFO'},'bpy.ops.lattice.set_on_selection()')
 		return{"FINISHED"}
 
-def register_lattice():
-	bpy.utils.register_class(Lattice_OT_Set_On_Selection)
+
+# Quik setup operators #
+class Modifier_OT_Lattice_2x2x2_Set(Operator):
+	bl_idname = "modifier.lattice_2x2x2_set"
+	bl_label = "Lattice 2x2x2 (Set)"
+	@classmethod
+	def poll(self, ctx):
+		return is_objects_selected(ctx)
+	def execute(self, ctx):
+		bpy.ops.lattice.set_on_selection(res_u=2,res_v=2,res_w=2)
+		self.report({'INFO'},'bpy.ops.modifier.lattice_2x2x2_set()')
+		return{"FINISHED"}
+
+class Modifier_OT_Lattice_3x3x3_Set(Operator):
+	bl_idname = "modifier.lattice_3x3x3_set"
+	bl_label = "Lattice 3x3x3 (Set)"
+	@classmethod
+	def poll(self, ctx):
+		return is_objects_selected(ctx)
+	def execute(self, ctx):
+		bpy.ops.lattice.set_on_selection(res_u=3,res_v=3,res_w=3)
+		self.report({'INFO'},'bpy.ops.modifier.lattice_3x3x3_set()')
+		return{"FINISHED"}
+
+class Modifier_OT_Lattice_4x4x4_Set(Operator):
+	bl_idname = "modifier.lattice_4x4x4_set"
+	bl_label = "Lattice 4x4x4 (Set)"
+	@classmethod
+	def poll(self, ctx):
+		return is_objects_selected(ctx)
+	def execute(self, ctx):
+		bpy.ops.lattice.set_on_selection(res_u=4,res_v=4,res_w=4)
+		self.report({'INFO'},'bpy.ops.modifier.lattice_4x4x4_set()')
+		return{"FINISHED"}
+
+class Modifier_OT_FFD_2x2x2_Set(Operator):
+	bl_idname = "modifier.ffd_2x2x2_set"
+	bl_label = "FFD 2x2x2 (Set)"
+	@classmethod
+	def poll(self, ctx):
+		return is_objects_selected(ctx)
+	def execute(self, ctx):
+		bpy.ops.lattice.set_on_selection(res_u=2,res_v=2,res_w=2)
+		self.report({'INFO'},'bpy.ops.modifier.ffd_2x2x2_set()')
+		return{"FINISHED"}
+
+class Modifier_OT_FFD_3x3x3_Set(Operator):
+	bl_idname = "modifier.ffd_3x3x3_set"
+	bl_label = "FFD 3x3x3 (Set)"
+	@classmethod
+	def poll(self, ctx):
+		return is_objects_selected(ctx)
+	def execute(self, ctx):
+		bpy.ops.lattice.set_on_selection(res_u=3,res_v=3,res_w=3)
+		self.report({'INFO'},'bpy.ops.modifier.ffd_3x3x3_set()')
+		return{"FINISHED"}
+
+class Modifier_OT_FFD_4x4x4_Set(Operator):
+	bl_idname = "modifier.ffd_4x4x4_set"
+	bl_label = "FFD 4x4x4 (Set)"
+	@classmethod
+	def poll(self, ctx):
+		return is_objects_selected(ctx)
+	def execute(self, ctx):
+		bpy.ops.lattice.set_on_selection(res_u=4,res_v=4,res_w=4)
+		self.report({'INFO'},'bpy.ops.modifier.ffd_4x4x4_set()')
+		return{"FINISHED"}
+	
+class lattice_data:
+	preferences = None
+	def is_3dmax(self):
+		if self.preferences == None:
+			return False
+		print(self.preferences.viowport)
+		return self.preferences.viowport == '3DsMax'
+			
+ld = lattice_data()
+
+def lattice_menu(self, ctx):
+	layout = self.layout
+	layout.separator()
+	the_name = 'FFD' if ld.is_3dmax() else 'Lattice'
+	layout.operator("modifier.lattice_2x2x2_set",text=(the_name+' 2x2x2 (Set)'),icon="OUTLINER_OB_LATTICE")
+	layout.operator("modifier.lattice_3x3x3_set",text=(the_name+' 3x3x3 (Set)'),icon="OUTLINER_OB_LATTICE")
+	layout.operator("modifier.lattice_4x4x4_set",text=(the_name+' 4x4x4 (Set)'),icon="OUTLINER_OB_LATTICE")
+
+classes = [Lattice_OT_Set_On_Selection,
+	Modifier_OT_Lattice_2x2x2_Set,
+	Modifier_OT_Lattice_3x3x3_Set,
+	Modifier_OT_Lattice_4x4x4_Set,
+	Modifier_OT_FFD_2x2x2_Set,
+	Modifier_OT_FFD_3x3x3_Set,
+	Modifier_OT_FFD_4x4x4_Set]
+
+def register_lattice(preferences):
+	ld.preferences = preferences
+	[bpy.utils.register_class(c) for c in classes]
+	bpy.types.BSMAX_MT_latticecreatemenu.append(lattice_menu)
 
 def unregister_lattice():
-	bpy.utils.unregister_class(Lattice_OT_Set_On_Selection)
+	bpy.types.BSMAX_MT_latticecreatemenu.remove(lattice_menu)
+	[bpy.utils.unregister_class(c) for c in classes]

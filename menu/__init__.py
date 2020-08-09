@@ -17,25 +17,8 @@ from .blender import register_blenderdefault,unregister_blenderdefault
 from .quad import register_quad,unregister_quad
 # from .marking.init import *
 
-class RegisterData:
-	def __init__(self):
-		self.pack = ''
-reg = RegisterData()
-
 def register_menu(preferences):
-	unregister_menu()
-
-	floatmenus = preferences.floatmenus
-	if floatmenus == "QuadMenu_st_nokey":
-		register_quad(preferences)
-	elif floatmenus == "QuadMenu_st_andkey":
-		register_quad(preferences)
-	elif floatmenus == "Marking_Menu":
-		pass
-	
-	reg.pack = floatmenus
+	register_quad(preferences)
 
 def unregister_menu():
-	if reg.pack == "QuadMenu_st_andkey" or reg.pack == "QuadMenu_st_nokey":
-		unregister_quad()
-	reg.pack = ''
+	unregister_quad()

@@ -13,33 +13,23 @@
 #	along with this program.  If not, see <https://www.gnu.org/licenses/>.
 ############################################################################
 
-from .max import register_max,unregister_max
-from .blender import register_blender,unregister_blender
-from .cinema4d import register_cinema4d,unregister_cinema4d
-from .maya import register_maya,unregister_maya
-from .modo import register_modo,unregister_modo
-from .softimage import register_softimage,unregister_softimage
-from .navigation import register_navigation,unregister_navigation
-from .public import register_public,unregister_public
+from .max import register_max, unregister_max
+from .blender import register_blender, unregister_blender
+from .cinema4d import register_cinema4d, unregister_cinema4d
+from .maya import register_maya, unregister_maya
+from .modo import register_modo, unregister_modo
+from .softimage import register_softimage, unregister_softimage
+from .unrealengin import register_unreal, unregister_unreal
+
 
 def register_keymaps(preferences):
-	unregister_keymaps()
-	
-	keymaps = preferences.keymaps
-	if keymaps == '3DsMax':
-		register_max()
-	elif keymaps == 'Blender':
-		register_blender()
-	elif keymaps == 'Cinema4D':
-		register_cinema4d()
-	elif keymaps == 'Maya':
-		register_maya()
-	elif keymaps == 'Modo':
-		register_modo()
-	elif keymaps == 'Softimage':
-		register_softimage()
-	register_public()
-	register_navigation(preferences)
+	register_max(preferences)
+	register_maya(preferences)
+	register_modo(preferences)
+	register_blender(preferences)
+	register_cinema4d(preferences)
+	register_softimage(preferences)
+	register_unreal(preferences)
 
 def unregister_keymaps():
 	unregister_max()
@@ -48,5 +38,4 @@ def unregister_keymaps():
 	unregister_maya()
 	unregister_modo()
 	unregister_softimage()
-	unregister_public()
-	unregister_navigation()
+	unregister_unreal()

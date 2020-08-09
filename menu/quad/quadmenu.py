@@ -28,6 +28,7 @@ class BsMax_OT_View3D_QuadMenu(Operator):
 	controllers = []
 	menu: StringProperty(name = 'default')
 	space: StringProperty(name = 'View3D')
+	#TODO remove space just make it auto
 	#'View3D', 'UVEditor', 'GraphEditor', 'DopeSheetEditor', 'NodeEditor'
 	#ClipEditor, ImageEditor, NLA, NodeEditorPath, Outliner3D
 
@@ -45,14 +46,14 @@ class BsMax_OT_View3D_QuadMenu(Operator):
 					QuadMenuRef.finish = True
 
 		# resize the quad menu
-		if event.type == 'NUMPAD_MINUS':
-			if event.value == 'PRESS':
-				if QuadMenuRef.size > 15:
-					QuadMenuRef.size -= 1
-		if event.type == 'NUMPAD_PLUS':
-			if event.value == 'PRESS':
-				if QuadMenuRef.size < 60:
-					QuadMenuRef.size += 1
+		# if event.type == 'NUMPAD_MINUS':
+		# 	if event.value == 'PRESS':
+		# 		if QuadMenuRef.size > 15:
+		# 			QuadMenuRef.size -= 1
+		# if event.type == 'NUMPAD_PLUS':
+		# 	if event.value == 'PRESS':
+		# 		if QuadMenuRef.size < 60:
+		# 			QuadMenuRef.size += 1
 
 		if event.type in {'ESC'} or QuadMenuRef.finish:
 			self.unregister_handler()
@@ -157,6 +158,7 @@ class BsMax_OT_View3D_QuadMenu(Operator):
 				self.controllers.append(NewQuad)
 
 	def invoke(self, ctx, event):
+		QuadMenuRef.size = qmd.get_scale() * 15
 		self.x = event.mouse_region_x - int(QuadMenuRef.size / 2)
 		self.y = event.mouse_region_y + int(QuadMenuRef.size / 2)
 		self.create(ctx)
@@ -164,10 +166,19 @@ class BsMax_OT_View3D_QuadMenu(Operator):
 		ctx.window_manager.modal_handler_add(self)
 		return {'RUNNING_MODAL'}
 
-def register_quadmenu():
-	# if not hasattr(bpy.types, "BsMax_OT_View3D_QuadMenu"):
+class Quad_Menu_Data:
+	preferences = None
+	def get_scale(self):
+		if self.preferences == None:
+			return 1
+		else:
+			return self.preferences.menu_scale
+
+qmd = Quad_Menu_Data()
+
+def register_quadmenu(preferences):
+	qmd.preferences = preferences
 	bpy.utils.register_class(BsMax_OT_View3D_QuadMenu)
 
 def unregister_quadmenu():
-	# if hasattr(bpy.types, "BsMax_OT_View3D_QuadMenu"):
 	bpy.utils.unregister_class(BsMax_OT_View3D_QuadMenu)

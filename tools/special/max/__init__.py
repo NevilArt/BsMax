@@ -13,46 +13,11 @@
 #	along with this program.  If not, see <https://www.gnu.org/licenses/>.
 ############################################################################
 
-from .attach import register_attach,unregister_attach
-from .coordinate import register_coordinate,unregister_coordinate
-from .dragclone import register_dragclone,unregister_dragclone
-from .hold import register_hold,unregister_hold
 from .menu import register_menu,unregister_menu
 from .modifier import register_modifier,unregister_modifier
-from .navigation import register_navigation,unregister_navigation
-from .objectproperties import register_objectproperties,unregister_objectproperties
-from .snap import register_snap,unregister_snap
-from .subobjectlevel import register_subobjectlevel,unregister_subobjectlevel
-from .transform import register_transform,unregister_transform
-from .viewport import register_viewport,unregister_viewport
-from .viewportbg import register_viewportbg,unregister_viewportbg
 
 def register_max():
-	register_attach()
-	register_coordinate()
-	register_dragclone()
-	register_hold()
-	register_menu()
 	register_modifier()
-	# register_navigation()
-	register_objectproperties()
-	register_snap()
-	register_subobjectlevel()
-	register_transform()
-	register_viewport()
-	register_viewportbg()
 
 def unregister_max():
-	unregister_attach()
-	unregister_coordinate()
-	unregister_dragclone()
-	unregister_hold()
-	unregister_menu()
 	unregister_modifier()
-	# unregister_navigation()
-	unregister_objectproperties()
-	unregister_snap()
-	unregister_subobjectlevel()
-	unregister_transform()
-	unregister_viewport()
-	unregister_viewportbg()

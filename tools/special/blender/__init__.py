@@ -14,12 +14,9 @@
 ############################################################################
 
 from .modifier import register_modifier,unregister_modifier
-from .menu import register_menu,unregister_menu
 
 def register_blender():
 	register_modifier()
-	register_menu()
 
 def unregister_blender():
-	unregister_menu()
 	unregister_modifier()

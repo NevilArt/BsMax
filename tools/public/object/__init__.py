@@ -22,9 +22,11 @@ from .convert import register_convert,unregister_convert
 from .freeze import register_freeze,unregister_freeze
 from .lattice import register_lattice,unregister_lattice
 from .linkto import register_linkto, unregister_linkto
+from .objectproperties import register_objectproperties,unregister_objectproperties
 from .pivotpoint import register_pivotpoint,unregister_pivotpoint
+from .subobjectlevel import register_subobjectlevel,unregister_subobjectlevel
 
-def register_object():
+def register_object(preferences):
 	register_arrange()
 	# register_bake()
 	register_batchrename()
@@ -32,9 +34,11 @@ def register_object():
 	register_collection()
 	register_convert()
 	register_freeze()
-	register_lattice()
+	register_lattice(preferences)
 	register_linkto()
+	register_objectproperties()
 	register_pivotpoint()
+	register_subobjectlevel()
 
 def unregister_object():
 	unregister_arrange()
@@ -46,4 +50,6 @@ def unregister_object():
 	unregister_freeze()
 	unregister_lattice()
 	unregister_linkto()
+	unregister_objectproperties()
 	unregister_pivotpoint()
+	unregister_subobjectlevel()

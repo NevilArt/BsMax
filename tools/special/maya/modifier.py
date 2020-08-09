@@ -18,39 +18,6 @@ from bpy.types import Operator
 from bsmax.actions import modifier_add
 from bsmax.state import is_objects_selected
 
-class Modifier_OT_Lattice_2x2x2_Set(Operator):
-	bl_idname = "modifier.lattice_2x2x2_set"
-	bl_label = "Lattice 2x2x2 (Set)"
-	@classmethod
-	def poll(self, ctx):
-		return is_objects_selected(ctx)
-	def execute(self, ctx):
-		bpy.ops.lattice.set_on_selection(res_u=2,res_v=2,res_w=2)
-		self.report({'INFO'},'bpy.ops.modifier.lattice_2x2x2_set()')
-		return{"FINISHED"}
-
-class Modifier_OT_Lattice_3x3x3_Set(Operator):
-	bl_idname = "modifier.lattice_3x3x3_set"
-	bl_label = "Lattice 3x3x3 (Set)"
-	@classmethod
-	def poll(self, ctx):
-		return is_objects_selected(ctx)
-	def execute(self, ctx):
-		bpy.ops.lattice.set_on_selection(res_u=3,res_v=3,res_w=3)
-		self.report({'INFO'},'bpy.ops.modifier.lattice_3x3x3_set()')
-		return{"FINISHED"}
-
-class Modifier_OT_Lattice_4x4x4_Set(Operator):
-	bl_idname = "modifier.lattice_4x4x4_set"
-	bl_label = "Lattice 4x4x4 (Set)"
-	@classmethod
-	def poll(self, ctx):
-		return is_objects_selected(ctx)
-	def execute(self, ctx):
-		bpy.ops.lattice.set_on_selection(res_u=4,res_v=4,res_w=4)
-		self.report({'INFO'},'bpy.ops.modifier.lattice_4x4x4_set()')
-		return{"FINISHED"}
-
 class Modifier_OT_Add_Revolve(Operator):
 	bl_idname = "modifier.add_revolve"
 	bl_label = "Revolve (add)"
@@ -63,13 +30,13 @@ class Modifier_OT_Add_Revolve(Operator):
 		self.report({'INFO'},'bpy.ops.modifier.add_revolve()')
 		return {'FINISHED'}
 
-classes = [Modifier_OT_Lattice_2x2x2_Set,
-		Modifier_OT_Lattice_3x3x3_Set,
-		Modifier_OT_Lattice_4x4x4_Set,
-		Modifier_OT_Add_Revolve]
+classes = [Modifier_OT_Add_Revolve]
 
 def register_modifier():
 	[bpy.utils.register_class(c) for c in classes]
 
 def unregister_modifier():
-	[bpy.utils.unregister_class(c) for c in classes]
+	# [bpy.utils.unregister_class(c) for c in classes]
+	for c in classes:
+		if hasattr(bpy.types, eval("bpy.ops." + c.bl_idname + ".idname()")):
+			bpy.utils.unregister_class(c)

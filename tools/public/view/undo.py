@@ -215,7 +215,7 @@ classes = [BsMax_OT_ViewUndoRedo,
 
 def register_undo(preferences):
 	[bpy.utils.register_class(c) for c in classes]
-	if preferences.viewundo:
+	if preferences.view_undo:
 		bpy.types.VIEW3D_MT_view.prepend(view_undorido_menu)
 
 def unregister_undo():

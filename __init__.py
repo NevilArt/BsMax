@@ -18,10 +18,10 @@
 
 bl_info = {
 	"name": "BsMax",
-	"description": "BsMax for Blender 2.80 ~ 2.90",
+	"description": "BsMax for Blender 2.80 ~ 2.91",
 	"author": "Naser Merati (Nevil)",
-	"version": (0, 1, 0, 20200731),
-	"blender": (2, 80, 0),# 2.80~2.90
+	"version": (0, 1, 0, 20200809),
+	"blender": (2, 80, 0),# 2.80~2.91
 	"location": "Almost Everywhere in Blender",
 	"wiki_url": "https://github.com/NevilArt/BsMax_2_80/wiki",
 	"doc_url": "https://github.com/NevilArt/BsMax_2_80/wiki",
@@ -30,7 +30,7 @@ bl_info = {
 }
 
 import bpy,sys,os
-from bpy.props import EnumProperty,BoolProperty
+from bpy.props import EnumProperty,BoolProperty,FloatProperty
 from time import sleep
 from _thread import start_new_thread
 
@@ -39,90 +39,254 @@ path = os.path.dirname(os.path.realpath(__file__))
 if path not in sys.path:
 	sys.path.append(path)
 
-from .keymaps import register_keymaps,unregister_keymaps,register_navigation,unregister_navigation
+from .keymaps import register_keymaps,unregister_keymaps
 from .menu import register_menu,unregister_menu
 from .primitive import register_primitives,unregister_primitives
 from .startup import register_startup,unregister_startup
-from .tools import register_tools,unregister_tools,register_special
+from .tools import register_tools,unregister_tools
 
 # import templates
 
 addons = bpy.context.preferences.addons
+wiki = "https://github.com/NevilArt/BsMax_2_80/wiki/"
 
 # Addon preferences
-def update_navigation(self, ctx):
-	register_navigation(addons[__name__].preferences)
+def update_preferences(self, ctx, action):
+	""" Radiobuttons """
+	if action == 'quick' and self.quick:
+		self.simple = self.custom = False
+		self.refine()
+	elif action == 'simple'and self.simple:
+		self.quick = self.custom = False
+		self.refine()
+	elif action == 'custom' and self.custom:
+		self.simple = self.quick = False
+	if not self.quick and not self.simple and not self.custom:
+		if action == 'quick':
+			self.quick = True
+		elif action == 'simple':
+			self.simple = True
+		elif action == 'custom':
+			self.custom = True
+		else:
+			self.simple = True
+	
+	if self.active:
+		""" Quick Selection """
+		if self.quick and action == "aplication":
+			if self.aplication != 'Custom':
+				self.navigation = self.aplication
+				self.keymaps = self.aplication
+				self.toolpack = self.aplication
 
-def update_toolpack(self, ctx):
-	register_special(addons[__name__].preferences)
+				self.navigation_3d = self.aplication
+				self.navigation_2d = self.aplication
+				self.viowport = self.aplication
+				self.sculpt = self.aplication
+				self.uv_editor = self.aplication
+				self.node_editor = self.aplication
+				self.graph_editor = self.aplication
+				self.clip_editor = self.aplication
+				self.video_sequencer = self.aplication
+				self.text_editor = self.aplication
+				self.file_browser = self.aplication
+				self.floatmenus = self.aplication
 
-def update_floatmenu(self, ctx):
-	register_menu(addons[__name__].preferences)
-
-def update_keymaps(self, ctx):
-	self.arreng()
-	register_keymaps(addons[__name__].preferences)
+		""" Simple Selection """
+		if self.simple:
+			if action == "navigation":
+				if self.navigation != 'Custom':
+					self.navigation_3d = self.navigation
+					self.navigation_2d = self.navigation
+				return
+			
+			elif action == "keymaps":
+				if self.keymaps != 'Custom':
+					self.viowport = self.keymaps
+					self.sculpt = self.keymaps
+					self.uv_editor = self.keymaps
+					self.node_editor = self.keymaps
+					self.graph_editor = self.keymaps
+					self.clip_editor = self.keymaps
+					self.video_sequencer = self.keymaps
+					self.text_editor = self.keymaps
+					self.file_browser = self.keymaps
+				return
+			
+		""" Custom Selection """
+		if action in {"navigation_3d","navigation_2d","viowport", "sculpt",
+			"uv_editor", "node_editor", "text_editopr", "graph_editor","clip_editor",
+			"video_sequencer", "text_editor","file_browser", "floatmenus", "view_undo"}:
+			register_keymaps(addons[__name__].preferences)
 
 class BsMax_AddonPreferences(bpy.types.AddonPreferences):
 	bl_idname = __name__
 
-	navigation: EnumProperty(name='Navigation',update=update_navigation,
-		default='Blender',
-		description='select overide navigation mode',
-		items=[('3DsMax','3DsMax',''),
-			('Maya','Maya',''),
-			# ('Softimage','Softimage',''),
-			# ('Modo','Modo',''),
-			# ('Cinema4D','Cinema4D',''),
-			('Blender','Blender',''),
-			('None','None','')])
-
-	apppack = [('3DsMax','3DsMax',''),
-			('Maya','Maya',''),
-			# ('Softimage','Softimage',''),
-			# ('Modo','Modo',''),
-			# ('Cinema4D','Cinema4D',''),
-			('Blender','Blender',''),
-			('None','None','')]
-
-	toolpack: EnumProperty(name='Tools Pack',
-		default='Blender',
-		description='Extera Overide Tools',
-		update=update_toolpack,items=apppack)
-
-	floatmenus: EnumProperty(name='Float Menu',update=update_floatmenu,
-		default='Blender',
-		description='Float menus type',
-		items=[('QuadMenu_st_andkey','QuadMenu Standard (with Keymap)',''),
-			('QuadMenu_st_nokey','QuadMenu Standard (without Keymap)',''),
-			('Blender','Blender',''),
-			('None','None','')])
-
-	keymaps: EnumProperty(name='Keymap',
-		default='Blender',
-		description='Overide Full Keymap',
-		update=update_keymaps,items=apppack)
+	active = BoolProperty(name="Active",default=False)
 	
-	viewundo: BoolProperty(name="View Undo",default=False,update=update_keymaps)
+	quick: BoolProperty(name="Quick",default=False,
+		update= lambda self,ctx: update_preferences(self,ctx,'quick'))
+	simple: BoolProperty(name="Simple",default=True,
+		update= lambda self,ctx: update_preferences(self,ctx,'simple'))
+	custom: BoolProperty(name="Custom",default=False,
+		update= lambda self,ctx: update_preferences(self,ctx,'custom'))
 	
-	def arreng(self):
-		if self.keymaps != "Blender":
-			if self.toolpack != self.keymaps:
-				self.toolpack = self.keymaps
-		if self.floatmenus == 'QuadMenu_st_andkey' or self.floatmenus == 'QuadMenu_st_nokey':
-			if self.toolpack != '3DsMax':
-				self.toolpack = '3DsMax'
+	apps = [('3DsMax','3DsMax',''),('Maya','Maya',''),('Blender','Blender (Default)','')]
+	custom = [('Custom','Custom','')]
+	menus = [('3DsMax','3DsMax (QuadMenu)',''),('Maya','Maya (Not ready yet)',''),('Blender','Blender (Default)','')]
+	
+	""" Quick select mode """
+	aplication: EnumProperty(name='Aplication', items=apps+custom, default='Blender',
+		update= lambda self,ctx: update_preferences(self,ctx,'aplication'),
+		description='select a package')
+
+	""" Simple select mode """
+	navigation: EnumProperty(name='Navigation', items=apps+custom, default='Blender',
+		update= lambda self,ctx: update_preferences(self,ctx,'navigation'),
+		description='select overide navigation mode')
+
+	toolpack: EnumProperty(name='Tools Pack', items=apps, default='Blender',
+		update= lambda self,ctx: update_preferences(self,ctx,'toolpack'),
+		description='Extera Overide Tools')
+
+	floatmenus: EnumProperty(name='Float Menu', items=menus, default='Blender',
+		update= lambda self,ctx: update_preferences(self,ctx,'floatmenus'),
+		description='Float menus type')
+
+	keymaps: EnumProperty(name='Keymap', items=apps+custom, default='Blender',
+		update= lambda self,ctx: update_preferences(self,ctx,'keymaps'),
+		description='Overide Full Keymap')
+	
+	""" Custom select mode """
+	navigation_3d: EnumProperty(name='Navigation 3D', items=apps, default='Blender',
+		update= lambda self,ctx: update_preferences(self,ctx,'navigation_3d'),
+		description='Overide navigation on 3D View')
+	navigation_2d: EnumProperty(name='Navigation 2D', items=apps, default='Blender',
+		update= lambda self,ctx: update_preferences(self,ctx,'navigation_2d'),
+		description='Overide navigation in 2D Views')
+	viowport: EnumProperty(name='View 3D', items=apps, default='Blender',
+		update= lambda self,ctx: update_preferences(self,ctx,'viowport'),
+		description='Overide keymaps in 3D view')
+	sculpt: EnumProperty(name='Sculp/Paint', items=apps, default='Blender',
+		update= lambda self,ctx: update_preferences(self,ctx,'sculpt'),
+		description='Overide keymaps in sculpt and paint mode')
+	uv_editor: EnumProperty(name='UV Editor', items=apps, default='Blender',
+		update= lambda self,ctx: update_preferences(self,ctx,'uv_editor'),
+		description='Overide keymaps in UV editor')
+	node_editor: EnumProperty(name='Node Editor', items=apps, default='Blender',
+		update= lambda self,ctx: update_preferences(self,ctx,'node_editor'),
+		description='Overide keymaps in Node editors')
+	graph_editor: EnumProperty(name='Graph Editor', items=apps, default='Blender',
+		update= lambda self,ctx: update_preferences(self,ctx,'graph_editor'),
+		description='Overide keymaps in Time ediotrs')
+	clip_editor: EnumProperty(name='Clip Editor', items=apps, default='Blender',
+		update= lambda self,ctx: update_preferences(self,ctx,'clip_editor'),
+		description='Overide keymaps in Clip editor')
+	video_sequencer: EnumProperty(name='Video Sequencer', items=apps, default='Blender',
+		update= lambda self,ctx: update_preferences(self,ctx,'video_sequencer'),
+		description='Overide keymaps in Video sequencer')
+	text_editor: EnumProperty(name='Text Editor', items=apps, default='Blender',
+		update= lambda self,ctx: update_preferences(self,ctx,'text_editopr'),
+		description='Overide keymaps in text editor')
+	file_browser: EnumProperty(name='File Browser', items=apps, default='Blender',
+		update= lambda self,ctx: update_preferences(self,ctx,'file_browser'),
+		description='Overide keymaps in File Browser')
+
+	""" Global options """
+	options: BoolProperty(default=False)
+	view_undo: BoolProperty(name="View Undo",default=False,
+		update= lambda self, ctx: update_preferences(self,ctx,'view_undo'),
+		description='undo the only view angle')
+	menu_scale: FloatProperty(name="Float Menu Scale",min=1,max=3,description='')
+
+	def refine(self):
+		""" Disactive keymap update """
+		self.active = False
+		
+		""" Simple mode navigation """
+		if self.navigation_3d == self.navigation_2d:
+			if self.navigation == 'Custom':
+				self.navigation = self.navigation_3d
+		elif self.navigation != 'Custom':
+			self.navigation = 'Custom'
+		
+		""" Simple mode keymap """
+		if self.viowport == self.sculpt and\
+			self.viowport == self.uv_editor and\
+			self.viowport == self.node_editor and\
+			self.viowport == self.text_editor and\
+			self.viowport == self.graph_editor and\
+			self.viowport == self.clip_editor and\
+			self.viowport == self.video_sequencer and\
+			self.viowport == self.file_browser:
+			if self.keymaps == 'Custom':
+				self.keymaps = self.viowport
+		elif self.keymaps != 'Custom':
+			self.keymaps = 'Custom'
+
+		""" Quick select mode """
+		if self.navigation == self.keymaps and\
+			self.navigation == self.floatmenus:
+			if self.aplication == 'Custom':
+				self.aplication = self.navigation
+		elif self.aplication != 'Custom':
+			self.aplication = 'Custom'
+
+		""" Reactive keymap update """
+		self.active = True
+
+	def row_prop(self,col,name,page):
+		row = col.row()
+		row.prop(self,name)
+		srow = row.row()
+		srow.scale_x = 1
+		srow.operator("wm.url_open",icon='HELP').url= wiki + page
 
 	def draw(self, ctx):
-		self.arreng()
 		layout = self.layout
-		row = layout.row()
-		col = row.column()
-		col.prop(self,"navigation")
-		col.prop(self,"keymaps")
-		col.prop(self,"floatmenus")
-		col.prop(self,"toolpack")
-		col.prop(self,"viewundo")
+		
+		box = layout.box()
+		row = box.row(align=True)
+		row.prop(self,"quick",icon='MESH_CIRCLE')
+		row.prop(self,"simple",icon='MESH_UVSPHERE')
+		row.prop(self,"custom",icon='MESH_ICOSPHERE')
+
+		if self.quick:
+			row = box.row()
+			col = row.column()
+			self.row_prop(col,"aplication", "applications")
+
+		if self.simple:	
+			row = box.row()
+			col = row.column()
+			self.row_prop(col,"navigation", "Navigation")
+			self.row_prop(col,"keymaps", "Keymaps-" + self.keymaps)
+			self.row_prop(col,"floatmenus", "floatmenus-" + self.floatmenus)
+		
+		if self.custom:
+			row = box.row()
+			col = row.column()
+
+			self.row_prop(col,"navigation_3d","navigation_3d-" + self.navigation_3d)
+			self.row_prop(col,"navigation_2d","navigation_2d-" + self.navigation_2d)
+			self.row_prop(col,"viowport","viowport-" + self.viowport)
+			self.row_prop(col,"sculpt","sculpt-" + self.sculpt)
+			self.row_prop(col,"uv_editor","uv_editor-" + self.uv_editor)
+			self.row_prop(col,"node_editor","node_editor-" + self.node_editor)
+			self.row_prop(col,"text_editor","text_editor-" + self.text_editor)
+			self.row_prop(col,"graph_editor","graph_editor-" + self.graph_editor)
+			self.row_prop(col,"clip_editor","clip_editor-" + self.clip_editor)
+			self.row_prop(col,"video_sequencer","video_sequencer-" + self.video_sequencer)
+			self.row_prop(col,"file_browser","file_browser-" + self.file_browser)
+			self.row_prop(col,"floatmenus", "floatmenus-" + self.floatmenus)
+			
+		box = layout.box()
+		box.prop(self,"options",text="Options")
+		if self.options:
+			box = box.box()
+			row = box.row()
+			row.prop(self,"view_undo")
+			row.prop(self,"menu_scale")
 
 def save_preferences(preferences):
 	filename = bpy.utils.user_resource('SCRIPTS', "addons") + "/BsMax.ini"
@@ -137,6 +301,13 @@ def save_preferences(preferences):
 	ini.write(string)
 	ini.close()
 
+def isfloat(value):
+  try:
+    float(value)
+    return True
+  except ValueError:
+    return False
+
 def load_preferences(preferences):
 	filename = bpy.utils.user_resource('SCRIPTS', "addons") + "/BsMax.ini"
 	if os.path.exists(filename):
@@ -145,40 +316,42 @@ def load_preferences(preferences):
 		for prop in props:
 			key = prop.split("=")
 			if len(key) == 2:
-				if key[1] in {'True','False'}:
+				if isfloat(key[1]):
+					value = float(key[1])
+				elif key[1] in {'True','False'}:
 					value = key[1] == 'True'
 				else:
 					value = key[1]
 				try:
-					setattr(preferences, key[0], value)
+					if hasattr(preferences, key[0]):
+						setattr(preferences, key[0], value)
 				except:
 					pass
 
 def register_delay(preferences):
 	sleep(0.2)
-	register_navigation(preferences)
 	register_keymaps(preferences)
 	register_startup(preferences)
 
 def register():
 	bpy.utils.register_class(BsMax_AddonPreferences)
 	preferences = addons[__name__].preferences
+	load_preferences(preferences)
+	preferences.active = True
 	register_primitives()
 	register_tools(preferences)
 	register_menu(preferences)
 	# templates.register()
 	start_new_thread(register_delay,tuple([preferences]))
-	load_preferences(preferences)
 	
 def unregister():
 	save_preferences(addons[__name__].preferences)
 	unregister_keymaps()
-	unregister_navigation()
 	unregister_menu()
 	unregister_tools()
 	unregister_primitives()
 	unregister_startup()
 	bpy.utils.unregister_class(BsMax_AddonPreferences)
 	# templates.unregister()
-	if path not in sys.path:
+	if path in sys.path:
 		sys.path.remove(path)

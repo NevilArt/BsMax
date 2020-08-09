@@ -18,8 +18,6 @@ from .menu import register_menu,unregister_menu
 
 def register_maya():
 	register_modifier()
-	register_menu()
 
 def unregister_maya():
-	unregister_menu()
 	unregister_modifier()

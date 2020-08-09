@@ -19,27 +19,49 @@ from .maya import register_maya,unregister_maya
 
 class RegisterData:
 	def __init__(self):
-		self.pack = ''
+		self.pack_max = False
+		self.pack_maya = False
+		self.pack_blender = False
 reg = RegisterData()
+
+def get_active_apps(preferences):
+	prefs = [preferences.viowport]
+		# preferences.sculpt,
+		# preferences.uv_editor,
+		# preferences.node_editor,
+		# preferences.graph_editor,
+		# preferences.dope_sheet,
+		# preferences.clip_editor,
+		# preferences.video_sequencer,
+		# preferences.text_editor,
+		# preferences.file_browser]
+	apps = []
+	for app in prefs:
+		if not app in apps:
+			apps.append(app)
+	return apps
 
 def register_special(preferences):
 	Unregister_special()
-
-	toolpack = preferences.toolpack
-	if toolpack == 'Blender':
-		register_blender()
-	elif toolpack == '3DsMax':
+	
+	if not reg.pack_max:
 		register_max()
-	elif toolpack == 'Maya':
+		reg.pack_max = True
+	
+	if not reg.pack_blender:
+		register_blender()
+		reg.pack_blender = True
+	
+	if not reg.pack_maya:
 		register_maya()
-
-	reg.pack = toolpack
+		reg.pack_maya = True
 
 def Unregister_special():
-	if reg.pack == 'Blender':
+	if reg.pack_blender:
 		unregister_blender()
-	elif reg.pack == '3DsMax':
+	
+	if reg.pack_max:
 		unregister_max()
-	elif reg.pack == 'Maya':
+	
+	if reg.pack_maya:
 		unregister_maya()
-	reg.pack = ''

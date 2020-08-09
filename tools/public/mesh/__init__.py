@@ -13,6 +13,7 @@
 #	along with this program.  If not, see <https://www.gnu.org/licenses/>.
 ############################################################################
 
+from .attach import register_attach,unregister_attach
 from .meshs import register_meshs,unregister_meshs
 from .edit import register_edit,unregister_edit
 from .smartcreate import register_smartcreate,unregister_smartcreate
@@ -22,6 +23,7 @@ from .select import register_select,unregister_select
 from .weld import register_weld,unregister_weld
 
 def register_mesh():
+	register_attach()
 	register_edit()
 	register_meshs()
 	register_smartcreate()
@@ -31,6 +33,7 @@ def register_mesh():
 	register_weld()
 
 def unregister_mesh():
+	unregister_attach()
 	unregister_edit()
 	unregister_meshs()
 	unregister_smartcreate()

@@ -41,7 +41,7 @@ def register_public(preferences):
 	register_material()
 	register_mesh()
 	register_modifier()
-	register_object()
+	register_object(preferences)
 	register_render()
 	register_select()
 	register_text()

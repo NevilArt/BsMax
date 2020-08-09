@@ -16,7 +16,7 @@
 import bpy
 from bpy.types import Operator
 
-class BsMax_OT_BlenderDefaultMenueCall(Operator):
+class View_OT_Blender_Default_Menue_Call(Operator):
 	bl_idname = "bsmax.blenderdefaultmenucall"
 	bl_label = "Call Blender Menu"
 	
@@ -70,7 +70,7 @@ class View3D_OT_Drop_Tool(Operator):
 
 	def call_menu(self, ctx):
 		if self.preferences != None:
-			if self.preferences.floatmenus == "QuadMenu_st_andkey":
+			if self.preferences.floatmenus == "3DsMax":
 				bpy.ops.bsmax.view3dquadmenue('INVOKE_DEFAULT',menu='default',space='View3D')
 			else:
 				bpy.ops.bsmax.blenderdefaultmenucall('INVOKE_DEFAULT')
@@ -82,7 +82,7 @@ class View3D_OT_Drop_Tool(Operator):
 			self.call_menu(ctx)
 		return{"FINISHED"}
 
-classes = [BsMax_OT_BlenderDefaultMenueCall,View3D_OT_Drop_Tool]
+classes = [View_OT_Blender_Default_Menue_Call ,View3D_OT_Drop_Tool]
 
 def register_droptool(preferences):
 	View3D_OT_Drop_Tool.preferences = preferences

@@ -14,21 +14,30 @@
 ############################################################################
 
 from .alignobjects import register_alignobjects,unregister_alignobjects
+from .coordinate import register_coordinate,unregister_coordinate
 from .mirror import register_mirror,unregister_mirror
+from .snap import register_snap,unregister_snap
+from .transformcontrol import register_transformcontrol,unregister_transformcontrol
 from .transforms import register_transforms,unregister_transforms
 from .transformtypein import register_transformtypein,unregister_transformtypein
 from .zoomextended import register_zoomextended,unregister_zoomextended
 
 def register_transform():
 	register_alignobjects()
+	register_coordinate()
 	register_mirror()
+	register_snap()
+	register_transformcontrol()
 	register_transforms()
 	register_transformtypein()
 	register_zoomextended()
 
 def unregister_transform():
 	unregister_alignobjects()
+	unregister_coordinate()
 	unregister_mirror()
+	unregister_snap()
+	unregister_transformcontrol()
 	unregister_transforms()
 	unregister_transformtypein()
 	unregister_zoomextended()

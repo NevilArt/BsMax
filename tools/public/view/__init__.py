@@ -16,8 +16,11 @@
 from .droptool import register_droptool,unregister_droptool
 from .filebrowser import register_filebrowser,unregister_filebrowser
 from .floateditor import register_floateditor,unregister_floateditor
+from .hold import register_hold,unregister_hold
 from .undo import register_undo,unregister_undo
 from .view3d import register_view3d,unregister_view3d
+from .viewport import register_viewport,unregister_viewport
+from .viewportbg import register_viewportbg,unregister_viewportbg
 
 def register_view(preferences):
 	register_droptool(preferences)
@@ -25,6 +28,8 @@ def register_view(preferences):
 	register_floateditor()
 	register_undo(preferences)
 	register_view3d()
+	register_viewport()
+	register_viewportbg()
 
 def unregister_view():
 	unregister_droptool()
@@ -32,3 +37,5 @@ def unregister_view():
 	unregister_floateditor()
 	unregister_undo()
 	unregister_view3d()
+	unregister_viewport()
+	unregister_viewportbg()

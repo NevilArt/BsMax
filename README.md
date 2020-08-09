@@ -1,9 +1,15 @@
 
 # BsMax_2_80
 
-(Works on Blender 2.80 ~ 2.90)
+(Works on Blender 2.80 ~ 2.91)
 
 Recent Updates
+
+* Open the keymaps list in github wiki via addon preferences (In production).
+* Preferences UI changed, more optional and easy to understand.
+* Quad menu can scale from addon preferences.
+* lots of code cleaning and Simplification to make future improvment easy.
+
 
 * Align Objects has percentage option now and can put in halfway or increase distance by entering negative value.
 * Keymap issue fixed on Dope Sheet and Graph Editor.

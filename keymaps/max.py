@@ -75,6 +75,23 @@ def add_float_editors(km,space):
 	# km.new(space,'editor.float','SIX','PRESS',[('ui_type','particle')])
 	# km.new(space,'editor.float','H','PRESS',[('ui_type','OUTLINER')])
 
+def add_float_menu(km,space,preferences):
+	fm = km_float_menu
+	if preferences.floatmenus == "3DsMax":
+		fm.new(space,"bsmax.view3dquadmenue","V","PRESS",[('menu','viewport'),('space','View3D')])
+		# This not needed drop tool can call this
+		# fm.new(space,"bsmax.view3dquadmenue","RIGHTMOUSE","PRESS",[('menu','default'),('space','View3D')])
+		# Ignore Alt + RMB in Maya navigation enabled #
+		if preferences.navigation_3d != 'Maya':
+			fm.new(space,"bsmax.view3dquadmenue","RIGHTMOUSE","PRESS",[('menu','coordinate'),('space','View3D')],alt=True)
+		fm.new(space,"bsmax.view3dquadmenue","RIGHTMOUSE","PRESS",[('menu','create'),('space','View3D')],ctrl=True)
+		fm.new(space,"bsmax.view3dquadmenue","RIGHTMOUSE","PRESS",[('menu','snap'),('space','View3D')],shift=True)
+		fm.new(space,"bsmax.view3dquadmenue","RIGHTMOUSE","PRESS",[('menu','render'),('space','View3D')],alt=True,ctrl=True)
+		fm.new(space,"bsmax.view3dquadmenue","RIGHTMOUSE","PRESS",[('menu','fx'),('space','View3D')],alt=True,shift=True)
+		fm.new(space,"bsmax.view3dquadmenue","RIGHTMOUSE","PRESS",[('menu','Selection'),('space','View3D')],ctrl=True,shift=True)
+		fm.new(space,"bsmax.view3dquadmenue","RIGHTMOUSE","PRESS",[('menu','custom'),('space','View3D')],alt=True,ctrl=True,shift=True)
+#------------------------------------------------------------------------------------------------------#
+
 def window(km):
 	km.mute('Window','wm.quit_blender','Q','PRESS',ctrl=True)
 	space = km.space('Window','EMPTY','WINDOW')
@@ -96,7 +113,12 @@ def view2d(km):
 	# km.new(space,'view2d.zoom','MIDDLEMOUSE','PRESS',[],ctrl=True,alt=True)
 	pass
 
-def view3d(km):
+def view2d_navigation(km,preferences):
+	# space = km.space('View2D','EMPTY','WINDOW')
+	# km.new(space,'view2d.zoom','MIDDLEMOUSE','PRESS',[],ctrl=True,alt=True)
+	pass
+
+def view3d(km,preferences):
 	km.mute('3D View','view3d.view_center_pick','MIDDLEMOUSE','CLICK',alt=True)
 	km.mute('3D View','view3d.view_axis','EVT_TWEAK_M','NORTH',alt=True)
 	km.mute('3D View','view3d.view_axis','EVT_TWEAK_M','SOUTH',alt=True)
@@ -112,7 +134,22 @@ def view3d(km):
 	add_switch_view(km,space)
 	add_view3d_tweak_selection(km,space)
 	add_float_editors(km,space)
+	add_float_menu(km,space,preferences)
 
+	if preferences.view_undo:
+		km.new(space,"view3d.movecover","MIDDLEMOUSE","PRESS",[])
+		km.new(space,"view3d.rotatecover","MIDDLEMOUSE","PRESS",[],alt=True)
+		km.new(space,"view3d.zoomcover","MIDDLEMOUSE","PRESS",[],ctrl=True,alt=True)
+		km.new(space,"view3d.zoomincover","WHEELINMOUSE","PRESS",[])
+		km.new(space,"view3d.zoomoutcover","WHEELOUTMOUSE","PRESS",[])
+	else:
+		km.new(space,"view3d.move","MIDDLEMOUSE","PRESS",[])
+		km.new(space,"view3d.rotate","MIDDLEMOUSE","PRESS",[],alt=True)
+		km.new(space,"view3d.zoom","MIDDLEMOUSE","PRESS",[],ctrl=True,alt=True)
+		km.new(space,"view3d.zoom","WHEELINMOUSE","PRESS",[('delta',1)])
+		km.new(space,"view3d.zoom","WHEELOUTMOUSE","PRESS",[('delta',-1)])
+	
+	km.new(space,"view3d.drop_tool","RIGHTMOUSE","PRESS",[])
 	km.new(space,'screen.header','SIX','PRESS',[],alt=True)
 	km.new(space,'screen.region_quadview','W','PRESS',[],alt=True)
 	km.new(space,'view3d.transform_gizmosize','EQUAL','PRESS',[('step',10)])
@@ -143,6 +180,17 @@ def view3d(km):
 	km.new(space,'screen.animation_play','SLASH','PRESS',[])
 	km.new(space,'view.undoredo','Z','PRESS',[('redo',False)],shift=True)
 	km.new(space,'view.undoredo','Y','PRESS',[('redo',True)],shift=True)
+
+def view3d_navigation(km,preferences):
+	space = km.space('3D View','VIEW_3D','WINDOW')
+	if preferences.view_undo:
+		km.new(space,"view3d.movecover","MIDDLEMOUSE","PRESS",[])
+		km.new(space,"view3d.rotatecover","MIDDLEMOUSE","PRESS",[],alt=True)
+		km.new(space,"view3d.zoomcover","MIDDLEMOUSE","PRESS",[],ctrl=True,alt=True)
+	else:
+		km.new(space,"view3d.move","MIDDLEMOUSE","PRESS",[])
+		km.new(space,"view3d.rotate","MIDDLEMOUSE","PRESS",[],alt=True)
+		km.new(space,"view3d.zoom","MIDDLEMOUSE","PRESS",[],ctrl=True,alt=True)
 
 def view3d_generic(km):
 	km.mute('3D View Generic','wm.context_toggle','T','PRESS')
@@ -200,10 +248,10 @@ def view3d_select_lasso(km):
 	km.new(space,'view3d.select_lasso','EVT_TWEAK_L','ANY',[('mode','SUB')],alt=True)
 
 def transform(km):
-	pass
 	# space = km.space('Transform Modal Map','EMPTY','WINDOW',modal=True)
+	pass
 
-def object_mode(km):
+def object_mode(km,preferences):
 	space = km.space('Object Non-modal','EMPTY','WINDOW')
 	km.new(space,'bsmax.mode_set','TAB','PRESS',[])
 
@@ -215,7 +263,9 @@ def object_mode(km):
 	add_snap(km,space)
 	add_subobject(km,space)
 	add_float_editors(km,space)
+	add_float_menu(km,space,preferences)
 	
+	km.new(space,"view3d.drop_tool","RIGHTMOUSE","PRESS",[])
 	km.new(space,'view3d.select','LEFTMOUSE','RELEASE',[('enumerate',True)],shift=True)
 	km.new(space,'object.select_all','A','PRESS',[('action','SELECT')],ctrl=True )
 	km.new(space,'object.select_all','D','PRESS',[('action','DESELECT')],ctrl=True )
@@ -225,7 +275,7 @@ def object_mode(km):
 	km.new(space,'object.select_hierarchy','PAGE_DOWN','PRESS',[('direction','CHILD'),('extend',False)])
 	km.new(space,'object.select_hierarchy','PAGE_DOWN','PRESS',[('direction','CHILD'),('extend',True)],ctrl=True)
 	km.new(space,'object.select_similar','Q','PRESS',[],ctrl=True)
-	# Hide/Unhide #
+
 	km.new(space,'object.hide','H','PRESS',[('mode','selection')],alt=True)
 	km.new(space,'object.hide','I','PRESS',[('mode','unselected')],alt=True)
 	km.new(space,'object.hide','U','PRESS',[('mode','clear')],alt=True)
@@ -238,28 +288,30 @@ def object_mode(km):
 
 	km.new(space,'object.modify_pivotpoint','INSERT','PRESS',[])
 	km.new(space,'wm.call_menu','INSERT','PRESS',[('name','BSMAX_MT_SetPivotPoint')],ctrl=True)
-	# Tools #
+
 	km.new(space,'object.align_selected_to_target','A','PRESS',[],alt=True)
 	km.new(space,'object.transform_type_in','F12','PRESS',[])
 	km.new(space,'view3d.lighting_toggle','L','PRESS',[],ctrl=True)
 	km.new(space,'camera.select','C','PRESS',[])
 	km.new(space,'modifier.edit_multi','TAB','PRESS',[],ctrl=True)
 
-def mesh(km):
+def mesh(km,preferences):
 	km.mute('Mesh','mesh.shortest_path_pick','LEFTMOUSE','CLICK',ctrl=True)
 	km.mute('Mesh','mesh.loop_select','LEFTMOUSE','CLICK',alt=True)
 	km.mute('Mesh','mesh.select_all','A','PRESS')
 
 	space = km.space('Mesh','EMPTY','WINDOW')
-	# Global #
 	add_search(km,space)
 	add_side_panel(km,space)
-	# Selection #
+	add_view3d_click_selection(km,space)
+	add_view3d_tweak_selection(km,space)
+	add_switch_view(km,space)
+	add_float_menu(km,space,preferences)
+
+	km.new(space,"view3d.drop_tool","RIGHTMOUSE","PRESS",[])
 	km.new(space,'mesh.select_all','A','PRESS',[('action','SELECT')],ctrl=True)
 	km.new(space,'mesh.select_all','D','PRESS',[('action','DESELECT')],ctrl=True)
 	km.new(space,'mesh.select_all','I','PRESS',[('action','INVERT')],ctrl=True)
-	add_view3d_click_selection(km,space)
-	add_view3d_tweak_selection(km,space)
 	km.new(space,'mesh.shortest_path_pick','LEFTMOUSE','PRESS',[],shift=True)
 	km.new(space,'mesh.select_more','PAGE_UP','PRESS',[],ctrl=True)
 	km.new(space,'mesh.select_less','PAGE_DOWN','PRESS',[],ctrl=True)
@@ -267,8 +319,6 @@ def mesh(km):
 	km.new(space,'mesh.smart_select_loop','L','PRESS',[],alt=True)
 	km.new(space,'mesh.smart_select_ring','R','PRESS',[],alt=True)
 	km.new(space,'mesh.select_similar','Q','PRESS',[],ctrl=True)
-	# View #
-	add_switch_view(km,space)
 	km.new(space,'screen.screen_full_area','X','PRESS',[],ctrl=True)
 	# Hide/Unhide #
 	km.new(space,'mesh.hide','H','PRESS',[],alt=True)
@@ -307,39 +357,41 @@ def mesh(km):
 	# TEST #
 	km.new(space,'mesh.drag','EVT_TWEAK_L','ANY',[])
 
-def curve(km):
+def curve(km,preferences):
 	space = km.space('Curve','EMPTY','WINDOW')
-	# Global #
 	add_search(km,space)
 	add_side_panel(km,space)
-	# Selection #
+	add_view3d_click_selection(km,space)
+	add_view3d_tweak_selection(km,space)
+	add_subobject(km,space)
+	add_switch_view(km,space)
+	add_float_menu(km,space,preferences)
+
+	km.new(space,"view3d.drop_tool","RIGHTMOUSE","PRESS",[])
 	km.new(space,'curve.select_all','A','PRESS',[('action','SELECT')],ctrl=True)
 	km.new(space,'curve.select_all','D','PRESS',[('action','DESELECT')],ctrl=True)
 	km.new(space,'curve.select_all','I','PRESS',[('action','INVERT')],ctrl=True)
-	add_view3d_click_selection(km,space)
-	add_view3d_tweak_selection(km,space)
 	km.new(space,'curve.select_more','PAGE_UP','PRESS',[],ctrl=True)
 	km.new(space,'curve.select_less','PAGE_DOWN','PRESS',[],ctrl=True)
 	km.new(space,'curve.select_similar','Q','PRESS',[],ctrl=True)
-	# Set Subobject Mode #
-	add_subobject(km,space)
-	# View #
-	add_switch_view(km,space)
 	km.new(space,'screen.screen_full_area','X','PRESS',[],ctrl=True)
-	# Tools #
+
 	km.new(space,'anim.auto_key_toggle','N','PRESS',[])
 	km.new(space,'camera.select','C','PRESS',[])
 	km.new(space,'wm.tool_set_by_id','E','PRESS',[('name','builtin.rotate')])
 	km.new(space,'curve.chamfer','C','PRESS',[('fillet',True),('typein',False)],ctrl=True,shift=True)
 	# km.new(space,'curve.chamfer','C','DOUBLE_CLICK',[('fillet',True),('typein',True)],ctrl=True,shift=True)
 
-def armature(km):
+def armature(km,preferences):
 	space = km.space('Armature','EMPTY','WINDOW')
-	# Global #
 	add_search(km,space)
 	add_side_panel(km,space)
-	# Selection #
+	add_subobject(km,space)
+	add_switch_view(km,space)
 	add_view3d_click_selection(km,space)
+	add_float_menu(km,space,preferences)
+
+	km.new(space,"view3d.drop_tool","RIGHTMOUSE","PRESS",[])
 	km.new(space,'armature.select_all','A','PRESS',[('action','SELECT')],ctrl=True)
 	km.new(space,'armature.select_all','D','PRESS',[('action','DESELECT')],ctrl=True)
 	km.new(space,'armature.select_all','I','PRESS',[('action','INVERT')],ctrl=True)
@@ -354,10 +406,7 @@ def armature(km):
 	km.new(space,'armature.hide','H','PRESS',[],alt=True)
 	km.new(space,'armature.hide','I','PRESS',[('unselected',True)],alt=True)
 	km.new(space,'armature.reveal','U','PRESS',[],alt=True)
-	# Set Subobject Mode #
-	add_subobject(km,space)
 	# View #
-	add_switch_view(km,space)
 	km.new(space,'screen.screen_full_area','X','PRESS',[],ctrl=True)
 	km.new(space,'wm.multi_item_rename','F2','PRESS',[])
 	# Tools #
@@ -367,57 +416,47 @@ def armature(km):
 
 def metaball(km):
 	space = km.space('Metaball','EMPTY','WINDOW')
-	# Global #
 	add_search(km,space)
 	add_side_panel(km,space)
-	# Selection #
+	add_subobject(km,space)
+	km.new(space,"view3d.drop_tool","RIGHTMOUSE","PRESS",[])
 	km.new(space,'mball.select_all','A','PRESS',[('action','SELECT')],ctrl=True)
 	km.new(space,'mball.select_all','D','PRESS',[('action','DESELECT')],ctrl=True)
 	km.new(space,'mball.select_all','I','PRESS',[('action','INVERT')],ctrl=True)
 	km.new(space,'mball.select_similar','Q','PRESS',[],ctrl=True)
-	# Set Subobject Mode #
-	add_subobject(km,space)
-	# View #
 	km.new(space,'screen.screen_full_area','X','PRESS',[],ctrl=True)
-	# Tools #
 	km.new(space,'anim.auto_key_toggle','N','PRESS',[])
 	km.new(space,'camera.select','C','PRESS',[])
 
 def lattice(km):
 	space = km.space('Lattice','EMPTY','WINDOW')
-	# Global #
 	add_search(km,space)
 	add_side_panel(km,space)
-	# Selection #
+	add_subobject(km,space)
+	km.new(space,"view3d.drop_tool","RIGHTMOUSE","PRESS",[])
 	km.new(space,'lattice.select_all','A','PRESS',[('action','SELECT')],ctrl=True)
 	km.new(space,'lattice.select_all','D','PRESS',[('action','DESELECT')],ctrl=True)
 	km.new(space,'lattice.select_all','I','PRESS',[('action','INVERT')],ctrl=True)
 	km.new(space,'lattice.select_more','PAGE_UP','PRESS',[],ctrl=True)
 	km.new(space,'lattice.select_less','PAGE_DOWN','PRESS',[],ctrl=True)
 	km.new(space,'lattice.select_similar','Q','PRESS',[],ctrl=True)
-	# Set Subobject Mode #
-	add_subobject(km,space)
-	# View #
 	km.new(space,'screen.screen_full_area','X','PRESS',[],ctrl=True)
-	# Tools #
 	km.new(space,'anim.auto_key_toggle','N','PRESS',[])
 	km.new(space,'camera.select','C','PRESS',[])
 
-# def font(km):
-# 	pass
-
-def grease_pencil(km):
+def grease_pencil(km,preferences):
 	space = km.space('Grease Pencil','EMPTY','WINDOW')
-	# Global
 	add_search(km,space)
 	add_side_panel(km,space)
+	add_float_menu(km,space,preferences)
 
-def pos(km):
+def pos(km,preferences):
 	space = km.space('Pose','EMPTY','WINDOW')
-	# Global #
-	# add_side_panel(km,space)
-	# Selection #
 	add_view3d_click_selection(km,space)
+	add_subobject(km,space)
+	add_time(km,space)
+	add_float_menu(km,space,preferences)
+	km.new(space,"view3d.drop_tool","RIGHTMOUSE","PRESS",[])
 	km.new(space,'pose.select_all','A','PRESS',[('action','SELECT')],ctrl=True)
 	km.new(space,'pose.select_all','D','PRESS',[('action','DESELECT')],ctrl=True)
 	km.new(space,'pose.select_all','I','PRESS',[('action','INVERT')],ctrl=True)
@@ -428,15 +467,10 @@ def pos(km):
 	km.new(space,'pose.select_hierarchy','PAGE_DOWN','PRESS',[('direction','CHILD'),('extend',False)])
 	km.new(space,'pose.select_hierarchy','PAGE_DOWN','PRESS',[('direction','CHILD'),('extend',True)],ctrl=True)
 	km.new(space,'pose.select_similar','Q','PRESS',[],ctrl=True)
-	# Set Subobject Mode #
-	add_subobject(km,space)
-	# View #
 	km.new(space,'screen.screen_full_area','X','PRESS',[],ctrl=True)
-	# Tools #
 	# km.new(space,'anim.auto_key_toggle','N','PRESS',[])
 	# km.new(space,'anim.set_key','K','PRESS',[])
 	km.new(space,'camera.select','C','PRESS',[])
-	add_time(km,space)
 
 def vertex_paint(km):
 	space = km.space('Vertex Paint','EMPTY','WINDOW')
@@ -461,14 +495,11 @@ def sculpt(km):
 
 def particle(km):
 	pass
-	# Particle
 
 def outliner(km):
 	space = km.space('Outliner','OUTLINER','WINDOW')
 	add_search(km,space)
-	# upper than 2.80 do not need this part
 	if bpy.app.version[1] < 81:
-		# Selection #
 		km.new(space,'outliner.item_activate','LEFTMOUSE','PRESS',[('extend',True)],ctrl=True)
 		km.new(space,'outliner.select_box','EVT_TWEAK_L','EAST',[('mode','SET')])
 		km.new(space,'outliner.select_box','EVT_TWEAK_L','SOUTH_EAST',[('mode','SET')])
@@ -483,7 +514,6 @@ def outliner(km):
 		km.new(space,'outliner.select_all','D','PRESS',[('action','DESELECT')],ctrl=True)
 		km.new(space,'outliner.select_all','I','PRESS',[('action','INVERT')],ctrl=True)
 		km.new(space,'outliner.collection_objects_select','LEFTMOUSE','DOUBLE_CLICK',[])
-		# Tools #
 		km.new(space,'outliner.item_rename','F2','PRESS',[])
 		km.new(space,'outliner.collection_new','N','PRESS',[],ctrl=True)
 		km.new(space,'object.delete','DEL','PRESS',[('confirm',False)],ctrl=True)
@@ -494,16 +524,13 @@ def outliner(km):
 
 def node_editor(km):
 	space = km.space('Node Editor','NODE_EDITOR','WINDOW')
-	# Global #
 	add_search(km,space)
 	add_side_panel(km,space)
 	km.new(space,'wm.multi_item_rename','F2','PRESS',[])
-	# Selection #
 	km.new(space,'node.select','LEFTMOUSE','PRESS',[('extend',True)],ctrl=True)
 	km.new(space,'node.select_all','A','PRESS',[('action','SELECT')],ctrl=True)
 	km.new(space,'node.select_all','D','PRESS',[('action','DESELECT')],ctrl=True)
 	km.new(space,'node.select_all','I','PRESS',[('action','INVERT')],ctrl=True)
-	# tools #
 	km.new(space,'node.view_selected','Z','PRESS',[])
 	km.new(space,'wm.call_menu','RIGHTMOUSE','PRESS',[('name','NODE_MT_add')])
 	km.new(space,'node.duplicate_move','EVT_TWEAK_L','ANY',[],shift=True)
@@ -534,8 +561,6 @@ def console(km):
 	km.new(space,'console.cut','DEL','PRESS',[],shift=True)
 	km.new(space,'console.cut','X','PRESS',[],ctrl=True)
 	km.new(space,'console.clear','D','PRESS',[],shift=True)
-
-""" Clip """
 
 def info(km):
 	space = km.space('Info','INFO','WINDOW')
@@ -599,13 +624,12 @@ def nla_editor(km):
 
 def uv_editor(km):
 	space = km.space('UV Editor','EMPTY','WINDOW')
-	# Selection #
-	km.new(space,'object.move','W','PRESS',[])
-	km.new(space,'object.rotate','E','PRESS',[])
-	km.new(space,'object.scale','R','PRESS',[])
 	add_view3d_tweak_selection(km,space)
 	add_snap(km,space)
 	add_side_panel(km,space)
+	km.new(space,'object.move','W','PRESS',[])
+	km.new(space,'object.rotate','E','PRESS',[])
+	km.new(space,'object.scale','R','PRESS',[])
 	km.new(space,'wm.tool_set_by_id','Q','PRESS',[('name','builtin.select_box'),('cycle',True)])
 	km.new(space,'uv.select','EVT_TWEAK_L','ANY',[('extend',True)])
 	km.new(space,'uv.select_box','EVT_TWEAK_L','ANY',[('mode','SET')])
@@ -629,71 +653,143 @@ def uv_editor(km):
 def sequence_editor(km):
 	space = km.space('Sequencer','SEQUENCE_EDITOR','WINDOW')
 	add_search(km,space)
-	km.new(space,'wm.multi_item_rename','F2','PRESS',[])
 	add_side_panel(km,space)
+	km.new(space,'wm.multi_item_rename','F2','PRESS',[])
 
 def file_browser(km):
 	space = km.space('File Browser','FILE_BROWSER','WINDOW')
+	add_side_panel(km,space)
 	km.new(space,'filebrowser.scaleicons','WHEELUPMOUSE','PRESS',[('up',True)],ctrl=True)
 	km.new(space,'filebrowser.scaleicons','WHEELDOWNMOUSE','PRESS',[('up',False)],ctrl=True)
 	km.new(space,'file.select_all','A','PRESS',[('action','SELECT')],ctrl=True)
 	km.new(space,'file.select_all','D','PRESS',[('action','DESELECT')],ctrl=True)
-	add_side_panel(km,space)
 
 def modals(km):
 	# space = km.space('Knife Tool Modal Map','EMPTY','WINDOW',modal=True)
 	# km.new(space,'CONFIRM','RIGHTMOUSE','PRESS',[],any=True,modal=True)
 	pass
 
-def create_keymaps(km):
+km_navigation_3d = KeyMaps()
+km_navigation_2d = KeyMaps()
+km_viowport = KeyMaps()
+km_sculpt = KeyMaps()
+km_uv_editor = KeyMaps()
+km_node_editor = KeyMaps()
+km_text_editor = KeyMaps()
+km_graph_editor = KeyMaps()
+km_clip_editor = KeyMaps()
+km_video_sequencer = KeyMaps()
+km_file_browser = KeyMaps()
+km_float_menu = KeyMaps()
+
+def register_max(preferences):
 	if bpy.context.window_manager.keyconfigs.addon:
-		window(km)
-		screen(km)
-		view2d(km)
-		view3d(km)
-		view3d_generic(km)
-		view3d_select(km)
-		view3d_transform(km)
-		view3d_move(km)
-		view3d_rotate(km)
-		view3d_scale(km)
-		view3d_select_box(km)
-		view3d_select_circle(km)
-		view3d_select_lasso(km)
-		transform(km)
-		object_mode(km)
-		mesh(km)
-		curve(km)
-		armature(km)
-		metaball(km)
-		lattice(km)
-		# font(km)
-		grease_pencil(km)
-		pos(km)
-		vertex_paint(km)
-		weight_paint(km)
-		image_paint(km)
-		sculpt(km)
-		particle(km)
-		outliner(km)
-		node_editor(km)
-		text(km)
-		console(km)
-		info(km)
-		# frames(km)
-		graph_editor(km)
-		dopesheet_editor(km)
-		nla_editor(km)
-		uv_editor(km)
-		sequence_editor(km)
-		file_browser(km)
-		modals(km)
+		if preferences.navigation_3d == "3DsMax":
+			view3d_navigation(km_navigation_3d,preferences)
+			km_navigation_3d.register()
+		else:
+			km_navigation_3d.unregister()
 
-keymaps = KeyMaps()
+		if preferences.navigation_2d == "3DsMax":
+			view2d_navigation(km_navigation_2d,preferences)
+			km_navigation_2d.register()
+		else:
+			km_navigation_2d.unregister()
 
-def register_max():
-	create_keymaps(keymaps)
-	keymaps.register()
+		if preferences.viowport == "3DsMax":
+			window(km_viowport)
+			screen(km_viowport)
+			view3d(km_viowport,preferences)
+			view2d(km_viowport)
+			view3d_generic(km_viowport)
+			view3d_select(km_viowport)
+			view3d_transform(km_viowport)
+			view3d_move(km_viowport)
+			view3d_rotate(km_viowport)
+			view3d_scale(km_viowport)
+			view3d_select_box(km_viowport)
+			view3d_select_circle(km_viowport)
+			view3d_select_lasso(km_viowport)
+			transform(km_viowport)
+			object_mode(km_viowport,preferences)
+			mesh(km_viowport,preferences)
+			curve(km_viowport,preferences)
+			armature(km_viowport,preferences)
+			metaball(km_viowport)
+			lattice(km_viowport)
+			grease_pencil(km_viowport,preferences)
+			pos(km_viowport,preferences)
+			km_viowport.register()
+		else:
+			km_viowport.unregister()
+
+		if preferences.sculpt == "3DsMax":
+			vertex_paint(km_sculpt)
+			weight_paint(km_sculpt)
+			image_paint(km_sculpt)
+			sculpt(km_sculpt)
+			km_sculpt.register()
+		else:
+			km_sculpt.unregister()
+
+		if preferences.uv_editor == "3DsMax":
+			uv_editor(km_uv_editor)
+			km_uv_editor.register()
+		else:
+			km_uv_editor.unregister()
+
+		if preferences.node_editor == "3DsMax":
+			node_editor(km_node_editor)
+			km_node_editor.register()
+		else:
+			km_node_editor.unregister()
+
+		if preferences.graph_editor == "3DsMax":
+			graph_editor(km_graph_editor)
+			dopesheet_editor(km_graph_editor)
+			nla_editor(km_graph_editor)
+			km_graph_editor.register()
+		else:
+			km_graph_editor.unregister()
+			
+		if preferences.clip_editor == "3DsMax":
+			km_clip_editor.register()
+		else:
+			km_clip_editor.unregister()
+
+		if preferences.video_sequencer == "3DsMax":
+			sequence_editor(km_video_sequencer)
+			km_video_sequencer.register()
+		else:
+			km_video_sequencer.unregister()
+
+		if preferences.text_editor == "3DsMax":
+			text(km_text_editor)
+			km_text_editor.register()
+		else:
+			km_text_editor.unregister()
+		
+		if preferences.file_browser == "3DsMax":
+			file_browser(km_file_browser)
+			km_file_browser.register()
+		else:
+			km_file_browser.unregister()
+
+		if preferences.floatmenus == "3DsMax":
+			km_float_menu.register()
+		else:
+			km_float_menu.unregister()
 
 def unregister_max():
-	keymaps.unregister()
+	km_navigation_3d.unregister()
+	km_navigation_2d.unregister()
+	km_viowport.unregister()
+	km_sculpt.unregister()
+	km_uv_editor.unregister()
+	km_node_editor.unregister()
+	km_text_editor.unregister()
+	km_graph_editor.unregister()
+	km_clip_editor.unregister()
+	km_video_sequencer.unregister()
+	km_file_browser.unregister()
+	km_float_menu.unregister()

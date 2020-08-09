@@ -18,40 +18,6 @@ from bpy.types import Operator
 from bsmax.actions import modifier_add
 from bsmax.state import is_objects_selected
 
-# Quick presets just like in 3ds max 
-class Modifier_OT_FFD_2x2x2_Set(Operator):
-	bl_idname = "modifier.ffd_2x2x2_set"
-	bl_label = "FFD 2x2x2 (Set)"
-	@classmethod
-	def poll(self, ctx):
-		return is_objects_selected(ctx)
-	def execute(self, ctx):
-		bpy.ops.lattice.set_on_selection(res_u=2,res_v=2,res_w=2)
-		self.report({'INFO'},'bpy.ops.modifier.ffd_2x2x2_set()')
-		return{"FINISHED"}
-
-class Modifier_OT_FFD_3x3x3_Set(Operator):
-	bl_idname = "modifier.ffd_3x3x3_set"
-	bl_label = "FFD 3x3x3 (Set)"
-	@classmethod
-	def poll(self, ctx):
-		return is_objects_selected(ctx)
-	def execute(self, ctx):
-		bpy.ops.lattice.set_on_selection(res_u=3,res_v=3,res_w=3)
-		self.report({'INFO'},'bpy.ops.modifier.ffd_3x3x3_set()')
-		return{"FINISHED"}
-
-class Modifier_OT_FFD_4x4x4_Set(Operator):
-	bl_idname = "modifier.ffd_4x4x4_set"
-	bl_label = "FFD 4x4x4 (Set)"
-	@classmethod
-	def poll(self, ctx):
-		return is_objects_selected(ctx)
-	def execute(self, ctx):
-		bpy.ops.lattice.set_on_selection(res_u=4,res_v=4,res_w=4)
-		self.report({'INFO'},'bpy.ops.modifier.ffd_4x4x4_set()')
-		return{"FINISHED"}
-
 class Modifier_OT_Add_Bevel(Operator):
 	bl_idname = "modifier.add_bevel"
 	bl_label = "Bevel (Add)"
@@ -112,9 +78,6 @@ class Modifier_OT_Add_TurboSmooth(Operator):
 		return{"FINISHED"}
 
 classes = [Modifier_OT_Add_Bevel,
-	Modifier_OT_FFD_2x2x2_Set,
-	Modifier_OT_FFD_3x3x3_Set,
-	Modifier_OT_FFD_4x4x4_Set,
 	Modifier_OT_Add_Lathe,
 	Object_OT_Reset_Xform,
 	Modifier_OT_Add_Shell,
@@ -124,4 +87,7 @@ def register_modifier():
 	[bpy.utils.register_class(c) for c in classes]
 
 def unregister_modifier():
-	[bpy.utils.unregister_class(c) for c in classes]
+	# [bpy.utils.unregister_class(c) for c in classes]
+	for c in classes:
+		if hasattr(bpy.types, eval("bpy.ops." + c.bl_idname + ".idname()")):
+			bpy.utils.unregister_class(c)
