@@ -241,6 +241,7 @@ def register_modo(preferences):
 			km_video_sequencer.unregister()
 
 		if preferences.text_editor == "Modo":
+			# console(km_text_editor)
 			text(km_text_editor)
 			km_text_editor.register()
 		else:

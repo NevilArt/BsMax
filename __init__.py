@@ -20,7 +20,7 @@ bl_info = {
 	"name": "BsMax",
 	"description": "BsMax for Blender 2.80 ~ 2.91",
 	"author": "Naser Merati (Nevil)",
-	"version": (0, 1, 0, 20200809),
+	"version": (0, 1, 0, 20200816),
 	"blender": (2, 80, 0),# 2.80~2.91
 	"location": "Almost Everywhere in Blender",
 	"wiki_url": "https://github.com/NevilArt/BsMax_2_80/wiki",
@@ -287,6 +287,8 @@ class BsMax_AddonPreferences(bpy.types.AddonPreferences):
 			row = box.row()
 			row.prop(self,"view_undo")
 			row.prop(self,"menu_scale")
+		if self.menu_scale < 1:
+			self.menu_scale = 1
 
 def save_preferences(preferences):
 	filename = bpy.utils.user_resource('SCRIPTS', "addons") + "/BsMax.ini"

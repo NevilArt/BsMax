@@ -16,6 +16,7 @@
 from .animation import register_animation,unregister_animation
 from .armature import register_armature,unregister_armature
 from .camera import register_camera,unregister_camera
+from .clip_editor import register_clip_editor,unregister_clip_editor
 from .curve import register_curve,unregister_curve
 from .ligth import register_light,unregister_light
 from .material import register_material,unregister_material
@@ -36,6 +37,7 @@ def register_public(preferences):
 	register_animation()
 	register_armature()
 	register_camera()
+	register_clip_editor()
 	register_curve()
 	register_light()
 	register_material()
@@ -55,6 +57,7 @@ def unregister_public():
 	unregister_animation()
 	unregister_armature()
 	unregister_camera()
+	unregister_clip_editor()
 	unregister_curve()
 	unregister_light()
 	unregister_material()

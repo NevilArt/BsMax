@@ -227,6 +227,7 @@ def register_cinema4d(preferences):
 			km_video_sequencer.unregister()
 
 		if preferences.text_editor == "Cinema4D":
+			# console(km_text_editor)
 			text(km_text_editor)
 			km_text_editor.register()
 		else:

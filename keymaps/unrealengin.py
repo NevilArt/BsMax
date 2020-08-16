@@ -255,6 +255,7 @@ def register_unreal(preferences):
 			km_video_sequencer.unregister()
 
 		if preferences.text_editor == "unreal":
+			# console(km_text_editor)
 			text(km_text_editor)
 			km_text_editor.register()
 		else:

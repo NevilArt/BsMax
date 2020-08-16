@@ -5,12 +5,12 @@
 
 Recent Updates
 
+* Keymap updated (Clipt Editor for 3DsMax mode) and some keymap issues fixed.
+
 * Open the keymaps list in github wiki via addon preferences (In production).
 * Preferences UI changed, more optional and easy to understand.
 * Quad menu can scale from addon preferences.
 * lots of code cleaning and Simplification to make future improvment easy.
-
-
 * Align Objects has percentage option now and can put in halfway or increase distance by entering negative value.
 * Keymap issue fixed on Dope Sheet and Graph Editor.
 * Some New Items added to Quad menu.

@@ -142,6 +142,19 @@ def sequence_editor(km):
 def text(km):
 	pass
 
+def console(km):
+	space = km.space('Console','CONSOLE','WINDOW')
+	# km.new(space,'text.new','N','PRESS',[],ctrl=True)
+	# km.new(space,'text.open','O','PRESS',[],ctrl=True)
+	# km.new(space,'text.save','S','PRESS',[],ctrl=True)
+	km.new(space,'console.autocomplete','RET','PRESS',[],ctrl=True)
+	km.new(space,'console.autocomplete','SPACE','PRESS',[],ctrl=True)
+	km.new(space,'console.paste','INSERT','PRESS',[],shift=True)
+	km.new(space,'console.copy','INSERT','PRESS',[],ctrl=True)
+	km.new(space,'console.cut','DEL','PRESS',[],shift=True)
+	km.new(space,'console.cut','X','PRESS',[],ctrl=True)
+	km.new(space,'console.clear','D','PRESS',[],shift=True)
+
 def file_browser(km):
 	pass
 		
@@ -240,6 +253,7 @@ def register_blender(preferences):
 			km_video_sequencer.unregister()
 
 		if preferences.text_editor == "Blender":
+			console(km_text_editor)
 			text(km_text_editor)
 			km_text_editor.register()
 		else:

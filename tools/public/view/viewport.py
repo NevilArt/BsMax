@@ -121,7 +121,18 @@ class View3D_OT_Show_Statistics(Operator):
 
 	def execute(self, ctx):
 		overlay = ctx.space_data.overlay
-		overlay.show_text = not overlay.show_text
+		if not overlay.show_text and not overlay.show_stats:
+			overlay.show_text = True
+			overlay.show_stats = False
+		elif overlay.show_text and not overlay.show_stats:
+			overlay.show_text = False
+			overlay.show_stats = True
+		elif not overlay.show_text and overlay.show_stats:
+			overlay.show_text = True
+			overlay.show_stats = True
+		else:
+			overlay.show_text = False
+			overlay.show_stats = False
 		self.report({'INFO'},'bpy.ops.view3d.show_statistics()')
 		return{"FINISHED"}
 

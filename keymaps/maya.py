@@ -342,6 +342,7 @@ def register_maya(preferences):
 			km_video_sequencer.unregister()
 
 		if preferences.text_editor == "Maya":
+			# console(km_text_editor)
 			text(km_text_editor)
 			km_text_editor.register()
 		else:

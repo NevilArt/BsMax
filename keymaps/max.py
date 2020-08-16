@@ -110,12 +110,11 @@ def screen(km):
 
 def view2d(km):
 	# space = km.space('View2D','EMPTY','WINDOW')
-	# km.new(space,'view2d.zoom','MIDDLEMOUSE','PRESS',[],ctrl=True,alt=True)
 	pass
 
 def view2d_navigation(km,preferences):
-	# space = km.space('View2D','EMPTY','WINDOW')
-	# km.new(space,'view2d.zoom','MIDDLEMOUSE','PRESS',[],ctrl=True,alt=True)
+	space = km.space('View2D','EMPTY','WINDOW')
+	km.new(space,'view2d.zoom','MIDDLEMOUSE','PRESS',[],ctrl=True,alt=True)
 	pass
 
 def view3d(km,preferences):
@@ -252,6 +251,8 @@ def transform(km):
 	pass
 
 def object_mode(km,preferences):
+	km.mute('Object Mode','object.hide_collection','SEVEN','PRESS',any=True)
+	
 	space = km.space('Object Non-modal','EMPTY','WINDOW')
 	km.new(space,'bsmax.mode_set','TAB','PRESS',[])
 
@@ -622,6 +623,28 @@ def nla_editor(km):
 	# km.new(space,'nla.view_all','Z','PRESS',[])
 	km.new(space,'nla.view_selected','Z','PRESS',[])
 
+def clip_editor(km):
+	km.mute('Clip Editor','transform.translate','EVT_TWEAK_L','ANY')
+	km.mute('Clip Editor','clip.add_marker_slide','LEFTMOUSE','PRESS',ctrl=True)
+	
+	space = km.space('Clip Editor','CLIP_EDITOR','WINDOW')
+	add_side_panel(km,space)
+	add_time(km,space)
+	
+	km.new(space,'clip.select','LEFTMOUSE','PRESS',[('extend',True)],ctrl=True)
+	# TODO need a Alt click diselect operator
+	km.new(space,'clip.select_box','EVT_TWEAK_L','ANY',[('mode','SET')])
+	km.new(space,'clip.select_box','EVT_TWEAK_L','ANY',[('mode','ADD')],ctrl=True)
+	km.new(space,'clip.select_box','EVT_TWEAK_L','ANY',[('mode','SUB')],alt=True)
+	km.new(space,'clip.select_all','A','PRESS',[('action','SELECT')],ctrl=True)
+	km.new(space,'clip.select_all','D','PRESS',[('action','DESELECT')],ctrl=True)
+	# km.new(space,'clip.select_all','I','PRESS',[('action','INVERT')],ctrl=True)
+	# km.new(space,'clip.delete_marker','DEL','PRESS',[]) TODO replace by instan delete operator
+	# TODO replace by automatic one
+	# km.new(space,'clip.view_all','Z','PRESS',[('fit_view', True)])
+	# km.new(space,'clip.view_selected','Z','PRESS',[])
+	km.new(space,'clip.autoframe','Z','PRESS',[])
+
 def uv_editor(km):
 	space = km.space('UV Editor','EMPTY','WINDOW')
 	add_view3d_tweak_selection(km,space)
@@ -753,6 +776,7 @@ def register_max(preferences):
 			km_graph_editor.unregister()
 			
 		if preferences.clip_editor == "3DsMax":
+			clip_editor(km_clip_editor)
 			km_clip_editor.register()
 		else:
 			km_clip_editor.unregister()
@@ -764,6 +788,7 @@ def register_max(preferences):
 			km_video_sequencer.unregister()
 
 		if preferences.text_editor == "3DsMax":
+			console(km_text_editor)
 			text(km_text_editor)
 			km_text_editor.register()
 		else:
