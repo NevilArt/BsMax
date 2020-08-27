@@ -15,29 +15,143 @@
 
 import bpy
 from bpy.types import Operator
-from bsmax.state import is_mode
+from bpy.props import EnumProperty,BoolProperty
 
-# TODO extend and unselect for element select
+class Mesh_Subobject_Mode:
+	def __init__(self):
+		self.active = False
+		self.normal = True
+		self.material = False
+		self.seam = True
+		self.sharp = True
+		self.uv = False
 
-class Mesh_OT_Select_Element(Operator):
-	bl_idname = "mesh.select_element"
-	bl_label = "Select Element"
+msm = Mesh_Subobject_Mode()
+
+class Mesh_OT_Select_Element_Toggle(Operator):
+	bl_idname = "mesh.select_element_toggle"
+	bl_label = "Select Elemant Toggle"
 
 	@classmethod
 	def poll(self, ctx):
-		return ctx.mode == "MESH_EDIT"
+		return ctx.mode == "EDIT_MESH"
 	
 	def execute(self, ctx):
-		vert,edge,face = ctx.tool_settings.mesh_select_mode
-		if edge:
-			bpy.ops.mesh.smart_select_loop('INVOKE_DEFAULT')
-		if face:
-			bpy.ops.mesh.select_linked_pick('INVOKE_DEFAULT')
-		self.report({'INFO'},'bpy.ops.mesh.select_element()')
+		msm.active = not msm.active
+		return{"FINISHED"}
+
+class Mesh_OT_Select_Element_Setting(Operator):
+	bl_idname = "mesh.select_element_setting"
+	bl_label = "Select Elemant Setting"
+
+	active: BoolProperty(name="Active")
+	normal: BoolProperty(name="Normal")
+	material: BoolProperty(name="Material")
+	seam: BoolProperty(name="Seam")
+	sharp: BoolProperty(name="Sharp")
+	uv: BoolProperty(name="UV")
+
+	@classmethod
+	def poll(self, ctx):
+		return ctx.mode == "EDIT_MESH"
+
+	def draw(self,ctx):
+		layout =self.layout
+		box =layout.box()
+		box.prop(self,"active")
+		if self.active:
+			box =layout.box()
+			box.prop(self,"normal")
+			box.prop(self,"material")
+			box.prop(self,"seam")
+			box.prop(self,"sharp")
+			box.prop(self,"uv")
+
+	def commit(self):
+		msm.active = self.active
+		msm.normal = self.normal
+		msm.material = self.material
+		msm.seam = self.seam
+		msm.sharp = self.sharp
+		msm.uv = self.uv
+	
+	def execute(self, ctx):
+		self.commit()
 		return{"FINISHED"}
 	
+	def cancel(self,ctx):
+		self.commit()
+		return None
+
+	def invoke(self,ctx,event):
+		self.active = msm.active
+		self.normal = msm.normal
+		self.material = msm.material
+		self.seam = msm.seam
+		self.sharp = msm.sharp
+		self.uv = msm.uv
+		return ctx.window_manager.invoke_props_dialog(self)
+
+class Mesh_OT_Select_Max(Operator):
+	bl_idname = "mesh.select_max"
+	bl_label = "Select (3DsMax)"
+
+	mode: EnumProperty(name='Mode', default='SET',
+		items=[('SET','Set',''),('ADD','Add',''),('SUB','Sub','')])
+	
+	x,y = 0,0
+
+	@classmethod
+	def poll(self, ctx):
+		return ctx.mode == "EDIT_MESH"
+
+	def execute(self, ctx):
+		if msm.active:
+			delimit = set()
+			if msm.normal:
+				delimit.add('NORMAL')
+			if msm.material:
+				delimit.add('MATERIAL')
+			if msm.seam:
+				delimit.add('SEAM')
+			if msm.sharp:
+				delimit.add('SHARP')
+			if msm.uv:
+				delimit.add('UV')
+
+			if self.mode == 'SET':
+				bpy.ops.mesh.select_all(action='DESELECT')
+				bpy.ops.mesh.select_linked_pick('INVOKE_DEFAULT',
+					deselect=False, delimit=delimit)
+			elif self.mode == 'ADD':
+				bpy.ops.mesh.select_linked_pick('INVOKE_DEFAULT',
+					deselect=False, delimit=delimit)
+			elif self.mode == 'SUB':
+				bpy.ops.mesh.select_linked_pick('INVOKE_DEFAULT',
+					deselect=True, delimit=delimit)
+		else:
+			if self.mode == 'SET':
+				bpy.ops.view3d.select(deselect_all=True, location=(self.x, self.y))
+			elif self.mode == 'ADD':
+				bpy.ops.view3d.select(toggle=True, location=(self.x, self.y))
+			elif self.mode == 'SUB':
+				bpy.ops.view3d.select(deselect=True, location=(self.x, self.y))
+		self.report({'INFO'},'bpy.ops.mesh.select_max()')
+		return{"FINISHED"}
+	
+	def invoke(self, ctx, event):
+		self.x, self.y = event.mouse_region_x, event.mouse_region_y
+		return self.execute(ctx)
+
+classes = [	Mesh_OT_Select_Element_Toggle,
+			Mesh_OT_Select_Element_Setting,
+			Mesh_OT_Select_Max]
+
 def register_select():
-	bpy.utils.register_class(Mesh_OT_Select_Element)
+	[bpy.utils.register_class(c) for c in classes]
 
 def unregister_select():
-	bpy.utils.unregister_class(Mesh_OT_Select_Element)
+	[bpy.utils.unregister_class(c) for c in classes]
+
+if __name__ == "__main__":
+	register_select()

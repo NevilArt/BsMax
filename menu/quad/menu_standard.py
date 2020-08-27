@@ -126,7 +126,8 @@ def get_view3d_tool1(ctx):
 			items.append(QuadItem("Edge",edge,t,n,c0020,n))
 			items.append(QuadItem("Border",f,f,n,c0021,n))
 			items.append(QuadItem("Polygon",face,t,n,c0022,n))
-			items.append(QuadItem("Element",f,f,n,c0023,n))
+			#TODO find a way to read value
+			items.append(QuadItem("Element",f,t,n,c0194,n))
 			items.append(seprator())
 			items.append(QuadItem("Repeat",f,t,n,c0024,n))
 			IsEditMode = (ctx.mode=="EDIT_MESH")
