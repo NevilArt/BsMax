@@ -34,11 +34,52 @@ class Mesh_OT_Select_Element_Toggle(Operator):
 
 	@classmethod
 	def poll(self, ctx):
-		return ctx.mode == "EDIT_MESH"
+		return ctx.mode in {"EDIT_MESH","EDIT_CURVE"}
 	
 	def execute(self, ctx):
 		msm.active = not msm.active
 		return{"FINISHED"}
+
+def view3d_select(mode,x,y):
+	if mode == 'SET':
+		bpy.ops.view3d.select(deselect_all=True, location=(x, y))
+	elif mode == 'ADD':
+		bpy.ops.view3d.select(toggle=True, location=(x, y))
+	elif mode == 'SUB':
+		bpy.ops.view3d.select(deselect=True, location=(x, y))
+
+def mesh_select(mode):
+	delimit = set()
+	if msm.normal:
+		delimit.add('NORMAL')
+	if msm.material:
+		delimit.add('MATERIAL')
+	if msm.seam:
+		delimit.add('SEAM')
+	if msm.sharp:
+		delimit.add('SHARP')
+	if msm.uv:
+		delimit.add('UV')
+
+	if mode == 'SET':
+		bpy.ops.mesh.select_all(action='DESELECT')
+		bpy.ops.mesh.select_linked_pick('INVOKE_DEFAULT',
+			deselect=False, delimit=delimit)
+	elif mode == 'ADD':
+		bpy.ops.mesh.select_linked_pick('INVOKE_DEFAULT',
+			deselect=False, delimit=delimit)
+	elif mode == 'SUB':
+		bpy.ops.mesh.select_linked_pick('INVOKE_DEFAULT',
+			deselect=True, delimit=delimit)
+
+def curve_select(mode):
+	if mode == 'SET':
+		bpy.ops.curve.select_all(action='DESELECT')
+		bpy.ops.curve.select_linked_pick('INVOKE_DEFAULT',deselect=False)
+	elif mode == 'ADD':
+		bpy.ops.curve.select_linked_pick('INVOKE_DEFAULT',deselect=False)
+	elif mode == 'SUB':
+		bpy.ops.curve.select_linked_pick('INVOKE_DEFAULT',deselect=True)
 
 class Mesh_OT_Select_Element_Setting(Operator):
 	bl_idname = "mesh.select_element_setting"
@@ -107,36 +148,35 @@ class Mesh_OT_Select_Max(Operator):
 
 	def execute(self, ctx):
 		if msm.active:
-			delimit = set()
-			if msm.normal:
-				delimit.add('NORMAL')
-			if msm.material:
-				delimit.add('MATERIAL')
-			if msm.seam:
-				delimit.add('SEAM')
-			if msm.sharp:
-				delimit.add('SHARP')
-			if msm.uv:
-				delimit.add('UV')
-
-			if self.mode == 'SET':
-				bpy.ops.mesh.select_all(action='DESELECT')
-				bpy.ops.mesh.select_linked_pick('INVOKE_DEFAULT',
-					deselect=False, delimit=delimit)
-			elif self.mode == 'ADD':
-				bpy.ops.mesh.select_linked_pick('INVOKE_DEFAULT',
-					deselect=False, delimit=delimit)
-			elif self.mode == 'SUB':
-				bpy.ops.mesh.select_linked_pick('INVOKE_DEFAULT',
-					deselect=True, delimit=delimit)
+			mesh_select(self.mode)
 		else:
-			if self.mode == 'SET':
-				bpy.ops.view3d.select(deselect_all=True, location=(self.x, self.y))
-			elif self.mode == 'ADD':
-				bpy.ops.view3d.select(toggle=True, location=(self.x, self.y))
-			elif self.mode == 'SUB':
-				bpy.ops.view3d.select(deselect=True, location=(self.x, self.y))
+			view3d_select(self.mode, self.x, self.y)
 		self.report({'INFO'},'bpy.ops.mesh.select_max()')
+		return{"FINISHED"}
+	
+	def invoke(self, ctx, event):
+		self.x, self.y = event.mouse_region_x, event.mouse_region_y
+		return self.execute(ctx)
+
+class Curve_OT_Select_Max(Operator):
+	bl_idname = "curve.select_max"
+	bl_label = "Select (3DsMax)"
+
+	mode: EnumProperty(name='Mode', default='SET',
+		items=[('SET','Set',''),('ADD','Add',''),('SUB','Sub','')])
+	
+	x,y = 0,0
+
+	@classmethod
+	def poll(self, ctx):
+		return ctx.mode == "EDIT_CURVE"
+
+	def execute(self, ctx):
+		if msm.active:
+			curve_select(self.mode)
+		else:
+			view3d_select(self.mode, self.x, self.y)
+		self.report({'INFO'},'bpy.ops.curve.select_max()')
 		return{"FINISHED"}
 	
 	def invoke(self, ctx, event):
@@ -145,7 +185,8 @@ class Mesh_OT_Select_Max(Operator):
 
 classes = [	Mesh_OT_Select_Element_Toggle,
 			Mesh_OT_Select_Element_Setting,
-			Mesh_OT_Select_Max]
+			Mesh_OT_Select_Max,
+			Curve_OT_Select_Max]
 
 def register_select():
 	[bpy.utils.register_class(c) for c in classes]

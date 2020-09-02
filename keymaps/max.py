@@ -310,13 +310,13 @@ def mesh(km,preferences):
 
 	km.new(space,'mesh.select_element_toggle','FIVE','PRESS',[('mode','SET')])
 	km.new(space,'mesh.select_element_setting','FIVE','PRESS',[('mode','SET')],ctrl=True)
+	# km.new(space,'mesh.select_element','LEFTMOUSE','DOUBLE_CLICK',[])#<-- test
 	km.new(space,'mesh.select_max','LEFTMOUSE','CLICK',[('mode','SET')])
 	km.new(space,'mesh.select_max','LEFTMOUSE','CLICK',[('mode','ADD')],ctrl=True)
 	km.new(space,'mesh.select_max','LEFTMOUSE','CLICK',[('mode','SUB')],alt=True)
 	# km.new(space,'view3d.select_box','EVT_TWEAK_L','ANY',[('mode','SET')])
 	# km.new(space,'view3d.select_box','EVT_TWEAK_L','ANY',[('mode','ADD')],ctrl=True)
 	# km.new(space,'view3d.select_box','EVT_TWEAK_L','ANY',[('mode','SUB')],alt=True)
-	# km.new(space,'mesh.select_element','LEFTMOUSE','DOUBLE_CLICK',[]) #TODO edge mode border
 
 	km.new(space,"view3d.drop_tool","RIGHTMOUSE","PRESS",[])
 	km.new(space,'mesh.select_all','A','PRESS',[('action','SELECT')],ctrl=True)
@@ -370,11 +370,16 @@ def curve(km,preferences):
 	space = km.space('Curve','EMPTY','WINDOW')
 	add_search(km,space)
 	add_side_panel(km,space)
-	add_view3d_click_selection(km,space)
+	# add_view3d_click_selection(km,space)
 	add_view3d_tweak_selection(km,space)
 	add_subobject(km,space)
 	add_switch_view(km,space)
 	add_float_menu(km,space,preferences)
+
+	km.new(space,'mesh.select_element_toggle','FIVE','PRESS',[('mode','SET')])
+	km.new(space,'curve.select_max','LEFTMOUSE','CLICK',[('mode','SET')])
+	km.new(space,'curve.select_max','LEFTMOUSE','CLICK',[('mode','ADD')],ctrl=True)
+	km.new(space,'curve.select_max','LEFTMOUSE','CLICK',[('mode','SUB')],alt=True)
 
 	km.new(space,"view3d.drop_tool","RIGHTMOUSE","PRESS",[])
 	km.new(space,'curve.select_all','A','PRESS',[('action','SELECT')],ctrl=True)
@@ -384,12 +389,16 @@ def curve(km,preferences):
 	km.new(space,'curve.select_less','PAGE_DOWN','PRESS',[],ctrl=True)
 	km.new(space,'curve.select_similar','Q','PRESS',[],ctrl=True)
 	km.new(space,'screen.screen_full_area','X','PRESS',[],ctrl=True)
+	
+	km.new(space,'curve.break','B','PRESS',[('action','DESELECT')],ctrl=True)
+	km.new(space,'curve.extrude_move','E','PRESS',[('action','DESELECT')],ctrl=True,shift=True)
 
 	km.new(space,'anim.auto_key_toggle','N','PRESS',[])
 	km.new(space,'camera.select','C','PRESS',[])
 	km.new(space,'wm.tool_set_by_id','E','PRESS',[('name','builtin.rotate')])
 	km.new(space,'curve.chamfer','C','PRESS',[('fillet',True),('typein',False)],ctrl=True,shift=True)
 	# km.new(space,'curve.chamfer','C','DOUBLE_CLICK',[('fillet',True),('typein',True)],ctrl=True,shift=True)
+
 
 def armature(km,preferences):
 	space = km.space('Armature','EMPTY','WINDOW')

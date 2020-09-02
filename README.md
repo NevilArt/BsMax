@@ -5,6 +5,7 @@
 
 Recent Updates
 
+* Select Element enabled for Curve mode too ('5' Toggle On/Off)
 * Select Element enabled for 3DsMax mode ('5' Toggle On/Off, 'Ctrl + 5' Open Setting Dialog)
 * Keymap updated (Clipt Editor for 3DsMax mode) and some keymap issues fixed.
 * Open the keymaps list in github wiki via addon preferences (In production).
