@@ -99,10 +99,16 @@ def get_view3d_display(ctx):
 	items.append(QuadItem("Manage State Sets...",f,f,n,"",n))
 	items.append(QuadItem("State Sets",f,f,n,"",n))
 	items.append(seprator())
-	items.append(QuadItem("Hide Selection",f,t,n,c0012,n))
-	items.append(QuadItem("Hide Unselected",f,t,n,c0013,n))
-	items.append(QuadItem("Unhide All",f,t,n,c0014,n))
-	items.append(QuadItem("Unhide by Name",f,f,n,"",n))
+	mode = get_active_type(ctx)
+	if mode == 'OBJECT':
+		items.append(QuadItem("Hide Selection",f,t,n,c0012,n))
+		items.append(QuadItem("Hide Unselected",f,t,n,c0013,n))
+		items.append(QuadItem("Unhide All",f,t,n,c0014,n))
+		items.append(QuadItem("Unhide by Name",f,f,n,"",n))
+	if mode == 'ARMATURE':
+		items.append(QuadItem("Hide Selection",f,t,n,c0204,n))
+		items.append(QuadItem("Hide Unselected",f,t,n,c0205,n))
+		items.append(QuadItem("Unhide All",f,t,n,c0206,n))
 	items.append(seprator())
 	items.append(QuadItem("Freeze Selection",f,t,n,c0015,n))
 	items.append(QuadItem("Unfreeze All",f,t,n,c0016,n))
@@ -280,7 +286,21 @@ def get_view3d_tool2(ctx):
 		if ctx.mode == 'EDIT_ARMATURE':
 			items.append(QuadItem("Divide Bone",f,t,n,c0148,c0149))
 		elif ctx.mode == 'POSE':
-			pass
+			items.append(QuadItem("Insert Keyframe",f,t,n,c0195,n))
+			items.append(seprator())
+			items.append(QuadItem("Copy Pose",f,t,n,c0196,n))
+			items.append(QuadItem("Paste Pose",f,t,n,c0197,n))
+			items.append(QuadItem("Paste X-Flipped Pose",f,t,n,c0198,n))
+			items.append(seprator())
+			items.append(QuadItem("Push Pose from Breakdown",f,t,n,c0199,n))
+			items.append(QuadItem("Relax Pose to Breakdown",f,t,n,c0200,n))
+			items.append(QuadItem("Pose Breakdowner",f,t,n,c0201,n))
+			items.append(seprator())
+			items.append(QuadItem("Calculate Motion Paths",f,t,n,c0202,n))
+			items.append(QuadItem("Clear Motion Paths",f,t,n,c0203,n))
+			items.append(seprator())
+			items.append(QuadItem("Clear User Transforms",f,t,n,c0207,n))
+
 	return "Tool2",items,4
 
 def get_view3D_create(ctx):

@@ -489,6 +489,9 @@ def pos(km,preferences):
 	# km.new(space,'anim.auto_key_toggle','N','PRESS',[])
 	# km.new(space,'anim.set_key','K','PRESS',[])
 	km.new(space,'camera.select','C','PRESS',[])
+	km.new(space,'pose.hide','H','PRESS',[],alt=True)
+	km.new(space,'pose.hide','I','PRESS',[('unselected',True)],alt=True)
+	km.new(space,'pose.reveal','U','PRESS',[],alt=True)
 
 def vertex_paint(km):
 	space = km.space('Vertex Paint','EMPTY','WINDOW')
@@ -560,6 +563,7 @@ def text(km):
 	km.new(space,'text.run_script','E','PRESS',[],ctrl=True)
 	km.new(space,'text.run_script','F5','PRESS',[]) # From MVS
 	km.new(space,'text.autocomplete','RET','PRESS',[],ctrl=True)
+	km.new(space,'text.autocomplete','SPACE','PRESS',[],ctrl=True)
 	km.new(space,'text.new','N','PRESS',[],ctrl=True)
 	km.new(space,'text.open','O','PRESS',[],ctrl=True)
 	km.new(space,'text.save','S','PRESS',[],ctrl=True)
@@ -578,7 +582,7 @@ def console(km):
 	km.new(space,'console.copy','INSERT','PRESS',[],ctrl=True)
 	km.new(space,'console.cut','DEL','PRESS',[],shift=True)
 	km.new(space,'console.cut','X','PRESS',[],ctrl=True)
-	km.new(space,'console.clear','D','PRESS',[],shift=True)
+	km.new(space,'console.clear','D','PRESS',[],ctrl=True)
 
 def info(km):
 	space = km.space('Info','INFO','WINDOW')
@@ -759,6 +763,7 @@ def register_max(preferences):
 			lattice(km_viowport)
 			grease_pencil(km_viowport,preferences)
 			pos(km_viowport,preferences)
+			outliner(km_viowport)
 			km_viowport.register()
 		else:
 			km_viowport.unregister()
@@ -807,6 +812,7 @@ def register_max(preferences):
 		if preferences.text_editor == "3DsMax":
 			console(km_text_editor)
 			text(km_text_editor)
+			info(km_text_editor)
 			km_text_editor.register()
 		else:
 			km_text_editor.unregister()
