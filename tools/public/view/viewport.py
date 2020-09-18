@@ -93,24 +93,6 @@ class View3D_OT_Shade_Selected_Faces(Operator):
 		self.report({'INFO'},'bpy.ops.view3d.shade_selected_faces()')
 		return{"FINISHED"}
 
-class View3D_OT_Show_Hide_Gride(Operator):
-	bl_idname = "view3d.show_hide_gride"
-	bl_label = "Show Hide Gride"
-
-	@classmethod
-	def poll(self, ctx):
-		return ctx.area.type == 'VIEW_3D'
-
-	def execute(self, ctx):
-		overlay = ctx.space_data.overlay
-		state = overlay.show_floor
-		overlay.show_floor = not state
-		overlay.show_axis_x = not state
-		overlay.show_axis_y = not state
-		overlay.show_axis_z = False
-		self.report({'INFO'},'bpy.ops.view3d.show_hide_gride()')
-		return{"FINISHED"}
-
 class View3D_OT_Show_Statistics(Operator):
 	bl_idname = "view3d.show_statistics"
 	bl_label = "Show Statistics Toggle"
@@ -244,7 +226,6 @@ class View3D_OT_Show_Camera_Toggle(Operator):
 classes = [View3D_OT_Wireframe_Toggle,
 	View3D_OT_Edge_Face_Toggle,
 	View3D_OT_Shade_Selected_Faces,
-	View3D_OT_Show_Hide_Gride,
 	View3D_OT_Show_Statistics,
 	View3D_OT_Show_Geometry_Toggle,
 	View3D_OT_Show_Helper_Toggle,

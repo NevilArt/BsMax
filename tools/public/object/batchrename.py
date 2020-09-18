@@ -34,7 +34,7 @@ def arrange_selected_items(active, selected):
 			items.remove(active)
 		items.insert(0, active)
 	# if len(selected) == 0 and active != None:
-	#     items.append(active)
+	# 	items.append(active)
 	return items
 
 class WM_OT_Multi_Object_Rename(Operator):
@@ -142,21 +142,22 @@ class WM_OT_Multi_Object_Rename(Operator):
 		return {'FINISHED'}
 	   
 	def invoke(self, ctx, event):
-		mode = ''
+		active, selected, mode = None,[],''
 		if ctx.area.type == 'VIEW_3D':
-			if ctx.mode == 'OBJECT':
-				mode = 'OBJECT'
-			elif ctx.mode in {'POSE','EDIT_ARMATURE'}:
-				mode = 'ARMATURE'
+			if ctx.mode in {'OBJECT','EDIT_ARMATURE','POSE'}:
+				mode = ctx.mode
 		elif ctx.area.type in {'NODE_EDITOR','SEQUENCE_EDITOR'}:#,'OUTLINER'}:
 			mode = ctx.area.type
 
 		if mode == 'OBJECT':
 			active = ctx.active_object
 			selected = ctx.selected_objects
-		elif mode == 'ARMATURE':
+		elif mode == 'EDIT_ARMATURE':
 			active = ctx.active_bone
 			selected = ctx.selected_bones
+		elif mode == 'POSE':
+			active = ctx.active_bone
+			selected = ctx.selected_pose_bones
 		elif mode == 'NODE_EDITOR':
 			active = ctx.active_node
 			selected = ctx.selected_nodes
@@ -167,16 +168,15 @@ class WM_OT_Multi_Object_Rename(Operator):
 			active = get_active_collection(ctx)
 			# selected = get selected collection
 
-		if mode != '':
-			self.items = arrange_selected_items(active, selected)
+		self.items = arrange_selected_items(active, selected)
 
 		if len(self.items) == 1:
 			if mode == 'OBJECT':
 				if ctx.active_object == None:
 					ctx.view_layer.objects.active = self.items[0]
-			elif mode == 'ARMATUAR':
+			elif mode == 'POSE':
 				if ctx.active_bone == None:
-					pass # set self.items[0] as active bone
+					ctx.object.data.bones.active = self.items[0]
 
 			bpy.ops.wm.call_panel(name='TOPBAR_PT_name', keep_open=False)
 		

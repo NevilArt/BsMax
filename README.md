@@ -5,6 +5,10 @@
 
 Recent Updates
 
+* Some minor bugs fixed.
+* if you dont like the infinit gride then press 'G' to have a limited one.
+* Jotstick connector updated for work with new Joystick creator.
+* Joystick creator made a controller from Armatur can be join with rigg
 * Pose menu added to Quadmenu and some Keymap added for Pose mode.
 * Select Element enabled for Curve mode too ('5' Toggle On/Off)
 * Select Element enabled for 3DsMax mode ('5' Toggle On/Off, 'Ctrl + 5' Open Setting Dialog)
@@ -53,17 +57,4 @@ Recent Updates
 * Move selected objects to active layer(collection) (header of outliner button with + icon).
 * Pivot to first besierpoint for curve objects (View3D/Object/snap/Pivot to First Point).
 * Assistance pack option removed and all tools puted under Tools menu on View3D.
-* Light lister added (Render/Light lister).
-* Keymap system optimized.
-* Works on Blender 2.83 Beta.
-* Camera lock toggle added to Quad menu.
-* BUI added inside the BsMax will use for tools UI.
-* Rightclick Droptool disabled when rightclick select is active.
-* Automate animated link(child of). active animation assistance tool pack to see it.
-* Float Primitive Panel can run in blender mode with out activing the 3DsMax tools.
-* Mesh Primitives Update faster (for Blender 2.81 and above).
-* New Extrud Mesh object added to Create/Mesh menu (Genarate a Mesh object) (Under Construction).
-* Extrud shape object added to Create/Curve menu (Genarate a curve object).
-* Convert to regular object added to contex menu and primitive parameters panel.
-* Ask for close the Line if click on first point while drawing.
 * ...

@@ -510,12 +510,32 @@ def image_paint(km):
 	add_side_panel(km,space)
 
 def sculpt(km):
+	km.mute('Sculpt','wm.radial_control','F','PRESS')
+
 	space = km.space('Sculpt','EMPTY','WINDOW')
 	add_switch_view(km,space)
 	km.new(space,'view3d.show_camera_toggle','C','PRESS',[],shift=True)
+	km.new(space,'object.move','W','PRESS',[])
+	km.new(space,'object.rotate','E','PRESS',[])
+	km.new(space,'object.scale','R','PRESS',[])
+
+	# props = [("data_path_primary", 'tool_settings.sculpt.brush.strength'),
+	# 	("data_path_secondary", 'tool_settings.unified_paint_settings.strength'),
+	# 	("use_secondary", 'tool_settings.unified_paint_settings.use_unified_strength'),
+	# 	("rotation_path", 'tool_settings.sculpt.brush.texture_slot.angle'),
+	# 	("color_path", 'tool_settings.sculpt.brush.cursor_color_add'),
+	# 	("fill_color_path", ''),
+	# 	("fill_color_override_path", ''),
+	# 	("fill_color_override_test_path", ''),
+	# 	("zoom_path", ''),
+	# 	("image_id", 'tool_settings.sculpt.brush'),
+	# 	("secondary_tex", False)]
+	# km.new(space,'wm.radial_control','LEFTMOUSE','PRESS',props, shift=True, ctrl=True)
 
 def particle(km):
-	pass
+	space = km.space('Particle','EMPTY','WINDOW')
+	add_switch_view(km,space)
+
 
 def outliner(km):
 	space = km.space('Outliner','OUTLINER','WINDOW')
