@@ -45,3 +45,55 @@ def register_line(ctx,self,mode,color):
 def unregister_line(handle):
 	if handle != None:
 		bpy.types.SpaceView3D.draw_handler_remove(handle,'WINDOW')
+
+
+class Rubber_Band:
+	def __init__(self):
+		self.segment = 10
+		self.size = 2
+		self.draw_handler = None
+		self.vertices = []
+		self.colors = []
+		self.color_a = (0.0, 0.5, 0.5, 1.0)
+		self.color_b = (0.2, 0.0, 0.0, 1.0)
+		self.shader = gpu.shader.from_builtin('2D_UNIFORM_COLOR')
+		# self.shader = gpu.shader.from_builtin('2D_SMOOTH_COLOR')
+		
+	def create(self, sx, sy, ex, ey):
+		# x = (ex-sx) / self.segment
+		# y = (ey-sy) / self.segment
+		self.vertices.clear()
+		self.colors.clear()
+		self.vertices.append((sx, sy))
+		self.vertices.append((ex, ey))
+		self.colors.append(self.color_a)
+		self.colors.append(self.color_b)
+		# print(self.vertices)
+		# print(self.colors)
+		# for index in range(self.segment):
+		# 	self.vertices.append((sx+x*index, sy+y*index, 0))
+		# 	self.vertices.append((sx+x*(index+1), sy+y*(index+1), 0))
+		# 	self.colors.append(self.color_a)
+		# 	self.colors.append(self.color_b)
+	
+	def draw_rubber(self):
+		bgl.glEnable(bgl.GL_BLEND)
+		bgl.glLineWidth(self.size)
+
+		if len(self.vertices) == 2:
+			coords = [self.vertices[0], self.vertices[1]]
+			batch = batch_for_shader(self.shader, 'LINE_STRIP', {"pos": coords})
+			# batch = batch_for_shader(self.shader, 'LINES', {"pos":self.vertices, "color":self.colors})
+
+			self.shader.bind()
+			self.shader.uniform_float("color", self.color_a)
+			
+			batch.draw(self.shader)
+			bgl.glDisable(bgl.GL_BLEND)
+	
+	def register(self):
+		self.draw_handler = bpy.types.SpaceView3D.draw_handler_add(self.draw_rubber, (), 'WINDOW', 'POST_PIXEL')
+	
+	def unregister(self):
+		if self.draw_handler != None:
+			bpy.types.SpaceView3D.draw_handler_remove(self.draw_handler,'WINDOW')

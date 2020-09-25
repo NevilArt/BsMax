@@ -5,7 +5,10 @@
 
 Recent Updates
 
-* Some minor bugs fixed.
+* Path Constraint setting up a "Follow Path" in two clicks and set the key frame on Object rather than the path.
+* Parent Constraint in object mode can directly parent the Objects to the Bone rather than Armature.
+* View3D/Tools/Animation Max like Constraints tools added.
+* In Pose mode Doubleclick Select All children.
 * if you dont like the infinit gride then press 'G' to have a limited one.
 * Jotstick connector updated for work with new Joystick creator.
 * Joystick creator made a controller from Armatur can be join with rigg
@@ -52,9 +55,4 @@ Recent Updates
 * keymap changes '7' view statistic, '8' open environment setting (in 3DsMax mode).
 * PrimitiveData register error issue fixed.
 * Info and Console key map update (More like 3DsMax).
-* wireframe toggle restore the previews type (F3 in 3DsMax mode).
-* Shader editor assign material to selected objects. (shader editor menu/ tools/ assign to selection).
-* Move selected objects to active layer(collection) (header of outliner button with + icon).
-* Pivot to first besierpoint for curve objects (View3D/Object/snap/Pivot to First Point).
-* Assistance pack option removed and all tools puted under Tools menu on View3D.
 * ...

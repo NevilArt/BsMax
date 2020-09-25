@@ -15,7 +15,9 @@
 
 import bpy
 from bpy.types import Operator
+from mathutils import Vector
 from bsmax.curve import Curve
+from bsmax.graphic import Rubber_Band, get_screen_pos
 
 class CurveTool(Operator):
 	bl_options = {'REGISTER','UNDO'}
@@ -89,3 +91,106 @@ class CurveTool(Operator):
 		else:
 			ctx.window_manager.modal_handler_add(self)
 			return {'RUNNING_MODAL'}
+
+class PickOperator(Operator):
+	handle = None
+	start, center, end = None, Vector((0,0,0)), None
+	source, filters = [], ['ANY']
+	rb = Rubber_Band()
+
+	def modal(self, ctx, event):
+		ctx.area.tag_redraw()
+		if not event.type in {'LEFTMOUSE','RIGHTMOUSE', 'MOUSEMOVE', 'ESC'}:
+			return {'PASS_THROUGH'}
+		
+		elif event.type == 'MOUSEMOVE':
+			""" update the line coordinate """
+			""" self.center is a 3D coordinate """
+			######################################################
+			self.start = get_screen_pos(ctx,self.center) 
+			self.end = event.mouse_region_x, event.mouse_region_y
+			sx = int(self.start.x)
+			sy = int(self.start.y)
+			ex = self.end[0]
+			ey = self.end[1]
+			self.rb.create(sx, sy, ex, ey)
+			######################################################
+
+		elif event.type == 'LEFTMOUSE':
+			if event.value == 'PRESS':
+				""" clear all selection """
+				bpy.ops.object.select_all(action='DESELECT')
+				ctx.view_layer.objects.active = None
+				
+				""" Pick new object as target """
+				coord = event.mouse_region_x, event.mouse_region_y
+				bpy.ops.view3d.select(extend=False,location=coord)
+
+				""" Ignore selected obects as target """
+				if ctx.active_object in self.source:
+					ctx.view_layer.objects.active = None
+
+			if event.value =='RELEASE':
+				""" if target selected check and return """
+				picked_object = ctx.view_layer.objects.active
+				if picked_object != None:
+					if 'ANY' in self.filters or picked_object.type in self.filters:
+						self.finish(ctx, event, picked_object)
+						self.rb.unregister()
+						return {'CANCELLED'}
+					else:
+						ctx.view_layer.objects.active = None
+						bpy.ops.object.select_all(action='DESELECT')
+				self.reselect_source()
+
+			return {'RUNNING_MODAL'}
+
+		elif event.type in {'RIGHTMOUSE','ESC'}:
+			self.rb.unregister()
+			return {'CANCELLED'}
+
+		return {'RUNNING_MODAL'}
+	
+	def get_center(self, objs):
+		location = Vector((0,0,0))
+		for obj in objs:
+			location += obj.matrix_world.translation
+		return location / len(objs)
+	
+	def get_bone(self, ctx, event, armature):
+		coord = event.mouse_region_x, event.mouse_region_y
+		ctx.view_layer.objects.active = armature
+		bpy.ops.object.mode_set(mode='POSE', toggle=False)
+		bpy.ops.pose.select_all(action='DESELECT')
+		bpy.ops.view3d.select(extend=False, location=coord)
+		selection = ctx.selected_pose_bones
+		bone = selection[0] if len(selection) > 0 else None
+		bpy.ops.object.mode_set(mode='OBJECT', toggle=False)
+		return bone
+	
+	def setup(self, ctx, event):
+		self.source = ctx.selected_objects.copy()
+		self.center = self.get_center(self.source)
+		######################################################
+		self.start = self.end = event.mouse_region_x, event.mouse_region_y
+		######################################################
+		ctx.view_layer.objects.active = None
+	
+	def reselect_source(self):
+		for obj in self.source:
+			obj.select_set(state = True)
+
+	def finish(self, ctx, event, target):
+		subtarget = self.get_bone(ctx, event, target) if target.type == 'ARMATURE' else None
+		self.reselect_source()
+		self.picked(ctx, self.source, target, subtarget)
+		self.reselect_source()
+	
+	def picked(self, ctx, source, target, subtarget):
+		pass
+
+	def invoke(self, ctx, event):
+		self.setup(ctx, event)
+		self.rb.register()
+		ctx.window_manager.modal_handler_add(self)
+		return {'RUNNING_MODAL'}

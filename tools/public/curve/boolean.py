@@ -24,7 +24,7 @@ class Curve_OT_Boolean(CurveTool):
 	singleaction = True
 	typein: BoolProperty(name="Type In:",default=False)
 	advance: BoolProperty(name="advance:",default=False)
-	value: FloatProperty(name="tollerance:",unit='LENGTH',default=0.001, min=0.000001, max=1)
+	value: FloatProperty(name="tollerance:",unit='LENGTH',default=0.000001, min=0.0000000000001, max=1)
 	mode: EnumProperty(name='Type',default='UNION',
 		items=[('UNION','Union',''),
 		('INTERSECTION','Intersection',''),
