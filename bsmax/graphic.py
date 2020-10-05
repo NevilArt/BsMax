@@ -49,6 +49,8 @@ def unregister_line(handle):
 
 class Rubber_Band:
 	def __init__(self):
+		self.start = (0,0,0)
+		self.end = (0,0,0)
 		self.segment = 10
 		self.size = 2
 		self.draw_handler = None

@@ -20,8 +20,21 @@ from bpy.app.handlers import persistent
 def frame_Update(scene):
 	pass
 
+@persistent
+def depsgraph_update(scene):
+	""" called on each click and check the time slider header collor """
+	if bpy.context.scene.tool_settings.use_keyframe_insert_auto:
+		bpy.context.preferences.themes[0].dopesheet_editor.space.header = (0.5, 0.0, 0.0, 1.0)
+	else:
+		bpy.context.preferences.themes[0].dopesheet_editor.space.header = (0.2588, 0.2588, 0.2588, 1.0)
+
 def register_frameupdate():
 	bpy.app.handlers.frame_change_pre.append(frame_Update)
+	bpy.app.handlers.depsgraph_update_pre.append(depsgraph_update)
 
 def unregister_frameupdate():
 	bpy.app.handlers.frame_change_pre.remove(frame_Update)
+	bpy.app.handlers.depsgraph_update_pre.remove(depsgraph_update)
+
+if __name__ == "__main__":
+	register_frameupdate()

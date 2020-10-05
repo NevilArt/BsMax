@@ -5,6 +5,9 @@
 
 Recent Updates
 
+* Camera search any object display filter toggle Keymaps added for paint/sculp modes too.
+* Keymap updated in UV editor for Max like selection
+* Timeline Red header issue fixed.
 * Path Constraint setting up a "Follow Path" in two clicks and set the key frame on Object rather than the path.
 * Parent Constraint in object mode can directly parent the Objects to the Bone rather than Armature.
 * View3D/Tools/Animation Max like Constraints tools added.
@@ -50,9 +53,4 @@ Recent Updates
 * 'Z' for find active object in outliner (3DsMax mode).
 * Zoom extended updated, works in edit mode too (3DsMax mode).
 * Specific frames render replaced but not complete yet.
-* 'p' for Perspective toggle removed, 'P' for Perspective and 'U' for Orthographic in 3DsMax Mode.
-* Default key mode added to time line.
-* keymap changes '7' view statistic, '8' open environment setting (in 3DsMax mode).
-* PrimitiveData register error issue fixed.
-* Info and Console key map update (More like 3DsMax).
 * ...

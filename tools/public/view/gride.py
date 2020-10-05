@@ -25,9 +25,10 @@ class View3D_Gride:
 		self.color_x = (0.0, 0.2, 0.0, 1.0)
 		self.color_y = (0.2, 0.0, 0.0, 1.0)
 		self.color_g = (0.5, 0.5, 0.5, 0.5)
-		self.shader = gpu.shader.from_builtin('3D_SMOOTH_COLOR')
+		self.shader = gpu.shader.from_builtin('3D_SMOOTH_COLOR') # 3D_UNIFORM_COLOR
 		self.enabled = False
 		self.create()
+		self.batch = batch_for_shader(self.shader, 'LINES', {"pos": self.vertices, "color": self.colors})
 	
 	def create(self):
 		e = self.count*self.size
@@ -53,20 +54,28 @@ class View3D_Gride:
 				self.colors.append(self.color_g)
 				self.colors.append(self.color_g)
 	
-vg = View3D_Gride()
-batch = batch_for_shader(vg.shader, 'LINES', {"pos": vg.vertices, "color": vg.colors})
+	def draw(self):
+		bgl.glEnable(bgl.GL_BLEND)
+		bgl.glLineWidth(1)
+		self.shader.bind()
+		self.batch.draw(self.shader)
+		# bgl.glDisable(bgl.GL_BLEND)
+	
+	def register(self):
+		self.draw_handler = bpy.types.SpaceView3D.draw_handler_add(self.draw, (), 'WINDOW', 'POST_VIEW')
+		self.enabled =  True
 
-def draw():
-	bgl.glEnable(bgl.GL_BLEND)
-	bgl.glLineWidth(1)
-	vg.shader.bind()
-	batch.draw(vg.shader)
-	# bgl.glDisable(bgl.GL_BLEND)
-
+	def unregister(self):
+		if self.draw_handler != None:
+			bpy.types.SpaceView3D.draw_handler_remove(self.draw_handler,'WINDOW')
+			self.draw_handler = None
+			self.enabled =  False
+	
 class View3D_OT_Show_Hide_Gride(bpy.types.Operator):
 	bl_idname = "view3d.show_hide_gride"
 	bl_label = "Show Hide Gride"
 
+	view_gride = View3D_Gride()
 	state = 0
 
 	@classmethod
@@ -82,15 +91,12 @@ class View3D_OT_Show_Hide_Gride(bpy.types.Operator):
 	
 	def max_gride(self, ctx, stata):
 		if stata:
-			vg.draw_handler = bpy.types.SpaceView3D.draw_handler_add(draw, (), 'WINDOW', 'POST_VIEW')
-			vg.enabled =  True
-		elif vg.draw_handler != None:
-			bpy.types.SpaceView3D.draw_handler_remove(vg.draw_handler,'WINDOW')
-			vg.draw_handler = None
-			vg.enabled = False
+			self.view_gride.register()
+		else:
+			self.view_gride.unregister()
 
 	def execute(self, ctx):
-		bg,mg = ctx.space_data.overlay.show_floor, vg.enabled
+		bg,mg = ctx.space_data.overlay.show_floor, self.view_gride.enabled
 		if bg and not mg:
 			self.blender_gride(ctx, False)
 			self.max_gride(ctx, True)

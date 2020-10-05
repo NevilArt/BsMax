@@ -69,6 +69,14 @@ def add_search(km,space):
 		km.new(space,'wm.search_menu','X','PRESS',[],ctrl=True,shift=True,alt=True)
 		km.new(space,'wm.search_operator','X','PRESS',[])
 
+def add_show_types(km,space):
+	km.new(space,'view3d.show_geometry_toggle','G','PRESS',[],shift=True)
+	km.new(space,'view3d.show_helper_toggle','H','PRESS',[],shift=True)
+	km.new(space,'view3d.show_shape_toggle','S','PRESS',[],shift=True)
+	km.new(space,'view3d.show_light_toggle','L','PRESS',[],shift=True)
+	km.new(space,'view3d.show_bone_toggle','B','PRESS',[],shift=True)
+	km.new(space,'view3d.show_camera_toggle','C','PRESS',[],shift=True)
+
 def add_float_editors(km,space):
 	km.new(space,'editor.float','M','PRESS',[('ui_type','ShaderNodeTree'),('shader_type','OBJECT')])
 	km.new(space,'editor.float','EIGHT','PRESS',[('ui_type','ShaderNodeTree'),('shader_type','WORLD')])
@@ -265,6 +273,7 @@ def object_mode(km,preferences):
 	add_subobject(km,space)
 	add_float_editors(km,space)
 	add_float_menu(km,space,preferences)
+	add_show_types(km,space)
 	
 	km.new(space,"view3d.drop_tool","RIGHTMOUSE","PRESS",[])
 	km.new(space,'view3d.select','LEFTMOUSE','RELEASE',[('enumerate',True)],shift=True)
@@ -280,12 +289,12 @@ def object_mode(km,preferences):
 	km.new(space,'object.hide','H','PRESS',[('mode','selection')],alt=True)
 	km.new(space,'object.hide','I','PRESS',[('mode','unselected')],alt=True)
 	km.new(space,'object.hide','U','PRESS',[('mode','clear')],alt=True)
-	km.new(space,'view3d.show_geometry_toggle','G','PRESS',[],shift=True)
-	km.new(space,'view3d.show_helper_toggle','H','PRESS',[],shift=True)
-	km.new(space,'view3d.show_shape_toggle','S','PRESS',[],shift=True)
-	km.new(space,'view3d.show_light_toggle','L','PRESS',[],shift=True)
-	km.new(space,'view3d.show_bone_toggle','B','PRESS',[],shift=True)
-	km.new(space,'view3d.show_camera_toggle','C','PRESS',[],shift=True)
+	# km.new(space,'view3d.show_geometry_toggle','G','PRESS',[],shift=True)
+	# km.new(space,'view3d.show_helper_toggle','H','PRESS',[],shift=True)
+	# km.new(space,'view3d.show_shape_toggle','S','PRESS',[],shift=True)
+	# km.new(space,'view3d.show_light_toggle','L','PRESS',[],shift=True)
+	# km.new(space,'view3d.show_bone_toggle','B','PRESS',[],shift=True)
+	# km.new(space,'view3d.show_camera_toggle','C','PRESS',[],shift=True)
 
 	km.new(space,'object.modify_pivotpoint','INSERT','PRESS',[])
 	km.new(space,'wm.call_menu','INSERT','PRESS',[('name','BSMAX_MT_SetPivotPoint')],ctrl=True)
@@ -369,6 +378,7 @@ def mesh(km,preferences):
 def curve(km,preferences):
 	space = km.space('Curve','EMPTY','WINDOW')
 	add_search(km,space)
+	add_snap(km,space)
 	add_side_panel(km,space)
 	# add_view3d_click_selection(km,space)
 	add_view3d_tweak_selection(km,space)
@@ -499,12 +509,14 @@ def pos(km,preferences):
 def vertex_paint(km):
 	space = km.space('Vertex Paint','EMPTY','WINDOW')
 	add_switch_view(km,space)
-	km.new(space,'view3d.show_camera_toggle','C','PRESS',[],shift=True)
+	add_show_types(km,space)
+	km.new(space,'camera.set_active','C','PRESS',[])
 
 def weight_paint(km):
 	space = km.space('Weight Paint','EMPTY','WINDOW')
 	add_switch_view(km,space)
-	km.new(space,'view3d.show_camera_toggle','C','PRESS',[],shift=True)
+	add_show_types(km,space)
+	km.new(space,'camera.set_active','C','PRESS',[])
 	# Whight Paint Vertex Selection
 	# Face Mask
 
@@ -517,7 +529,8 @@ def sculpt(km):
 
 	space = km.space('Sculpt','EMPTY','WINDOW')
 	add_switch_view(km,space)
-	km.new(space,'view3d.show_camera_toggle','C','PRESS',[],shift=True)
+	add_show_types(km,space)
+	km.new(space,'camera.set_active','C','PRESS',[])
 	km.new(space,'object.move','W','PRESS',[])
 	km.new(space,'object.rotate','E','PRESS',[])
 	km.new(space,'object.scale','R','PRESS',[])
@@ -538,6 +551,7 @@ def sculpt(km):
 def particle(km):
 	space = km.space('Particle','EMPTY','WINDOW')
 	add_switch_view(km,space)
+	km.new(space,'camera.set_active','C','PRESS',[])
 
 
 def outliner(km):
@@ -691,17 +705,24 @@ def clip_editor(km):
 
 def uv_editor(km):
 	space = km.space('UV Editor','EMPTY','WINDOW')
-	add_view3d_tweak_selection(km,space)
 	add_snap(km,space)
 	add_side_panel(km,space)
 	km.new(space,'object.move','W','PRESS',[])
 	km.new(space,'object.rotate','E','PRESS',[])
 	km.new(space,'object.scale','R','PRESS',[])
 	km.new(space,'wm.tool_set_by_id','Q','PRESS',[('name','builtin.select_box'),('cycle',True)])
+
+	km.new(space,'uv.select','LEFTMOUSE','PRESS',[('extend',True)],ctrl=True)
+	# km.new(space,'uv.select','LEFTMOUSE','PRESS',[('extend',True)],alt=True)
+	km.new(space,'uv.shortest_path_pick','LEFTMOUSE','PRESS',[],shift=True)
+	km.new(space,'uv.shortest_path_pick','LEFTMOUSE','PRESS',[('extend',True)],ctrl=True,shift=True)
+	km.new(space,'uv.select_loop','LEFTMOUSE','DOUBLE_CLICK',[])
+	km.new(space,'uv.select_loop','LEFTMOUSE','DOUBLE_CLICK',[('extend',True)],ctrl=True)
+
 	km.new(space,'uv.select','EVT_TWEAK_L','ANY',[('extend',True)])
 	km.new(space,'uv.select_box','EVT_TWEAK_L','ANY',[('mode','SET')])
-	km.new(space,'uv.select_box','EVT_TWEAK_L','ANY',[('mode','ADD')],ctrl=True )
-	km.new(space,'uv.select_box','EVT_TWEAK_L','ANY',[('mode','SUB')],alt=True )
+	km.new(space,'uv.select_box','EVT_TWEAK_L','ANY',[('mode','ADD')],ctrl=True)
+	km.new(space,'uv.select_box','EVT_TWEAK_L','ANY',[('mode','SUB')],alt=True)
 	km.new(space,'uv.select_more','PAGE_UP','PRESS',[],ctrl=True)
 	km.new(space,'uv.select_less','PAGE_DOWN','PRESS',[],ctrl=True)
 	km.new(space,'uv.select_all','A','PRESS',[('action','SELECT')],ctrl=True)

@@ -13,8 +13,10 @@
 #	along with this program.  If not, see <https://www.gnu.org/licenses/>.
 ############################################################################
 
-import bpy, mathutils
+import bpy
+from mathutils import Vector, Matrix
 from bpy.types import Menu, Operator
+from bsmax.actions import set_origen
 
 objAxis = None
 objTarget = None
@@ -139,11 +141,39 @@ class Object_OT_Pivot_To_First_Point(Operator):
 			if len(obj.data.splines)>0:
 				if len(obj.data.splines[0].bezier_points)>0:
 					new_origin = obj.data.splines[0].bezier_points[0].co.copy()
-					obj.data.transform(mathutils.Matrix.Translation(-new_origin))
+					# obj.data.transform(mathutils.Matrix.Translation(-new_origin))
+					obj.data.transform(Matrix.Translation(-new_origin))
 					obj.matrix_world.translation += new_origin
 		self.report({'INFO'},'bpy.ops.object.pivot_to_first_point()')
 		return {"FINISHED"}
-				
+
+class Object_OT_Pivot_To_Buttom_Center(Operator):
+	bl_idname = "object.pivot_to_buttom_center"
+	bl_label = "Pivot to Buttom Center"
+
+	@classmethod
+	def poll(self, ctx):
+		return len(ctx.selected_objects) > 0
+		
+	def pivot_to_buttom_center(self, ctx, obj):
+		""" TODO bound_box return value in local coordinate """
+		""" need a fast method to get bound box in world space """
+		b = [obj.matrix_world @ Vector(v) for v in obj.bound_box]
+		min_x = min(b[0][0], b[1][0], b[2][0], b[3][0], b[4][0], b[5][0], b[6][0])
+		max_x = max(b[0][0], b[1][0], b[2][0], b[3][0], b[4][0], b[5][0], b[6][0])
+		min_y = min(b[0][1], b[1][1], b[2][1], b[3][1], b[4][1], b[5][1], b[6][1])
+		max_y = max(b[0][1], b[1][1], b[2][1], b[3][1], b[4][1], b[5][1], b[6][1])
+		min_z = min(b[0][2], b[1][2], b[2][2], b[3][2], b[4][2], b[5][2], b[6][2])
+		center_x = (min_x + max_x)/2
+		center_y = (min_y + max_y)/2
+		location = Vector((center_x, center_y, min_z))
+		set_origen(ctx, obj, location)
+
+	def execute(self,ctx):
+		for obj in ctx.selected_objects:
+			self.pivot_to_buttom_center(ctx, obj)
+		self.report({'INFO'},'bpy.ops.object.pivot_to_buttom_center()')
+		return {"FINISHED"}
 
 class BsMax_MT_SetPivotPoint(Menu):
 	bl_idname = "BSMAX_MT_SetPivotPoint"
@@ -155,6 +185,7 @@ class BsMax_MT_SetPivotPoint(Menu):
 		layout.operator("object.origin_set",text="Pivot to 3D Cursor").type='ORIGIN_CURSOR'
 		layout.operator("object.origin_set",text="Pivot to Center").type='ORIGIN_CENTER_OF_VOLUME'
 		layout.operator("object.origin_set",text="Pivot to Geometry").type='ORIGIN_CENTER_OF_MASS'
+		layout.operator("object.pivot_to_buttom_center",text="Pivot to Buttom Center")
 		layout.operator("object.pivot_to_first_point",text="Pivot to First BezierPoint")
 
 def snap_menu(self, ctx):
@@ -162,7 +193,10 @@ def snap_menu(self, ctx):
 	layout.separator()
 	layout.operator("object.pivot_to_first_point")
 
-classes = [Object_OT_Pivot_To_First_Point,BsMax_MT_SetPivotPoint,Object_OT_Modify_Pivot]
+classes = [Object_OT_Pivot_To_First_Point,
+	Object_OT_Modify_Pivot,
+	Object_OT_Pivot_To_Buttom_Center,
+	BsMax_MT_SetPivotPoint]
 
 def register_pivotpoint():
 	[bpy.utils.register_class(c) for c in classes]
@@ -171,3 +205,6 @@ def register_pivotpoint():
 def unregister_pivotpoint():
 	bpy.types.VIEW3D_MT_snap.remove(snap_menu)
 	[bpy.utils.unregister_class(c) for c in classes]
+
+if __name__ == "__main__":
+	register_pivotpoint()

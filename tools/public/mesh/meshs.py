@@ -75,7 +75,7 @@ class Mesh_OT_Auto_Ring_Select(Operator):
 
 class Mesh_OT_Dot_Loop_Select(Operator):
 	bl_idname = "mesh.dot_loop_select"
-	bl_label = "Dot Loop Select"
+	bl_label = "Dot Loop"
 	
 	@classmethod
 	def poll(self, ctx):
@@ -83,7 +83,7 @@ class Mesh_OT_Dot_Loop_Select(Operator):
 	
 	def execute(self, ctx):
 		if ctx.mode == 'EDIT_MESH':
-			bpy.ops.bmax.loopselect()
+			bpy.ops.mesh.smart_select_loop()
 			bpy.ops.mesh.select_nth()
 		self.report({'INFO'},'bpy.ops.mesh.dot_loop_select()')
 		return{"FINISHED"}
@@ -98,7 +98,7 @@ class Mesh_OT_Dot_Ring_Select(Operator):
 	
 	def execute(self, ctx):
 		if ctx.mode == 'EDIT_MESH':
-			bpy.ops.bmax.ringselect()
+			bpy.ops.mesh.smart_select_ring()
 			bpy.ops.mesh.select_nth()
 		self.report({'INFO'},'bpy.ops.mesh.dot_ring_select()')
 		return{"FINISHED"}
