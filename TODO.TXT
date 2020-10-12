@@ -1,0 +1,60 @@
+# Keymaps
+	Loop ring in UV Editor
+	M in Edit Mesh (Smooth)
+	Alt + X Xray mode
+	Brush Size control hot keys (for max mode)
+	Free S,R,G in wheight paint mode or set on W,E,R
+	Sequencer in pr mode Alt + Arrows move step by step
+	F9 if no active camera in scene create one befor render and delete after render
+	Outliner if more than one object selected open multi rename tool
+	Shader editor A assyn to selected
+
+# Tools
+	Refine tool for Curves
+	UV editor Target Weld
+	Fileview PageUp/ PageDown
+	Make rectangular UV
+	Instancer
+	Weld tool setting dialog
+	Topology symmetry tool
+	Maxlike Navigation operator (change action without release the Alt key)
+	Clone object shift drag
+	Extrude open edge with shift drag
+	Mimic the Slice modifire quick setup
+	Slide zoom Operator for maya navigation mode
+	video sequencer set current frame as first or last frame (range tool)
+
+# Issue
+	Convert to (apply all modifiers with confirm)
+	Join had to clear primitive datas too
+	Helix height and last segment
+	Edge mode delete face most desolve edges too
+	Seprate smart loop and rigg from regular one or update to make it work faster
+	While an image editor is open and shows render resoult dont open another one
+	pivot to first vertex not working on rotated objects
+		need a function to return true position of vertex and knot in world space
+	Bone to Bone link_to net to fix transform
+
+# Update
+	Enable snap for drawing primitives
+	Zoom extended no select mesh/curve
+	Zoom extended on limit gride area
+	Helix with bezier segments with less count of knots (Bezier points)
+	PickOperator had works on other modes to (Subtarget to object or another subtarget)
+
+# Quad menu
+	Seam and UV tools
+	layer stuff ctrl+rmc quad menu
+	put transform pivot poins in alt+rc quadmenu
+	weld tool setting dialog
+	Mesh Edit mode Attach on picked and by list
+
+# Addon
+	bl_description for all operators
+
+# Primitives
+	Torus Knot
+	quad sphere
+
+# BUI
+	New Editable Quadmenu with short key support

@@ -88,6 +88,10 @@ def create_joystic(ctx, rectangle, mode):
 	frame = joystick.data.bones[0]
 	joy = joystick.data.bones[1]
 	frame.name, joy.name = "Frame", "Joy"
+	
+	""" disable for diformation """
+	frame.use_deform = False
+	joy.use_deform = False
 
 	""" Set Transform """
 	joystick.scale = rectangle.scale

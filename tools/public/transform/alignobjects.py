@@ -17,7 +17,7 @@ import bpy
 from bpy.props import EnumProperty, BoolProperty, FloatProperty
 from mathutils import Vector, Matrix
 from bpy.types import Operator
-from bsmax.graphic import register_line,unregister_line,get_screen_pos
+from bsmax.operator import PickOperator
 
 # Original Code by Ozzkar
 # Edit by Nevil
@@ -314,70 +314,15 @@ def get_center(objs):
 		location += obj.matrix_world.translation
 	return location / len(objs)
 
-class Object_OT_Align_Selected_to_Target(Operator):
+class Object_OT_Align_Selected_to_Target(PickOperator):
 	bl_idname = "object.align_selected_to_target"
 	bl_label = "Align Selected Objects"
 	bl_options = {'REGISTER', 'UNDO'}
 
-	center = None
-	start, end, handle = None, None, None
-	selected_objects = []
-
-	@classmethod
-	def poll(self, ctx):
-		return len(ctx.selected_objects) > 0
-
-	def modal(self, ctx, event):
-		ctx.area.tag_redraw()
-		if not event.type in {'LEFTMOUSE','RIGHTMOUSE', 'MOUSEMOVE','ESC'}:
-			return {'PASS_THROUGH'}
-		
-		elif event.type == 'MOUSEMOVE':
-			self.start = get_screen_pos(ctx,self.center)
-			self.end = event.mouse_region_x, event.mouse_region_y
-
-		elif event.type == 'LEFTMOUSE':
-			if event.value == 'PRESS':
-				""" remove all selected and active object """
-				bpy.ops.object.select_all(action='DESELECT')
-				ctx.view_layer.objects.active = None
-				
-				""" Pick new object as target """
-				coord = event.mouse_region_x, event.mouse_region_y
-				bpy.ops.view3d.select(extend=False,location=coord)
-
-				""" Ignore selected obects as target """
-				if ctx.active_object in self.selected_objects:
-					ctx.view_layer.objects.active = None
-
-			if event.value =='RELEASE':
-
-				""" Restore selection """
-				for obj in self.selected_objects:
-					if obj != ctx.active_object:
-						obj.select_set(True)
-				
-				""" if target selected call the operator """
-				if ctx.view_layer.objects.active != None:
-					bpy.ops.object.align_selected_to_active('INVOKE_DEFAULT')
-					return {'CANCELLED'}
-
-			return {'RUNNING_MODAL'}
-
-		elif event.type in {'RIGHTMOUSE','ESC'}:
-			unregister_line(self.handle)
-			return {'CANCELLED'}
-
-		return {'RUNNING_MODAL'}
-
-	def invoke(self, ctx, event):
-		""" Store selected objects """
-		self.selected_objects = ctx.selected_objects.copy()
-		self.center = get_center(self.selected_objects)
-		self.start = self.end = event.mouse_region_x, event.mouse_region_y
-		self.handle = register_line(ctx, self, '2d', (1, 0.5, 0.5, 1))
-		ctx.window_manager.modal_handler_add(self)
-		return {'RUNNING_MODAL'}
+	def picked(self, ctx, source, subsource, target, subtarget):
+		target.select_set(True)
+		ctx.view_layer.objects.active = target
+		bpy.ops.object.align_selected_to_active('INVOKE_DEFAULT')
 
 classes = [Object_OT_Align_Selected_to_Active,Object_OT_Align_Selected_to_Target]
 

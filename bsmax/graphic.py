@@ -99,3 +99,4 @@ class Rubber_Band:
 	def unregister(self):
 		if self.draw_handler != None:
 			bpy.types.SpaceView3D.draw_handler_remove(self.draw_handler,'WINDOW')
+		self.draw_handler = None

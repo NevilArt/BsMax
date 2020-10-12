@@ -93,9 +93,9 @@ class CurveTool(Operator):
 			return {'RUNNING_MODAL'}
 
 class PickOperator(Operator):
-	handle = None
+	source, subsource, active = [], None, None
 	start, center, end = None, Vector((0,0,0)), None
-	source, filters = [], ['ANY']
+	mode, filters = 'OBJECT' , ['ANY']
 	rb = Rubber_Band()
 
 	def modal(self, ctx, event):
@@ -128,7 +128,8 @@ class PickOperator(Operator):
 
 				""" Ignore selected obects as target """
 				if ctx.active_object in self.source:
-					ctx.view_layer.objects.active = None
+					if self.subsource == []:
+						ctx.view_layer.objects.active = None
 
 			if event.value =='RELEASE':
 				""" if target selected check and return """
@@ -160,33 +161,63 @@ class PickOperator(Operator):
 	def get_bone(self, ctx, event, armature):
 		coord = event.mouse_region_x, event.mouse_region_y
 		ctx.view_layer.objects.active = armature
-		bpy.ops.object.mode_set(mode='POSE', toggle=False)
-		bpy.ops.pose.select_all(action='DESELECT')
-		bpy.ops.view3d.select(extend=False, location=coord)
-		selection = ctx.selected_pose_bones
+		if self.mode == 'EDIT_ARMATURE':
+			bpy.ops.object.mode_set(mode='EDIT', toggle=False)
+			bpy.ops.armature.select_all(action='DESELECT')
+			bpy.ops.view3d.select(extend=False, location=coord)
+			selection = ctx.selected_bones
+		else:
+			bpy.ops.object.mode_set(mode='POSE', toggle=False)
+			bpy.ops.pose.select_all(action='DESELECT')
+			bpy.ops.view3d.select(extend=False, location=coord)
+			selection = ctx.selected_pose_bones
 		bone = selection[0] if len(selection) > 0 else None
 		bpy.ops.object.mode_set(mode='OBJECT', toggle=False)
 		return bone
 	
+	def get_sub_itme(self, ctx, objs):
+		if ctx.mode == 'POSE':
+			return ctx.selected_pose_bones
+		elif ctx.mode == 'EDIT_ARMATURE':
+			return ctx.selected_bones
+		return []
+	
 	def setup(self, ctx, event):
+		self.mode = ctx.mode
+		self.active = ctx.active_object
 		self.source = ctx.selected_objects.copy()
+		self.subsource = self.get_sub_itme(ctx, self.source)
 		self.center = self.get_center(self.source)
 		######################################################
 		self.start = self.end = event.mouse_region_x, event.mouse_region_y
 		######################################################
 		ctx.view_layer.objects.active = None
 	
-	def reselect_source(self):
+	def set_mode(self, mode):
+		if mode in {'OBJECT', 'POSE'}:
+			bpy.ops.object.mode_set(mode=mode, toggle=False)
+		else:
+			bpy.ops.object.mode_set(mode='EDIT', toggle=False)
+	
+	def restore_mode(self, ctx, target, subtarget):
+		bpy.ops.object.mode_set(mode='OBJECT', toggle=False)
+		bpy.ops.object.select_all(action='DESELECT')
+		ctx.view_layer.objects.active = self.active
 		for obj in self.source:
 			obj.select_set(state = True)
+		self.set_mode(self.mode)
+		for sub in self.subsource:
+			if ctx.mode == 'POSE':
+				sub.bone.select = True
+			elif ctx.mode == 'EDIT_ARMATURE':
+				sub.select = True
 
 	def finish(self, ctx, event, target):
 		subtarget = self.get_bone(ctx, event, target) if target.type == 'ARMATURE' else None
-		self.reselect_source()
-		self.picked(ctx, self.source, target, subtarget)
-		self.reselect_source()
+		self.restore_mode(ctx, target, subtarget)
+		self.picked(ctx, self.source, self.subsource, target, subtarget)
 	
-	def picked(self, ctx, source, target, subtarget):
+	def picked(self, ctx, source, subsource, target, subtarget):
 		pass
 
 	def invoke(self, ctx, event):
@@ -194,3 +225,17 @@ class PickOperator(Operator):
 		self.rb.register()
 		ctx.window_manager.modal_handler_add(self)
 		return {'RUNNING_MODAL'}
+
+# class picker_OT_test(PickOperator):
+# 	bl_idname = "object.picker"
+# 	bl_label = "picker test"
+	
+# 	def picked(self, ctx, source, subsource, target, subtarget):
+# 		print("------------------------")
+# 		print("-source>", source)
+# 		print("-subs>", subsource)
+# 		print("-target>", target)
+# 		print("-subtarget>", subtarget)
+
+# if __name__ == "__main__":
+# 	bpy.utils.register_class(picker_OT_test)

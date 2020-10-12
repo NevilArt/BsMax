@@ -5,6 +5,10 @@
 
 Recent Updates
 
+
+* Linkto Operator now can link Object directly to a bone.
+* PickOperator updated, now can return source, subsource, target and subtarget.
+* New Hotkeys added to weight paint and File Browser (Max mode only).
 * Camera search any object display filter toggle Keymaps added for paint/sculp modes too.
 * Keymap updated in UV editor for Max like selection
 * Timeline Red header issue fixed.

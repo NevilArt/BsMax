@@ -20,7 +20,7 @@ bl_info = {
 	"name": "BsMax",
 	"description": "BsMax for Blender 2.80 ~ 2.91",
 	"author": "Naser Merati (Nevil)",
-	"version": (0, 1, 0, 20201005),
+	"version": (0, 1, 0, 20201012),
 	"blender": (2, 80, 0),# 2.80~2.91
 	"location": "Almost Everywhere in Blender",
 	"wiki_url": "https://github.com/NevilArt/BsMax_2_80/wiki",
@@ -279,9 +279,12 @@ class BsMax_AddonPreferences(bpy.types.AddonPreferences):
 			self.row_prop(col,"video_sequencer","video_sequencer-" + self.video_sequencer)
 			self.row_prop(col,"file_browser","file_browser-" + self.file_browser)
 			self.row_prop(col,"floatmenus", "floatmenus-" + self.floatmenus)
-			
+		
 		box = layout.box()
-		box.prop(self,"options",text="Options")
+		row = box.row()
+		row.prop(self,"options",text="Options")
+		row.operator("bsmax.save_preferences",text="Save Preferences Setting", icon="FILE_TICK")
+		
 		if self.options:
 			box = box.box()
 			row = box.row()
@@ -330,12 +333,20 @@ def load_preferences(preferences):
 				except:
 					pass
 
+class BsMax_OT_Save_Preferences(bpy.types.Operator):
+	bl_idname = "bsmax.save_preferences"
+	bl_label = "Save BsMax Preferences"
+	def execute(self, ctx):
+		save_preferences(addons[__name__].preferences)
+		return{"FINISHED"}
+
 def register_delay(preferences):
 	sleep(0.2)
 	register_keymaps(preferences)
 	register_startup(preferences)
 
 def register():
+	bpy.utils.register_class(BsMax_OT_Save_Preferences)
 	bpy.utils.register_class(BsMax_AddonPreferences)
 	preferences = addons[__name__].preferences
 	load_preferences(preferences)
@@ -354,6 +365,7 @@ def unregister():
 	unregister_primitives()
 	unregister_startup()
 	bpy.utils.unregister_class(BsMax_AddonPreferences)
+	bpy.utils.unregister_class(BsMax_OT_Save_Preferences)
 	# templates.unregister()
 	if path in sys.path:
 		sys.path.remove(path)

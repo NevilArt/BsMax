@@ -71,7 +71,7 @@ class Anim_OT_Link_Constraint(PickOperator):
 			fcurve.keyframe_points[-1].interpolation = 'CONSTANT'
 		const.inverse_matrix = const.target.matrix_world.inverted()
 	
-	def picked(self, ctx, source, target, subtarget):
+	def picked(self, ctx, source, subsource, target, subtarget):
 		frame = ctx.scene.frame_current
 		for obj in source:
 			set_free(self, obj, frame)
@@ -133,7 +133,7 @@ class Anim_OT_Path_Constraint(PickOperator):
 		const.offset = -100
 		obj.keyframe_insert(data_path=data_path, frame=end)
 
-	def picked(self, ctx, source, target, subtarget):
+	def picked(self, ctx, source, subsource, target, subtarget):
 		for obj in source:
 			if obj != target:
 				self.set_path_constraint(ctx, obj, target)
@@ -158,7 +158,7 @@ class Anim_OT_Lookat_Constraint(PickOperator):
 		const.track_axis = 'TRACK_X'
 		const.up_axis = 'UP_Z'
 
-	def picked(self, ctx, source, target, subtarget):
+	def picked(self, ctx, source, subsource, target, subtarget):
 		for obj in source:
 			self.set_lookat(obj, target, subtarget)
 		self.report({'INFO'},'bpy.ops.anim.lookat_constraint()')
@@ -179,7 +179,7 @@ class Anim_OT_Location_Constraint(PickOperator):
 		if subtarget != None:
 			const.subtarget = subtarget.name
 
-	def picked(self, ctx, source, target, subtarget):
+	def picked(self, ctx, source, subsource, target, subtarget):
 		for obj in source:
 			self.set_location(obj, target, subtarget)
 		self.report({'INFO'},'bpy.ops.anim.location_constraint()')
@@ -200,7 +200,7 @@ class Anim_OT_Orientation_Constraint(PickOperator):
 		if subtarget != None:
 			const.subtarget = subtarget.name
 
-	def picked(self, ctx, source, target, subtarget):
+	def picked(self, ctx, source, subsource, target, subtarget):
 		for obj in source:
 			self.set_orient(obj, target, subtarget)
 		self.report({'INFO'},'bpy.ops.anim.orientation_constraint()')

@@ -516,9 +516,15 @@ def weight_paint(km):
 	space = km.space('Weight Paint','EMPTY','WINDOW')
 	add_switch_view(km,space)
 	add_show_types(km,space)
+	add_view3d_click_selection(km,space)
+	add_view3d_tweak_selection(km,space)
+	
 	km.new(space,'camera.set_active','C','PRESS',[])
-	# Whight Paint Vertex Selection
-	# Face Mask
+	km.new(space,'wm.context_toggle','ONE','PRESS',[('data_path','weight_paint_object.data.use_paint_mask_vertex')])
+	km.new(space,'wm.context_toggle','TWO','PRESS',[('data_path','weight_paint_object.data.use_paint_mask')])
+	km.new(space,'paint.vert_select_all','A','PRESS',[('action','SELECT')],ctrl=True)
+	km.new(space,'paint.vert_select_all','D','PRESS',[('action','DESELECT')],ctrl=True)
+	km.new(space,'paint.vert_select_all','I','PRESS',[('action','INVERT')],ctrl=True)
 
 def image_paint(km):
 	space = km.space('Image Paint','EMPTY','WINDOW')
@@ -552,7 +558,6 @@ def particle(km):
 	space = km.space('Particle','EMPTY','WINDOW')
 	add_switch_view(km,space)
 	km.new(space,'camera.set_active','C','PRESS',[])
-
 
 def outliner(km):
 	space = km.space('Outliner','OUTLINER','WINDOW')
@@ -747,6 +752,12 @@ def sequence_editor(km):
 def file_browser(km):
 	space = km.space('File Browser','FILE_BROWSER','WINDOW')
 	add_side_panel(km,space)
+	km.new(space,'file.refresh','F5','PRESS',[])
+	km.new(space,'file.parent','BACK_SPACE','PRESS',[])
+	km.new(space,'file.parent','UP_ARROW','PRESS',[],alt=True)
+	km.new(space,'file.next','RIGHT_ARROW','PRESS',[],alt=True)
+	km.new(space,'file.previous','LEFT_ARROW','PRESS',[],alt=True)
+	km.new(space,'file.directory_new','N','PRESS',[],ctrl=True,shift=True)
 	km.new(space,'filebrowser.scaleicons','WHEELUPMOUSE','PRESS',[('up',True)],ctrl=True)
 	km.new(space,'filebrowser.scaleicons','WHEELDOWNMOUSE','PRESS',[('up',False)],ctrl=True)
 	km.new(space,'file.select_all','A','PRESS',[('action','SELECT')],ctrl=True)

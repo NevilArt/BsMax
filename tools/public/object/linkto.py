@@ -14,98 +14,67 @@
 ############################################################################
 
 import bpy
-from mathutils import Vector
-from bsmax.graphic import register_line,unregister_line,get_screen_pos
+from mathutils import Vector, Matrix
+from bsmax.operator import PickOperator
 
-def get_center(objs):
-	location = Vector((0,0,0))
-	for obj in objs:
-		location += obj.matrix_world.translation
-	return location / len(objs)
-
-class Object_OT_Link_to(bpy.types.Operator):
-	""" this class mimics the 3DsMax link to operator """
-	#TODO add armatuar mode too
+class Object_OT_Link_to(PickOperator):
+	""" This Class mimics the 3DsMax 'link to' operator """
 	bl_idname = "object.link_to"
 	bl_label = "Link to"
 	bl_options = {'REGISTER', 'UNDO'}
-
-	handle = None
-	start, center, end = None, Vector((0,0,0)), None
-	children, parent = [], None
-
-	def modal(self, ctx, event):
-		ctx.area.tag_redraw()
-		if not event.type in {'LEFTMOUSE','RIGHTMOUSE', 'MOUSEMOVE', 'ESC'}:
-			return {'PASS_THROUGH'}
-		
-		elif event.type == 'MOUSEMOVE':
-			""" update the line coordinate """
-			""" self.center is a 3D coordinate """
-			self.start = get_screen_pos(ctx,self.center) 
-			self.end = event.mouse_region_x, event.mouse_region_y
-
-		elif event.type == 'LEFTMOUSE':
-			if event.value == 'PRESS':
-				""" clear all selection """
-				bpy.ops.object.select_all(action='DESELECT')
-				ctx.view_layer.objects.active = None
-				
-				""" Pick new object as target """
-				coord = event.mouse_region_x, event.mouse_region_y
-				bpy.ops.view3d.select(extend=False,location=coord)
-
-				""" Ignore selected obects as target """
-				if ctx.active_object in self.children:
-					ctx.view_layer.objects.active = None
-
-			if event.value =='RELEASE':
-				""" if target selected do parenting """
-				if ctx.view_layer.objects.active != None:
-					self.finish(ctx, event)
-
-			return {'RUNNING_MODAL'}
-
-		elif event.type in {'RIGHTMOUSE','ESC'}:
-			unregister_line(self.handle)
-			return {'CANCELLED'}
-
-		return {'RUNNING_MODAL'}
 	
-	def setup(self, ctx, event):
-		self.children = ctx.selected_objects.copy()
-		self.center = get_center(self.children)
-		self.start = self.end = event.mouse_region_x, event.mouse_region_y
-		bpy.ops.object.select_all(action='DESELECT')
-		ctx.view_layer.objects.active = None
-	
-	def finish(self, ctx, event):
-		parent_object = ctx.view_layer.objects.active
-		bpy.ops.object.select_all(action='DESELECT')
+	@classmethod
+	def poll(self, ctx):
+		if ctx.area.type == 'VIEW_3D':
+			return len(ctx.selected_objects) > 0
+		return False
+
+	def link_to_bone(self, obj, armature, bone):
+		t = Matrix.Translation(bone.tail - bone.head)
+		tmw = armature.matrix_world @ t @ bone.matrix
+		cmw = obj.matrix_world.copy()
+     
+		cml = tmw.inverted() @ cmw
+		obj.matrix_parent_inverse = cml @ obj.matrix_basis.inverted()
 		
-		for obj in self.children:
-			if parent_object.parent == obj:
-				location = parent_object.matrix_world.translation.copy()
-				parent_object.parent = None
-				parent_object.location = location
+		obj.parent = armature
+		obj.parent_bone = bone.name
+		obj.parent_type = 'BONE' 
+
+		obj.matrix_world = cmw
+
+	def picked(self, ctx, source, subsource, target, subtarget):
+		if not subsource:
+			""" Object -> Object """
+			for sobj in source:
+				""" unparent parent if linked to self child """
+				if target.parent == sobj:
+					location = target.matrix_world.translation.copy()
+					target.parent = None
+					target.location = location
+				sobj.parent = target
+				sobj.matrix_parent_inverse = target.matrix_world.inverted()
 		
-			obj.parent = parent_object
-			obj.matrix_parent_inverse = parent_object.matrix_world.inverted()
+				""" Object -> Bone """
+				if subtarget:
+					self.link_to_bone(sobj, target, subtarget)
 		
-		parent_object.select_set(state=True)
-		self.children.clear()
-		self.children.append(parent_object)
-		self.setup(ctx, event)
-	
-	def execute(self, ctx):
+		if not subsource and not subtarget:
+			bpy.ops.object.select_all(action='DESELECT')
+			target.select_set(True)
+			ctx.view_layer.objects.active = target
+			bpy.ops.object.link_to('INVOKE_DEFAULT')
+
+		""" Bone -> Bone """
+		if subsource and subtarget:
+			bpy.ops.object.mode_set(mode='EDIT', toggle=False)
+			for bone in subsource:
+				""" Target and source[0] are same here """
+				target.data.edit_bones[bone.name].parent = target.data.edit_bones[subtarget.name]
+				# TODO have to keep transform
+			self.set_mode(self.mode)
+		
 		self.report({'INFO'},'bpy.ops.object.link_to()')
-		return{"FINISHED"}
-
-	def invoke(self, ctx, event):
-		self.setup(ctx, event)
-		self.handle = register_line(ctx, self, '2d', (1, 0.5, 0.5, 1))
-		ctx.window_manager.modal_handler_add(self)
-		return {'RUNNING_MODAL'}
 
 # hasattr(bpy.types, bpy.ops.object.link_to.idname())
 
