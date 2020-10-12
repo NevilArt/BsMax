@@ -124,7 +124,7 @@ class PickOperator(Operator):
 				
 				""" Pick new object as target """
 				coord = event.mouse_region_x, event.mouse_region_y
-				bpy.ops.view3d.select(extend=False,location=coord)
+				bpy.ops.view3d.select(extend=False, location=coord)
 
 				""" Ignore selected obects as target """
 				if ctx.active_object in self.source:
@@ -136,13 +136,13 @@ class PickOperator(Operator):
 				picked_object = ctx.view_layer.objects.active
 				if picked_object != None:
 					if 'ANY' in self.filters or picked_object.type in self.filters:
-						self.finish(ctx, event, picked_object)
 						self.rb.unregister()
+						self.finish(ctx, event, picked_object)
 						return {'CANCELLED'}
 					else:
 						ctx.view_layer.objects.active = None
 						bpy.ops.object.select_all(action='DESELECT')
-				self.reselect_source()
+				self.restore_mode(ctx)
 
 			return {'RUNNING_MODAL'}
 
@@ -193,19 +193,21 @@ class PickOperator(Operator):
 		######################################################
 		ctx.view_layer.objects.active = None
 	
-	def set_mode(self, mode):
+	def set_mode(self, ctx, mode):
 		if mode in {'OBJECT', 'POSE'}:
-			bpy.ops.object.mode_set(mode=mode, toggle=False)
+			if ctx.mode != mode:
+				bpy.ops.object.mode_set(mode=mode, toggle=False)
 		else:
 			bpy.ops.object.mode_set(mode='EDIT', toggle=False)
 	
-	def restore_mode(self, ctx, target, subtarget):
-		bpy.ops.object.mode_set(mode='OBJECT', toggle=False)
+	def restore_mode(self, ctx):
+		if ctx.mode != 'OBJECT':
+			bpy.ops.object.mode_set(mode='OBJECT', toggle=False)
 		bpy.ops.object.select_all(action='DESELECT')
 		ctx.view_layer.objects.active = self.active
 		for obj in self.source:
 			obj.select_set(state = True)
-		self.set_mode(self.mode)
+		self.set_mode(ctx, self.mode)
 		for sub in self.subsource:
 			if ctx.mode == 'POSE':
 				sub.bone.select = True
@@ -214,7 +216,7 @@ class PickOperator(Operator):
 
 	def finish(self, ctx, event, target):
 		subtarget = self.get_bone(ctx, event, target) if target.type == 'ARMATURE' else None
-		self.restore_mode(ctx, target, subtarget)
+		self.restore_mode(ctx)
 		self.picked(ctx, self.source, self.subsource, target, subtarget)
 	
 	def picked(self, ctx, source, subsource, target, subtarget):

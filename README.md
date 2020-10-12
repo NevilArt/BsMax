@@ -5,7 +5,7 @@
 
 Recent Updates
 
-
+* PickOperator bug fixed.
 * Linkto Operator now can link Object directly to a bone.
 * PickOperator updated, now can return source, subsource, target and subtarget.
 * New Hotkeys added to weight paint and File Browser (Max mode only).
