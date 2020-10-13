@@ -5,6 +5,7 @@
 
 Recent Updates
 
+* Path Sort Operator updated (Select objects call the operator then pick path)
 * PickOperator bug fixed.
 * Linkto Operator now can link Object directly to a bone.
 * PickOperator updated, now can return source, subsource, target and subtarget.

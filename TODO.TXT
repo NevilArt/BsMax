@@ -23,6 +23,7 @@
 	Mimic the Slice modifire quick setup
 	Slide zoom Operator for maya navigation mode
 	video sequencer set current frame as first or last frame (range tool)
+	Network render manager
 
 # Issue
 	Convert to (apply all modifiers with confirm)

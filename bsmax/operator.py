@@ -98,6 +98,12 @@ class PickOperator(Operator):
 	mode, filters = 'OBJECT' , ['ANY']
 	rb = Rubber_Band()
 
+	@classmethod
+	def poll(self, ctx):
+		if ctx.area.type == 'VIEW_3D':
+			return len(ctx.selected_objects) > 0
+		return False
+
 	def modal(self, ctx, event):
 		ctx.area.tag_redraw()
 		if not event.type in {'LEFTMOUSE','RIGHTMOUSE', 'MOUSEMOVE', 'ESC'}:

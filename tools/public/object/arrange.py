@@ -15,10 +15,12 @@
 
 import bpy
 from bpy.types import Operator
+from bpy.props import FloatProperty
 from bsmax.math import get_distance,point_on_curve
+from bsmax.operator import PickOperator
 
-class BsMax_OT_DistanceSort(Operator):
-	bl_idname = "object.distancesort"
+class Object_OT_Distance_Sort(Operator):
+	bl_idname = "object.distance_sort"
 	bl_label = "Distance Sort"
 	bl_description = "Sort Selected object in Line"
 
@@ -59,48 +61,78 @@ class BsMax_OT_DistanceSort(Operator):
 				Sobj[i].rotation_euler.y = YA+((YB - YA)/(len(Sobj) - 1))*i
 			for i in range(1,(len(Sobj) - 1)):
 				Sobj[i].rotation_euler.z = ZA+((ZB - ZA)/(len(Sobj) - 1))*i
-		self.report({'INFO'},"bpy.ops.object.distancesort()")
+		self.report({'INFO'},"bpy.ops.object.distance_sort()")
 		return{"FINISHED"}
 
-class BsMax_OT_PathSort(Operator):
-	bl_idname = "object.pathsort"
-	bl_label = "Path Sort"
-	bl_description = "Sort Selected object on Active Curve"
+
+
+class Path_Sort_Apply:
+	def __init__(self):
+		self.enable = False
+""" hide operator for user """
+psa = Path_Sort_Apply()
+
+class Object_OT_Path_Sort_Apply(Operator):
+	bl_idname = "object.path_sort_apply"
+	bl_label = "Path Sort Apply"
+	objs, path = [], None
+	start: FloatProperty(name="Start:",min=0,max=1,step=0.01,precision=3,default=0.0)
+	end: FloatProperty(name="End:",min=0,max=1,step=0.01,precision=3,default=1.0)
 
 	@classmethod
 	def poll(self, ctx):
-		if ctx.area.type == 'VIEW_3D':
-			if ctx.active_object.type == 'CURVE' and len(ctx.selected_objects) > 1:
-				return True
-		return False
+		return psa.enable
+	
+	def draw(self, ctx):
+		layout = self.layout
+		row = layout.row(align=True)
+		row.prop(self,"start")
+		row.prop(self,"end")
+	
+	def set_location(self, obj, path, time):
+		p = point_on_curve(path, 0, time)
+		p.x *= path.scale.x**2
+		p.y *= path.scale.y**2
+		p.z *= path.scale.z**2
+		location = p @ path.matrix_world.inverted() + path.location
+		obj.location = location
+	
+	def check(self, ctx):
+		close = self.path.data.splines[0].use_cyclic_u
+		count = len(self.objs)
+		length = (self.end - self.start) / 1
+		for i in range(count):
+			t = i/count if close else i / (count - 1) if count > 1 else 0
+			time = self.start + t * length
+			self.set_location(self.objs[i], self.path, time)
 
-	def execute(self, ctx):
-		objs = ctx.selected_objects.copy()
-		path = ctx.active_object
-		if path.type == 'CURVE':
-			if len(objs) > 0 and path != None:
-				if path in objs:
-					objs.remove(path)
-				count = len(objs)
-				close = path.data.splines[0].use_cyclic_u
-				for i in range(count):
-					t= i/count if close else i/(count - 1)
-					p= point_on_curve(path, 0, t)
-					p.x *= path.scale.x**2
-					p.y *= path.scale.y**2
-					p.z *= path.scale.z**2
-					location = p @ path.matrix_world.inverted() + path.location
-					objs[i].location = location
-		self.report({'INFO'},"bpy.ops.object.pathsort()")
-		return{"FINISHED"}
+	def execute(self,ctx):
+		return {'FINISHED'}
+
+	def invoke(self, ctx, event):
+		psa.enable = False
+		self.objs = ctx.selected_objects
+		self.path = ctx.active_object
+		self.check(ctx)
+		return ctx.window_manager.invoke_props_dialog(self)
+	
+class Object_OT_Path_Sort(PickOperator):
+	bl_idname = "object.path_sort"
+	bl_label = "Path Sort"
+	bl_description = "Sort Selected object on a Curve"
+	filters = ['CURVE']
+	def picked(self, ctx, source, subsource, target, subtarget):
+		ctx.view_layer.objects.active = target
+		psa.enable = True
+		bpy.ops.object.path_sort_apply('INVOKE_DEFAULT')
 
 def object_sort_menu(self, ctx):
 	layout = self.layout
 	layout.separator()
-	layout.operator("object.distancesort")
-	layout.operator("object.pathsort")
+	layout.operator("object.distance_sort")
+	layout.operator("object.path_sort")
 
-classes = [BsMax_OT_DistanceSort, BsMax_OT_PathSort]
+classes = [Object_OT_Distance_Sort, Object_OT_Path_Sort, Object_OT_Path_Sort_Apply]
 
 def register_arrange():
 	[bpy.utils.register_class(c) for c in classes]
@@ -109,3 +141,6 @@ def register_arrange():
 def unregister_arrange():
 	bpy.types.VIEW3D_MT_transform_object.remove(object_sort_menu)
 	[bpy.utils.unregister_class(c) for c in classes]
+
+if __name__ == "__main__":
+	register_arrange()
