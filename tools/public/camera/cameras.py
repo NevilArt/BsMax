@@ -28,20 +28,26 @@ class Camera_OT_Create_From_View(Operator):
 	def poll(self, ctx):
 		return ctx.area.type == 'VIEW_3D'
 
+	def camera_to_view(self, ctx):
+		# ctx.area.spaces.active.region_3d.view_matrix
+		bpy.ops.view3d.camera_to_view()
+	
+	def create_new_camera(self, ctx):
+		bpy.ops.object.camera_add()
+		ctx.scene.camera = bpy.data.objects[ctx.active_object.name]
+
 	def execute(self, ctx):
 		obj = ctx.selected_objects
 		if len(obj) == 1:
 			if obj[0].type == 'CAMERA':
 				ctx.scene.camera = obj[0]
-				bpy.ops.view3d.camera_to_view()
+				self.camera_to_view(ctx)
 			else:
-				bpy.ops.object.camera_add()
-				ctx.scene.camera = bpy.data.objects[ctx.active_object.name]
-				bpy.ops.view3d.camera_to_view()
+				self.create_new_camera(ctx)
+				self.camera_to_view(ctx)
 		else:
-			bpy.ops.object.camera_add()
-			ctx.scene.camera = bpy.data.objects[ctx.active_object.name]
-			bpy.ops.view3d.camera_to_view()
+			self.create_new_camera(ctx)
+			self.camera_to_view(ctx)
 		
 		self.report({'INFO'},'bpy.ops.camera.create_from_view()')
 		return{"FINISHED"}

@@ -158,7 +158,11 @@ class Mesh_OT_Delete_Auto(Operator):
 			if v:
 				bpy.ops.mesh.delete(type='VERT')
 			if e:
+				""" For remove the extera edges """
+				#TODO find the API for this
+				# Select expaned to Face mode (Face) Need to find python API for this
 				bpy.ops.mesh.delete(type='EDGE')
+				# ctx.tool_settings.mesh_select_mode = v,e,f # restore mode
 			if f:
 				bpy.ops.mesh.delete(type='FACE')
 		self.report({'INFO'},'bpy.ops.mesh.delete_auto()')

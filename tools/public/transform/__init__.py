@@ -13,7 +13,7 @@
 #	along with this program.  If not, see <https://www.gnu.org/licenses/>.
 ############################################################################
 
-from .alignobjects import register_alignobjects,unregister_alignobjects
+from .align_objects import register_align_objects,unregister_align_objects
 from .coordinate import register_coordinate,unregister_coordinate
 from .mirror import register_mirror,unregister_mirror
 from .snap import register_snap,unregister_snap
@@ -23,7 +23,7 @@ from .transformtypein import register_transformtypein,unregister_transformtypein
 from .zoomextended import register_zoomextended,unregister_zoomextended
 
 def register_transform():
-	register_alignobjects()
+	register_align_objects()
 	register_coordinate()
 	register_mirror()
 	register_snap()
@@ -33,7 +33,7 @@ def register_transform():
 	register_zoomextended()
 
 def unregister_transform():
-	unregister_alignobjects()
+	unregister_align_objects()
 	unregister_coordinate()
 	unregister_mirror()
 	unregister_snap()

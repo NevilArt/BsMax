@@ -17,15 +17,18 @@ from .frames import register_frames,unregister_frames
 # from .proxy import register_proxy,unregister_proxy
 from .lightlister import register_lightlister,unregister_lightlister
 # from .menu import register_menu,unregister_menu
+# from .quick_render import register_quick_render,unregister_quick_render
 
 def register_render():
 	register_frames()
 	# register_proxy()
 	register_lightlister()
 	# register_menu()
+	# register_quick_render()
 
 def unregister_render():
 	unregister_frames()
 	# unregister_proxy()
 	unregister_lightlister()
 	# unregister_menu()
+	# unregister_quick_render()

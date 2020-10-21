@@ -15,6 +15,7 @@
 
 import bpy
 from bpy.types import Operator
+from bpy.props import BoolProperty
 
 class Object_OT_Collaps_Modifiers(Operator):
 	bl_idname = "object.collaps_modifiers"
@@ -65,7 +66,35 @@ class Object_OT_Convert(Operator):
 			bpy.ops.primitive.cleardata('INVOKE_DEFAULT')
 			bpy.ops.object.convert(target=self.target)
 		return{"FINISHED"}
-classes = [Object_OT_Collaps_Modifiers, Object_OT_Convert]
+
+class Object_OT_Join(Operator):
+	bl_idname = "object.smart_join"
+	bl_label = "Smart Join"
+	# bl_description = ""
+
+	apply: BoolProperty(name='Apply', default=False)
+
+	@classmethod
+	def poll(self, ctx):
+		return ctx.active_object != None
+
+	def apply_modifiers(self, obj):
+		if self.apply:
+			pass
+	
+	def execute(self, ctx):
+		targte = ctx.active_object
+
+		for obj in ctx.selected_objects:
+			if obj.type == targte.type:
+				self.apply_modifiers(obj)
+				""" Remove primitive data if has targets """
+				targte.data.primitivedata.classname = ""
+
+		bpy.ops.object.join()
+		return{"FINISHED"}
+
+classes = [Object_OT_Collaps_Modifiers, Object_OT_Convert, Object_OT_Join]
 
 def register_convert():
 	[bpy.utils.register_class(c) for c in classes]

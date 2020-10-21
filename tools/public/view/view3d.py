@@ -14,8 +14,10 @@
 ############################################################################
 
 import bpy
+from bpy.types import Operator
+from bpy.props import StringProperty,FloatProperty,IntProperty,BoolProperty,EnumProperty
 
-class View3D_OT_perespective(bpy.types.Operator):
+class View3D_OT_perespective(Operator):
 	bl_idname = 'view3d.perespective'
 	bl_label = 'Perespective'
 
@@ -41,9 +43,47 @@ class View3D_OT_perespective(bpy.types.Operator):
 		elif self.mode == 'Orthographic':
 			r3d.view_perspective = 'ORTHO'
 		return{'FINISHED'}
+	
+class Object_OT_Viewport_Display(Operator):
+	bl_idname = "object.viewoport_display"
+	bl_label = "Object Viewport Dispaly"
+
+	@classmethod
+	def poll(self,ctx):
+		return ctx.active_object != None
+
+	def draw(self,ctx):
+		layout =self.layout
+		layout.prop(ctx.object,'show_name',text='Name')
+		layout.prop(ctx.object,'show_axis',text='Axix')
+		layout.prop(ctx.object,'show_wire',text='Wireframe')
+		layout.prop(ctx.object,'show_all_edges',text='All Edges')
+		layout.prop(ctx.object,'show_texture_space',text='Texture Space')
+		layout.prop(ctx.object.display,'show_shadows',text='Shadow')
+		layout.prop(ctx.object,'show_in_front',text='In Front')
+		layout.prop(ctx.object,'color',text='Color')
+		layout.prop(ctx.object,'display_type',text='Display As')
+		row = layout.row()
+		row.prop(ctx.object,'show_bounds',text='Bounds')
+		row.prop(ctx.object,'display_bounds_type',text='')
+		layout.label(text="'Hold Alt for Apply Selection'")
+
+	def execute(self,ctx):
+		return {'FINISHED'}
+
+	def cancel(self,ctx):
+		return None
+	
+	def invoke(self,ctx,event):
+		return ctx.window_manager.invoke_props_dialog(self, width=150)
+
+classes = [View3D_OT_perespective, Object_OT_Viewport_Display]
 
 def register_view3d():
-	bpy.utils.register_class(View3D_OT_perespective)
+	[bpy.utils.register_class(c) for c in classes]
 
 def unregister_view3d():
-	bpy.utils.unregister_class(View3D_OT_perespective)
+	[bpy.utils.unregister_class(c) for c in classes]
+
+if __name__ == "__main__":
+	register_view3d()

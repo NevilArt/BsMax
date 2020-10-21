@@ -5,13 +5,16 @@
 
 Recent Updates
 
+* Align Objects has better UI and able to Align Objects to Bone of Armature too.
+* Primitive Geometries create and update with Shade Smooth active.
+* Join (ctrl+J) clear primitive data now.
+* Object display setiing assined to 'Alt+X'.
 * Path Sort Operator updated (Select objects call the operator then pick path)
 * PickOperator bug fixed.
 * Linkto Operator now can link Object directly to a bone.
 * PickOperator updated, now can return source, subsource, target and subtarget.
 * New Hotkeys added to weight paint and File Browser (Max mode only).
 * Camera search any object display filter toggle Keymaps added for paint/sculp modes too.
-* Keymap updated in UV editor for Max like selection
 * Timeline Red header issue fixed.
 * Path Constraint setting up a "Follow Path" in two clicks and set the key frame on Object rather than the path.
 * Parent Constraint in object mode can directly parent the Objects to the Bone rather than Armature.
@@ -23,13 +26,11 @@ Recent Updates
 * Pose menu added to Quadmenu and some Keymap added for Pose mode.
 * Select Element enabled for Curve mode too ('5' Toggle On/Off)
 * Select Element enabled for 3DsMax mode ('5' Toggle On/Off, 'Ctrl + 5' Open Setting Dialog)
-* Keymap updated (Clipt Editor for 3DsMax mode) and some keymap issues fixed.
 * Open the keymaps list in github wiki via addon preferences (In production).
 * Preferences UI changed, more optional and easy to understand.
 * Quad menu can scale from addon preferences.
 * lots of code cleaning and Simplification to make future improvment easy.
 * Align Objects has percentage option now and can put in halfway or increase distance by entering negative value.
-* Keymap issue fixed on Dope Sheet and Graph Editor.
 * Some New Items added to Quad menu.
 * "Link to" operator (Avalible in Quadmenu).
 * Align objects draws a line to show the tool is active.
@@ -52,10 +53,4 @@ Recent Updates
 * Snap automaticly changes on Move Rotate tool call viea short cut(act more max like).
 * View undo can disable now (some times cause the viewport leg).
 * Camera lister updated ('C' in Max mode).
-* Animated primitives problem solved.
-* Object Properties added to Quad menu (not perfect but some thing better than nothing).
-* Split Edge added to quad menu.
-* 'Z' for find active object in outliner (3DsMax mode).
-* Zoom extended updated, works in edit mode too (3DsMax mode).
-* Specific frames render replaced but not complete yet.
 * ...

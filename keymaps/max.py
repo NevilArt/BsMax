@@ -107,7 +107,8 @@ def window(km):
 
 def screen(km):
 	space = km.space('Screen','EMPTY','WINDOW')
-	km.new(space,'render.render','F9','PRESS',[('use_viewport',True)])
+	# km.new(space,'render.render','F9','PRESS',[('use_viewport',True)])
+	km.new(space,'render.quick_render','F9','PRESS',[])
 	km.new(space,'render.render','Q','PRESS',[('use_viewport',True),('animation',True)],shift=True)
 	km.new(space,'screen.repeat_last','SEMI_COLON','PRESS',[])
 	km.new(space,'screen.screen_full_area','X','PRESS',[],ctrl=True)
@@ -297,13 +298,15 @@ def object_mode(km,preferences):
 	# km.new(space,'view3d.show_camera_toggle','C','PRESS',[],shift=True)
 
 	km.new(space,'object.modify_pivotpoint','INSERT','PRESS',[])
-	km.new(space,'wm.call_menu','INSERT','PRESS',[('name','BSMAX_MT_SetPivotPoint')],ctrl=True)
+	km.new(space,'wm.call_menu','INSERT','PRESS',[('name','object_MT_Set_Pivot_Point')],ctrl=True)
 
 	km.new(space,'object.align_selected_to_target','A','PRESS',[],alt=True)
 	km.new(space,'object.transform_type_in','F12','PRESS',[])
 	km.new(space,'view3d.lighting_toggle','L','PRESS',[],ctrl=True)
 	km.new(space,'camera.select','C','PRESS',[])
 	km.new(space,'modifier.edit_multi','TAB','PRESS',[],ctrl=True)
+	km.new(space,'object.viewoport_display','X','PRESS',[],alt=True)
+	km.new(space,'object.smart_join','J','PRESS',[],ctrl=True)
 
 def mesh(km,preferences):
 	km.mute('Mesh','mesh.shortest_path_pick','LEFTMOUSE','CLICK',ctrl=True)

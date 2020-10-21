@@ -185,6 +185,36 @@ class View3D_OT_ZoomOutCover(Operator):
 		ctx.window_manager.modal_handler_add(self)
 		return {'RUNNING_MODAL'}
 
+###########################################################################
+# class View3D_OT_Slide_Zoom(Operator):
+# 	bl_idname = "view3d.slide_zoom"
+# 	bl_label = "Slide Zoom (Maya mode)"
+# 	x,y = 0,0
+	
+# 	@classmethod
+# 	def poll(self, ctx):
+# 		return ctx.area.type == 'VIEW_3D'
+	
+# 	def modal(self, ctx, event):
+
+# 		if not event.type in {'RIGHTMOUSE', 'MOUSEMOVE'}:
+# 			return {'PASS_THROUGH'}
+
+# 		if event.type == 'MOUSEMOVE':
+# 			value_x = event.mouse_x - self.x
+# 			value_y = event.mouse_y - self.y
+# 			record_navigation(ctx, event)
+# 			bpy.ops.view3d.zoom('INVOKE_DEFAULT', delta = -1)
+		
+# 		if event.type == 'RIGHTMOUSE' and event.value == 'RELEASE':
+# 			return {'CANCELLED'}
+# 		return {'RUNNING_MODAL'}
+
+# 	def invoke(self, ctx, event):
+# 		ctx.window_manager.modal_handler_add(self)
+# 		return {'RUNNING_MODAL'}
+###########################################################################
+
 class View3D_OT_DollyCover(Operator):
 	bl_idname = "view3d.dollycover"
 	bl_label = "Dolly View (Cover)"

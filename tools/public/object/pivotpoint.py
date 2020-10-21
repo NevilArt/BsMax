@@ -175,8 +175,8 @@ class Object_OT_Pivot_To_Buttom_Center(Operator):
 		self.report({'INFO'},'bpy.ops.object.pivot_to_buttom_center()')
 		return {"FINISHED"}
 
-class BsMax_MT_SetPivotPoint(Menu):
-	bl_idname = "BSMAX_MT_SetPivotPoint"
+class Object_MT_Set_Pivot_Point(Menu):
+	bl_idname = "OBJECT_MT_set_pivot_point"
 	bl_label = "Set Pivot Point"
 	def draw(self, ctx):
 		layout = self.layout
@@ -196,7 +196,7 @@ def snap_menu(self, ctx):
 classes = [Object_OT_Pivot_To_First_Point,
 	Object_OT_Modify_Pivot,
 	Object_OT_Pivot_To_Buttom_Center,
-	BsMax_MT_SetPivotPoint]
+	Object_MT_Set_Pivot_Point]
 
 def register_pivotpoint():
 	[bpy.utils.register_class(c) for c in classes]
