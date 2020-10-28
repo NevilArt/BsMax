@@ -107,8 +107,8 @@ def window(km):
 
 def screen(km):
 	space = km.space('Screen','EMPTY','WINDOW')
-	# km.new(space,'render.render','F9','PRESS',[('use_viewport',True)])
-	km.new(space,'render.quick_render','F9','PRESS',[])
+	km.new(space,'render.render','F9','PRESS',[('use_viewport',True)])
+	# km.new(space,'render.quick_render','F9','PRESS',[])
 	km.new(space,'render.render','Q','PRESS',[('use_viewport',True),('animation',True)],shift=True)
 	km.new(space,'screen.repeat_last','SEMI_COLON','PRESS',[])
 	km.new(space,'screen.screen_full_area','X','PRESS',[],ctrl=True)

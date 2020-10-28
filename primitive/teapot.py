@@ -205,6 +205,8 @@ class Teapot(PrimitiveGeometryClass):
 		self.finishon = 2
 		self.owner = None
 		self.data = None
+		""" Default Settings """
+		self.auto_smooth_angle = 1.5708
 	def reset(self):
 		self.__init__()
 	def create(self, ctx):
@@ -214,6 +216,8 @@ class Teapot(PrimitiveGeometryClass):
 		pd.classname = self.classname
 		pd.csegs = 4
 		pd.bool1,pd.bool2,pd.bool3,pd.bool4 = True,True,True,True
+		""" Apply Default Settings """
+		self.data.auto_smooth_angle = self.auto_smooth_angle
 	def update(self):
 		pd = self.data.primitivedata
 		mesh = get_teapot_mesh(pd.radius1,pd.csegs,pd.bool1,pd.bool2,pd.bool3,pd.bool4)

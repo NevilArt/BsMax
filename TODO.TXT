@@ -6,6 +6,7 @@
 	F9 if no active camera in scene create one befor render and delete after render
 	Outliner if more than one object selected open multi rename tool
 	Shader editor A assyn to selected
+	Disable F9
 
 # Tools
 	Refine tool for Curves
@@ -32,13 +33,15 @@
 		Curve key keys between first and last key
 		Time range marker
 		Select Keyed/Nonkeyed controllers
+	Better Isolate system (Alt+Q)
+	Character lister (some thing like light lister for rigged Armatures)
+		Select, Isolate, Hide/Unhide, Skin on/off, Animation on/off, Subdivision, ...
 
 # Issue
 	Convert to (apply all modifiers with confirm)
 	Helix height and last segment
 	Edge mode delete face most desolve edges too
-	Seprate smart loop and rigg from regular one or update to make it work faster
-	While an image editor is open and shows render resoult dont open another one
+	Seprate smart loop and ring from regular one or update to make it work faster
 	pivot to first vertex not working on rotated objects
 		need a function to return true position of vertex and knot in world space
 	Bone to Bone link_to net to fix transform
@@ -50,7 +53,6 @@
 	Zoom extended on limit gride area
 	Helix with bezier segments with less count of knots (Bezier points)
 	PickOperator had works on other modes to (Subtarget to object or another subtarget)
-	Each primitive needs special auto_smooth_angle value
 
 # Quad menu
 	Seam and UV tools

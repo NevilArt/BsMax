@@ -291,6 +291,8 @@ class Monkey(PrimitiveGeometryClass):
 		self.finishon = 2
 		self.owner = None
 		self.data = None
+		""" Default Settings """
+		self.auto_smooth_angle = 3.14159
 	def reset(self):
 		self.__init__()
 	def create(self, ctx):
@@ -298,6 +300,8 @@ class Monkey(PrimitiveGeometryClass):
 		self.create_mesh(ctx, mesh, self.classname)
 		pd = self.data.primitivedata
 		pd.classname = self.classname
+		""" Apply Default Settings """
+		self.data.auto_smooth_angle = self.auto_smooth_angle
 	def update(self):
 		pd = self.data.primitivedata
 		mesh = get_monkey_mesh(pd.radius1)

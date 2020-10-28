@@ -89,6 +89,8 @@ class Torus(PrimitiveGeometryClass):
 		self.finishon = 3
 		self.owner = None
 		self.data = None
+		""" Default Settings """
+		self.auto_smooth_angle = 0.785398
 	def reset(self):
 		self.__init__()
 	def create(self, ctx):
@@ -97,6 +99,8 @@ class Torus(PrimitiveGeometryClass):
 		pd = self.data.primitivedata
 		pd.classname = self.classname
 		pd.ssegs, pd.ssegs_b = 24, 12
+		""" Apply Default Settings """
+		self.data.auto_smooth_angle = self.auto_smooth_angle
 	def update(self):
 		pd = self.data.primitivedata
 		mesh = get_torus_mesh(pd.radius1, pd.radius2, pd.rotation, pd.twist, 

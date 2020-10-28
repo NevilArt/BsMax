@@ -13,14 +13,16 @@
 #	along with this program.  If not, see <https://www.gnu.org/licenses/>.
 ############################################################################
 
-from .animationkey import register_animationkey,unregister_animationkey
-from .frameupdate import register_frameupdate,unregister_frameupdate
-from .parent import register_parent,unregister_parent
-from .pose import register_pose,unregister_pose
-from .menu import register_menu,unregister_menu
+from .animationkey import register_animationkey, unregister_animationkey
+from .character_lister import register_character_lister, unregister_character_lister
+from .frameupdate import register_frameupdate, unregister_frameupdate
+from .parent import register_parent, unregister_parent
+from .pose import register_pose, unregister_pose
+from .menu import register_menu, unregister_menu
 
 def register_animation():
 	register_animationkey()
+	register_character_lister()
 	register_frameupdate()
 	register_parent()
 	register_pose()
@@ -28,6 +30,7 @@ def register_animation():
 
 def unregister_animation():
 	unregister_animationkey()
+	unregister_character_lister()
 	unregister_frameupdate()
 	unregister_menu()
 	unregister_pose()
