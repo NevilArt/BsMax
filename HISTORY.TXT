@@ -1,5 +1,9 @@
 
 
+# 0,1,0,20201028
+	Default auto smooth fixed for Torus, Teapot, Monkey primitives.
+	Bugfix.
+
 # 0,1,0,20201026 and befor
 	Align Objects has better UI and able to Align Objects to Bone of Armature too.
 	Primitive Geometries create and update with Shade Smooth active.

@@ -72,7 +72,7 @@ class Object_OT_Link_to(PickOperator):
 				""" Target and source[0] are same here """
 				target.data.edit_bones[bone.name].parent = target.data.edit_bones[subtarget.name]
 				# TODO have to keep transform
-			self.set_mode(self.mode)
+			# self.set_mode(self.mode)
 		
 		self.report({'INFO'},'bpy.ops.object.link_to()')
 

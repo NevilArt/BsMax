@@ -16,26 +16,48 @@
 import bpy
 from bpy.props import StringProperty, BoolProperty
 from bpy.types import Scene, Panel, Operator
+from bsmax.operator import PickOperator
 
-class Object_OT_Attach(Operator):
-	bl_idname = "object.attach"
+class Mesh_OT_Attach(PickOperator):
+	bl_idname = "mesh.attach"
 	bl_label = "Attach"
-	#custom_property: PointerProperty(type = bpy.types.Object)
-	def execute(self, ctx):
-		# print("Attach by eyedrop working on progress")
-		# self.report({'INFO'},'bpy.ops.object.attach()')
-		return{"FINISHED"}
+	filters = ['MESH']
 
-class Object_OT_Attach_List(Operator):
-	bl_idname = "object.attach_list"
+	@classmethod
+	def poll(self, ctx):
+		if ctx.area.type == 'VIEW_3D':
+			if len(ctx.scene.objects) > 0:
+				if ctx.object != None:
+					return ctx.mode == 'EDIT_MESH'
+		return False
+
+	def picked(self, ctx, source, subsource, target, subtarget):
+		bpy.ops.object.mode_set(mode='OBJECT', toggle=False)
+		target.select_set(state = True)
+		bpy.ops.object.join()
+		bpy.ops.object.mode_set(mode='EDIT', toggle=False)
+		bpy.ops.mesh.attach('INVOKE_DEFAULT')
+		self.report({'INFO'},'bpy.ops.mesh.attach()')
+
+class Mesh_OT_Attach_List(Operator):
+	bl_idname = "mesh.attach_list"
 	bl_label = "Attach List"
+	
+	@classmethod
+	def poll(self, ctx):
+		if ctx.area.type == 'VIEW_3D':
+			if len(ctx.scene.objects) > 0:
+				if ctx.object != None:
+					return ctx.mode == 'EDIT_MESH'
+		return False
+	
 	def execute(self, ctx):
 		# print("Attach by list working on progress")
 		# self.report({'INFO'},'bpy.ops.object.attach_list()')
 		return{"FINISHED"}
 
-class Object_OT_Detach(Operator):
-	bl_idname = "object.detach"
+class Mesh_OT_Detach(Operator):
+	bl_idname = "mesh.detach"
 	bl_label = "Detach"
 
 	name:StringProperty(name="Name")
@@ -92,10 +114,13 @@ class Object_OT_Detach(Operator):
 			self.name = ctx.active_object.name
 		return ctx.window_manager.invoke_props_dialog(self)
 
-classes = [Object_OT_Attach, Object_OT_Attach_List, Object_OT_Detach]
+classes = [Mesh_OT_Attach, Mesh_OT_Attach_List, Mesh_OT_Detach]
 
 def register_attach():
 	[bpy.utils.register_class(c) for c in classes]
 
 def unregister_attach():
 	[bpy.utils.unregister_class(c) for c in classes]
+
+if __name__ == "__main__":
+	register_attach()

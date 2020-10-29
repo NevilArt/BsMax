@@ -12,7 +12,7 @@
 #	You should have received a copy of the GNU General Public License
 #	along with this program.  If not, see <https://www.gnu.org/licenses/>.
 ############################################################################
-
+from .attach import register_attach,unregister_attach
 from .chamfer import register_chamfer,unregister_chamfer
 from .outline import register_outline,unregister_outline
 from .boolean import register_boolean,unregister_boolean
@@ -22,6 +22,7 @@ from .weld import register_weld,unregister_weld
 # from .panel import *
 
 def register_curve():
+	register_attach()
 	register_chamfer()
 	register_outline()
 	register_boolean()
@@ -30,6 +31,7 @@ def register_curve():
 	register_weld()
 
 def unregister_curve():
+	unregister_attach()
 	unregister_chamfer()
 	unregister_outline()
 	unregister_boolean()

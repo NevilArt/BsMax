@@ -125,6 +125,8 @@ class PickOperator(Operator):
 		elif event.type == 'LEFTMOUSE':
 			if event.value == 'PRESS':
 				""" clear all selection """
+				if ctx.mode != 'OBJECT':
+					bpy.ops.object.mode_set(mode='OBJECT', toggle=False)
 				bpy.ops.object.select_all(action='DESELECT')
 				ctx.view_layer.objects.active = None
 				
@@ -132,7 +134,7 @@ class PickOperator(Operator):
 				coord = event.mouse_region_x, event.mouse_region_y
 				bpy.ops.view3d.select(extend=False, location=coord)
 
-				""" Ignore selected obects as target """
+				""" Ignore source obects as target """
 				if ctx.active_object in self.source:
 					if self.subsource == []:
 						ctx.view_layer.objects.active = None
@@ -141,13 +143,27 @@ class PickOperator(Operator):
 				""" if target selected check and return """
 				picked_object = ctx.view_layer.objects.active
 				if picked_object != None:
-					if 'ANY' in self.filters or picked_object.type in self.filters:
+					allowed = False
+					""" Filter the selection types """
+					if 'ANY' in self.filters:
+						allowed = True
+					
+					if picked_object.type in self.filters:
+						allowed = True
+					
+					if 'AUTO' in self.filters and len(self.source) > 0:
+						#TODO need to smarter method
+						if self.source[0].type == picked_object.type and self.source[0] != picked_object:
+							allowed = True
+				
+					if allowed:
 						self.rb.unregister()
 						self.finish(ctx, event, picked_object)
 						return {'CANCELLED'}
 					else:
 						ctx.view_layer.objects.active = None
 						bpy.ops.object.select_all(action='DESELECT')
+				
 				self.restore_mode(ctx)
 
 			return {'RUNNING_MODAL'}
@@ -159,6 +175,7 @@ class PickOperator(Operator):
 		return {'RUNNING_MODAL'}
 	
 	def get_center(self, objs):
+		""" Return selected objects midil """
 		location = Vector((0,0,0))
 		for obj in objs:
 			location += obj.matrix_world.translation
@@ -196,8 +213,7 @@ class PickOperator(Operator):
 		self.center = self.get_center(self.source)
 		######################################################
 		self.start = self.end = event.mouse_region_x, event.mouse_region_y
-		######################################################
-		ctx.view_layer.objects.active = None
+		######################################################	
 	
 	def set_mode(self, ctx, mode):
 		if mode in {'OBJECT', 'POSE'}:
@@ -219,6 +235,9 @@ class PickOperator(Operator):
 				sub.bone.select = True
 			elif ctx.mode == 'EDIT_ARMATURE':
 				sub.select = True
+			
+	def cancel(self, ctx):
+		self.set_mode(ctx, self.modal)
 
 	def finish(self, ctx, event, target):
 		subtarget = self.get_bone(ctx, event, target) if target.type == 'ARMATURE' else None
@@ -237,13 +256,6 @@ class PickOperator(Operator):
 # class picker_OT_test(PickOperator):
 # 	bl_idname = "object.picker"
 # 	bl_label = "picker test"
-	
+#	filters = ['ANY']
 # 	def picked(self, ctx, source, subsource, target, subtarget):
-# 		print("------------------------")
-# 		print("-source>", source)
-# 		print("-subs>", subsource)
-# 		print("-target>", target)
-# 		print("-subtarget>", subtarget)
-
-# if __name__ == "__main__":
-# 	bpy.utils.register_class(picker_OT_test)
+#		pass

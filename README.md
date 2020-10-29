@@ -20,10 +20,13 @@ The goal of UI simulator is make people come form other software (like me) feel 
 * Press the "Save Preferences Setting" button.
 * It is better to restart the Blender after install.
 
-# Lastest Updates
+# latest Updates
 
-* Default auto smooth fixed for Torus, Teapot, Monkey primitives.
-* Some minor bug fix.
+* Atach picked object in Edit mode like 3DsMax`s edit poly attach (object mode and Edit mode in Quad menu).
+* Same Attach function added for Curve & Armature too.
+* ObjectPicker Operator updated.
+* Pivot to First Bezier point issue fixed (Ctrl + Insert in set pivot point menu).
+* Bugfix.
 * [Update History...](https://github.com/NevilArt/BsMax_2_80/blob/master/HISTORY.TXT)
 
 # License

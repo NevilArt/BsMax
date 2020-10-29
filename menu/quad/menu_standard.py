@@ -141,7 +141,10 @@ def get_view3d_tool1(ctx):
 			items.append(QuadItem("Quickslice",f,IsEditMode,n,c0025,n))
 			items.append(QuadItem("Cut",f,IsEditMode,n,c0026,n))
 			items.append(seprator())
-			items.append(QuadItem("Attach",f,t,n,c0098,c0099))
+			if IsEditMode:
+				items.append(QuadItem("Attach",f,t,n,c0098,n))
+			else:
+				items.append(QuadItem("Attach",f,t,n,c0210,n))
 			items.append(QuadItem("Collaps",f,IsEditMode,n,c0027,n))
 			items.append(QuadItem("Hide Unselected",f,IsEditMode,n,c0028,n))
 			items.append(seprator())
@@ -170,6 +173,9 @@ def get_view3d_tool1(ctx):
 				items.append(seprator())
 				items.append(QuadItem("Make First",f,t,n,c0161,n))
 				items.append(QuadItem("Revarse Spline",f,t,n,c0160,n))
+			else:
+				items.append(seprator())
+				items.append(QuadItem("Attach",f,t,n,c0210,n))
 	if get_active_type(ctx) == 'ARMATURE':
 		items.append(QuadItem("Octahedral",f,t,n,c0150,n))
 		items.append(QuadItem("Stick",f,t,n,c0151,n))
@@ -180,6 +186,9 @@ def get_view3d_tool1(ctx):
 			pass
 		elif ctx.mode == 'POSE':
 			pass
+		else:
+			items.append(seprator())
+			items.append(QuadItem("Attach",f,t,n,c0210,n))
 	return "Tool1",items,3
 
 def get_view3d_tool2(ctx):
@@ -241,7 +250,7 @@ def get_view3d_tool2(ctx):
 				items.append(QuadItem("Remove Isolated Faces",f,t,n,c0135,n))
 	elif get_active_type(ctx) == 'CURVE' and ctx.mode == 'EDIT_CURVE':
 		items.append(QuadItem("Create Line",f,f,n,"",n))
-		items.append(QuadItem("Attach",f,f,n,"",""))
+		items.append(QuadItem("Attach",f,t,n,c0208,n))
 		items.append(QuadItem("Detach Segment",f,f,n,"",n))
 		items.append(seprator())
 		items.append(QuadItem("Chamfer",f,t,n,c0055,c0145))
@@ -285,6 +294,7 @@ def get_view3d_tool2(ctx):
 	if get_active_type(ctx) == 'ARMATURE':
 		if ctx.mode == 'EDIT_ARMATURE':
 			items.append(QuadItem("Divide Bone",f,t,n,c0148,c0149))
+			items.append(QuadItem("Attach",f,t,n,c0209,n))
 		elif ctx.mode == 'POSE':
 			items.append(QuadItem("Insert Keyframe",f,t,n,c0195,n))
 			items.append(seprator())

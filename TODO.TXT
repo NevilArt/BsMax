@@ -36,16 +36,15 @@
 	Better Isolate system (Alt+Q)
 	Character lister (some thing like light lister for rigged Armatures)
 		Select, Isolate, Hide/Unhide, Skin on/off, Animation on/off, Subdivision, ...
+	Need a PickAndDo operator (Alternative for PickOperator)
 
 # Issue
 	Convert to (apply all modifiers with confirm)
 	Helix height and last segment
 	Edge mode delete face most desolve edges too
 	Seprate smart loop and ring from regular one or update to make it work faster
-	pivot to first vertex not working on rotated objects
-		need a function to return true position of vertex and knot in world space
 	Bone to Bone link_to net to fix transform
-	Press 'S' while navigation hade to toggle Snap rather than the scale in max mode
+	[Press 'S' while navigation hade to toggle Snap rather than the scale in max mode]
 
 # Update
 	Enable snap for drawing primitives
@@ -59,7 +58,6 @@
 	layer stuff ctrl+rmc quad menu
 	put transform pivot poins in alt+rc quadmenu
 	weld tool setting dialog
-	Mesh Edit mode Attach on picked and by list
 
 # Addon
 	bl_description for all operators

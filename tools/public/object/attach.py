@@ -12,13 +12,35 @@
 #	You should have received a copy of the GNU General Public License
 #	along with this program.  If not, see <https://www.gnu.org/licenses/>.
 ############################################################################
-from .attach import register_attach, unregister_attach
-from .bone import register_bone, unregister_bone
+import bpy
+from bsmax.operator import PickOperator
 
-def register_armature():
+class Object_OT_Attach(PickOperator):
+	bl_idname = "object.attach"
+	bl_label = "Attach"
+	filters = ['AUTO']
+
+	@classmethod
+	def poll(self, ctx):
+		if ctx.area.type == 'VIEW_3D':
+			if len(ctx.scene.objects) > 0:
+				if ctx.object != None:
+					return ctx.mode == 'OBJECT'
+		return False
+
+	def picked(self, ctx, source, subsource, target, subtarget):
+		target.select_set(state = True)
+		bpy.ops.object.join()
+		bpy.ops.object.attach('INVOKE_DEFAULT')
+		self.report({'INFO'},'bpy.ops.object.attach()')
+
+classes = [Object_OT_Attach]
+
+def register_attach():
+	[bpy.utils.register_class(c) for c in classes]
+
+def unregister_attach():
+	[bpy.utils.unregister_class(c) for c in classes]
+
+if __name__ == "__main__":
 	register_attach()
-	register_bone()
-
-def unregister_armature():
-	unregister_attach()
-	unregister_bone()
