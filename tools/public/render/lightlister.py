@@ -12,26 +12,8 @@
 #	You should have received a copy of the GNU General Public License
 #	along with this program.  If not, see <https://www.gnu.org/licenses/>.
 ############################################################################
-
 import bpy
 from bpy.types import Operator
-from bsmax.actions import set_as_active_object
-
-class Light_TO_Select_By_Name(Operator):
-	bl_idname = "light.select_by_name"
-	bl_label = "select light by name"
-	name: bpy.props.StringProperty(default="")
-	
-	@classmethod
-	def poll(self, ctx):
-		return True
-	
-	def execute(self,ctx):
-		bpy.ops.object.select_all(action='DESELECT')
-		if self.name != "":
-			set_as_active_object(ctx,bpy.data.objects[self.name])
-		self.report({'INFO'},'bpy.ops.light.select_by_name()')
-		return{"FINISHED"}
 
 class Render_TO_Light_Lister(Operator):
 	bl_idname = "render.light_lister"
@@ -40,7 +22,7 @@ class Render_TO_Light_Lister(Operator):
 
 	def get_field(self,row,light):
 		icon = 'LIGHT_' + light.data.type
-		row.operator("light.select_by_name",icon=icon,text=light.name).name = light.name
+		row.operator("object.select_by_name",icon=icon,text=light.name).name = light.name
 		row.prop(light.data,'color',text="")
 		row.prop(light.data,'energy',text="")
 		row.prop(light.data,'specular_factor',text="")
@@ -99,7 +81,7 @@ def render_menu(self, ctx):
 	layout.separator()
 	layout.operator("render.light_lister",text="Light Lister",icon='LIGHT_SUN')
 
-classes = [Render_TO_Light_Lister,Light_TO_Select_By_Name]
+classes = [Render_TO_Light_Lister]
 
 def register_lightlister():
 	[bpy.utils.register_class(c) for c in classes]

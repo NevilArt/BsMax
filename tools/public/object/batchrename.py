@@ -12,7 +12,6 @@
 #	You should have received a copy of the GNU General Public License
 #	along with this program.  If not, see <https://www.gnu.org/licenses/>.
 ############################################################################
-
 import bpy
 from bpy.types import Operator
 from bpy.props import BoolProperty,StringProperty,IntProperty,EnumProperty
@@ -37,9 +36,12 @@ def arrange_selected_items(active, selected):
 	# 	items.append(active)
 	return items
 
-class WM_OT_Multi_Object_Rename(Operator):
+class WM_OT_Multi_Item_Rename(Operator):
 	bl_idname = "wm.multi_item_rename" 
 	bl_label  = "Multi Item Rename"
+
+	force: EnumProperty(name='',description='',default='AUTO',
+			items =[('AUTO','Auto',''),('OBJECT','Object','')])
 
 	use_set_name: BoolProperty(name="Set Name:",description="Set Name")
 	set_type: EnumProperty(name='',description='',default='SetName',
@@ -146,8 +148,11 @@ class WM_OT_Multi_Object_Rename(Operator):
 		if ctx.area.type == 'VIEW_3D':
 			if ctx.mode in {'OBJECT','EDIT_ARMATURE','POSE'}:
 				mode = ctx.mode
-		elif ctx.area.type in {'NODE_EDITOR','SEQUENCE_EDITOR'}:#,'OUTLINER'}:
+		elif ctx.area.type in {'NODE_EDITOR','SEQUENCE_EDITOR','OUTLINER'}:
 			mode = ctx.area.type
+		
+		if self.force == 'OBJECT':
+			mode == 'OBJECT'
 
 		if mode == 'OBJECT':
 			active = ctx.active_object
@@ -187,10 +192,10 @@ class WM_OT_Multi_Object_Rename(Operator):
 		return {'FINISHED'}
 
 def register_batchrename():
-	bpy.utils.register_class(WM_OT_Multi_Object_Rename)
+	bpy.utils.register_class(WM_OT_Multi_Item_Rename)
 
 def unregister_batchrename():
-	bpy.utils.unregister_class(WM_OT_Multi_Object_Rename)
+	bpy.utils.unregister_class(WM_OT_Multi_Item_Rename)
 
 if __name__ == "__main__":
 	register_batchrename()

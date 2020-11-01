@@ -30,11 +30,12 @@ def restore_original_theme():
 		bpy.context.preferences.themes[0].view_3d.empty = v3empty
 	if v3light != None:
 		bpy.context.preferences.themes[0].view_3d.light = v3light
+	# TODO call reset action for them
 
 def set_3dsmax_theme():
 	bpy.context.preferences.themes[0].view_3d.camera = (0.341,0.47,0.8)
 	bpy.context.preferences.themes[0].view_3d.empty = (0.054,1,0.007)
-	bpy.context.preferences.themes[0].view_3d.light = (1,0.898,0,1)
+	bpy.context.preferences.themes[0].view_3d.light = (0.8,0.8,0,0.12)
 
 def register_theme(preferences):
 	store_original_theme()

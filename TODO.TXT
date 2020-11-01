@@ -1,12 +1,12 @@
+Note: Tasks in [] can't apply for now because of python API limitation, I am looking for solution.
+
 # Keymaps
-	Loop ring in UV Editor
-	M in Edit Mesh (Smooth)
+	[Loop ring short key in UV Editor]
 	Brush Size control hot keys (for max mode)
 	Sequencer in pr mode Alt + Arrows move step by step
-	F9 if no active camera in scene create one befor render and delete after render
-	Outliner if more than one object selected open multi rename tool
+	[F9 if no active camera in scene create one befor render and delete after render]
 	Shader editor A assyn to selected
-	Disable F9
+	Disable F9 for other coomands if exist
 
 # Tools
 	Refine tool for Curves
@@ -16,7 +16,7 @@
 	Instancer
 	Weld tool setting dialog
 	Topology symmetry tool
-	Maxlike Navigation operator (change action without release the Alt key)
+	[Maxlike Navigation operator (change action without release the Alt key)]
 	Clone object shift drag
 	Extrude open edge with shift drag
 	Mimic the Slice modifire quick setup
@@ -34,8 +34,7 @@
 		Time range marker
 		Select Keyed/Nonkeyed controllers
 	Better Isolate system (Alt+Q)
-	Character lister (some thing like light lister for rigged Armatures)
-		Select, Isolate, Hide/Unhide, Skin on/off, Animation on/off, Subdivision, ...
+	More stuff for Character lister (Skin on/off, Subdivision level fo mesh, ...)
 	Need a PickAndDo operator (Alternative for PickOperator)
 
 # Issue

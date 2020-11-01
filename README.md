@@ -22,11 +22,8 @@ The goal of UI simulator is make people come form other software (like me) feel 
 
 # latest Updates
 
-* Atach picked object in Edit mode like 3DsMax`s edit poly attach (object mode and Edit mode in Quad menu).
-* Same Attach function added for Curve & Armature too.
-* ObjectPicker Operator updated.
-* Pivot to First Bezier point issue fixed (Ctrl + Insert in set pivot point menu).
-* Bugfix.
+* Character lister added (for now very simple stuff but in time other tools will be add)
+* Mesh edit mode 'Ctrl + M' Subdivid/MSmooth selected faces (Max mode only)
 * [Update History...](https://github.com/NevilArt/BsMax_2_80/blob/master/HISTORY.TXT)
 
 # License

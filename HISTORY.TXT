@@ -1,4 +1,10 @@
 
+# 0,1,0,20201029
+	Atach picked object in Edit mode like 3DsMax`s edit poly attach (object mode and Edit mode in Quad menu).
+	Same Attach function added for Curve & Armature too.
+	ObjectPicker Operator updated.
+	Pivot to First Bezier point issue fixed (Ctrl + Insert in set pivot point menu).
+	Bugfix.
 
 # 0,1,0,20201028
 	Default auto smooth fixed for Torus, Teapot, Monkey primitives.

@@ -27,6 +27,8 @@ class BsMax_MT_Animation_Tools(bpy.types.Menu):
 
 	def draw(self, ctx):
 		layout=self.layout
+		layout.operator("anim.character_lister",text="Character Lister",icon="GHOST_DISABLED")
+		layout.separator()
 		layout.operator("anim.path_constraint",text="Path Constraint",icon="CON_FOLLOWPATH")
 		layout.operator("anim.location_constraint",text="Location Constraint",icon="CON_LOCLIMIT")
 		layout.separator()

@@ -16,64 +16,138 @@
 import bpy
 from bpy.types import Operator
 from bpy.props import StringProperty
-from bsmax.actions import set_as_active_object
 
-class Light_TO_Character_Set(Operator):
-	bl_idname = "anim.character_set"
-	bl_label = "character"
+class CharacterSet:
+	def __init__(self):
+		self.enabled = False
+		self.characters = []
 	
+	def get_scene_characters(self):
+		self.characters = [char for char in bpy.data.objects if char.type == 'ARMATURE']
+	
+	def get_character_by_name(self, name):
+		for char in self.characters:
+			if char.name == name:
+				return char
+		return None
+
+cs = CharacterSet()
+
+
+
+class Armature_TO_Character_Hide(Operator):
+	""" Hide/Unhide Character (for now only Armature) """
+	bl_idname = "anim.character_hide"
+	bl_label = "Character Hide"
 	name: StringProperty(default="")
-	mode: StringProperty(default="")
-	
+
 	@classmethod
 	def poll(self, ctx):
-		return True
+		return cs.enabled
 	
 	def execute(self,ctx):
-		self.report({'INFO'},'bpy.ops.anim.character_set()')
+		character = cs.get_character_by_name(self.name)
+		if character:
+			state = not character.hide_viewport
+			character.hide_viewport = state
+			character.hide_render = False
+			character.hide_select = False
 		return{"FINISHED"}
 
-class Render_TO_Character_Lister(Operator):
+
+
+class Armature_TO_Character_Isolate(Operator):
+	""" Isolate only this Character (for now only Armature) """
+	bl_idname = "anim.character_isolate"
+	bl_label = "Character Isolate"
+	name: StringProperty(default="")
+
+	@classmethod
+	def poll(self, ctx):
+		return cs.enabled
+	
+	def execute(self,ctx):
+		character = cs.get_character_by_name(self.name)
+		if character:
+			for char in cs.characters:
+				if char != character:
+					char.hide_viewport = True
+					char.hide_render = True
+					char.hide_select = True
+				else:
+					char.hide_viewport = False
+					char.hide_render = False
+					char.hide_select = False
+		return{"FINISHED"}
+
+
+
+class Armature_TO_Character_Rest(Operator):
+	""" Rest/Pose Switch """
+	bl_idname = "anim.character_rest"
+	bl_label = "Character Rest/Pose"
+	name: StringProperty(default="")
+
+	@classmethod
+	def poll(self, ctx):
+		return cs.enabled
+	
+	def execute(self,ctx):
+		character = cs.get_character_by_name(self.name)
+		if character:
+			state = character.data.pose_position
+			state = 'POSE' if state == 'REST' else 'REST'
+			character.data.pose_position = state
+		return{"FINISHED"}
+
+
+
+class Anim_TO_Character_Lister(Operator):
+	""" List of Character for quick managment """
 	bl_idname = "anim.character_lister"
 	bl_label = "Character lister"
-	characters = []
 
 	def get_field(self,row,character):
-		row.label(text=character.name)
+		name = character.name
+		row.operator("object.select_by_name", icon='ARMATURE_DATA', text=character.name).name = name
+		
+		hide_icon = 'HIDE_ON' if character.hide_viewport else 'HIDE_OFF'
+		row.operator("anim.character_hide", icon=hide_icon, text='').name = name
+		
+		isolate_icon = 'RADIOBUT_OFF' if character.hide_viewport else 'RADIOBUT_ON'
+		row.operator("anim.character_isolate", icon=isolate_icon, text='').name = name
+		
+		rest_icon = 'ARMATURE_DATA' if character.data.pose_position == 'REST' else 'EVENT_T'
+		row.operator("anim.character_rest", icon=rest_icon, text='').name = name
 
 	def draw(self,ctx):
 		box = self.layout.box()
 		col = box.column()
 		row = col.row()
 		row.label(text='')
-		for character in self.characters:
+		for character in cs.characters:
 			self.get_field(col.row(align=True), character)
 	
 	def execute(self,ctx):
 		self.report({'INFO'},'bpy.ops.anim.character_lister()')
+		cs.enabled = False
 		return{"FINISHED"}
 	
 	def cancel(self,ctx):
-		return None
+		cs.enabled = False
 	
-	def get_characters(self):
-		characters = []
-		for character in bpy.data.objects:
-			if character.type == 'ARMATURE':
-				isnew = True
-				for c in characters:
-					if character.data == c.data:
-						isnew = False
-						break
-				if isnew:
-					characters.append(character)
-		return characters
-
 	def invoke(self,ctx,event):
-		self.characters = self.get_characters() 
-		return ctx.window_manager.invoke_props_dialog(self,width=700)
+		""" collect armature objects in scene """
+		cs.get_scene_characters()
+		cs.enabled = True
+		return ctx.window_manager.invoke_props_dialog(self,width=200)
 
-classes = [Render_TO_Character_Lister, Light_TO_Character_Set]
+
+
+classes = [Armature_TO_Character_Hide,
+	Armature_TO_Character_Isolate,
+	Armature_TO_Character_Rest,
+	Anim_TO_Character_Lister]
 
 def register_character_lister():
 	[bpy.utils.register_class(c) for c in classes]

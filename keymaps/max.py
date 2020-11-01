@@ -319,6 +319,7 @@ def mesh(km,preferences):
 	add_view3d_tweak_selection(km,space)
 	add_switch_view(km,space)
 	add_float_menu(km,space,preferences)
+	add_subobject(km,space)
 
 	km.new(space,'mesh.select_element_toggle','FIVE','PRESS',[('mode','SET')])
 	km.new(space,'mesh.select_element_setting','FIVE','PRESS',[('mode','SET')],ctrl=True)
@@ -366,8 +367,7 @@ def mesh(km,preferences):
 	km.new(space,'mesh.remove','BACK_SPACE','PRESS',[('vert',True)],ctrl=True)
 	km.new(space,'mesh.delete_auto','DEL','PRESS',[])
 	km.new(space,'object.transform_type_in','F12','PRESS',[])
-	# Set Subobject Mode #
-	add_subobject(km,space)
+	km.new(space,'mesh.subdivide','M','PRESS',[],ctrl=True)
 	# Tools #
 	km.new(space,'view3d.shade_selected_faces','F2','PRESS',[])
 	km.new(space,'anim.auto_key_toggle','N','PRESS',[])
@@ -563,6 +563,8 @@ def particle(km):
 	km.new(space,'camera.set_active','C','PRESS',[])
 
 def outliner(km):
+	# km.mute('Outliner','outliner.item_rename','F2','PRESS')
+	
 	space = km.space('Outliner','OUTLINER','WINDOW')
 	add_search(km,space)
 	if bpy.app.version[1] < 81:
@@ -585,8 +587,9 @@ def outliner(km):
 		km.new(space,'object.delete','DEL','PRESS',[('confirm',False)],ctrl=True)
 		km.new(space,'outliner.hide','H','PRESS',[],alt=True)
 		km.new(space,'outliner.unhide_all','U','PRESS',[],alt=True)
-	else:
-		km.new(space,'outliner.show_active','Z','PRESS',[])
+
+	km.new(space,'outliner.show_active','Z','PRESS',[])
+	# km.new(space,'outliner.rename_selection','F2','PRESS',[])
 
 def node_editor(km):
 	space = km.space('Node Editor','NODE_EDITOR','WINDOW')

@@ -14,6 +14,7 @@
 ############################################################################
 
 import bpy
+from bpy.types import Operator
 
 def get_active_collection(ctx):
 	active_layer_name = ctx.view_layer.active_layer_collection.name
@@ -27,7 +28,7 @@ def clear_collections(ctx, obj):
 	for collection in obj.users_collection:
 		collection.objects.unlink(obj)
 
-class Collection_OT_Move_To_Active(bpy.types.Operator):
+class Collection_OT_Move_To_Active(Operator):
 	bl_idname = "collection.move_to_active"
 	bl_label = "Move to active collection"
 	bl_description = "Move selected objects in to active collection"
@@ -46,13 +47,36 @@ class Collection_OT_Move_To_Active(bpy.types.Operator):
 		self.report({'INFO'},'bpy.ops.collection.move_to_active()')
 		return{"FINISHED"}
 
+class Outliner_OT_Rename_Selection(Operator):
+	bl_idname = "outliner.rename_selection"
+	bl_label = "Rename"
+	bl_description = "Rename objects"
+
+	@classmethod
+	def poll(self, ctx):
+		return True
+
+	def execute(self, ctx):
+		#TODO put this in mult otem rename operator
+		count = len(ctx.selected_objects)
+		if count > 1:
+			bpy.ops.wm.multi_item_rename(force='OBJECT')
+		elif count == 1:
+			bpy.ops.outliner.item_rename('INVOKE_DEFAULT')
+		return{"FINISHED"}
+
 def outliner_header(self,ctx):
 	self.layout.operator("collection.move_to_active",text="",icon='ADD')
 
+classes = [Collection_OT_Move_To_Active, Outliner_OT_Rename_Selection]
+
 def register_collection():
-	bpy.utils.register_class(Collection_OT_Move_To_Active)
+	[bpy.utils.register_class(c) for c in classes]
 	bpy.types.OUTLINER_HT_header.append(outliner_header)
 
 def unregister_collection():
 	bpy.types.OUTLINER_HT_header.remove(outliner_header)
-	bpy.utils.unregister_class(Collection_OT_Move_To_Active)
+	[bpy.utils.unregister_class(c) for c in classes]
+
+if __name__ == "__main__":
+	register_collection()

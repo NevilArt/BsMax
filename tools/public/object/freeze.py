@@ -12,12 +12,33 @@
 #	You should have received a copy of the GNU General Public License
 #	along with this program.  If not, see <https://www.gnu.org/licenses/>.
 ############################################################################
-
 import bpy
 from bpy.types import Operator
-from bpy.props import EnumProperty,BoolProperty
+from bpy.props import EnumProperty, BoolProperty, StringProperty
+from bsmax.actions import set_as_active_object
+
+
+
+class Object_TO_Select_By_Name(Operator):
+	""" Select """
+	bl_idname = "object.select_by_name"
+	bl_label = "select object by name"
+	name: bpy.props.StringProperty(default="")
+	
+	@classmethod
+	def poll(self, ctx):
+		return ctx.mode == 'OBJECT'
+	
+	def execute(self,ctx):
+		bpy.ops.object.select_all(action='DESELECT')
+		if self.name != "":
+			set_as_active_object(ctx,bpy.data.objects[self.name])
+		return{"FINISHED"}
+
+
 
 class Object_OT_Freeze(Operator):
+	""" Freeze/Unfreeze Objects """
 	bl_idname = "object.freeze"
 	bl_label = "Freeze/Unfreeze"
 	# bl_description = ""
@@ -41,7 +62,10 @@ class Object_OT_Freeze(Operator):
 		self.report({'INFO'},'bpy.ops.object.freeze()')
 		return{"FINISHED"}
 
+
+
 class Object_OT_Hide(Operator):
+	""" Hide/Unhide Objects """
 	bl_idname = "object.hide"
 	bl_label = "Hide/Unhide"
 	# bl_description = ""
@@ -74,7 +98,10 @@ class Object_OT_Hide(Operator):
 		self.report({'INFO'},'bpy.ops.object.hide()')
 		return{"FINISHED"}
 
-classes = [Object_OT_Freeze,Object_OT_Hide]
+
+
+
+classes = [Object_OT_Freeze, Object_OT_Hide, Object_TO_Select_By_Name]
 
 def register_freeze():
 	[bpy.utils.register_class(c) for c in classes]
