@@ -12,13 +12,10 @@
 #	You should have received a copy of the GNU General Public License
 #	along with this program.  If not, see <https://www.gnu.org/licenses/>.
 ############################################################################
-from .cameras import register_cameras, unregister_cameras
-from .target_camera import register_terget_camera, unregister_terget_camera
+from .hair_guide import register_hair_guide, unregister_hair_guide
 
-def register_camera():
-	register_cameras()
-	register_terget_camera()
+def register_particle():
+	register_hair_guide()
 
-def unregister_camera():
-	unregister_cameras()
-	unregister_terget_camera()
+def unregister_particle():
+	unregister_hair_guide()

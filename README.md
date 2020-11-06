@@ -22,8 +22,8 @@ The goal of UI simulator is make people come form other software (like me) feel 
 
 # latest Updates
 
-* Character lister added (for now very simple stuff but in time other tools will be add)
-* Mesh edit mode 'Ctrl + M' Subdivid/MSmooth selected faces (Max mode only)
+* Hair guide from Curve operator added (for now select mesh search "Hair Guides From Curve" and pick Curve)
+* A Simple Camera lister added (Menu: Render > Camera Lister)
 * [Update History...](https://github.com/NevilArt/BsMax_2_80/blob/master/HISTORY.TXT)
 
 # License

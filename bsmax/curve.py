@@ -12,7 +12,6 @@
 #	You should have received a copy of the GNU General Public License
 #	along with this program.  If not, see <https://www.gnu.org/licenses/>.
 ############################################################################
-
 import bpy, numpy, math, cmath
 from mathutils import Vector
 from copy import deepcopy
@@ -92,8 +91,8 @@ def xray_spline_intersection(spline, origin):
 		startpoint = spline_points[index-1]
 		endPoint = spline_points[index]
 		if root == float('inf'): # Segment is parallel to ray
-			if index == 0 and spline.use_cyclic_u:
-				cyclic_parallel_fix_flag = True
+			# if index == 0 and spline.use_cyclic_u:
+			# 	cyclic_parallel_fix_flag = True
 			if len(intersections) > 0 and intersections[-1][1] == startpoint:
 				intersections[-1][1] = endPoint # Skip in adjacency test
 		elif intersectionX >= origin.x:
@@ -180,7 +179,7 @@ def get_line_offset(p1, p2, val):
 	return Vector((x,y,0))*val
 
 def get_corner_position(p1, p2, p3, val):
-	teta = get_3_points_angle_2d(p1, p2, p3)
+	# teta = get_3_points_angle_2d(p1, p2, p3)
 	if False:#(pi - abs(teta)) < 0.001:
 		o3 = get_line_offset(p1,p3,val)
 		position = o3 + p2
@@ -333,10 +332,7 @@ class SegmentDivisions:
 		self.cos.clear()
 		self.times.sort(reverse=reverse)
 		""" sort correction point as time sort """
-		# print("times", len(times),len(self.times))
-		# print("cos", len(cos),len(self.cos))
 		for time in self.times:
-			# print("-->",time,times.index(time))
 			self.cos.append(cos[times.index(time)])
 
 class SplineDivisions:
@@ -514,7 +510,6 @@ class Segment:
 		p3 = 3*self.b-3*self.a
 		p4 = self.a
 		return p1*t**3+p2*t*t+p3*t+p4
-		#return self.spline.get_point_on_segment(self.index, t)
 	
 	def get_section_line(self, start, end):
 		a = point_on_vector(self.a,self.b,self.c,self.d,start)
@@ -598,7 +593,6 @@ class Spline:
 		return a, b, c, d
 
 	def get_as_segments(self):
-		segs = []
 		count = len(self.bezier_points) if self.use_cyclic_u else len(self.bezier_points)-1
 		return [Segment(self,i) for i in range(count)]
 
@@ -627,7 +621,55 @@ class Spline:
 		return p1*t**3+p2*t*t+p3*t+p4
 
 	def get_point_on_spline(self, time):
-		return None
+		# if time == 1:
+		# 	return self.bezier_points[-1].co
+		# lengthes, full_length = [], 0
+		# for seg in self.get_as_segments():
+		# 	length = self.get_segment_length(seg.index, steps=25)
+		# 	lengthes.append(length)
+		# 	full_length += length
+		# length = full_length * time
+		# index = 0
+		# for i in range(0, len(lengthes)):
+		# 	if length < lengthes[i]:
+		# 		index = i
+		# 		break
+		# 	else:
+		# 		length -= lengthes[i]
+		# time_on_segment = length / lengthes[index]
+		# return self.get_point_on_segment(index, time_on_segment)
+
+		lengths, total_length = [], 0
+		if time <= 0:
+			return self.bezier_points[0].co.copy()
+		if time >= 1:
+			return self.bezier_points[-1].co.copy()
+		else:
+			segs = [point for point in self.bezier_points]
+			if self.use_cyclic_u:
+				segs.append(self.bezier_points[0])
+			# collect the segment length
+			for i in range(len(segs) - 1):
+				a = segs[i].co
+				b = segs[i].handle_right
+				c = segs[i+1].handle_left
+				d = segs[i+1].co
+				l = get_segment_length(a,b,c,d,100)
+				lengths.append(l)
+				total_length += l
+			length = total_length * time
+			for i in range(len(lengths)):
+				if length >= lengths[i]:
+					length -= lengths[i]
+				else:
+					index = i
+					break
+			a = segs[index].co
+			b = segs[index].handle_right
+			c = segs[index+1].handle_left
+			d = segs[index+1].co
+			t = length / lengths[index]	
+		return point_on_vector(a, b, c, d, t)
 
 	def set_free(self, full=False):
 		if len(self.bezier_points) > 0:
@@ -812,7 +854,7 @@ class Spline:
 			f1 = point_on_line(a, c, t)
 			f2 = point_on_line(b, c, t)
 
-			point_0 = l[0]#
+			# point_0 = l[0]#
 			out_0 = l[1]#
 			in_1 = r[4]
 			point_1 = r[3]#
@@ -821,7 +863,7 @@ class Spline:
 			point_2 = l[3]#
 			out_2 = l[2]#
 			in_3 = r[5]#
-			point_3 = r[6]#
+			# point_3 = r[6]#
 
 			handle_type = 'FREE' if tention > 0 else 'VECTOR'
 
@@ -928,8 +970,8 @@ class Spline:
 					ii = len(self.bezier_points)-1
 				else:
 					ii = i - 1
-				dot = self.bezier_points[i];
-				dot1 = self.bezier_points[ii];   
+				dot = self.bezier_points[i]
+				dot1 = self.bezier_points[ii]
 				while dot1 in dellist and i != ii:
 					ii -= 1
 					if ii < 0:

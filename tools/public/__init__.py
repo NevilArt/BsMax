@@ -23,6 +23,7 @@ from .material import register_material,unregister_material
 from .mesh import register_mesh,unregister_mesh
 from .modifier import register_modifier,unregister_modifier
 from .object import register_object,unregister_object
+from .particle import register_particle,unregister_particle
 from .render import register_render,unregister_render
 from .select import register_select,unregister_select
 from .text import register_text,unregister_text
@@ -44,6 +45,7 @@ def register_public(preferences):
 	register_mesh()
 	register_modifier()
 	register_object(preferences)
+	register_particle()
 	register_render()
 	register_select()
 	register_text()
@@ -64,6 +66,7 @@ def unregister_public():
 	unregister_mesh()
 	unregister_modifier()
 	unregister_object()
+	unregister_particle()
 	unregister_render()
 	unregister_select()
 	unregister_text()

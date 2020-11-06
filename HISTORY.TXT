@@ -1,3 +1,6 @@
+# 0,1,0,20201101
+	Character lister added (for now very simple stuff but in time other tools will be add)
+	Mesh edit mode 'Ctrl + M' Subdivid/MSmooth selected faces (Max mode only)
 
 # 0,1,0,20201029
 	Atach picked object in Edit mode like 3DsMax`s edit poly attach (object mode and Edit mode in Quad menu).

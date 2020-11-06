@@ -28,7 +28,7 @@ def point_on_vector(a, b, c, d, t):
 
 def point_on_curve(curve, index, time):
 	spline = curve.data.splines[index]
-	lengths, totallength = [], 0
+	lengths, total_length = [], 0
 	if time <= 0:
 		return spline.bezier_points[0].co.copy()
 	if time >= 1:
@@ -45,8 +45,8 @@ def point_on_curve(curve, index, time):
 			d = segs[i+1].co
 			l = get_segment_length(a,b,c,d,100)
 			lengths.append(l)
-			totallength += l
-		length = totallength*time
+			total_length += l
+		length = total_length * time
 		for i in range(len(lengths)):
 			if length >= lengths[i]:
 				length -= lengths[i]

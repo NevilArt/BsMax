@@ -12,7 +12,6 @@
 #	You should have received a copy of the GNU General Public License
 #	along with this program.  If not, see <https://www.gnu.org/licenses/>.
 ############################################################################
-
 import bpy, mathutils
 from bpy.props import EnumProperty, BoolProperty
 from bpy.types import Operator
@@ -20,6 +19,7 @@ from bsmax.state import has_constraint
 
 # create a camera from view 
 class Camera_OT_Create_From_View(Operator):
+	""" Create a new camera and align it to view """
 	bl_idname = "camera.create_from_view"
 	bl_label = "Create Camera From View"
 	bl_description = "Create New Camera From View"

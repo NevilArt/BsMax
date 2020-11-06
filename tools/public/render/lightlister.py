@@ -76,12 +76,80 @@ class Render_TO_Light_Lister(Operator):
 		self.lights = self.get_lights() 
 		return ctx.window_manager.invoke_props_dialog(self,width=700)
 
+
+
+class Render_TO_Camera_Lister(Operator):
+	bl_idname = "render.camera_lister"
+	bl_label = "Camera lister"
+	lights = []
+
+	def get_field(self,row,camera):
+		row.operator("object.select_by_name",icon='CAMERA_DATA',text=camera.name).name = camera.name
+		
+		srow = row.row(align=True)
+		srow.prop(camera.data,'type',text="")
+		srow.prop(camera.data,'lens',text="")
+
+		srow = row.row(align=True)
+		srow.prop(camera.data,'clip_start',text="")
+		srow.prop(camera.data,'clip_end',text="")
+		
+		srow = row.row(align=True)
+		srow.prop(camera.data.dof,'use_dof',text="")
+		srow.prop(camera.data.dof,'focus_distance',text="")
+
+		srow = row.row(align=True)
+		srow.prop(camera.data,'display_size',text="")
+
+	def draw(self,ctx):
+		box = self.layout.box()
+		col = box.column(align=True)
+
+		row = col.row()
+		row.label(text='Name')
+		row.label(text='Type')
+		row.label(text='Lens')
+		row.label(text='Clip Start')
+		row.label(text='Clip End')
+		row.label(text='FOV')
+		row.label(text='Size')
+
+		for cam in self.cameras:
+			self.get_field(col.row(align=False),cam)
+	
+	def execute(self,ctx):
+		self.report({'INFO'},'bpy.ops.render.camera_lister()')
+		return{"FINISHED"}
+	
+	def cancel(self,ctx):
+		return None
+	
+	def get_cameras(self):
+		cameras = []
+		for light in bpy.data.objects:
+			if light.type == 'CAMERA':
+				isnew = True
+				for l in cameras:
+					if light.data == l.data:
+						isnew = False
+						break
+				if isnew:
+					cameras.append(light)
+		return cameras
+
+	def invoke(self,ctx,event):
+		self.cameras = self.get_cameras() 
+		return ctx.window_manager.invoke_props_dialog(self,width=700)
+
+
+
 def render_menu(self, ctx):
 	layout = self.layout
 	layout.separator()
 	layout.operator("render.light_lister",text="Light Lister",icon='LIGHT_SUN')
+	layout.operator("render.camera_lister",text="Camera Lister",icon='CAMERA_DATA')
 
-classes = [Render_TO_Light_Lister]
+classes = [Render_TO_Light_Lister, Render_TO_Camera_Lister]
 
 def register_lightlister():
 	[bpy.utils.register_class(c) for c in classes]
