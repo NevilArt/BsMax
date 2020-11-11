@@ -13,9 +13,12 @@
 #	along with this program.  If not, see <https://www.gnu.org/licenses/>.
 ############################################################################
 from .hair_guide import register_hair_guide, unregister_hair_guide
+from .paint import register_paint, unregister_paint
 
 def register_particle():
 	register_hair_guide()
+	register_paint()
 
 def unregister_particle():
 	unregister_hair_guide()
+	unregister_paint()

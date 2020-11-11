@@ -14,8 +14,9 @@
 ############################################################################
 import bpy
 from mathutils import Vector, Matrix
+from bpy.types import Operator
 from bsmax.math import point_on_curve
-from bsmax.actions import set_origen
+from bsmax.actions import set_origen, link_to_scene
 from bsmax.operator import PickOperator
 
 class Particle_OT_Hair_Guides_From_Curve(PickOperator):
@@ -88,18 +89,81 @@ class Particle_OT_Hair_Guides_From_Curve(PickOperator):
 		obj = obj.evaluated_get(depsgraph)
 
 		""" Comb The Hair """
-		for i in range(0, hair.count):
+		for i in range(hair.count):
 			self.comb_the_hair(obj.particle_systems.active.particles[i], target, i)
 		
 		""" Commit Brush """
 		bpy.ops.particle.connect_hair()
 		bpy.ops.object.mode_set(mode='OBJECT', toggle=False)
+		self.report({'INFO'},'bpy.ops.particle.hair_guides_from_curve()')
+
+class Particle_OT_Hair_Guides_To_Curve(Operator):
+	bl_idname = 'particle.hair_guides_to_curve'
+	bl_label = 'Hair Guides To Curve'
+	bl_options = {'REGISTER', 'UNDO'}
+
+	@classmethod
+	def poll(self, ctx):
+		if ctx.area.type == 'VIEW_3D':
+			if ctx.mode == 'OBJECT':
+				if len(ctx.selected_objects) == 1:
+					return ctx.object.type == 'MESH'
+		return False
+
+	def center_of(self, point_a, point_b):
+		return (point_a + point_b) / 2
+	
+	def read_hair_guide(self, ctx, obj):
+		""" collect and return hair guides coordinate points """
+		depsgraph = ctx.evaluated_depsgraph_get()
+		obj = obj.evaluated_get(depsgraph)
+		hairs = obj.particle_systems.active.particles
+		return [[key.co for key in hair.hair_keys] for hair in hairs]
+	
+	def create_curve(self, ctx, guides, parent):
+		if len(guides) > 1:
+			name = parent.name + "_Hair_Guide"
+			newcurve = bpy.data.curves.new(name, type='CURVE')
+			newcurve.dimensions = '3D'
+			curve = bpy.data.curves[newcurve.name]
+			curve.splines.clear()
+			
+			for guide in guides:
+				count = len(guide)
+				newspline = curve.splines.new('BEZIER')
+				newspline.bezier_points.add(count-1)
+				for i in range(count):
+					first, last, co = (i == 0), (i == count-1), guide[i]
+					bez = newspline.bezier_points[i]
+					handle_type = 'VECTOR' if first or last else 'AUTO'
+					bez.co = co
+					bez.handle_left = self.center_of(co, guide[i+1]) if first else co
+					bez.handle_left_type = handle_type
+					bez.handle_right = co if last else self.center_of(co, guide[i-1])
+					bez.handle_right_type = handle_type
+			
+			curve = bpy.data.objects.new(name, newcurve)
+			link_to_scene(ctx, curve)
+
+			curve.location = parent.location
+			curve.rotation_euler = parent.rotation_euler
+			curve.scale = parent.scale
+	
+	def execute(self,ctx):
+		obj = ctx.active_object
+		guides = self.read_hair_guide(ctx, obj)
+		self.create_curve(ctx, guides, obj)
+		self.report({'INFO'},'bpy.ops.particle.hair_guides_to_curve()')
+		return{"FINISHED"}
+	
+
+classes = [Particle_OT_Hair_Guides_From_Curve, Particle_OT_Hair_Guides_To_Curve]
 
 def register_hair_guide():
-	bpy.utils.register_class(Particle_OT_Hair_Guides_From_Curve)
+	[bpy.utils.register_class(c) for c in classes]
 
 def unregister_hair_guide():
-	bpy.utils.unregister_class(Particle_OT_Hair_Guides_From_Curve)
+	[bpy.utils.unregister_class(c) for c in classes]
 
 if __name__ == "__main__":
 	register_hair_guide()

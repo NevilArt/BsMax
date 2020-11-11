@@ -187,11 +187,13 @@ class PrimitiveGeometryClass:
 				""" I had to skip this part till I find a solution for this """
 
 class PrimitiveCurveClass:
+	def __init__(self):
+		self.close = False
 	def create_curve(self, ctx, shapes, classname):
 		# Create Spline
 		newcurve = bpy.data.curves.new(classname, type='CURVE')
 		newcurve.dimensions = '3D'
-		CurveFromShapes(newcurve, shapes, self.close)
+		curve_from_shapes(newcurve, shapes, self.close)
 		# Create object and link to collection
 		self.owner = bpy.data.objects.new(classname, newcurve)
 		link_to_scene(ctx, self.owner)
@@ -200,18 +202,20 @@ class PrimitiveCurveClass:
 	def update_curve(self, shapes):
 		if self.data != None and bpy.context.mode == 'OBJECT':
 			curve = bpy.data.curves[self.data.name]
-			CurveFromShapes(curve, shapes, self.close)
+			curve_from_shapes(curve, shapes, self.close)
 
 # Create Curve from Splines in the shape Data
-def CurveFromShapes(Curve, Shapes, Close):
-	Curve.splines.clear()
-	for Shape in Shapes:
-		newspline = Curve.splines.new('BEZIER')
-		newspline.bezier_points.add(len(Shape) - 1)
-		for i in range(len(Shape)):
+def curve_from_shapes(curve, shapes, close):
+	""" put BsMax primitive Shape Date in to Blender Curve Data """
+	curve.splines.clear()
+	for shape in shapes:
+		count = len(shape)
+		newspline = curve.splines.new('BEZIER')
+		newspline.bezier_points.add(count - 1)
+		for i in range(count):
 			bez = newspline.bezier_points[i]
-			bez.co, bez.handle_left, bez.handle_left_type, bez.handle_right, bez.handle_right_type = Shape[i]
-		newspline.use_cyclic_u = Close
+			bez.co, bez.handle_left, bez.handle_left_type, bez.handle_right, bez.handle_right_type = shape[i]
+		newspline.use_cyclic_u = close
 
 def ClearPrimitiveData(obj):
 	if obj != None:
