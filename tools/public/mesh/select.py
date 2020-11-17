@@ -34,7 +34,7 @@ class Mesh_OT_Select_Element_Toggle(Operator):
 
 	@classmethod
 	def poll(self, ctx):
-		return ctx.mode in {"EDIT_MESH","EDIT_CURVE"}
+		return ctx.mode in {'EDIT_MESH','EDIT_CURVE', 'PARTICLE'}
 	
 	def execute(self, ctx):
 		msm.active = not msm.active
@@ -80,6 +80,15 @@ def curve_select(mode):
 		bpy.ops.curve.select_linked_pick('INVOKE_DEFAULT',deselect=False)
 	elif mode == 'SUB':
 		bpy.ops.curve.select_linked_pick('INVOKE_DEFAULT',deselect=True)
+
+def particle_select(mode):
+	if mode == 'SET':
+		bpy.ops.particle.select_all(action='DESELECT')
+		bpy.ops.particle.select_linked_pick('INVOKE_DEFAULT',deselect=False)
+	elif mode == 'ADD':
+		bpy.ops.particle.select_linked_pick('INVOKE_DEFAULT',deselect=False)
+	elif mode == 'SUB':
+		bpy.ops.particle.select_linked_pick('INVOKE_DEFAULT',deselect=True)
 
 class Mesh_OT_Select_Element_Setting(Operator):
 	bl_idname = "mesh.select_element_setting"
@@ -183,10 +192,36 @@ class Curve_OT_Select_Max(Operator):
 		self.x, self.y = event.mouse_region_x, event.mouse_region_y
 		return self.execute(ctx)
 
+class Particle_OT_Select_Max(Operator):
+	bl_idname = "particle.select_max"
+	bl_label = "Select (3DsMax)"
+
+	mode: EnumProperty(name='Mode', default='SET',
+		items=[('SET','Set',''),('ADD','Add',''),('SUB','Sub','')])
+	
+	x,y = 0,0
+
+	@classmethod
+	def poll(self, ctx):
+		return ctx.mode == "EDIT_CURVE"
+
+	def execute(self, ctx):
+		if msm.active:
+			particle_select(self.mode)
+		else:
+			view3d_select(self.mode, self.x, self.y)
+		self.report({'INFO'},'bpy.ops.curve.select_max()')
+		return{"FINISHED"}
+	
+	def invoke(self, ctx, event):
+		self.x, self.y = event.mouse_region_x, event.mouse_region_y
+		return self.execute(ctx)
+
 classes = [	Mesh_OT_Select_Element_Toggle,
 			Mesh_OT_Select_Element_Setting,
 			Mesh_OT_Select_Max,
-			Curve_OT_Select_Max]
+			Curve_OT_Select_Max,
+			Particle_OT_Select_Max]
 
 def register_select():
 	[bpy.utils.register_class(c) for c in classes]

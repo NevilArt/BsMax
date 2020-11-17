@@ -6,7 +6,7 @@ Note: Tasks in [] can't apply for now because of python API limitation, I am loo
 	Sequencer in pr mode Alt + Arrows move step by step
 	[F9 if no active camera in scene create one befor render and delete after render]
 	Shader editor A assyn to selected
-	Disable F9 for other coomands if exist
+	Disable F9 (max quick render) for other actions if exist
 
 # Tools
 	Refine tool for Curves

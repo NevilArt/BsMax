@@ -1,3 +1,7 @@
+# 0,1,0,20201111
+	Weight paint to vertex paint convertor added (for now search for "Weight to Vertex Color").
+	Create Curve from hair guide tool added (for now search for "Hair Guides To Curve")
+
 # 0,1,0,20201106
 	Hair guide from Curve operator added (for now select mesh search "Hair Guides From Curve" and pick Curve)
 	A Simple Camera lister added (Menu: Render > Camera Lister)

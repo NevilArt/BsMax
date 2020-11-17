@@ -561,6 +561,15 @@ def particle(km):
 	space = km.space('Particle','EMPTY','WINDOW')
 	add_switch_view(km,space)
 	km.new(space,'camera.set_active','C','PRESS',[])
+	km.new(space,'mesh.select_element_toggle','FIVE','PRESS',[('mode','SET')])
+	km.new(space,'particle.select_max','LEFTMOUSE','CLICK',[('mode','SET')])
+	km.new(space,'particle.select_max','LEFTMOUSE','CLICK',[('mode','ADD')],ctrl=True)
+	km.new(space,'particle.select_max','LEFTMOUSE','CLICK',[('mode','SUB')],alt=True)
+	km.new(space,'particle.select_all','A','PRESS',[('action','SELECT')],ctrl=True)
+	km.new(space,'particle.select_all','D','PRESS',[('action','DESELECT')],ctrl=True)
+	km.new(space,'particle.select_all','I','PRESS',[('action','INVERT')],ctrl=True)
+	km.new(space,'particle.select_more','PAGE_UP','PRESS',[],ctrl=True)
+	km.new(space,'particle.select_less','PAGE_DOWN','PRESS',[],ctrl=True)
 
 def outliner(km):
 	# km.mute('Outliner','outliner.item_rename','F2','PRESS')
@@ -592,18 +601,29 @@ def outliner(km):
 	# km.new(space,'outliner.rename_selection','F2','PRESS',[])
 
 def node_editor(km):
+	km.mute('Node Editor','node.select','LEFTMOUSE','PRESS',shift=True)
+	km.mute('Node Editor','node.select','LEFTMOUSE','PRESS',ctrl=True)
+	km.mute('Node Editor','node.select','LEFTMOUSE','PRESS',alt=True)
 	space = km.space('Node Editor','NODE_EDITOR','WINDOW')
 	add_search(km,space)
 	add_side_panel(km,space)
 	km.new(space,'wm.multi_item_rename','F2','PRESS',[])
 	km.new(space,'node.select','LEFTMOUSE','PRESS',[('extend',True)],ctrl=True)
+	km.new(space,'node.select_box','EVT_TWEAK_L','ANY',[('mode','ADD')],ctrl=True )
+	km.new(space,'node.select_box','EVT_TWEAK_L','ANY',[('mode','SUB')],alt=True )
 	km.new(space,'node.select_all','A','PRESS',[('action','SELECT')],ctrl=True)
 	km.new(space,'node.select_all','D','PRESS',[('action','DESELECT')],ctrl=True)
 	km.new(space,'node.select_all','I','PRESS',[('action','INVERT')],ctrl=True)
-	km.new(space,'node.view_selected','Z','PRESS',[])
+	# km.new(space,'node.view_selected','Z','PRESS',[])
+	km.new(space,'node.zoom_extended','Z','PRESS',[])
 	km.new(space,'wm.call_menu','RIGHTMOUSE','PRESS',[('name','NODE_MT_add')])
-	km.new(space,'node.duplicate_move','EVT_TWEAK_L','ANY',[],shift=True)
-	# node.links_cut
+	# km.new(space,'node.duplicate_move','EVT_TWEAK_L','ANY',[('keep_inputs',True)],shift=True)
+	km.new(space,'node.duplicate_move_keep_inputs','EVT_TWEAK_L','ANY',[],shift=True)
+	km.new(space,'node.hide_socket_toggle','H','PRESS',[])
+	km.new(space,'node.hide_toggle','H','PRESS',[],ctrl=True)
+	km.new(space,'node.links_cut','MIDDLEMOUSE','PRESS',[],alt=True)
+	km.new(space,'node.link','EVT_TWEAK_L','ANY',[('detach',True)],alt=True)
+	km.new(space,'node.select_linked_from','T','PRESS',[],ctrl=True)
 
 def text(km):
 	""" script editor """
@@ -833,6 +853,7 @@ def register_max(preferences):
 			vertex_paint(km_sculpt)
 			weight_paint(km_sculpt)
 			image_paint(km_sculpt)
+			particle(km_sculpt)
 			sculpt(km_sculpt)
 			km_sculpt.register()
 		else:

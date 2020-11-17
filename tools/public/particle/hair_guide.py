@@ -74,8 +74,7 @@ class Particle_OT_Hair_Guides_From_Curve(PickOperator):
 		hair = obj.particle_systems.active.particles.data.settings
 		hair.count = len(target.data.splines)
 		hair.hair_length = self.get_max_lenght(target)
-		#TODO need to desin a UI for get some info from user
-		hair.hair_step = 12 # optinal / pass for now
+		hair.hair_step = max([len(spline.bezier_points) for spline in target.data.splines])
 
 		""" Make the Brush ready """
 		bpy.ops.object.mode_set(mode='PARTICLE_EDIT', toggle=False)

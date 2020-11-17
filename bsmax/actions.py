@@ -17,6 +17,7 @@ import bpy
 from mathutils import Matrix
 
 def solve_missing_activeobject(ctx, objs):
+	""" Make first selected object as active_object if missing """
 	if ctx.active_object == None:
 		if len(objs) > 0:
 			ctx.view_layer.objects.active = objs[0]
@@ -80,6 +81,8 @@ def delete_objects(objs):
 	bpy.ops.object.delete({"selected_objects": objs})
 
 def set_create_target(obj, targ, distance=(0.0, 0.0, -2.0)):
+	""" Add a lock at constraint with basic setting """
+	""" Create a empty object as target if targ == None """
 	cont = obj.constraints.new('TRACK_TO')
 	if targ == None:
 		targ = bpy.data.objects.new("empty", None )
@@ -117,6 +120,9 @@ def set_origen(ctx, obj, location):
 	scene.cursor.rotation_euler = saved_rotation
 
 def freeze_transform(objs):
+	""" simulate freeze transform action """
+	""" put actual transform to delta then reset the transform """
+	#TODO if selta has vale had to combine with new walue or get from world or parent coordinate
 	for obj in objs:
 		obj.delta_location = obj.location
 		obj.location = [0,0,0]

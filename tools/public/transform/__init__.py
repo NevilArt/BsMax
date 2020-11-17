@@ -20,7 +20,7 @@ from .snap import register_snap,unregister_snap
 from .transformcontrol import register_transformcontrol,unregister_transformcontrol
 from .transforms import register_transforms,unregister_transforms
 from .transformtypein import register_transformtypein,unregister_transformtypein
-from .zoomextended import register_zoomextended,unregister_zoomextended
+from .zoom_extended import register_zoom_extended,unregister_zoom_extended
 
 def register_transform():
 	register_align_objects()
@@ -30,7 +30,7 @@ def register_transform():
 	register_transformcontrol()
 	register_transforms()
 	register_transformtypein()
-	register_zoomextended()
+	register_zoom_extended()
 
 def unregister_transform():
 	unregister_align_objects()
@@ -40,4 +40,4 @@ def unregister_transform():
 	unregister_transformcontrol()
 	unregister_transforms()
 	unregister_transformtypein()
-	unregister_zoomextended()
+	unregister_zoom_extended()
