@@ -99,13 +99,14 @@ def get_view3d_display(ctx):
 	items.append(QuadItem("Manage State Sets...",f,f,n,"",n))
 	items.append(QuadItem("State Sets",f,f,n,"",n))
 	items.append(seprator())
-	mode = get_active_type(ctx)
+	# mode = get_active_type(ctx)
+	mode = ctx.mode
 	if mode == 'OBJECT':
 		items.append(QuadItem("Hide Selection",f,t,n,c0012,n))
 		items.append(QuadItem("Hide Unselected",f,t,n,c0013,n))
 		items.append(QuadItem("Unhide All",f,t,n,c0014,n))
 		items.append(QuadItem("Unhide by Name",f,f,n,"",n))
-	if mode == 'ARMATURE':
+	if mode in {'EDIT_ARMATURE', 'POSE'}:
 		items.append(QuadItem("Hide Selection",f,t,n,c0204,n))
 		items.append(QuadItem("Hide Unselected",f,t,n,c0205,n))
 		items.append(QuadItem("Unhide All",f,t,n,c0206,n))
@@ -257,7 +258,7 @@ def get_view3d_tool2(ctx):
 		items.append(QuadItem("Fillet",f,t,n,c0056,c0146))
 		items.append(seprator())
 		items.append(QuadItem("Connect",f,f,n,"",n))
-		items.append(QuadItem("Refine Connect",f,f,n,"",n))
+		items.append(QuadItem("Refine",f,t,n,c0211,n))
 		items.append(seprator())
 		items.append(QuadItem("Cycle Vertices",f,f,n,"",n))
 		items.append(QuadItem("Break Vertices",f,f,n,"",n))

@@ -24,10 +24,10 @@ Your Reports and Ideas will help me alot and don't forget the sharing. let more 
 
 # latest Updates
 
-* Max like selection key map added for particle edit mode(Max mode only).
-* Hair guide from curve step_key counts issue fixed.
-* Node editor 3DsMax like selection short keys (Max mode only).
-* Node editor 'H' and 'Ctrl + H' actions swapped for 3DsMax mode.
+* Refine tool added (insert vertex on clicked point in curves) (Curve edit mode: menu: Segment/ Refine)
+* In Quad Menu Move, Rotate, Scale Setting buttion action issue fixed.
+* Align Object added to menu: Object/Transform/Align Objects(BsMax).
+* Hide/Unhide issue in Quad Menu fixed.
 * [Update History...](https://github.com/NevilArt/BsMax_2_80/blob/master/HISTORY.TXT)
 
 # License

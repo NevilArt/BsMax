@@ -67,7 +67,6 @@ class Node_OT_Zoom_Extended(Operator):
 		return ctx.area.type == 'NODE_EDITOR'
 
 	def execute(self, ctx):
-		print(ctx.area.type)
 		if len(ctx.selected_nodes) > 0:
 			bpy.ops.node.view_selected('INVOKE_DEFAULT')
 		else:

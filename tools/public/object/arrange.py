@@ -128,6 +128,7 @@ class Object_OT_Path_Sort(PickOperator):
 
 def object_sort_menu(self, ctx):
 	layout = self.layout
+	layout.operator("object.align_selected_to_target", text='Align Objects (BsMax)')
 	layout.separator()
 	layout.operator("object.distance_sort")
 	layout.operator("object.path_sort")

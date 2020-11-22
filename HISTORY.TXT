@@ -1,3 +1,9 @@
+# 0,1,0,20201117
+	Max like selection key map added for particle edit mode(Max mode only).
+	Hair guide from curve step_key counts issue fixed.
+	Node editor 3DsMax like selection short keys (Max mode only).
+	Node editor 'H' and 'Ctrl + H' actions swapped for 3DsMax mode.
+
 # 0,1,0,20201111
 	Weight paint to vertex paint convertor added (for now search for "Weight to Vertex Color").
 	Create Curve from hair guide tool added (for now search for "Hair Guides To Curve")

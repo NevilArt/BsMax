@@ -7,16 +7,16 @@ Note: Tasks in [] can't apply for now because of python API limitation, I am loo
 	[F9 if no active camera in scene create one befor render and delete after render]
 	Shader editor A assyn to selected
 	Disable F9 (max quick render) for other actions if exist
+	"Ctrl + Shift + S" "Save As" in node editor
 
 # Tools
-	Refine tool for Curves
 	UV editor Target Weld
 	Fileview PageUp/ PageDown
 	Make rectangular UV
 	Instancer
 	Weld tool setting dialog
 	Topology symmetry tool
-	[Maxlike Navigation operator (change action without release the Alt key)]
+	[3DsMax Navigation operator (change navigation type without release the Alt key)]
 	Clone object shift drag
 	Extrude open edge with shift drag
 	Mimic the Slice modifire quick setup
@@ -36,6 +36,11 @@ Note: Tasks in [] can't apply for now because of python API limitation, I am loo
 	Better Isolate system (Alt+Q)
 	More stuff for Character lister (Skin on/off, Subdivision level fo mesh, ...)
 	Need a PickAndDo operator (Alternative for PickOperator)
+	Target weld for edge mode
+	Node to text (clip board) and reverce
+	Reload All/Special image files
+		for image in bpy.data.images:
+    		image.reload()
 
 # Issue
 	Convert to (apply all modifiers with confirm)
@@ -44,6 +49,7 @@ Note: Tasks in [] can't apply for now because of python API limitation, I am loo
 	Seprate smart loop and ring from regular one or update to make it work faster
 	Bone to Bone link_to net to fix transform
 	[Press 'S' while navigation hade to toggle Snap rather than the scale in max mode]
+	Mirro operator not working.
 
 # Update
 	Enable snap for drawing primitives
@@ -51,6 +57,11 @@ Note: Tasks in [] can't apply for now because of python API limitation, I am loo
 	Zoom extended on limit gride area
 	Helix with bezier segments with less count of knots (Bezier points)
 	PickOperator had works on other modes to (Subtarget to object or another subtarget)
+	Primitives save last created parameters value
+	Crearte primitive weel for segment count
+	Create primitive remove very tiny objects
+	If an object created uncheck hide that type of object in view port
+	Create area light set as rectangular rather than squer
 
 # Quad menu
 	Seam and UV tools

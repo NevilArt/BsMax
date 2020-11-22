@@ -13,8 +13,8 @@
 #	along with this program.  If not, see <https://www.gnu.org/licenses/>.
 ############################################################################
 
-import bpy, mathutils
-from mathutils import Vector, Matrix
+import bpy#, mathutils
+from mathutils import Vector, Matrix, geometry
 from math import pi
 from bpy_extras.view3d_utils import region_2d_to_location_3d
 
@@ -84,7 +84,8 @@ def get_click_point_info(x, y, ctx):
 		ray_depth = view_matrix @ Vector((0,0,-100000))#TODO from view
 		ray_end = region_2d_to_location_3d(region,region_data, (x, y), ray_depth)
 		p = get_triface_from_orient(view_orient)
-		cp.view = mathutils.geometry.intersect_ray_tri(p[0],p[1],p[2],ray_end,ray_start,False)
+		# cp.view = mathutils.geometry.intersect_ray_tri(p[0],p[1],p[2],ray_end,ray_start,False)
+		cp.view = geometry.intersect_ray_tri(p[0],p[1],p[2],ray_end,ray_start,False)
 		if cp.view == None:
 			cp.view = Vector((0,0,0))
 	else:

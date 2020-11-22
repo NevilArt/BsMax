@@ -21,7 +21,7 @@ from bsmax.math import (get_3_points_angle_2d,get_lines_intersection,split_segme
 	point_on_vector,get_distance,get_3_points_angle_3d,get_segment_length,shift_number)
 
 ############################################################################################
-## temprary function need to simplifyied ###################################################
+## temprary function need to simplifying ###################################################
 ############################################################################################
 param_tollerance = 0.0001
 cubic_roots_of_unity = [complex(1, 0), complex(-1, math.sqrt(3))*0.5, complex(-1, -math.sqrt(3))*0.5]
@@ -515,6 +515,18 @@ class Segment:
 		a = point_on_vector(self.a,self.b,self.c,self.d,start)
 		b = point_on_vector(self.a,self.b,self.c,self.d,end)
 		return Line(a,b)
+	
+	def get_length(self, steps=100):
+		points = [self.a]
+		s = 1 / steps
+		for i in range(1, steps + 1):
+			t = i * s
+			p = point_on_vector(self.a, self.b, self.c, self.d, t)
+			points.append(p)
+		lenght = 0
+		for i in range(len(points) - 1):
+			lenght += get_distance(points[i], points[i - 1])
+		return lenght
 
 class Spline:
 	def __init__(self, spline):
@@ -598,6 +610,7 @@ class Spline:
 
 	def get_segment_length(self, index, steps=100):
 		if index <= len(self.bezier_points)-2:
+			#TODO get length from segment class
 			a,b,c,d = self.get_segment(index)
 			points = [a]
 			s = 1 / steps

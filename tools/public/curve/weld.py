@@ -18,7 +18,7 @@ from bpy.types import Operator
 from bpy.props import BoolProperty, FloatProperty
 from bsmax.math import get_distance
 from bsmax.curve import Curve, Spline
-from tools.public.curve.operator import CurveTool
+from bsmax.operator import CurveTool
 
 class Curve_OT_Break(Operator):
 	bl_idname = "curve.break"

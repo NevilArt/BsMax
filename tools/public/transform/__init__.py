@@ -19,7 +19,7 @@ from .mirror import register_mirror,unregister_mirror
 from .snap import register_snap,unregister_snap
 from .transformcontrol import register_transformcontrol,unregister_transformcontrol
 from .transforms import register_transforms,unregister_transforms
-from .transformtypein import register_transformtypein,unregister_transformtypein
+from .transform_type_in import register_transform_type_in,unregister_transform_type_in
 from .zoom_extended import register_zoom_extended,unregister_zoom_extended
 
 def register_transform():
@@ -29,7 +29,7 @@ def register_transform():
 	register_snap()
 	register_transformcontrol()
 	register_transforms()
-	register_transformtypein()
+	register_transform_type_in()
 	register_zoom_extended()
 
 def unregister_transform():
@@ -39,5 +39,5 @@ def unregister_transform():
 	unregister_snap()
 	unregister_transformcontrol()
 	unregister_transforms()
-	unregister_transformtypein()
+	unregister_transform_type_in()
 	unregister_zoom_extended()

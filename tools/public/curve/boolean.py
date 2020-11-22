@@ -16,7 +16,7 @@
 import bpy
 from bpy.props import BoolProperty,FloatProperty,EnumProperty
 from bsmax.curve import Curve
-from .operator import CurveTool
+from bsmax.operator import CurveTool
 
 class Curve_OT_Boolean(CurveTool):
 	bl_idname = "curve.boolean"

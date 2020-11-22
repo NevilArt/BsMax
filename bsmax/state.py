@@ -65,8 +65,7 @@ def has_constraint(obj, constrainttype):
 	return False
 
 def get_active_type(ctx):
-	active_obj = ctx.active_object
-	return None if active_obj == None else active_obj.type
+	return None if ctx.active_object == None else ctx.active_object.type
 
 def get_obj_class(obj):
 	if obj.type in ['MESH', 'CURVE']:

@@ -49,7 +49,7 @@ class Line(PrimitiveCurveClass):
 	def create(self, ctx):
 		self.ctx = ctx
 		shapes = get_line_shape([])
-		self.create_curve(ctx,shapes,"")
+		self.create_curve(ctx,shapes,self.classname)
 	def update(self, ctx):
 		shapes = get_line_shape(self.knots + self.lastknot)
 		self.update_curve(shapes)
@@ -75,12 +75,11 @@ class Curve_OT_CloseLine(Operator):
 	def invoke(self, ctx, event):
 		return ctx.window_manager.invoke_confirm(self, event)
 
-def check_for_close(self):
+def check_for_close(self, ctx):
 	if len(self.subclass.knots) > 2:
-		region = bpy.context.region
-		region_data = bpy.context.space_data.region_3d
-		p0 = location_3d_to_region_2d(region,region_data,self.subclass.knots[0].pos)
-		pl = location_3d_to_region_2d(region,region_data,self.subclass.lastknot[0].pos)
+		region_3d = ctx.space_data.region_3d
+		p0 = location_3d_to_region_2d(ctx.region,region_3d,self.subclass.knots[0].pos)
+		pl = location_3d_to_region_2d(ctx.region,region_3d,self.subclass.lastknot[0].pos)
 		if abs(p0.x-pl.x) < 10 and abs(p0.y-pl.y) < 10:
 			bpy.ops.curve.closeline('INVOKE_DEFAULT')
 
@@ -120,7 +119,7 @@ class Create_OT_Line(CreatePrimitive):
 		if clickcount != self.lastclick:
 			self.subclass.knots.append(newknot)
 			self.lastclick = clickcount
-			check_for_close(self)
+			check_for_close(self, ctx)
 
 		if LineData.close:
 			self.subclass.knots.pop()

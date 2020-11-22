@@ -17,11 +17,11 @@ c0000="bpy.ops.object.select_instance('INVOKE_DEFAULT')"
 c0001="bpy.ops.object.smart_convert(target='MESH')"
 c0002="bpy.ops.object.smart_convert(target='CURVE')"
 c0003="bpy.ops.wm.tool_set_by_id(name='builtin.move')"
-c0004="bpy.ops.object.transform_type_in(switch='move')"
+c0004="bpy.ops.object.tti_call(switch='move')"
 c0005="bpy.ops.wm.tool_set_by_id(name='builtin.rotate')"
-c0006="bpy.ops.object.transform_type_in(switch='rotate')"
+c0006="bpy.ops.object.tti_call(switch='rotate')"
 c0007="bpy.ops.wm.tool_set_by_id(name='builtin.scale')"
-c0008="bpy.ops.object.transform_type_in(switch='scale')"
+c0008="bpy.ops.object.tti_call(switch='scale')"
 c0009="bpy.ops.wm.tool_set_by_id(name='builtin.select_box')"
 c0010="bpy.ops.bsmax.selectsimilar('INVOKE_DEFAULT')"
 c0011="bpy.ops.object.clone('INVOKE_DEFAULT')"
@@ -224,7 +224,7 @@ c0207="bpy.ops.pose.user_transforms_clear('INVOKE_DEFAULT')"
 c0208="bpy.ops.curve.attach('INVOKE_DEFAULT')"
 c0209="bpy.ops.armature.attach('INVOKE_DEFAULT')"
 c0210="bpy.ops.object.attach('INVOKE_DEFAULT')"
-c0211=''
+c0211="bpy.ops.curve.refine('INVOKE_DEFAULT')"
 c0212=''
 c0213=''
 c0214=''
