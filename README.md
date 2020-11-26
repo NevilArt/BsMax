@@ -24,10 +24,8 @@ Your Reports and Ideas will help me alot and don't forget the sharing. let more 
 
 # latest Updates
 
-* Refine tool added (insert vertex on clicked point in curves) (Curve edit mode: menu: Segment/ Refine)
-* In Quad Menu Move, Rotate, Scale Setting buttion action issue fixed.
-* Align Object added to menu: Object/Transform/Align Objects(BsMax).
-* Hide/Unhide issue in Quad Menu fixed.
+* Accidentally created tiny primitives removing automatically.
+* Undo for Create primitives remove only the last one.
 * [Update History...](https://github.com/NevilArt/BsMax_2_80/blob/master/HISTORY.TXT)
 
 # License

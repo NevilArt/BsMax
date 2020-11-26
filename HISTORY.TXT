@@ -1,3 +1,9 @@
+# 0,1,0,20201122
+	Refine tool added (insert vertex on clicked point in curves) (Curve edit mode: menu: Segment/ Refine)
+	In Quad Menu Move, Rotate, Scale Setting buttion action issue fixed.
+	Align Object added to menu: Object/Transform/Align Objects(BsMax).
+	Hide/Unhide issue in Quad Menu fixed.
+
 # 0,1,0,20201117
 	Max like selection key map added for particle edit mode(Max mode only).
 	Hair guide from curve step_key counts issue fixed.

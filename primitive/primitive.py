@@ -19,7 +19,7 @@ from mathutils import Vector
 from math import sqrt
 from gpu_extras.batch import batch_for_shader
 from bsmax.state import is_object_mode
-from bsmax.actions import link_to_scene,set_as_active_object,set_create_target,delete_objects
+from bsmax.actions import link_to_scene, set_as_active_object, set_create_target, delete_objects
 from bsmax.mouse import get_click_point_info, ClickPoint
 from bsmax.math import get_2_point_center
 
@@ -64,10 +64,10 @@ class Dimantion:
 
 class CreatePrimitive(Operator):
 	bl_options = {'REGISTER','UNDO'}
-	#bpy.ops.ed.undo_push() TODO use this for undo step by step
 	subclass = None
 	params = None
 	step = 0
+	start, end = Vector((0,0,0)), Vector((0,0,0))
 	cpoint_a = ClickPoint()
 	cpoint_b = ClickPoint()
 	state = False
@@ -84,7 +84,10 @@ class CreatePrimitive(Operator):
 	@classmethod
 	def poll(self, ctx):
 		return is_object_mode(ctx)
-
+	
+	def is_drawed_enough(self):
+		return abs(self.start.x - self.end.x) + abs(self.start.y - self.end.y) > 8
+	
 	def modal(self, ctx, event):
 		ctx.area.tag_redraw()
 
@@ -109,6 +112,7 @@ class CreatePrimitive(Operator):
 					self.step = 1
 					self.cpoint_o = self.cpoint_a = self.cpoint_b
 					self.create(ctx, self.cpoint_a)
+					self.start = Vector((x,y,0))
 					if ctx.space_data.local_view:
 						self.subclass.owner.local_view_set(ctx.space_data, True)
 				if event.value == 'PRESS':
@@ -117,6 +121,7 @@ class CreatePrimitive(Operator):
 					self.state = self.drag = False
 					self.step += 1
 					self.cpoint_a = self.cpoint_b
+					self.end = Vector((x,y,0))
 
 			if event.type in self.requestkey:
 				self.event(event.type, event.value)
@@ -132,7 +137,12 @@ class CreatePrimitive(Operator):
 				if self.subclass.finishon > 0:
 					if self.step >= self.subclass.finishon:
 						self.step = 0
-						self.finish()
+						""" Delete object if was very tiny """
+						if not self.is_drawed_enough():
+							self.subclass.abort()
+						else:
+							self.finish()
+							bpy.ops.ed.undo_push()
 						self.subclass.reset()
 
 			if event.type in self.cancelkeys or self.forcefinish:

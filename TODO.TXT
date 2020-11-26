@@ -8,12 +8,13 @@ Note: Tasks in [] can't apply for now because of python API limitation, I am loo
 	Shader editor A assyn to selected
 	Disable F9 (max quick render) for other actions if exist
 	"Ctrl + Shift + S" "Save As" in node editor
+	Object mode Double click for select children
 
 # Tools
 	UV editor Target Weld
 	Fileview PageUp/ PageDown
 	Make rectangular UV
-	Instancer
+	Instancer / Make Unique
 	Weld tool setting dialog
 	Topology symmetry tool
 	[3DsMax Navigation operator (change navigation type without release the Alt key)]
@@ -43,7 +44,7 @@ Note: Tasks in [] can't apply for now because of python API limitation, I am loo
     		image.reload()
 
 # Issue
-	Convert to (apply all modifiers with confirm)
+	Convert to (make Unique and apply all modifiers)
 	Helix height and last segment
 	Edge mode delete face most desolve edges too
 	Seprate smart loop and ring from regular one or update to make it work faster
@@ -59,9 +60,10 @@ Note: Tasks in [] can't apply for now because of python API limitation, I am loo
 	PickOperator had works on other modes to (Subtarget to object or another subtarget)
 	Primitives save last created parameters value
 	Crearte primitive weel for segment count
-	Create primitive remove very tiny objects
 	If an object created uncheck hide that type of object in view port
 	Create area light set as rectangular rather than squer
+	Smart Convert and Joint makes Unique befor apply.
+	Show/Hide Gride has to works on flat views too.
 
 # Quad menu
 	Seam and UV tools

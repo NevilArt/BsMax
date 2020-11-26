@@ -186,25 +186,28 @@ class View3D_OT_ZoomOutCover(Operator):
 		return {'RUNNING_MODAL'}
 
 ###########################################################################
+# from bpy_extras.view3d_utils import region_2d_to_location_3d
 # class View3D_OT_Slide_Zoom(Operator):
 # 	bl_idname = "view3d.slide_zoom"
 # 	bl_label = "Slide Zoom (Maya mode)"
-# 	x,y = 0,0
+# 	old_pov = None
 	
-# 	@classmethod
-# 	def poll(self, ctx):
-# 		return ctx.area.type == 'VIEW_3D'
+# 	# @classmethod
+# 	# def poll(self, ctx):
+# 	# 	return ctx.area.type == 'VIEW_3D'
 	
 # 	def modal(self, ctx, event):
 
-# 		if not event.type in {'RIGHTMOUSE', 'MOUSEMOVE'}:
-# 			return {'PASS_THROUGH'}
+# 		# if not event.type in {'RIGHTMOUSE', 'MOUSEMOVE'}:
+# 		# 	return {'PASS_THROUGH'}
 
 # 		if event.type == 'MOUSEMOVE':
-# 			value_x = event.mouse_x - self.x
-# 			value_y = event.mouse_y - self.y
-# 			record_navigation(ctx, event)
-# 			bpy.ops.view3d.zoom('INVOKE_DEFAULT', delta = -1)
+# 			coord = (event.mouse_x, event.mouse_y)
+# 			point_on_view = region_2d_to_location_3d(ctx.region, ctx.space_data.region_3d, coord, ctx.scene.cursor.location)
+# 			print(old_pov, point_on_view)
+# 			old_pov = point_on_view
+# 			# record_navigation(ctx, event)
+# 			# bpy.ops.view3d.zoom('INVOKE_DEFAULT', delta = -1)
 		
 # 		if event.type == 'RIGHTMOUSE' and event.value == 'RELEASE':
 # 			return {'CANCELLED'}
@@ -242,6 +245,7 @@ classes = [BsMax_OT_ViewUndoRedo,
 		View3D_OT_ZoomInCover,
 		View3D_OT_ZoomOutCover,
 		View3D_OT_DollyCover]
+		# View3D_OT_Slide_Zoom]
 
 def register_undo(preferences):
 	[bpy.utils.register_class(c) for c in classes]
@@ -255,3 +259,6 @@ def unregister_undo():
 	except:
 		pass
 	[bpy.utils.unregister_class(c) for c in classes]
+
+if __name__ == "__main__":
+	register_undo
