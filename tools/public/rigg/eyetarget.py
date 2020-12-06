@@ -48,6 +48,7 @@ class Rigg_TO_Eye_Target_Creator(bpy.types.Operator):
 	bl_idname = "rigg.eye_target_creator"
 	bl_label = "Eye Target Creator"
 	bl_description = "Create Eyetarget For 2 Selected Objects"
+	bl_options = {'REGISTER', 'UNDO'}
 
 	@classmethod
 	def poll(self, ctx):
@@ -97,7 +98,7 @@ class Rigg_TO_Eye_Target_Creator(bpy.types.Operator):
 		holderr.select_set(True)
 		ctx.view_layer.objects.active = holderr
 		bpy.ops.object.parent_set(type='OBJECT', keep_transform=True)
-		self.report({'INFO'},'bpy.ops.rigg.eye_target_creator()')
+		self.report({'OPERATOR'},'bpy.ops.rigg.eye_target_creator()')
 		return {"FINISHED"}
 
 def register_eyetarget():

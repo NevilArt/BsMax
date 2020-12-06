@@ -307,6 +307,8 @@ def object_mode(km,preferences):
 	km.new(space,'modifier.edit_multi','TAB','PRESS',[],ctrl=True)
 	km.new(space,'object.viewoport_display','X','PRESS',[],alt=True)
 	km.new(space,'object.smart_join','J','PRESS',[],ctrl=True)
+	km.new(space,'object.select_children','LEFTMOUSE','DOUBLE_CLICK',[('full',True)])
+	km.new(space,'object.select_children','LEFTMOUSE','DOUBLE_CLICK',[('full',True),('extend',True)],ctrl=True)
 
 def mesh(km,preferences):
 	km.mute('Mesh','mesh.shortest_path_pick','LEFTMOUSE','CLICK',ctrl=True)
@@ -614,6 +616,7 @@ def node_editor(km):
 	km.new(space,'node.select_all','A','PRESS',[('action','SELECT')],ctrl=True)
 	km.new(space,'node.select_all','D','PRESS',[('action','DESELECT')],ctrl=True)
 	km.new(space,'node.select_all','I','PRESS',[('action','INVERT')],ctrl=True)
+	km.new(space,'wm.save_as_mainfile','S','PRESS',[],ctrl=True,shift=True)
 	# km.new(space,'node.view_selected','Z','PRESS',[])
 	km.new(space,'node.zoom_extended','Z','PRESS',[])
 	km.new(space,'wm.call_menu','RIGHTMOUSE','PRESS',[('name','NODE_MT_add')])

@@ -32,6 +32,7 @@ class Collection_OT_Move_To_Active(Operator):
 	bl_idname = "collection.move_to_active"
 	bl_label = "Move to active collection"
 	bl_description = "Move selected objects in to active collection"
+	bl_options = {'REGISTER', 'UNDO'}
 
 	@classmethod
 	def poll(self, ctx):
@@ -44,7 +45,7 @@ class Collection_OT_Move_To_Active(Operator):
 			clear_collections(ctx,obj)
 			active_collection.objects.link(obj)
 		ctx.view_layer.active_layer_collection = active_layer
-		self.report({'INFO'},'bpy.ops.collection.move_to_active()')
+		self.report({'OPERATOR'},'bpy.ops.collection.move_to_active()')
 		return{"FINISHED"}
 
 class Outliner_OT_Rename_Selection(Operator):

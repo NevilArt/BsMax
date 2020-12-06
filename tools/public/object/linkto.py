@@ -63,6 +63,7 @@ class Object_OT_Link_to(PickOperator):
 			bpy.ops.object.select_all(action='DESELECT')
 			target.select_set(True)
 			ctx.view_layer.objects.active = target
+			bpy.ops.ed.undo_push()
 			bpy.ops.object.link_to('INVOKE_DEFAULT')
 
 		""" Bone -> Bone """
@@ -74,7 +75,7 @@ class Object_OT_Link_to(PickOperator):
 				# TODO have to keep transform
 			# self.set_mode(self.mode)
 		
-		self.report({'INFO'},'bpy.ops.object.link_to()')
+		self.report({'OPERATOR'},'bpy.ops.object.link_to()')
 
 # hasattr(bpy.types, bpy.ops.object.link_to.idname())
 

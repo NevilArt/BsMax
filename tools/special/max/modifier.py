@@ -26,7 +26,7 @@ class Modifier_OT_Add_Bevel(Operator):
 		return is_objects_selected(ctx)
 	def execute(self, ctx):
 		modifier_add(ctx,ctx.selected_objects,'BEVEL')
-		self.report({'INFO'},'bpy.ops.modifier.add_bevel()')
+		self.report({'OPERATOR'},'bpy.ops.modifier.add_bevel()')
 		return{"FINISHED"}
 
 class Modifier_OT_Add_Lathe(Operator):
@@ -38,7 +38,7 @@ class Modifier_OT_Add_Lathe(Operator):
 		return is_objects_selected(ctx)
 	def execute(self, ctx):
 		modifier_add(ctx,ctx.selected_objects,'SCREW')
-		self.report({'INFO'},'bpy.ops.modifier.add_lathe()')
+		self.report({'OPERATOR'},'bpy.ops.modifier.add_lathe()')
 		return {'FINISHED'}
 
 class Object_OT_Reset_Xform(Operator):
@@ -52,7 +52,7 @@ class Object_OT_Reset_Xform(Operator):
 			ctx.view_layer.objects.active = obj
 			bpy.ops.object.transform_apply(location=False,rotation=True,scale=True)
 		ctx.view_layer.objects.active = obj
-		self.report({'INFO'},'bpy.ops.object.reset_xform()')
+		self.report({'OPERATOR'},'bpy.ops.object.reset_xform()')
 		return{"FINISHED"}
 
 class Modifier_OT_Add_Shell(Operator):
@@ -63,7 +63,7 @@ class Modifier_OT_Add_Shell(Operator):
 		return is_objects_selected(ctx)
 	def execute(self, ctx):
 		modifier_add(ctx,ctx.selected_objects,'SOLIDIFY',name="SHELL")
-		self.report({'INFO'},'bpy.ops.modifier.add_shell()')
+		self.report({'OPERATOR'},'bpy.ops.modifier.add_shell()')
 		return{"FINISHED"}
 
 class Modifier_OT_Add_TurboSmooth(Operator):
@@ -74,7 +74,7 @@ class Modifier_OT_Add_TurboSmooth(Operator):
 		return is_objects_selected(ctx)
 	def execute(self, ctx):
 		modifier_add(ctx,ctx.selected_objects,'SUBSURF',name='Turbosmooth')
-		self.report({'INFO'},'bpy.ops.modifier.add_turbosmooth()')
+		self.report({'OPERATOR'},'bpy.ops.modifier.add_turbosmooth()')
 		return{"FINISHED"}
 
 classes = [Modifier_OT_Add_Bevel,

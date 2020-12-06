@@ -53,7 +53,7 @@ class Render_TO_Light_Lister(Operator):
 			self.get_field(col.row(align=True),light)
 	
 	def execute(self,ctx):
-		self.report({'INFO'},'bpy.ops.render.light_lister()')
+		self.report({'OPERATOR'},'bpy.ops.render.light_lister()')
 		return{"FINISHED"}
 	
 	def cancel(self,ctx):
@@ -118,7 +118,7 @@ class Render_TO_Camera_Lister(Operator):
 			self.get_field(col.row(align=False),cam)
 	
 	def execute(self,ctx):
-		self.report({'INFO'},'bpy.ops.render.camera_lister()')
+		self.report({'OPERATOR'},'bpy.ops.render.camera_lister()')
 		return{"FINISHED"}
 	
 	def cancel(self,ctx):

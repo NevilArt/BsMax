@@ -19,41 +19,49 @@ from bpy.types import Operator
 class Object_OT_Freeze_Transform(Operator):
 	bl_idname = "object.freeze_transform"
 	bl_label = "Freeze Transform"
+	bl_options = {'REGISTER', 'UNDO'}
+	
 	def execute(self, ctx):
 		for obj in ctx.selected_objects:
 			obj.delta_location = obj.location
 			obj.location = [0,0,0]
 			obj.delta_rotation_euler = obj.rotation_euler
 			obj.rotation_euler = [0,0,0]
-		self.report({'INFO'},'bpy.ops.object.freeze_transform()')
+		self.report({'OPERATOR'},'bpy.ops.object.freeze_transform()')
 		return{"FINISHED"}
 
 class Object_OT_Freeze_Rotation(Operator):
 	bl_idname = "object.freeze_rotation"
 	bl_label = "Freeze Rotation"
+	bl_options = {'REGISTER', 'UNDO'}
+	
 	def execute(self, ctx):
 		for obj in ctx.selected_objects:
 			obj.delta_rotation_euler = obj.rotation_euler
 			obj.rotation_euler = [0,0,0]
-			self.report({'INFO'},'bpy.ops.object.freeze_rotation()')
+			self.report({'OPERATOR'},'bpy.ops.object.freeze_rotation()')
 			return{"FINISHED"}
 
 class Object_OT_Transform_To_Zero(Operator):
 	bl_idname = "object.transform_to_zero"
 	bl_label = "Transform To Zero"
+	bl_options = {'REGISTER', 'UNDO'}
+	
 	def execute(self, ctx):
 		for obj in ctx.selected_objects:
 			obj.location = [0,0,0]
 			obj.rotation_euler = [0,0,0]
-		self.report({'INFO'},'bpy.ops.object.transform_to_zero()')
+		self.report({'OPERATOR'},'bpy.ops.object.transform_to_zero()')
 		return{"FINISHED"}
 
 class Object_OT_Rotation_To_Zero(Operator):
 	bl_idname = "object.rotation_to_zero"
 	bl_label = "Rotation To Zero"
+	bl_options = {'REGISTER', 'UNDO'}
+	
 	def execute(self, ctx):
 		bpy.ops.object.rotation_clear()
-		self.report({'INFO'},'bpy.ops.object.rotation_to_zero()')
+		self.report({'OPERATOR'},'bpy.ops.object.rotation_to_zero()')
 		return{"FINISHED"}
 
 classes = [Object_OT_Freeze_Transform,

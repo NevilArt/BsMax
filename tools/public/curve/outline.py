@@ -21,6 +21,8 @@ from bsmax.operator import CurveTool
 class BsMax_OT_OutlineCurve(CurveTool):
 	bl_idname = "curve.outline"
 	bl_label = "Outline (Curve)"
+	bl_options = {'REGISTER', 'UNDO'}
+	
 	typein: BoolProperty(name="Type In:",default=False)
 	value: FloatProperty(name="Value:",unit='LENGTH')
 	close: BoolProperty(name="Close:",default=True)
@@ -67,7 +69,7 @@ class BsMax_OT_OutlineCurve(CurveTool):
 			col.prop(self,"mirror")
 	
 	def self_report(self):
-		self.report({'INFO'},'bpy.ops.curve.outline()')
+		self.report({'OPERATOR'},'bpy.ops.curve.outline()')
 
 def register_outline():
 	bpy.utils.register_class(BsMax_OT_OutlineCurve)

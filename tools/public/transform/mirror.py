@@ -115,7 +115,7 @@ class Object_OT_Mirror(bpy.types.Operator):
 		row.prop(self,"c_mode")
 
 	def execute(self, ctx):
-		self.report({'INFO'},'bpy.ops.object.mirror()')
+		self.report({'OPERATOR'},'bpy.ops.object.mirror()')
 		return {'FINISHED'}
 
 	def invoke(self, ctx, evt):

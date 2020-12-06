@@ -44,8 +44,9 @@ def set_free(self, obj, frame):
 		obj.keyframe_insert(data_path='rotation_euler', frame=frame)
 
 class Anim_OT_Link_Constraint(PickOperator):
-	bl_idname="anim.link_constraint"
-	bl_label="Link Constraint"
+	bl_idname = "anim.link_constraint"
+	bl_label = "Link Constraint"
+	bl_options = {'REGISTER', 'UNDO'}
 
 	@classmethod
 	def poll(self, ctx):
@@ -76,12 +77,13 @@ class Anim_OT_Link_Constraint(PickOperator):
 		for obj in source:
 			set_free(self, obj, frame)
 			self.set_link(obj, target, subtarget, frame)
-		self.report({'INFO'},'bpy.ops.anim.link_constraint()')
+		self.report({'OPERATOR'},'bpy.ops.anim.link_constraint()')
 
 
 class Anim_OT_Link_To_World(Operator):
-	bl_idname="anim.link_to_world"
-	bl_label="Link To World"
+	bl_idname = "anim.link_to_world"
+	bl_label = "Link To World"
+	bl_options = {'REGISTER', 'UNDO'}
 
 	@classmethod
 	def poll(self, ctx):
@@ -94,14 +96,14 @@ class Anim_OT_Link_To_World(Operator):
 		frame = ctx.scene.frame_current
 		for obj in objs:
 			set_free(self, obj, frame)
-		self.report({'INFO'},'bpy.ops.anim.link_to_world()')
+		self.report({'OPERATOR'},'bpy.ops.anim.link_to_world()')
 		return{"FINISHED"}
 
 class Anim_OT_Path_Constraint(PickOperator):
-	bl_idname="anim.path_constraint"
-	bl_label="Path Constraint"
-	bl_description=""
-	bl_options={'REGISTER', 'UNDO'}
+	bl_idname = "anim.path_constraint"
+	bl_label = "Path Constraint"
+	bl_description = ""
+	bl_options = {'REGISTER', 'UNDO'}
 
 	filters = ['CURVE']
 
@@ -137,11 +139,12 @@ class Anim_OT_Path_Constraint(PickOperator):
 		for obj in source:
 			if obj != target:
 				self.set_path_constraint(ctx, obj, target)
-		self.report({'INFO'},'bpy.ops.anim.path_constraint()')
+		self.report({'OPERATOR'},'bpy.ops.anim.path_constraint()')
 
 class Anim_OT_Lookat_Constraint(PickOperator):
-	bl_idname="anim.lookat_constraint"
-	bl_label="Lookat Constraint"
+	bl_idname = "anim.lookat_constraint"
+	bl_label = "Lookat Constraint"
+	bl_options = {'REGISTER', 'UNDO'}
 
 	@classmethod
 	def poll(self, ctx):
@@ -161,11 +164,12 @@ class Anim_OT_Lookat_Constraint(PickOperator):
 	def picked(self, ctx, source, subsource, target, subtarget):
 		for obj in source:
 			self.set_lookat(obj, target, subtarget)
-		self.report({'INFO'},'bpy.ops.anim.lookat_constraint()')
+		self.report({'OPERATOR'},'bpy.ops.anim.lookat_constraint()')
 
 class Anim_OT_Location_Constraint(PickOperator):
-	bl_idname="anim.location_constraint"
-	bl_label="Location Constraint"
+	bl_idname = "anim.location_constraint"
+	bl_label = "Location Constraint"
+	bl_options = {'REGISTER', 'UNDO'}
 
 	@classmethod
 	def poll(self, ctx):
@@ -182,11 +186,12 @@ class Anim_OT_Location_Constraint(PickOperator):
 	def picked(self, ctx, source, subsource, target, subtarget):
 		for obj in source:
 			self.set_location(obj, target, subtarget)
-		self.report({'INFO'},'bpy.ops.anim.location_constraint()')
+		self.report({'OPERATOR'},'bpy.ops.anim.location_constraint()')
 
 class Anim_OT_Orientation_Constraint(PickOperator):
-	bl_idname="anim.orientation_constraint"
-	bl_label="Orientation Constraint"
+	bl_idname = "anim.orientation_constraint"
+	bl_label = "Orientation Constraint"
+	bl_options = {'REGISTER', 'UNDO'}
 
 	@classmethod
 	def poll(self, ctx):
@@ -203,7 +208,7 @@ class Anim_OT_Orientation_Constraint(PickOperator):
 	def picked(self, ctx, source, subsource, target, subtarget):
 		for obj in source:
 			self.set_orient(obj, target, subtarget)
-		self.report({'INFO'},'bpy.ops.anim.orientation_constraint()')
+		self.report({'OPERATOR'},'bpy.ops.anim.orientation_constraint()')
 
 classes = [	Anim_OT_Link_Constraint,
 			Anim_OT_Link_To_World,

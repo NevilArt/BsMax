@@ -54,7 +54,7 @@ class Pose_OT_Select_Children(Operator):
 			for bone in selected:
 				for child in bone.children:
 					child.select = True
-		self.report({'INFO'},'bpy.ops.pose.select_children()')
+		self.report({'OPERATOR'},'bpy.ops.pose.select_children()')
 		return{"FINISHED"}
 
 def register_pose():

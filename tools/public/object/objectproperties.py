@@ -14,7 +14,7 @@
 ############################################################################
 
 import bpy
-from bpy.props import StringProperty,FloatProperty,IntProperty,BoolProperty,EnumProperty
+from bpy.props import StringProperty, FloatProperty, IntProperty, BoolProperty, EnumProperty
 
 def get_children(obj):
 	children =[]
@@ -176,6 +176,7 @@ def mode(self, ctx):
 class Object_OT_Properties(bpy.types.Operator):
 	bl_idname = "object.properties"
 	bl_label = "Object Properties"
+	bl_options = {'REGISTER', 'UNDO'}
 
 	# Object information
 	name: StringProperty(name="Name",update=rename)
@@ -303,7 +304,7 @@ class Object_OT_Properties(bpy.types.Operator):
 	def execute(self,ctx):
 		hide(self,ctx)
 		freeze(self,ctx)
-		self.report({'INFO'},'bpy.ops.object.properties()')
+		self.report({'OPERATOR'},'bpy.ops.object.properties()')
 		return {'FINISHED'}
 
 	def cancel(self,ctx):

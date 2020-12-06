@@ -21,6 +21,8 @@ from bsmax.operator import CurveTool
 class Curve_OT_Chamfer(CurveTool):
 	bl_idname = "curve.chamfer"
 	bl_label = "Fillet/Chamfer"
+	bl_options = {'REGISTER', 'UNDO'}
+	
 	fillet: BoolProperty(name="Fillet:",default=False)
 	value: FloatProperty(name="Value:",unit='LENGTH',min=0)
 	typein: BoolProperty(name="Type In:",default=False)

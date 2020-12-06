@@ -23,6 +23,8 @@ class Object_TO_Select_By_Name(Operator):
 	""" Select """
 	bl_idname = "object.select_by_name"
 	bl_label = "select object by name"
+	bl_options = {'REGISTER', 'UNDO'}
+	
 	name: bpy.props.StringProperty(default="")
 	
 	@classmethod
@@ -42,6 +44,7 @@ class Object_OT_Freeze(Operator):
 	bl_idname = "object.freeze"
 	bl_label = "Freeze/Unfreeze"
 	# bl_description = ""
+	bl_options = {'REGISTER', 'UNDO'}
 
 	mode: EnumProperty(default='selection',
 		items=[('selection','Freeze Selection',''),
@@ -59,7 +62,7 @@ class Object_OT_Freeze(Operator):
 		elif self.mode == 'clear':
 			for obj in bpy.data.objects:
 				obj.hide_select = False
-		self.report({'INFO'},'bpy.ops.object.freeze()')
+		self.report({'OPERATOR'},'bpy.ops.object.freeze()')
 		return{"FINISHED"}
 
 
@@ -69,6 +72,7 @@ class Object_OT_Hide(Operator):
 	bl_idname = "object.hide"
 	bl_label = "Hide/Unhide"
 	# bl_description = ""
+	bl_options = {'REGISTER', 'UNDO'}
 
 	mode: EnumProperty(default='selection',
 		items=[('selection','Hide Selection',''),
@@ -95,7 +99,7 @@ class Object_OT_Hide(Operator):
 				obj.hide_render = False
 				obj.hide_viewport = False
 			bpy.ops.object.hide_view_clear('INVOKE_DEFAULT')
-		self.report({'INFO'},'bpy.ops.object.hide()')
+		self.report({'OPERATOR'},'bpy.ops.object.hide()')
 		return{"FINISHED"}
 
 

@@ -19,6 +19,7 @@ class Material_OT_Assign_To_Selection(bpy.types.Operator):
 	bl_idname = "material.assign_to_selection"
 	bl_label = "Assign to selected objects"
 	bl_description = "Assign Material to selected objects"
+	bl_options = {'REGISTER', 'UNDO'}
 
 	@classmethod
 	def poll(self, ctx):
@@ -32,7 +33,7 @@ class Material_OT_Assign_To_Selection(bpy.types.Operator):
 		material = ctx.active_object.active_material
 		for o in ctx.selected_objects:
 			o.active_material = material
-		self.report({'INFO'},'bpy.ops.material.assign_to_selection()')
+		self.report({'OPERATOR'},'bpy.ops.material.assign_to_selection()')
 		return{"FINISHED"}
 
 class BsMax_MT_material_Tools(bpy.types.Menu):

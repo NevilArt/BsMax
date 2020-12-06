@@ -15,12 +15,59 @@
 
 import bpy
 from bpy.types import Operator
-from bpy.props import BoolProperty
+from bpy.props import BoolProperty, FloatProperty, IntProperty
 
-# create shape from selected edges poly
+
+
+class Mesh_OT_Connect_Data:
+	def __init__(self):
+		self.segments = 1
+		self.pinch = 0
+		self.slide = 0
+mocd = Mesh_OT_Connect_Data()
+
+class Mesh_OT_Connect(Operator):
+	bl_idname = "mesh.connect"
+	bl_label = "Connect"
+	bl_options={'REGISTER', 'UNDO'}
+
+	# segments: IntProperty(name="Segments")
+	# pinch: FloatProperty(name="Pinch", min=-1, max=1)
+	# slide: FloatProperty(name="Slide", min=-1, max=1)
+	
+	@classmethod
+	def poll(self, ctx):
+		return ctx.area.type == 'VIEW_3D'
+
+	# def draw(self, ctx):
+	# 	layout = self.layout
+	# 	layout.prop(self,"segments")
+	# 	layout.prop(self,"pinch")
+	# 	layout.prop(self,"slide")
+	
+	def execute(self, ctx):
+		if ctx.mode == 'EDIT_MESH':
+			v,e,f = ctx.tool_settings.mesh_select_mode
+			if v: 
+				bpy.ops.mesh.vert_connect()
+			elif e:
+				bpy.ops.mesh.subdivide()
+				bpy.ops.mesh.select_all(action='DESELECT')
+				#TODO select new created edges
+				# mocd.segments = self.segments
+		# self.report({'OPERATOR'},'bpy.ops.mesh.connect()')
+		return{"FINISHED"}
+
+	# def invoke(self, ctx, event):
+	# 	self.segments = mocd.segments
+	# 	return {'FINISHED'}
+
+
+
 class Mesh_OT_Create_Curve_From_Edges(Operator):
 	bl_idname = "mesh.create_curve_from_edge"
 	bl_label = "Create Shape from Edges"
+	bl_options = {'REGISTER', 'UNDO'}
 	
 	@classmethod
 	def poll(self, ctx):
@@ -32,12 +79,15 @@ class Mesh_OT_Create_Curve_From_Edges(Operator):
 		if ctx.mode == 'EDIT_MESH' and e:
 			bpy.ops.mesh.duplicate(mode=1)
 			bpy.ops.mesh.separate(type='SELECTED')
-		self.report({'INFO'},'bpy.ops.mesh.create_curve_from_edge()')
+		self.report({'OPERATOR'},'bpy.ops.mesh.create_curve_from_edge()')
 		return{"FINISHED"}
+
+
 
 class Mesh_OT_Auto_Loop_Select(Operator):
 	bl_idname = "mesh.auto_loop_select"
 	bl_label = "Auto Loop Select"
+	bl_options = {'REGISTER', 'UNDO'}
 	
 	@classmethod
 	def poll(self, ctx):
@@ -51,12 +101,15 @@ class Mesh_OT_Auto_Loop_Select(Operator):
 			elif f:
 				#TODO "Face loop"
 				pass
-		self.report({'INFO'},'bpy.ops.mesh.auto_loop_select()')
+		self.report({'OPERATOR'},'bpy.ops.mesh.auto_loop_select()')
 		return{"FINISHED"}
+
+
 
 class Mesh_OT_Auto_Ring_Select(Operator):
 	bl_idname = "mesh.auto_ring_select"
 	bl_label = "Auto Ring Select"
+	bl_options = {'REGISTER', 'UNDO'}
 	
 	@classmethod
 	def poll(self, ctx):
@@ -70,12 +123,15 @@ class Mesh_OT_Auto_Ring_Select(Operator):
 			elif f:
 				# TODO face ring
 				pass
-		self.report({'INFO'},'bpy.ops.mesh.auto_ring_select()')
+		self.report({'OPERATOR'},'bpy.ops.mesh.auto_ring_select()')
 		return{"FINISHED"}
+
+
 
 class Mesh_OT_Dot_Loop_Select(Operator):
 	bl_idname = "mesh.dot_loop_select"
 	bl_label = "Dot Loop"
+	bl_options = {'REGISTER', 'UNDO'}
 	
 	@classmethod
 	def poll(self, ctx):
@@ -85,12 +141,15 @@ class Mesh_OT_Dot_Loop_Select(Operator):
 		if ctx.mode == 'EDIT_MESH':
 			bpy.ops.mesh.smart_select_loop()
 			bpy.ops.mesh.select_nth()
-		self.report({'INFO'},'bpy.ops.mesh.dot_loop_select()')
+		self.report({'OPERATOR'},'bpy.ops.mesh.dot_loop_select()')
 		return{"FINISHED"}
+
+
 
 class Mesh_OT_Dot_Ring_Select(Operator):
 	bl_idname = "mesh.dot_ring_select"
 	bl_label = "Dot Ring"
+	bl_options = {'REGISTER', 'UNDO'}
 	
 	@classmethod
 	def poll(self, ctx):
@@ -100,32 +159,16 @@ class Mesh_OT_Dot_Ring_Select(Operator):
 		if ctx.mode == 'EDIT_MESH':
 			bpy.ops.mesh.smart_select_ring()
 			bpy.ops.mesh.select_nth()
-		self.report({'INFO'},'bpy.ops.mesh.dot_ring_select()')
+		self.report({'OPERATOR'},'bpy.ops.mesh.dot_ring_select()')
 		return{"FINISHED"}
 
-class Mesh_OT_Connect(Operator):
-	bl_idname = "mesh.connect"
-	bl_label = "Connect"
-	
-	@classmethod
-	def poll(self, ctx):
-		return ctx.area.type == 'VIEW_3D'
-	
-	def execute(self, ctx):
-		if ctx.mode == 'EDIT_MESH':
-			v,e,f = ctx.tool_settings.mesh_select_mode
-			if v: 
-				bpy.ops.mesh.vert_connect()
-			elif e:
-				bpy.ops.mesh.subdivide()
-				bpy.ops.mesh.select_all(action='DESELECT')
-				#TODO select new created edges
-		self.report({'INFO'},'bpy.ops.mesh.connect()')
-		return{"FINISHED"}
+
 
 class Mesh_OT_Remove(Operator):
 	bl_idname = "mesh.remove"
 	bl_label = "Remove"
+	bl_options = {'REGISTER', 'UNDO'}
+	
 	vert: bpy.props.BoolProperty(name="Use Verts",default=False)
 	
 	@classmethod
@@ -141,12 +184,15 @@ class Mesh_OT_Remove(Operator):
 				bpy.ops.mesh.dissolve_edges(use_verts=self.vert)
 			if f:
 				bpy.ops.mesh.dissolve_faces(use_verts=self.vert)
-		self.report({'INFO'},'bpy.ops.mesh.remove(vert='+ str(self.vert) +')')
+		self.report({'OPERATOR'},'bpy.ops.mesh.remove(vert='+ str(self.vert) +')')
 		return{"FINISHED"}
+
+
 
 class Mesh_OT_Delete_Auto(Operator):
 	bl_idname = "mesh.delete_auto"
 	bl_label = "Delete (Auto)"
+	bl_options = {'REGISTER', 'UNDO'}
 	
 	@classmethod
 	def poll(self, ctx):
@@ -165,13 +211,16 @@ class Mesh_OT_Delete_Auto(Operator):
 				# ctx.tool_settings.mesh_select_mode = v,e,f # restore mode
 			if f:
 				bpy.ops.mesh.delete(type='FACE')
-		self.report({'INFO'},'bpy.ops.mesh.delete_auto()')
+		self.report({'OPERATOR'},'bpy.ops.mesh.delete_auto()')
 		return{"FINISHED"}
+
+
 
 class Mesh_OT_Remove_Isolated_Geometry(Operator):
 	bl_idname = "mesh.remove_isolated_geometry"
 	bl_label = "Remove Isolated Geometry"
 	bl_description = "Remove isolated vertices and edges"
+	bl_options = {'REGISTER', 'UNDO'}
 	
 	@classmethod
 	def poll(self, ctx):
@@ -186,8 +235,10 @@ class Mesh_OT_Remove_Isolated_Geometry(Operator):
 			bpy.ops.mesh.delete(type='EDGE')
 		if f:
 			bpy.ops.mesh.delete(type='FACE')
-		self.report({'INFO'},'bpy.ops.mesh.remove_isolated_geometry()')
+		self.report({'OPERATOR'},'bpy.ops.mesh.remove_isolated_geometry()')
 		return {'FINISHED'}
+
+
 
 classes = [Mesh_OT_Create_Curve_From_Edges,
 		Mesh_OT_Auto_Loop_Select,
@@ -204,3 +255,6 @@ def register_meshs():
 
 def unregister_meshs():
 	[bpy.utils.unregister_class(c) for c in classes]
+
+if __name__ == "__main__":
+	register_meshs()

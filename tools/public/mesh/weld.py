@@ -14,6 +14,8 @@
 ############################################################################
 
 import bpy#,bmesh
+from bpy.types import Operator
+from bpy.props import FloatProperty
 from bsmax.graphic import register_line,unregister_line
 
 # TARGET WELD
@@ -29,10 +31,11 @@ def SelectVert(ctx, event, started):
 	if result == {'PASS_THROUGH'}:
 		bpy.ops.mesh.select_all(action='DESELECT')
 
-class Mesh_OT_Target_Weld(bpy.types.Operator):
+class Mesh_OT_Target_Weld(Operator):
 	bl_idname = "mesh.target_weld"
 	bl_label = "Target Weld"
-	bl_options = {'REGISTER','UNDO'}
+	bl_options = {'REGISTER', 'UNDO'}
+	
 	start, end, handle = None, None, None
 	drag, picked = False, False
 
@@ -75,7 +78,7 @@ class Mesh_OT_Target_Weld(bpy.types.Operator):
 		return {'RUNNING_MODAL'}
 
 	def execute(self,ctx):
-		self.report({'INFO'},'bpy.ops.mesh.target_weld()')
+		self.report({'OPERATOR'},'bpy.ops.mesh.target_weld()')
 		return{"FINISHED"}
 
 	def invoke(self, ctx, event):
@@ -85,11 +88,27 @@ class Mesh_OT_Target_Weld(bpy.types.Operator):
 			return {'RUNNING_MODAL'}
 		return {'CANCELLED'}
 
+class Mesh_OT_Weld(Operator):
+	bl_idname = "mesh.weld"
+	bl_label = "Weld"
+	bl_options = {'REGISTER', 'UNDO'}
+
+	threshold: FloatProperty(name="Threshold")
+
+	def draw(self, ctx):
+		self.layout.prop(self,"threshold")
+
+	def execute(self,ctx):
+		bpy.ops.mesh.remove_doubles(threshold=self.threshold, use_unselected=False)
+		return{"FINISHED"}
+
+classes = [Mesh_OT_Target_Weld, Mesh_OT_Weld]
+
 def register_weld():
-	bpy.utils.register_class(Mesh_OT_Target_Weld)
+	[bpy.utils.register_class(c) for c in classes]
 
 def unregister_weld():
-	bpy.utils.unregister_class(Mesh_OT_Target_Weld)
+	[bpy.utils.unregister_class(c) for c in classes]
 
 if __name__ == "__main__":
 	register_weld()

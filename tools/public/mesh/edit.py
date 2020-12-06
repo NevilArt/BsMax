@@ -20,6 +20,7 @@ from bsmax.state import is_mode
 class Mesh_OT_Chamfer(Operator):
 	bl_idname = "mesh.chamfer"
 	bl_label = "Chamfer"
+	bl_options = {'REGISTER', 'UNDO'}
 
 	# @classmethod
 	# def poll(self, ctx):
@@ -29,12 +30,13 @@ class Mesh_OT_Chamfer(Operator):
 		vert,edge,face = ctx.tool_settings.mesh_select_mode
 		v = vert and not edge and not face
 		bpy.ops.mesh.bevel(vertex_only=v)
-		self.report({'INFO'},'bpy.ops.mesh.chamfer()')
+		self.report({'OPERATOR'},'bpy.ops.mesh.chamfer()')
 		return{"FINISHED"}
 
 class Mesh_OT_Drag(Operator):
 	bl_idname = "mesh.drag"
 	bl_label = "Mesh Drag"
+	bl_options = {'REGISTER', 'UNDO'}
 
 	# @classmethod
 	# def poll(self, ctx):

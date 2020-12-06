@@ -94,7 +94,7 @@ class Particle_OT_Hair_Guides_From_Curve(PickOperator):
 		""" Commit Brush """
 		bpy.ops.particle.connect_hair()
 		bpy.ops.object.mode_set(mode='OBJECT', toggle=False)
-		self.report({'INFO'},'bpy.ops.particle.hair_guides_from_curve()')
+		self.report({'OPERATOR'},'bpy.ops.particle.hair_guides_from_curve()')
 
 class Particle_OT_Hair_Guides_To_Curve(Operator):
 	bl_idname = 'particle.hair_guides_to_curve'
@@ -152,7 +152,7 @@ class Particle_OT_Hair_Guides_To_Curve(Operator):
 		obj = ctx.active_object
 		guides = self.read_hair_guide(ctx, obj)
 		self.create_curve(ctx, guides, obj)
-		self.report({'INFO'},'bpy.ops.particle.hair_guides_to_curve()')
+		self.report({'OPERATOR'},'bpy.ops.particle.hair_guides_to_curve()')
 		return{"FINISHED"}
 	
 

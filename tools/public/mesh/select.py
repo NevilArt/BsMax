@@ -145,6 +145,7 @@ class Mesh_OT_Select_Element_Setting(Operator):
 class Mesh_OT_Select_Max(Operator):
 	bl_idname = "mesh.select_max"
 	bl_label = "Select (3DsMax)"
+	bl_options = {'REGISTER', 'UNDO'}
 
 	mode: EnumProperty(name='Mode', default='SET',
 		items=[('SET','Set',''),('ADD','Add',''),('SUB','Sub','')])
@@ -160,7 +161,7 @@ class Mesh_OT_Select_Max(Operator):
 			mesh_select(self.mode)
 		else:
 			view3d_select(self.mode, self.x, self.y)
-		self.report({'INFO'},'bpy.ops.mesh.select_max()')
+		self.report({'OPERATOR'},'bpy.ops.mesh.select_max()')
 		return{"FINISHED"}
 	
 	def invoke(self, ctx, event):
@@ -170,6 +171,7 @@ class Mesh_OT_Select_Max(Operator):
 class Curve_OT_Select_Max(Operator):
 	bl_idname = "curve.select_max"
 	bl_label = "Select (3DsMax)"
+	bl_options = {'REGISTER', 'UNDO'}
 
 	mode: EnumProperty(name='Mode', default='SET',
 		items=[('SET','Set',''),('ADD','Add',''),('SUB','Sub','')])
@@ -185,7 +187,7 @@ class Curve_OT_Select_Max(Operator):
 			curve_select(self.mode)
 		else:
 			view3d_select(self.mode, self.x, self.y)
-		self.report({'INFO'},'bpy.ops.curve.select_max()')
+		self.report({'OPERATOR'},'bpy.ops.curve.select_max()')
 		return{"FINISHED"}
 	
 	def invoke(self, ctx, event):
@@ -195,6 +197,7 @@ class Curve_OT_Select_Max(Operator):
 class Particle_OT_Select_Max(Operator):
 	bl_idname = "particle.select_max"
 	bl_label = "Select (3DsMax)"
+	bl_options = {'REGISTER', 'UNDO'}
 
 	mode: EnumProperty(name='Mode', default='SET',
 		items=[('SET','Set',''),('ADD','Add',''),('SUB','Sub','')])
@@ -210,7 +213,7 @@ class Particle_OT_Select_Max(Operator):
 			particle_select(self.mode)
 		else:
 			view3d_select(self.mode, self.x, self.y)
-		self.report({'INFO'},'bpy.ops.curve.select_max()')
+		self.report({'OPERATOR'},'bpy.ops.curve.select_max()')
 		return{"FINISHED"}
 	
 	def invoke(self, ctx, event):

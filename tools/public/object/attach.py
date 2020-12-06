@@ -18,6 +18,7 @@ from bsmax.operator import PickOperator
 class Object_OT_Attach(PickOperator):
 	bl_idname = "object.attach"
 	bl_label = "Attach"
+	
 	filters = ['AUTO']
 
 	@classmethod
@@ -31,8 +32,9 @@ class Object_OT_Attach(PickOperator):
 	def picked(self, ctx, source, subsource, target, subtarget):
 		target.select_set(state = True)
 		bpy.ops.object.join()
+		bpy.ops.ed.undo_push()
 		bpy.ops.object.attach('INVOKE_DEFAULT')
-		self.report({'INFO'},'bpy.ops.object.attach()')
+		self.report({'OPERATOR'},'bpy.ops.object.attach()')
 
 classes = [Object_OT_Attach]
 

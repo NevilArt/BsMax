@@ -15,10 +15,12 @@
 
 import bpy
 from bpy.types import Operator
+from bpy.props import BoolProperty
 
 class Object_OT_Select_Instance(Operator):
 	bl_idname = "object.select_instance"
 	bl_label = "Select Instance"
+	bl_options = {'REGISTER', 'UNDO'}
 	
 	@classmethod
 	def poll(self, ctx):
@@ -31,7 +33,7 @@ class Object_OT_Select_Instance(Operator):
 			for obj in ctx.scene.objects:
 				if ctx.active_object.data == obj.data:
 					obj.select_set(True)
-		self.report({'INFO'},'bpy.ops.object.select_instance()')
+		self.report({'OPERATOR'},'bpy.ops.object.select_instance()')
 		return{"FINISHED"}
 
 def BsMax_ReadPrimitiveData(obj):
@@ -43,6 +45,7 @@ def BsMax_ReadPrimitiveData(obj):
 class Object_OT_Select_Similar(Operator):
 	bl_idname = "object.select_similar"
 	bl_label = "Select Similar"
+	bl_options = {'REGISTER', 'UNDO'}
 	
 	@classmethod
 	def poll(self, ctx):
@@ -89,7 +92,44 @@ class Object_OT_Select_Similar(Operator):
 		elif len(inst) > 0:
 			for o in inst:
 				o.select_set(True)
-		self.report({'INFO'},'bpy.ops.object.select_similar()')
+		self.report({'OPERATOR'},'bpy.ops.object.select_similar()')
+		return{"FINISHED"}
+
+class Object_OT_Select_Children(Operator):
+	bl_idname = "object.select_children"
+	bl_label = "Select Children"
+	bl_description = ""
+	bl_options = {'REGISTER', 'UNDO'}
+	
+	full: BoolProperty()
+	extend: BoolProperty()
+
+	@classmethod
+	def poll(self, ctx):
+		return ctx.mode == 'OBJECT'
+
+	def collect_children(self, objs):
+		children = []
+		for obj in objs:
+			for child in obj.children:
+				if not child in objs:
+					children.append(child)
+					child.select_set(state = True)
+		return children
+	
+	def execute(self, ctx):
+		selected = ctx.selected_objects
+		nsc = len(selected) # New Selected Count
+		if self.full == True:
+			children = selected
+			while nsc != 0:
+				children = self.collect_children(children)
+				nsc = len(children)
+		else:
+			for obj in selected:
+				for child in obj.children:
+					child.select_set(state = True)
+		self.report({'OPERATOR'},'bpy.ops.object.select_children()')
 		return{"FINISHED"}
 
 def select_menu(self, ctx):
@@ -97,8 +137,9 @@ def select_menu(self, ctx):
 	layout.separator()
 	layout.operator("object.select_instance")
 	layout.operator("object.select_similar")
+	layout.operator("object.select_children")
 
-classes = [Object_OT_Select_Instance,Object_OT_Select_Similar]
+classes = [Object_OT_Select_Instance, Object_OT_Select_Similar, Object_OT_Select_Children]
 
 def register_selection():
 	[bpy.utils.register_class(c) for c in classes]
@@ -108,3 +149,6 @@ def register_selection():
 def unregister_selection():
 	bpy.types.VIEW3D_MT_select_object.remove(select_menu)
 	[bpy.utils.unregister_class(c) for c in classes]
+
+if __name__ == "__main__":
+	register_selection()

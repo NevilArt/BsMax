@@ -20,6 +20,7 @@ from bpy.types import Operator
 class View3D_OT_Transform_Gizmo_Size(Operator):
 	bl_idname = "view3d.transform_gizmosize"
 	bl_label = "Transform Gizmo Size"
+	
 	step: FloatProperty()
 
 	def execute(self, ctx):
@@ -27,7 +28,7 @@ class View3D_OT_Transform_Gizmo_Size(Operator):
 			ctx.user_preferences.view.gizmo_size += self.step
 		else:
 			ctx.preferences.view.gizmo_size += self.step
-		self.report({'INFO'},'bpy.ops.view3d.transform_gizmosize()')
+		self.report({'OPERATOR'},'bpy.ops.view3d.transform_gizmosize()')
 		return{"FINISHED"}
 
 def get_tool(ctx):
@@ -54,6 +55,7 @@ def coordinate_toggle(ctx):
 class Object_OT_Move(Operator):
 	bl_idname = "object.move"
 	bl_label = "Move"
+	
 	smax: BoolProperty()
 
 	def execute(self, ctx):
@@ -66,13 +68,15 @@ class Object_OT_Move(Operator):
 			else:	
 				bpy.ops.wm.tool_set_by_id(name="builtin.move")
 		bpy.ops.object.snap_toggle(auto=self.smax)
-		# self.report({'INFO'},'bpy.ops.object.move()')
+		# self.report({'OPERATOR'},'bpy.ops.object.move()')
 		return{"FINISHED"}
 
 class Object_OT_Rotate(Operator):
 	bl_idname = "object.rotate"
 	bl_label = "Rotate"
+	
 	smax: BoolProperty()
+	
 	def execute(self, ctx):
 		tool = get_tool(ctx)
 		if tool == "builtin.select":
@@ -83,13 +87,15 @@ class Object_OT_Rotate(Operator):
 			else:
 				bpy.ops.wm.tool_set_by_id(name="builtin.rotate")
 		bpy.ops.object.angel_snap(auto=self.smax)
-		# self.report({'INFO'},'bpy.ops.object.rotate()')
+		# self.report({'OPERATOR'},'bpy.ops.object.rotate()')
 		return{"FINISHED"}
 
 class Object_OT_Scale(Operator):
 	bl_idname = "object.scale"
 	bl_label = "Scale"
+	
 	cage: BoolProperty(default=False)
+	
 	def execute(self, ctx):
 		tool = get_tool(ctx)
 		if tool == "builtin.select":
@@ -102,7 +108,7 @@ class Object_OT_Scale(Operator):
 					bpy.ops.wm.tool_set_by_id(name="builtin.scale",cycle=True)
 			else:
 				bpy.ops.wm.tool_set_by_id(name="builtin.scale",cycle=True)
-		# self.report({'INFO'},'bpy.ops.object.scale()')
+		# self.report({'OPERATOR'},'bpy.ops.object.scale()')
 		return{"FINISHED"}
 
 # "TweakBetter" created by Dan Pool (dpdp)
@@ -112,6 +118,7 @@ class View3D_OT_Tweak_Better(Operator):
 	"""Fix the select active tool"""
 	bl_idname = "view3d.tweak_better"
 	bl_label = "Tweak Better"
+	
 	tmode: StringProperty(name="Transform Mode")
 	release: BoolProperty(name="Confirm on Release")
 
@@ -122,7 +129,7 @@ class View3D_OT_Tweak_Better(Operator):
 		return {'RUNNING_MODAL'}
 
 	def execute(self,ctx):
-		self.report({'INFO'},'bpy.ops.view3d.tweak_better()')
+		self.report({'OPERATOR'},'bpy.ops.view3d.tweak_better()')
 		return{"FINISHED"}
 
 	def invoke(self, ctx, event):

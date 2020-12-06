@@ -22,6 +22,7 @@ from bsmax.state import has_constraint
 class Camera_OT_Create_Target(Operator):
 	bl_idname = "camera.create_target"
 	bl_label = "Make Target Camera"
+	bl_options = {'REGISTER', 'UNDO'}
 
 	@classmethod
 	def poll(self, ctx):
@@ -37,12 +38,13 @@ class Camera_OT_Create_Target(Operator):
 		target = set_create_target(cam, None, distance=(0,0,-size*3))
 		target.empty_display_size = size / 10
 		set_as_active_object(ctx, cam)
-		self.report({'INFO'},"bpy.ops.camera.create_target()")
+		self.report({'OPERATOR'},"bpy.ops.camera.create_target()")
 		return {'FINISHED'}
 
 class Camera_OT_Clear_Target(Operator):
 	bl_idname = "camera.clear_targte"
 	bl_label = "Make Free Camera"
+	bl_options = {'REGISTER', 'UNDO'}
 
 	@classmethod
 	def poll(self, ctx):
@@ -61,7 +63,7 @@ class Camera_OT_Clear_Target(Operator):
 		for c in TrackToConts:
 			cam.constraints.remove(c)
 		cam.matrix_world = transfoem
-		self.report({'INFO'},'bpy.ops.camera.clear_targte()')
+		self.report({'OPERATOR'},'bpy.ops.camera.clear_targte()')
 		return {'FINISHED'}
 
 class Camera_OT_Select_Target(Operator):
@@ -80,7 +82,6 @@ class Camera_OT_Select_Target(Operator):
 		obj = ctx.active_object
 		targ = obj.constraints["Track To"].target
 		set_as_active_object(ctx, targ)
-		self.report({'INFO'},'bpy.ops.camera.select_target()')
 		return {'FINISHED'}
 
 def camera_menu(self, ctx):

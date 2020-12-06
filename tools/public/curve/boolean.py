@@ -21,6 +21,8 @@ from bsmax.operator import CurveTool
 class Curve_OT_Boolean(CurveTool):
 	bl_idname = "curve.boolean"
 	bl_label = "Boolean"
+	bl_options = {'REGISTER', 'UNDO'}
+	
 	singleaction = True
 	typein: BoolProperty(name="Type In:",default=False)
 	advance: BoolProperty(name="advance:",default=False)
@@ -63,7 +65,7 @@ class Curve_OT_Boolean(CurveTool):
 			col.prop(self,"value")
 	
 	def self_report(self):
-		self.report({'INFO'},'bpy.ops.curve.boolean()')
+		self.report({'OPERATOR'},'bpy.ops.curve.boolean()')
 
 def register_boolean():
 	bpy.utils.register_class(Curve_OT_Boolean)

@@ -7,8 +7,6 @@ Note: Tasks in [] can't apply for now because of python API limitation, I am loo
 	[F9 if no active camera in scene create one befor render and delete after render]
 	Shader editor A assyn to selected
 	Disable F9 (max quick render) for other actions if exist
-	"Ctrl + Shift + S" "Save As" in node editor
-	Object mode Double click for select children
 
 # Tools
 	UV editor Target Weld
@@ -42,6 +40,8 @@ Note: Tasks in [] can't apply for now because of python API limitation, I am loo
 	Reload All/Special image files
 		for image in bpy.data.images:
     		image.reload()
+	Spline vertex Hoke to object by drag and pick
+
 
 # Issue
 	Convert to (make Unique and apply all modifiers)
@@ -51,6 +51,9 @@ Note: Tasks in [] can't apply for now because of python API limitation, I am loo
 	Bone to Bone link_to net to fix transform
 	[Press 'S' while navigation hade to toggle Snap rather than the scale in max mode]
 	Mirro operator not working.
+	--->>>> Smart join Bone issue
+	Undo
+		Chamfer Curve
 
 # Update
 	Enable snap for drawing primitives

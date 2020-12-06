@@ -29,6 +29,7 @@ class Object_OT_Weight_to_Vertex_Color(Operator):
 	bl_label = "Weight to Vertex Color"
 	bl_space_type = "VIEW_3D"
 	bl_options = {'REGISTER', 'UNDO'}
+	
 	colored: BoolProperty(name="Color / BW", default=False)
 
 	@classmethod
@@ -80,7 +81,7 @@ class Object_OT_Weight_to_Vertex_Color(Operator):
 		if self.check_for_active_chanels(ctx.active_object):
 			self.transfer_weight_to_vertex_color(ctx.active_object)
 			ctx.active_object.data.update()
-		# self.report({'INFO'},'bpy.ops.object.weight_to_vertex_color()')
+		# self.report({'OPERATOR'},'bpy.ops.object.weight_to_vertex_color()')
 		return {'FINISHED'}
 
 def register_paint():

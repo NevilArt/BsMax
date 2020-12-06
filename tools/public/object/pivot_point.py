@@ -106,6 +106,7 @@ def ModifyPivotPoint(ctx):
 class Object_OT_Modify_Pivot(Operator):
 	bl_idname = "object.modify_pivotpoint"
 	bl_label = "Modify Pivot Point"
+	bl_options = {'REGISTER', 'UNDO'}
 
 	@classmethod
 	def poll(self, ctx):
@@ -125,6 +126,7 @@ class Object_OT_Modify_Pivot(Operator):
 class Object_OT_Pivot_To_First_Point(Operator):
 	bl_idname = "object.pivot_to_first_point"
 	bl_label = "Pivot to First point"
+	bl_options = {'REGISTER', 'UNDO'}
 
 	@classmethod
 	def poll(self, ctx):
@@ -144,12 +146,13 @@ class Object_OT_Pivot_To_First_Point(Operator):
 					delta_origin = obj.data.splines[0].bezier_points[0].co.copy()
 					obj.data.transform(Matrix.Translation(-delta_origin))
 					obj.matrix_world.translation = old_origin
-		self.report({'INFO'},'bpy.ops.object.pivot_to_first_point()')
+		self.report({'OPERATOR'},'bpy.ops.object.pivot_to_first_point()')
 		return {"FINISHED"}
 
 class Object_OT_Pivot_To_Buttom_Center(Operator):
 	bl_idname = "object.pivot_to_buttom_center"
 	bl_label = "Pivot to Buttom Center"
+	bl_options = {'REGISTER', 'UNDO'}
 
 	@classmethod
 	def poll(self, ctx):
@@ -172,7 +175,7 @@ class Object_OT_Pivot_To_Buttom_Center(Operator):
 	def execute(self,ctx):
 		for obj in ctx.selected_objects:
 			self.pivot_to_buttom_center(ctx, obj)
-		self.report({'INFO'},'bpy.ops.object.pivot_to_buttom_center()')
+		self.report({'OPERATOR'},'bpy.ops.object.pivot_to_buttom_center()')
 		return {"FINISHED"}
 
 class OBJECT_MT_Set_Pivot_Point(Menu):

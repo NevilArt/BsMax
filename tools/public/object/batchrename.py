@@ -39,6 +39,7 @@ def arrange_selected_items(active, selected):
 class WM_OT_Multi_Item_Rename(Operator):
 	bl_idname = "wm.multi_item_rename" 
 	bl_label  = "Multi Item Rename"
+	bl_options = {'REGISTER', 'UNDO'}
 
 	force: EnumProperty(name='',description='',default='AUTO',
 			items =[('AUTO','Auto',''),('OBJECT','Object','')])
@@ -140,7 +141,7 @@ class WM_OT_Multi_Item_Rename(Operator):
 
 	def execute(self, ctx):
 		self.rename_items(ctx)
-		self.report({'INFO'},'bpy.ops.wm.multi_item_rename()')
+		self.report({'OPERATOR'},'bpy.ops.wm.multi_item_rename()')
 		return {'FINISHED'}
 	   
 	def invoke(self, ctx, event):

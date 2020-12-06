@@ -21,6 +21,7 @@ class Object_OT_Collaps_Modifiers(Operator):
 	bl_idname = "object.collaps_modifiers"
 	bl_label = "Apply All Modifiers"
 	# bl_description = ""
+	bl_options = {'REGISTER', 'UNDO'}
 
 	target: bpy.props.EnumProperty(default='MESH',items=[('MESH','Mesh',''),('CURVE','Curve','')])
 
@@ -56,6 +57,7 @@ class Object_OT_Convert(Operator):
 	bl_idname = "object.smart_convert"
 	bl_label = "Smart Convert"
 	# bl_description = ""
+	bl_options = {'REGISTER', 'UNDO'}
 
 	target: bpy.props.EnumProperty(default='MESH',items=[('MESH','Mesh',''),('CURVE','Curve','')])
 
@@ -71,6 +73,7 @@ class Object_OT_Join(Operator):
 	bl_idname = "object.smart_join"
 	bl_label = "Smart Join"
 	# bl_description = ""
+	bl_options = {'REGISTER', 'UNDO'}
 
 	apply: BoolProperty(name='Apply', default=False)
 
@@ -86,7 +89,7 @@ class Object_OT_Join(Operator):
 		targte = ctx.active_object
 
 		for obj in ctx.selected_objects:
-			if obj.type == targte.type:
+			if obj.type == targte.type and obj.type in {'MESH', 'CURVE'}:
 				self.apply_modifiers(obj)
 				""" Remove primitive data if has targets """
 				targte.data.primitivedata.classname = ""

@@ -34,7 +34,7 @@ class Editor_OT_Open_As_Float_Window(Operator):
 		bpy.ops.screen.area_dupli('INVOKE_DEFAULT')
 		ctx.area.type = original_type
 
-		self.report({'INFO'},'bpy.ops.editor.float()')
+		self.report({'OPERATOR'},'bpy.ops.editor.float()')
 		return{"FINISHED"}
 
 class Editor_OT_ScriptListenerOpen(Operator):
@@ -47,7 +47,7 @@ class Editor_OT_ScriptListenerOpen(Operator):
 		bpy.ops.screen.area_split(direction='HORIZONTAL',factor=0.5)
 		area = ctx.window_manager.windows[-1].screen.areas[0]
 		area.type = 'INFO'
-		self.report({'INFO'},'bpy.ops.editor.script_listener()')
+		self.report({'OPERATOR'},'bpy.ops.editor.script_listener()')
 		return{"FINISHED"}
 
 classes = [Editor_OT_Open_As_Float_Window,Editor_OT_ScriptListenerOpen]

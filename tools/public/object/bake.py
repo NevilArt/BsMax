@@ -105,7 +105,7 @@ class Object_OT_Bake_Texture(bpy.types.Operator):
 			bake_types.append('TRANSMISSION')
 		for bake_type in bake_types:
 			bake(self,ctx,self.source,self.target,self.cage,bake_type)
-		self.report({'INFO'},'bpy.ops.object.texture_bake()')
+		self.report({'OPERATOR'},'bpy.ops.object.texture_bake()')
 		return {'FINISHED'}
 
 	def cancel(self, ctx):

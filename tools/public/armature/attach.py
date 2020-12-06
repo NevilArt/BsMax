@@ -18,6 +18,7 @@ from bsmax.operator import PickOperator
 class Armature_OT_Attach(PickOperator):
 	bl_idname = "armature.attach"
 	bl_label = "Attach"
+	bl_options = {'REGISTER', 'UNDO'}
 	filters = ['ARMATURE']
 
 	@classmethod
@@ -34,7 +35,7 @@ class Armature_OT_Attach(PickOperator):
 		bpy.ops.object.join()
 		bpy.ops.object.mode_set(mode='EDIT', toggle=False)
 		bpy.ops.armature.attach('INVOKE_DEFAULT')
-		self.report({'INFO'},'bpy.ops.armature.attach()')
+		self.report({'OPERATOR'},'bpy.ops.armature.attach()')
 
 classes = [Armature_OT_Attach]
 

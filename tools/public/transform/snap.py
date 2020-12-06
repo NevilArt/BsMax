@@ -107,7 +107,9 @@ class Object_OT_Snap_Toggle(Operator):
 class Object_OT_Angel_Snap(Operator):
 	bl_idname = "object.angel_snap"
 	bl_label = "Angel Snap"
+	
 	auto: BoolProperty(default=False)
+	
 	def execute(self, ctx):
 		t = ctx.scene.tool_settings
 		if self.auto:
@@ -133,6 +135,7 @@ class Object_OT_Angel_Snap(Operator):
 class Object_OT_Placment(Operator):
 	bl_idname = "object.placment"
 	bl_label = "placment"
+	
 	def execute(self, ctx):
 		ctx.scene.tool_settings.use_snap = True
 		ctx.scene.tool_settings.snap_elements = {'FACE'}
@@ -140,7 +143,7 @@ class Object_OT_Placment(Operator):
 		ctx.scene.tool_settings.use_snap_translate = True
 		ctx.scene.tool_settings.use_snap_project = True
 		bpy.ops.wm.tool_set_by_id(name='builtin.move')
-		self.report({'INFO'},'bpy.ops.object.placment()')
+		self.report({'OPERATOR'},'bpy.ops.object.placment()')
 		return{"FINISHED"}
 
 classes = [Object_OT_Snap_Setting,

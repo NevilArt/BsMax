@@ -31,7 +31,7 @@ class Clip_OT_Auto_Frame(Operator):
 	def execute(self, ctx):
 		bpy.ops.clip.view_selected('INVOKE_DEFAULT')
 		# bpy.ops.clip.view_all('INVOKE_DEFAULT')
-		self.report({'INFO'},'bpy.ops.clip.autoframe()')
+		self.report({'OPERATOR'},'bpy.ops.clip.autoframe()')
 		return{"FINISHED"}
 
 

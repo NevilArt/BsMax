@@ -19,14 +19,16 @@ from mathutils import Matrix
 class View3d_OT_HomeView(Operator):
 	bl_idname = 'view3d.homeview'
 	bl_label = 'Home View'
+	
 	@classmethod
 	def poll(self, ctx):
 		return ctx.area.type == 'VIEW_3D'
+	
 	def execute(self, ctx):
 		homeview = (( 0.4100,0.9120,-0.0133,0),(-0.4017,0.1936,0.8950,-1.9045),
 					( 0.8188,-0.3617,0.4458,-17.9866),( 0,0,0,1))
 		ctx.area.spaces.active.region_3d.view_matrix = Matrix(homeview)
-		self.report({'INFO'},'bpy.ops.view3d.homeview()')
+		# self.report({'OPERATOR'},'bpy.ops.view3d.homeview()')
 		return{'FINISHED'}
 
 class View3d_OT_Zoom_Extended(Operator):
@@ -55,7 +57,7 @@ class View3d_OT_Zoom_Extended(Operator):
 		else:
 			bpy.ops.view3d.view_selected(use_all_regions=False)
 
-		self.report({'INFO'},'bpy.ops.view3d.zoom_extended()')
+		# self.report({'OPERATOR'},'bpy.ops.view3d.zoom_extended()')
 		return{'FINISHED'}
 
 class Node_OT_Zoom_Extended(Operator):

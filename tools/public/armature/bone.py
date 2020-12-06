@@ -22,6 +22,8 @@ from bsmax.state import is_active_object
 class Armature_OT_Bone_Type(Operator):
 	bl_idname = "armature.bone_type"
 	bl_label = "Bone Type"
+	bl_options = {'REGISTER', 'UNDO'}
+	
 	mode: EnumProperty(name="Bone Draw type", default='BBONE',
 			description='Armature Bone Draw Type',
 			items=[('OCTAHEDRAL','Octahedral',''),('STICK','Stick',''),
@@ -34,13 +36,14 @@ class Armature_OT_Bone_Type(Operator):
 	def execute(self, ctx):
 		if ctx.active_object != None:
 			ctx.object.data.display_type = self.mode
-		self.report({'INFO'},'bpy.ops.armature.bone_type(mode="'+ self.mode +'")')
+		self.report({'OPERATOR'},'bpy.ops.armature.bone_type(mode="'+ self.mode +'")')
 		return{"FINISHED"}
 
 # Devide Bone by number dialog 
 class Armature_OT_Bone_Devide(Operator):
 	bl_idname = "armature.bone_devide"
 	bl_label = "Bone Devide"
+	bl_options = {'REGISTER', 'UNDO'}
 	devides: IntProperty(name="Devides",default=1)
 	typein: BoolProperty(name="Type In:",default=False)
 	
@@ -52,7 +55,7 @@ class Armature_OT_Bone_Devide(Operator):
 		bpy.ops.armature.subdivide(number_cuts=self.devides)
 		d = 'devides='+ str(self.devides)
 		t = 'typein=' + str(self.typein)
-		self.report({'INFO'},'bpy.ops.armature.bone_devide('+ d +','+ t +')')
+		self.report({'OPERATOR'},'bpy.ops.armature.bone_devide('+ d +','+ t +')')
 		return {'FINISHED'}
 
 	def modal(self, ctx, event):
@@ -67,7 +70,7 @@ class Armature_OT_Bone_Devide(Operator):
 			ctx.window_manager.modal_handler_add(self)
 			return {'RUNNING_MODAL'}
 
-classes = [Armature_OT_Bone_Type,Armature_OT_Bone_Devide]
+classes = [Armature_OT_Bone_Type, Armature_OT_Bone_Devide]
 
 def register_bone():
 	[bpy.utils.register_class(c) for c in classes]

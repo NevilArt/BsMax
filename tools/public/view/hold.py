@@ -21,7 +21,7 @@ class Scene_OT_Hold(Operator):
 		bl_label = "Hold"
 		def execute(self, ctx):
 			# print("Hold coming soon")
-			# self.report({'INFO'},'bpy.ops.scene.hold()')
+			# self.report({'OPERATOR'},'bpy.ops.scene.hold()')
 			return{"FINISHED"}
 
 class Scene_OT_Fetch(Operator):
@@ -29,7 +29,7 @@ class Scene_OT_Fetch(Operator):
 		bl_label = "Fetch"
 		def execute(self, ctx):
 			# print("Fetch coming soon")
-			# self.report({'INFO'},'bpy.ops.scene.fetch()')
+			# self.report({'OPERATOR'},'bpy.ops.scene.fetch()')
 			return{"FINISHED"}
 
 classes = [Scene_OT_Hold, Scene_OT_Fetch]

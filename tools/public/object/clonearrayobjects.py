@@ -14,7 +14,7 @@
 ############################################################################
 
 import bpy
-from bpy.props import StringProperty,BoolProperty,FloatProperty,IntProperty
+from bpy.props import StringProperty, BoolProperty, FloatProperty, IntProperty
 from math import radians
 
 # TODO
@@ -170,7 +170,7 @@ class Object_OT_Clone_Array(bpy.types.Operator):
 		BsMax_Clone_SetTransform(self, ctx)
 
 	def execute(self, ctx):
-		self.report({'INFO'},'bpy.ops.object.clone()')
+		self.report({'OPERATOR'},'bpy.ops.object.clone()')
 		return {'FINISHED'}
 
 	def cancel(self, ctx):

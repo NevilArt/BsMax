@@ -123,6 +123,7 @@ def read_objects_values(self, ctx):
 class Object_OT_Transform_Type_In(bpy.types.Operator):
 	bl_idname = "object.transform_type_in"
 	bl_label = "Transform Type-in"
+	bl_options = {'REGISTER', 'UNDO'}
 
 	pos_abs_x: FloatProperty(name="X",unit='LENGTH',update=pos_abs_x)
 	pos_abs_y: FloatProperty(name="Y",unit='LENGTH',update=pos_abs_y)
@@ -199,7 +200,7 @@ class Object_OT_Transform_Type_In(bpy.types.Operator):
 		self.percent = 100
 
 	def execute(self, ctx):
-		self.report({'INFO'},'bpy.ops.object.transform_type_in()')
+		self.report({'OPERATOR'},'bpy.ops.object.transform_type_in()')
 		return {'FINISHED'}
 
 	def cancel(self, ctx):

@@ -15,7 +15,7 @@
 
 import bpy
 from bpy.types import Operator
-from bpy.props import BoolProperty,IntProperty,FloatProperty
+from bpy.props import BoolProperty, IntProperty, FloatProperty
 from mathutils.geometry import intersect_point_line
 from bpy_extras.view3d_utils import region_2d_to_location_3d, region_2d_to_vector_3d ,location_3d_to_region_2d
 from bsmax.math import get_bias, get_distance
@@ -34,6 +34,8 @@ class Point:
 class Curve_OT_divid_plus(CurveTool):
 	bl_idname = "curve.divid_plus"
 	bl_label = "Divid plus"
+	bl_options = {'REGISTER', 'UNDO'}
+	
 	typein: BoolProperty(name="Type In:",default=True)
 	count: IntProperty(name="Count",min=0,default=0)
 	squeeze: FloatProperty(name="Squeeze",min=0,max=1,default=0)
@@ -66,7 +68,7 @@ class Curve_OT_divid_plus(CurveTool):
 		col.prop(self,"shift")
 	
 	def self_report(self):
-		self.report({'INFO'},'bpy.ops.curve.divid_plus()')
+		self.report({'OPERATOR'},'bpy.ops.curve.divid_plus()')
 
 
 
@@ -74,6 +76,7 @@ class Curve_OT_Refine(Operator):
 	bl_idname = "curve.refine"
 	bl_label = "Refine"
 	obj, curve = None, None
+	new_point_added = False
 
 	@classmethod
 	def poll(self, ctx):
@@ -111,7 +114,7 @@ class Curve_OT_Refine(Operator):
 	def modal(self, ctx, event):
 		ctx.area.tag_redraw()
 		x,y = event.mouse_region_x, event.mouse_region_y
-		
+	
 		if ctx.mode != 'EDIT_CURVE':
 			return {'CANCELLED'}
 
@@ -127,6 +130,8 @@ class Curve_OT_Refine(Operator):
 
 		elif event.type == 'LEFTMOUSE':
 			if event.value == 'PRESS':
+				self.new_point_added = False
+				self.curve = Curve(self.obj)
 				""" Divide each segment to 10 part and collect distance from click point """
 				points = []
 				for spline in self.curve.splines:
@@ -149,11 +154,12 @@ class Curve_OT_Refine(Operator):
 				""" insert if distance les than 10 pixel """
 				if abs(x-pl.x) < 10 and abs(y-pl.y) < 10:
 					nearest_point.segment.spline.divid(nearest_point.segment.index, nearest_point.time)
+					self.new_point_added = True
 
-			if event.value =='RELEASE':
+			if event.value =='RELEASE' and self.new_point_added:
 				""" Update and Get new genarated curve data """
 				self.curve.update()
-				self.curve = Curve(self.obj)
+				bpy.ops.ed.undo_push()
 			
 			return {'RUNNING_MODAL'}
 
@@ -176,3 +182,6 @@ def register_divid():
 
 def unregister_divid():
 	[bpy.utils.unregister_class(c) for c in classes]
+
+if __name__ == "__main__":
+	register_divid()

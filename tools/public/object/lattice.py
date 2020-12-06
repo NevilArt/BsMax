@@ -87,6 +87,8 @@ def create_lattice(ctx, u, v, w):
 class Lattice_OT_Set_On_Selection(Operator):
 	bl_idname = "lattice.set_on_selection"
 	bl_label = "Lattice (Set)"
+	bl_options = {'REGISTER', 'UNDO'}
+	
 	res_u: IntProperty(name="Res X",min=2,max=1000,default=2)
 	res_v: IntProperty(name="Res Y",min=2,max=1000,default=2)
 	res_w: IntProperty(name="Res Z",min=2,max=1000,default=2)
@@ -113,7 +115,7 @@ class Lattice_OT_Set_On_Selection(Operator):
 				lt.parent = target
 				lt.matrix_parent_inverse = target.matrix_world.inverted()
 				lock_transform(lt,True,True,True)
-		self.report({'INFO'},'bpy.ops.lattice.set_on_selection()')
+		self.report({'OPERATOR'},'bpy.ops.lattice.set_on_selection()')
 		return{"FINISHED"}
 
 
@@ -126,7 +128,7 @@ class Modifier_OT_Lattice_2x2x2_Set(Operator):
 		return is_objects_selected(ctx)
 	def execute(self, ctx):
 		bpy.ops.lattice.set_on_selection(res_u=2,res_v=2,res_w=2)
-		self.report({'INFO'},'bpy.ops.modifier.lattice_2x2x2_set()')
+		self.report({'OPERATOR'},'bpy.ops.modifier.lattice_2x2x2_set()')
 		return{"FINISHED"}
 
 class Modifier_OT_Lattice_3x3x3_Set(Operator):
@@ -137,7 +139,7 @@ class Modifier_OT_Lattice_3x3x3_Set(Operator):
 		return is_objects_selected(ctx)
 	def execute(self, ctx):
 		bpy.ops.lattice.set_on_selection(res_u=3,res_v=3,res_w=3)
-		self.report({'INFO'},'bpy.ops.modifier.lattice_3x3x3_set()')
+		self.report({'OPERATOR'},'bpy.ops.modifier.lattice_3x3x3_set()')
 		return{"FINISHED"}
 
 class Modifier_OT_Lattice_4x4x4_Set(Operator):
@@ -148,7 +150,7 @@ class Modifier_OT_Lattice_4x4x4_Set(Operator):
 		return is_objects_selected(ctx)
 	def execute(self, ctx):
 		bpy.ops.lattice.set_on_selection(res_u=4,res_v=4,res_w=4)
-		self.report({'INFO'},'bpy.ops.modifier.lattice_4x4x4_set()')
+		self.report({'OPERATOR'},'bpy.ops.modifier.lattice_4x4x4_set()')
 		return{"FINISHED"}
 
 class Modifier_OT_FFD_2x2x2_Set(Operator):
@@ -159,7 +161,7 @@ class Modifier_OT_FFD_2x2x2_Set(Operator):
 		return is_objects_selected(ctx)
 	def execute(self, ctx):
 		bpy.ops.lattice.set_on_selection(res_u=2,res_v=2,res_w=2)
-		self.report({'INFO'},'bpy.ops.modifier.ffd_2x2x2_set()')
+		self.report({'OPERATOR'},'bpy.ops.modifier.ffd_2x2x2_set()')
 		return{"FINISHED"}
 
 class Modifier_OT_FFD_3x3x3_Set(Operator):
@@ -170,7 +172,7 @@ class Modifier_OT_FFD_3x3x3_Set(Operator):
 		return is_objects_selected(ctx)
 	def execute(self, ctx):
 		bpy.ops.lattice.set_on_selection(res_u=3,res_v=3,res_w=3)
-		self.report({'INFO'},'bpy.ops.modifier.ffd_3x3x3_set()')
+		self.report({'OPERATOR'},'bpy.ops.modifier.ffd_3x3x3_set()')
 		return{"FINISHED"}
 
 class Modifier_OT_FFD_4x4x4_Set(Operator):
@@ -181,7 +183,7 @@ class Modifier_OT_FFD_4x4x4_Set(Operator):
 		return is_objects_selected(ctx)
 	def execute(self, ctx):
 		bpy.ops.lattice.set_on_selection(res_u=4,res_v=4,res_w=4)
-		self.report({'INFO'},'bpy.ops.modifier.ffd_4x4x4_set()')
+		self.report({'OPERATOR'},'bpy.ops.modifier.ffd_4x4x4_set()')
 		return{"FINISHED"}
 	
 class lattice_data:

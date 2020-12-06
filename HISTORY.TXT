@@ -1,3 +1,7 @@
+# 0,1,0,20201126
+	Accidentally created tiny primitives removing automatically.
+	Undo for Create primitives remove only the last one.
+
 # 0,1,0,20201122
 	Refine tool added (insert vertex on clicked point in curves) (Curve edit mode: menu: Segment/ Refine)
 	In Quad Menu Move, Rotate, Scale Setting buttion action issue fixed.

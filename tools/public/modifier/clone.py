@@ -17,9 +17,10 @@ import bpy
 from bpy.types import Operator,Panel
 from bpy.props import BoolProperty,StringProperty
 
-class Modifier_OT_CopyToSelection(Operator):
+class Modifier_OT_Copy_To_Selection(Operator):
 	bl_idname = "modifier.copy_to_selection"
 	bl_label = "Copy to Selection"
+	bl_options = {'REGISTER', 'UNDO'}
 
 	expanded_only: BoolProperty()
 
@@ -42,9 +43,10 @@ class Modifier_OT_CopyToSelection(Operator):
 
 		return{"FINISHED"}
 
-class Modifier_OT_MatchSelection(Operator):
+class Modifier_OT_Match_Selection(Operator):
 	bl_idname = "modifier.match_selection"
 	bl_label = "Match Selection"
+	bl_options = {'REGISTER', 'UNDO'}
 
 	name: StringProperty()
 
@@ -71,7 +73,7 @@ class Modifier_OT_MatchSelection(Operator):
 # TODO add to modifire panel
 # More tools copy props, delet modifiers
 
-classes = [Modifier_OT_CopyToSelection, Modifier_OT_MatchSelection]
+classes = [Modifier_OT_Copy_To_Selection, Modifier_OT_Match_Selection]
 
 def register_clone():
 	[bpy.utils.register_class(c) for c in classes]

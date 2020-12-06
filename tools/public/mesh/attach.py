@@ -21,6 +21,7 @@ from bsmax.operator import PickOperator
 class Mesh_OT_Attach(PickOperator):
 	bl_idname = "mesh.attach"
 	bl_label = "Attach"
+	
 	filters = ['MESH']
 
 	@classmethod
@@ -36,8 +37,9 @@ class Mesh_OT_Attach(PickOperator):
 		target.select_set(state = True)
 		bpy.ops.object.join()
 		bpy.ops.object.mode_set(mode='EDIT', toggle=False)
+		bpy.ops.ed.undo_push()
 		bpy.ops.mesh.attach('INVOKE_DEFAULT')
-		self.report({'INFO'},'bpy.ops.mesh.attach()')
+		self.report({'OPERATOR'},'bpy.ops.mesh.attach()')
 
 class Mesh_OT_Attach_List(Operator):
 	bl_idname = "mesh.attach_list"
@@ -53,7 +55,7 @@ class Mesh_OT_Attach_List(Operator):
 	
 	def execute(self, ctx):
 		# print("Attach by list working on progress")
-		# self.report({'INFO'},'bpy.ops.object.attach_list()')
+		# self.report({'OPERATOR'},'bpy.ops.object.attach_list()')
 		return{"FINISHED"}
 
 class Mesh_OT_Detach(Operator):
@@ -106,7 +108,7 @@ class Mesh_OT_Detach(Operator):
 		else:
 			bpy.ops.mesh.separate(type = 'SELECTED')
 		
-		self.report({'INFO'},'bpy.ops.object.detach()')
+		self.report({'OPERATOR'},'bpy.ops.object.detach()')
 		return{"FINISHED"}
 
 	def invoke(self, ctx, event):

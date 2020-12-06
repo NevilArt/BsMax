@@ -21,6 +21,7 @@ from bsmax.math import get_axis_constraint
 class Object_OT_Drag_Clone(bpy.types.Operator):
 	bl_idname = "object.drag_clone"
 	bl_label = "Drag Clone"
+	bl_options = {'REGISTER', 'UNDO'}
 
 	point_a = None
 	point_b = None
@@ -30,7 +31,7 @@ class Object_OT_Drag_Clone(bpy.types.Operator):
 		return is_objects_selected(ctx)
 	
 	def execute(self,ctx):
-		self.report({'INFO'},'bpy.ops.object.drag_clone()')
+		self.report({'OPERATOR'},'bpy.ops.object.drag_clone()')
 		return{"FINISHED"}
 
 	def modal(self, ctx, event):

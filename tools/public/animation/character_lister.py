@@ -19,7 +19,6 @@ from bpy.props import StringProperty
 
 class CharacterSet:
 	def __init__(self):
-		self.enabled = False
 		self.characters = []
 	
 	def get_scene_characters(self):
@@ -39,12 +38,9 @@ class Armature_TO_Character_Hide(Operator):
 	""" Hide/Unhide Character (for now only Armature) """
 	bl_idname = "anim.character_hide"
 	bl_label = "Character Hide"
+	bl_options={'REGISTER', 'INTERNAL'}
 	name: StringProperty(default="")
 
-	@classmethod
-	def poll(self, ctx):
-		return cs.enabled
-	
 	def execute(self,ctx):
 		character = cs.get_character_by_name(self.name)
 		if character:
@@ -60,12 +56,9 @@ class Armature_TO_Character_Isolate(Operator):
 	""" Isolate only this Character (for now only Armature) """
 	bl_idname = "anim.character_isolate"
 	bl_label = "Character Isolate"
+	bl_options={'REGISTER', 'INTERNAL'}
 	name: StringProperty(default="")
 
-	@classmethod
-	def poll(self, ctx):
-		return cs.enabled
-	
 	def execute(self,ctx):
 		character = cs.get_character_by_name(self.name)
 		if character:
@@ -86,12 +79,9 @@ class Armature_TO_Character_Rest(Operator):
 	""" Rest/Pose Switch """
 	bl_idname = "anim.character_rest"
 	bl_label = "Character Rest/Pose"
+	bl_options={'REGISTER', 'INTERNAL'}
 	name: StringProperty(default="")
 
-	@classmethod
-	def poll(self, ctx):
-		return cs.enabled
-	
 	def execute(self,ctx):
 		character = cs.get_character_by_name(self.name)
 		if character:
@@ -129,17 +119,11 @@ class Anim_TO_Character_Lister(Operator):
 			self.get_field(col.row(align=True), character)
 	
 	def execute(self,ctx):
-		self.report({'INFO'},'bpy.ops.anim.character_lister()')
-		cs.enabled = False
 		return{"FINISHED"}
-	
-	def cancel(self,ctx):
-		cs.enabled = False
-	
+
 	def invoke(self,ctx,event):
 		""" collect armature objects in scene """
 		cs.get_scene_characters()
-		cs.enabled = True
 		return ctx.window_manager.invoke_props_dialog(self,width=200)
 
 

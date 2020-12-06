@@ -21,6 +21,7 @@ from bpy.types import WorkSpaceTool
 class CurveFilletTool(WorkSpaceTool):
 	bl_space_type='VIEW_3D'
 	bl_context_mode='EDIT_CURVE'
+	bl_options = {'REGISTER', 'UNDO'}
 
 	""" The prefix of the idname should be your add-on name """
 	bl_idname = "bsmax.curvefillet"

@@ -109,7 +109,7 @@ class View3D_OT_Show_Hide_Gride(bpy.types.Operator):
 			self.blender_gride(ctx, True)
 			self.max_gride(ctx, False)
 
-		self.report({'INFO'},'bpy.ops.view3d.show_hide_gride()')
+		self.report({'OPERATOR'},'bpy.ops.view3d.show_hide_gride()')
 		return{"FINISHED"}
 
 def register_gride():

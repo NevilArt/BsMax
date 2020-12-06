@@ -19,6 +19,7 @@ from bsmax.operator import PickOperator
 class Curve_OT_Attach(PickOperator):
 	bl_idname = "curve.attach"
 	bl_label = "Attach"
+
 	filters = ['CURVE']
 
 	@classmethod
@@ -34,8 +35,9 @@ class Curve_OT_Attach(PickOperator):
 		target.select_set(state = True)
 		bpy.ops.object.join()
 		bpy.ops.object.mode_set(mode='EDIT', toggle=False)
+		bpy.ops.ed.undo_push()
 		bpy.ops.curve.attach('INVOKE_DEFAULT')
-		self.report({'INFO'},'bpy.ops.curve.attach()')
+		self.report({'OPERATOR'},'bpy.ops.curve.attach()')
 
 classes = [Curve_OT_Attach]
 

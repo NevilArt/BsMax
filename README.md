@@ -24,8 +24,8 @@ Your Reports and Ideas will help me alot and don't forget the sharing. let more 
 
 # latest Updates
 
-* Accidentally created tiny primitives removing automatically.
-* Undo for Create primitives remove only the last one.
+* Undo issue fixed for most of the Operators.
+* "DoublClick" and "Ctrl+DoubleClick" for select children in object mode (Max mode)
 * [Update History...](https://github.com/NevilArt/BsMax_2_80/blob/master/HISTORY.TXT)
 
 # License

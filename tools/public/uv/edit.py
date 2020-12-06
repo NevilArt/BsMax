@@ -21,6 +21,8 @@ from bsmax.actions import set_as_active_object,link_to_scene
 class UV_OT_Turn(Operator):
 	bl_idname = "uv.turn"
 	bl_label = "Turn"
+	bl_options = {'REGISTER', 'UNDO'}
+	
 	ccw: BoolProperty(name="CCW")
 
 	@classmethod
@@ -35,13 +37,15 @@ class UV_OT_Turn(Operator):
 						use_proportional_edit=False,proportional_edit_falloff='SMOOTH',
 						proportional_size=1,use_proportional_connected=False,
 						use_proportional_projected=False)
-		self.report({'INFO'},'bpy.ops.uv.turn()')
+		self.report({'OPERATOR'},'bpy.ops.uv.turn()')
 		return{"FINISHED"}
 
 # not done yet
 class UV_OT_Plane_Projection(Operator):
 	bl_idname = "uv.plane_projection"
 	bl_label = "Plane Projection"
+	bl_options = {'REGISTER', 'UNDO'}
+	
 	quick: BoolProperty(name="Quick",default=True)
 
 	@classmethod
@@ -62,7 +66,7 @@ class UV_OT_Plane_Projection(Operator):
 		set_as_active_object(ctx,obj)
 		bpy.ops.object.mode_set(mode='EDIT')
 
-		self.report({'INFO'},'bpy.ops.uv.plane_projection()')
+		self.report({'OPERATOR'},'bpy.ops.uv.plane_projection()')
 		return{"FINISHED"}
 
 classes = [UV_OT_Turn,UV_OT_Plane_Projection]

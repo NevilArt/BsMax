@@ -22,6 +22,7 @@ from bsmax.state import has_constraint
 class Light_OT_Create_Target(Operator):
 	bl_idname = "light.create_target"
 	bl_label = "Make Target Light"
+	bl_options = {'REGISTER', 'UNDO'}
 
 	@classmethod
 	def poll(self, ctx):
@@ -35,12 +36,13 @@ class Light_OT_Create_Target(Operator):
 		light = ctx.active_object
 		set_create_target(light, None)
 		set_as_active_object(ctx, light)
-		self.report({'INFO'},'bpy.ops.light.create_target()')
+		self.report({'OPERATOR'},'bpy.ops.light.create_target()')
 		return {'FINISHED'}
 
 class Light_OT_Clear_Target(Operator):
 	bl_idname = "light.clear_target"
 	bl_label = "Make Free Light"
+	bl_options = {'REGISTER', 'UNDO'}
 
 	@classmethod
 	def poll(self, ctx):
@@ -59,7 +61,7 @@ class Light_OT_Clear_Target(Operator):
 		for c in TrackToConts:
 			obj.constraints.remove(c)
 		obj.matrix_world = transfoem
-		self.report({'INFO'},'bpy.ops.light.clear_target()')
+		self.report({'OPERATOR'},'bpy.ops.light.clear_target()')
 		return {'FINISHED'}
 
 classes = [Light_OT_Create_Target,Light_OT_Clear_Target]

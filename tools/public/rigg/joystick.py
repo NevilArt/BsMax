@@ -167,6 +167,7 @@ class Rigg_TO_Joy_Stick_Creator(Operator):
 	bl_idname = "rigg.joy_stick_creator"
 	bl_label = "Joystick Creator"
 	bl_description = "Conver Selected Rectangle to Joystick"
+	bl_options = {'REGISTER', 'UNDO'}
 
 	mode: IntProperty()
 	orient = "j"
@@ -188,7 +189,7 @@ class Rigg_TO_Joy_Stick_Creator(Operator):
 		frame = ctx.active_object
 		create_joystic(ctx, frame, JoyStickCreator.mode)
 		JoyStickCreator.mode = 0
-		self.report({'INFO'},'bpy.ops.rigg.joy_stick_creator()')
+		self.report({'OPERATOR'},'bpy.ops.rigg.joy_stick_creator()')
 		return {"FINISHED"}
 
 	def invoke(self, ctx, event):
@@ -209,6 +210,7 @@ class Rigg_TO_Joystick_Shapekey_Connector(Operator):
 	bl_idname = "rigg.joystick_shapekey_connector"
 	bl_label = "Joystick Connecotr"
 	bl_description = "Connect Joystick to Shapekey"
+	bl_options = {'REGISTER', 'UNDO'}
 
 	@classmethod
 	def poll(self, ctx):
@@ -349,7 +351,7 @@ class Rigg_TO_Joystick_Shapekey_Connector(Operator):
 				self.set_driver(armatuar, joy, 1, shell, self.upleft)
 			
 			bpy.ops.object.mode_set(mode='OBJECT', toggle=False)
-		self.report({'INFO'},'bpy.ops.rigg.joystick_shapekey_connector()')
+		self.report({'OPERATOR'},'bpy.ops.rigg.joystick_shapekey_connector()')
 		return {"FINISHED"}
 
 	def draw(self, ctx):

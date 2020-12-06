@@ -485,7 +485,7 @@ class Object_OT_Align_Selected_to_Active(Operator):
 	def execute(self, ctx):
 		self.restore_selection(ctx)
 		self.store()
-		self.report({'INFO'},'bpy.ops.object.align_selected_to_target()')
+		self.report({'OPERATOR'},'bpy.ops.object.align_selected_to_target()')
 		return {'FINISHED'}
 
 	def cancel(self, ctx):

@@ -27,7 +27,7 @@ class Modifier_OT_DATA_TRANSFER_Add(Operator):
 		return is_objects_selected(ctx)
 	def execute(self, ctx):
 		modifier_add(ctx,ctx.selected_objects,'DATA_TRANSFER')
-		self.report({'INFO'},'bpy.ops.modifier.datatransformadd()')
+		self.report({'OPERATOR'},'bpy.ops.modifier.datatransformadd()')
 		return {'FINISHED'}
 
 class Modifier_OT_MESH_CACHE_Add(Operator):
@@ -39,7 +39,7 @@ class Modifier_OT_MESH_CACHE_Add(Operator):
 		return is_objects_selected(ctx)
 	def execute(self, ctx):
 		modifier_add(ctx,ctx.selected_objects,'MESH_CACHE')
-		self.report({'INFO'},'bpy.ops.modifier.meshcacheadd()')
+		self.report({'OPERATOR'},'bpy.ops.modifier.meshcacheadd()')
 		return {'FINISHED'}
 
 class Modifier_OT_MESH_SEQUENCE_CACHE_Add(Operator):
@@ -51,7 +51,7 @@ class Modifier_OT_MESH_SEQUENCE_CACHE_Add(Operator):
 		return is_objects_selected(ctx)
 	def execute(self, ctx):
 		modifier_add(ctx,ctx.selected_objects,'MESH_SEQUENCE_CACHE')
-		self.report({'INFO'},'bpy.ops.modifier.meshsequencecacheadd()')
+		self.report({'OPERATOR'},'bpy.ops.modifier.meshsequencecacheadd()')
 		return {'FINISHED'}
 
 class Modifier_OT_NORMAL_EDIT_Add(Operator):
@@ -63,7 +63,7 @@ class Modifier_OT_NORMAL_EDIT_Add(Operator):
 		return is_objects_selected(ctx)
 	def execute(self, ctx):
 		modifier_add(ctx,ctx.selected_objects,'NORMAL_EDIT')
-		self.report({'INFO'},'bpy.ops.modifier.normaleditadd()')
+		self.report({'OPERATOR'},'bpy.ops.modifier.normaleditadd()')
 		return {'FINISHED'}
 
 class Modifier_OT_WEIGHTED_NORMAL_Add(Operator):
@@ -75,7 +75,7 @@ class Modifier_OT_WEIGHTED_NORMAL_Add(Operator):
 		return is_objects_selected(ctx)
 	def execute(self, ctx):
 		modifier_add(ctx,ctx.selected_objects,'WEIGHTED_NORMAL')
-		self.report({'INFO'},'bpy.ops.modifier.weightednormaladd()')
+		self.report({'OPERATOR'},'bpy.ops.modifier.weightednormaladd()')
 		return {'FINISHED'}
 
 class Modifier_OT_UV_PROJECT_Add(Operator):
@@ -87,7 +87,7 @@ class Modifier_OT_UV_PROJECT_Add(Operator):
 		return is_objects_selected(ctx)
 	def execute(self, ctx):
 		modifier_add(ctx,ctx.selected_objects,'UV_PROJECT')
-		self.report({'INFO'},'bpy.ops.modifier.uvprojectadd()')
+		self.report({'OPERATOR'},'bpy.ops.modifier.uvprojectadd()')
 		return {'FINISHED'}
 
 class Modifier_OT_UV_WARP_Add(Operator):
@@ -99,7 +99,7 @@ class Modifier_OT_UV_WARP_Add(Operator):
 		return is_objects_selected(ctx)
 	def execute(self, ctx):
 		modifier_add(ctx,ctx.selected_objects,'UV_WARP')
-		self.report({'INFO'},'bpy.ops.modifier.uvwarpadd()')
+		self.report({'OPERATOR'},'bpy.ops.modifier.uvwarpadd()')
 		return {'FINISHED'}
 
 class Modifier_OT_VERTEX_WEIGHT_EDIT_Add(Operator):
@@ -111,7 +111,7 @@ class Modifier_OT_VERTEX_WEIGHT_EDIT_Add(Operator):
 		return is_objects_selected(ctx)
 	def execute(self, ctx):
 		modifier_add(ctx,ctx.selected_objects,'VERTEX_WEIGHT_EDIT')
-		self.report({'INFO'},'bpy.ops.modifier.vertexweighteditadd()')
+		self.report({'OPERATOR'},'bpy.ops.modifier.vertexweighteditadd()')
 		return {'FINISHED'}
 
 class Modifier_OT_VERTEX_WEIGHT_MIX_Add(Operator):
@@ -123,7 +123,7 @@ class Modifier_OT_VERTEX_WEIGHT_MIX_Add(Operator):
 		return is_objects_selected(ctx)
 	def execute(self, ctx):
 		modifier_add(ctx,ctx.selected_objects,'VERTEX_WEIGHT_MIX')
-		self.report({'INFO'},'bpy.ops.modifier.vertexweightmixadd()')
+		self.report({'OPERATOR'},'bpy.ops.modifier.vertexweightmixadd()')
 		return {'FINISHED'}
 
 class Modifier_OT_VERTEX_WEIGHT_PROXIMITY_Add(Operator):
@@ -135,7 +135,7 @@ class Modifier_OT_VERTEX_WEIGHT_PROXIMITY_Add(Operator):
 		return is_objects_selected(ctx)
 	def execute(self, ctx):
 		modifier_add(ctx,ctx.selected_objects,'VERTEX_WEIGHT_PROXIMITY')
-		self.report({'INFO'},'bpy.ops.modifier.vertexweightproximityadd()')
+		self.report({'OPERATOR'},'bpy.ops.modifier.vertexweightproximityadd()')
 		return {'FINISHED'}
 
 class Modifier_OT_ARRAY_Add(Operator):
@@ -147,7 +147,7 @@ class Modifier_OT_ARRAY_Add(Operator):
 		return is_objects_selected(ctx)
 	def execute(self, ctx):
 		modifier_add(ctx,ctx.selected_objects,'ARRAY')
-		self.report({'INFO'},'bpy.ops.modifier.arrayadd()')
+		self.report({'OPERATOR'},'bpy.ops.modifier.arrayadd()')
 		return {'FINISHED'}
 
 class Modifier_OT_BEVEL_Add(Operator):
@@ -159,7 +159,7 @@ class Modifier_OT_BEVEL_Add(Operator):
 		return is_objects_selected(ctx)
 	def execute(self, ctx):
 		modifier_add(ctx,ctx.selected_objects,'BEVEL')
-		self.report({'INFO'},'bpy.ops.modifier.beveladd()')
+		self.report({'OPERATOR'},'bpy.ops.modifier.beveladd()')
 		return {'FINISHED'}
 
 class Modifier_OT_BOOLEAN_Add(Operator):
@@ -171,7 +171,7 @@ class Modifier_OT_BOOLEAN_Add(Operator):
 		return is_objects_selected(ctx)
 	def execute(self, ctx):
 		modifier_add(ctx,ctx.selected_objects,'BOOLEAN')
-		self.report({'INFO'},'bpy.ops.modifier.booleanadd()')
+		self.report({'OPERATOR'},'bpy.ops.modifier.booleanadd()')
 		return {'FINISHED'}
 
 class Modifier_OT_BUILD_Add(Operator):
@@ -183,7 +183,7 @@ class Modifier_OT_BUILD_Add(Operator):
 		return is_objects_selected(ctx)
 	def execute(self, ctx):
 		modifier_add(ctx,ctx.selected_objects,'BUILD')
-		self.report({'INFO'},'bpy.ops.modifier.buildadd()')
+		self.report({'OPERATOR'},'bpy.ops.modifier.buildadd()')
 		return {'FINISHED'}
 
 class Modifier_OT_DECIMATE_Add(Operator):
@@ -195,7 +195,7 @@ class Modifier_OT_DECIMATE_Add(Operator):
 		return is_objects_selected(ctx)
 	def execute(self, ctx):
 		modifier_add(ctx,ctx.selected_objects,'DECIMATE')
-		self.report({'INFO'},'bpy.ops.modifier.decimateadd()')
+		self.report({'OPERATOR'},'bpy.ops.modifier.decimateadd()')
 		return {'FINISHED'}
 
 class Modifier_OT_EDGE_SPLIT_Add(Operator):
@@ -207,7 +207,7 @@ class Modifier_OT_EDGE_SPLIT_Add(Operator):
 		return is_objects_selected(ctx)
 	def execute(self, ctx):
 		modifier_add(ctx,ctx.selected_objects,'EDGE_SPLIT')
-		self.report({'INFO'},'bpy.ops.modifier.edgesplitadd()')
+		self.report({'OPERATOR'},'bpy.ops.modifier.edgesplitadd()')
 		return {'FINISHED'}
 
 class Modifier_OT_Mask_Add(Operator):
@@ -219,7 +219,7 @@ class Modifier_OT_Mask_Add(Operator):
 		return is_objects_selected(ctx)
 	def execute(self, ctx):
 		modifier_add(ctx,ctx.selected_objects,'MASK')
-		self.report({'INFO'},'bpy.ops.modifier.maskadd()')
+		self.report({'OPERATOR'},'bpy.ops.modifier.maskadd()')
 		return {'FINISHED'}
 
 class Modifier_OT_MIRROR_Add(Operator):
@@ -231,7 +231,7 @@ class Modifier_OT_MIRROR_Add(Operator):
 		return is_objects_selected(ctx)
 	def execute(self, ctx):
 		modifier_add(ctx,ctx.selected_objects,'MIRROR')
-		self.report({'INFO'},'bpy.ops.modifier.mirroradd()')
+		self.report({'OPERATOR'},'bpy.ops.modifier.mirroradd()')
 		return {'FINISHED'}
 
 class Modifier_OT_MULTIRES_Add(Operator):
@@ -243,7 +243,7 @@ class Modifier_OT_MULTIRES_Add(Operator):
 		return is_objects_selected(ctx)
 	def execute(self, ctx):
 		modifier_add(ctx,ctx.selected_objects,'MULTIRES')
-		self.report({'INFO'},'bpy.ops.modifier.multiresadd()')
+		self.report({'OPERATOR'},'bpy.ops.modifier.multiresadd()')
 		return {'FINISHED'}
 
 class Modifier_OT_REMESH_Add(Operator):
@@ -255,7 +255,7 @@ class Modifier_OT_REMESH_Add(Operator):
 		return is_objects_selected(ctx)
 	def execute(self, ctx):
 		modifier_add(ctx,ctx.selected_objects,'REMESH')
-		self.report({'INFO'},'bpy.ops.modifier.remeshadd()')
+		self.report({'OPERATOR'},'bpy.ops.modifier.remeshadd()')
 		return {'FINISHED'}
 
 class Modifier_OT_Screw_Add(Operator):
@@ -267,7 +267,7 @@ class Modifier_OT_Screw_Add(Operator):
 		return is_objects_selected(ctx)
 	def execute(self, ctx):
 		modifier_add(ctx,ctx.selected_objects,'SCREW')
-		self.report({'INFO'},'bpy.ops.modifier.screwadd()')
+		self.report({'OPERATOR'},'bpy.ops.modifier.screwadd()')
 		return {'FINISHED'}
 
 class Modifier_OT_SKIN_Add(Operator):
@@ -279,7 +279,7 @@ class Modifier_OT_SKIN_Add(Operator):
 		return is_objects_selected(ctx)
 	def execute(self, ctx):
 		modifier_add(ctx,ctx.selected_objects,'SKIN')
-		self.report({'INFO'},'bpy.ops.modifier.skinadd()')
+		self.report({'OPERATOR'},'bpy.ops.modifier.skinadd()')
 		return {'FINISHED'}
 
 class Modifier_OT_SOLIDIFY_Add(Operator):
@@ -291,7 +291,7 @@ class Modifier_OT_SOLIDIFY_Add(Operator):
 		return is_objects_selected(ctx)
 	def execute(self, ctx):
 		modifier_add(ctx,ctx.selected_objects,'SOLIDIFY')
-		self.report({'INFO'},'bpy.ops.modifier.solidifyadd()')
+		self.report({'OPERATOR'},'bpy.ops.modifier.solidifyadd()')
 		return {'FINISHED'}
 
 class Modifier_OT_SUBSURF_Add(Operator):
@@ -303,7 +303,7 @@ class Modifier_OT_SUBSURF_Add(Operator):
 		return is_objects_selected(ctx)
 	def execute(self, ctx):
 		modifier_add(ctx,ctx.selected_objects,'SUBSURF')
-		self.report({'INFO'},'bpy.ops.modifier.subsurfadd()')
+		self.report({'OPERATOR'},'bpy.ops.modifier.subsurfadd()')
 		return {'FINISHED'}
 
 class Modifier_OT_TRIANGULATE_Add(Operator):
@@ -315,7 +315,7 @@ class Modifier_OT_TRIANGULATE_Add(Operator):
 		return is_objects_selected(ctx)
 	def execute(self, ctx):
 		modifier_add(ctx,ctx.selected_objects,'TRIANGULATE')
-		self.report({'INFO'},'bpy.ops.modifier.triangulateadd()')
+		self.report({'OPERATOR'},'bpy.ops.modifier.triangulateadd()')
 		return {'FINISHED'}
 
 class Modifier_OT_WIREFRAME_Add(Operator):
@@ -327,7 +327,7 @@ class Modifier_OT_WIREFRAME_Add(Operator):
 		return is_objects_selected(ctx)
 	def execute(self, ctx):
 		modifier_add(ctx,ctx.selected_objects,'WIREFRAME')
-		self.report({'INFO'},'bpy.ops.modifier.wireframeadd()')
+		self.report({'OPERATOR'},'bpy.ops.modifier.wireframeadd()')
 		return {'FINISHED'}
 
 class Modifier_OT_ARMATURE_Add(Operator):
@@ -339,7 +339,7 @@ class Modifier_OT_ARMATURE_Add(Operator):
 		return is_objects_selected(ctx)
 	def execute(self, ctx):
 		modifier_add(ctx,ctx.selected_objects,'ARMATURE')
-		self.report({'INFO'},'bpy.ops.modifier.armatureadd()')
+		self.report({'OPERATOR'},'bpy.ops.modifier.armatureadd()')
 		return {'FINISHED'}
 
 class Modifier_OT_CAST_Add(Operator):
@@ -351,7 +351,7 @@ class Modifier_OT_CAST_Add(Operator):
 		return is_objects_selected(ctx)
 	def execute(self, ctx):
 		modifier_add(ctx,ctx.selected_objects,'CAST')
-		self.report({'INFO'},'bpy.ops.modifier.castadd()')
+		self.report({'OPERATOR'},'bpy.ops.modifier.castadd()')
 		return {'FINISHED'}
 
 class Modifier_OT_CURVE_Add(Operator):
@@ -363,7 +363,7 @@ class Modifier_OT_CURVE_Add(Operator):
 		return is_objects_selected(ctx)
 	def execute(self, ctx):
 		modifier_add(ctx,ctx.selected_objects,'CURVE')
-		self.report({'INFO'},'bpy.ops.modifier.curveadd()')
+		self.report({'OPERATOR'},'bpy.ops.modifier.curveadd()')
 		return {'FINISHED'}
 
 class Modifier_OT_DISPLACE_Add(Operator):
@@ -375,7 +375,7 @@ class Modifier_OT_DISPLACE_Add(Operator):
 		return is_objects_selected(ctx)
 	def execute(self, ctx):
 		modifier_add(ctx,ctx.selected_objects,'DISPLACE')
-		self.report({'INFO'},'bpy.ops.modifier.displaceadd()')
+		self.report({'OPERATOR'},'bpy.ops.modifier.displaceadd()')
 		return {'FINISHED'}
 
 class Modifier_OT_HOOK_Add(Operator):
@@ -387,7 +387,7 @@ class Modifier_OT_HOOK_Add(Operator):
 		return is_objects_selected(ctx)
 	def execute(self, ctx):
 		modifier_add(ctx,ctx.selected_objects,'HOOK')
-		self.report({'INFO'},'bpy.ops.modifier.hookadd()')
+		self.report({'OPERATOR'},'bpy.ops.modifier.hookadd()')
 		return {'FINISHED'}
 
 class Modifier_OT_LAPLACIANDEFORM_Add(Operator):
@@ -399,7 +399,7 @@ class Modifier_OT_LAPLACIANDEFORM_Add(Operator):
 		return is_objects_selected(ctx)
 	def execute(self, ctx):
 		modifier_add(ctx,ctx.selected_objects,'LAPLACIANDEFORM')
-		self.report({'INFO'},'bpy.ops.modifier.laplaciandeformadd()')
+		self.report({'OPERATOR'},'bpy.ops.modifier.laplaciandeformadd()')
 		return {'FINISHED'}
 
 class Modifier_OT_LATTICE_Add(Operator):
@@ -411,7 +411,7 @@ class Modifier_OT_LATTICE_Add(Operator):
 		return is_objects_selected(ctx)
 	def execute(self, ctx):
 		modifier_add(ctx,ctx.selected_objects,'LATTICE')
-		self.report({'INFO'},'bpy.ops.modifier.latticeadd()')
+		self.report({'OPERATOR'},'bpy.ops.modifier.latticeadd()')
 		return {'FINISHED'}
 
 class Modifier_OT_MESH_DEFORM_Add(Operator):
@@ -423,7 +423,7 @@ class Modifier_OT_MESH_DEFORM_Add(Operator):
 		return is_objects_selected(ctx)
 	def execute(self, ctx):
 		modifier_add(ctx,ctx.selected_objects,'MESH_DEFORM')
-		self.report({'INFO'},'bpy.ops.modifier.meshdeformadd()')
+		self.report({'OPERATOR'},'bpy.ops.modifier.meshdeformadd()')
 		return {'FINISHED'}
 
 class Modifier_OT_SHRINKWRAP_Add(Operator):
@@ -435,7 +435,7 @@ class Modifier_OT_SHRINKWRAP_Add(Operator):
 		return is_objects_selected(ctx)
 	def execute(self, ctx):
 		modifier_add(ctx,ctx.selected_objects,'SHRINKWRAP')
-		self.report({'INFO'},'bpy.ops.modifier.shrinkwarpadd()')
+		self.report({'OPERATOR'},'bpy.ops.modifier.shrinkwarpadd()')
 		return {'FINISHED'}
 
 class Modifier_OT_SIMPLE_DEFORM_Add(Operator):
@@ -447,7 +447,7 @@ class Modifier_OT_SIMPLE_DEFORM_Add(Operator):
 		return is_objects_selected(ctx)
 	def execute(self, ctx):
 		modifier_add(ctx,ctx.selected_objects,'SIMPLE_DEFORM')
-		self.report({'INFO'},'bpy.ops.modifier.simpledeformadd()')
+		self.report({'OPERATOR'},'bpy.ops.modifier.simpledeformadd()')
 		return {'FINISHED'}
 
 class Modifier_OT_SMOOTH_Add(Operator):
@@ -459,7 +459,7 @@ class Modifier_OT_SMOOTH_Add(Operator):
 		return is_objects_selected(ctx)
 	def execute(self, ctx):
 		modifier_add(ctx,ctx.selected_objects,'SMOOTH')
-		self.report({'INFO'},'bpy.ops.modifier.smoothadd()')
+		self.report({'OPERATOR'},'bpy.ops.modifier.smoothadd()')
 		return {'FINISHED'}
 
 class Modifier_OT_CORRECTIVE_SMOOTH_Add(Operator):
@@ -471,7 +471,7 @@ class Modifier_OT_CORRECTIVE_SMOOTH_Add(Operator):
 		return is_objects_selected(ctx)
 	def execute(self, ctx):
 		modifier_add(ctx,ctx.selected_objects,'CORRECTIVE_SMOOTH')
-		self.report({'INFO'},'bpy.ops.modifier.correctivesmoothadd()')
+		self.report({'OPERATOR'},'bpy.ops.modifier.correctivesmoothadd()')
 		return {'FINISHED'}
 
 class Modifier_OT_LAPLACIANSMOOTH_Add(Operator):
@@ -483,7 +483,7 @@ class Modifier_OT_LAPLACIANSMOOTH_Add(Operator):
 		return is_objects_selected(ctx)
 	def execute(self, ctx):
 		modifier_add(ctx,ctx.selected_objects,'LAPLACIANSMOOTH')
-		self.report({'INFO'},'bpy.ops.modifier.laplaciansmoothadd()')
+		self.report({'OPERATOR'},'bpy.ops.modifier.laplaciansmoothadd()')
 		return {'FINISHED'}
 
 class Modifier_OT_SURFACE_DEFORM_Add(Operator):
@@ -495,7 +495,7 @@ class Modifier_OT_SURFACE_DEFORM_Add(Operator):
 		return is_objects_selected(ctx)
 	def execute(self, ctx):
 		modifier_add(ctx,ctx.selected_objects,'SURFACE_DEFORM')
-		self.report({'INFO'},'bpy.ops.modifier.surfacedeformadd()')
+		self.report({'OPERATOR'},'bpy.ops.modifier.surfacedeformadd()')
 		return {'FINISHED'}
 
 class Modifier_OT_WARP_Add(Operator):
@@ -507,7 +507,7 @@ class Modifier_OT_WARP_Add(Operator):
 		return is_objects_selected(ctx)
 	def execute(self, ctx):
 		modifier_add(ctx,ctx.selected_objects,'WARP')
-		self.report({'INFO'},'bpy.ops.modifier.warpadd()')
+		self.report({'OPERATOR'},'bpy.ops.modifier.warpadd()')
 		return {'FINISHED'}
 
 class Modifier_OT_WAVE_Add(Operator):
@@ -519,7 +519,7 @@ class Modifier_OT_WAVE_Add(Operator):
 		return is_objects_selected(ctx)
 	def execute(self, ctx):
 		modifier_add(ctx,ctx.selected_objects,'WAVE')
-		self.report({'INFO'},'bpy.ops.modifier.waveadd()')
+		self.report({'OPERATOR'},'bpy.ops.modifier.waveadd()')
 		return {'FINISHED'}
 
 class Modifier_OT_CLOTH_Add(Operator):
@@ -531,7 +531,7 @@ class Modifier_OT_CLOTH_Add(Operator):
 		return is_objects_selected(ctx)
 	def execute(self, ctx):
 		modifier_add(ctx,ctx.selected_objects,'CLOTH')
-		self.report({'INFO'},'bpy.ops.modifier.clothadd()')
+		self.report({'OPERATOR'},'bpy.ops.modifier.clothadd()')
 		return {'FINISHED'}
 
 class Modifier_OT_COLLISION_Add(Operator):
@@ -543,7 +543,7 @@ class Modifier_OT_COLLISION_Add(Operator):
 		return is_objects_selected(ctx)
 	def execute(self, ctx):
 		modifier_add(ctx,ctx.selected_objects,'COLLISION')
-		self.report({'INFO'},'bpy.ops.modifier.collisionadd()')
+		self.report({'OPERATOR'},'bpy.ops.modifier.collisionadd()')
 		return {'FINISHED'}
 
 class Modifier_OT_DYNAMIC_PAINT_Add(Operator):
@@ -555,7 +555,7 @@ class Modifier_OT_DYNAMIC_PAINT_Add(Operator):
 		return is_objects_selected(ctx)
 	def execute(self, ctx):
 		modifier_add(ctx,ctx.selected_objects,'DYNAMIC_PAINT')
-		self.report({'INFO'},'bpy.ops.modifier.dynamicpaintadd()')
+		self.report({'OPERATOR'},'bpy.ops.modifier.dynamicpaintadd()')
 		return {'FINISHED'}
 
 class Modifier_OT_EXPLODE_Add(Operator):
@@ -567,7 +567,7 @@ class Modifier_OT_EXPLODE_Add(Operator):
 		return is_objects_selected(ctx)
 	def execute(self, ctx):
 		modifier_add(ctx,ctx.selected_objects,'EXPLODE')
-		self.report({'INFO'},'bpy.ops.modifier.explodeadd()')
+		self.report({'OPERATOR'},'bpy.ops.modifier.explodeadd()')
 		return {'FINISHED'}
 
 class Modifier_OT_FLUID_SIMULATION_Add(Operator):
@@ -579,7 +579,7 @@ class Modifier_OT_FLUID_SIMULATION_Add(Operator):
 		return is_objects_selected(ctx)
 	def execute(self, ctx):
 		modifier_add(ctx,ctx.selected_objects,'FLUID_SIMULATION')
-		self.report({'INFO'},'bpy.ops.modifier.fluidsimulationadd()')
+		self.report({'OPERATOR'},'bpy.ops.modifier.fluidsimulationadd()')
 		return {'FINISHED'}
 
 class Modifier_OT_OCEAN_Add(Operator):
@@ -591,7 +591,7 @@ class Modifier_OT_OCEAN_Add(Operator):
 		return is_objects_selected(ctx)
 	def execute(self, ctx):
 		modifier_add(ctx,ctx.selected_objects,'OCEAN')
-		self.report({'INFO'},'bpy.ops.modifier.oceanadd()')
+		self.report({'OPERATOR'},'bpy.ops.modifier.oceanadd()')
 		return {'FINISHED'}
 
 class Modifier_OT_PARTICLE_INSTANCE_Add(Operator):
@@ -603,7 +603,7 @@ class Modifier_OT_PARTICLE_INSTANCE_Add(Operator):
 		return is_objects_selected(ctx)
 	def execute(self, ctx):
 		modifier_add(ctx,ctx.selected_objects,'PARTICLE_INSTANCE')
-		self.report({'INFO'},'bpy.ops.modifier.particleinstanceadd()')
+		self.report({'OPERATOR'},'bpy.ops.modifier.particleinstanceadd()')
 		return {'FINISHED'}
 
 class Modifier_OT_PARTICLE_SYSTEM_Add(Operator):
@@ -615,7 +615,7 @@ class Modifier_OT_PARTICLE_SYSTEM_Add(Operator):
 		return is_objects_selected(ctx)
 	def execute(self, ctx):
 		modifier_add(ctx,ctx.selected_objects,'PARTICLE_SYSTEM')
-		self.report({'INFO'},'bpy.ops.modifier.particlesystemeadd()')
+		self.report({'OPERATOR'},'bpy.ops.modifier.particlesystemeadd()')
 		return {'FINISHED'}
 
 class Modifier_OT_SMOKE_Add(Operator):
@@ -627,7 +627,7 @@ class Modifier_OT_SMOKE_Add(Operator):
 		return is_objects_selected(ctx)
 	def execute(self, ctx):
 		modifier_add(ctx,ctx.selected_objects,'SMOKE')
-		self.report({'INFO'},'bpy.ops.modifier.smokeadd()')
+		self.report({'OPERATOR'},'bpy.ops.modifier.smokeadd()')
 		return {'FINISHED'}
 
 class Modifier_OT_SOFT_BODY_Add(Operator):
@@ -639,7 +639,7 @@ class Modifier_OT_SOFT_BODY_Add(Operator):
 		return is_objects_selected(ctx)
 	def execute(self, ctx):
 		modifier_add(ctx,ctx.selected_objects,'SOFT_BODY')
-		self.report({'INFO'},'bpy.ops.modifier.softbodyadd()')
+		self.report({'OPERATOR'},'bpy.ops.modifier.softbodyadd()')
 		return {'FINISHED'}
 
 classes = [

@@ -23,6 +23,7 @@ class Object_OT_Distance_Sort(Operator):
 	bl_idname = "object.distance_sort"
 	bl_label = "Distance Sort"
 	bl_description = "Sort Selected object in Line"
+	bl_options = {'REGISTER', 'UNDO'}
 
 	@classmethod
 	def poll(self, ctx):
@@ -61,28 +62,20 @@ class Object_OT_Distance_Sort(Operator):
 				Sobj[i].rotation_euler.y = YA+((YB - YA)/(len(Sobj) - 1))*i
 			for i in range(1,(len(Sobj) - 1)):
 				Sobj[i].rotation_euler.z = ZA+((ZB - ZA)/(len(Sobj) - 1))*i
-		self.report({'INFO'},"bpy.ops.object.distance_sort()")
+		self.report({'OPERATOR'},"bpy.ops.object.distance_sort()")
 		return{"FINISHED"}
 
 
 
-class Path_Sort_Apply:
-	def __init__(self):
-		self.enable = False
-""" hide operator for user """
-psa = Path_Sort_Apply()
-
 class Object_OT_Path_Sort_Apply(Operator):
 	bl_idname = "object.path_sort_apply"
 	bl_label = "Path Sort Apply"
+	bl_options = {'REGISTER', 'INTERNAL','UNDO'}
+	
 	objs, path = [], None
 	start: FloatProperty(name="Start:",min=0,max=1,step=0.01,precision=3,default=0.0)
 	end: FloatProperty(name="End:",min=0,max=1,step=0.01,precision=3,default=1.0)
 
-	@classmethod
-	def poll(self, ctx):
-		return psa.enable
-	
 	def draw(self, ctx):
 		layout = self.layout
 		row = layout.row(align=True)
@@ -110,7 +103,6 @@ class Object_OT_Path_Sort_Apply(Operator):
 		return {'FINISHED'}
 
 	def invoke(self, ctx, event):
-		psa.enable = False
 		self.objs = ctx.selected_objects
 		self.path = ctx.active_object
 		self.check(ctx)
@@ -120,10 +112,10 @@ class Object_OT_Path_Sort(PickOperator):
 	bl_idname = "object.path_sort"
 	bl_label = "Path Sort"
 	bl_description = "Sort Selected object on a Curve"
+	
 	filters = ['CURVE']
 	def picked(self, ctx, source, subsource, target, subtarget):
 		ctx.view_layer.objects.active = target
-		psa.enable = True
 		bpy.ops.object.path_sort_apply('INVOKE_DEFAULT')
 
 def object_sort_menu(self, ctx):
