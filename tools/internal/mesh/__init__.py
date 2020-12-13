@@ -13,16 +13,22 @@
 #	along with this program.  If not, see <https://www.gnu.org/licenses/>.
 ############################################################################
 
-from .external import register_external, unregister_external
-from .internal import register_internal,unregister_internal
-from .special import register_special,Unregister_special
+from .attach import register_attach, unregister_attach
+from .meshs import register_meshs, unregister_meshs
+from .edit import register_edit, unregister_edit
+from .select import register_select, unregister_select
+from .weld import register_weld, unregister_weld
 
-def register_tools(preferences):
-	register_external()
-	register_internal(preferences)
-	register_special(preferences)
+def register_mesh():
+	register_attach()
+	register_edit()
+	register_meshs()
+	register_select()
+	register_weld()
 
-def unregister_tools():
-	unregister_external()
-	unregister_internal()
-	Unregister_special()
+def unregister_mesh():
+	unregister_attach()
+	unregister_edit()
+	unregister_meshs()
+	unregister_select()
+	unregister_weld()

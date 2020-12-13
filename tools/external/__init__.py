@@ -12,17 +12,13 @@
 #	You should have received a copy of the GNU General Public License
 #	along with this program.  If not, see <https://www.gnu.org/licenses/>.
 ############################################################################
+import bpy
+from .maxivz_tools.mvztools import MESH_OT_SmartSelectLoop, MESH_OT_SmartSelectRing
 
-from .external import register_external, unregister_external
-from .internal import register_internal,unregister_internal
-from .special import register_special,Unregister_special
+classes = [MESH_OT_SmartSelectLoop, MESH_OT_SmartSelectRing]
 
-def register_tools(preferences):
-	register_external()
-	register_internal(preferences)
-	register_special(preferences)
-
-def unregister_tools():
-	unregister_external()
-	unregister_internal()
-	Unregister_special()
+def register_external():
+	[bpy.utils.register_class(c) for c in classes]
+	
+def unregister_external():
+	[bpy.utils.unregister_class(c) for c in classes]

@@ -42,16 +42,13 @@ Note: Tasks in [] can't apply for now because of python API limitation, I am loo
     		image.reload()
 	Spline vertex Hoke to object by drag and pick
 
-
 # Issue
 	Convert to (make Unique and apply all modifiers)
 	Helix height and last segment
 	Edge mode delete face most desolve edges too
-	Seprate smart loop and ring from regular one or update to make it work faster
 	Bone to Bone link_to net to fix transform
 	[Press 'S' while navigation hade to toggle Snap rather than the scale in max mode]
 	Mirro operator not working.
-	--->>>> Smart join Bone issue
 	Undo
 		Chamfer Curve
 
@@ -65,8 +62,8 @@ Note: Tasks in [] can't apply for now because of python API limitation, I am loo
 	Crearte primitive weel for segment count
 	If an object created uncheck hide that type of object in view port
 	Create area light set as rectangular rather than squer
-	Smart Convert and Joint makes Unique befor apply.
 	Show/Hide Gride has to works on flat views too.
+	Atach tool need to update to no mercy mode.
 
 # Quad menu
 	Seam and UV tools

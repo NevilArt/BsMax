@@ -31,8 +31,10 @@ def seprator():
 def get_view3d_transform_convert_to_sub(ctx): #Submenu
 	items = []
 	#  text, check, enabled,menu,action,setting
-	items.append(QuadItem("Convert Curve To Mesh",f,t,n,c0001,n))
-	items.append(QuadItem("Convert Mesh To Curve",f,t,n,c0002,n))
+	items.append(QuadItem("Convert To Mesh",f,t,n,c0001,n))
+	items.append(QuadItem("Convert To Curve",f,t,n,c0002,n))
+	items.append(QuadItem("Convert To Grease Pencil",f,t,n,c0212,n))
+	items.append(QuadItem("Convert To Point Cloude",f,t,n,c0213,n))
 	# NOTE Sub menus do not return text and index
 	return items
 

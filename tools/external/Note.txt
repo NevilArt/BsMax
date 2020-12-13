@@ -1,0 +1,5 @@
+Code on this directory are taked from other addons with owner permission.
+
+# Original code of mvztool is from https://blenderartists.org/u/maxiv94
+# https://blenderartists.org/t/interactive-tools-for-blender-2-8/1164932
+# Only smart ring/loop tools registered from this addon

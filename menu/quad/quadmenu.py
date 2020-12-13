@@ -26,9 +26,10 @@ class BsMax_OT_View3D_QuadMenu(Operator):
 	x, y = 0, 0
 	handler = None
 	controllers = []
+	# TODO make enom 
 	menu: StringProperty(name = 'default')
 	space: StringProperty(name = 'View3D')
-	#TODO remove space just make it auto
+	# TODO remove space just make it auto
 	#'View3D', 'UVEditor', 'GraphEditor', 'DopeSheetEditor', 'NodeEditor'
 	#ClipEditor, ImageEditor, NLA, NodeEditorPath, Outliner3D
 

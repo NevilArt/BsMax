@@ -14,8 +14,8 @@
 ############################################################################
 
 c0000="bpy.ops.object.select_instance('INVOKE_DEFAULT')"
-c0001="bpy.ops.object.smart_convert(target='MESH')"
-c0002="bpy.ops.object.smart_convert(target='CURVE')"
+c0001="bpy.ops.object.convert_to(target='MESH')"
+c0002="bpy.ops.object.convert_to(target='CURVE')"
 c0003="bpy.ops.wm.tool_set_by_id(name='builtin.move')"
 c0004="bpy.ops.object.tti_call(switch='move')"
 c0005="bpy.ops.wm.tool_set_by_id(name='builtin.rotate')"
@@ -64,7 +64,7 @@ c0047="bpy.ops.wm.tool_set_by_id(name='builtin.bevel')"
 c0048=""
 c0049="bpy.ops.mesh.create_curve_from_edge('INVOKE_DEFAULT')"
 c0050="bpy.ops.mesh.dissolve_faces('INVOKE_DEFAULT')"
-c0051="bpy.ops.object.detach('INVOKE_DEFAULT')"
+c0051="bpy.ops.mesh.detach('INVOKE_DEFAULT')"
 c0052="bpy.ops.wm.tool_set_by_id(name='builtin.extrude_region')"
 c0053="bpy.ops.wm.tool_set_by_id(name='builtin.inset_faces')"
 c0054="bpy.ops.mesh.flip_normals('INVOKE_DEFAULT')"
@@ -225,8 +225,8 @@ c0208="bpy.ops.curve.attach('INVOKE_DEFAULT')"
 c0209="bpy.ops.armature.attach('INVOKE_DEFAULT')"
 c0210="bpy.ops.object.attach('INVOKE_DEFAULT')"
 c0211="bpy.ops.curve.refine('INVOKE_DEFAULT')"
-c0212=''
-c0213=''
+c0212="bpy.ops.object.convert_to(target='GPENCIL')"
+c0213="bpy.ops.object.convert_to(target='POINTCLOUD')"
 c0214=''
 c0215=''
 c0216=''

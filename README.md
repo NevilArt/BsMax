@@ -13,6 +13,8 @@ The goal of UI simulator is people that came from other software (like me) feel 
 
 Your Reports and Ideas will help me alot and don't forget the sharing. let more people who needs this stuff know this is exist.
 
+If not have Github account use 'NevilArt@Gmail.Com' for connection.
+
 # Installation
 
 * Download all the package as zip file.
@@ -24,9 +26,19 @@ Your Reports and Ideas will help me alot and don't forget the sharing. let more 
 
 # latest Updates
 
-* Undo issue fixed for most of the Operators.
-* "DoublClick" and "Ctrl+DoubleClick" for select children in object mode (Max mode)
+* Smart loop/ring tools from 'maxivz_tools' addon updated.
+* 'Convert to' and 'Join Plus' tools updated to 'No Mercy' mode (Modifier apply, Make unique, clear primitives data).
+* 'Join Plus' issue with armature objects fixed.
+* New 'pose.select_hierarchy_plus' tool select child/parent in pose mode better than original one.
+* 'Ctrl + L' do 'Attribute link' if object selected do 'Light toggle' if not obj selected (Max Mode)
+* Node editor 'Zoom extended' error on empty node editor has fixed ('Z' in max mode).
+* Joystick connector status check updated to avoid displaying error messages.
+* 'Detach' command in quad menu issue fixed and now it works.
 * [Update History...](https://github.com/NevilArt/BsMax_2_80/blob/master/HISTORY.TXT)
+
+# Note
+
+* because of API changes 'Hair guide from/to curve' operator do not works on Blender 2.91 and 2.92, for now use it on earlier versions.
 
 # License
 
