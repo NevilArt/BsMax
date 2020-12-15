@@ -1,3 +1,13 @@
+# 0,1,0,20201213
+	Smart loop/ring tools from 'maxivz_tools' addon updated.
+	'Convert to' and 'Join Plus' tools updated to 'No Mercy' mode (Modifier apply, Make unique, clear primitives data).
+	'Join Plus' issue with armature objects fixed.
+	New 'pose.select_hierarchy_plus' tool select child/parent in pose mode better than original one.
+	'Ctrl + L' do 'Attribute link' if object selected do 'Light toggle' if not obj selected (Max Mode)
+	Node editor 'Zoom extended' error on empty node editor has fixed ('Z' in max mode).
+	Joystick connector status check updated to avoid displaying error messages.
+	'Detach' command in quad menu issue fixed and now it works.
+
 # 0,1,0,20201206
 	Undo issue fixed for most of the Operators.
 	"DoublClick" and "Ctrl+DoubleClick" for select children in object mode (Max mode)

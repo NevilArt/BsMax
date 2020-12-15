@@ -500,7 +500,7 @@ def pos(km,preferences):
 	km.new(space,'pose.select_hierarchy_plus','PAGE_UP','PRESS',[('direction','PARENT'),('extend',True)],ctrl=True)
 	km.new(space,'pose.select_hierarchy_plus','PAGE_DOWN','PRESS',[('direction','CHILDREN'),('full',False),('extend',False)])
 	km.new(space,'pose.select_hierarchy_plus','PAGE_DOWN','PRESS',[('direction','CHILDREN'),('full',False),('extend',True)],ctrl=True)
-	km.new(space,'pose.select_children','LEFTMOUSE','DOUBLE_CLICK',[('direction','CHILDREN'),('full',True),('extend',True)])
+	km.new(space,'pose.select_hierarchy_plus','LEFTMOUSE','DOUBLE_CLICK',[('direction','CHILDREN'),('full',True),('extend',True)])
 	km.new(space,'camera.select','C','PRESS',[])
 	km.new(space,'pose.hide','H','PRESS',[],alt=True)
 	km.new(space,'pose.hide','I','PRESS',[('unselected',True)],alt=True)

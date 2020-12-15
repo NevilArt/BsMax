@@ -26,14 +26,8 @@ If not have Github account use 'NevilArt@Gmail.Com' for connection.
 
 # latest Updates
 
-* Smart loop/ring tools from 'maxivz_tools' addon updated.
-* 'Convert to' and 'Join Plus' tools updated to 'No Mercy' mode (Modifier apply, Make unique, clear primitives data).
-* 'Join Plus' issue with armature objects fixed.
-* New 'pose.select_hierarchy_plus' tool select child/parent in pose mode better than original one.
-* 'Ctrl + L' do 'Attribute link' if object selected do 'Light toggle' if not obj selected (Max Mode)
-* Node editor 'Zoom extended' error on empty node editor has fixed ('Z' in max mode).
-* Joystick connector status check updated to avoid displaying error messages.
-* 'Detach' command in quad menu issue fixed and now it works.
+* 'Attach' tool collaps target objects modifiers befor join. (for now works only for Mesh objects)
+* 'Double click' for 'Select children' in pose mode keymap issue fixed.
 * [Update History...](https://github.com/NevilArt/BsMax_2_80/blob/master/HISTORY.TXT)
 
 # Note

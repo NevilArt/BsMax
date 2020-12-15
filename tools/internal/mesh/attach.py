@@ -31,9 +31,33 @@ class Mesh_OT_Attach(PickOperator):
 				if ctx.object != None:
 					return ctx.mode == 'EDIT_MESH'
 		return False
+	
+	def convert(self, ctx, obj):
+		bpy.ops.object.select_all(action='DESELECT')
+		
+		obj.select_set(True)
+		ctx.view_layer.objects.active = obj
+		
+		""" collaps modifiers """
+		for modifier in obj.modifiers:
+			bpy.ops.object.modifier_apply(modifier=modifier.name)
+
+		""" set the target mode """
+		bpy.ops.object.convert(target="MESH")
 
 	def picked(self, ctx, source, subsource, target, subtarget):
 		bpy.ops.object.mode_set(mode='OBJECT', toggle=False)
+
+		self.convert(ctx, target)
+		
+		for s in source:
+			s.select_set(True)
+			ctx.view_layer.objects.active = s
+
+			""" clear primitive data """
+			if s.type in {'MESH','CURVE'}:
+				s.data.primitivedata.classname = ""
+
 		target.select_set(state = True)
 		bpy.ops.object.join()
 		bpy.ops.object.mode_set(mode='EDIT', toggle=False)
