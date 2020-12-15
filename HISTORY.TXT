@@ -1,3 +1,6 @@
+# 0,1,0,20201215
+	'Attach' tool collaps target objects modifiers before join. (for now works only for Mesh objects)
+
 # 0,1,0,20201213
 	Smart loop/ring tools from 'maxivz_tools' addon updated.
 	'Convert to' and 'Join Plus' tools updated to 'No Mercy' mode (Modifier apply, Make unique, clear primitives data).

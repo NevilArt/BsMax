@@ -63,7 +63,6 @@ Note: Tasks in [] can't apply for now because of python API limitation, I am loo
 	If an object created uncheck hide that type of object in view port
 	Create area light set as rectangular rather than squer
 	Show/Hide Gride has to works on flat views too.
-	Atach tool need to update to no mercy mode.
 
 # Quad menu
 	Seam and UV tools

@@ -26,8 +26,8 @@ If not have Github account use 'NevilArt@Gmail.Com' for connection.
 
 # latest Updates
 
-* 'Attach' tool collaps target objects modifiers befor join. (for now works only for Mesh objects)
-* 'Double click' for 'Select children' in pose mode keymap issue fixed.
+* Create empty frame for using as joysticks border added for 'Joystic Creator'.
+* 'Ctrl + RMB' Select extended in max mode works better now.
 * [Update History...](https://github.com/NevilArt/BsMax_2_80/blob/master/HISTORY.TXT)
 
 # Note

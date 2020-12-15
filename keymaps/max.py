@@ -168,7 +168,7 @@ def view3d(km,preferences):
 	km.new(space,'object.rotate','E','PRESS',[('smax',True)])
 	km.new(space,'object.scale','R','PRESS',[('cage',False)])
 	km.new(space,'object.scale','E','PRESS',[('cage',True)],ctrl=True)
-	km.new(space,'view3d.select','LEFTMOUSE','CLICK',[('extend',True)],ctrl=True)
+	km.new(space,'view3d.select','LEFTMOUSE','CLICK',[('extend',True),('center',True),('enumerate',True),('object',True)],ctrl=True)
 	km.new(space,'view3d.select','LEFTMOUSE','CLICK',[('deselect',True)],alt=True)
 	km.new(space,'view3d.zoom_extended','Z','PRESS',[])
 	km.new(space,'camera.set_active','C','PRESS',[])

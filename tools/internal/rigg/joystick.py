@@ -69,8 +69,8 @@ def create_joystic(ctx, rectangle, mode):
 	rectangle.select_set(state=True)
 	bpy.ops.object.convert(target='MESH')
 
-	"""  """
-	bpy.ops.mesh.primitive_circle_add(radius=radius,vertices=16)
+	""" Creaye circle for joystic """
+	bpy.ops.mesh.primitive_circle_add(radius=radius, vertices=16)
 	circle = ctx.active_object
 	bpy.ops.object.mode_set(mode='EDIT', toggle=False)
 	bpy.ops.mesh.select_all(action='SELECT')
@@ -130,6 +130,11 @@ def create_joystic(ctx, rectangle, mode):
 	objs = [rectangle,circle]
 	bpy.ops.object.delete({"selected_objects": objs})
 
+	""" frame only mode delete joystick """
+	if mode == 10:
+		bpy.ops.object.editmode_toggle()
+		bpy.ops.armature.delete()
+		bpy.ops.object.editmode_toggle()
 
 class JoyStickCreator:
 	mode = 0
@@ -149,6 +154,8 @@ def get_arrow_panel(op, layout, mode):
 	row.operator(op,text="",icon="BLANK1").mode = 7
 	row.operator(op,text="",icon="TRIA_DOWN").mode = 8
 	row.operator(op,text="",icon="BLANK1").mode = 9
+	col = layout.column()
+	col.operator(op,text="",icon="MESH_PLANE").mode = 10
 	
 	if mode == 1: text = "Up Left"
 	elif mode == 2: text = "Up"
@@ -159,6 +166,7 @@ def get_arrow_panel(op, layout, mode):
 	elif mode == 7: text = "Down Left"
 	elif mode == 8: text = "Down"
 	elif mode == 9: text = "Down Right"
+	elif mode == 10: text = "Frame Only"
 	else: text = ""
 	col.label(text=text)
 
@@ -400,8 +408,6 @@ class Rigg_TO_Joystick_Shapekey_Connector(Operator):
 			set_as_active_object(ctx, armatuar)
 		if shell != None:
 			shell.select_set(state=True)
-		if armatuar != None:
-			bpy.ops.object.mode_set(mode='POSE', toggle=False)
 		self.reset_enoms()
 		return ctx.window_manager.invoke_props_dialog(self, width=400)
 
