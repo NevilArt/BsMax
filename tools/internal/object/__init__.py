@@ -20,6 +20,7 @@ from .batchrename import register_batchrename, unregister_batchrename
 from .clonearrayobjects import register_cloneobject, unregister_cloneobject
 from .collection import register_collection, unregister_collection
 from .convert import register_convert, unregister_convert
+from .create import register_create, unregister_create
 from .freeze import register_freeze, unregister_freeze
 from .lattice import register_lattice, unregister_lattice
 from .linkto import register_linkto, unregister_linkto
@@ -35,6 +36,7 @@ def register_object(preferences):
 	register_cloneobject()
 	register_collection()
 	register_convert()
+	register_create()
 	register_freeze()
 	register_lattice(preferences)
 	register_linkto()
@@ -50,6 +52,7 @@ def unregister_object():
 	unregister_cloneobject()
 	unregister_collection()
 	unregister_convert()
+	unregister_create()
 	unregister_freeze()
 	unregister_lattice()
 	unregister_linkto()

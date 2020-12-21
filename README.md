@@ -26,8 +26,9 @@ If not have Github account use 'NevilArt@Gmail.Com' for connection.
 
 # latest Updates
 
-* Create empty frame for using as joysticks border added for 'Joystic Creator'.
-* 'Ctrl + RMB' Select extended in max mode works better now.
+* Additional Primitives are create from search box (Search for 'Create' then choose the type).
+* Additional Primitives are create from python Script (bpy.ops.object.create(type=['BOX'](https://github.com/NevilArt/BsMax_2_80/wiki/bpy.ops.object.create))).
+
 * [Update History...](https://github.com/NevilArt/BsMax_2_80/blob/master/HISTORY.TXT)
 
 # Note

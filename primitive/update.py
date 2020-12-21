@@ -17,30 +17,30 @@ import bpy
 from bpy.app.handlers import persistent
 from bpy.props import StringProperty,IntProperty,FloatProperty,BoolProperty,EnumProperty,PointerProperty
 from primitive.box import Box
-from primitive.capsule import Capsule
-from primitive.cylinder import Cylinder, Cone
-#from primitive.geoSphere import GeoSphere
-from primitive.icosphere import Icosphere
-from primitive.mesher import Mesher
-from primitive.monkey import Monkey
-from primitive.oiltank import OilTank
-from primitive.plane import Plane
-from primitive.pyramid import Pyramid
-from primitive.sphere import Sphere
-from primitive.teapot import Teapot
-from primitive.torus import Torus
-from primitive.tube import Tube
-from primitive.arc import Arc
-from primitive.circle import Circle
-from primitive.donut import Donut
-from primitive.ellipse import Ellipse
-from primitive.extrude import Extrude_Curve, Extrude_Mesh
-from primitive.helix import Helix
-from primitive.ngon import NGon
-from primitive.profilo import Profilo
-from primitive.rectangle import Rectangle
-from primitive.star import Star
-from primitive.light import Compass
+from .capsule import Capsule
+from .cylinder import Cylinder, Cone
+#frome .geoSphere import GeoSphere
+from .icosphere import Icosphere
+from .mesher import Mesher
+from .monkey import Monkey
+from .oiltank import OilTank
+from .plane import Plane
+from .pyramid import Pyramid
+from .sphere import Sphere
+from .teapot import Teapot
+from .torus import Torus
+from .tube import Tube
+from .arc import Arc
+from .circle import Circle
+from .donut import Donut
+from .ellipse import Ellipse
+from .extrude import Extrude_Curve, Extrude_Mesh
+from .helix import Helix
+from .ngon import NGon
+from .profilo import Profilo
+from .rectangle import Rectangle
+from .star import Star
+from .light import Compass
 
 # Classes
 def get_class(name):

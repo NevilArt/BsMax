@@ -486,6 +486,9 @@ class Primitive_OT_Edit(Operator):
 		self = ctx.active_object.data.primitivedata
 		get_panel(self,this.layout)
 
+	def cancel(self, ctx):
+		pass
+
 	def execute(self,ctx):
 		return {'FINISHED'}
 

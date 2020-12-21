@@ -206,6 +206,25 @@ def get_box_mesh(width, length, height, wsegs, lsegs, hsegs):
 			faces.append((d, c, b, a))
 	return verts, edges, faces
 
+class Box_Data:
+	def __init__(self):
+		self.width = 1
+		self.length = 1
+		self.height = 1
+		self.wsegs = 1
+		self.lsegs = 1
+		self.hsegs = 1
+	
+	def update(self, target):
+		self.width = 1
+		self.length = 1
+		self.height = 1
+		self.wsegs = 1
+		self.lsegs = 1
+		self.hsegs = 1
+
+box_data = Box_Data()
+
 class Box(PrimitiveGeometryClass):
 	def __init__(self):
 		self.classname = "Box"

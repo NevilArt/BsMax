@@ -1,3 +1,7 @@
+# 0,1,0,20201216
+	Create empty frame for using as joysticks border added for 'Joystic Creator'.
+	'Ctrl + RMB' Select extended in max mode works better now.
+
 # 0,1,0,20201215
 	'Attach' tool collaps target objects modifiers before join. (for now works only for Mesh objects)
 

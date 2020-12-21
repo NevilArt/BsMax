@@ -15,7 +15,7 @@
 
 import bpy
 from bpy.types import Operator
-from bpy.props import StringProperty,FloatProperty,IntProperty,BoolProperty,EnumProperty
+from bpy.props import StringProperty
 
 class View3D_OT_perespective(Operator):
 	bl_idname = 'view3d.perespective'
