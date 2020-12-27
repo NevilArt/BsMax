@@ -26,9 +26,13 @@ If not have Github account use 'NevilArt@Gmail.Com' for connection.
 
 # latest Updates
 
-* Additional Primitives are create from search box (Search for 'Create' then choose the type).
-* Additional Primitives are create from python Script (bpy.ops.object.create(type=['BOX'](https://github.com/NevilArt/BsMax_2_80/wiki/bpy.ops.object.create))).
-
+* Delete_plus for object mode keep children transform on parent delete. ('Delete' Max mode)
+* 1,2,3 disabled for non converted primitive objects.
+* Link_to operator issue with transformed parent Re-Link to other object fixed.
+* 'pose.select_hierarchy_plus' tool replased with 'pose.select_hierarchy' for defult blender mode. ('[' ']' in Blender mode).
+* "DoublClick" select children in Pose mode (Blender mode)
+* Additional object (Mesh,Curve,Text) can attach to bone custome shape in pose mode (works on Rest Positon mode).
+* Transform/Rotation to Zero reset bone for pose mode rather than the armature position.
 * [Update History...](https://github.com/NevilArt/BsMax_2_80/blob/master/HISTORY.TXT)
 
 # Note

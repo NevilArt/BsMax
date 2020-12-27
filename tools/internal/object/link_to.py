@@ -15,6 +15,7 @@
 
 import bpy
 from mathutils import Vector, Matrix
+from bpy.types import Operator
 from bsmax.operator import PickOperator
 
 class Object_OT_Link_to(PickOperator):
@@ -49,9 +50,15 @@ class Object_OT_Link_to(PickOperator):
 			for sobj in source:
 				""" unparent parent if linked to self child """
 				if target.parent == sobj:
-					location = target.matrix_world.translation.copy()
+					matrix_world = target.matrix_world.copy()
 					target.parent = None
-					target.location = location
+					target.matrix_world = matrix_world
+					target.location = matrix_world.translation
+				""" Unparent source objcets befor reparenting """
+				matrix_world = sobj.matrix_world.copy()
+				sobj.parent = None
+				sobj.matrix_world = matrix_world
+				""" link to new target """
 				sobj.parent = target
 				sobj.matrix_parent_inverse = target.matrix_world.inverted()
 		
@@ -77,20 +84,32 @@ class Object_OT_Link_to(PickOperator):
 		
 		self.report({'OPERATOR'},'bpy.ops.object.link_to()')
 
-# hasattr(bpy.types, bpy.ops.object.link_to.idname())
+class Object_OT_Unlink(Operator):
+	bl_idname = "object.unlink"
+	bl_label = "Unlink"
+	bl_options = {'REGISTER', 'UNDO'}
+	
+	def execute(self, ctx):
+		for obj in ctx.selected_objects:
+			matrix_world = obj.matrix_world.copy()
+			obj.parent = None
+			obj.matrix_world = matrix_world
+		return{"FINISHED"}
 
 def linkto_menu(self, ctx):
 	layout = self.layout
 	layout.separator()
 	layout.operator("object.link_to",icon="LINKED")
 
-def register_linkto():
-	bpy.utils.register_class(Object_OT_Link_to)
+classes = [Object_OT_Link_to, Object_OT_Unlink]
+
+def register_link_to():
+	[bpy.utils.register_class(c) for c in classes]
 	bpy.types.VIEW3D_MT_object_parent.append(linkto_menu)
 
-def unregister_linkto():
+def unregister_link_to():
 	bpy.types.VIEW3D_MT_object_parent.remove(linkto_menu)
-	bpy.utils.unregister_class(Object_OT_Link_to)
+	[bpy.utils.unregister_class(c) for c in classes]
 
 if __name__ == "__main__":
-	register_linkto()
+	register_link_to()

@@ -13,21 +13,21 @@
 #	along with this program.  If not, see <https://www.gnu.org/licenses/>.
 ############################################################################
 
-from .align_objects import register_align_objects,unregister_align_objects
-from .coordinate import register_coordinate,unregister_coordinate
-from .mirror import register_mirror,unregister_mirror
-from .snap import register_snap,unregister_snap
-from .transformcontrol import register_transformcontrol,unregister_transformcontrol
-from .transforms import register_transforms,unregister_transforms
-from .transform_type_in import register_transform_type_in,unregister_transform_type_in
-from .zoom_extended import register_zoom_extended,unregister_zoom_extended
+from .align_objects import register_align_objects, unregister_align_objects
+from .coordinate import register_coordinate, unregister_coordinate
+from .mirror import register_mirror, unregister_mirror
+from .snap import register_snap, unregister_snap
+from .transform_control import register_transform_control, unregister_transform_control
+from .transforms import register_transforms, unregister_transforms
+from .transform_type_in import register_transform_type_in, unregister_transform_type_in
+from .zoom_extended import register_zoom_extended, unregister_zoom_extended
 
 def register_transform():
 	register_align_objects()
 	register_coordinate()
 	register_mirror()
 	register_snap()
-	register_transformcontrol()
+	register_transform_control()
 	register_transforms()
 	register_transform_type_in()
 	register_zoom_extended()
@@ -37,7 +37,7 @@ def unregister_transform():
 	unregister_coordinate()
 	unregister_mirror()
 	unregister_snap()
-	unregister_transformcontrol()
+	unregister_transform_control()
 	unregister_transforms()
 	unregister_transform_type_in()
 	unregister_zoom_extended()

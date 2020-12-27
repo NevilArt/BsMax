@@ -309,6 +309,7 @@ def object_mode(km,preferences):
 	km.new(space,'object.join_plus','J','PRESS',[],ctrl=True)
 	km.new(space,'object.select_children','LEFTMOUSE','DOUBLE_CLICK',[('full',True)])
 	km.new(space,'object.select_children','LEFTMOUSE','DOUBLE_CLICK',[('full',True),('extend',True)],ctrl=True)
+	km.new(space,'object.delete_plus','DEL','PRESS',[])
 
 def mesh(km,preferences):
 	km.mute('Mesh','mesh.shortest_path_pick','LEFTMOUSE','CLICK',ctrl=True)

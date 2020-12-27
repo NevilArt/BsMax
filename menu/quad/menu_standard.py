@@ -185,12 +185,10 @@ def get_view3d_tool1(ctx):
 		items.append(QuadItem("BndiBone",f,t,n,c0152,n))
 		items.append(QuadItem("Envelope",f,t,n,c0153,n))
 		items.append(QuadItem("Wire",f,t,n,c0154,n))
-		if ctx.mode == 'EDIT_ARMATURE':
-			pass
-		elif ctx.mode == 'POSE':
-			pass
+		items.append(seprator())
+		if ctx.mode in {'EDIT_ARMATURE','POSE'}:
+			items.append(QuadItem("Attach",f,t,n,c0209,n))
 		else:
-			items.append(seprator())
 			items.append(QuadItem("Attach",f,t,n,c0210,n))
 	return "Tool1",items,3
 

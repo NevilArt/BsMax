@@ -48,9 +48,14 @@ class Object_OT_Transform_To_Zero(Operator):
 	bl_options = {'REGISTER', 'UNDO'}
 	
 	def execute(self, ctx):
-		for obj in ctx.selected_objects:
-			obj.location = [0,0,0]
-			obj.rotation_euler = [0,0,0]
+		if ctx.mode == 'OBJECT':
+			for obj in ctx.selected_objects:
+				obj.location = [0,0,0]
+				obj.rotation_euler = [0,0,0]
+		elif ctx.mode == 'POSE':
+			bpy.ops.pose.loc_clear()
+			bpy.ops.pose.rot_clear()
+			bpy.ops.pose.scale_clear()
 		self.report({'OPERATOR'},'bpy.ops.object.transform_to_zero()')
 		return{"FINISHED"}
 
@@ -60,7 +65,10 @@ class Object_OT_Rotation_To_Zero(Operator):
 	bl_options = {'REGISTER', 'UNDO'}
 	
 	def execute(self, ctx):
-		bpy.ops.object.rotation_clear()
+		if ctx.mode == 'OBJECT':
+			bpy.ops.object.rotation_clear()
+		elif ctx.mode == 'POSE':
+			bpy.ops.pose.rot_clear()
 		self.report({'OPERATOR'},'bpy.ops.object.rotation_to_zero()')
 		return{"FINISHED"}
 
@@ -69,8 +77,11 @@ classes = [Object_OT_Freeze_Transform,
 	Object_OT_Transform_To_Zero,
 	Object_OT_Rotation_To_Zero]
 
-def register_transformcontrol():
+def register_transform_control():
 	[bpy.utils.register_class(c) for c in classes]
 
-def unregister_transformcontrol():
+def unregister_transform_control():
 	[bpy.utils.unregister_class(c) for c in classes]
+
+if __name__ == "__main__":
+	register_transform_control()

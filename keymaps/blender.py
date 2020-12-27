@@ -106,6 +106,11 @@ def grease_pencil(km):
 def pos(km):
 	space = km.space('Pose','EMPTY','WINDOW')
 	km.new(space,"view3d.drop_tool","RIGHTMOUSE","PRESS",[])
+	km.new(space,'pose.select_hierarchy_plus','LEFT_BRACKET','PRESS',[('direction','PARENT'),('extend',False)])
+	km.new(space,'pose.select_hierarchy_plus','LEFT_BRACKET','PRESS',[('direction','PARENT'),('extend',True)],shift=True)
+	km.new(space,'pose.select_hierarchy_plus','RIGHT_BRACKET','PRESS',[('direction','CHILDREN'),('full',False),('extend',False)])
+	km.new(space,'pose.select_hierarchy_plus','RIGHT_BRACKET','PRESS',[('direction','CHILDREN'),('full',False),('extend',True)],shift=True)
+	km.new(space,'pose.select_hierarchy_plus','LEFTMOUSE','DOUBLE_CLICK',[('direction','CHILDREN'),('full',True),('extend',True)])
 
 def vertex_paint(km):
 	pass

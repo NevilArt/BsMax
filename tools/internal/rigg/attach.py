@@ -13,21 +13,20 @@
 #	along with this program.  If not, see <https://www.gnu.org/licenses/>.
 ############################################################################
 import bpy
-from bpy.types import Operator
 from bsmax.operator import PickOperator
 
 class Object_OT_Attach(PickOperator):
-	bl_idname = "object.attach"
+	bl_idname = "armature.attach"
 	bl_label = "Attach"
 	
-	filters = ['AUTO']
+	filters = ['AUTO'] #text, curve, mesh
 
 	@classmethod
 	def poll(self, ctx):
 		if ctx.area.type == 'VIEW_3D':
 			if len(ctx.scene.objects) > 0:
 				if ctx.object != None:
-					return ctx.mode == 'OBJECT'
+					return ctx.mode == 'OBJECT' #edit armature
 		return False
 	
 	def convert(self, ctx, obj):
@@ -43,46 +42,10 @@ class Object_OT_Attach(PickOperator):
 
 
 	def picked(self, ctx, source, subsource, target, subtarget):
-		bpy.ops.object.select_all(action='DESELECT')
-		self.convert(ctx, target)
-		
-		for s in source:
-			s.select_set(True)
-			ctx.view_layer.objects.active = s
-			
-			""" clear primitive data """
-			if s.type in {'MESH','CURVE'}:
-				s.data.primitivedata.classname = ""
-		
-		target.select_set(state = True)
-		bpy.ops.object.join()
-		bpy.ops.ed.undo_push()
-		bpy.ops.object.attach('INVOKE_DEFAULT')
-		self.report({'OPERATOR'},'bpy.ops.object.attach()')
+        # 
+		self.report({'OPERATOR'},'bpy.ops.armature.attach()')
 
-
-
-class Object_TO_Delete_Plus(Operator):
-	""" Delete Plus """
-	bl_idname = "object.delete_plus"
-	bl_label = "Delete Plus"
-	bl_options = {'REGISTER', 'UNDO'}
-	
-	@classmethod
-	def poll(self, ctx):
-		return ctx.mode == 'OBJECT'
-	
-	def execute(self,ctx):
-		for obj in ctx.selected_objects:
-			for child in obj.children:
-				matrix_world = child.matrix_world.copy()
-				child.parent = None
-				child.matrix_world = matrix_world
-		bpy.ops.object.delete({"selected_objects": ctx.selected_objects})
-		return{"FINISHED"}
-
-
-classes = [Object_OT_Attach, Object_TO_Delete_Plus]
+classes = [Object_OT_Attach]
 
 def register_attach():
 	[bpy.utils.register_class(c) for c in classes]

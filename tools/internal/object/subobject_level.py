@@ -16,7 +16,7 @@
 import bpy
 from bpy.props import IntProperty
 
-class Object_OT_SubobjectLevel(bpy.types.Operator):
+class Object_OT_Subobject_Level(bpy.types.Operator):
 	bl_idname = "object.subobject_level"
 	bl_label = "Subobject Level"
 	level: IntProperty(name="SubobjectLevel")
@@ -32,11 +32,16 @@ class Object_OT_SubobjectLevel(bpy.types.Operator):
 		ctx.tool_settings.mesh_select_mode = v,e,f
 
 	def execute(self, ctx):  
-		activeobj = ctx.active_object
+		active_object = ctx.active_object
+		is_primitive = active_object.data.primitivedata.classname if active_object.type in {'MESH','CURVE'} else False
 		mode = ctx.mode
-		if activeobj != None:
+		
+		if active_object != None:
 			v,e,f = ctx.tool_settings.mesh_select_mode
-			if activeobj.type == 'MESH':
+			if active_object.type == 'MESH':
+				if is_primitive:
+					self.set('OBJECT')
+					return{"FINISHED"}
 				if self.level == 1: # Vertex mode
 					if mode == "EDIT_MESH" and v:
 						self.set('OBJECT')
@@ -92,7 +97,7 @@ class Object_OT_SubobjectLevel(bpy.types.Operator):
 						self.set('OBJECT')
 					else: 
 						self.set('TEXTURE_PAINT')
-			elif activeobj.type == 'SURFACE':
+			elif active_object.type == 'SURFACE':
 				if self.level == 1:
 					if mode == "EDIT_SURFACE": 
 						self.set('OBJECT')
@@ -101,7 +106,10 @@ class Object_OT_SubobjectLevel(bpy.types.Operator):
 				elif self.level == 0 or self.level >= 2: 
 					self.set('OBJECT')
 
-			elif activeobj.type == 'CURVE':
+			elif active_object.type == 'CURVE':
+				if is_primitive:
+					self.set('OBJECT')
+					return{"FINISHED"}
 				if self.level == 1:
 					if mode == "EDIT_CURVE": 
 						self.set('OBJECT')
@@ -110,7 +118,7 @@ class Object_OT_SubobjectLevel(bpy.types.Operator):
 				elif self.level == 0 or self.level >= 2: 
 					self.set('OBJECT')
 
-			elif activeobj.type == 'META':
+			elif active_object.type == 'META':
 				if self.level == 1:
 					if mode == "EDIT_METABALL": 
 						self.set('OBJECT')
@@ -119,7 +127,7 @@ class Object_OT_SubobjectLevel(bpy.types.Operator):
 				elif self.level == 0 or self.level >= 2: 
 					self.set('OBJECT')
 
-			elif activeobj.type == 'LATTICE':
+			elif active_object.type == 'LATTICE':
 				if self.level == 1:
 					if mode == "EDIT_LATTICE": 
 						self.set('OBJECT')
@@ -128,7 +136,7 @@ class Object_OT_SubobjectLevel(bpy.types.Operator):
 				elif self.level == 0 or self.level >= 2: 
 					self.set('OBJECT')
 
-			elif activeobj.type == 'ARMATURE':
+			elif active_object.type == 'ARMATURE':
 				if self.level == 1:
 					if mode == "EDIT_ARMATURE":
 						self.set('OBJECT')
@@ -142,7 +150,7 @@ class Object_OT_SubobjectLevel(bpy.types.Operator):
 				elif self.level == 0 or self.level >= 3:
 					self.set('OBJECT')
 
-			elif activeobj.type == 'GPENCIL':
+			elif active_object.type == 'GPENCIL':
 				if self.level == 1:
 					if mode == 'GPENCIL_EDIT':
 						self.set('OBJECT')
@@ -167,8 +175,11 @@ class Object_OT_SubobjectLevel(bpy.types.Operator):
 					self.set('OBJECT')
 		return{"FINISHED"}
 
-def register_subobjectlevel():
-	bpy.utils.register_class(Object_OT_SubobjectLevel)
+def register_subobject_level():
+	bpy.utils.register_class(Object_OT_Subobject_Level)
 
-def unregister_subobjectlevel():
-	bpy.utils.unregister_class(Object_OT_SubobjectLevel)
+def unregister_subobject_level():
+	bpy.utils.unregister_class(Object_OT_Subobject_Level)
+
+if __name__ == "__main__":
+	register_subobject_level()
