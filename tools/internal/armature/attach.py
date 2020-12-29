@@ -60,11 +60,14 @@ class Armature_OT_Attach(PickOperator):
 
 			for bone in subsource:
 				""" Get Mesh data if avalible """
-				old_mesh = bpy.data.objects[bone.custom_shape.data.name_full].data if bone.custom_shape else None
+				custom_shape_name = bone.custom_shape.name if bone.custom_shape else None
+				old_mesh = bpy.data.objects[custom_shape_name] if custom_shape_name else None
 				new_mesh = self.create_empty_mesh_object(ctx)
 				if old_mesh:
-					new_mesh.data = old_mesh
-
+					new_mesh.data = old_mesh.data
+				# else:
+				# 	bone.custom_shape = new_mesh
+				
 				new_mesh.location = armature.matrix_world @ armature.data.bones.active.head_local
 				new_mesh.rotation_euler = armature.data.bones.active.matrix_local.to_euler()
 				new_mesh.scale = armature.data.bones.active.matrix_local.to_scale()
@@ -79,6 +82,7 @@ class Armature_OT_Attach(PickOperator):
 				bpy.ops.object.join()
 	
 				bpy.ops.object.delete({"selected_objects": [new_mesh]})
+				break
 
 			""" Restor default selection set """
 			bpy.ops.object.select_all(action='DESELECT')

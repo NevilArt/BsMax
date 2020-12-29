@@ -26,18 +26,9 @@ If not have Github account use 'NevilArt@Gmail.Com' for connection.
 
 # latest Updates
 
-* Delete_plus for object mode keep children transform on parent delete. ('Delete' Max mode)
-* 1,2,3 disabled for non converted primitive objects.
-* Link_to operator issue with transformed parent Re-Link to other object fixed.
-* 'pose.select_hierarchy_plus' tool replased with 'pose.select_hierarchy' for defult blender mode. ('[' ']' in Blender mode).
-* "DoublClick" select children in Pose mode (Blender mode)
-* Additional object (Mesh,Curve,Text) can attach to bone custome shape in pose mode (works on Rest Positon mode).
-* Transform/Rotation to Zero reset bone for pose mode rather than the armature position.
+* Armature.arrach operator bug fixed
+* Hair guide from curve operator compatibility issue with Blender 2.91 fix.
 * [Update History...](https://github.com/NevilArt/BsMax_2_80/blob/master/HISTORY.TXT)
-
-# Note
-
-* because of API changes 'Hair guide from/to curve' operator do not works on Blender 2.91 and 2.92, for now use it on earlier versions.
 
 # License
 

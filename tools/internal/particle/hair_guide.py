@@ -61,10 +61,10 @@ class Particle_OT_Hair_Guides_From_Curve(PickOperator):
 		
 		""" Set Curve pivot same as Object """
 		#TODO temprary solution for fix this read the #TODO_01
-		set_origen(ctx, target, source[0].location)
+		set_origen(ctx, target, obj.location)
 		bpy.ops.object.select_all(action='DESELECT')
-		source[0].select_set(state = True)
-		ctx.view_layer.objects.active = source[0]
+		obj.select_set(state = True)
+		ctx.view_layer.objects.active = obj
 
 		""" Make ready for working on """
 		self.check_modifier(obj)
@@ -76,12 +76,15 @@ class Particle_OT_Hair_Guides_From_Curve(PickOperator):
 		hair.hair_length = self.get_max_lenght(target)
 		hair.hair_step = max([len(spline.bezier_points) for spline in target.data.splines])
 
-		""" Make the Brush ready """
+		""" Make the Brush ready """		
 		bpy.ops.object.mode_set(mode='PARTICLE_EDIT', toggle=False)
 		bpy.ops.wm.tool_set_by_id(name='builtin_brush.Comb')
-
-		bpy.ops.particle.brush_edit(stroke=[{'name':'', 'location':(0,0,0), 'mouse':(0,0),
-			'pressure':0, 'size':0,	'pen_flip':False, 'time':0, 'is_start':True}])
+		
+		version = bpy.app.version
+		if version[0] == 2 and version[1] <= 90:
+			bpy.ops.particle.brush_edit(stroke=[{'name':'','location':(0,0,0),'mouse':(0,0),'pressure':0,'size':0,'pen_flip':False,'time':0,'is_start':True}])
+		else:
+			bpy.ops.particle.brush_edit(stroke=[{'name':'','location':(0,0,0),'mouse':(0,0),'mouse_event':(0,0),'pressure':0,'size':0,'pen_flip':False,'x_tilt':0,'y_tilt':0,'time':0,'is_start':False}])
 		
 		bpy.ops.particle.disconnect_hair()
 		depsgraph = ctx.evaluated_depsgraph_get()
