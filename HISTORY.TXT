@@ -1,4 +1,8 @@
 
+# 0,1,0,20201229
+	Armature.arrach operator bug fixed
+	Hair guide from curve operator compatibility issue with Blender 2.91 fix.
+
 # 0,1,0,20201227
 	Delete_plus for object mode keep children transform on parent delete. ('Delete' Max mode)
 	1,2,3 disabled for non converted primitive objects.

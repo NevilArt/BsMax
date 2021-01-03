@@ -14,14 +14,16 @@
 ############################################################################
 
 import bpy
+from bpy.types import Panel
 from bpy.app.handlers import persistent
 
-class RENDER_PT_frames(bpy.types.Panel):
+class RENDER_PT_frames(Panel):
 	bl_space_type = 'PROPERTIES'
 	bl_region_type = 'WINDOW'
 	bl_context = "output"
 	bl_label = "Frames"
 	bl_parent_id = "RENDER_PT_dimensions"
+	bl_default_closed = True
 	COMPAT_ENGINES = {'BLENDER_RENDER', 'BLENDER_EEVEE', 'BLENDER_WORKBENCH'}
 
 	def draw(self, ctx):

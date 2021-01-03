@@ -26,8 +26,10 @@ If not have Github account use 'NevilArt@Gmail.Com' for connection.
 
 # latest Updates
 
-* Armature.arrach operator bug fixed
-* Hair guide from curve operator compatibility issue with Blender 2.91 fix.
+* Submit Render jobs to Backburner (Original code from "Template Matt Ebb | Blaize | Anthony Hunt | Spirou4D") (For Now Windows Only).
+* Updated "Backburner" addon for Blender 2.8x, 2.9x.
+* Add Specific Frames type ('1,3,5-7') to "Backburner" tool.
+* 'Ctrl+Shift+A' Create primitive Menu added to blender key-maps mode.
 * [Update History...](https://github.com/NevilArt/BsMax_2_80/blob/master/HISTORY.TXT)
 
 # License

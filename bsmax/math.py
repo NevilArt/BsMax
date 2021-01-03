@@ -16,6 +16,40 @@
 from math import sqrt, acos, atan2
 from mathutils import Vector
 
+class BitArray:
+	def __init__(self):
+		self.string = ""
+		self.ints = []
+	
+	def set(self, frames):
+		""" check the string """
+		self.string = ""
+		for l in frames:
+			if l in '0123456789,-':
+				self.string += l
+
+		""" convert strings to integers """
+		self.string = self.string.strip()
+		ranges = self.string.split(",")
+		numstr = [r.split("-") for r in ranges]
+		self.ints.clear()
+		for n in numstr:
+			if len(n) == 1:
+				if n[0] != '':
+					self.ints.append(int(n[0]))
+			elif len(n) == 2:
+				n1,n2 = int(n[0]),int(n[1])
+				if n2 > n1:
+					for i in range(n1,n2+1):
+						self.ints.append(i)
+		self.ints.sort()
+	
+	def get(self):
+		return self.ints
+
+
+
+
 def point_on_line(a, b, t):
 	return a+(b-a)*t
 
