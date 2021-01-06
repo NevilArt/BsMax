@@ -26,10 +26,9 @@ If not have Github account use 'NevilArt@Gmail.Com' for connection.
 
 # latest Updates
 
-* Submit Render jobs to Backburner (Original code from "Template Matt Ebb | Blaize | Anthony Hunt | Spirou4D") (For Now Windows Only).
-* Updated "Backburner" addon for Blender 2.8x, 2.9x.
-* Add Specific Frames type ('1,3,5-7') to "Backburner" tool.
-* 'Ctrl+Shift+A' Create primitive Menu added to blender key-maps mode.
+* Backburner Tool Updated.
+* "BsMax_2_80\tools\internal\render\backburner.py" Could be installed as a standalone addons too.
+* The function that has changed timeline color on auto on cused to crash blender some time. disabled till find a solution.
 * [Update History...](https://github.com/NevilArt/BsMax_2_80/blob/master/HISTORY.TXT)
 
 # License

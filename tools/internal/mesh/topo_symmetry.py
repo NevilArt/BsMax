@@ -43,7 +43,7 @@ class Mesh:
 		self.read_data(data)
 	
 	def is_unique_ege(self,v1,v2):
-		return true
+		return True
 
 	def read_data(self, data):
 		""" read faces """
@@ -63,7 +63,7 @@ class Fast_Mesh:
 		self.polygons = []
 		self.read_deata()
 	
-	def get_faces(index, source):
+	def get_faces(self, index, source):
 		if source == 'vertics':
 			pass
 		if source == 'edge':
@@ -72,6 +72,7 @@ class Fast_Mesh:
 			polygons = self.owner.data.polygons
 			if index < len(polygons):
 				return [v for v in polygons[index].vertices]
+		return []
 	
 	def read_deata(self):
 		data = self.owner.data
