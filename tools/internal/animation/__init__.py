@@ -19,6 +19,7 @@ from .frameupdate import register_frameupdate, unregister_frameupdate
 from .parent import register_parent, unregister_parent
 from .pose import register_pose, unregister_pose
 from .menu import register_menu, unregister_menu
+from .selection_set import register_selection_set, unregister_selection_set
 
 def register_animation():
 	register_animationkey()
@@ -27,6 +28,7 @@ def register_animation():
 	register_parent()
 	register_pose()
 	register_menu()
+	register_selection_set()
 
 def unregister_animation():
 	unregister_animationkey()
@@ -35,3 +37,4 @@ def unregister_animation():
 	unregister_menu()
 	unregister_pose()
 	unregister_parent()
+	unregister_selection_set()

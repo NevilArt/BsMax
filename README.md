@@ -26,9 +26,7 @@ If not have Github account use 'NevilArt@Gmail.Com' for connection.
 
 # latest Updates
 
-* Backburner Tool Updated.
-* "BsMax_2_80\tools\internal\render\backburner.py" Could be installed as a standalone addons too.
-* The function that has changed timeline color on auto on cused to crash blender some time. disabled till find a solution.
+* New Selection Set for Armature (Pose mode only) (View3D/ Rigth Panel/ Tool/ Selection)
 * [Update History...](https://github.com/NevilArt/BsMax_2_80/blob/master/HISTORY.TXT)
 
 # License

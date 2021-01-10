@@ -1,4 +1,9 @@
 
+# 0,1,0,20210106
+	Backburner Tool Updated.
+	"BsMax_2_80\tools\internal\render\backburner.py" Could be installed as a standalone addons too.
+	The function that has changed timeline color on auto on cused to crash blender some time. disabled till find a solution.
+
 # 0,1,0,20210103
 	Submit Render jobs to Backburner (Original code from "Matt Ebb | Blaize | Anthony Hunt | Spirou4D") (For Now Windows Only).
 	Updated "Backburner" addon for Blender 2.8x, 2.9x.

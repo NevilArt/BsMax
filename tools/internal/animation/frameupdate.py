@@ -20,6 +20,8 @@ from bpy.app.handlers import persistent
 def frame_Update(scene):
 	pass
 
+
+dopesheet_editor = bpy.context.preferences.themes[0].dopesheet_editor
 @persistent
 def depsgraph_update(scene):
 	""" called on each click and check the time slider header collor """
@@ -28,9 +30,11 @@ def depsgraph_update(scene):
 	else:
 		color = (0.2588, 0.2588, 0.2588, 1.0)
 	
-	# this action cuse the crash blender whene image object sclaed or moved via corner dots
-	# need to be sure is mouse over the timeline then call this action
-	# bpy.context.preferences.themes[0].dopesheet_editor.space.header = color
+	# make sure mouse is over the time line and dopesheet to execute this command #
+	# if dopesheet_editor.space.header != color:
+		# dopesheet_editor.space.header = color
+	# print("header> ",dopesheet_editor.space.header)
+	# print("New> ",color)
 
 def register_frameupdate():
 	# bpy.app.handlers.frame_change_pre.append(frame_Update)
