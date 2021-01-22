@@ -1,4 +1,7 @@
 
+# 0,1,0,20210110
+	New Selection Set for Armature (Pose mode only) (View3D/ Rigth Panel/ Tool/ Selection)
+
 # 0,1,0,20210106
 	Backburner Tool Updated.
 	"BsMax_2_80\tools\internal\render\backburner.py" Could be installed as a standalone addons too.

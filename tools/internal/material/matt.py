@@ -28,12 +28,12 @@ class Material_OT_Assign_To_Selection(bpy.types.Operator):
 		return False
 
 	def execute(self, ctx):
-		# this is temprary tool
-		# pinied node on node editor will be source material
-		material = ctx.active_object.active_material
-		for o in ctx.selected_objects:
-			o.active_material = material
-		self.report({'OPERATOR'},'bpy.ops.material.assign_to_selection()')
+		if ctx.mode == 'OBJECT':
+			bpy.ops.object.make_links_data(type='MATERIAL')
+			self.report({'OPERATOR'},'bpy.ops.object.make_links_data(type="MATERIAL")')
+		elif ctx.mode == 'EDIT_MESH':
+			bpy.ops.object.material_slot_assign()
+			self.report({'OPERATOR'},'bpy.ops.object.material_slot_assign()')
 		return{"FINISHED"}
 
 class BsMax_MT_material_Tools(bpy.types.Menu):
@@ -58,3 +58,6 @@ def register_matt():
 def unregister_matt():
 	bpy.types.NODE_MT_editor_menus.remove(matt_menu)
 	[bpy.utils.unregister_class(c) for c in classes]
+
+if __name__ == "__main__":
+	register_matt()

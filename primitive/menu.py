@@ -295,7 +295,8 @@ def objects_context_menu(self, ctx):
 	layout.operator("primitive.cleardata",text="Convert to Ragular Object")
 
 def CreateMenu_CallBack(self,ctx):
-	self.layout.menu("BSMAX_MT_createmenu")
+	if ctx.mode == 'OBJECT':
+		self.layout.menu("BSMAX_MT_createmenu")
 
 classes = [BsMax_MT_VertexCreate,
 		BsMax_MT_MeshCreate,

@@ -163,7 +163,7 @@ class Anim_OT_Frame_Set(Operator):
 	
 	def execute(self, ctx):
 		scene = ctx.scene
-		frame,first,last = scene.frame_current,scene.frame_start,scene.frame_end
+		frame, first, last = scene.frame_current, scene.frame_start, scene.frame_end
 		if self.frame == 'Next':
 			frame += 1
 			frame = first if frame > last else frame

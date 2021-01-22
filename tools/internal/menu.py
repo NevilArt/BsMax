@@ -28,11 +28,18 @@ class BsMax_MT_View3D_tools(bpy.types.Menu):
 	def draw(self,ctx):
 		layout=self.layout
 		layout.menu('BSMAX_MT_animationtools',icon='ARMATURE_DATA')
-		# layout.menu('BSMAX_MT_rendertools',icon='RENDER_ANIMATION')
 		layout.menu('BSMAX_MT_riggtools',icon='TOOL_SETTINGS')
+		layout.menu('BSMAX_MT_particletools',icon='MOD_PARTICLES')
+
+
 
 def tools_menu(self,ctx):
-	self.layout.menu('BSMAX_MT_view3dtools')
+	if ctx.mode == 'OBJECT':
+		self.layout.menu('BSMAX_MT_view3dtools')
+	# elif ctx.mode == 'POSE':
+	# 	self.layout.menu('BSMAX_MT_animationtools')
+
+
 
 def default_key(self,ctx):
 	self.layout.prop(ctx.preferences.edit,'keyframe_new_interpolation_type',text='')

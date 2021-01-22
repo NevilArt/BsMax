@@ -84,10 +84,17 @@ class Object_OT_Weight_to_Vertex_Color(Operator):
 		# self.report({'OPERATOR'},'bpy.ops.object.weight_to_vertex_color()')
 		return {'FINISHED'}
 
+
+def paint_menu(self,ctx):
+	self.layout.separator()
+	self.layout.operator("object.weight_to_vertex_color")
+
 def register_paint():
 	bpy.utils.register_class(Object_OT_Weight_to_Vertex_Color)
+	bpy.types.VIEW3D_MT_paint_vertex.append(paint_menu)
 
 def unregister_paint():
+	bpy.types.VIEW3D_MT_paint_vertex.remove(paint_menu)
 	bpy.utils.unregister_class(Object_OT_Weight_to_Vertex_Color)
 
 if __name__ == "__main__":

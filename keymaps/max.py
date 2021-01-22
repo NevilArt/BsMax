@@ -158,7 +158,7 @@ def view3d(km,preferences):
 		km.new(space,"view3d.zoom","WHEELOUTMOUSE","PRESS",[('delta',-1)])
 	
 	km.new(space,"view3d.drop_tool","RIGHTMOUSE","PRESS",[])
-	km.new(space,'screen.header','SIX','PRESS',[],alt=True)
+	# km.new(space,'screen.header','SIX','PRESS',[],alt=True)
 	km.new(space,'screen.region_quadview','W','PRESS',[],alt=True)
 	km.new(space,'view3d.transform_gizmosize','EQUAL','PRESS',[('step',10)])
 	km.new(space,'view3d.transform_gizmosize','MINUS','PRESS',[('step',-10)])
@@ -181,9 +181,10 @@ def view3d(km,preferences):
 	km.new(space,'view3d.background','B','PRESS',[],alt=True)
 	km.new(space,'object.subobject_level','B','PRESS',[('level',6)],ctrl=True)
 	km.new(space,'camera.show_safe_areas','F','PRESS',[],shift=True)
-	km.new(space,'scene.hold','H','PRESS',[],ctrl=True,alt=True)
-	km.new(space,'scene.fetch','F','PRESS',[],ctrl=True,alt=True)
+	# km.new(space,'scene.hold','H','PRESS',[],ctrl=True,alt=True)
+	# km.new(space,'scene.fetch','F','PRESS',[],ctrl=True,alt=True)
 	km.new(space,'wm.call_menu','A','PRESS',[('name','BSMAX_MT_createmenu')],ctrl=True,shift=True)
+	km.new(space,'wm.call_menu','T','PRESS',[('name','TOPBAR_MT_file_external_data')],shift=True)
 	km.new(space,'view3d.homeview','HOME','PRESS',[],alt=True)
 	km.new(space,'screen.animation_play','SLASH','PRESS',[])
 	km.new(space,'view.undoredo','Z','PRESS',[('redo',False)],shift=True)
@@ -207,6 +208,7 @@ def view3d_generic(km):
 	space = km.space('3D View Generic','VIEW_3D','WINDOW')
 	km.new(space,'view3d.properties','LEFT_BRACKET','PRESS',[])
 	km.new(space,'view3d.toolshelf','RIGHT_BRACKET','PRESS',[])
+
 
 def view3d_tweak(km):
 	# space = km.space('3D View Tool: Tweak','VIEW_3D','WINDOW')
@@ -371,6 +373,7 @@ def mesh(km,preferences):
 	km.new(space,'mesh.delete_auto','DEL','PRESS',[])
 	km.new(space,'object.transform_type_in','F12','PRESS',[])
 	km.new(space,'mesh.subdivide','M','PRESS',[],ctrl=True)
+	km.new(space,'transform.skin_resize','A','PRESS',[],ctrl=True,shift=True)
 	# Tools #
 	km.new(space,'view3d.shade_selected_faces','F2','PRESS',[])
 	km.new(space,'anim.auto_key_toggle','N','PRESS',[])
@@ -623,6 +626,8 @@ def node_editor(km):
 	km.new(space,'node.links_cut','MIDDLEMOUSE','PRESS',[],alt=True)
 	km.new(space,'node.link','EVT_TWEAK_L','ANY',[('detach',True)],alt=True)
 	km.new(space,'node.select_linked_from','T','PRESS',[],ctrl=True)
+	km.new(space,'material.assign_to_selection','A','PRESS',[])
+	
 
 def text(km):
 	""" script editor """

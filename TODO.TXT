@@ -1,6 +1,6 @@
 Note: Tasks in [] can't apply for now because of python API limitation, I am looking for solution.
 
-# Keymaps
+# Keymaps/Menu
 	[Loop ring short key in UV Editor]
 	Brush Size control hot keys (for max mode)
 	Sequencer in pr mode Alt + Arrows move step by step
@@ -52,6 +52,8 @@ Note: Tasks in [] can't apply for now because of python API limitation, I am loo
 	Mirro operator not working.
 	Undo
 		Chamfer Curve
+	joystick connecto: check for mesh and armature condition is ok for opration or not
+	Convert to for curve objects apply modifiers do not work
 
 # Update
 	Enable snap for drawing primitives
@@ -64,6 +66,9 @@ Note: Tasks in [] can't apply for now because of python API limitation, I am loo
 	If an object created uncheck hide that type of object in view port
 	Create area light set as rectangular rather than squer
 	Show/Hide Gride has to works on flat views too.
+	Put transform type in in right tool panel on/off with f12
+	transform type in sub object and pivot helper 
+	alight too adapt for edit pivot mode
 
 # Quad menu
 	Seam and UV tools

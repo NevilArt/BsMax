@@ -20,6 +20,8 @@ from mathutils import Vector
 from bsmax.state import has_constraint,get_obj_class
 from bsmax.actions import link_to,set_origen,set_as_active_object
 
+
+
 def get_joystic_mode(width, length):
 	if length < width / 2:
 		return "h"
@@ -27,10 +29,14 @@ def get_joystic_mode(width, length):
 		return "v"
 	return "j"
 
+
+
 def get_joy_radius(width, length, orient):
 	if orient == 'j': 
 		return (width + length) / 15.0
 	return (min(width, length) / 2)
+
+
 
 def create_joystic(ctx, rectangle, mode):
 	width = rectangle.data.primitivedata.width
@@ -136,9 +142,13 @@ def create_joystic(ctx, rectangle, mode):
 		bpy.ops.armature.delete()
 		bpy.ops.object.editmode_toggle()
 
+
+
 class JoyStickCreator:
 	mode = 0
 	direction = 0
+
+
 
 def get_arrow_panel(op, layout, mode):
 	col = layout.column(align=True)
@@ -169,6 +179,8 @@ def get_arrow_panel(op, layout, mode):
 	elif mode == 10: text = "Frame Only"
 	else: text = ""
 	col.label(text=text)
+
+
 
 
 class Rigg_TO_Joy_Stick_Creator(Operator):
@@ -214,7 +226,10 @@ class Rigg_TO_Joy_Stick_Creator(Operator):
 		return {'CANCELLED'}
 
 
+
+
 class Rigg_TO_Joystick_Shapekey_Connector(Operator):
+	""" Select Armature contain Joystick and Mesh contain Shape keys and run this operator  """
 	bl_idname = "rigg.joystick_shapekey_connector"
 	bl_label = "Joystick Connecotr"
 	bl_description = "Connect Joystick to Shapekey"
@@ -225,7 +240,11 @@ class Rigg_TO_Joystick_Shapekey_Connector(Operator):
 		if ctx.area.type == 'VIEW_3D':
 			if ctx.mode == 'OBJECT':
 				if len(ctx.selected_objects) == 2:
-					return True
+					o = ctx.selected_objects
+					if o[0].type == 'ARMATURE' and o[1].type == 'MESH':
+						return True
+					if o[0].type == 'MESH' and o[1].type == 'ARMATURE':
+						return True
 		return False
 	
 	def coolect_joys(self, ctx):
@@ -411,12 +430,22 @@ class Rigg_TO_Joystick_Shapekey_Connector(Operator):
 		self.reset_enoms()
 		return ctx.window_manager.invoke_props_dialog(self, width=400)
 
+
+
+
+def joystick_connectore_menu(self,ctx):
+	self.layout.operator("rigg.joystick_shapekey_connector")
+
+
+
 classes = [Rigg_TO_Joy_Stick_Creator, Rigg_TO_Joystick_Shapekey_Connector]
 
 def register_joystic():
 	[bpy.utils.register_class(c) for c in classes]
+	bpy.types.VIEW3D_MT_make_links.append(joystick_connectore_menu)
 
 def unregister_joystic():
+	bpy.types.VIEW3D_MT_make_links.remove(joystick_connectore_menu)
 	[bpy.utils.unregister_class(c) for c in classes]
 
 if __name__ == "__main__":

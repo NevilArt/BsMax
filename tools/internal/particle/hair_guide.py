@@ -14,10 +14,11 @@
 ############################################################################
 import bpy
 from mathutils import Vector, Matrix
-from bpy.types import Operator
+from bpy.types import Operator, Menu
 from bsmax.math import point_on_curve
 from bsmax.actions import set_origen, link_to_scene
 from bsmax.operator import PickOperator
+from bsmax.state import is_object_mode
 
 class Particle_OT_Hair_Guides_From_Curve(PickOperator):
 	bl_idname = 'particle.hair_guides_from_curve'
@@ -123,7 +124,7 @@ class Particle_OT_Hair_Guides_To_Curve(Operator):
 		return [[key.co for key in hair.hair_keys] for hair in hairs]
 	
 	def create_curve(self, ctx, guides, parent):
-		if len(guides) > 1:
+		if len(guides) > 0:
 			name = parent.name + "_Hair_Guide"
 			newcurve = bpy.data.curves.new(name, type='CURVE')
 			newcurve.dimensions = '3D'
@@ -157,9 +158,25 @@ class Particle_OT_Hair_Guides_To_Curve(Operator):
 		self.create_curve(ctx, guides, obj)
 		self.report({'OPERATOR'},'bpy.ops.particle.hair_guides_to_curve()')
 		return{"FINISHED"}
-	
 
-classes = [Particle_OT_Hair_Guides_From_Curve, Particle_OT_Hair_Guides_To_Curve]
+
+
+class BsMax_MT_particle_tools(Menu):
+	bl_idname = "BSMAX_MT_particletools"
+	bl_label = "Particle"
+	bl_context = "objectmode"
+
+	@classmethod
+	def poll(self, ctx):
+		return is_object_mode(ctx)
+
+	def draw(self, ctx):
+		layout=self.layout
+		layout.operator("particle.hair_guides_from_curve",icon="PARTICLEMODE")
+		layout.operator("particle.hair_guides_to_curve",icon="TRACKING")
+
+
+classes = [Particle_OT_Hair_Guides_From_Curve, Particle_OT_Hair_Guides_To_Curve, BsMax_MT_particle_tools]
 
 def register_hair_guide():
 	[bpy.utils.register_class(c) for c in classes]
