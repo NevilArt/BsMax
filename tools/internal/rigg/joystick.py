@@ -329,13 +329,9 @@ class Rigg_TO_Joystick_Shapekey_Connector(Operator):
 		var.targets[0].transform_space = 'LOCAL_SPACE'
 		return var.targets[0]
 	
-	def clear_drivers(self, shape_keys, shape_key):
-		# need to remove all old drivers
-		pass
-
 	def set_driver(self, armatuar, joy, direction, shell, shape_key):
 		key_block = shell.data.shape_keys.key_blocks[shape_key]
-		# self.clear_drivers(shell.data.shape_keys, shape_key)
+		key_block.driver_remove("value")
 		driver = key_block.driver_add("value")
 		driver.driver.type = 'SCRIPTED'
 		if direction in [2,4,6,8]:

@@ -182,6 +182,7 @@ def register_blender(preferences):
 		if preferences.navigation_3d == "Blender":
 			view3d_navigation(km_navigation_3d,preferences)
 			km_navigation_3d.register()
+			bpy.context.preferences.inputs.view_zoom_axis = 'VERTICAL'
 		else:
 			km_navigation_3d.unregister()
 

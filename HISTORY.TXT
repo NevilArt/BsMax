@@ -1,4 +1,13 @@
 
+# 0,1,0,20210122
+	'Hair guides from/to curve' added to View3D:Tools/Particle Menu.
+	Mesh Edit mode Skin Resize keymap changed to 'Ctrl + Shift + A' (Max mode).
+	Joystic to Shape key connector added to link context menu (Ctrl + L).
+	'Weight to Vertex Color' puted in View3d/ Paint menu (Vertex paint Mode).
+	'A' copy active object material to selected objects as 3DsMax "Assign Material to Selection" (Max mode).
+	'Create' and 'Tools' Menus shows only in object mode.
+	'Shift + T' open External Data context menu replacement for 3DsMax Asset Tracking (Max mode).
+
 # 0,1,0,20210110
 	New Selection Set for Armature (Pose mode only) (View3D/ Rigth Panel/ Tool/ Selection)
 

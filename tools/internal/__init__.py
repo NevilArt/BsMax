@@ -48,7 +48,7 @@ def register_internal(preferences):
 	register_render()
 	register_select()
 	register_text()
-	register_transform()
+	register_transform(preferences)
 	register_uv()
 	register_view(preferences)
 	register_rigg()

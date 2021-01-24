@@ -19,7 +19,7 @@ from mathutils import Vector
 from math import sqrt
 from gpu_extras.batch import batch_for_shader
 from bsmax.state import is_object_mode
-from bsmax.actions import link_to_scene, set_as_active_object, set_create_target, delete_objects
+from bsmax.actions import link_to_scene, set_as_active_object
 from bsmax.mouse import get_click_point_info, ClickPoint
 from bsmax.math import get_2_point_center
 

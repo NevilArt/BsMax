@@ -20,7 +20,7 @@ bl_info = {
 	"name": "BsMax",
 	"description": "BsMax for Blender 2.80 ~ 2.93",
 	"author": "Naser Merati (Nevil)",
-	"version": (0, 1, 0, 20210122),
+	"version": (0, 1, 0, 20210124),
 	"blender": (2, 80, 0),# 2.80~2.93
 	"location": "Almost Everywhere in Blender",
 	"wiki_url": "https://github.com/NevilArt/BsMax_2_80/wiki",
@@ -199,6 +199,8 @@ class BsMax_AddonPreferences(bpy.types.AddonPreferences):
 		description='undo the only view angle')
 	menu_scale: FloatProperty(name="Float Menu Scale",min=1,max=3,description='')
 
+	blender_transform_type: BoolProperty(name="Blender Transform Type",default=False)
+
 	def refine(self):
 		""" Disactive keymap update """
 		self.active = False
@@ -290,6 +292,7 @@ class BsMax_AddonPreferences(bpy.types.AddonPreferences):
 			row = box.row()
 			row.prop(self,"view_undo")
 			row.prop(self,"menu_scale")
+			# row.prop(self,"blender_transform_type")
 		if self.menu_scale < 1:
 			self.menu_scale = 1
 

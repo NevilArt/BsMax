@@ -41,12 +41,17 @@ class Create_OT_Camera(CreatePrimitive):
 	def update(self, ctx, clickcount, dimantion):
 		if clickcount == 1:
 			if self.drag and self.subclass.target == None:
-				self.subclass.target = set_create_target(self.subclass.owner, None)
+				bpy.ops.object.select_all(action = 'DESELECT')
+				self.subclass.owner.select_set(state = True)
+				ctx.view_layer.objects.active = self.subclass.owner
+				bpy.ops.camera.create_target()
+				self.subclass.target = self.subclass.owner.constraints["Track To"].target
+
 			self.subclass.target.location = dimantion.view
 
 			size = get_distance(self.subclass.owner.location,self.subclass.target.location)/3
 			self.subclass.owner.data.display_size = size
-			self.subclass.target.empty_display_size = size / 10
+			self.subclass.target.empty_display_size = size
 
 	def finish(self):
 		pass

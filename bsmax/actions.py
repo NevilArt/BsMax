@@ -80,25 +80,26 @@ def set_as_active_object(ctx, obj):
 def delete_objects(objs):
 	bpy.ops.object.delete({"selected_objects": objs})
 
-def set_create_target(obj, targ, distance=(0.0, 0.0, -2.0)):
-	""" Add a lock at constraint with basic setting """
-	""" Create a empty object as target if targ == None """
-	cont = obj.constraints.new('TRACK_TO')
-	if targ == None:
-		targ = bpy.data.objects.new("empty", None )
-		targ.empty_display_type = 'CUBE'
-		targ.empty_display_size = 0.25
-		activelayername = bpy.context.view_layer.active_layer_collection.name
-		col = bpy.data.collections[activelayername]
-		col.objects.link(targ)
-		targ.name = obj.name + "_target"
-		targ.location = obj.location
-		targ.rotation_euler = obj.rotation_euler
-		targ.matrix_basis @= Matrix.Translation(distance)
-	cont.target = targ
-	cont.track_axis = 'TRACK_NEGATIVE_Z'
-	cont.up_axis = 'UP_Y'
-	return targ
+def set_create_target(obj, target, distance=(0.0, 0.0, -2.0), align=True):
+	""" Add a lookat constraint with basic setting """
+	""" Create an empty object as target if target is None """
+	constraint = obj.constraints.new('TRACK_TO')
+	if target == None:
+		target = bpy.data.objects.new("empty", None)
+		target.empty_display_type = 'CUBE'
+		target.empty_display_size = 0.25
+		active_layer_name = bpy.context.view_layer.active_layer_collection.name
+		col = bpy.data.collections[active_layer_name]
+		col.objects.link(target)
+		target.name = obj.name + "_target"
+	if align:
+		target.location = obj.location
+		target.rotation_euler = obj.rotation_euler
+		target.matrix_basis @= Matrix.Translation(distance)
+	constraint.target = target
+	constraint.track_axis = 'TRACK_NEGATIVE_Z'
+	constraint.up_axis = 'UP_Y'
+	return target
 
 def link_to(obj, target):
 	obj.parent = target

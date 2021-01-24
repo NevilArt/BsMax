@@ -31,12 +31,52 @@ class Camera_OT_Create_Target(Operator):
 			if obj.type == 'CAMERA' and not has_constraint(obj, 'TRACK_TO'):
 				return True
 		return False
+	
+	def cretae_target_object(self, ctx):
+		bpy.ops.object.empty_add(type='SPHERE')
+		return ctx.active_object
+	
+	def create_driver(self, cam, target):
+		cam.data.dof.driver_remove('aperture_fstop')
+
+		driver = cam.data.dof.driver_add('aperture_fstop')
+		driver.driver.type = 'SCRIPTED'
+
+		var = driver.driver.variables.new()
+		var.name = 's'
+		var.type = 'SINGLE_PROP'
+		var.targets[0].id = target
+		var.targets[0].data_path = 'empty_display_size'
+
+		x = driver.driver.variables.new()
+		x.name = 'x'
+		x.type = 'TRANSFORMS'
+		x.targets[0].id = target
+		x.targets[0].transform_type = 'SCALE_X'
+
+		y = driver.driver.variables.new()
+		y.name = 'y'
+		y.type = 'TRANSFORMS'
+		y.targets[0].id = target
+		y.targets[0].transform_type = 'SCALE_Y'
+
+		z = driver.driver.variables.new()
+		z.name = 'z'
+		z.type = 'TRANSFORMS'
+		z.targets[0].id = target
+		z.targets[0].transform_type = 'SCALE_Z'
+
+		driver.driver.expression = 's*((x+y+z)/3)'
 
 	def execute(self, ctx):
 		cam = ctx.active_object
 		size = cam.data.display_size
-		target = set_create_target(cam, None, distance=(0,0,-size*3))
-		target.empty_display_size = size / 10
+		empty = self.cretae_target_object(ctx)
+		target = set_create_target(cam, empty, distance=(0,0,-size*3))
+		target.empty_display_size = size
+		target.name = cam.name + "_target"
+		cam.data.dof.focus_object = target
+		self.create_driver(cam, target)
 		set_as_active_object(ctx, cam)
 		self.report({'OPERATOR'},"bpy.ops.camera.create_target()")
 		return {'FINISHED'}
@@ -56,6 +96,7 @@ class Camera_OT_Clear_Target(Operator):
 
 	def execute(self, ctx):
 		cam = ctx.active_object
+		cam.data.dof.driver_remove('aperture_fstop')
 		transfoem = cam.matrix_world.copy()
 		targ = cam.constraints["Track To"].target
 		delete_objects([targ])

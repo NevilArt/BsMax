@@ -14,8 +14,8 @@
 ############################################################################
 
 from .external import register_external, unregister_external
-from .internal import register_internal,unregister_internal
-from .special import register_special,Unregister_special
+from .internal import register_internal, unregister_internal
+from .special import register_special, Unregister_special
 
 def register_tools(preferences):
 	register_external()

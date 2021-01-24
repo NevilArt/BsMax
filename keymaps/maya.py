@@ -265,6 +265,7 @@ def register_maya(preferences):
 		if preferences.navigation_3d == "Maya":
 			view3d_navigation(km_navigation_3d,preferences)
 			km_navigation_3d.register()
+			bpy.context.preferences.inputs.view_zoom_axis = 'HORIZONTAL'
 		else:
 			km_navigation_3d.unregister()
 

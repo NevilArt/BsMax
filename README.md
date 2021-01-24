@@ -26,13 +26,10 @@ If not have Github account use 'NevilArt@Gmail.Com' for connection.
 
 # latest Updates
 
-* 'Hair guides from/to curve' added to View3D:Tools/Particle Menu.
-* Mesh Edit mode Skin Resize keymap changed to 'Ctrl + Shift + A' (Max mode).
-* Joystic to Shape key connector added to link context menu (Ctrl + L).
-* 'Weight to Vertex Color' puted in View3d/ Paint menu (Vertex paint Mode).
-* 'A' copy active object material to selected objects as 3DsMax "Assign Material to Selection" (Max mode).
-* 'Create' and 'Tools' Menus shows only in object mode.
-* 'Shift + T' open External Data context menu replacement for 3DsMax Asset Tracking (Max mode).
+* 'TWEAK MMB + Shift' Align view (Replacement of 'TWEAK MMB + Alt' in Blender Default for 3DsMax Mode).
+* Zoom mode setting to Horizontal mode when Maya navigation active.
+* Joystick connector remove old driver if exist.
+* Camera target control the F-Stop of Depth of Field too.
 * [Update History...](https://github.com/NevilArt/BsMax_2_80/blob/master/HISTORY.TXT)
 
 # License

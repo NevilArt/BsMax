@@ -132,9 +132,10 @@ def view3d(km,preferences):
 	km.mute('3D View','view3d.view_axis','EVT_TWEAK_M','SOUTH',alt=True)
 	km.mute('3D View','view3d.view_axis','EVT_TWEAK_M','EAST',alt=True)
 	km.mute('3D View','view3d.view_axis','EVT_TWEAK_M','WEST',alt=True)
+	km.mute('3D View','view3d.move','MIDDLEMOUSE','PRESS',shift=True)
 	km.mute('3D View','view3d.localview_remove_from','M','PRESS',ctrl=True)
 	km.mute('3D View','wm.call_menu_pie','Z','PRESS')
-
+	
 	space = km.space('3D View','VIEW_3D','WINDOW')
 	add_search(km,space)
 	add_snap(km,space)
@@ -157,7 +158,13 @@ def view3d(km,preferences):
 		km.new(space,"view3d.zoom","WHEELINMOUSE","PRESS",[('delta',1)])
 		km.new(space,"view3d.zoom","WHEELOUTMOUSE","PRESS",[('delta',-1)])
 	
-	km.new(space,"view3d.drop_tool","RIGHTMOUSE","PRESS",[])
+	km.new(space,'view3d.drop_tool','RIGHTMOUSE','PRESS',[])
+
+	km.new(space,'view3d.view_axis','EVT_TWEAK_M','NORTH',[('type','TOP'),('relative',True)],shift=True)
+	km.new(space,'view3d.view_axis','EVT_TWEAK_M','SOUTH',[('type','BOTTOM'),('relative',True)],shift=True)
+	km.new(space,'view3d.view_axis','EVT_TWEAK_M','EAST',[('type','RIGHT'),('relative',True)],shift=True)
+	km.new(space,'view3d.view_axis','EVT_TWEAK_M','WEST',[('type','LEFT'),('relative',True)],shift=True)
+
 	# km.new(space,'screen.header','SIX','PRESS',[],alt=True)
 	km.new(space,'screen.region_quadview','W','PRESS',[],alt=True)
 	km.new(space,'view3d.transform_gizmosize','EQUAL','PRESS',[('step',10)])
@@ -816,6 +823,7 @@ def register_max(preferences):
 		if preferences.navigation_3d == "3DsMax":
 			view3d_navigation(km_navigation_3d,preferences)
 			km_navigation_3d.register()
+			bpy.context.preferences.inputs.view_zoom_axis = 'VERTICAL'
 		else:
 			km_navigation_3d.unregister()
 
