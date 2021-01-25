@@ -1,4 +1,10 @@
 
+# 0,1,0,20210124
+	'TWEAK MMB + Shift' Align view (Replacement of 'TWEAK MMB + Alt' in Blender Default for 3DsMax Mode).
+	Zoom mode setting to Horizontal mode when Maya navigation active.
+	Joystick connector remove old driver if exist.
+	Camera target control the F-Stop of Depth of Field too.
+
 # 0,1,0,20210122
 	'Hair guides from/to curve' added to View3D:Tools/Particle Menu.
 	Mesh Edit mode Skin Resize keymap changed to 'Ctrl + Shift + A' (Max mode).

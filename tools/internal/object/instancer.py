@@ -12,16 +12,25 @@
 #	You should have received a copy of the GNU General Public License
 #	along with this program.  If not, see <https://www.gnu.org/licenses/>.
 ############################################################################
-from .cameras import register_cameras, unregister_cameras
-from .panel import register_panel, unregister_panel
-from .target_camera import register_terget_camera, unregister_terget_camera
+import bpy
+from bpy.types import Operator
 
-def register_camera():
-	register_cameras()
-	register_panel()
-	register_terget_camera()
 
-def unregister_camera():
-	unregister_cameras()
-	unregister_panel()
-	unregister_terget_camera()
+
+class Object_TO_Instancer_Select(Operator):
+	""" collect and select object may suld be instance """
+	bl_idname = 'object.instancer_select'
+	bl_label = 'Instancer Select'
+	bl_options = {'REGISTER', 'UNDO'}
+	
+	@classmethod
+	def poll(self, ctx):
+		return ctx.mode == 'OBJECT'
+	
+	def execute(self,ctx):
+		# collect ans select object has data with siliar name
+		return{"FINISHED"}
+
+
+if __name__ == "__main__":
+	bpy.utils.register_class(Object_TO_Instancer_Select) 

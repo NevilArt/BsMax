@@ -51,7 +51,7 @@ class Create_OT_Camera(CreatePrimitive):
 
 			size = get_distance(self.subclass.owner.location,self.subclass.target.location)/3
 			self.subclass.owner.data.display_size = size
-			self.subclass.target.empty_display_size = size
+			self.subclass.target.empty_display_size = size / 10
 
 	def finish(self):
 		pass

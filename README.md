@@ -26,10 +26,9 @@ If not have Github account use 'NevilArt@Gmail.Com' for connection.
 
 # latest Updates
 
-* 'TWEAK MMB + Shift' Align view (Replacement of 'TWEAK MMB + Alt' in Blender Default for 3DsMax Mode).
-* Zoom mode setting to Horizontal mode when Maya navigation active.
-* Joystick connector remove old driver if exist.
-* Camera target control the F-Stop of Depth of Field too.
+* Camera Target seprated from FOV Target.
+* Camera Target tools puted on 'Properties > Object Data (Camera) > Target/Tools' panel.
+* 'Blender Transform Type' added to Options make 'W,E,R' Keys work like Blender 'G,R'S' Keys (Need to restart blender on change)
 * [Update History...](https://github.com/NevilArt/BsMax_2_80/blob/master/HISTORY.TXT)
 
 # License
