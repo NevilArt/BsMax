@@ -46,15 +46,20 @@ def add_view3d_tweak_selection(km, space):
 	km.new(space,'view3d.select_box','EVT_TWEAK_L','ANY',[('mode','ADD')],ctrl=True )
 	km.new(space,'view3d.select_box','EVT_TWEAK_L','ANY',[('mode','SUB')],alt=True )
 
-def add_transform_toold(km, space, preferences):
+def add_transform_tool(km, space, preferences, smax=False):
 	if preferences.blender_transform_type:
 		km.new(space,'transform.translate','W','PRESS',[])
 		km.new(space,'transform.rotate','E','PRESS',[])
 		km.new(space,'transform.resize','R','PRESS',[])
 	else:
-		km.new(space,'object.move','W','PRESS',[])
-		km.new(space,'object.rotate','E','PRESS',[])
-		km.new(space,'object.scale','R','PRESS',[])
+		if smax:
+			km.new(space,'object.move','W','PRESS',[('smax',True)])
+			km.new(space,'object.rotate','E','PRESS',[('smax',True)])
+			km.new(space,'object.scale','R','PRESS',[('cage',False)])
+		else:
+			km.new(space,'object.move','W','PRESS',[])
+			km.new(space,'object.rotate','E','PRESS',[])
+			km.new(space,'object.scale','R','PRESS',[])
 
 def add_snap(km, space):
 	km.new(space,'object.snap_toggle','S','PRESS',[])
@@ -154,7 +159,7 @@ def view3d(km,preferences):
 	add_view3d_tweak_selection(km, space)
 	add_float_editors(km, space)
 	add_float_menu(km, space, preferences)
-	add_transform_toold(km, space, preferences)
+	add_transform_tool(km, space, preferences, smax=True)
 
 	if preferences.view_undo:
 		km.new(space,"view3d.movecover","MIDDLEMOUSE","PRESS",[])
@@ -558,7 +563,7 @@ def sculpt(km, preferences):
 	space = km.space('Sculpt','EMPTY','WINDOW')
 	add_switch_view(km, space)
 	add_show_types(km, space)
-	add_transform_toold(km, space, preferences)
+	add_transform_tool(km, space, preferences)
 
 	km.new(space,'camera.set_active','C','PRESS',[])
 	# km.new(space,'object.move','W','PRESS',[])
@@ -762,7 +767,7 @@ def uv_editor(km, preferences):
 	space = km.space('UV Editor','EMPTY','WINDOW')
 	add_snap(km, space)
 	add_side_panel(km, space)
-	add_transform_toold(km, space, preferences)
+	add_transform_tool(km, space, preferences)
 	
 	# km.new(space,'object.move','W','PRESS',[])
 	# km.new(space,'object.rotate','E','PRESS',[])

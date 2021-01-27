@@ -26,9 +26,7 @@ If not have Github account use 'NevilArt@Gmail.Com' for connection.
 
 # latest Updates
 
-* Camera Target seprated from FOV Target.
-* Camera Target tools puted on 'Properties > Object Data (Camera) > Target/Tools' panel.
-* 'Blender Transform Type' added to Options make 'W,E,R' Keys work like Blender 'G,R'S' Keys (Need to restart blender on change)
+* The issue of last update ('W,E,R' and snap) fixed.
 * [Update History...](https://github.com/NevilArt/BsMax_2_80/blob/master/HISTORY.TXT)
 
 # License

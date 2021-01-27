@@ -1,4 +1,9 @@
 
+# 0,1,0,20210127
+	Camera Target seprated from FOV Target.
+	Camera Target tools puted on 'Properties > Object Data (Camera) > Target/Tools' panel.
+	'Blender Transform Type' added to Options make 'W,E,R' Keys work like Blender 'G,R'S' Keys (Need to restart blender on change)
+
 # 0,1,0,20210124
 	'TWEAK MMB + Shift' Align view (Replacement of 'TWEAK MMB + Alt' in Blender Default for 3DsMax Mode).
 	Zoom mode setting to Horizontal mode when Maya navigation active.
