@@ -56,7 +56,8 @@ class Mesh_OT_Drag(Operator):
 	# def invoke(self, ctx, event):
 	# 	ctx.window_manager.modal_handler_add(self)
 	# 	return {'RUNNING_MODAL'}
-	
+
+
 classes = [Mesh_OT_Chamfer, Mesh_OT_Drag]
 
 def register_edit():

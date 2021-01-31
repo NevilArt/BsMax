@@ -125,10 +125,14 @@ class PickOperator(Operator):
 			######################################################
 			self.start = get_screen_pos(ctx,self.center) 
 			self.end = event.mouse_region_x, event.mouse_region_y
-			sx = int(self.start.x)
-			sy = int(self.start.y)
-			ex = self.end[0]
-			ey = self.end[1]
+			if self.start != None:
+				sx, sy = int(self.start.x), int(self.start.y)
+			else:
+				sx, sy = 0, 0
+			if self.end != None:
+				ex, ey = self.end[0], self.end[1]
+			else:
+				ex, ey = 0, 0
 			self.rb.create(sx, sy, ex, ey)
 			######################################################
 

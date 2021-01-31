@@ -71,10 +71,6 @@ class Object_OT_Move(Operator):
 	smax: BoolProperty()
 
 	def execute(self, ctx):
-		# if ap.is_blender_transform_mode():
-		# 	print("move")
-		# 	# bpy.ops.transform.translate()
-		# else:
 		tool = get_tool(ctx)
 		if tool == "builtin.select":
 			set_gizmo(ctx,True,False,False)
@@ -94,9 +90,6 @@ class Object_OT_Rotate(Operator):
 	smax: BoolProperty()
 	
 	def execute(self, ctx):
-		# if ap.is_blender_transform_mode():
-		# 	bpy.ops.transform.rotate()
-		# else:
 		tool = get_tool(ctx)
 		if tool == "builtin.select":
 			set_gizmo(ctx,False,True,False)
@@ -116,9 +109,6 @@ class Object_OT_Scale(Operator):
 	cage: BoolProperty(default=False)
 	
 	def execute(self, ctx):
-		# if ap.is_blender_transform_mode():
-		# 	bpy.ops.transform.resize()
-		# else:
 		tool = get_tool(ctx)
 		if tool == "builtin.select":
 			set_gizmo(ctx,False,False,True)

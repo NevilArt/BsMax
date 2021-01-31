@@ -31,37 +31,41 @@ class Mesh_OT_Connect(Operator):
 	bl_label = "Connect"
 	bl_options={'REGISTER', 'UNDO'}
 
+	# default: BoolProperty(default=True)
 	# segments: IntProperty(name="Segments")
 	# pinch: FloatProperty(name="Pinch", min=-1, max=1)
 	# slide: FloatProperty(name="Slide", min=-1, max=1)
 	
-	@classmethod
-	def poll(self, ctx):
-		return ctx.area.type == 'VIEW_3D'
+	# @classmethod
+	# def poll(self, ctx):
+	# 	return ctx.mode == "MESH_EDIT"
 
 	# def draw(self, ctx):
 	# 	layout = self.layout
 	# 	layout.prop(self,"segments")
-	# 	layout.prop(self,"pinch")
-	# 	layout.prop(self,"slide")
-	
+	# 	# layout.prop(self,"pinch")
+	# 	# layout.prop(self,"slide")
+
+	def devide(self, ctx):
+		v,e,f = ctx.tool_settings.mesh_select_mode
+		if v: 
+			bpy.ops.mesh.vert_connect()
+		elif e:
+			bpy.ops.mesh.subdivide_edgering(number_cuts=1)
+			# bpy.ops.mesh.subdivide()
+			# bpy.ops.mesh.select_all(action='DESELECT')
+			# TODO select new created edges
+			# mocd.segments = self.segments
+
 	def execute(self, ctx):
-		if ctx.mode == 'EDIT_MESH':
-			v,e,f = ctx.tool_settings.mesh_select_mode
-			if v: 
-				bpy.ops.mesh.vert_connect()
-			elif e:
-				bpy.ops.mesh.subdivide()
-				bpy.ops.mesh.select_all(action='DESELECT')
-				#TODO select new created edges
-				# mocd.segments = self.segments
+		self.devide(ctx)
 		# self.report({'OPERATOR'},'bpy.ops.mesh.connect()')
 		return{"FINISHED"}
 
 	# def invoke(self, ctx, event):
-	# 	self.segments = mocd.segments
-	# 	return {'FINISHED'}
-
+	# 	if not self.default:
+	# 		return ctx.window_manager.invoke_props_dialog(self)
+	# 	return{"FINISHED"}
 
 
 class Mesh_OT_Create_Curve_From_Edges(Operator):

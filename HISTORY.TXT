@@ -1,4 +1,7 @@
 
+# 0,1,0,20210128
+	The issue of last update ('W,E,R' and snap) fixed.
+
 # 0,1,0,20210127
 	Camera Target seprated from FOV Target.
 	Camera Target tools puted on 'Properties > Object Data (Camera) > Target/Tools' panel.

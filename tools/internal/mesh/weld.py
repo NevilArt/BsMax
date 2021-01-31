@@ -14,7 +14,7 @@
 ############################################################################
 
 import bpy#,bmesh
-from bpy.types import Operator
+from bpy.types import Operator, Menu
 from bpy.props import FloatProperty
 from bsmax.graphic import register_line,unregister_line
 
@@ -88,21 +88,23 @@ class Mesh_OT_Target_Weld(Operator):
 			return {'RUNNING_MODAL'}
 		return {'CANCELLED'}
 
+
+class VIEW3D_MT_edit_mesh_weld(Menu):
+	bl_label = "Weld"
+	def draw(self, ctx):
+		self.layout.operator_enum("mesh.merge", "type")
+		self.layout.operator("mesh.remove_doubles", text="Weld by distance")
+
 class Mesh_OT_Weld(Operator):
 	bl_idname = "mesh.weld"
 	bl_label = "Weld"
-	bl_options = {'REGISTER', 'UNDO'}
-
-	threshold: FloatProperty(name="Threshold")
-
-	def draw(self, ctx):
-		self.layout.prop(self,"threshold")
-
 	def execute(self,ctx):
-		bpy.ops.mesh.remove_doubles(threshold=self.threshold, use_unselected=False)
+		bpy.ops.wm.call_menu(name = 'VIEW3D_MT_edit_mesh_weld')
 		return{"FINISHED"}
 
-classes = [Mesh_OT_Target_Weld, Mesh_OT_Weld]
+classes = [	Mesh_OT_Target_Weld,
+			VIEW3D_MT_edit_mesh_weld,
+			Mesh_OT_Weld]
 
 def register_weld():
 	[bpy.utils.register_class(c) for c in classes]

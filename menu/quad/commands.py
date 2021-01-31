@@ -58,10 +58,10 @@ c0041="bpy.ops.mesh.remove_doubles(threshold=0.001, use_unselected=False)"
 c0042="bpy.ops.mesh.weld('INVOKE_DEFAULT')"
 c0043="bpy.ops.mesh.dissolve_edges('INVOKE_DEFAULT')"
 c0044="bpy.ops.mesh.separate('INVOKE_DEFAULT')"
-c0045="bpy.ops.mesh.connect('INVOKE_DEFAULT')"
+c0045="bpy.ops.mesh.subdivide('INVOKE_DEFAULT')"
 c0046="bpy.ops.wm.tool_set_by_id(name='builtin.extrude_region')"
 c0047="bpy.ops.wm.tool_set_by_id(name='builtin.bevel')"
-c0048=""
+c0048="bpy.ops.mesh.subdivide_edgering('INVOKE_DEFAULT')"
 c0049="bpy.ops.mesh.create_curve_from_edge('INVOKE_DEFAULT')"
 c0050="bpy.ops.mesh.dissolve_faces('INVOKE_DEFAULT')"
 c0051="bpy.ops.mesh.detach('INVOKE_DEFAULT')"
@@ -227,7 +227,7 @@ c0210="bpy.ops.object.attach('INVOKE_DEFAULT')"
 c0211="bpy.ops.curve.refine('INVOKE_DEFAULT')"
 c0212="bpy.ops.object.convert_to(target='GPENCIL')"
 c0213="bpy.ops.object.convert_to(target='POINTCLOUD')"
-c0214=''
+c0214=""
 c0215=''
 c0216=''
 c0217=''

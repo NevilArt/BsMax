@@ -222,7 +222,7 @@ def get_view3d_tool2(ctx):
 			if E:
 				items.append(QuadItem("Remove",f,t,n,c0043,n))
 				items.append(QuadItem("Split",f,t,n,c0165,n))
-				items.append(QuadItem("Connect",f,t,n,c0045,n))
+				items.append(QuadItem("Connect",f,t,n,c0038,c0048))
 				items.append(QuadItem("Bridge",f,t,n,c0143,n))
 				items.append(seprator())
 				items.append(QuadItem("Extrude",f,t,n,c0046,n))

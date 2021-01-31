@@ -13,7 +13,7 @@ The goal of UI simulator is people that came from other software (like me) feel 
 
 Your Reports and Ideas will help me alot and don't forget the sharing. let more people who needs this stuff know this is exist.
 
-If not have Github account use 'NevilArt@Gmail.Com' for connection.
+If not have Github account use 'NevilArt@Gmail.Com' for bug report.
 
 # Installation
 
@@ -26,7 +26,8 @@ If not have Github account use 'NevilArt@Gmail.Com' for connection.
 
 # latest Updates
 
-* The issue of last update ('W,E,R' and snap) fixed.
+* 'Align object' issue with new merged object fixed.
+* Quadmenu 'Weld' option is works now (as a temprary solution).
 * [Update History...](https://github.com/NevilArt/BsMax_2_80/blob/master/HISTORY.TXT)
 
 # License
