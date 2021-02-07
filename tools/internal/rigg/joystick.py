@@ -24,10 +24,10 @@ from bsmax.actions import link_to,set_origen,set_as_active_object
 
 def get_joystic_mode(width, length):
 	if length < width / 2:
-		return "h"
+		return 'h'
 	if width < length / 2:
-		return "v"
-	return "j"
+		return 'v'
+	return 'j'
 
 
 
@@ -150,20 +150,28 @@ class JoyStickCreator:
 
 
 
-def get_arrow_panel(op, layout, mode):
+def get_arrow_panel(op, layout, mode, orient):
 	col = layout.column(align=True)
 	row = col.row(align = True)
-	row.operator(op,text="", icon="BLANK1").mode = 1
-	row.operator(op,text="",icon="TRIA_UP").mode = 2
-	row.operator(op,text="",icon="BLANK1").mode = 3
+	if orient == 'j':
+		row.operator(op,text="", icon="BLANK1").mode = 1
+	if orient in {'j', 'v'}:
+		row.operator(op,text="",icon="TRIA_UP").mode = 2
+	if orient == 'j':
+		row.operator(op,text="",icon="BLANK1").mode = 3
 	row = col.row(align = True)
-	row.operator(op,text="",icon="TRIA_LEFT").mode = 4
+	if orient in {'j', 'h'}:
+		row.operator(op,text="",icon="TRIA_LEFT").mode = 4
 	row.operator(op,text="",icon='DOT').mode = 5
-	row.operator(op,text="",icon="TRIA_RIGHT").mode = 6
+	if orient in {'j', 'h'}:
+		row.operator(op,text="",icon="TRIA_RIGHT").mode = 6
 	row = col.row(align = True)
-	row.operator(op,text="",icon="BLANK1").mode = 7
-	row.operator(op,text="",icon="TRIA_DOWN").mode = 8
-	row.operator(op,text="",icon="BLANK1").mode = 9
+	if orient == 'j':
+		row.operator(op,text="",icon="BLANK1").mode = 7
+	if orient in {'j', 'v'}:
+		row.operator(op,text="",icon="TRIA_DOWN").mode = 8
+	if orient == 'j':
+		row.operator(op,text="",icon="BLANK1").mode = 9
 	col = layout.column()
 	col.operator(op,text="",icon="MESH_PLANE").mode = 10
 	
@@ -203,7 +211,7 @@ class Rigg_TO_Joy_Stick_Creator(Operator):
 		layout = self.layout
 		op = "rigg.joy_stick_creator"
 		mode = JoyStickCreator.mode
-		get_arrow_panel(op, layout, mode)
+		get_arrow_panel(op, layout, mode, self.orient)
 
 	def execute(self, ctx):
 		frame = ctx.active_object

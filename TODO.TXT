@@ -7,12 +7,13 @@ Note: Tasks in [] can't apply for now because of python API limitation, I am loo
 	[F9 if no active camera in scene create one befor render and delete after render]
 	Shader editor A assyn to selected
 	Disable F9 (max quick render) for other actions if exist
+	in some PCs 'E' calls Scale rather then Rotate ??
 
 # Tools
 	UV editor Target Weld
 	Fileview PageUp/ PageDown
 	Make rectangular UV
-	Instancer / Make Unique
+	Instancer / Make Unique a grupe of objects
 	Weld tool setting dialog
 	Topology symmetry tool
 	[3DsMax Navigation operator (change navigation type without release the Alt key)]
@@ -40,6 +41,7 @@ Note: Tasks in [] can't apply for now because of python API limitation, I am loo
 		for image in bpy.data.images:
     		image.reload()
 	Spline vertex Hoke to object by drag and pick
+	semi instance selector
 	
 
 # Issue

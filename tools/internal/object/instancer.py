@@ -15,6 +15,21 @@
 import bpy
 from bpy.types import Operator
 
+class OBJECT_TO_Date_Rename(Operator):
+	""" Object.Data.Name = Object.Name in selection """
+	bl_idname = 'object.data_rename'
+	bl_label = 'Data Rename'
+	bl_options = {'REGISTER', 'UNDO'}
+
+	@classmethod
+	def poll(self, ctx):
+		return ctx.mode == 'OBJECT'
+	
+	def execute(self,ctx):
+		# TODO find a clear solution for instanced(linked) objects
+		for obj in ctx.selected_objects:
+			obj.data.name = obj.name
+		return{"FINISHED"}
 
 
 class Object_TO_Instancer_Select(Operator):
@@ -31,6 +46,28 @@ class Object_TO_Instancer_Select(Operator):
 		# collect ans select object has data with siliar name
 		return{"FINISHED"}
 
+class Object_TO_Make_Unique(Operator):
+	bl_idname = 'object.make_unique'
+	bl_label = 'Make Unique'
+	bl_options = {'REGISTER', 'UNDO'}
+	
+	@classmethod
+	def poll(self, ctx):
+		return ctx.mode == 'OBJECT'
+	
+	def execute(self,ctx):
+		# collect ans select object has data with siliar name
+		return{"FINISHED"}
+
+
+
+classes = [OBJECT_TO_Date_Rename]
+
+def register_instancer():
+	[bpy.utils.register_class(c) for c in classes]
+
+def unregister_instancer():
+	[bpy.utils.unregister_class(c) for c in classes]
 
 if __name__ == "__main__":
-	bpy.utils.register_class(Object_TO_Instancer_Select) 
+	register_instancer()

@@ -1,4 +1,8 @@
 
+# 0,1,0,20210131
+	'Align object' issue with new merged object fixed.
+	Quadmenu 'Weld' option is works now (as a temprary solution).
+
 # 0,1,0,20210128
 	The issue of last update ('W,E,R' and snap) fixed.
 

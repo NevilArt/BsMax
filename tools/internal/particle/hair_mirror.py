@@ -12,20 +12,4 @@
 #	You should have received a copy of the GNU General Public License
 #	along with this program.  If not, see <https://www.gnu.org/licenses/>.
 ############################################################################
-
-from .eyetarget import register_eyetarget, unregister_eyetarget
-from .joystick import register_joystic, unregister_joystic
-from .menu import register_menu, unregister_menu
-from .shapekey import register_shapekey, unregister_shapekey
-
-def register_rigg():
-	register_eyetarget()
-	register_joystic()
-	register_shapekey()
-	register_menu()
-
-def unregister_rigg():
-	unregister_eyetarget()
-	unregister_joystic()
-	unregister_shapekey()
-	unregister_menu()
+import bpy

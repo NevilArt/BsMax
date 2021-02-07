@@ -315,11 +315,11 @@ class Object_OT_Properties(bpy.types.Operator):
 		read_info(self,ctx)
 		return ctx.window_manager.invoke_props_dialog(self)
 
-def register_objectproperties():
+def register_object_properties():
 	bpy.utils.register_class(Object_OT_Properties)
 
-def unregister_objectproperties():
+def unregister_object_properties():
 	bpy.utils.unregister_class(Object_OT_Properties)
 
 if __name__ =="__main__":
-	register_objectproperties()
+	register_object_properties()

@@ -26,8 +26,8 @@ If not have Github account use 'NevilArt@Gmail.Com' for bug report.
 
 # latest Updates
 
-* 'Align object' issue with new merged object fixed.
-* Quadmenu 'Weld' option is works now (as a temprary solution).
+* Multi target shapekey (driving multiple shapekeys automatically) added under shapekey panel.
+* Very simple tool for quick rename objects data name same as object name (for now search 'Data Rename' operator).
 * [Update History...](https://github.com/NevilArt/BsMax_2_80/blob/master/HISTORY.TXT)
 
 # License

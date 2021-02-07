@@ -188,10 +188,10 @@ def object_menu(self, ctx):
 	layout.separator()
 	layout.operator("object.clone")
 
-def register_cloneobject():
+def register_clone_object():
 	bpy.utils.register_class(Object_OT_Clone_Array)
 	bpy.types.VIEW3D_MT_object.append(object_menu)
 
-def unregister_cloneobject():
+def unregister_clone_object():
 	bpy.types.VIEW3D_MT_object.remove(object_menu)
 	bpy.utils.unregister_class(Object_OT_Clone_Array)
