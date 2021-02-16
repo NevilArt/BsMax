@@ -17,10 +17,9 @@ from .chamfer import register_chamfer, unregister_chamfer
 from .outline import register_outline, unregister_outline
 from .boolean import register_boolean, unregister_boolean
 from .divid import register_divid, unregister_divid
-# from .insert import register_insert, unregister_insert
 from .menu import register_menu, unregister_menu
+from .selection import register_selection, unregister_selection
 from .weld import register_weld, unregister_weld
-# from .panel import *
 
 def register_curve():
 	register_attach()
@@ -28,8 +27,8 @@ def register_curve():
 	register_outline()
 	register_boolean()
 	register_divid()
-	# register_insert()
 	register_menu()
+	register_selection()
 	register_weld()
 
 def unregister_curve():
@@ -38,6 +37,6 @@ def unregister_curve():
 	unregister_outline()
 	unregister_boolean()
 	unregister_divid()
-	# unregister_insert()
 	unregister_menu()
+	unregister_selection
 	unregister_weld()

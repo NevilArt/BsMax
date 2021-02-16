@@ -17,29 +17,22 @@ import bpy
 from bpy.props import StringProperty, BoolProperty, FloatProperty
 from bpy.types import Operator
 
-# class Addon_Preferences:
-# 	def __init__(self):
-# 		self.addon_preferences = None
-# 	def is_blender_transform_mode(self):
-# 		print("pppp>>", self.addon_preferences)
-# 		if self.addon_preferences != None:
-# 			print("type", self.addon_preferences.blender_transform_type)
-# 			return self.addon_preferences.blender_transform_type
-# 		return False
-# ap = Addon_Preferences()
-
 class View3D_OT_Transform_Gizmo_Size(Operator):
 	bl_idname = "view3d.transform_gizmosize"
 	bl_label = "Transform Gizmo Size"
+	bl_options= {'REGISTER', 'INTERNAL'}
 	
 	step: FloatProperty()
+
+	@classmethod
+	def poll(self, ctx):
+		return ctx.area.type == 'VIEW_3D'
 
 	def execute(self, ctx):
 		if bpy.app.version[1] < 81:
 			ctx.user_preferences.view.gizmo_size += self.step
 		else:
 			ctx.preferences.view.gizmo_size += self.step
-		self.report({'OPERATOR'},'bpy.ops.view3d.transform_gizmosize()')
 		return{"FINISHED"}
 
 def get_tool(ctx):
@@ -63,23 +56,34 @@ def coordinate_toggle(ctx):
 	elif coord.type == 'GLOBAL':
 		coord.type = 'LOCAL'
 
+def is_transform_avalible(ctx):
+	return not ctx.mode in {'PAINT_TEXTURE', 'PAINT_WEIGHT', 'PAINT_VERTEX', 'PARTICLE'}
+
+
+
 class Object_OT_Move(Operator):
 	bl_idname = "object.move"
 	bl_label = "Move"
 	bl_options = {'REGISTER', 'INTERNAL'}
 	
-	smax: BoolProperty()
+	smax: BoolProperty(default=False)
+
+	@classmethod
+	def poll(self, ctx):
+		return ctx.area.type in {'VIEW_3D', 'IMAGE_EDITOR'}
 
 	def execute(self, ctx):
-		tool = get_tool(ctx)
-		if tool == "builtin.select":
-			set_gizmo(ctx,True,False,False)
-		else:
-			if tool == "builtin.move":
-				coordinate_toggle(ctx)
-			else:	
-				bpy.ops.wm.tool_set_by_id(name="builtin.move")
-		bpy.ops.object.snap_toggle(auto=self.smax)
+		# print(">>> object.move >>>", ctx.mode)
+		if is_transform_avalible(ctx):
+			tool = get_tool(ctx)
+			if tool == 'builtin.select':
+				set_gizmo(ctx,True,False,False)
+			else:
+				if tool == 'builtin.move':
+					coordinate_toggle(ctx)
+				else:	
+					bpy.ops.wm.tool_set_by_id(name='builtin.move')
+			# bpy.ops.object.snap_toggle(auto=self.smax)
 		return{"FINISHED"}
 
 class Object_OT_Rotate(Operator):
@@ -87,18 +91,24 @@ class Object_OT_Rotate(Operator):
 	bl_label = "Rotate"
 	bl_options = {'REGISTER', 'INTERNAL'}
 	
-	smax: BoolProperty()
+	smax: BoolProperty(default=False)
+
+	@classmethod
+	def poll(self, ctx):
+		return ctx.area.type in {'VIEW_3D', 'IMAGE_EDITOR'}
 	
 	def execute(self, ctx):
-		tool = get_tool(ctx)
-		if tool == "builtin.select":
-			set_gizmo(ctx,False,True,False)
-		else:
-			if tool == "builtin.rotate":
-				coordinate_toggle(ctx)
+		# print(">>> object.rotate >>>", ctx.mode)
+		if is_transform_avalible(ctx):
+			tool = get_tool(ctx)
+			if tool == 'builtin.select':
+				set_gizmo(ctx,False,True,False)
 			else:
-				bpy.ops.wm.tool_set_by_id(name="builtin.rotate")
-		bpy.ops.object.angel_snap(auto=self.smax)
+				if tool == 'builtin.rotate':
+					coordinate_toggle(ctx)
+				else:
+					bpy.ops.wm.tool_set_by_id(name='builtin.rotate')
+			# bpy.ops.object.angel_snap(auto=self.smax)
 		return{"FINISHED"}
 
 class Object_OT_Scale(Operator):
@@ -107,19 +117,25 @@ class Object_OT_Scale(Operator):
 	bl_options = {'REGISTER', 'INTERNAL'}
 	
 	cage: BoolProperty(default=False)
+
+	@classmethod
+	def poll(self, ctx):
+		return ctx.area.type in {'VIEW_3D', 'IMAGE_EDITOR'}
 	
 	def execute(self, ctx):
-		tool = get_tool(ctx)
-		if tool == "builtin.select":
-			set_gizmo(ctx,False,False,True)
-		else:
-			if self.cage:
-				if tool == "builtin.scale":
-					coordinate_toggle(ctx)
-				else:
-					bpy.ops.wm.tool_set_by_id(name="builtin.scale",cycle=True)
+		# print(">>> object.scale >>>", ctx.mode)
+		if is_transform_avalible(ctx):
+			tool = get_tool(ctx)
+			if tool == 'builtin.select':
+				set_gizmo(ctx,False,False,True)
 			else:
-				bpy.ops.wm.tool_set_by_id(name="builtin.scale",cycle=True)
+				if self.cage:
+					if tool == 'builtin.scale':
+						coordinate_toggle(ctx)
+					else:
+						bpy.ops.wm.tool_set_by_id(name='builtin.scale', cycle=True)
+				else:
+					bpy.ops.wm.tool_set_by_id(name='builtin.scale', cycle=True)
 		return{"FINISHED"}
 
 # "TweakBetter" created by Dan Pool (dpdp)
@@ -158,14 +174,10 @@ class View3D_OT_Tweak_Better(Operator):
 			self.report({'WARNING'}, "No active object, could not finish")
 			return {'CANCELLED'}
 
-classes = [View3D_OT_Transform_Gizmo_Size,View3D_OT_Tweak_Better,
-			Object_OT_Move,Object_OT_Rotate,Object_OT_Scale]
+classes = [View3D_OT_Transform_Gizmo_Size, View3D_OT_Tweak_Better,
+			Object_OT_Move, Object_OT_Rotate, Object_OT_Scale]
 
 def register_transforms(preferences):
-	# print("Before>>", ap.addon_preferences)
-	# ap.addon_preferences = preferences
-	# print("After>>", ap.addon_preferences)
-	# * 'W ,E ,R' can act like 'G, R, S' of original Blender keymaps (Addon Prefrence setting: Blender Transform type).
 	[bpy.utils.register_class(c) for c in classes]
 
 def unregister_transforms():

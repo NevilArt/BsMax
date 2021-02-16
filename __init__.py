@@ -20,7 +20,7 @@ bl_info = {
 	"name": "BsMax",
 	"description": "BsMax for Blender 2.80 ~ 2.93",
 	"author": "Naser Merati (Nevil)",
-	"version": (0, 1, 0, 20210207),
+	"version": (0, 1, 0, 20210216),
 	"blender": (2, 80, 0),# 2.80~2.93
 	"location": "Almost Everywhere in Blender",
 	"wiki_url": "https://github.com/NevilArt/BsMax_2_80/wiki",
@@ -30,7 +30,7 @@ bl_info = {
 }
 
 import bpy,sys,os
-from bpy.props import EnumProperty,BoolProperty,FloatProperty
+from bpy.props import EnumProperty, BoolProperty, FloatProperty
 from time import sleep
 from _thread import start_new_thread
 
@@ -39,11 +39,11 @@ path = os.path.dirname(os.path.realpath(__file__))
 if path not in sys.path:
 	sys.path.append(path)
 
-from .keymaps import register_keymaps,unregister_keymaps
-from .menu import register_menu,unregister_menu
-from .primitive import register_primitives,unregister_primitives
-from .startup import register_startup,unregister_startup
-from .tools import register_tools,unregister_tools
+from .keymaps import register_keymaps, unregister_keymaps
+from .menu import register_menu, unregister_menu
+from .primitive import register_primitives, unregister_primitives
+from .startup import register_startup, unregister_startup
+from .tools import register_tools, unregister_tools
 
 # import templates
 

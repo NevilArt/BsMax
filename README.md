@@ -26,8 +26,8 @@ If not have Github account use 'NevilArt@Gmail.Com' for bug report.
 
 # latest Updates
 
-* Multi target shapekey (driving multiple shapekeys automatically) added under shapekey panel.
-* Very simple tool for quick rename objects data name same as object name (for now search 'Data Rename' operator).
+* Select by Length and Segment Count added to Select Menu in Curve Edit mode.
+* 'W','E','R' issue with snap fixed.
 * [Update History...](https://github.com/NevilArt/BsMax_2_80/blob/master/HISTORY.TXT)
 
 # License
