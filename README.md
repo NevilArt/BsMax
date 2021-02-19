@@ -26,8 +26,7 @@ If not have Github account use 'NevilArt@Gmail.Com' for bug report.
 
 # latest Updates
 
-* Select by Length and Segment Count added to Select Menu in Curve Edit mode.
-* 'W','E','R' issue with snap fixed.
+* Solve the Library override broken shapekey drivers (Tools/Animation/Fix Override Driver Issue).
 * [Update History...](https://github.com/NevilArt/BsMax_2_80/blob/master/HISTORY.TXT)
 
 # License

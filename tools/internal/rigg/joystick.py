@@ -286,10 +286,7 @@ class Rigg_TO_Joystick_Shapekey_Connector(Operator):
 				shell = obj
 		items = [('None','','')]
 		if shell != None:
-			names = []
-			for n in shell.data.shape_keys.key_blocks:
-				if n.name != 'Basis':
-					names.append(n.name)
+			names = [n.name for n in shell.data.shape_keys.key_blocks if n.name != 'Basis']
 			items += [(n,n,'') for n in names]
 		return items
 

@@ -37,6 +37,8 @@ class BsMax_MT_Animation_Tools(bpy.types.Menu):
 		layout.separator()
 		layout.operator("anim.lookat_constraint",text="Lookat Constraint",icon="CON_TRACKTO")
 		layout.operator("anim.orientation_constraint",text="Orientation Constraint",icon="CON_ROTLIMIT")
+		layout.separator()
+		layout.operator("anim.driver_fixer",text="Fix Override Driver Issue",icon="GHOST_ENABLED")
 
 def animation_menu(self, ctx):
 	self.layout.menu("BSMAX_MT_animationtools")

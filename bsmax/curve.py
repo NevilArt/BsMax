@@ -1026,7 +1026,9 @@ class Curve:
 		self.original = deepcopy(self.splines)
 
 	def get_splines(self, splines):
-		return [Spline(sp) for sp in splines]
+		""" collect splines from object date and convert to BsMax Spline class """
+		""" Ignore and remove the splines with less than 1 bezier points """
+		return [Spline(sp) for sp in splines if len(sp.bezier_points) > 1]
 
 	def selection(self, mode):
 		return get_curve_selection_index(self.splines,mode)
