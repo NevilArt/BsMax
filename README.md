@@ -26,7 +26,7 @@ If not have Github account use 'NevilArt@Gmail.Com' for bug report.
 
 # latest Updates
 
-* Solve the Library override broken shapekey drivers (Tools/Animation/Fix Override Driver Issue).
+* "Overridelibrary" Driver Issue fixer applying for the whole scene automatically (Tools/Animation/Fix Override Driver Issue)
 * [Update History...](https://github.com/NevilArt/BsMax_2_80/blob/master/HISTORY.TXT)
 
 # License

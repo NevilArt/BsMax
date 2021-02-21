@@ -1,3 +1,6 @@
+# 0,1,0,20210219
+	Solve the Library override broken shapekey drivers (Tools/Animation/Fix Override Driver Issue).
+
 # 0,1,0,20210216
 	Select by Length and Segment Count added to Select Menu in Curve Edit mode.
 	'W','E','R' issue with snap fixed.
