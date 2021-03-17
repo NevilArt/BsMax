@@ -17,6 +17,8 @@ import bpy
 from bpy.types import Operator
 from bpy.props import BoolProperty, EnumProperty
 
+
+
 class KeyData:
 	def __init__(self):
 		self.Key_All = False
@@ -31,6 +33,8 @@ class KeyData:
 		# self.Key_Materials = False
 		# self.Key_Other = False
 kd = KeyData()
+
+
 
 class Anim_OT_Set_Key_Filters(Operator):
 	bl_idname="anim.set_key_filters"
@@ -93,6 +97,8 @@ class Anim_OT_Set_Key_Filters(Operator):
 
 #obj.modifiers[0].keyframe_insert(data_path="thickness")
 
+
+
 class Anim_OT_Auto_Key_Toggle(Operator):
 	bl_idname = "anim.auto_key_toggle"
 	bl_label = "Auto Key Toggle"
@@ -108,9 +114,11 @@ class Anim_OT_Auto_Key_Toggle(Operator):
 			dopesheet_space.header = (0.5, 0.0, 0.0, 1.0)
 		return{"FINISHED"}
 
-def set_key(objs, key):
-	for obj in objs:
-		obj.keyframe_insert(data_path=key)
+
+
+# def set_key(objs, key):
+# 	for obj in objs:
+# 		obj.keyframe_insert(data_path=key)
 
 class Anim_OT_Set_Key(Operator):
 	bl_idname = "anim.set_key"
@@ -142,6 +150,8 @@ class Anim_OT_Set_Key(Operator):
 		self.report({'OPERATOR'},"bpy.ops.anim.set_key()")
 		return{"FINISHED"}
 
+
+
 # Delete selected objects animation
 class Anim_OT_Delete_Selected_Animation(Operator):
 	bl_idname = "anim.delete_selected_animation"
@@ -153,6 +163,8 @@ class Anim_OT_Delete_Selected_Animation(Operator):
 			obj.animation_data_clear()
 		self.report({'OPERATOR'},"bpy.ops.anim.delete_selected_animation()")
 		return{"FINISHED"}
+
+
 
 class Anim_OT_Frame_Set(Operator):
 	bl_idname = "anim.frame_set"
@@ -177,51 +189,7 @@ class Anim_OT_Frame_Set(Operator):
 		ctx.scene.frame_current = frame
 		return{"FINISHED"}
 
-class Anim_OT_Set_TimeLine_Range(Operator):
-	bl_idname = "anim.set_timeline_range"
-	bl_label = "Set TimeLine Range"
-	start = False
-	mouse_x = 0
-	mode: EnumProperty(name='Mode',default='Shift',
-		items =[('Shift','Shift',''), ('First','First',''), ('End','End','')])
-	
-	def modal(self, ctx, event):
-		if not self.start:
-			self.start = True
-			self.mouse_x = event.mouse_x
-		if event.type == 'MOUSEMOVE':
-			scene = ctx.scene
-			frame_start,frame_end = scene.frame_start, scene.frame_end
-			if self.start:
-				scale = (frame_end - frame_start) / 100
-				scale = 1 if scale < 1 else scale
-				step = (event.mouse_x - self.mouse_x) / 10.0 * scale
-				if self.mode == 'First':
-					scene.frame_start -= step
-					if frame_start == frame_end:
-						scene.frame_start = frame_end - 1
-				elif self.mode == 'End':
-					scene.frame_end -= step
-					if frame_end == frame_start:
-						scene.frame_end = frame_start + 1
-				else:
-					step = 0 if frame_start - step < 0 else step
-					scene.frame_start -= step
-					scene.frame_end -= step
-				if scene.frame_current < scene.frame_start:
-					scene.frame_current = scene.frame_start
-				if scene.frame_current > scene.frame_end:
-					scene.frame_current = scene.frame_end
-				self.mouse_x = event.mouse_x
-				bpy.ops.action.view_all()
-		if self.start and event.value == 'RELEASE':
-			self.start = False
-			return {'CANCELLED'}
-		return {'RUNNING_MODAL'}
 
-	def invoke(self, ctx, event):
-		ctx.window_manager.modal_handler_add(self)
-		return {'RUNNING_MODAL'}
 
 class Dopesheet_OT_Zoom_Extended(Operator):
 	bl_idname = 'action.zoom_extended'
@@ -235,6 +203,8 @@ class Dopesheet_OT_Zoom_Extended(Operator):
 		bpy.ops.action.view_selected('INVOKE_DEFAULT')
 		# bpy.ops.action.view_all('INVOKE_DEFAULT')
 		return{'FINISHED'}
+
+
 
 class Anim_OT_Delete_Key(Operator):
 	bl_idname = 'anim.delete_key'
@@ -261,12 +231,11 @@ classes = [Anim_OT_Set_Key_Filters,
 			Anim_OT_Set_Key,
 			Anim_OT_Delete_Selected_Animation,
 			Anim_OT_Frame_Set,
-			Anim_OT_Set_TimeLine_Range,
 			Dopesheet_OT_Zoom_Extended,
 			Anim_OT_Delete_Key]
 
-def register_animationkey():
+def register_animation_key():
 	[bpy.utils.register_class(c) for c in classes]
 
-def unregister_animationkey():
+def unregister_animation_key():
 	[bpy.utils.unregister_class(c) for c in classes]

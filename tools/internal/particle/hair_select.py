@@ -14,41 +14,49 @@
 ############################################################################
 import bpy
 from bpy.types import Operator
+from bpy.props import BoolProperty, FloatProperty
 
-
-class Particle_OT_Hair_Symmetry(Operator):
-	bl_idname = 'particle.hair_symmetry'
-	bl_label = 'Hair Symmetry'
+class Particle_OT_Hair_Select(Operator):
+	bl_idname = 'particle.hair_select'
+	bl_label = 'Hair Select (L.R.)'
 	bl_options = {'REGISTER', 'UNDO'}
 
+	left: BoolProperty(name="Left +x", default=False)
+	right: BoolProperty(name="Right -x", default=False)
+	center: BoolProperty(name="Center", default=False)
+	tolerance: FloatProperty(name="Tolerance", default=0.001, min=0)
+	
 	@classmethod
 	def poll(self, ctx):
 		if ctx.area.type == 'VIEW_3D':
-			if ctx.mode == 'OBJECT':
-				if len(ctx.selected_objects) == 1:
-					return ctx.object.type == 'MESH'
+			return ctx.mode == 'PARTICLE'
 		return False
 	
 	def draw(self,ctx):
-		pass
+		layout = self.layout
+		row = layout.row()
+		row.prop(self, 'left')
+		row.prop(self, 'right')
+		row = layout.row()
+		row.prop(self, 'center')
+		if self.center:
+			row.prop(self, 'tolerance')
 
 	def execute(self,ctx):
-		print("done")
-		self.report({'OPERATOR'},'bpy.ops.particle.hair_symmetry()')
+		particles = ctx.active_object.particle_systems.active.particles
+		for particle in particles:
+			print( particle.location.x )
+			# need to find python API for select hair particle via script
 		return{"FINISHED"}
 	
-	def cancel(self,ctx):
-		# restore(self,ctx)
-		return None
-
 	def invoke(self,ctx,event):
 		return ctx.window_manager.invoke_props_dialog(self)
 
 def register_hair_symmetry():
-	bpy.utils.register_class(Particle_OT_Hair_Symmetry)
+	bpy.utils.register_class(Particle_OT_Hair_Select)
 
 def unregister_hair_symmetry():
-	bpy.utils.unregister_class(Particle_OT_Hair_Symmetry)
+	bpy.utils.unregister_class(Particle_OT_Hair_Select)
 
 if __name__ =="__main__":
 	register_hair_symmetry()

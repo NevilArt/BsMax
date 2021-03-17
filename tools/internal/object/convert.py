@@ -17,6 +17,8 @@ import bpy
 from bpy.types import Operator
 from bpy.props import BoolProperty
 
+
+
 class Object_OT_Convert_TO(Operator):
 	bl_idname = "object.convert_to"
 	bl_label = "Convert to (BsMax)"
@@ -55,46 +57,60 @@ class Object_OT_Convert_TO(Operator):
 			obj.select_set(True)
 		return{"FINISHED"}
 
+
+
 class Object_OT_Join_Plus(Operator):
 	bl_idname = "object.join_plus"
 	bl_label = "Join (Plus)"
 	# bl_description = ""
 	bl_options = {'REGISTER', 'UNDO'}
 
+	convert: BoolProperty(name='Apply befor Join', default=True)
+
 	@classmethod
 	def poll(self, ctx):
 		return ctx.active_object != None
-
+	
+	def draw(self,ctx):
+		layout = self.layout
+		layout.prop(self, 'convert')
+	
 	def execute(self, ctx):
-		targte = ctx.active_object
-		selected_objects = ctx.selected_objects.copy()
-		bpy.ops.object.select_all(action='DESELECT')
-		
-		for obj in selected_objects:
-			obj.select_set(True)
-			ctx.view_layer.objects.active = obj
+		if self.convert:
+			targte = ctx.active_object
+			selected_objects = ctx.selected_objects.copy()
+			bpy.ops.object.select_all(action='DESELECT')
 			
-			""" clear primitive data """
-			if obj.type in {'MESH','CURVE'}:
-				obj.data.primitivedata.classname = ""
+			for obj in selected_objects:
+				obj.select_set(True)
+				ctx.view_layer.objects.active = obj
+				
+				""" clear primitive data """
+				if obj.type in {'MESH','CURVE'}:
+					obj.data.primitivedata.classname = ""
 
-			""" make unique """
-			obj.data = obj.data.copy()
-			
-			""" collaps modifiers """
-			for modifier in obj.modifiers:
-				bpy.ops.object.modifier_apply(modifier=modifier.name)
-			
-			obj.select_set(False)
+				""" make unique """
+				obj.data = obj.data.copy()
+				
+				""" collaps modifiers """
+				for modifier in obj.modifiers:
+					bpy.ops.object.modifier_apply(modifier=modifier.name)
+				
+				obj.select_set(False)
 
-		for obj in selected_objects:
-			obj.select_set(True)
-		
-		targte.select_set(True)
-		ctx.view_layer.objects.active = targte
+			for obj in selected_objects:
+				obj.select_set(True)
+			
+			targte.select_set(True)
+			ctx.view_layer.objects.active = targte
 
 		bpy.ops.object.join()	
 		return{"FINISHED"}
+	
+	def invoke(self,ctx,event):
+		return ctx.window_manager.invoke_props_dialog(self)
+
+
 
 classes = [Object_OT_Convert_TO, Object_OT_Join_Plus]
 

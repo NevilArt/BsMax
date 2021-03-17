@@ -114,7 +114,9 @@ class Align_object_Data_Class:
 		
 		""" get min/max/center/pivot data """
 		if len(cld) == 0 or obj.type not in {'MESH', 'CURVE', 'SURFACE', 'FONT', 'ARMATURE'}:
-			return obj.location.copy(), obj.location.copy(), obj.location.copy(), obj.location.copy()
+			location = obj.matrix_world.to_translation()
+			return location.copy(), location.copy(), location.copy(), location.copy()
+		
 		p_min, p_max = cld[0].copy(), cld[0].copy()
 		for v in cld:
 			if p_min.x > v.x:
@@ -129,8 +131,10 @@ class Align_object_Data_Class:
 				p_max.y = v.y
 			if p_max.z < v.z:
 				p_max.z = v.z
+		
 		""" Min, Center, Location, Max """
-		return [p_min, (p_min+p_max)/2, obj.location.copy(), p_max]
+		pivot = obj.matrix_world.to_translation()
+		return [p_min, (p_min+p_max)/2, pivot, p_max]
 	
 	def store_original_transforms(self, cls, ctx):
 		self.pos_curs = ctx.scene.cursor.location.copy()

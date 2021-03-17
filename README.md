@@ -26,7 +26,9 @@ If not have Github account use 'NevilArt@Gmail.Com' for bug report.
 
 # latest Updates
 
-* Render preset Save/Load and Copy/Paste operator added (Render Properties/ Presets)
+* 'Align Object' works for objects with Constriants.
+* 'Set current time as start/end' operator (Right Click Menu).
+* 'Join plus' Ask for apply befor join 'Ctrl + j' (Blender & 3DsMax Mode).
 * [Update History...](https://github.com/NevilArt/BsMax_2_80/blob/master/HISTORY.TXT)
 
 # License

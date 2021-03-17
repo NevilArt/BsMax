@@ -13,7 +13,7 @@
 #	along with this program.  If not, see <https://www.gnu.org/licenses/>.
 ############################################################################
 
-from .animationkey import register_animationkey, unregister_animationkey
+from .animation_key import register_animation_key, unregister_animation_key
 from .character_lister import register_character_lister, unregister_character_lister
 from .driver_fixer import register_driver_fixer, unregister_driver_fixer
 from .frameupdate import register_frameupdate, unregister_frameupdate
@@ -21,9 +21,10 @@ from .parent import register_parent, unregister_parent
 from .pose import register_pose, unregister_pose
 from .menu import register_menu, unregister_menu
 from .selection_set import register_selection_set, unregister_selection_set
+from .time import register_time, unregister_time
 
 def register_animation():
-	register_animationkey()
+	register_animation_key()
 	register_character_lister()
 	register_driver_fixer()
 	register_frameupdate()
@@ -31,9 +32,10 @@ def register_animation():
 	register_pose()
 	register_menu()
 	register_selection_set()
+	register_time()
 
 def unregister_animation():
-	unregister_animationkey()
+	unregister_animation_key()
 	unregister_character_lister()
 	unregister_driver_fixer()
 	unregister_frameupdate()
@@ -41,3 +43,4 @@ def unregister_animation():
 	unregister_pose()
 	unregister_parent()
 	unregister_selection_set()
+	unregister_time()

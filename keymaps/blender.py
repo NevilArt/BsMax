@@ -79,6 +79,7 @@ def object_mode(km):
 	km.new(space,"view3d.drop_tool","RIGHTMOUSE","PRESS",[])
 	km.new(space,"bsmax.mode_set",'F9',"PRESS",[])
 	km.new(space,'wm.call_menu','A','PRESS',[('name','BSMAX_MT_createmenu')],ctrl=True,shift=True)
+	km.new(space,'object.join_plus','J','PRESS',[],ctrl=True)
 
 def mesh(km):
 	space = km.space('Mesh','EMPTY','WINDOW')
