@@ -96,7 +96,7 @@ def add_show_types(km, space):
 def add_float_editors(km, space):
 	km.new(space,'editor.float','M','PRESS',[('ui_type','ShaderNodeTree'),('shader_type','OBJECT')])
 	km.new(space,'editor.float','EIGHT','PRESS',[('ui_type','ShaderNodeTree'),('shader_type','WORLD')])
-	# km.new(space,'editor.float','SIX','PRESS',[('ui_type','particle')])
+	km.new(space,'editor.float','SIX','PRESS',[('ui_type','GeometryNodeTree')])
 	# km.new(space,'editor.float','H','PRESS',[('ui_type','OUTLINER')])
 
 def add_float_menu(km, space, preferences):

@@ -67,37 +67,47 @@ class Anim_OT_Set_TimeLine_Range(Operator):
 
 
 
-class Anim_OT_Set_Current_time_as(Operator):
-	bl_idname = 'anim.set_current_time_as'
-	bl_label = 'Set Current time As'
+class Anim_OT_Keys_Range_Set(Operator):
+	bl_idname = 'anim.keys_range_set'
+	bl_label = 'Set Keys Time Raneg'
 	bl_options = {'REGISTER', 'INTERNAL'}
 
-	set_as: EnumProperty(name='As', default='START', items =[('START','START Frame',''), ('END','End Frame','')])
+	selection: BoolProperty(name='Selection', default='True')
 
 	# @classmethod
 	# def poll(self, ctx):
 	# 	return ctx.area.type in {'VIEW_3D'}
 
 	def execute(self, ctx):
-		scene = ctx.scene
-		if self.set_as == 'START':
-			scene.frame_start = scene.frame_current
+		if self.selection:
+			# TODO collect selected keys
+			keys = []
 		else:
-			scene.frame_end = scene.frame_current
-		return{"FINISHED"}
+			# TODO collect all keys
+			keys = []
+		
+		for key in keys:
+			# TODO get lowest and heigest time
+			start, end = 0, 100
+
+		scene = ctx.scene
+		scene.frame_start = start
+		scene.frame_end = end
+		return{'FINISHED'}
 
 
 
 def time_context_menu(self, ctx):
 	layout = self.layout
 	layout.separator()
-	layout.operator("anim.set_current_time_as",text="Set Current time As Start").set_as = 'START'
-	layout.operator("anim.set_current_time_as",text="Set Current time As End").set_as = 'END'
+	layout.operator('anim.start_frame_set')
+	layout.operator('anim.end_frame_set')
+	# layout.operator('anim.keys_range_set')
 
 
 
 classes = [Anim_OT_Set_TimeLine_Range,
-	Anim_OT_Set_Current_time_as]
+		Anim_OT_Keys_Range_Set]
 
 def register_time():
 	[bpy.utils.register_class(c) for c in classes]

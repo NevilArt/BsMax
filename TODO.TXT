@@ -18,11 +18,8 @@ Note: Tasks in [] can't apply for now because of python API limitation, I am loo
 	Clone object shift drag
 	Extrude open edge with shift drag
 	Mimic the Slice modifire quick setup
-	video sequencer set current frame as first or last frame (range tool)
-	Network render manager
 	Global transform offset tool for selected objects in selected range
 	Armature
-		Pos snapshot (quick reset to rest pose)
 		Smartkey mode (new key type same as previes key type)
 		Selection tools for rigg (create button, add/remove new item, rest pose, isolate and ...)
 		Blend pose tool

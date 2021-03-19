@@ -1,5 +1,5 @@
 
-# BsMax 2.80 ~ 2.92
+# BsMax 2.80 ~ 2.93
 
 BsMax is package of many different tools and UI simulator (much as possible) for [Blender 3D](https://www.blender.org/).
 
@@ -26,9 +26,8 @@ If not have Github account use 'NevilArt@Gmail.Com' for bug report.
 
 # latest Updates
 
-* 'Align Object' works for objects with Constriants.
-* 'Set current time as start/end' operator (Right Click Menu).
-* 'Join plus' Ask for apply befor join 'Ctrl + j' (Blender & 3DsMax Mode).
+* '6' open float geometry node editor (Replacement for PFSurce shortcut) (3DsMax mode).
+* 'bpy.ops.editor.float' Updated to work in Blender 2.93 and improved ('M', '8', 'F11' in 3DsMax mode).
 * [Update History...](https://github.com/NevilArt/BsMax_2_80/blob/master/HISTORY.TXT)
 
 # License

@@ -17,16 +17,16 @@
 ############################################################################
 
 bl_info = {
-	"name": "BsMax",
-	"description": "BsMax for Blender 2.80 ~ 2.93",
-	"author": "Naser Merati (Nevil)",
-	"version": (0, 1, 0, 20210317),
-	"blender": (2, 80, 0),# 2.80~2.93
-	"location": "Almost Everywhere in Blender",
-	"wiki_url": "https://github.com/NevilArt/BsMax_2_80/wiki",
-	"doc_url": "https://github.com/NevilArt/BsMax_2_80/wiki",
-	"tracker_url": "https://github.com/NevilArt/BsMax_2_80/issues",
-	"category": "Interface"
+	'name': 'BsMax',
+	'description': 'BsMax for Blender 2.80 ~ 2.93',
+	'author': 'Naser Merati (Nevil)',
+	'version': (0, 1, 0, 20210319),
+	'blender': (2, 80, 0),# 2.80~2.93
+	'location': 'Almost Everywhere in Blender',
+	'wiki_url': 'https://github.com/NevilArt/BsMax_2_80/wiki',
+	'doc_url': 'https://github.com/NevilArt/BsMax_2_80/wiki',
+	'tracker_url': 'https://github.com/NevilArt/BsMax_2_80/issues',
+	'category': 'Interface'
 }
 
 import bpy,sys,os
@@ -48,7 +48,7 @@ from .tools import register_tools, unregister_tools
 # import templates
 
 addons = bpy.context.preferences.addons
-wiki = "https://github.com/NevilArt/BsMax_2_80/wiki/"
+wiki = 'https://github.com/NevilArt/BsMax_2_80/wiki/'
 
 # Addon preferences
 def update_preferences(self, ctx, action):
@@ -73,7 +73,7 @@ def update_preferences(self, ctx, action):
 	
 	if self.active:
 		""" Quick Selection """
-		if self.quick and action == "aplication":
+		if self.quick and action == 'aplication':
 			if self.aplication != 'Custom':
 				self.navigation = self.aplication
 				self.keymaps = self.aplication
@@ -94,13 +94,13 @@ def update_preferences(self, ctx, action):
 
 		""" Simple Selection """
 		if self.simple:
-			if action == "navigation":
+			if action == 'navigation':
 				if self.navigation != 'Custom':
 					self.navigation_3d = self.navigation
 					self.navigation_2d = self.navigation
 				return
 			
-			elif action in {"keymaps", "transform"}:
+			elif action in {'keymaps', 'transform'}:
 				if self.keymaps != 'Custom':
 					self.viowport = self.keymaps
 					self.sculpt = self.keymaps
@@ -114,21 +114,21 @@ def update_preferences(self, ctx, action):
 				return
 			
 		""" Custom Selection """
-		if action in {"navigation_3d","navigation_2d","viowport", "sculpt",
-			"uv_editor", "node_editor", "text_editopr", "graph_editor","clip_editor",
-			"video_sequencer", "text_editor","file_browser", "floatmenus", "view_undo"}:
+		if action in {'navigation_3d','navigation_2d','viowport', 'sculpt',
+			'uv_editor', 'node_editor', 'text_editopr', 'graph_editor','clip_editor',
+			'video_sequencer', 'text_editor','file_browser', 'floatmenus', 'view_undo'}:
 			register_keymaps(addons[__name__].preferences)
 
 class BsMax_AddonPreferences(bpy.types.AddonPreferences):
 	bl_idname = __name__
 
-	active = BoolProperty(name="Active",default=False)
+	active = BoolProperty(name='Active',default=False)
 	
-	quick: BoolProperty(name="Quick",default=False,
+	quick: BoolProperty(name='Quick',default=False,
 		update= lambda self,ctx: update_preferences(self,ctx,'quick'))
-	simple: BoolProperty(name="Simple",default=True,
+	simple: BoolProperty(name='Simple',default=True,
 		update= lambda self,ctx: update_preferences(self,ctx,'simple'))
-	custom: BoolProperty(name="Custom",default=False,
+	custom: BoolProperty(name='Custom',default=False,
 		update= lambda self,ctx: update_preferences(self,ctx,'custom'))
 	
 	apps = [('3DsMax','3DsMax',''),('Maya','Maya',''),('Blender','Blender (Default)','')]
@@ -194,12 +194,12 @@ class BsMax_AddonPreferences(bpy.types.AddonPreferences):
 
 	""" Global options """
 	options: BoolProperty(default=False)
-	view_undo: BoolProperty(name="View Undo",default=False,
+	view_undo: BoolProperty(name='View Undo',default=False,
 		update= lambda self, ctx: update_preferences(self,ctx,'view_undo'),
 		description='undo the only view angle')
-	menu_scale: FloatProperty(name="Float Menu Scale",min=1,max=3,description='')
+	menu_scale: FloatProperty(name='Float Menu Scale', min=1, max=3, description='')
 
-	blender_transform_type: BoolProperty(name='Blender Transform Type',default=False,
+	blender_transform_type: BoolProperty(name='Blender Transform Type', default=False,
 		update= lambda self,ctx: update_preferences(self,ctx,'transform'),
 		description='Make "W E R" work as "G R S", Need to restart to See effect')
 
@@ -244,72 +244,72 @@ class BsMax_AddonPreferences(bpy.types.AddonPreferences):
 		row.prop(self,name)
 		srow = row.row()
 		srow.scale_x = 1
-		srow.operator("wm.url_open",icon='HELP').url= wiki + page
+		srow.operator('wm.url_open', icon='HELP').url= wiki + page
 
 	def draw(self, ctx):
 		layout = self.layout
 		
 		box = layout.box()
 		row = box.row(align=True)
-		row.prop(self,"quick",icon='MESH_CIRCLE')
-		row.prop(self,"simple",icon='MESH_UVSPHERE')
-		row.prop(self,"custom",icon='MESH_ICOSPHERE')
+		row.prop(self, 'quick', icon='MESH_CIRCLE')
+		row.prop(self, 'simple', icon='MESH_UVSPHERE')
+		row.prop(self, 'custom', icon='MESH_ICOSPHERE')
 
 		if self.quick:
 			row = box.row()
 			col = row.column()
-			self.row_prop(col,"aplication", "applications")
+			self.row_prop(col, 'aplication', 'applications')
 
 		if self.simple:	
 			row = box.row()
 			col = row.column()
-			self.row_prop(col,"navigation", "Navigation")
-			self.row_prop(col,"keymaps", "Keymaps-" + self.keymaps)
-			self.row_prop(col,"floatmenus", "floatmenus-" + self.floatmenus)
+			self.row_prop(col, 'navigation', 'Navigation')
+			self.row_prop(col, 'keymaps', 'Keymaps-' + self.keymaps)
+			self.row_prop(col, 'floatmenus', 'floatmenus-' + self.floatmenus)
 		
 		if self.custom:
 			row = box.row()
 			col = row.column()
 
-			self.row_prop(col,"navigation_3d","navigation_3d-" + self.navigation_3d)
-			self.row_prop(col,"navigation_2d","navigation_2d-" + self.navigation_2d)
-			self.row_prop(col,"viowport","viowport-" + self.viowport)
-			self.row_prop(col,"sculpt","sculpt-" + self.sculpt)
-			self.row_prop(col,"uv_editor","uv_editor-" + self.uv_editor)
-			self.row_prop(col,"node_editor","node_editor-" + self.node_editor)
-			self.row_prop(col,"text_editor","text_editor-" + self.text_editor)
-			self.row_prop(col,"graph_editor","graph_editor-" + self.graph_editor)
-			self.row_prop(col,"clip_editor","clip_editor-" + self.clip_editor)
-			self.row_prop(col,"video_sequencer","video_sequencer-" + self.video_sequencer)
-			self.row_prop(col,"file_browser","file_browser-" + self.file_browser)
-			self.row_prop(col,"floatmenus", "floatmenus-" + self.floatmenus)
+			self.row_prop(col, 'navigation_3d', 'navigation_3d-' + self.navigation_3d)
+			self.row_prop(col, 'navigation_2d', 'navigation_2d-' + self.navigation_2d)
+			self.row_prop(col, 'viowport', 'viowport-' + self.viowport)
+			self.row_prop(col, 'sculpt', 'sculpt-' + self.sculpt)
+			self.row_prop(col, 'uv_editor', 'uv_editor-' + self.uv_editor)
+			self.row_prop(col, 'node_editor', 'node_editor-' + self.node_editor)
+			self.row_prop(col, 'text_editor', 'text_editor-' + self.text_editor)
+			self.row_prop(col, 'graph_editor', 'graph_editor-' + self.graph_editor)
+			self.row_prop(col, 'clip_editor', 'clip_editor-' + self.clip_editor)
+			self.row_prop(col, 'video_sequencer', 'video_sequencer-' + self.video_sequencer)
+			self.row_prop(col, 'file_browser', 'file_browser-' + self.file_browser)
+			self.row_prop(col, 'floatmenus', 'floatmenus-' + self.floatmenus)
 		
 		box = layout.box()
 		row = box.row()
 		icon = 'DOWNARROW_HLT' if self.options else 'RIGHTARROW'
-		row.prop(self,"options",text="Options",icon=icon)
-		row.operator("bsmax.save_preferences",text="Save Preferences Setting", icon="FILE_TICK")
+		row.prop(self, 'options', text='Options', icon=icon)
+		row.operator('bsmax.save_preferences', text='Save Preferences Setting', icon='FILE_TICK')
 		
 		if self.options:
 			box = box.box()
 			row = box.row()
-			row.prop(self,"view_undo")
-			row.prop(self,"menu_scale")
+			row.prop(self, 'view_undo')
+			row.prop(self, 'menu_scale')
 			row = box.row()
-			row.prop(self,"blender_transform_type")
+			row.prop(self, 'blender_transform_type')
 		if self.menu_scale < 1:
 			self.menu_scale = 1
 
 def save_preferences(preferences):
-	filename = bpy.utils.user_resource('SCRIPTS', "addons") + "/BsMax.ini"
-	string = ""
+	filename = bpy.utils.user_resource('SCRIPTS', 'addons') + '/BsMax.ini'
+	string = ''
 	for prop in preferences.bl_rna.properties:
 		if not prop.is_readonly:
 			key = prop.identifier
 			if key != 'bl_idname':
 				val = str(getattr(preferences, key))
-				string += key + "=" + val + os.linesep
-	ini = open(filename, "w")
+				string += key + '=' + val + os.linesep
+	ini = open(filename, 'w')
 	ini.write(string)
 	ini.close()
 
@@ -321,16 +321,16 @@ def isfloat(value):
     return False
 
 def load_preferences(preferences):
-	filename = bpy.utils.user_resource('SCRIPTS', "addons") + "/BsMax.ini"
+	filename = bpy.utils.user_resource('SCRIPTS', 'addons') + '/BsMax.ini'
 	if os.path.exists(filename):
 		string = open(filename).read()
 		props = string.splitlines()
 		for prop in props:
-			key = prop.split("=")
+			key = prop.split('=')
 			if len(key) == 2:
 				if isfloat(key[1]):
 					value = float(key[1])
-				elif key[1] in {'True','False'}:
+				elif key[1] in {'True', 'False'}:
 					value = key[1] == 'True'
 				else:
 					value = key[1]
@@ -341,12 +341,12 @@ def load_preferences(preferences):
 					pass
 
 class BsMax_OT_Save_Preferences(bpy.types.Operator):
-	bl_idname = "bsmax.save_preferences"
-	bl_label = "Save BsMax Preferences"
+	bl_idname = 'bsmax.save_preferences'
+	bl_label = 'Save BsMax Preferences'
 	bl_options = {'REGISTER', 'INTERNAL'}
 	def execute(self, ctx):
 		save_preferences(addons[__name__].preferences)
-		return{"FINISHED"}
+		return{'FINISHED'}
 
 def register_delay(preferences):
 	sleep(0.2)

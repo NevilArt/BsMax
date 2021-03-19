@@ -61,6 +61,9 @@ def get_view3d_transform(ctx):
 	items.append(QuadItem("Driver Editor...",f,t,n,c0170,n))
 	items.append(QuadItem("NLA Editor...",f,t,n,c0169,n))
 	items.append(QuadItem("Text Editor...",f,t,n,c0171,n))
+	version = bpy.app.version
+	if version[0] > 2 or (version[0] == 2 and version[1] >= 93):
+		items.append(QuadItem("Geometry Node Editor...",f,t,n,c0214,n))
 	items.append(QuadItem(n,f,f,n,n,n))
 	submenu = get_view3d_transform_convert_to_sub(ctx)
 	items.append(QuadItem("Conver to",f,f,submenu,n,n))

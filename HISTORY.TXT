@@ -1,3 +1,8 @@
+# 0,1,0,20210317
+	'Align Object' works for objects with Constriants.
+	'Set start/end frame' (Right Click Menu time line and Sequencer).
+	'Join plus' Ask for apply befor join 'Ctrl + j' (Blender & 3DsMax Mode).
+
 # 0,1,0,20210310
 	Render preset Save/Load and Copy/Paste operator added (Render Properties/ Presets)
 

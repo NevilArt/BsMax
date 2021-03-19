@@ -227,7 +227,7 @@ c0210="bpy.ops.object.attach('INVOKE_DEFAULT')"
 c0211="bpy.ops.curve.refine('INVOKE_DEFAULT')"
 c0212="bpy.ops.object.convert_to(target='GPENCIL')"
 c0213="bpy.ops.object.convert_to(target='POINTCLOUD')"
-c0214=""
+c0214="bpy.ops.editor.float(ui_type='GeometryNodeTree')"
 c0215=''
 c0216=''
 c0217=''
