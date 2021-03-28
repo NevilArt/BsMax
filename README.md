@@ -26,9 +26,13 @@ If not have Github account use 'NevilArt@Gmail.Com' for bug report.
 
 # latest Updates
 
-* '6' open float geometry node editor (Replacement for PFSurce shortcut) (3DsMax mode).
-* 'bpy.ops.editor.float' Updated to work in Blender 2.93 and improved ('M', '8', 'F11' in 3DsMax mode).
+* Minor improvement and bug fixed in some of tools.
+* 'K' add key frame on ui items too (3DsMax mode).
+* 'S' add key frame on ui items too (Maya mode).
+* 'Connect Script To Active Object' operator bind script to the object and makes link or merge with it to news scene automatically.
 * [Update History...](https://github.com/NevilArt/BsMax_2_80/blob/master/HISTORY.TXT)
+
+* Note: Some keymap not working whell with Blender 2.93 Alpha for now.
 
 # License
 

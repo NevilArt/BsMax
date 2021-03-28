@@ -20,12 +20,12 @@ from bsmax.curve import Curve
 from bsmax.graphic import Rubber_Band, get_screen_pos
 
 class CurveTool(Operator):
-	bl_options = {'REGISTER','UNDO'}
-	curve,obj = None,None
-	start,finish = False,False
-	start_x,start_y = 0,0
-	value_x,value_y,value_w = 0,0,0
-	canceled,singleaction = False,False
+	bl_options = {'REGISTER', 'UNDO'}
+	curve, obj = None, None
+	start, finish = False, False
+	start_x, start_y = 0, 0
+	value_x, value_y,value_w = 0, 0, 0
+	canceled, singleaction = False, False
 	typein = False
 
 	@classmethod
@@ -50,12 +50,11 @@ class CurveTool(Operator):
 		self.curve.reset()
 
 	def execute(self, ctx):
-		# if self.value_x + self.value_y == 0:
 		if self.canceled:
 			self.abort()
 		else:
 			self.apply()
-		return{"FINISHED"}
+		return{'FINISHED'}
 
 	def check(self, ctx):
 		if not self.start:
@@ -94,7 +93,7 @@ class CurveTool(Operator):
 		self.get_data(ctx)
 		if self.typein:
 			wm = ctx.window_manager
-			return wm.invoke_props_dialog(self)#,width=120)
+			return wm.invoke_props_dialog(self)
 		else:
 			ctx.window_manager.modal_handler_add(self)
 			return {'RUNNING_MODAL'}
@@ -104,7 +103,7 @@ class CurveTool(Operator):
 
 class PickOperator(Operator):
 	source, subsource, active = [], None, None
-	start, center, end = None, Vector((0,0,0)), None
+	start, center, end = None, Vector((0, 0, 0)), None
 	mode, filters = 'OBJECT' , ['ANY']
 	rb = Rubber_Band()
 
@@ -219,6 +218,9 @@ class PickOperator(Operator):
 			return ctx.selected_bones
 		return []
 	
+	def pre_setup(self, ctx, event):
+		pass
+	
 	def setup(self, ctx, event):
 		self.mode = ctx.mode
 		self.active = ctx.active_object
@@ -260,8 +262,9 @@ class PickOperator(Operator):
 	
 	def picked(self, ctx, source, subsource, target, subtarget):
 		pass
-
+	
 	def invoke(self, ctx, event):
+		self.pre_setup(ctx, event)
 		self.setup(ctx, event)
 		self.rb.register()
 		ctx.window_manager.modal_handler_add(self)

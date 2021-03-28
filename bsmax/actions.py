@@ -31,7 +31,7 @@ def lock_transform(obj, move, rotate, scale):
 def set_transform(obj, coordinate, location, rotation, dimantion):
 	if coordinate == 'locaL':
 		pass
-	elif coordinate in {'world','global'}:
+	elif coordinate in {'world', 'global'}:
 		pass
 	elif coordinate == 'parent':
 		pass
@@ -60,7 +60,7 @@ def modifier_add(ctx, objs, modifier, name=''):
 
 def link_to_scene(ctx, obj):
 	activelayername = ctx.view_layer.active_layer_collection.name
-	if activelayername == "Master Collection":
+	if activelayername == 'Master Collection':
 		collection = ctx.scene.collection
 	else:
 		collection = bpy.data.collections[activelayername]
@@ -78,20 +78,20 @@ def set_as_active_object(ctx, obj):
 		ctx.view_layer.objects.active = obj
 
 def delete_objects(objs):
-	bpy.ops.object.delete({"selected_objects": objs})
+	bpy.ops.object.delete({'selected_objects': objs})
 
 def set_create_target(obj, target, distance=(0.0, 0.0, -2.0), align=True):
 	""" Add a lookat constraint with basic setting """
 	""" Create an empty object as target if target is None """
 	constraint = obj.constraints.new('TRACK_TO')
 	if target == None:
-		target = bpy.data.objects.new("empty", None)
+		target = bpy.data.objects.new('empty', None)
 		target.empty_display_type = 'CUBE'
 		target.empty_display_size = 0.25
 		active_layer_name = bpy.context.view_layer.active_layer_collection.name
 		col = bpy.data.collections[active_layer_name]
 		col.objects.link(target)
-		target.name = obj.name + "_target"
+		target.name = obj.name + '_target'
 	if align:
 		target.location = obj.location
 		target.rotation_euler = obj.rotation_euler
@@ -123,7 +123,7 @@ def set_origen(ctx, obj, location):
 def freeze_transform(objs):
 	""" simulate freeze transform action """
 	""" put actual transform to delta then reset the transform """
-	#TODO if selta has vale had to combine with new walue or get from world or parent coordinate
+	#TODO if selta has vale had to combine with new value or get from world or parent coordinate
 	for obj in objs:
 		obj.delta_location = obj.location
 		obj.location = [0,0,0]

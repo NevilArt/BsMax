@@ -16,9 +16,13 @@ import bpy
 from bpy.types import Operator
 from bsmax.operator import PickOperator
 
+
+
 class Object_OT_Attach(PickOperator):
-	bl_idname = "object.attach"
-	bl_label = "Attach"
+	""" Pick an object to join with the Active object """
+	bl_idname = 'object.attach'
+	bl_label = 'Attach'
+	bl_description = ''
 	
 	filters = ['AUTO']
 
@@ -26,33 +30,40 @@ class Object_OT_Attach(PickOperator):
 	def poll(self, ctx):
 		if ctx.area.type == 'VIEW_3D':
 			if len(ctx.scene.objects) > 0:
-				if ctx.object != None:
+				if ctx.object:
 					return ctx.mode == 'OBJECT'
 		return False
 	
+	def pre_setup(self, ctx, event):
+		if ctx.active_object:
+			if ctx.active_object.type == 'MESH':
+				self.filters = ['MESH', 'CURVE']
+			else:
+				self.filters = ['AUTO']
+
 	def convert(self, ctx, obj):
 		obj.select_set(True)
 		ctx.view_layer.objects.active = obj
 		
-		""" collaps modifiers """
+		""" Collaps Modifiers """
 		for modifier in obj.modifiers:
 			bpy.ops.object.modifier_apply(modifier=modifier.name)
-
-		# """ set the target mode """
-		# bpy.ops.object.convert(target="MESH")
-
 
 	def picked(self, ctx, source, subsource, target, subtarget):
 		bpy.ops.object.select_all(action='DESELECT')
 		self.convert(ctx, target)
 		
-		for s in source:
-			s.select_set(True)
-			ctx.view_layer.objects.active = s
+		for obj in source:
+			obj.select_set(True)
+			ctx.view_layer.objects.active = obj
 			
-			""" clear primitive data """
-			if s.type in {'MESH','CURVE'}:
-				s.data.primitivedata.classname = ""
+			if obj.type in {'MESH', 'CURVE'}:
+				""" Clear Primitive Data """
+				obj.data.primitivedata.classname = ''
+
+				""" Make Same Type if Possible """
+				if target.type != obj.type:
+					bpy.ops.object.convert_to(target=obj.type)
 		
 		target.select_set(state = True)
 		bpy.ops.object.join()
@@ -64,8 +75,8 @@ class Object_OT_Attach(PickOperator):
 
 class Object_TO_Delete_Plus(Operator):
 	""" Delete Plus """
-	bl_idname = "object.delete_plus"
-	bl_label = "Delete Plus"
+	bl_idname = 'object.delete_plus'
+	bl_label = 'Delete Plus'
 	bl_options = {'REGISTER', 'UNDO'}
 	
 	@classmethod
@@ -78,8 +89,8 @@ class Object_TO_Delete_Plus(Operator):
 				matrix_world = child.matrix_world.copy()
 				child.parent = None
 				child.matrix_world = matrix_world
-		bpy.ops.object.delete({"selected_objects": ctx.selected_objects})
-		return{"FINISHED"}
+		bpy.ops.object.delete({'selected_objects': ctx.selected_objects})
+		return{'FINISHED'}
 
 
 classes = [Object_OT_Attach, Object_TO_Delete_Plus]
@@ -90,5 +101,5 @@ def register_attach():
 def unregister_attach():
 	[bpy.utils.unregister_class(c) for c in classes]
 
-if __name__ == "__main__":
+if __name__ == '__main__':
 	register_attach()

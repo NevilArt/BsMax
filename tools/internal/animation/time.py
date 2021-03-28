@@ -72,7 +72,7 @@ class Anim_OT_Keys_Range_Set(Operator):
 	bl_label = 'Set Keys Time Raneg'
 	bl_options = {'REGISTER', 'INTERNAL'}
 
-	selection: BoolProperty(name='Selection', default='True')
+	selection: BoolProperty(name='Selection', default=True)
 
 	# @classmethod
 	# def poll(self, ctx):

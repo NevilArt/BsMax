@@ -262,7 +262,7 @@ def select_loop_directional(ctx, edge, directional = True, direction = 0):
 				print("LOOP WILL JUMP ROW")
 				new_selection = selection
 				iterate = False
-			if len([face for face in new_selection[0].link_faces if len(list(face.verts)) is not 4]) is not 0:
+			if len([face for face in new_selection[0].link_faces if len(list(face.verts)) != 4]) != 0:
 				#End selection on ngons or triangles
 				print("END LOOP")
 				iterate = False
@@ -1112,13 +1112,13 @@ class MESH_OT_QuickRadialSymmetry(Operator):
 	def modal(self, ctx, event):
 		if event.type == 'MOUSEMOVE':  # Apply
 			if event.ctrl:
-				if self.modkey is not 1:
+				if self.modkey != 1:
 					self.modkey = 1
 					self.initial_pos_x = event.mouse_x
 					self.initial_sym_count = self.sym_count 
 				self.calculate_axis(ctx, event, self.selection)
 			else:
-				if self.modkey is not 0:
+				if self.modkey != 0:
 					self.modkey = 0
 					self.initial_pos_x = event.mouse_x
 					self.initial_sym_axis = self.sym_axis
@@ -1161,7 +1161,7 @@ class MESH_OT_SmartExtrude(Operator):
 
 	#Not Needed, delete later
 	def get_verts_center(self, ctx):
-		bm = get_bmesh(ctx)
+		# bm = get_bmesh(ctx)
 		obj = ctx.active_object
 		selectionMode = (tuple(ctx.scene.tool_settings.mesh_select_mode))
 		if selectionMode[0]:

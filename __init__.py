@@ -20,7 +20,7 @@ bl_info = {
 	'name': 'BsMax',
 	'description': 'BsMax for Blender 2.80 ~ 2.93',
 	'author': 'Naser Merati (Nevil)',
-	'version': (0, 1, 0, 20210319),
+	'version': (0, 1, 0, 20210328),
 	'blender': (2, 80, 0),# 2.80~2.93
 	'location': 'Almost Everywhere in Blender',
 	'wiki_url': 'https://github.com/NevilArt/BsMax_2_80/wiki',
@@ -239,7 +239,7 @@ class BsMax_AddonPreferences(bpy.types.AddonPreferences):
 		""" Reactive keymap update """
 		self.active = True
 
-	def row_prop(self,col,name,page):
+	def row_prop(self, col, name, page):
 		row = col.row()
 		row.prop(self,name)
 		srow = row.row()

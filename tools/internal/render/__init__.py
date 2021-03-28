@@ -14,22 +14,21 @@
 ############################################################################
 
 from .backburner import register_backburner, unregister_backburner
-# from .frames import register_frames, unregister_frames
-from .lightlister import register_lightlister,unregister_lightlister
-# from .menu import register_menu,unregister_menu
+from .light_lister import register_light_lister,unregister_light_lister
+from .matt import register_matt, unregister_matt
 from .preset import register_preset, unregister_preset
 # from .quick_render import register_quick_render,unregister_quick_render
 
 def register_render():
 	register_backburner()
-	register_lightlister()
-	# register_menu()
+	register_light_lister()
+	register_matt()
 	register_preset()
 	# register_quick_render()
 
 def unregister_render():
 	unregister_backburner()
-	unregister_lightlister()
-	# unregister_menu()
+	unregister_light_lister()
+	unregister_matt()
 	unregister_preset()
 	# unregister_quick_render()

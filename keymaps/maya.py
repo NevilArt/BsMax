@@ -41,6 +41,10 @@ def window(km):
 	space = km.space('Window','EMPTY','WINDOW')
 	add_search(km,space)
 
+def user_interface(km):
+	space = km.space('User Interface','EMPTY','WINDOW')
+	km.new(space,'anim.keyframe_insert_button','S','PRESS',[('all', True)])
+
 def screen(km):
 	space = km.space('Screen','EMPTY','WINDOW')
 	add_undo(km,space)
@@ -277,6 +281,7 @@ def register_maya(preferences):
 
 		if preferences.viowport == "Maya":
 			window(km_viowport)
+			user_interface(km_viowport)
 			screen(km_viowport)
 			view3d(km_viowport)
 			view2d(km_viowport)

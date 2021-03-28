@@ -16,22 +16,24 @@ import bpy
 from bpy.types import Operator
 
 class Render_TO_Light_Lister(Operator):
-	bl_idname = "render.light_lister"
-	bl_label = "Light lister"
+	bl_idname = 'render.light_lister'
+	bl_label = 'Light lister'
+	bl_options = {'REGISTER', 'INTERNAL'}
+	
 	lights = []
 
 	def get_field(self,row,light):
 		icon = 'LIGHT_' + light.data.type
-		row.operator("object.select_by_name",icon=icon,text=light.name).name = light.name
-		row.prop(light.data,'color',text="")
-		row.prop(light.data,'energy',text="")
-		row.prop(light.data,'specular_factor',text="")
-		row.prop(light.data,'shadow_soft_size',text="")
-		row.prop(light.data,'use_custom_distance',text="")
-		row.prop(light.data,'cutoff_distance',text="")
-		row.prop(light.data,'use_shadow',text="")
-		row.prop(light.data,'shadow_buffer_clip_start',text="")
-		row.prop(light.data,'shadow_buffer_bias',text="")
+		row.operator('object.select_by_name', icon=icon, text=light.name).name = light.name
+		row.prop(light.data, 'color', text='')
+		row.prop(light.data, 'energy', text='')
+		row.prop(light.data, 'specular_factor', text='')
+		row.prop(light.data, 'shadow_soft_size', text='')
+		row.prop(light.data, 'use_custom_distance', text='')
+		row.prop(light.data, 'cutoff_distance', text='')
+		row.prop(light.data, 'use_shadow', text='')
+		row.prop(light.data, 'shadow_buffer_clip_start', text='')
+		row.prop(light.data, 'shadow_buffer_bias', text='')
 
 	def draw(self,ctx):
 		box = self.layout.box()
@@ -50,11 +52,11 @@ class Render_TO_Light_Lister(Operator):
 		row.label(text='Bias')
 
 		for light in self.lights:
-			self.get_field(col.row(align=True),light)
+			self.get_field(col.row(align=True), light)
 	
 	def execute(self,ctx):
-		self.report({'OPERATOR'},'bpy.ops.render.light_lister()')
-		return{"FINISHED"}
+		self.report({'OPERATOR'}, 'bpy.ops.render.light_lister()')
+		return{'FINISHED'}
 	
 	def cancel(self,ctx):
 		return None
@@ -74,32 +76,34 @@ class Render_TO_Light_Lister(Operator):
 
 	def invoke(self,ctx,event):
 		self.lights = self.get_lights() 
-		return ctx.window_manager.invoke_props_dialog(self,width=700)
+		return ctx.window_manager.invoke_props_dialog(self, width=700)
 
 
 
 class Render_TO_Camera_Lister(Operator):
-	bl_idname = "render.camera_lister"
-	bl_label = "Camera lister"
+	bl_idname = 'render.camera_lister'
+	bl_label = 'Camera lister'
+	bl_options = {'REGISTER', 'INTERNAL'}
+	
 	lights = []
 
 	def get_field(self,row,camera):
-		row.operator("object.select_by_name",icon='CAMERA_DATA',text=camera.name).name = camera.name
+		row.operator('object.select_by_name', icon='CAMERA_DATA', text=camera.name).name = camera.name
 		
 		srow = row.row(align=True)
-		srow.prop(camera.data,'type',text="")
-		srow.prop(camera.data,'lens',text="")
+		srow.prop(camera.data, 'type', text='')
+		srow.prop(camera.data, 'lens', text='')
 
 		srow = row.row(align=True)
-		srow.prop(camera.data,'clip_start',text="")
-		srow.prop(camera.data,'clip_end',text="")
+		srow.prop(camera.data, 'clip_start', text='')
+		srow.prop(camera.data, 'clip_end', text='')
 		
 		srow = row.row(align=True)
-		srow.prop(camera.data.dof,'use_dof',text="")
-		srow.prop(camera.data.dof,'focus_distance',text="")
+		srow.prop(camera.data.dof, 'use_dof', text='')
+		srow.prop(camera.data.dof, 'focus_distance', text='')
 
 		srow = row.row(align=True)
-		srow.prop(camera.data,'display_size',text="")
+		srow.prop(camera.data, 'display_size', text='')
 
 	def draw(self,ctx):
 		box = self.layout.box()
@@ -118,46 +122,46 @@ class Render_TO_Camera_Lister(Operator):
 			self.get_field(col.row(align=False),cam)
 	
 	def execute(self,ctx):
-		self.report({'OPERATOR'},'bpy.ops.render.camera_lister()')
-		return{"FINISHED"}
+		self.report({'OPERATOR'}, 'bpy.ops.render.camera_lister()')
+		return{'FINISHED'}
 	
 	def cancel(self,ctx):
 		return None
 	
 	def get_cameras(self):
 		cameras = []
-		for light in bpy.data.objects:
-			if light.type == 'CAMERA':
+		for camera in bpy.data.objects:
+			if camera.type == 'CAMERA':
 				isnew = True
 				for l in cameras:
-					if light.data == l.data:
+					if camera.data == l.data:
 						isnew = False
 						break
 				if isnew:
-					cameras.append(light)
+					cameras.append(camera)
 		return cameras
 
 	def invoke(self,ctx,event):
 		self.cameras = self.get_cameras() 
-		return ctx.window_manager.invoke_props_dialog(self,width=700)
+		return ctx.window_manager.invoke_props_dialog(self, width=700)
 
 
 
 def render_menu(self, ctx):
 	layout = self.layout
 	layout.separator()
-	layout.operator("render.light_lister",text="Light Lister",icon='LIGHT_SUN')
-	layout.operator("render.camera_lister",text="Camera Lister",icon='CAMERA_DATA')
+	layout.operator('render.light_lister', text='Light Lister', icon='LIGHT_SUN')
+	layout.operator('render.camera_lister', text='Camera Lister', icon='CAMERA_DATA')
 
 classes = [Render_TO_Light_Lister, Render_TO_Camera_Lister]
 
-def register_lightlister():
+def register_light_lister():
 	[bpy.utils.register_class(c) for c in classes]
 	bpy.types.TOPBAR_MT_render.append(render_menu)
 
-def unregister_lightlister():
+def unregister_light_lister():
 	bpy.types.TOPBAR_MT_render.remove(render_menu)
 	[bpy.utils.unregister_class(c) for c in classes]
 
-if __name__ == "__main__":
-	register_lightlister()
+if __name__ == '__main__':
+	register_light_lister()

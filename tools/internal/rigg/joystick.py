@@ -15,10 +15,10 @@
 
 import bpy
 from bpy.types import Operator
-from bpy.props import IntProperty,EnumProperty
+from bpy.props import IntProperty, EnumProperty
 from mathutils import Vector
-from bsmax.state import has_constraint,get_obj_class
-from bsmax.actions import link_to,set_origen,set_as_active_object
+from bsmax.state import has_constraint, get_obj_class
+from bsmax.actions import link_to, set_origen, set_as_active_object
 
 
 
@@ -307,23 +307,23 @@ class Rigg_TO_Joystick_Shapekey_Connector(Operator):
 		miny,maxy = str(const.min_y), str(const.max_y)
 
 		if direction == 1: # up left #
-			return "(min(0,varx)/" + minx + ")*(max(0,vary)/" + maxy + ")"
+			return '(min(0,varx)/' + minx + ')*(max(0,vary)/' + maxy + ')'
 		elif direction == 2: # up #
-			return "var/" + maxy
+			return 'var/' + maxy
 		elif direction == 3: # up right #
-			return "(max(0,varx)/" + maxx + ")*(max(0,vary)/" + maxy + ")"
+			return '(max(0,varx)/' + maxx + ')*(max(0,vary)/' + maxy + ')'
 		elif direction == 4: # left #
-			return "var/" + minx
+			return 'var/' + minx
 		elif direction == 6: # right #
-			return "var/" + maxx
+			return 'var/' + maxx
 		elif direction == 7: # down left #
-			return "(min(0,varx)/" + minx + ")*(min(0,vary)/" + miny + ")"
+			return '(min(0,varx)/' + minx + ')*(min(0,vary)/' + miny + ')'
 		elif direction == 8: # down #
-			return "var/" + miny
+			return 'var/' + miny
 		elif direction == 9: # down right #
-			return "(max(0,varx)/" + maxx + ")*(min(0,vary)/" + miny + ")"
+			return '(max(0,varx)/' + maxx + ')*(min(0,vary)/' + miny + ')'
 		else:
-			return "0"
+			return '0'
 
 	def add_var(self, driver, name, armatuar, joy):
 		var = driver.driver.variables.new()
@@ -336,8 +336,8 @@ class Rigg_TO_Joystick_Shapekey_Connector(Operator):
 	
 	def set_driver(self, armatuar, joy, direction, shell, shape_key):
 		key_block = shell.data.shape_keys.key_blocks[shape_key]
-		key_block.driver_remove("value")
-		driver = key_block.driver_add("value")
+		key_block.driver_remove('value')
+		driver = key_block.driver_add('value')
 		driver.driver.type = 'SCRIPTED'
 		if direction in [2,4,6,8]:
 			target = self.add_var(driver, 'var', armatuar, joy)
@@ -357,7 +357,7 @@ class Rigg_TO_Joystick_Shapekey_Connector(Operator):
 		for obj in ctx.selected_objects:
 			if obj.type == 'ARMATURE':
 				armatuar = obj
-			elif obj.type in {'MESH','CURVE'}:
+			elif obj.type in {'MESH', 'CURVE'}:
 				shell = obj
 		if armatuar != None and shell != None:
 			joy = armatuar.pose.bones[self.joystick]
@@ -380,29 +380,29 @@ class Rigg_TO_Joystick_Shapekey_Connector(Operator):
 				self.set_driver(armatuar, joy, 1, shell, self.upleft)
 			
 			bpy.ops.object.mode_set(mode='OBJECT', toggle=False)
-		self.report({'OPERATOR'},'bpy.ops.rigg.joystick_shapekey_connector()')
+		# self.report({'OPERATOR'},'bpy.ops.rigg.joystick_shapekey_connector()')
 		return {"FINISHED"}
 
 	def draw(self, ctx):
 		layout = self.layout
 		box = layout.box()
-		box.label(text="Select Joystick")
-		box.prop(self,'joystick')
+		box.label(text='Select Joystick')
+		box.prop(self, 'joystick')
 		box = layout.box()
-		box.label(text="Direction")
+		box.label(text='Direction')
 		col = box.column(align=True)
+		row = col.row(align=True)
+		row.prop(self, 'upleft', text='')
+		row.prop(self, 'up', text='')
+		row.prop(self, 'upright', text='')
+		row = col.row(align=True)
+		row.prop(self,'left',text='')
+		row.label(text='')
+		row.prop(self, 'right', text='')
 		row = col.row(align = True)
-		row.prop(self,'upleft',text="")
-		row.prop(self,'up',text="")
-		row.prop(self,'upright',text="")
-		row = col.row(align = True)
-		row.prop(self,'left',text="")
-		row.label(text="")
-		row.prop(self,'right',text="")
-		row = col.row(align = True)
-		row.prop(self,'downleft',text="")
-		row.prop(self,'down',text="")
-		row.prop(self,'downright',text="")
+		row.prop(self, 'downleft', text='')
+		row.prop(self, 'down', text='')
+		row.prop(self, 'downright', text='')
 	
 	def reset_enoms(self):
 		# TODO check for has data or not
@@ -435,7 +435,7 @@ class Rigg_TO_Joystick_Shapekey_Connector(Operator):
 
 
 def joystick_connectore_menu(self,ctx):
-	self.layout.operator("rigg.joystick_shapekey_connector")
+	self.layout.operator('rigg.joystick_shapekey_connector')
 
 
 

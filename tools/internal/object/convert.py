@@ -69,15 +69,22 @@ class Object_OT_Join_Plus(Operator):
 
 	@classmethod
 	def poll(self, ctx):
-		return ctx.active_object != None
+		return len(ctx.selected_objects) > 1
 	
 	def draw(self,ctx):
 		layout = self.layout
 		layout.prop(self, 'convert')
-	
+
 	def execute(self, ctx):
+		target = ctx.active_object
+		
+		""" if active object not selected ignore it and pick first object """
+		if not target.select_get():
+			target = ctx.view_layer.objects.active = ctx.selected_objects[0]
+
+		""" """
 		if self.convert:
-			targte = ctx.active_object
+			
 			selected_objects = ctx.selected_objects.copy()
 			bpy.ops.object.select_all(action='DESELECT')
 			
@@ -88,6 +95,10 @@ class Object_OT_Join_Plus(Operator):
 				""" clear primitive data """
 				if obj.type in {'MESH','CURVE'}:
 					obj.data.primitivedata.classname = ""
+				
+					""" make same type if possible """
+					if obj.type != target.type:
+						bpy.ops.object.convert_to(target=target.type)
 
 				""" make unique """
 				obj.data = obj.data.copy()
@@ -101,8 +112,8 @@ class Object_OT_Join_Plus(Operator):
 			for obj in selected_objects:
 				obj.select_set(True)
 			
-			targte.select_set(True)
-			ctx.view_layer.objects.active = targte
+			target.select_set(True)
+			ctx.view_layer.objects.active = target
 
 		bpy.ops.object.join()	
 		return{"FINISHED"}

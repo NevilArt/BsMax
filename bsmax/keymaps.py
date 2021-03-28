@@ -16,7 +16,7 @@
 import bpy
 
 class KeyMap:
-	def __init__(self,space,idname,type,value,alt,ctrl,shift,any,modal):
+	def __init__(self, space, idname, type, value, alt, ctrl, shift, any, modal):
 		self.space = space
 		self.idname = idname
 		self.type = type
@@ -40,11 +40,12 @@ class KeyMap:
 						if self.type == k.type and self.value == k.value and \
 							self.any == k.any and self.alt == k.alt and \
 							self.ctrl == k.ctrl and self.shift == k.shift:
+							
 							self._key = k
 							break
 		return self._key
 	
-	def compar(self,space,idname,type,value,alt,ctrl,shift,any,properties):
+	def compare(self, space, idname, type, value, alt, ctrl, shift, any, properties):
 		if self.space != space:
 			return False
 		if self.idname != idname:
@@ -77,32 +78,33 @@ class KeyMaps:
 		self.keymaps = []
 		self.mutekeys = []
 
-	def space(self,name,space_type,region_type,modal=False):
+	def space(self, name, space_type, region_type, modal=False):
 		kcfg = bpy.context.window_manager.keyconfigs.addon
-		return kcfg.keymaps.new(name=name,space_type=space_type,region_type=region_type)
+		return kcfg.keymaps.new(name=name, space_type=space_type, region_type=region_type)
 
-	def new(self,space,idname,type,value,properties,
-			alt=False,ctrl=False,shift=False,any=False,modal=False):
+	def new(self, space, idname, type, value, properties,
+			alt=False, ctrl=False, shift=False, any=False, modal=False):
 		""" check is info uniqu """
 		isnew = True
 		for key in self.newkeys:
-			if key.compar(space,idname,type,value,alt,ctrl,shift,any,properties):
+			if key.compare(space, idname, type, value, alt, ctrl, shift, any, properties):
 				isnew = False
 				break
 		""" create newkey if it is uniqu """
 		if isnew:
-			newkey = KeyMap(space,idname,type,value,alt,ctrl,shift,any,modal)
+			newkey = KeyMap(space, idname, type, value, alt, ctrl, shift, any, modal)
 			newkey.properties = properties
 			self.newkeys.append(newkey)
 	
-	def mute(self,space,idname,inputtype,value,alt=False,ctrl=False,shift=False,any=False,modal=False):
-		newkey = KeyMap(space,idname,inputtype,value,alt=alt,ctrl=ctrl,shift=shift,any=any,modal=modal)
+	def mute(self, space, idname, inputtype, value, alt=False, ctrl=False, shift=False, any=False, modal=False):
+		newkey = KeyMap(space, idname, inputtype, value, alt=alt, ctrl=ctrl, shift=shift, any=any, modal=modal)
 		self.mutekeys.append(newkey)
 	
 	def set_mute(self,state,delay):
 		for mutekey in self.mutekeys:
 			if mutekey.key != None:
 				mutekey.key.active = not state
+		# bpy.context.window_manager.keyconfigs.default.keymaps['3D View Generic'].keymap_items['wm.context_toggle'].active
 
 	def register(self):
 		self.unregister()
@@ -117,13 +119,13 @@ class KeyMaps:
 					alt=k.alt, ctrl=k.ctrl, shift=k.shift, any=k.any)
 			
 			for key,val in k.properties:
-				if hasattr(keymapitem.properties,key):
-					setattr(keymapitem.properties,key,val)
+				if hasattr(keymapitem.properties, key):
+					setattr(keymapitem.properties, key, val)
 			self.keymaps.append((k.space, keymapitem))
-		self.set_mute(True,0)
+		self.set_mute(True, 0)
 
 	def unregister(self):
 		for km,kmi in self.keymaps:
 			km.keymap_items.remove(kmi)
 		self.keymaps.clear()
-		self.set_mute(False,0)
+		self.set_mute(False, 0)

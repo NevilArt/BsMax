@@ -27,14 +27,14 @@ def draw_line(self,mode,color):
 	bgl.glEnable(bgl.GL_BLEND)
 	coords = [self.start, self.end]
 	shader = gpu.shader.from_builtin(mode)
-	batch = batch_for_shader(shader, 'LINE_STRIP', {"pos": coords})
+	batch = batch_for_shader(shader, 'LINE_STRIP', {'pos': coords})
 	shader.bind()
-	shader.uniform_float("color", color)
+	shader.uniform_float('color', color)
 	batch.draw(shader)
 	bgl.glDisable(bgl.GL_BLEND)
 
 def register_line(ctx,self,mode,color):
-	""" owner most have to "start" and "end" point values """
+	""" owner most have to 'start' and 'end' point values """
 	""" self.start self.end """
 	space = ctx.area.spaces.active
 	if mode == '2d':
