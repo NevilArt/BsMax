@@ -31,7 +31,7 @@ def set_free(self, obj, frame):
 	if const != None:
 		worldlocation = obj.matrix_world
 		const.influence = 0 # in time 0
-		const.keyframe_insert(data_path="influence", index=-1, frame=frame)
+		const.keyframe_insert(data_path='influence', index=-1, frame=frame)
 		for fcurve in obj.animation_data.action.fcurves:
 			fcurve.keyframe_points[-1].interpolation = 'CONSTANT'
 		# set new position
@@ -44,8 +44,8 @@ def set_free(self, obj, frame):
 		obj.keyframe_insert(data_path='rotation_euler', frame=frame)
 
 class Anim_OT_Link_Constraint(PickOperator):
-	bl_idname = "anim.link_constraint"
-	bl_label = "Link Constraint"
+	bl_idname = 'anim.link_constraint'
+	bl_label = 'Link Constraint'
 	bl_options = {'REGISTER', 'UNDO'}
 
 	@classmethod
@@ -63,14 +63,18 @@ class Anim_OT_Link_Constraint(PickOperator):
 			const.set_inverse_pending = True
 
 		const.influence = 0 # in time 0
-		const.keyframe_insert(data_path="influence", index=-1, frame=0)
+		const.keyframe_insert(data_path='influence', index=-1, frame=0)
 		for fcurve in obj.animation_data.action.fcurves:
 			fcurve.keyframe_points[-1].interpolation = 'CONSTANT'
 		const.influence = 1 # in time current
-		const.keyframe_insert(data_path="influence", index=-1, frame=frame)
+		const.keyframe_insert(data_path='influence', index=-1, frame=frame)
 		for fcurve in obj.animation_data.action.fcurves:
 			fcurve.keyframe_points[-1].interpolation = 'CONSTANT'
 		const.inverse_matrix = const.target.matrix_world.inverted()
+
+		""" Fix loacation for Armatore Bone """
+		if subtarget != None:
+			bpy.ops.constraint.childof_set_inverse(constraint=const.name, owner='OBJECT')
 	
 	def picked(self, ctx, source, subsource, target, subtarget):
 		frame = ctx.scene.frame_current
@@ -81,8 +85,8 @@ class Anim_OT_Link_Constraint(PickOperator):
 
 
 class Anim_OT_Link_To_World(Operator):
-	bl_idname = "anim.link_to_world"
-	bl_label = "Link To World"
+	bl_idname = 'anim.link_to_world'
+	bl_label = 'Link To World'
 	bl_options = {'REGISTER', 'UNDO'}
 
 	@classmethod
@@ -97,12 +101,12 @@ class Anim_OT_Link_To_World(Operator):
 		for obj in objs:
 			set_free(self, obj, frame)
 		self.report({'OPERATOR'},'bpy.ops.anim.link_to_world()')
-		return{"FINISHED"}
+		return{'FINISHED'}
 
 class Anim_OT_Path_Constraint(PickOperator):
-	bl_idname = "anim.path_constraint"
-	bl_label = "Path Constraint"
-	bl_description = ""
+	bl_idname = 'anim.path_constraint'
+	bl_label = 'Path Constraint'
+	bl_description = ''
 	bl_options = {'REGISTER', 'UNDO'}
 
 	filters = ['CURVE']
@@ -142,8 +146,8 @@ class Anim_OT_Path_Constraint(PickOperator):
 		self.report({'OPERATOR'},'bpy.ops.anim.path_constraint()')
 
 class Anim_OT_Lookat_Constraint(PickOperator):
-	bl_idname = "anim.lookat_constraint"
-	bl_label = "Lookat Constraint"
+	bl_idname = 'anim.lookat_constraint'
+	bl_label = 'Lookat Constraint'
 	bl_options = {'REGISTER', 'UNDO'}
 
 	@classmethod
@@ -167,8 +171,8 @@ class Anim_OT_Lookat_Constraint(PickOperator):
 		self.report({'OPERATOR'},'bpy.ops.anim.lookat_constraint()')
 
 class Anim_OT_Location_Constraint(PickOperator):
-	bl_idname = "anim.location_constraint"
-	bl_label = "Location Constraint"
+	bl_idname = 'anim.location_constraint'
+	bl_label = 'Location Constraint'
 	bl_options = {'REGISTER', 'UNDO'}
 
 	@classmethod
@@ -189,8 +193,8 @@ class Anim_OT_Location_Constraint(PickOperator):
 		self.report({'OPERATOR'},'bpy.ops.anim.location_constraint()')
 
 class Anim_OT_Orientation_Constraint(PickOperator):
-	bl_idname = "anim.orientation_constraint"
-	bl_label = "Orientation Constraint"
+	bl_idname = 'anim.orientation_constraint'
+	bl_label = 'Orientation Constraint'
 	bl_options = {'REGISTER', 'UNDO'}
 
 	@classmethod

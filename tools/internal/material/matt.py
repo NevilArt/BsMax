@@ -30,10 +30,10 @@ class Material_OT_Assign_To_Selection(bpy.types.Operator):
 	def execute(self, ctx):
 		if ctx.mode == 'OBJECT':
 			bpy.ops.object.make_links_data(type='MATERIAL')
-			self.report({'OPERATOR'},'bpy.ops.object.make_links_data(type="MATERIAL")')
+			# self.report({'OPERATOR'},'bpy.ops.object.make_links_data(type="MATERIAL")')
 		elif ctx.mode == 'EDIT_MESH':
 			bpy.ops.object.material_slot_assign()
-			self.report({'OPERATOR'},'bpy.ops.object.material_slot_assign()')
+			# self.report({'OPERATOR'}, 'bpy.ops.object.material_slot_assign()')
 		return{"FINISHED"}
 
 class BsMax_MT_material_Tools(bpy.types.Menu):
@@ -44,7 +44,7 @@ class BsMax_MT_material_Tools(bpy.types.Menu):
 		layout=self.layout
 		if ctx.space_data.type == "NODE_EDITOR":
 			if ctx.space_data.shader_type == 'OBJECT':
-				layout.operator("material.assign_to_selection",text="Assign to selected")
+				layout.operator("material.assign_to_selection", text="Assign to selected")
 
 def matt_menu(self, ctx):
 	self.layout.menu("BSMAX_MT_materialtools")

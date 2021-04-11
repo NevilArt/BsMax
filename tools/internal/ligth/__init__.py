@@ -13,10 +13,10 @@
 #	along with this program.  If not, see <https://www.gnu.org/licenses/>.
 ############################################################################
 
-from .targetlight import register_targetlight,unregister_targetlight
+from .target_light import register_target_light,unregister_target_light
 
 def register_light():
-	register_targetlight()
+	register_target_light()
 
 def unregister_light():
-	unregister_targetlight()
+	unregister_target_light()

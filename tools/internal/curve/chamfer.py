@@ -19,13 +19,13 @@ from bsmax.curve import Curve
 from bsmax.operator import CurveTool
 
 class Curve_OT_Chamfer(CurveTool):
-	bl_idname = "curve.chamfer"
-	bl_label = "Fillet/Chamfer"
+	bl_idname = 'curve.chamfer'
+	bl_label = 'Fillet/Chamfer'
 	bl_options = {'REGISTER', 'UNDO'}
 	
-	fillet: BoolProperty(name="Fillet:",default=False)
-	value: FloatProperty(name="Value:",unit='LENGTH',min=0)
-	typein: BoolProperty(name="Type In:",default=False)
+	fillet: BoolProperty(name='Fillet:', default=False)
+	value: FloatProperty(name='Value:', unit='LENGTH', min=0)
+	typein: BoolProperty(name='Type In:', default=False)
 
 	def apply(self):
 		curve = self.curve
@@ -42,10 +42,10 @@ class Curve_OT_Chamfer(CurveTool):
 	def draw(self, ctx):
 		layout = self.layout
 		icon = 'SPHERECURVE' if self.fillet else 'LINCURVE'
-		text = "Fillet" if self.fillet else "Chamfer"
+		text = 'Fillet' if self.fillet else 'Chamfer'
 		col = layout.column(align=True)
-		col.prop(self,"fillet",text=text, icon=icon)
-		col.prop(self,"value",text="Value")
+		col.prop(self, 'fillet', text=text, icon=icon)
+		col.prop(self, 'value', text='Value')
 
 def register_chamfer():
 	bpy.utils.register_class(Curve_OT_Chamfer)

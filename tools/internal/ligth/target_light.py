@@ -15,13 +15,12 @@
 
 import bpy, mathutils
 from bpy.types import Operator
-# from mathutils import Matrix
 from bsmax.actions import set_create_target, set_as_active_object, delete_objects
 from bsmax.state import has_constraint
 
 class Light_OT_Create_Target(Operator):
-	bl_idname = "light.create_target"
-	bl_label = "Make Target Light"
+	bl_idname = 'light.create_target'
+	bl_label = 'Make Target Light'
 	bl_options = {'REGISTER', 'UNDO'}
 
 	@classmethod
@@ -36,12 +35,12 @@ class Light_OT_Create_Target(Operator):
 		light = ctx.active_object
 		set_create_target(light, None)
 		set_as_active_object(ctx, light)
-		self.report({'OPERATOR'},'bpy.ops.light.create_target()')
+		# self.report({'OPERATOR'},'bpy.ops.light.create_target()')
 		return {'FINISHED'}
 
 class Light_OT_Clear_Target(Operator):
-	bl_idname = "light.clear_target"
-	bl_label = "Make Free Light"
+	bl_idname = 'light.clear_target'
+	bl_label = 'Make Free Light'
 	bl_options = {'REGISTER', 'UNDO'}
 
 	@classmethod
@@ -55,19 +54,19 @@ class Light_OT_Clear_Target(Operator):
 	def execute(self, ctx):
 		obj = ctx.active_object
 		transfoem = obj.matrix_world.copy()
-		targ = obj.constraints["Track To"].target
+		targ = obj.constraints['Track To'].target
 		delete_objects([targ])
 		TrackToConts = [ c for c in obj.constraints if c.type == 'TRACK_TO' ]
 		for c in TrackToConts:
 			obj.constraints.remove(c)
 		obj.matrix_world = transfoem
-		self.report({'OPERATOR'},'bpy.ops.light.clear_target()')
+		# self.report({'OPERATOR'},'bpy.ops.light.clear_target()')
 		return {'FINISHED'}
 
-classes = [Light_OT_Create_Target,Light_OT_Clear_Target]
+classes = [Light_OT_Create_Target, Light_OT_Clear_Target]
 
-def register_targetlight():
+def register_target_light():
 	[bpy.utils.register_class(c) for c in classes]
 
-def unregister_targetlight():
+def unregister_target_light():
 	[bpy.utils.unregister_class(c) for c in classes]

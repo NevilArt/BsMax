@@ -17,8 +17,8 @@ import bpy
 from bsmax.operator import PickOperator
 
 class Curve_OT_Attach(PickOperator):
-	bl_idname = "curve.attach"
-	bl_label = "Attach"
+	bl_idname = 'curve.attach'
+	bl_label = 'Attach'
 
 	filters = ['CURVE']
 
@@ -37,7 +37,7 @@ class Curve_OT_Attach(PickOperator):
 		bpy.ops.object.mode_set(mode='EDIT', toggle=False)
 		bpy.ops.ed.undo_push()
 		bpy.ops.curve.attach('INVOKE_DEFAULT')
-		self.report({'OPERATOR'},'bpy.ops.curve.attach()')
+		# self.report({'OPERATOR'},'bpy.ops.curve.attach()')
 
 classes = [Curve_OT_Attach]
 

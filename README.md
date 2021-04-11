@@ -15,6 +15,10 @@ Your Reports and Ideas will help me alot and don't forget the sharing. let more 
 
 If not have Github account use 'NevilArt@Gmail.Com' for bug report.
 
+# Slow for a while
+
+Do not worry about slowing down of Updates. it`s time to learn Blender c++ coding to be able develope better tools. for this reason updating the BsMax will bee slower for a while, but Bug fix and Adapt for new version of Blender still has high-priority.
+
 # Installation
 
 * Download all the package as zip file.
@@ -23,16 +27,12 @@ If not have Github account use 'NevilArt@Gmail.Com' for bug report.
 * Select the Software you use to use.
 * Press the "Save Preferences Setting" button.
 * It is better to restart the Blender after install.
+* Note: Some times need to reset factory the blender to make addon work fine (happens when addons install to alpha version).
 
 # latest Updates
 
-* Minor improvement and bug fixed in some of tools.
-* 'K' add key frame on ui items too (3DsMax mode).
-* 'S' add key frame on ui items too (Maya mode).
-* 'Connect Script To Active Object' operator bind script to the object and makes link or merge with it to news scene automatically.
+* Parent constraint now works better with Armature objects.
 * [Update History...](https://github.com/NevilArt/BsMax_2_80/blob/master/HISTORY.TXT)
-
-* Note: Some keymap not working whell with Blender 2.93 Alpha for now.
 
 # License
 

@@ -1,3 +1,9 @@
+# 0,1,0,20210328
+	Minor improvement and bug fixed in some of tools.
+	'K' add key frame on ui items too (3DsMax mode).
+	'S' add key frame on ui items too (Maya mode).
+	'Connect Script To Active Object' operator bind script to the object and makes link or merge with it to news scene automatically.
+
 # 0,1,0,20210319
 	'6' open float geometry node editor (Replacement for PFSurce shortcut) (3DsMax mode).
 	'bpy.ops.editor.float' Updated to work in Blender 2.93 and improved ('M', '8', 'F11' in 3DsMax mode).
