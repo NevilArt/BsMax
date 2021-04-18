@@ -81,8 +81,8 @@ class Particle_OT_Hair_Guides_From_Curve(PickOperator):
 		bpy.ops.object.mode_set(mode='PARTICLE_EDIT', toggle=False)
 		bpy.ops.wm.tool_set_by_id(name='builtin_brush.Comb')
 		
-		version = bpy.app.version
-		if version[0] == 2 and version[1] <= 90:
+		ver = bpy.app.version
+		if ver[0] == 2 and ver[1] <= 90:
 			bpy.ops.particle.brush_edit(stroke=[{'name':'','location':(0,0,0),'mouse':(0,0),'pressure':0,'size':0,'pen_flip':False,'time':0,'is_start':True}])
 		else:
 			bpy.ops.particle.brush_edit(stroke=[{'name':'','location':(0,0,0),'mouse':(0,0),'mouse_event':(0,0),'pressure':0,'size':0,'pen_flip':False,'x_tilt':0,'y_tilt':0,'time':0,'is_start':False}])

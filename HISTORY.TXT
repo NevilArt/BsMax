@@ -1,3 +1,6 @@
+#0,1,0,20210411
+	Parent constraint now works better with Armature objects.
+
 # 0,1,0,20210328
 	Minor improvement and bug fixed in some of tools.
 	'K' add key frame on ui items too (3DsMax mode).

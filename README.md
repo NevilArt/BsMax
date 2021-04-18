@@ -1,5 +1,5 @@
 
-# BsMax 2.80 ~ 2.93
+# BsMax 2.80 ~ 3.0
 
 BsMax is package of many different tools and UI simulator (much as possible) for [Blender 3D](https://www.blender.org/).
 
@@ -31,7 +31,7 @@ Do not worry about slowing down of Updates. it`s time to learn Blender c++ codin
 
 # latest Updates
 
-* Parent constraint now works better with Armature objects.
+* All version check codes updated to make then add-on works on Blender 3.0 and above too;
 * [Update History...](https://github.com/NevilArt/BsMax_2_80/blob/master/HISTORY.TXT)
 
 # License

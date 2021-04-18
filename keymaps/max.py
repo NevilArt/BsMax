@@ -79,7 +79,8 @@ def add_side_panel(km, space):
 	km.new(space,'wm.context_toggle','RIGHT_BRACKET','PRESS',[('data_path','space_data.show_region_ui')])
 
 def add_search(km, space):
-	if bpy.app.version[1] < 90:
+	ver = bpy.app.version
+	if ver[0] == 2 and ver[1] < 90:
 		km.new(space,'wm.search_menu','X','PRESS',[])
 	else:
 		km.new(space,'wm.search_menu','X','PRESS',[],ctrl=True,shift=True,alt=True)
@@ -615,7 +616,8 @@ def outliner(km):
 	
 	space = km.space('Outliner','OUTLINER','WINDOW')
 	add_search(km, space)
-	if bpy.app.version[1] < 81:
+	ver = bpy.app.version
+	if ver[0] == 2 and ver[1] < 81:
 		km.new(space,'outliner.item_activate','LEFTMOUSE','PRESS',[('extend',True)],ctrl=True)
 		km.new(space,'outliner.select_box','EVT_TWEAK_L','EAST',[('mode','SET')])
 		km.new(space,'outliner.select_box','EVT_TWEAK_L','SOUTH_EAST',[('mode','SET')])

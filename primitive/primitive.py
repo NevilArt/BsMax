@@ -176,7 +176,8 @@ class PrimitiveGeometryClass:
 		if self.data != None and bpy.context.mode == 'OBJECT':
 			verts,edges,faces, = meshdata
 			""" Genarate New Data """
-			# if bpy.app.version[1] == 80:
+			# ver = bpy.app.version
+			# if ver[0] == 2 and ver[1] == 80:
 			if True:
 				""" old method for V2.80 """
 				orgmesh = bpy.data.meshes[self.data.name]

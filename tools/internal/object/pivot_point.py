@@ -113,10 +113,10 @@ class Object_OT_Modify_Pivot(Operator):
 		return ctx.active_object != None
 
 	def execute(self, ctx):
-		v = bpy.app.version[1]
-		if v == 80:
+		ver = bpy.app.version
+		if ver[0] == 2 and ver[1] == 80:
 			ModifyPivotPoint(ctx)
-		elif v >= 81:
+		else:
 			state = ctx.scene.tool_settings.use_transform_data_origin
 			ctx.scene.tool_settings.use_transform_data_origin = not state
 		return {"FINISHED"}

@@ -70,7 +70,9 @@ class View3D_OT_Background(Operator):
 			grad.high_gradient[1] = 0.294
 			grad.high_gradient[2] = 0.294
 
-		if bpy.app.version[1] <= 82:
+		
+		ver = bpy.app.version
+		if ver[0] == 2 and ver[1] <= 82:
 			grad.show_grad = show_grad
 		else:
 			grad_type = 'LINEAR' if show_grad else 'SINGLE_COLOR'

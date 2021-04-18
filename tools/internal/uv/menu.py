@@ -34,7 +34,8 @@ class UV_MT_Edit(Menu):
 def uv_edit_menu(self, ctx):
 	self.layout.menu("UV_MT_edit")
 
-mnu = bpy.types.MASK_MT_editor_menus if bpy.app.version[1] < 83 else bpy.types.IMAGE_MT_editor_menus
+ver = bpy.app.version
+mnu = bpy.types.MASK_MT_editor_menus if ver[0] == 2 and ver[1] < 83 else bpy.types.IMAGE_MT_editor_menus
 
 def register_menu():
 	bpy.utils.register_class(UV_MT_Edit)
