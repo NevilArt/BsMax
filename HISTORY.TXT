@@ -1,3 +1,6 @@
+#0,1,0,20210418
+	All version check codes updated to make then add-on works on Blender 3.0 and above too;
+
 #0,1,0,20210411
 	Parent constraint now works better with Armature objects.
 

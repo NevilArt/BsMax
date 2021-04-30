@@ -31,7 +31,8 @@ Do not worry about slowing down of Updates. it`s time to learn Blender c++ codin
 
 # latest Updates
 
-* All version check codes updated to make then add-on works on Blender 3.0 and above too;
+* 'SetKey' issue when no object select fixed. (Max mode)
+* 'Edit Mode' shortkey disabled for Linked, Proxy & Libraryoveride Armature that can not be edit.
 * [Update History...](https://github.com/NevilArt/BsMax_2_80/blob/master/HISTORY.TXT)
 
 # License

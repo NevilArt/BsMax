@@ -116,38 +116,38 @@ class Anim_OT_Auto_Key_Toggle(Operator):
 
 
 
-# def set_key(objs, key):
-# 	for obj in objs:
-# 		obj.keyframe_insert(data_path=key)
-
 class Anim_OT_Set_Key(Operator):
 	bl_idname = "anim.set_key"
 	bl_label = "Set Keys"
 
-	# @classmethod
-	# def poll(self, ctx):
-	# 	return len(ctx.selected_objects) > 0
+	@classmethod
+	def poll(self, ctx):
+		return ctx.mode in ['OBJECT', 'POSE']
 
 	def execute(self, ctx):
-		if ctx.mode in ['OBJECT', 'POSE']:
-			#objs=ctx.selected_objects
-			if kd.Key_All:
+
+		if ctx.mode == 'POSE' and len(ctx.selected_pose_bones) == 0:
+			return{"FINISHED"}
+		if ctx.mode == 'OBJECT' and len(ctx.selected_objects) == 0:
+			return{"FINISHED"}
+
+		if kd.Key_All:
+			bpy.ops.anim.keyframe_insert_menu(type='Location')
+			bpy.ops.anim.keyframe_insert_menu(type='Rotation')
+			bpy.ops.anim.keyframe_insert_menu(type='Scaling')
+		else:
+			if kd.Key_Available:
+				try:
+					bpy.ops.anim.keyframe_insert_menu(type='Available')
+				except:
+					pass
+			if kd.Key_Position:
 				bpy.ops.anim.keyframe_insert_menu(type='Location')
+			if kd.Key_Rotation:
 				bpy.ops.anim.keyframe_insert_menu(type='Rotation')
+			if kd.Key_Scale:
 				bpy.ops.anim.keyframe_insert_menu(type='Scaling')
-			else:
-				if kd.Key_Available:
-					try:
-						bpy.ops.anim.keyframe_insert_menu(type='Available')
-					except:
-						pass
-				if kd.Key_Position:
-					bpy.ops.anim.keyframe_insert_menu(type='Location')
-				if kd.Key_Rotation:
-					bpy.ops.anim.keyframe_insert_menu(type='Rotation')
-				if kd.Key_Scale:
-					bpy.ops.anim.keyframe_insert_menu(type='Scaling')
-		self.report({'OPERATOR'},"bpy.ops.anim.set_key()")
+
 		return{"FINISHED"}
 
 
@@ -239,3 +239,6 @@ def register_animation_key():
 
 def unregister_animation_key():
 	[bpy.utils.unregister_class(c) for c in classes]
+
+if __name__ == '__main__':
+	register_animation_key()

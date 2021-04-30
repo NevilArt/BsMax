@@ -141,7 +141,12 @@ class Object_OT_Subobject_Level(bpy.types.Operator):
 					if mode == "EDIT_ARMATURE":
 						self.set('OBJECT')
 					else:
-						self.set('EDIT')
+						# this for proxy and librery overide the cant be set in edit mode #
+						# TODO find a way to check is linked or not rather then use try #
+						try:
+							self.set('EDIT')
+						except:
+							pass
 				elif self.level == 2:
 					if mode == "POSE":
 						self.set('OBJECT')

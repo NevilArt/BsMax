@@ -496,7 +496,7 @@ class Primitive_OT_Edit(Operator):
 		wm = ctx.window_manager
 		return wm.invoke_props_dialog(self,width=200)
 
-class BsMax_OT_SetObjectMode(Operator):
+class BsMax_OT_Set_Object_Mode(Operator):
 	bl_idname="bsmax.mode_set"
 	bl_label="Set Object Mode"
 
@@ -514,11 +514,16 @@ class BsMax_OT_SetObjectMode(Operator):
 			if ctx.active_object.type == 'GPENCIL':
 				bpy.ops.gpencil.editmode_toggle()
 			elif ctx.active_object.type in {'MESH','CURVE','SURFACE','META','FONT','ARMATURE','LATTICE'}:
-				bpy.ops.object.editmode_toggle()
+				# igone the edit mode for proxy and libraryoverirde #
+				# TODO need to a method to check linked or not rather than use try #
+				try:
+					bpy.ops.object.editmode_toggle()
+				except:
+					pass
 			# ignor this types {'EMPTY','LIGHT','LIGHT_PROBE','CAMERA','SPEAKER',}
 		return {"FINISHED"}
 
-classes = [Primitive_PT_Panel,	Primitive_OT_Edit, BsMax_OT_SetObjectMode]
+classes = [Primitive_PT_Panel,	Primitive_OT_Edit, BsMax_OT_Set_Object_Mode]
 
 def register_panel():
 	[bpy.utils.register_class(c) for c in classes]
