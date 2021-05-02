@@ -36,8 +36,8 @@ class BsMax_MT_View3D_tools(bpy.types.Menu):
 def tools_menu(self,ctx):
 	if ctx.mode == 'OBJECT':
 		self.layout.menu('BSMAX_MT_view3dtools')
-	# elif ctx.mode == 'POSE':
-	# 	self.layout.menu('BSMAX_MT_animationtools')
+	elif ctx.mode == 'POSE':
+		self.layout.menu('BSMAX_MT_animationtools')
 
 
 

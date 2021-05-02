@@ -31,8 +31,7 @@ Do not worry about slowing down of Updates. it`s time to learn Blender c++ codin
 
 # latest Updates
 
-* 'SetKey' issue when no object select fixed. (Max mode)
-* 'Edit Mode' shortkey disabled for Linked, Proxy & Libraryoveride Armature that can not be edit.
+* 'Parent Constraint' and 'parent to world' works on pose mode too. (other constriant for pose mode will add soon)
 * [Update History...](https://github.com/NevilArt/BsMax_2_80/blob/master/HISTORY.TXT)
 
 # License

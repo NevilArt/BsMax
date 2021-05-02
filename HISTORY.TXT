@@ -1,3 +1,7 @@
+#0,1,0,20210429
+	'SetKey' issue when no object select fixed. (Max mode)
+	'Edit Mode' shortkey disabled for Linked, Proxy & Libraryoveride Armature that can not be edit.
+
 #0,1,0,20210418
 	All version check codes updated to make then add-on works on Blender 3.0 and above too;
 

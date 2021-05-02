@@ -273,6 +273,12 @@ class PickOperator(Operator):
 # class picker_OT_test(PickOperator):
 # 	bl_idname = "object.picker"
 # 	bl_label = "picker test"
-#	filters = ['ANY']
+# 	filters = ['ANY']
 # 	def picked(self, ctx, source, subsource, target, subtarget):
-#		pass
+# 		print("---------------------------------------")
+# 		print("source: ", source)
+# 		print("subsource: ", subsource)
+# 		print("target: ", target)
+# 		print("subtarget: ", subtarget)
+
+# bpy.utils.register_class(picker_OT_test)
