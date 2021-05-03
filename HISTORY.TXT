@@ -1,3 +1,6 @@
+#0,1,0,20210502
+	'Parent Constraint' and 'parent to world' works on pose mode too.
+
 #0,1,0,20210429
 	'SetKey' issue when no object select fixed. (Max mode)
 	'Edit Mode' shortkey disabled for Linked, Proxy & Libraryoveride Armature that can not be edit.

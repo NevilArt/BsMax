@@ -31,7 +31,7 @@ Do not worry about slowing down of Updates. it`s time to learn Blender c++ codin
 
 # latest Updates
 
-* 'Parent Constraint' and 'parent to world' works on pose mode too. (other constriant for pose mode will add soon)
+* 'W,E,R' auto Coordinate Toggle 'World/Local' disabled by default. 'Ctrl+W' for Active/Deactive (3DsMax mode).
 * [Update History...](https://github.com/NevilArt/BsMax_2_80/blob/master/HISTORY.TXT)
 
 # License

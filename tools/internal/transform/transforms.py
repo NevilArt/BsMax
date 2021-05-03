@@ -17,6 +17,8 @@ import bpy
 from bpy.props import StringProperty, BoolProperty, FloatProperty
 from bpy.types import Operator
 
+
+
 class View3D_OT_Transform_Gizmo_Size(Operator):
 	bl_idname = "view3d.transform_gizmosize"
 	bl_label = "Transform Gizmo Size"
@@ -36,6 +38,8 @@ class View3D_OT_Transform_Gizmo_Size(Operator):
 			ctx.preferences.view.gizmo_size += self.step
 		return{"FINISHED"}
 
+
+
 def get_tool(ctx):
 	space_type = ctx.area.spaces.active.type
 	if space_type == "VIEW_3D":
@@ -45,10 +49,14 @@ def get_tool(ctx):
 	else:
 		return ""
 
+
+
 def set_gizmo(ctx,translate,rotate,scale):
 	ctx.space_data.show_gizmo_object_translate = translate
 	ctx.space_data.show_gizmo_object_rotate = rotate
 	ctx.space_data.show_gizmo_object_scale = scale
+
+
 
 def coordinate_toggle(ctx):
 	coord = ctx.window.scene.transform_orientation_slots[0]
@@ -57,8 +65,31 @@ def coordinate_toggle(ctx):
 	elif coord.type == 'GLOBAL':
 		coord.type = 'LOCAL'
 
+
+
 def is_transform_avalible(ctx):
 	return not ctx.mode in {'PAINT_TEXTURE', 'PAINT_WEIGHT', 'PAINT_VERTEX', 'PARTICLE'}
+
+
+
+class Transform_Mode:
+	def __init__(self):
+		self.auto_switch = False
+transform_mode = Transform_Mode()
+
+
+class Object_OT_Auto_Coordinate_Toggle(Operator):
+	bl_idname = "object.auto_coordinate_toggle"
+	bl_label = "Auto Coordinate Toggle"
+	bl_options = {'REGISTER', 'INTERNAL'}
+
+	@classmethod
+	def poll(self, ctx):
+		return ctx.area.type == 'VIEW_3D'
+	
+	def execute(self, ctx):
+		transform_mode.auto_switch = not transform_mode.auto_switch
+		return{"FINISHED"}
 
 
 
@@ -74,18 +105,25 @@ class Object_OT_Move(Operator):
 		return ctx.area.type in {'VIEW_3D', 'IMAGE_EDITOR'}
 
 	def execute(self, ctx):
-		# print(">>> object.move >>>", ctx.mode)
 		if is_transform_avalible(ctx):
+			
 			tool = get_tool(ctx)
+			
 			if tool == 'builtin.select':
 				set_gizmo(ctx,True,False,False)
+			
 			else:
-				if tool == 'builtin.move':
-					coordinate_toggle(ctx)
-				else:	
-					bpy.ops.wm.tool_set_by_id(name='builtin.move')
-			# bpy.ops.object.snap_toggle(auto=self.smax)
+				""" Cordinate tooggle work only if actived """
+				if transform_mode.auto_switch:
+					if tool == 'builtin.move':
+						coordinate_toggle(ctx)
+						return{"FINISHED"}
+				
+				bpy.ops.wm.tool_set_by_id(name='builtin.move')
+		
 		return{"FINISHED"}
+
+
 
 class Object_OT_Rotate(Operator):
 	bl_idname = "object.rotate"
@@ -99,18 +137,24 @@ class Object_OT_Rotate(Operator):
 		return ctx.area.type in {'VIEW_3D', 'IMAGE_EDITOR'}
 	
 	def execute(self, ctx):
-		# print(">>> object.rotate >>>", ctx.mode)
 		if is_transform_avalible(ctx):
+			
 			tool = get_tool(ctx)
 			if tool == 'builtin.select':
 				set_gizmo(ctx,False,True,False)
+			
 			else:
-				if tool == 'builtin.rotate':
-					coordinate_toggle(ctx)
-				else:
-					bpy.ops.wm.tool_set_by_id(name='builtin.rotate')
-			# bpy.ops.object.angel_snap(auto=self.smax)
+				""" Cordinate tooggle work only if actived """
+				if transform_mode.auto_switch:
+					if tool == 'builtin.rotate':
+						coordinate_toggle(ctx)
+						return{"FINISHED"}
+			
+				bpy.ops.wm.tool_set_by_id(name='builtin.rotate')
+		
 		return{"FINISHED"}
+
+
 
 class Object_OT_Scale(Operator):
 	bl_idname = "object.scale"
@@ -124,20 +168,25 @@ class Object_OT_Scale(Operator):
 		return ctx.area.type in {'VIEW_3D', 'IMAGE_EDITOR'}
 	
 	def execute(self, ctx):
-		# print(">>> object.scale >>>", ctx.mode)
 		if is_transform_avalible(ctx):
+			
 			tool = get_tool(ctx)
 			if tool == 'builtin.select':
 				set_gizmo(ctx,False,False,True)
+			
 			else:
-				if self.cage:
-					if tool == 'builtin.scale':
-						coordinate_toggle(ctx)
-					else:
-						bpy.ops.wm.tool_set_by_id(name='builtin.scale', cycle=True)
-				else:
-					bpy.ops.wm.tool_set_by_id(name='builtin.scale', cycle=True)
+				""" Cordinate tooggle work only if actived """
+				if transform_mode.auto_switch:
+					if self.cage:
+						if tool == 'builtin.scale':
+							coordinate_toggle(ctx)
+							return{"FINISHED"}
+	
+				bpy.ops.wm.tool_set_by_id(name='builtin.scale', cycle=True)
+		
 		return{"FINISHED"}
+
+
 
 # "TweakBetter" created by Dan Pool (dpdp)
 # original addon "qwer_addon"
@@ -175,8 +224,16 @@ class View3D_OT_Tweak_Better(Operator):
 			self.report({'WARNING'}, "No active object, could not finish")
 			return {'CANCELLED'}
 
-classes = [View3D_OT_Transform_Gizmo_Size, View3D_OT_Tweak_Better,
-			Object_OT_Move, Object_OT_Rotate, Object_OT_Scale]
+
+
+classes = [	View3D_OT_Transform_Gizmo_Size,
+			Object_OT_Auto_Coordinate_Toggle,
+			Object_OT_Move,
+			Object_OT_Rotate,
+			Object_OT_Scale,
+			View3D_OT_Tweak_Better]
+
+
 
 def register_transforms(preferences):
 	[bpy.utils.register_class(c) for c in classes]

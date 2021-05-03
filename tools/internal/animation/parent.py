@@ -37,6 +37,7 @@ def insert_key_for_current_state(chanel, frame):
 
 
 def set_last_key_type(chanel, key_type):
+	""" Find the newest added key and change the key type """
 	for fcurve in chanel.animation_data.action.fcurves:
 		fcurve.keyframe_points[-1].interpolation = key_type
 

@@ -308,6 +308,7 @@ def object_mode(km, preferences):
 	add_show_types(km, space)
 	add_transform_tool(km, space, preferences, smax=False)
 	
+	km.new(space,'object.auto_coordinate_toggle','W','PRESS',[],ctrl=True )
 	km.new(space,'view3d.drop_tool','RIGHTMOUSE','PRESS',[])
 	km.new(space,'view3d.select','LEFTMOUSE','RELEASE',[('enumerate',True)],shift=True)
 	km.new(space,'object.select_all','A','PRESS',[('action','SELECT')],ctrl=True )
@@ -322,12 +323,6 @@ def object_mode(km, preferences):
 	km.new(space,'object.hide','H','PRESS',[('mode','selection')],alt=True)
 	km.new(space,'object.hide','I','PRESS',[('mode','unselected')],alt=True)
 	km.new(space,'object.hide','U','PRESS',[('mode','clear')],alt=True)
-	# km.new(space,'view3d.show_geometry_toggle','G','PRESS',[],shift=True)
-	# km.new(space,'view3d.show_helper_toggle','H','PRESS',[],shift=True)
-	# km.new(space,'view3d.show_shape_toggle','S','PRESS',[],shift=True)
-	# km.new(space,'view3d.show_light_toggle','L','PRESS',[],shift=True)
-	# km.new(space,'view3d.show_bone_toggle','B','PRESS',[],shift=True)
-	# km.new(space,'view3d.show_camera_toggle','C','PRESS',[],shift=True)
 
 	km.new(space,'object.modify_pivotpoint','INSERT','PRESS',[])
 	km.new(space,'wm.call_menu','INSERT','PRESS',[('name','OBJECT_MT_Set_Pivot_Point')],ctrl=True)
