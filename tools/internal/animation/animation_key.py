@@ -15,7 +15,7 @@
 
 import bpy
 from bpy.types import Operator
-from bpy.props import BoolProperty, EnumProperty
+from bpy.props import BoolProperty, EnumProperty, IntProperty
 
 
 
@@ -157,6 +157,10 @@ class Anim_OT_Delete_Selected_Animation(Operator):
 	bl_idname = "anim.delete_selected_animation"
 	bl_label = "Delete Selected Animation"
 	bl_options={'REGISTER', 'UNDO'}
+
+	@classmethod
+	def poll(self, ctx):
+		return ctx.area.type == 'VIEW_3D'
 	
 	def execute(self, ctx):
 		for obj in ctx.selected_objects:
@@ -222,17 +226,78 @@ class Anim_OT_Delete_Key(Operator):
 			bpy.ops.graph.delete()
 		return{'FINISHED'}
 
+
+class Anim_OT_Freeze_on(Operator):
+	bl_idname = 'anim.freeze_on'
+	bl_label = 'Freeze On'
+	bl_options={'REGISTER', 'UNDO'}
+
+	frames: IntProperty(name='Frames', min= 0)
+
+	@classmethod
+	def poll(self, ctx):
+		return ctx.area.type == 'VIEW_3D'
+
+	def insert_key_for_current_state(self, chanel, frame):
+		""" Set key for Location and Scale always is same """
+		chanel.keyframe_insert(data_path='location', frame=frame)
+		chanel.keyframe_insert(data_path='scale', frame=frame)
+
+		""" Sey key by rotation mode """
+		if chanel.rotation_mode == 'QUATERNION':
+			chanel.keyframe_insert(data_path='rotation_quaternion', frame=frame)
+		elif chanel.rotation_mode == 'AXIS_ANGLE':
+			chanel.keyframe_insert(data_path='rotation_axis_angle', frame=frame)
+		else:
+			chanel.keyframe_insert(data_path='rotation_euler', frame=frame)
+	
+	def draw(self, ctx):
+		layout = self.layout
+		layout.prop(self, 'frames', icon='TEMP')
+
+	def execute(self, ctx):
+		frame_current = ctx.scene.frame_current
+		
+		if ctx.mode == 'OBJECT':
+			for obj in ctx.selected_objects:
+				worldlocation = obj.matrix_world
+				for frame in range(frame_current, frame_current + self.frames):
+					obj.matrix_world = worldlocation
+					self.insert_key_for_current_state(obj, frame)
+
+		if ctx.mode == "POSE":
+			armature = ctx.active_object
+			for bone in ctx.selected_pose_bones:
+				
+				# bone = armature.pose.bones[bone.name] # get pose bone
+				bone_matrix = armature.matrix_world @ bone.matrix
+
+				for frame in range(frame_current, frame_current + self.frames):
+					ctx.scene.frame_current = frame
+					ctx.view_layer.update()
+					bone.matrix = bone_matrix
+					self.insert_key_for_current_state(bone, frame)
+
+		return{'FINISHED'}
+	
+	def invoke(self, ctx, event):
+		return ctx.window_manager.invoke_props_dialog(self)
+
+
+
 # class Graph_Editor_OT_Hide(Operator):
 # 		graph.select_linked
 
 
-classes = [Anim_OT_Set_Key_Filters,
+
+classes = [ Anim_OT_Set_Key_Filters,
 			Anim_OT_Auto_Key_Toggle,
 			Anim_OT_Set_Key,
 			Anim_OT_Delete_Selected_Animation,
 			Anim_OT_Frame_Set,
 			Dopesheet_OT_Zoom_Extended,
-			Anim_OT_Delete_Key]
+			Anim_OT_Delete_Key,
+			Anim_OT_Freeze_on]
 
 def register_animation_key():
 	[bpy.utils.register_class(c) for c in classes]

@@ -92,7 +92,7 @@ def set_bone_free(self, armature, bone, frame):
 	
 	if const != None:
 		""" Store the world position """
-		matrix_world = (armature.matrix_world @ bone.matrix)
+		matrix_world = armature.matrix_world @ bone.matrix
 	
 		""" Insert key frame on frame Zero with value Zero """
 		const.influence = 0 # in time 0

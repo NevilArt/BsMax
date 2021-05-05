@@ -31,7 +31,7 @@ Do not worry about slowing down of Updates. it`s time to learn Blender c++ codin
 
 # latest Updates
 
-* 'W,E,R' auto Coordinate Toggle 'World/Local' disabled by default. 'Ctrl+W' for Active/Deactive (3DsMax mode).
+* 'Freeze On' Fix an IK controller in position for wanted frame range 'Animation/Freeze On' (Name and Location is temporary).
 * [Update History...](https://github.com/NevilArt/BsMax_2_80/blob/master/HISTORY.TXT)
 
 # License
