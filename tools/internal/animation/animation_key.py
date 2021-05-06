@@ -227,57 +227,165 @@ class Anim_OT_Delete_Key(Operator):
 		return{'FINISHED'}
 
 
+def update_freeze_on(self, ctx):
+	""" Get from calculate fields """
+	self.frames = self.relase - self.push
+	self.next_step = self.next_push - self.push + 1
+	self.repeat = self.end / self.next_step
+
 class Anim_OT_Freeze_on(Operator):
 	bl_idname = 'anim.freeze_on'
 	bl_label = 'Freeze On'
 	bl_options={'REGISTER', 'UNDO'}
 
-	frames: IntProperty(name='Frames', min= 0)
+	""" Data method """
+	frames: IntProperty(name='Fix', min=0, default=1,
+		description='Number of frames object has to fixed')
+	
+	next_step: IntProperty(name='Cycle', min=0, default=1,
+		description='Length of walk/run cycle')
+	
+	repeat: IntProperty(name='Repeat', min=1, default=1,
+		description='Repeat same action for next steps')
+	
+	""" Key chanels """
+	key_location: BoolProperty(name='Key Location', default= True,
+		description='Set Key for Location')
+	
+	key_rotation: BoolProperty(name='Key Rotation', default= True,
+		description='Set key for Rotation')
+	
+	key_scale: BoolProperty(name='Key Scale', default= False,
+		description='Set key for Scale')
+	
+	""" Calculator """
+	calculator: BoolProperty(name='Calculator', default= False)
+	
+	push: IntProperty(name='Frame that foot touch floor',
+		min=0, default=1, update=update_freeze_on)
+	
+	relase: IntProperty(name='Frame that foot untouch floor',
+		min=0, default=1, update=update_freeze_on)
+
+	next_push: IntProperty(name='Second time foot touch floor',
+		min=0, default=1, update=update_freeze_on)
+	
+	end: IntProperty(name='End of Walk/Run cycle',
+		min=0, default=1, update=update_freeze_on)
+
+	""" Simple """
+	more: BoolProperty(name='More Option', default= False)
 
 	@classmethod
 	def poll(self, ctx):
 		return ctx.area.type == 'VIEW_3D'
 
-	def insert_key_for_current_state(self, chanel, frame):
-		""" Set key for Location and Scale always is same """
-		chanel.keyframe_insert(data_path='location', frame=frame)
-		chanel.keyframe_insert(data_path='scale', frame=frame)
-
-		""" Sey key by rotation mode """
-		if chanel.rotation_mode == 'QUATERNION':
-			chanel.keyframe_insert(data_path='rotation_quaternion', frame=frame)
-		elif chanel.rotation_mode == 'AXIS_ANGLE':
-			chanel.keyframe_insert(data_path='rotation_axis_angle', frame=frame)
-		else:
-			chanel.keyframe_insert(data_path='rotation_euler', frame=frame)
-	
 	def draw(self, ctx):
 		layout = self.layout
-		layout.prop(self, 'frames', icon='TEMP')
+
+		box = layout.box()
+		box.enabled = not self.calculator # disable if calc is on
+		
+		row = box.row()
+		row.label(text='Fix position')
+		row.prop(self, 'more', icon='HAND')
+		
+		row = box.row()
+		row = box.row(align=True)
+		row.prop(self, 'frames', icon='TEMP')
+		if self.more:
+			row.prop(self, 'next_step', icon='TRACKING_FORWARDS_SINGLE')
+			row.prop(self, 'repeat', icon='FILE_REFRESH')
+
+			box = layout.box()
+			box.label(text='Set Key For')
+			row = box.row(align=True)
+			row.prop(self, 'key_location', text='Location', icon='BLANK1')
+			row.prop(self, 'key_rotation', text='Rotation', icon='BLANK1')
+			row.prop(self, 'key_scale', text='Scale',icon='BLANK1')
+
+			box = layout.box()
+			box.prop(self, 'calculator', icon='ALIGN_TOP')
+			if self.calculator:
+				box.prop(self, 'push', icon='TEMP')
+				box.prop(self, 'relase', icon='TEMP')
+				box.prop(self, 'next_push', icon='TEMP')
+				box.prop(self, 'end', icon='TEMP')
+		else:
+			self.next_step = 1
+			self.repeat = 1
+	
+	def insert_key_for_current_state(self, chanel, frame):
+		""" Set key for Location and Scale always is same """
+		if self.key_location:
+			chanel.keyframe_insert(data_path='location', frame=frame)
+		if self.key_scale:
+			chanel.keyframe_insert(data_path='scale', frame=frame)
+
+		""" Sey key by rotation mode """
+		if self.key_rotation:
+			if chanel.rotation_mode == 'QUATERNION':
+				chanel.keyframe_insert(data_path='rotation_quaternion', frame=frame)
+			elif chanel.rotation_mode == 'AXIS_ANGLE':
+				chanel.keyframe_insert(data_path='rotation_axis_angle', frame=frame)
+			else:
+				chanel.keyframe_insert(data_path='rotation_euler', frame=frame)
+
+	def fix_object_in_location(self, ctx, frame_current):
+		""" at each frame return object to first position and set key """
+		for obj in ctx.selected_objects:
+			worldlocation = obj.matrix_world
+			for frame in range(frame_current, frame_current + self.frames):
+				obj.matrix_world = worldlocation
+				self.insert_key_for_current_state(obj, frame)
+		
+	def fix_bone_in_location(self, ctx, frame_current):
+		""" at each frame return bone to first position and set key """
+		armature = ctx.active_object
+		for bone in ctx.selected_pose_bones:
+			
+			# if armature.parent:
+			# 	# matrix = armature.convert_space(pose_bone=bone, matrix=bone.matrix_basis, from_space='POSE', to_space='WORLD')
+			# 	# bone_matrix = armature.parent.matrix_world @ armature.matrix_parent_inverse @ armature.matrix_basis
+			# 	# bone_matrix = armature.matrix_world @ matrix
+			# 	# TODO this is not return correct value when armature has parent need to replace
+			# else:
+			""" Conver Pose bone space to world space """
+			bone_matrix = armature.convert_space(pose_bone=bone,
+				matrix=bone.matrix, from_space='POSE', to_space='WORLD')
+
+			for frame in range(frame_current, frame_current + self.frames):
+				ctx.scene.frame_current = frame
+				ctx.view_layer.update()
+				""" Convert World to pose bone space """
+				bone.matrix = armature.convert_space(pose_bone=bone,
+					matrix=bone_matrix, from_space='WORLD', to_space='POSE')
+				self.insert_key_for_current_state(bone, frame)
 
 	def execute(self, ctx):
-		frame_current = ctx.scene.frame_current
+		""" Store current time """
+		start_time = ctx.scene.frame_current
 		
-		if ctx.mode == 'OBJECT':
-			for obj in ctx.selected_objects:
-				worldlocation = obj.matrix_world
-				for frame in range(frame_current, frame_current + self.frames):
-					obj.matrix_world = worldlocation
-					self.insert_key_for_current_state(obj, frame)
+		""" start frame already asked from user if calculator is on """
+		if self.calculator:
+			ctx.scene.frame_current = self.push
+			ctx.view_layer.update()
 
-		if ctx.mode == "POSE":
-			armature = ctx.active_object
-			for bone in ctx.selected_pose_bones:
-				
-				# bone = armature.pose.bones[bone.name] # get pose bone
-				bone_matrix = armature.matrix_world @ bone.matrix
+		""" Repeat for each foot step """
+		for _ in range(self.repeat):
+		
+			if ctx.mode == 'OBJECT':
+				self.fix_object_in_location(ctx, ctx.scene.frame_current)
 
-				for frame in range(frame_current, frame_current + self.frames):
-					ctx.scene.frame_current = frame
-					ctx.view_layer.update()
-					bone.matrix = bone_matrix
-					self.insert_key_for_current_state(bone, frame)
+			if ctx.mode == "POSE":
+				self.fix_bone_in_location(ctx, ctx.scene.frame_current)
 
+			""" jump to frame the next foot step begon most be equal of cycle length """
+			ctx.scene.frame_current += self.next_step - self.frames
+			ctx.view_layer.update()
+		
+		""" restore to begining time """
+		ctx.scene.frame_current = start_time
 		return{'FINISHED'}
 	
 	def invoke(self, ctx, event):

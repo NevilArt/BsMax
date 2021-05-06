@@ -233,6 +233,7 @@ class Camera_OT_Catch_Frames(Operator):
 		if ctx.active_object != None:
 			if ctx.active_object.type == "CAMERA":
 				frames = catch_camera_frames(ctx)
+				# ctx.view_layer.update() #check with/whitout this #
 				print("-->", frames)
 		# self.report({'OPERATOR'},'bpy.ops.camera.set_active()')
 		return{"FINISHED"}
