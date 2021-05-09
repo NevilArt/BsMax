@@ -1,3 +1,6 @@
+#0,1,0,20210506
+	'Freeze On' improved ('Animation/Freeze On')
+
 #0,1,0,20210505
 	'Freeze On' Fix an IK controller in position for wanted frame range 'Animation/Freeze On'.
 

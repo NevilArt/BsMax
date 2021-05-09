@@ -231,7 +231,7 @@ def update_freeze_on(self, ctx):
 	""" Get from calculate fields """
 	self.frames = self.relase - self.push
 	self.next_step = self.next_push - self.push + 1
-	self.repeat = self.end / self.next_step
+	self.repeat = (self.end - self.push) / self.next_step
 
 class Anim_OT_Freeze_on(Operator):
 	bl_idname = 'anim.freeze_on'
@@ -261,7 +261,7 @@ class Anim_OT_Freeze_on(Operator):
 	""" Calculator """
 	calculator: BoolProperty(name='Calculator', default= False)
 	
-	push: IntProperty(name='Frame that foot touch floor',
+	push: IntProperty(name='Frame that first time foot touch the floor',
 		min=0, default=1, update=update_freeze_on)
 	
 	relase: IntProperty(name='Frame that foot untouch floor',

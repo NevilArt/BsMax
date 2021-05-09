@@ -31,7 +31,8 @@ Do not worry about slowing down of Updates. it`s time to learn Blender c++ codin
 
 # latest Updates
 
-* 'Freeze On' improved ('Animation/Freeze On')
+* Light/Camera lister Improved.
+* 'Freeze On' Repeat count issue fixed.
 * [Update History...](https://github.com/NevilArt/BsMax_2_80/blob/master/HISTORY.TXT)
 
 # License
