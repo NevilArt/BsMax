@@ -96,12 +96,12 @@ class Selection_Set_Armature(PropertyGroup):
 
 
 class ARMATURE_OT_Selection_Set(Operator):
-	bl_idname = "pose.selection_set"
-	bl_label = "Selection set"
-	bl_description = ""
+	bl_idname = 'pose.selection_set'
+	bl_label = 'Selection set'
+	# bl_description = ''
 	bl_options = {'REGISTER', 'UNDO', 'INTERNAL'}
 
-	index: IntProperty(name="index")
+	index: IntProperty(name='index')
 
 	def get_groups(self, bone):
 		return bone.selection_groups.split(',')
@@ -146,15 +146,15 @@ class ARMATURE_OT_Selection_Set(Operator):
 			""" Get Old Name """
 			name = arm_sel_set.get_name_by_index(ctx.active_object, ctx.scene.selection_set.active)
 			ctx.scene.selection_set.name = name
-		return{"FINISHED"}
+		return{'FINISHED'}
 
 
 
 class Armature_OP_Selection_Set(Panel):
 	bl_space_type = 'VIEW_3D'
 	bl_region_type = 'UI'
-	bl_label = "Selection (Pose Bone)"
-	bl_idname = "VIEW3D_PT_selection_set"
+	bl_label = 'Selection (Pose Bone)'
+	bl_idname = 'VIEW3D_PT_selection_set'
 	bl_category = 'Tool'
 
 	@classmethod
@@ -166,9 +166,21 @@ class Armature_OP_Selection_Set(Panel):
 	
 	def draw(self, ctx):
 		layout = self.layout
-		box = layout.box()
+
 		obj_selection_set = ctx.active_object.data.selection_set
 		scene_selection_set = ctx.scene.selection_set
+		
+		""" Controll """
+		box = layout.box()
+		row = box.row()
+		row.prop(scene_selection_set, 'multi',icon='ADD', text='')
+		row.prop(scene_selection_set, 'mode')
+		if scene_selection_set.mode == 'EDIT':
+			row.prop(obj_selection_set, 'columns', text='Col:')
+			row.prop(obj_selection_set, 'rows', text='Row:')
+		
+		""" Buttons """
+		box = layout.box()
 		for j in range(obj_selection_set.rows):
 			row = box.row()
 			for i in range(obj_selection_set.columns):
@@ -180,24 +192,20 @@ class Armature_OP_Selection_Set(Panel):
 						name = str(index)
 					else:
 						name = arm_sel_set.get_name_by_index(ctx.active_object, index)
-					row.operator("pose.selection_set", text=name).index=index
-		box = layout.box()
-		row = box.row()
-		row.prop(scene_selection_set, 'multi',icon='ADD', text='')
-		row.prop(scene_selection_set, 'mode')
-		if scene_selection_set.mode == 'EDIT':
-			row.prop(obj_selection_set, 'columns', text='Col:')
-			row.prop(obj_selection_set, 'rows', text='Row:')
+					row.operator('pose.selection_set', text=name).index=index
 
 
 
-classes = [ARMATURE_OT_Selection_Set, Armature_OP_Selection_Set, Selection_Set_Scene, Selection_Set_Armature]
+classes = [ARMATURE_OT_Selection_Set,
+	Armature_OP_Selection_Set,
+	Selection_Set_Scene,
+	Selection_Set_Armature]
 
 def register_selection_set():
 	[bpy.utils.register_class(c) for c in classes]
 	bpy.types.Scene.selection_set = PointerProperty(type=Selection_Set_Scene)
 	bpy.types.Armature.selection_set = PointerProperty(type=Selection_Set_Armature)
-	bpy.types.PoseBone.selection_groups = StringProperty(name="Selection Groups", default='')
+	bpy.types.PoseBone.selection_groups = StringProperty(name='Selection Groups', default='')
 
 def unregister_selection_set():
 	[bpy.utils.unregister_class(c) for c in classes]

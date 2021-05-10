@@ -142,6 +142,7 @@ class Camera_OT_Select(Operator):
 		if ctx.scene.camera:
 			ctx.area.spaces[0].region_3d.view_perspective = 'CAMERA'
 
+		bpy.ops.view3d.view_center_camera('INVOKE_DEFAULT')
 		return{'FINISHED'}
 
 
@@ -248,3 +249,6 @@ def register_cameras():
 def unregister_cameras():
 	bpy.types.VIEW3D_MT_view_cameras.remove(camera_menu)	
 	[bpy.utils.unregister_class(c) for c in classes]
+
+if __name__ == '__main__':
+	register_cameras()

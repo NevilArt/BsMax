@@ -16,7 +16,7 @@
 from .animation_key import register_animation_key, unregister_animation_key
 from .character_lister import register_character_lister, unregister_character_lister
 from .driver_fixer import register_driver_fixer, unregister_driver_fixer
-from .frameupdate import register_frameupdate, unregister_frameupdate
+from .frame_update import register_frame_update, unregister_frame_update
 from .parent import register_parent, unregister_parent
 from .pose import register_pose, unregister_pose
 from .menu import register_menu, unregister_menu
@@ -27,7 +27,7 @@ def register_animation():
 	register_animation_key()
 	register_character_lister()
 	register_driver_fixer()
-	register_frameupdate()
+	register_frame_update()
 	register_parent()
 	register_pose()
 	register_menu()
@@ -38,7 +38,7 @@ def unregister_animation():
 	unregister_animation_key()
 	unregister_character_lister()
 	unregister_driver_fixer()
-	unregister_frameupdate()
+	unregister_frame_update()
 	unregister_menu()
 	unregister_pose()
 	unregister_parent()

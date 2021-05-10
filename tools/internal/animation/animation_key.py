@@ -14,9 +14,8 @@
 ############################################################################
 
 import bpy
-from bpy.types import Operator
+from bpy.types import Operator, Panel
 from bpy.props import BoolProperty, EnumProperty, IntProperty
-
 
 
 class KeyData:
@@ -33,6 +32,13 @@ class KeyData:
 		# self.Key_Materials = False
 		# self.Key_Other = False
 kd = KeyData()
+
+
+
+class Anim_State:
+	def __init__(self):
+		self.lock_on_panel = False
+anim_state = Anim_State()
 
 
 
@@ -99,23 +105,6 @@ class Anim_OT_Set_Key_Filters(Operator):
 
 
 
-class Anim_OT_Auto_Key_Toggle(Operator):
-	bl_idname = "anim.auto_key_toggle"
-	bl_label = "Auto Key Toggle"
-
-	def execute(self, ctx):
-		state = ctx.scene.tool_settings.use_keyframe_insert_auto
-		ctx.scene.tool_settings.use_keyframe_insert_auto = not state
-		""" change dopesheet header color """
-		dopesheet_space = ctx.preferences.themes[0].dopesheet_editor.space
-		if state:
-			dopesheet_space.header = (0.2588, 0.2588, 0.2588, 1.0)
-		else:
-			dopesheet_space.header = (0.5, 0.0, 0.0, 1.0)
-		return{"FINISHED"}
-
-
-
 class Anim_OT_Set_Key(Operator):
 	bl_idname = "anim.set_key"
 	bl_label = "Set Keys"
@@ -148,14 +137,14 @@ class Anim_OT_Set_Key(Operator):
 			if kd.Key_Scale:
 				bpy.ops.anim.keyframe_insert_menu(type='Scaling')
 
-		return{"FINISHED"}
+		return{'FINISHED'}
 
 
 
 # Delete selected objects animation
 class Anim_OT_Delete_Selected_Animation(Operator):
-	bl_idname = "anim.delete_selected_animation"
-	bl_label = "Delete Selected Animation"
+	bl_idname = 'anim.delete_selected_animation'
+	bl_label = 'Delete Selected Animation'
 	bl_options={'REGISTER', 'UNDO'}
 
 	@classmethod
@@ -165,14 +154,14 @@ class Anim_OT_Delete_Selected_Animation(Operator):
 	def execute(self, ctx):
 		for obj in ctx.selected_objects:
 			obj.animation_data_clear()
-		self.report({'OPERATOR'},"bpy.ops.anim.delete_selected_animation()")
-		return{"FINISHED"}
+		# self.report({'OPERATOR'},'bpy.ops.anim.delete_selected_animation()')
+		return{'FINISHED'}
 
 
 
 class Anim_OT_Frame_Set(Operator):
-	bl_idname = "anim.frame_set"
-	bl_label = "Set Frame"
+	bl_idname = 'anim.frame_set'
+	bl_label = 'Set Frame'
 	frame: EnumProperty(name='Frame', default='Next',
 		items =[('Next','Next',''),('Previous','Previous',''),
 				('First','First',''),('Last','Last','')])
@@ -191,7 +180,7 @@ class Anim_OT_Frame_Set(Operator):
 		else:
 			frame = last
 		ctx.scene.frame_current = frame
-		return{"FINISHED"}
+		return{'FINISHED'}
 
 
 
@@ -275,6 +264,7 @@ class Anim_OT_Freeze_on(Operator):
 
 	""" Simple """
 	more: BoolProperty(name='More Option', default= False)
+	panel: BoolProperty(name='On Panel', default= False)
 
 	@classmethod
 	def poll(self, ctx):
@@ -289,6 +279,7 @@ class Anim_OT_Freeze_on(Operator):
 		row = box.row()
 		row.label(text='Fix position')
 		row.prop(self, 'more', icon='HAND')
+		# row.prop(self, 'panel', icon='NODE_SEL')
 		
 		row = box.row()
 		row = box.row(align=True)
@@ -314,6 +305,9 @@ class Anim_OT_Freeze_on(Operator):
 		else:
 			self.next_step = 1
 			self.repeat = 1
+	
+	def check(self, ctx):
+		anim_state.lock_on_panel = self.panel
 	
 	def insert_key_for_current_state(self, chanel, frame):
 		""" Set key for Location and Scale always is same """
@@ -391,6 +385,20 @@ class Anim_OT_Freeze_on(Operator):
 	def invoke(self, ctx, event):
 		return ctx.window_manager.invoke_props_dialog(self)
 
+class Anim_OP_Selection_Set(Panel):
+	bl_space_type = 'VIEW_3D'
+	bl_region_type = 'UI'
+	bl_label = 'Freeze on'
+	bl_idname = 'VIEW3D_PT_anim_Lock_on'
+	bl_category = 'Tool'
+
+	@classmethod
+	def poll(self, ctx):
+		return anim_state.lock_on_panel
+	
+	def draw(self, ctx):
+		layout = self.layout
+		layout.label(text='TEST')
 
 
 # class Graph_Editor_OT_Hide(Operator):
@@ -399,13 +407,13 @@ class Anim_OT_Freeze_on(Operator):
 
 
 classes = [ Anim_OT_Set_Key_Filters,
-			Anim_OT_Auto_Key_Toggle,
 			Anim_OT_Set_Key,
 			Anim_OT_Delete_Selected_Animation,
 			Anim_OT_Frame_Set,
 			Dopesheet_OT_Zoom_Extended,
 			Anim_OT_Delete_Key,
-			Anim_OT_Freeze_on]
+			Anim_OT_Freeze_on,
+			Anim_OP_Selection_Set]
 
 def register_animation_key():
 	[bpy.utils.register_class(c) for c in classes]
