@@ -31,9 +31,7 @@ Do not worry about slowing down of Updates. it`s time to learn Blender c++ codin
 
 # latest Updates
 
-* 'OpenGL Depth Picking' Automaticly disable on Pose mode to speed up bone selecting.
-* 'C' Camera search fits camera frame to view too (3DsMax Mode).
-* Timeline Red bar back with no crash.
+* 'OpenGL Depth Picking' Autodisable is optinal (Search for 'Auto Use Select Pick Depth Toggle' off by default).
 * [Update History...](https://github.com/NevilArt/BsMax_2_80/blob/master/HISTORY.TXT)
 
 # License

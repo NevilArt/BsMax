@@ -204,9 +204,24 @@ class Render_TO_Light_Lister(Operator):
 				if isnew:
 					lights.append(light)
 		return lights
+	
+	# def get_emition_matts(self, ctx);
+	# 	meshes = [obj for obj in ctx.scene.objects if obj.type == 'MESH']
+	# 	for obj in meshes:
+	# 		for slot in obj.material_slots:
+	# 			outputs, matts = [], []
+	# 			for node in slot.material.node_tree.nodes:
+	# 				if node.type == 'OUTPUT_MATERIAL':
+	# 					links = node.inputs['Surface'].links 
+	# 					if len(links) > 0:
+	# 						if links[0].from_node.type == 'BSDF_TRANSPARENT':
+	# 							matts.append(node)
+	# 						else:
+	# 							outputs.append(node)
 
 	def invoke(self, ctx, event):
-		self.lights = self.get_lights() 
+		self.lights = self.get_lights()
+		# self.materials = self.get_emition_matts(ctx)
 		return ctx.window_manager.invoke_props_dialog(self, width=500)
 
 

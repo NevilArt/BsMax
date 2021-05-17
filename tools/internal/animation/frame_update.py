@@ -24,6 +24,7 @@ class Scene_Stata:
 		self.mode = 'OBJECT'
 		self.pose_mode = False
 		self.use_select_pick_depth = False
+		self.active_auto_use_select_pick_depth = False
 		self.use_keyframe_insert_auto = False
 		self.dopesheet_editor_space_header_color = (0.2588, 0.2588, 0.2588, 1.0)
 	
@@ -44,9 +45,10 @@ class Scene_Stata:
 		# self.use_keyframe_insert_auto = ukias
 	
 	def mode_updated(self, ctx):
-		""" uspds use_select_pick_depth State """
-		uspds = False if (ctx.mode == 'POSE') else self.use_select_pick_depth
-		ctx.preferences.system.use_select_pick_depth = uspds
+		if self.active_auto_use_select_pick_depth:
+			""" uspds use_select_pick_depth State """
+			uspds = False if (ctx.mode == 'POSE') else self.use_select_pick_depth
+			ctx.preferences.system.use_select_pick_depth = uspds
 
 	def autokey_state_updated(self, ctx):
 		if ctx.scene.tool_settings.use_keyframe_insert_auto:
@@ -106,8 +108,23 @@ class Anim_OT_Auto_Key_Toggle(Operator):
 
 
 
+# this operator need to see scene_state class #
+class Anim_OT_Auto_Use_Select_Pick_Depth_Toggle(Operator):
+	bl_idname = 'anim.auto_use_select_pick_depth_toggle'
+	bl_label = 'Auto Use Select Pick Depth Toggle'
+	bl_options = {'REGISTER'}
+
+	def execute(self, ctx):
+		scene_state.active_auto_use_select_pick_depth = not scene_state.active_auto_use_select_pick_depth
+		return{'FINISHED'}
+
+
+
+classes = [Anim_OT_Auto_Key_Toggle,
+	Anim_OT_Auto_Use_Select_Pick_Depth_Toggle]
+
 def register_frame_update():
-	bpy.utils.register_class(Anim_OT_Auto_Key_Toggle)
+	[bpy.utils.register_class(c) for c in classes]
 	scene_state.store(bpy.context)
 	# bpy.app.handlers.frame_change_pre.append(frame_Update)
 	bpy.app.handlers.depsgraph_update_pre.append(depsgraph_update)
@@ -117,7 +134,7 @@ def unregister_frame_update():
 	scene_state.restore(bpy.context)
 	# bpy.app.handlers.frame_change_pre.remove(frame_Update)
 	bpy.app.handlers.depsgraph_update_pre.remove(depsgraph_update)
-	bpy.utils.unregister_class(Anim_OT_Auto_Key_Toggle)
+	[bpy.utils.unregister_class(c) for c in classes]
 
 if __name__ == '__main__':
 	register_frame_update()
