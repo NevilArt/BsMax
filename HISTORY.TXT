@@ -1,3 +1,7 @@
+
+#0,1,0,20210517
+	'OpenGL Depth Picking' Autodisable is optinal (Search for 'Auto Use Select Pick Depth Toggle' off by default)
+
 #0,1,0,20210511
 	'OpenGL Depth Picking' Automaticly disable on Pose mode to speed up bone selecting.
 	'C' Camera search fits camera frame to view too (3DsMax Mode).

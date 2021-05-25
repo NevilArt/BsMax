@@ -31,7 +31,7 @@ Do not worry about slowing down of Updates. it`s time to learn Blender c++ codin
 
 # latest Updates
 
-* 'OpenGL Depth Picking' Autodisable is optinal (Search for 'Auto Use Select Pick Depth Toggle' off by default).
+* Light lister list materials with emission (Editable only if Color or Strength slot are free).
 * [Update History...](https://github.com/NevilArt/BsMax_2_80/blob/master/HISTORY.TXT)
 
 # License

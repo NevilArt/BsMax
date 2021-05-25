@@ -159,8 +159,42 @@ class Render_TO_Light_Lister(Operator):
 				row.prop(data, 'contact_shadow_bias', text='Bias')
 				row.prop(data, 'contact_shadow_thickness', text='Thikness')
 	
-	def get_material_field(self, col, material):
-		pass
+	def is_free_node_input(self, input):
+		return len(input.links) == 0
+	
+	def get_material_field(self, col, material, node):
+		row = col.row()
+		row.label(text= material.name)
+		if node.type == 'EMISSION':
+			
+			color_slot = node.inputs['Color']
+			if self.is_free_node_input(color_slot):
+				row.prop(color_slot, 'default_value', text='', icon='BLANK1')
+			else:
+				row.label(text='', icon='LOCKED')
+			
+			strength_slot = node.inputs['Strength']
+			if self.is_free_node_input(strength_slot):
+				row.prop(strength_slot, 'default_value', text='Strength')
+			else:
+				row.label(text=' ', icon='LOCKED')
+		
+		if node.type == 'BSDF_PRINCIPLED':
+			
+			emission_slot = node.inputs['Emission']
+			if self.is_free_node_input(emission_slot):
+				row.prop(emission_slot, 'default_value', text='', icon='BLANK1')
+			else:
+				row.label(text='', icon='LOCKED')
+			
+			strength_slot = node.inputs['Emission Strength']
+			if self.is_free_node_input(strength_slot):
+				row.prop(strength_slot, 'default_value', text='Strength')
+			else:
+				row.label(text=' ', icon='LOCKED')
+		
+		row.label(text='')
+		row.label(text='')
 
 	def draw(self, ctx):
 		layout = self.layout
@@ -182,8 +216,8 @@ class Render_TO_Light_Lister(Operator):
 		""" Get Material Field """
 		box = layout.box()
 		col = box.column()
-		for material in self.materials:
-			self.get_material_field(col, material)
+		for material, node in self.materials:
+			self.get_material_field(col, material, node)
 	
 	def execute(self, ctx):
 		self.report({'OPERATOR'}, 'bpy.ops.render.light_lister()')
@@ -205,23 +239,36 @@ class Render_TO_Light_Lister(Operator):
 					lights.append(light)
 		return lights
 	
-	# def get_emition_matts(self, ctx);
-	# 	meshes = [obj for obj in ctx.scene.objects if obj.type == 'MESH']
-	# 	for obj in meshes:
-	# 		for slot in obj.material_slots:
-	# 			outputs, matts = [], []
-	# 			for node in slot.material.node_tree.nodes:
-	# 				if node.type == 'OUTPUT_MATERIAL':
-	# 					links = node.inputs['Surface'].links 
-	# 					if len(links) > 0:
-	# 						if links[0].from_node.type == 'BSDF_TRANSPARENT':
-	# 							matts.append(node)
-	# 						else:
-	# 							outputs.append(node)
+	def get_emission_matts(self, ctx):
+		emission, bsdf_principled = [], []
+
+		for material in bpy.data.materials:
+			if material.use_nodes:
+				for node in material.node_tree.nodes:
+					if node.type == 'OUTPUT_MATERIAL':
+						if node.mute:
+							continue
+						
+						for link in node.inputs['Surface'].links:
+							if link.from_node.type == 'EMISSION':
+								emission.append((material, link.from_node))
+
+							if link.from_node.type == 'BSDF_PRINCIPLED':
+								""" Ignore if emission color is Black """
+								default_value = link.from_node.inputs['Emission'].default_value
+								if default_value[0] == 0.0 and default_value[1] == 0.0 and \
+									default_value[2] == 0.0 and default_value[3] == 1.0:
+									break
+
+								bsdf_principled.append((material, link.from_node))
+							break
+
+		return emission + bsdf_principled
+
 
 	def invoke(self, ctx, event):
 		self.lights = self.get_lights()
-		# self.materials = self.get_emition_matts(ctx)
+		self.materials = self.get_emission_matts(ctx)
 		return ctx.window_manager.invoke_props_dialog(self, width=500)
 
 
@@ -336,4 +383,5 @@ def unregister_light_lister():
 	[bpy.utils.unregister_class(c) for c in classes]
 
 if __name__ == '__main__':
-	register_light_lister()
+	[bpy.utils.register_class(c) for c in classes]
+	# register_light_lister()
