@@ -15,15 +15,7 @@
 import bpy
 from bpy.types import Operator
 
-class Anim_TO_Driver_Fixer(Operator):
-	""" Solve overide library issue with drivers """
-	bl_idname = "anim.driver_fixer"
-	bl_label = "Driver Fixer"
-
-	@classmethod
-	def poll(self, ctx):
-		return ctx.area.type == 'VIEW_3D'
-
+class Driver_Reconnect:
 	def get_shapekey_driver(self, obj, name):
 		if hasattr(obj.data.shape_keys.animation_data, 'drivers'):
 			for driver in obj.data.shape_keys.animation_data.drivers:
@@ -51,7 +43,7 @@ class Anim_TO_Driver_Fixer(Operator):
 				except:
 					pass
 
-	def execute(self, ctx):
+	def update(self):
 		for obj in bpy.data.objects:
 			if obj.animation_data:
 				for driver in obj.animation_data.drivers:
@@ -59,7 +51,20 @@ class Anim_TO_Driver_Fixer(Operator):
 		for obj in bpy.data.objects:
 			if obj.type in {'MESH','CURVE'}:
 				self.fix_shapekey(obj)
-			
+	
+
+class Anim_TO_Driver_Fixer(Operator):
+	""" Solve overide library issue with drivers """
+	bl_idname = "anim.driver_fixer"
+	bl_label = "Driver Fixer"
+
+	@classmethod
+	def poll(self, ctx):
+		return ctx.area.type == 'VIEW_3D'
+
+	def execute(self, ctx):
+		dr = Driver_Reconnect()
+		dr.update()
 		return{"FINISHED"}
 
 def register_driver_fixer():

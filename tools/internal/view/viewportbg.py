@@ -76,7 +76,8 @@ class View3D_OT_Background(Operator):
 			grad.show_grad = show_grad
 		else:
 			grad_type = 'LINEAR' if show_grad else 'SINGLE_COLOR'
-			ctx.preferences.themes['Default'].view_3d.space.gradients.background_type = grad_type
+			space = ctx.preferences.themes['Default'].view_3d.space
+			space.gradients.background_type = grad_type
 
 		if self.index == 5:
 			self.index = 0

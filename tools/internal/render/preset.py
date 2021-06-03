@@ -16,7 +16,7 @@
 import bpy
 from bpy.types import Panel, Operator
 from bpy.props import StringProperty, EnumProperty
-from os import path, mkdir
+from os import path, mkdir, access, W_OK
 from glob import glob
 
 preset_path = bpy.utils.user_resource('SCRIPTS', "presets") + "\\BsMax\\render\\"
@@ -40,71 +40,74 @@ def get_manual_part(ctx, engin_name):
 
 	if engin_name == 'render':
 		render = ctx.scene.render
-		script += 'bpy.context.scene.render.use_high_quality_normals = ' + str(render.use_high_quality_normals) + '\n'
-		script += 'bpy.context.scene.render.hair_type = "' + render.hair_type + '"\n'
-		script += 'bpy.context.scene.render.hair_subdiv = ' + str(render.hair_subdiv) + '\n'
-		script += 'bpy.context.scene.render.film_transparent = ' + str(render.film_transparent) + '\n'
-		script += 'bpy.context.scene.render.use_simplify = ' + str(render.use_simplify) + '\n'
-		script += 'bpy.context.scene.render.simplify_subdivision = ' + str(render.simplify_subdivision) + '\n'
-		script += 'bpy.context.scene.render.simplify_child_particles = ' + str(render.simplify_child_particles) + '\n'
-		script += 'bpy.context.scene.render.simplify_volumes = ' + str(render.simplify_volumes) + '\n'
-		script += 'bpy.context.scene.render.simplify_subdivision_render = ' + str(render.simplify_subdivision_render) + '\n'
-		script += 'bpy.context.scene.render.simplify_child_particles_render = ' + str(render.simplify_child_particles_render) + '\n'
-		script += 'bpy.context.scene.render.simplify_gpencil = ' + str(render.simplify_gpencil) + '\n'
-		script += 'bpy.context.scene.render.simplify_gpencil_onplay = ' + str(render.simplify_gpencil_onplay) + '\n'
-		script += 'bpy.context.scene.render.simplify_gpencil_view_fill = ' + str(render.simplify_gpencil_view_fill) + '\n'
-		script += 'bpy.context.scene.render.simplify_gpencil_modifier = ' + str(render.simplify_gpencil_modifier) + '\n'
-		script += 'bpy.context.scene.render.simplify_gpencil_shader_fx = ' + str(render.simplify_gpencil_shader_fx) + '\n'
-		script += 'bpy.context.scene.render.simplify_gpencil_tint = ' + str(render.simplify_gpencil_tint) + '\n'
-		script += 'bpy.context.scene.render.simplify_gpencil_antialiasing = ' + str(render.simplify_gpencil_antialiasing) + '\n'
-		script += 'bpy.context.scene.render.use_freestyle = ' + str(render.use_freestyle) + '\n'
-		script += 'bpy.context.scene.render.line_thickness_mode = "' + render.line_thickness_mode + '"\n'
-		script += 'bpy.context.scene.render.line_thickness = ' + str(render.line_thickness) + '\n'
-		script += 'bpy.context.scene.render.use_save_buffers = ' + str(render.use_save_buffers) + '\n'
-		script += 'bpy.context.scene.render.use_persistent_data = ' + str(render.use_persistent_data) + '\n'
-		script += 'bpy.context.scene.render.use_motion_blur = ' + str(render.use_motion_blur) + '\n'
+		bcs = 'bpy.context.scene.render.'
+		script += bcs + 'use_high_quality_normals = ' + str(render.use_high_quality_normals) + '\n'
+		script += bcs + 'hair_type = "' + render.hair_type + '"\n'
+		script += bcs + 'hair_subdiv = ' + str(render.hair_subdiv) + '\n'
+		script += bcs + 'film_transparent = ' + str(render.film_transparent) + '\n'
+		script += bcs + 'use_simplify = ' + str(render.use_simplify) + '\n'
+		script += bcs + 'simplify_subdivision = ' + str(render.simplify_subdivision) + '\n'
+		script += bcs + 'simplify_child_particles = ' + str(render.simplify_child_particles) + '\n'
+		script += bcs + 'simplify_volumes = ' + str(render.simplify_volumes) + '\n'
+		script += bcs + 'simplify_subdivision_render = ' + str(render.simplify_subdivision_render) + '\n'
+		script += bcs + 'simplify_child_particles_render = ' + str(render.simplify_child_particles_render) + '\n'
+		script += bcs + 'simplify_gpencil = ' + str(render.simplify_gpencil) + '\n'
+		script += bcs + 'simplify_gpencil_onplay = ' + str(render.simplify_gpencil_onplay) + '\n'
+		script += bcs + 'simplify_gpencil_view_fill = ' + str(render.simplify_gpencil_view_fill) + '\n'
+		script += bcs + 'simplify_gpencil_modifier = ' + str(render.simplify_gpencil_modifier) + '\n'
+		script += bcs + 'simplify_gpencil_shader_fx = ' + str(render.simplify_gpencil_shader_fx) + '\n'
+		script += bcs + 'simplify_gpencil_tint = ' + str(render.simplify_gpencil_tint) + '\n'
+		script += bcs + 'simplify_gpencil_antialiasing = ' + str(render.simplify_gpencil_antialiasing) + '\n'
+		script += bcs + 'use_freestyle = ' + str(render.use_freestyle) + '\n'
+		script += bcs + 'line_thickness_mode = "' + render.line_thickness_mode + '"\n'
+		script += bcs + 'line_thickness = ' + str(render.line_thickness) + '\n'
+		script += bcs + 'use_save_buffers = ' + str(render.use_save_buffers) + '\n'
+		script += bcs + 'use_persistent_data = ' + str(render.use_persistent_data) + '\n'
+		script += bcs + 'use_motion_blur = ' + str(render.use_motion_blur) + '\n'
 	
 	if engin_name == 'eevee':
 		eevee = ctx.scene.eevee
-		script += 'bpy.context.scene.eevee.volumetric_light_clamp = ' + str(eevee.volumetric_light_clamp) + '\n'
-		script += 'bpy.context.scene.eevee.use_shadow_high_bitdepth = ' + str(eevee.use_shadow_high_bitdepth) + '\n'
-		script += 'bpy.context.scene.eevee.use_soft_shadows = ' + str(eevee.use_soft_shadows) + '\n'
-		script += 'bpy.context.scene.eevee.gi_auto_bake = ' + str(eevee.gi_auto_bake) + '\n'
-		script += 'bpy.context.scene.eevee.gi_glossy_clamp = ' + str(eevee.gi_glossy_clamp) + '\n'
-		script += 'bpy.context.scene.eevee.gi_show_cubemaps = ' + str(eevee.gi_show_cubemaps) + '\n'
-		script += 'bpy.context.scene.eevee.gi_show_irradiance = ' + str(eevee.gi_show_irradiance) + '\n'
-		script += 'bpy.context.scene.eevee.use_overscan = ' + str(eevee.use_overscan) + '\n'
-		script += 'bpy.context.scene.eevee.use_gtao = ' + str(eevee.use_gtao) + '\n'
-		script += 'bpy.context.scene.eevee.use_bloom = ' + str(eevee.use_bloom) + '\n'
-		script += 'bpy.context.scene.eevee.use_ssr = ' + str(eevee.use_ssr) + '\n'
-		script += 'bpy.context.scene.eevee.use_motion_blur = ' + str(eevee.use_motion_blur) + '\n'
-		script += 'bpy.context.scene.eevee.use_volumetric_shadows = ' + str(eevee.use_volumetric_shadows) + '\n'
+		bcs = 'bpy.context.scene.eevee.'
+		script += bcs + 'volumetric_light_clamp = ' + str(eevee.volumetric_light_clamp) + '\n'
+		script += bcs + 'use_shadow_high_bitdepth = ' + str(eevee.use_shadow_high_bitdepth) + '\n'
+		script += bcs + 'use_soft_shadows = ' + str(eevee.use_soft_shadows) + '\n'
+		script += bcs + 'gi_auto_bake = ' + str(eevee.gi_auto_bake) + '\n'
+		script += bcs + 'gi_glossy_clamp = ' + str(eevee.gi_glossy_clamp) + '\n'
+		script += bcs + 'gi_show_cubemaps = ' + str(eevee.gi_show_cubemaps) + '\n'
+		script += bcs + 'gi_show_irradiance = ' + str(eevee.gi_show_irradiance) + '\n'
+		script += bcs + 'use_overscan = ' + str(eevee.use_overscan) + '\n'
+		script += bcs + 'use_gtao = ' + str(eevee.use_gtao) + '\n'
+		script += bcs + 'use_bloom = ' + str(eevee.use_bloom) + '\n'
+		script += bcs + 'use_ssr = ' + str(eevee.use_ssr) + '\n'
+		script += bcs + 'use_motion_blur = ' + str(eevee.use_motion_blur) + '\n'
+		script += bcs + 'use_volumetric_shadows = ' + str(eevee.use_volumetric_shadows) + '\n'
 
 	if engin_name == 'cycles':
 		cycles = ctx.scene.cycles
-		script += 'bpy.context.scene.cycles.shading_system = ' + str(cycles.shading_system) + '\n'
-		script += 'bpy.context.scene.cycles.aa_samples = ' + str(cycles.aa_samples) + '\n'
-		script += 'bpy.context.scene.cycles.ao_samples = ' + str(cycles.ao_samples) + '\n'
-		script += 'bpy.context.scene.cycles.use_adaptive_sampling = ' + str(cycles.use_adaptive_sampling) + '\n'
-		script += 'bpy.context.scene.cycles.adaptive_min_samples = ' + str(cycles.adaptive_min_samples) + '\n'
-		script += 'bpy.context.scene.cycles.use_denoising = ' + str(cycles.use_denoising) + '\n'
-		script += 'bpy.context.scene.cycles.denoiser = "' + cycles.denoiser + '"\n'
-		script += 'bpy.context.scene.cycles.seed = ' + str(cycles.seed) + '\n'
-		script += 'bpy.context.scene.cycles.use_square_samples = ' + str(cycles.use_square_samples) + '\n'
-		script += 'bpy.context.scene.cycles.min_light_bounces = ' + str(cycles.min_light_bounces) + '\n'
-		script += 'bpy.context.scene.cycles.min_transparent_bounces = ' + str(cycles.min_transparent_bounces) + '\n'
-		script += 'bpy.context.scene.cycles.volume_bounces = ' + str(cycles.volume_bounces) + '\n'
-		script += 'bpy.context.scene.cycles.sample_clamp_direct = ' + str(cycles.sample_clamp_direct) + '\n'
-		script += 'bpy.context.scene.cycles_curves.shape = "' + ctx.scene.cycles_curves.shape + '"\n'
-		script += 'bpy.context.scene.cycles.use_preview_denoising = ' + str(cycles.use_preview_denoising) + '\n'
-		script += 'bpy.context.scene.cycles.use_animated_seed = ' + str(cycles.use_animated_seed) + '\n'
-		script += 'bpy.context.scene.cycles.ao_bounces_render = ' + str(cycles.ao_bounces_render) + '\n'
-		script += 'bpy.context.scene.cycles.use_camera_cull = ' + str(cycles.use_camera_cull) + '\n'
-		script += 'bpy.context.scene.cycles.use_distance_cull = ' + str(cycles.use_distance_cull) + '\n'
-		script += 'bpy.context.scene.cycles.use_progressive_refine = ' + str(cycles.use_progressive_refine) + '\n'
-		script += 'bpy.context.scene.cycles.debug_use_spatial_splits = ' + str(cycles.debug_use_spatial_splits) + '\n'
-		script += 'bpy.context.scene.cycles.debug_bvh_time_steps = ' + str(cycles.debug_bvh_time_steps) + '\n'
-		script += 'bpy.context.scene.cycles_curves.subdivisions = ' + str(ctx.scene.cycles_curves.subdivisions) + '\n'
+		bcs = 'bpy.context.scene.cycles'
+		script += bcs + 'shading_system = ' + str(cycles.shading_system) + '\n'
+		script += bcs + '.aa_samples = ' + str(cycles.aa_samples) + '\n'
+		script += bcs + '.ao_samples = ' + str(cycles.ao_samples) + '\n'
+		script += bcs + '.use_adaptive_sampling = ' + str(cycles.use_adaptive_sampling) + '\n'
+		script += bcs + '.adaptive_min_samples = ' + str(cycles.adaptive_min_samples) + '\n'
+		script += bcs + '.use_denoising = ' + str(cycles.use_denoising) + '\n'
+		script += bcs + '.denoiser = "' + cycles.denoiser + '"\n'
+		script += bcs + '.seed = ' + str(cycles.seed) + '\n'
+		script += bcs + '.use_square_samples = ' + str(cycles.use_square_samples) + '\n'
+		script += bcs + '.min_light_bounces = ' + str(cycles.min_light_bounces) + '\n'
+		script += bcs + '.min_transparent_bounces = ' + str(cycles.min_transparent_bounces) + '\n'
+		script += bcs + '.volume_bounces = ' + str(cycles.volume_bounces) + '\n'
+		script += bcs + '.sample_clamp_direct = ' + str(cycles.sample_clamp_direct) + '\n'
+		script += bcs + '_curves.shape = "' + ctx.scene.cycles_curves.shape + '"\n'
+		script += bcs + '.use_preview_denoising = ' + str(cycles.use_preview_denoising) + '\n'
+		script += bcs + '.use_animated_seed = ' + str(cycles.use_animated_seed) + '\n'
+		script += bcs + '.ao_bounces_render = ' + str(cycles.ao_bounces_render) + '\n'
+		script += bcs + '.use_camera_cull = ' + str(cycles.use_camera_cull) + '\n'
+		script += bcs + '.use_distance_cull = ' + str(cycles.use_distance_cull) + '\n'
+		script += bcs + '.use_progressive_refine = ' + str(cycles.use_progressive_refine) + '\n'
+		script += bcs + '.debug_use_spatial_splits = ' + str(cycles.debug_use_spatial_splits) + '\n'
+		script += bcs + '.debug_bvh_time_steps = ' + str(cycles.debug_bvh_time_steps) + '\n'
+		script += bcs + '_curves.subdivisions = ' + str(ctx.scene.cycles_curves.subdivisions) + '\n'
 
 	return script
 
@@ -175,7 +178,8 @@ class Render_OT_Save_Preset(Operator):
 
 	def save_file(self, string):
 		if not path.exists(preset_path):
-			mkdir(preset_path)
+			if os.access(preset_path, os.W_OK):
+				mkdir(preset_path)
 		filename = 	preset_path + self.preset_name + '.py'
 		preset_file = open(filename, "w")
 		preset_file.write(string)

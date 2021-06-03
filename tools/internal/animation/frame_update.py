@@ -17,6 +17,8 @@ import bpy
 from bpy.types import Operator
 from bpy.app.handlers import persistent
 
+from .driver_fixer import Driver_Reconnect
+
 
 
 class Scene_Stata:
@@ -89,6 +91,14 @@ scene_state = Scene_Stata()
 
 
 @persistent
+def render_init(scene):
+	""" Fix the overide issue befor render start """
+	dr = Driver_Reconnect()
+	dr.update()
+
+
+
+@persistent
 def depsgraph_update(scene):
 	scene_state.check(bpy.context)
 
@@ -127,12 +137,14 @@ def register_frame_update():
 	[bpy.utils.register_class(c) for c in classes]
 	scene_state.store(bpy.context)
 	# bpy.app.handlers.frame_change_pre.append(frame_Update)
+	bpy.app.handlers.render_init.append(render_init)
 	bpy.app.handlers.depsgraph_update_pre.append(depsgraph_update)
 
 def unregister_frame_update():
 	""" Return the defult values befor remove """
 	scene_state.restore(bpy.context)
 	# bpy.app.handlers.frame_change_pre.remove(frame_Update)
+	bpy.app.handlers.render_init.remove(render_init)
 	bpy.app.handlers.depsgraph_update_pre.remove(depsgraph_update)
 	[bpy.utils.unregister_class(c) for c in classes]
 

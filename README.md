@@ -31,7 +31,8 @@ Do not worry about slowing down of Updates. it`s time to learn Blender c++ codin
 
 # latest Updates
 
-* Light lister list materials with emission (Editable only if Color or Strength slot are free).
+* BsMax works with Blender defult with Rightclick select mode too.
+* Fix library override issue fix on render time automaticaly. (Not works on back burnuer yet).
 * [Update History...](https://github.com/NevilArt/BsMax_2_80/blob/master/HISTORY.TXT)
 
 # License

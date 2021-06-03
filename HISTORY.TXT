@@ -1,3 +1,5 @@
+#0,1,0,20210525
+	Light lister list materials with emission (Editable only if Color or Strength slot are free).
 
 #0,1,0,20210517
 	'OpenGL Depth Picking' Autodisable is optinal (Search for 'Auto Use Select Pick Depth Toggle' off by default)
