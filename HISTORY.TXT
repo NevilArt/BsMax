@@ -1,3 +1,7 @@
+#0,1,0,20210604
+	BsMax works with Blender defult with Rightclick select mode too.
+	Fix library override issue fix on render time automaticaly.
+
 #0,1,0,20210525
 	Light lister list materials with emission (Editable only if Color or Strength slot are free).
 

@@ -31,8 +31,7 @@ Do not worry about slowing down of Updates. it`s time to learn Blender c++ codin
 
 # latest Updates
 
-* BsMax works with Blender defult with Rightclick select mode too.
-* Fix library override issue fix on render time automaticaly. (Not works on back burnuer yet).
+* Auto library override issue fixer caused to crash on heavy secens, disabled for now.
 * [Update History...](https://github.com/NevilArt/BsMax_2_80/blob/master/HISTORY.TXT)
 
 # License

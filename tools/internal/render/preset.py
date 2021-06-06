@@ -178,7 +178,7 @@ class Render_OT_Save_Preset(Operator):
 
 	def save_file(self, string):
 		if not path.exists(preset_path):
-			if os.access(preset_path, os.W_OK):
+			if access(preset_path, W_OK):
 				mkdir(preset_path)
 		filename = 	preset_path + self.preset_name + '.py'
 		preset_file = open(filename, "w")
