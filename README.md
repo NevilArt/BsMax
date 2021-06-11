@@ -31,7 +31,7 @@ Do not worry about slowing down of Updates. it`s time to learn Blender c++ codin
 
 # latest Updates
 
-* Auto library override issue fixer caused to crash on heavy secens, disabled for now.
+* Transfer tool for Rigg Selection set to other Rigg 'Pose mode: Right Panel/Tool/Selection(Pose bone)/Transform/(Copy/Past)'
 * [Update History...](https://github.com/NevilArt/BsMax_2_80/blob/master/HISTORY.TXT)
 
 # License

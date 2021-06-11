@@ -1,3 +1,6 @@
+#0,1,0,20210606
+	Auto library override issue fixer caused to crash on heavy secens, disabled for now.
+
 #0,1,0,20210604
 	BsMax works with Blender defult with Rightclick select mode too.
 	Fix library override issue fix on render time automaticaly.

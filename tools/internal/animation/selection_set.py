@@ -22,6 +22,7 @@ class Armature_Selection_Set:
 	def __init__(self):
 		self.armature = None
 		self.button_names = []
+		self.clipboard_test_key = '"""__armature_selection_set_clipboard__"""'
 	
 	def get_names_from_armature(self, armature):
 		""" calculate once if armature changes """
@@ -54,6 +55,54 @@ class Armature_Selection_Set:
 		for name in names:
 			name_str += name + ':'
 		armature.data.selection_set.names = name_str
+	
+	def copy_to_clipboard(self, ctx):
+		if self.armature:
+			""" Read data from armature """
+			armature = ctx.active_object
+			names = armature.data['selection_set']['names']
+			columns = armature.data.selection_set.columns
+			rows = armature.data.selection_set.rows
+			
+			""" Convert data to string """
+			string = self.clipboard_test_key + '\n'
+			string += '\n'
+			string += 'import bpy\n'
+			string += '\n'
+			string += 'armature = bpy.context.active_object' + '\n'
+			string += 'armature.data["selection_set"]["names"] = "' + names + '"\n'
+			string += 'armature.data.selection_set.columns = ' + str(columns) + '\n'
+			string += 'armature.data.selection_set.rows = ' + str(rows) + '\n'
+			string += '\n'
+			string += 'bone_groups = (\n' # Open array
+
+			for bone in armature.pose.bones:
+				name = bone.name
+				selection_groups = bone.selection_groups
+				string += '["' + name + '", "' + selection_groups + '"],\n'
+			
+			string += ')\n' # Close the array
+			string += '\n'
+
+			""" Check and aply selection data to new bonse is exist """
+			string += 'for name, selection_groups in bone_groups:\n'
+			string += '	for bone in armature.pose.bones:\n'
+			string += '		if name == bone.name:\n'
+			string += '			bone.selection_groups = selection_groups\n'
+			string += '			break\n'
+			string += '\n'
+			string += 'bpy.context.scene.selection_set.mode = "TRANSFER"\n'
+
+			""" Send data to clipboard """
+			ctx.window_manager.clipboard = string
+	
+	def past_from_clipboard(self, ctx):
+		if self.armature:
+			string = ctx.window_manager.clipboard
+			test = string.splitlines()
+			if len(test) > 0:
+				if test[0] == self.clipboard_test_key:
+					exec(string)
 
 arm_sel_set = Armature_Selection_Set()
 
@@ -80,8 +129,13 @@ def rename_selection_set(self, ctx):
 
 
 class Selection_Set_Scene(PropertyGroup):
-	mode: EnumProperty(name='Mode',default='SELECT',
-		items =[('SELECT','Select',''), ('SET','Set',''),('RENAME','Rename',''), ('EDIT','Edit','')])
+	mode: EnumProperty(name='Mode', default='SELECT',
+		items =[
+			('SELECT', 'Select', 'Select group of bones'),
+			('SET', 'Set', 'Set Selection groups'),
+			('RENAME', 'Rename', 'Rename buttons'),
+			('EDIT', 'Edit', 'Edit buttons layout'),
+			('TRANSFER', 'Transfer', 'Transfer Selection set from a rig to other')])
 	multi: BoolProperty(name='Multi Selection', default=False)
 	name: StringProperty(name="", update=rename_selection_set)
 	active: IntProperty(name="", default=0)
@@ -92,6 +146,22 @@ class Selection_Set_Armature(PropertyGroup):
 	columns: IntProperty(name='columns', min=1, max=100, default=3)
 	rows: IntProperty(name='row', min=1, max=100, default=10)
 	names: StringProperty(name='')
+
+
+
+class ARMATURE_OT_Transfer_Selection_Set(Operator):
+	bl_idname = 'pose.transfer_selection_set'
+	bl_label = 'Transfer Selection set'
+	# bl_description = ''
+	bl_options = {'REGISTER', 'UNDO', 'INTERNAL'}
+	action: StringProperty()
+	
+	def execute(self, ctx):
+		if self.action == 'COPY':
+			arm_sel_set.copy_to_clipboard(ctx)
+		else:
+			arm_sel_set.past_from_clipboard(ctx)
+		return{'FINISHED'}
 
 
 
@@ -178,6 +248,10 @@ class Armature_OP_Selection_Set(Panel):
 		if scene_selection_set.mode == 'EDIT':
 			row.prop(obj_selection_set, 'columns', text='Col:')
 			row.prop(obj_selection_set, 'rows', text='Row:')
+		if scene_selection_set.mode == 'TRANSFER':
+			ptss = "pose.transfer_selection_set"
+			row.operator(ptss, text="", icon="COPYDOWN").action = "COPY"
+			row.operator(ptss, text="", icon="PASTEDOWN").action = "PASTE"
 		
 		""" Buttons """
 		box = layout.box()
@@ -197,6 +271,7 @@ class Armature_OP_Selection_Set(Panel):
 
 
 classes = [ARMATURE_OT_Selection_Set,
+	ARMATURE_OT_Transfer_Selection_Set,
 	Armature_OP_Selection_Set,
 	Selection_Set_Scene,
 	Selection_Set_Armature]
@@ -214,4 +289,5 @@ def unregister_selection_set():
 	del bpy.types.PoseBone.selection_groups
 
 if __name__ == "__main__":
+	# unregister_selection_set()
 	register_selection_set()

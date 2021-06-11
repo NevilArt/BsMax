@@ -93,7 +93,7 @@ def create_joystic(ctx, rectangle, mode):
 	joystick.location = location
 	frame = joystick.data.bones[0]
 	joy = joystick.data.bones[1]
-	frame.name, joy.name = "Frame", "Joy"
+	frame.name, joy.name = 'Frame', 'Joy'
 	
 	""" disable for diformation """
 	frame.use_deform = False
@@ -134,7 +134,7 @@ def create_joystic(ctx, rectangle, mode):
 	""" Clear Scene """
 	bpy.ops.object.mode_set(mode='OBJECT', toggle=False)
 	objs = [rectangle,circle]
-	bpy.ops.object.delete({"selected_objects": objs})
+	bpy.ops.object.delete({'selected_objects': objs})
 
 	""" frame only mode delete joystick """
 	if mode == 10:
@@ -152,78 +152,77 @@ class JoyStickCreator:
 
 def get_arrow_panel(op, layout, mode, orient):
 	col = layout.column(align=True)
-	row = col.row(align = True)
+	row = col.row(align=True)
 	if orient == 'j':
-		row.operator(op,text="", icon="BLANK1").mode = 1
+		row.operator(op, text='', icon='BLANK1').mode = 1
 	if orient in {'j', 'v'}:
-		row.operator(op,text="",icon="TRIA_UP").mode = 2
+		row.operator(op, text='', icon='TRIA_UP').mode = 2
 	if orient == 'j':
-		row.operator(op,text="",icon="BLANK1").mode = 3
+		row.operator(op, text='', icon='BLANK1').mode = 3
 	row = col.row(align = True)
 	if orient in {'j', 'h'}:
-		row.operator(op,text="",icon="TRIA_LEFT").mode = 4
-	row.operator(op,text="",icon='DOT').mode = 5
+		row.operator(op, text='', icon='TRIA_LEFT').mode = 4
+	row.operator(op, text='', icon='DOT').mode = 5
 	if orient in {'j', 'h'}:
-		row.operator(op,text="",icon="TRIA_RIGHT").mode = 6
+		row.operator(op, text='', icon='TRIA_RIGHT').mode = 6
 	row = col.row(align = True)
 	if orient == 'j':
-		row.operator(op,text="",icon="BLANK1").mode = 7
+		row.operator(op, text='', icon='BLANK1').mode = 7
 	if orient in {'j', 'v'}:
-		row.operator(op,text="",icon="TRIA_DOWN").mode = 8
+		row.operator(op, text='', icon='TRIA_DOWN').mode = 8
 	if orient == 'j':
-		row.operator(op,text="",icon="BLANK1").mode = 9
+		row.operator(op, text='', icon='BLANK1').mode = 9
 	col = layout.column()
-	col.operator(op,text="",icon="MESH_PLANE").mode = 10
+	col.operator(op, text='', icon='MESH_PLANE').mode = 10
 	
-	if mode == 1: text = "Up Left"
-	elif mode == 2: text = "Up"
-	elif mode == 3: text = "Up Right"
-	elif mode == 4: text = "Left"
-	elif mode == 5: text = "Center"
-	elif mode == 6: text = "Right"
-	elif mode == 7: text = "Down Left"
-	elif mode == 8: text = "Down"
-	elif mode == 9: text = "Down Right"
-	elif mode == 10: text = "Frame Only"
-	else: text = ""
+	if mode == 1: text = 'Up Left'
+	elif mode == 2: text = 'Up'
+	elif mode == 3: text = 'Up Right'
+	elif mode == 4: text = 'Left'
+	elif mode == 5: text = 'Center'
+	elif mode == 6: text = 'Right'
+	elif mode == 7: text = 'Down Left'
+	elif mode == 8: text = 'Down'
+	elif mode == 9: text = 'Down Right'
+	elif mode == 10: text = 'Frame Only'
+	else: text = ''
 	col.label(text=text)
 
 
 
 
 class Rigg_TO_Joy_Stick_Creator(Operator):
-	bl_idname = "rigg.joy_stick_creator"
-	bl_label = "Joystick Creator"
-	bl_description = "Conver Selected Rectangle to Joystick"
+	bl_idname = 'rigg.joy_stick_creator'
+	bl_label = 'Joystick Creator'
+	bl_description = 'Conver Selected Rectangle to Joystick'
 	bl_options = {'REGISTER', 'UNDO'}
 
 	mode: IntProperty()
-	orient = "j"
+	orient = 'j'
 
 	@classmethod
 	def poll(self, ctx):
 		if ctx.area.type == 'VIEW_3D':
 			if ctx.active_object != None:
-				return get_obj_class(ctx.active_object) == "Rectangle"
+				return get_obj_class(ctx.active_object) == 'Rectangle'
 		return False
 
 	def draw(self, ctx):
 		layout = self.layout
-		op = "rigg.joy_stick_creator"
 		mode = JoyStickCreator.mode
-		get_arrow_panel(op, layout, mode, self.orient)
+		get_arrow_panel('rigg.joy_stick_creator', layout, mode, self.orient)
 
 	def execute(self, ctx):
 		frame = ctx.active_object
 		create_joystic(ctx, frame, JoyStickCreator.mode)
 		JoyStickCreator.mode = 0
 		self.report({'OPERATOR'},'bpy.ops.rigg.joy_stick_creator()')
-		return {"FINISHED"}
+		return {'FINISHED'}
 
 	def invoke(self, ctx, event):
 		if self.mode == 0:
 			rec = ctx.active_object
-			if get_obj_class(rec) == "Rectangle":
+			if get_obj_class(rec) == 'Rectangle':
 				width = rec.data.primitivedata.width
 				length = rec.data.primitivedata.length
 				self.orient = get_joystic_mode(width, length)
@@ -238,9 +237,9 @@ class Rigg_TO_Joy_Stick_Creator(Operator):
 
 class Rigg_TO_Joystick_Shapekey_Connector(Operator):
 	""" Select Armature contain Joystick and Mesh contain Shape keys and run this operator  """
-	bl_idname = "rigg.joystick_shapekey_connector"
-	bl_label = "Joystick Connecotr"
-	bl_description = "Connect Joystick to Shapekey"
+	bl_idname = 'rigg.joystick_shapekey_connector'
+	bl_label = 'Joystick Connecotr'
+	bl_description = 'Connect Joystick to Shapekey'
 	bl_options = {'REGISTER', 'UNDO'}
 
 	@classmethod
@@ -282,12 +281,12 @@ class Rigg_TO_Joystick_Shapekey_Connector(Operator):
 	def collect_shapekeys(self, ctx):
 		shell = None
 		for obj in ctx.selected_objects:
-			if obj.type in {'MESH','CURVE'}:
+			if obj.type in {'MESH', 'CURVE'}:
 				shell = obj
-		items = [('None','','')]
+		items = [('None', '', '')]
 		if shell != None:
 			names = [n.name for n in shell.data.shape_keys.key_blocks if n.name != 'Basis']
-			items += [(n,n,'') for n in names]
+			items += [(n, n, '') for n in names]
 		return items
 
 	up: EnumProperty(items=collect_shapekeys)
@@ -381,7 +380,7 @@ class Rigg_TO_Joystick_Shapekey_Connector(Operator):
 			
 			bpy.ops.object.mode_set(mode='OBJECT', toggle=False)
 		# self.report({'OPERATOR'},'bpy.ops.rigg.joystick_shapekey_connector()')
-		return {"FINISHED"}
+		return {'FINISHED'}
 
 	def draw(self, ctx):
 		layout = self.layout
@@ -422,7 +421,7 @@ class Rigg_TO_Joystick_Shapekey_Connector(Operator):
 		for obj in ctx.selected_objects:
 			if obj.type == 'ARMATURE':
 				armatuar = obj
-			elif obj.type in {'MESH','CURVE'}:
+			elif obj.type in {'MESH', 'CURVE'}:
 				shell = obj
 		if armatuar != None:
 			set_as_active_object(ctx, armatuar)
@@ -449,5 +448,5 @@ def unregister_joystic():
 	bpy.types.VIEW3D_MT_make_links.remove(joystick_connectore_menu)
 	[bpy.utils.unregister_class(c) for c in classes]
 
-if __name__ == "__main__":
+if __name__ == '__main__':
 	register_joystic()
