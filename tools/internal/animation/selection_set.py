@@ -16,28 +16,54 @@ import bpy
 from bpy.types import Operator, Panel, PropertyGroup
 from bpy.props import IntProperty, StringProperty, BoolProperty, PointerProperty, EnumProperty
 
-
+class Bone_Group:
+	def __init__(self, name, groups):
+		self.name = name
+		self.groups = groups
 
 class Armature_Selection_Set:
 	def __init__(self):
 		self.armature = None
 		self.button_names = []
 		self.clipboard_test_key = '"""__armature_selection_set_clipboard__"""'
+		
+		""" Orginal Data for Restore"""
+		self.orig_coumns = 0
+		self.orig_raws = 0
+		self.orig_bones = []
 	
-	def get_names_from_armature(self, armature):
+	def get_names_from_armature(self, armature, reload=False):
 		""" calculate once if armature changes """
-		if self.armature != armature:
+		if self.armature != armature or reload:
 			""" fill name list if less than buttons count """
 			buttons_count = armature.data.selection_set.columns * armature.data.selection_set.rows
 			names = armature.data.selection_set.names.split(':')
+			
+			""" Read for first time """
 			if len(names) == 1:
 				if names[0] == '':
 					names = []
+			
+			""" Create name for new ganarated buttons """
 			if len(names) < buttons_count:
 				for i in range(len(names), buttons_count):
-					names.append(str(i))
+					names.append('')
+			
 			self.button_names = names
 			self.armature = armature
+	
+	def store_armature_date(self, armature):
+		self.orig_coumns = armature.data.selection_set.columns
+		self.orig_raws = armature.data.selection_set.rows
+
+		print("---------------------------------")
+		for bone in armature.pose.bones:
+			name = bone.name
+			selection_groups = bone.selection_groups
+			print(name, selection_groups)
+			new_bone = Bone_Group(name, [])
+			self.orig_bones.append(new_bone)
+		
 
 	def get_name_by_index(self, armature, index):
 		self.get_names_from_armature(armature)
@@ -91,7 +117,7 @@ class Armature_Selection_Set:
 			string += '			bone.selection_groups = selection_groups\n'
 			string += '			break\n'
 			string += '\n'
-			string += 'bpy.context.scene.selection_set.mode = "TRANSFER"\n'
+			string += 'bpy.context.scene.selection_set.mode = "EDIT"\n'
 
 			""" Send data to clipboard """
 			ctx.window_manager.clipboard = string
@@ -103,12 +129,17 @@ class Armature_Selection_Set:
 			if len(test) > 0:
 				if test[0] == self.clipboard_test_key:
 					exec(string)
+					self.get_names_from_armature(self.armature, reload=True)
 
 arm_sel_set = Armature_Selection_Set()
 
 
 
 def rename_selection_set(self, ctx):
+
+	# TODO temprary solution but works
+	arm_sel_set.get_names_from_armature(ctx.active_object, reload=True)
+	
 	""" Filter the new name """
 	new_name = ''
 	selection_set = ctx.scene.selection_set
@@ -117,6 +148,8 @@ def rename_selection_set(self, ctx):
 		if v != ':':
 			new_name += v
 	
+	# TODO check before remove
+	# this part is unnececery
 	if new_name == '':
 		new_name = ' '
 	
@@ -133,10 +166,10 @@ class Selection_Set_Scene(PropertyGroup):
 		items =[
 			('SELECT', 'Select', 'Select group of bones'),
 			('SET', 'Set', 'Set Selection groups'),
-			('RENAME', 'Rename', 'Rename buttons'),
-			('EDIT', 'Edit', 'Edit buttons layout'),
-			('TRANSFER', 'Transfer', 'Transfer Selection set from a rig to other')])
+			# ('RENAME', 'Rename', 'Rename buttons'),
+			('EDIT', 'Edit', 'Edit buttons layout')])
 	multi: BoolProperty(name='Multi Selection', default=False)
+	unselect: BoolProperty(name='Remove From Selection', default=False)
 	name: StringProperty(name="", update=rename_selection_set)
 	active: IntProperty(name="", default=0)
 
@@ -149,7 +182,7 @@ class Selection_Set_Armature(PropertyGroup):
 
 
 
-class ARMATURE_OT_Transfer_Selection_Set(Operator):
+class ARMATURE_OT_Selection_Set_Transfer(Operator):
 	bl_idname = 'pose.transfer_selection_set'
 	bl_label = 'Transfer Selection set'
 	# bl_description = ''
@@ -165,6 +198,48 @@ class ARMATURE_OT_Transfer_Selection_Set(Operator):
 
 
 
+class ARMATURE_OT_Selection_Set_Dimantion_Resize(Operator):
+	bl_idname = 'pose.selection_set_dimantion_resize'
+	bl_label = 'Selection set Dimantion Resize'
+	# bl_description = ''
+	bl_options = {'REGISTER', 'UNDO', 'INTERNAL'}
+	action: StringProperty()
+	
+	def execute(self, ctx):
+		selection_set = ctx.active_object.data.selection_set
+
+		if self.action == 'SUB_COL_LEFT':
+			if selection_set.columns > 2:
+				selection_set.columns -= 1
+		
+		elif self.action == 'ADD_COL_LEFT':
+			selection_set.columns += 1
+		
+		elif self.action == 'ADD_COL_RIGHT':
+			selection_set.columns += 1
+		
+		elif self.action == 'SYB_COL_RIGHT':
+			if selection_set.columns > 2:
+				selection_set.columns -= 1
+		
+		elif self.action == 'SUB_ROW_LEFT':
+			if selection_set.rows > 2:
+				selection_set.rows -= 1
+		
+		elif self.action == 'ADD_ROW_LEFT':
+			selection_set.rows += 1
+		
+		elif self.action == 'ADD_ROW_RIGHT':
+			selection_set.rows += 1
+		
+		elif self.action == 'SUB_ROW_RIGHT':
+			if selection_set.rows > 2:
+				selection_set.rows -= 1
+		
+		return{'FINISHED'}
+
+
+
 class ARMATURE_OT_Selection_Set(Operator):
 	bl_idname = 'pose.selection_set'
 	bl_label = 'Selection set'
@@ -175,29 +250,38 @@ class ARMATURE_OT_Selection_Set(Operator):
 
 	def get_groups(self, bone):
 		return bone.selection_groups.split(',')
-	
+
 	def set_groups(self, bone, groups):
 		string = ''
+		
 		for s in groups:
-			string += s + ','
+			if not s in {'', ' '}:
+				string += s + ','
+
 		bone.selection_groups = string
-	
+
+
 	def add(self, bone, index):
 		groups = self.get_groups(bone)
+
 		if not index in groups:
 			groups.append(index)
+
 		self.set_groups(bone, groups)
+	
 	
 	def remove(self, bone, index):
 		groups = self.get_groups(bone)
+		
 		if index in groups:
 			groups.remove(index)
 			self.set_groups(bone, groups)
-
+	
 	def execute(self, ctx):
 		mode = ctx.scene.selection_set.mode
 		bones = ctx.active_object.pose.bones
 		index = str(self.index)
+		
 		if mode == 'SELECT':
 			for bone in bones:
 				if index in self.get_groups(bone):
@@ -205,17 +289,21 @@ class ARMATURE_OT_Selection_Set(Operator):
 				else:
 					if not ctx.scene.selection_set.multi:
 						bone.bone.select = False
+		
 		elif mode == 'SET':
 			for bone in bones:
 				if bone.bone.select:
 					self.add(bone, index)
 				else:
 					self.remove(bone, index)
-		elif ctx.scene.selection_set.mode == 'RENAME':
+		
+		# elif ctx.scene.selection_set.mode == 'RENAME':
+		elif ctx.scene.selection_set.mode == 'EDIT':
 			ctx.scene.selection_set.active = self.index
 			""" Get Old Name """
 			name = arm_sel_set.get_name_by_index(ctx.active_object, ctx.scene.selection_set.active)
 			ctx.scene.selection_set.name = name
+		
 		return{'FINISHED'}
 
 
@@ -244,37 +332,74 @@ class Armature_OP_Selection_Set(Panel):
 		box = layout.box()
 		row = box.row()
 		row.prop(scene_selection_set, 'multi',icon='ADD', text='')
+		# row.prop(scene_selection_set, 'unselect',icon='REMOVE', text='')
 		row.prop(scene_selection_set, 'mode')
-		if scene_selection_set.mode == 'EDIT':
-			row.prop(obj_selection_set, 'columns', text='Col:')
-			row.prop(obj_selection_set, 'rows', text='Row:')
-		if scene_selection_set.mode == 'TRANSFER':
-			ptss = "pose.transfer_selection_set"
-			row.operator(ptss, text="", icon="COPYDOWN").action = "COPY"
-			row.operator(ptss, text="", icon="PASTEDOWN").action = "PASTE"
 		
-		""" Buttons """
-		box = layout.box()
-		for j in range(obj_selection_set.rows):
+		if scene_selection_set.mode == 'EDIT':
+			ptss = 'pose.transfer_selection_set'
+			row.operator(ptss, text='', icon='COPYDOWN').action = 'COPY'
+			row.operator(ptss, text='', icon='PASTEDOWN').action = 'PASTE'
+
+			# pssdr = 'pose.selection_set_dimantion_resize'
+			# row_cr = box.row()
+			# box_c = row_cr.box()
+			# row_c = box_c.row()
+			# row_c.operator(pssdr, text='', icon='REMOVE').action='SUB_COL_LEFT'
+			# row_c.operator(pssdr, text='', icon='ADD').action='ADD_COL_LEFT'
+			# row_c.label(text= 'C: ' + str(obj_selection_set.columns))
+			# row_c.operator(pssdr, text='', icon='ADD').action='ADD_COL_RIGHT'
+			# row_c.operator(pssdr, text='', icon='REMOVE').action='SYB_COL_RIGHT'
+
+			# box_r = row_cr.box()
+			# row_r = box_r.row()
+			# row_r.operator(pssdr, text='', icon='REMOVE').action='SUB_ROW_LEFT'
+			# row_r.operator(pssdr, text='', icon='ADD').action='ADD_ROW_LEFT'
+			# row_r.label(text= 'R: ' +  str(obj_selection_set.rows))
+			# row_r.operator(pssdr, text='', icon='ADD').action='ADD_ROW_RIGHT'
+			# row_r.operator(pssdr, text='', icon='REMOVE').action='SUB_ROW_RIGHT'
+			
 			row = box.row()
-			for i in range(obj_selection_set.columns):
-				index = j*obj_selection_set.columns + i
-				if scene_selection_set.mode == 'RENAME' and scene_selection_set.active == index:
+			row.prop(obj_selection_set, 'columns', text='Columns:')
+			row.prop(obj_selection_set, 'rows', text='Rows:')
+
+			
+		
+		# Draw Buttons
+		#	[][][][]
+		#	[][][][]
+		#	[][][][]
+
+		box = layout.box()
+		mode = scene_selection_set.mode
+		active = scene_selection_set.active
+		
+		for r in range(obj_selection_set.rows):
+
+			row = box.row()
+			for c in range(obj_selection_set.columns):
+
+				index = r * obj_selection_set.columns + c
+				
+				""" Draw Rename box for active slot """
+				if mode == 'EDIT' and active == index:
 					row.prop(scene_selection_set, 'name')
 				else:
-					if scene_selection_set.mode == 'EDIT':
-						name = str(index)
+					name = arm_sel_set.get_name_by_index(ctx.active_object, index)
+					
+					if mode in {'SET', 'SELECT'} and name in {'', ' '}:
+						row.label(text='') # Hiden button
 					else:
-						name = arm_sel_set.get_name_by_index(ctx.active_object, index)
-					row.operator('pose.selection_set', text=name).index=index
+						row.operator('pose.selection_set', text=name).index=index				
 
 
 
-classes = [ARMATURE_OT_Selection_Set,
-	ARMATURE_OT_Transfer_Selection_Set,
-	Armature_OP_Selection_Set,
+classes = [
 	Selection_Set_Scene,
-	Selection_Set_Armature]
+	Selection_Set_Armature,
+	Armature_OP_Selection_Set,
+	ARMATURE_OT_Selection_Set,
+	ARMATURE_OT_Selection_Set_Transfer,
+	ARMATURE_OT_Selection_Set_Dimantion_Resize]
 
 def register_selection_set():
 	[bpy.utils.register_class(c) for c in classes]

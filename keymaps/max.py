@@ -72,6 +72,9 @@ def add_time(km, space):
 	km.new(space,'anim.frame_set','PERIOD','PRESS',[('frame','Next')])
 	km.new(space,'anim.frame_set','COMMA','PRESS',[('frame','Previous')])
 	km.new(space,'anim.set_key','K','PRESS',[])
+	km.new(space,'anim.set_key_filters','K','PRESS',[],ctrl=True,shift=True)
+	km.new(space,'anim.keyframe_insert_menu','K','PRESS',[],ctrl=True)
+	km.new(space,'anim.keyframe_delete_v3d','K','PRESS',[],alt=True)
 	km.new(space,'anim.auto_key_toggle','N','PRESS',[])
 
 def add_side_panel(km, space):
@@ -407,6 +410,9 @@ def mesh(km, preferences):
 	# km.new(space,'wm.tool_set_by_id','E','PRESS',[('name','builtin.rotate')])
 	# km.new(space,'wm.tool_set_by_id','R','PRESS',[('name','builtin.scale'),('cycle',True)])
 	km.new(space,'anim.set_key','K','PRESS',[])
+	km.new(space,'anim.set_key_filters','K','PRESS',[],ctrl=True,shift=True)
+	km.new(space,'anim.keyframe_insert_menu','K','PRESS',[],ctrl=True)
+	km.new(space,'anim.keyframe_delete_v3d','K','PRESS',[],alt=True)
 	# TEST #
 	km.new(space,'mesh.drag','EVT_TWEAK_L','ANY',[])
 

@@ -20,18 +20,18 @@ from bpy.props import BoolProperty, EnumProperty, IntProperty
 
 class KeyData:
 	def __init__(self):
-		self.Key_All = False
-		self.Key_Available = True
-		self.Key_Position = True
-		self.Key_Rotation = True
-		self.Key_Scale = True
-		# self.Key_IKParams = False
-		# self.Key_ObjParams = False
-		# self.Key_CusAttributes = False
-		# self.Key_Modifiers = False
-		# self.Key_Materials = False
-		# self.Key_Other = False
-kd = KeyData()
+		self.available = True
+		self.location = True
+		self.rotation = True
+		self.scale = False
+		self.visual_location = False
+		self.visual_rotation = False
+		self.visual_scale = False
+		self.bbone_shape = False
+		self.whole_character = False
+		self.whole_character_selected = False
+
+key_data = KeyData()
 
 
 
@@ -43,65 +43,68 @@ anim_state = Anim_State()
 
 
 class Anim_OT_Set_Key_Filters(Operator):
-	bl_idname="anim.set_key_filters"
-	bl_label="Set Key Filters"
-	bl_description="Set Key Filter"
+	bl_idname = 'anim.set_key_filters'
+	bl_label = 'Set Key Filters'
+	bl_description = 'Set Key Filter'
 
-	Key_All: BoolProperty(name="All")
-	Key_Available: BoolProperty(name="Available",default=True)
-	Key_Position: BoolProperty(name="Position",default=True)
-	Key_Rotation: BoolProperty(name="Rotation",default=True)
-	Key_Scale: BoolProperty(name="Scale",default=True)
-	# Key_IKParams: BoolProperty(name="IK Parameters")
-	# Key_ObjParams: BoolProperty(name="Object Parameters")
-	# Key_CusAttributes: BoolProperty(name="CUstom Attributes")
-	# Key_Modifiers: BoolProperty(name="Modifiers")
-	# Key_Materials: BoolProperty(name="Materials")
-	# Key_Other: BoolProperty(name="Other")
+	available: BoolProperty(name='Avalable')
+	location: BoolProperty(name='Location')
+	rotation: BoolProperty(name='Rotation')
+	scale: BoolProperty(name='Scale')
+	visual_location: BoolProperty(name='Visual Location')
+	visual_rotation: BoolProperty(name='Visual Rotation')
+	visual_scale: BoolProperty(name='Viasual Scale')
+	bbone_shape: BoolProperty(name='BBone Shape')
+	whole_character: BoolProperty(name='Whole Character')
+	whole_character_selected: BoolProperty(name='Whole Character (Selected only)')
 
 	def draw(self, ctx):
 		layout = self.layout
 		box = layout.box()
-		row = box.row()
-		row.prop(self, "Key_All")
-		row.prop(self, "Key_Available")
-		row.prop(self, "Key_Position")
-		row.prop(self, "Key_Rotation")
-		row.prop(self, "Key_Scale")
-		# row.prop(self, "Key_ObjParams")
-		# row.prop(self, "Key_CusAttributes")
-		# row.prop(self, "Key_Modifiers")
-		# row.prop(self, "Key_Materials")
-		# row.prop(self, "Key_Other")
+		box.prop(self, 'available')
+		box.prop(self, 'location')
+		box.prop(self, 'rotation')
+		box.prop(self, 'scale')
+		box = layout.box()
+		box.prop(self, 'visual_location')
+		box.prop(self, 'visual_rotation')
+		box.prop(self, 'visual_scale')
+		box = layout.box()
+		box.prop(self, 'bbone_shape')
+		box.prop(self, 'whole_character')
+		box.prop(self, 'whole_character_selected')
 		
+	def set(self):
+		key_data.available = self.available
+		key_data.location = self.location
+		key_data.rotation = self.rotation
+		key_data.scale = self.scale
+		key_data.visual_location = self.visual_location
+		key_data.visual_rotation = self.visual_rotation
+		key_data.visual_scale = self.visual_scale
+		key_data.bbone_shape = self.bbone_shape
+		key_data.whole_character = self.whole_character
+		key_data.whole_character_selected = self.whole_character_selected
+	
 	def execute(self, ctx):
-		kd.Key_All = self.Key_All
-		kd.Key_Available = self.Key_Available
-		kd.Key_Position = self.Key_Position
-		kd.Key_Rotation = self.Key_Rotation
-		kd.Key_Scale = self.Key_Scale
-		# kd.Key_ObjParams = self.Key_ObjParams
-		# kd.Key_CusAttributes = self.Key_CusAttributes
-		# kd.Key_Modifiers = self.Key_Modifiers
-		# kd.Key_Materials = self.Key_Materials
-		# kd.Key_Other = self.Key_Other
+		self.set()
 		return {'FINISHED'}
+	
+	def cancel(self, ctx):
+		self.set()
 
 	def invoke(self, ctx, event):
-		self.Key_All = kd.Key_All
-		self.Key_Available = kd.Key_Available
-		self.Key_Position = kd.Key_Position
-		self.Key_Rotation = kd.Key_Rotation
-		self.Key_Scale = kd.Key_Scale
-		# self.Key_ObjParams = kd.Key_ObjParams
-		# self.Key_CusAttributes = kd.Key_CusAttributes
-		# self.Key_Modifiers = kd.Key_Modifiers
-		# self.Key_Materials = kd.Key_Materials
-		# self.Key_Other = kd.Key_Other
-		self.Cast = True
-		return ctx.window_manager.invoke_props_dialog(self,width=140)
-
-#obj.modifiers[0].keyframe_insert(data_path="thickness")
+		self.available = key_data.available
+		self.location = key_data.location
+		self.rotation = key_data.rotation
+		self.scale = key_data.scale
+		self.visual_location = key_data.visual_location
+		self.visual_rotation = key_data.visual_rotation
+		self.visual_scale = key_data.visual_scale
+		self.bbone_shape = key_data.bbone_shape
+		self.whole_character = key_data.whole_character
+		self.whole_character_selected = key_data.whole_character
+		return ctx.window_manager.invoke_props_dialog(self,width=200)
 
 
 
@@ -116,26 +119,38 @@ class Anim_OT_Set_Key(Operator):
 	def execute(self, ctx):
 
 		if ctx.mode == 'POSE' and len(ctx.selected_pose_bones) == 0:
-			return{"FINISHED"}
+			return{'FINISHED'}
 		if ctx.mode == 'OBJECT' and len(ctx.selected_objects) == 0:
-			return{"FINISHED"}
+			return{'FINISHED'}
+		
+		anim = bpy.ops.anim
 
-		if kd.Key_All:
-			bpy.ops.anim.keyframe_insert_menu(type='Location')
-			bpy.ops.anim.keyframe_insert_menu(type='Rotation')
-			bpy.ops.anim.keyframe_insert_menu(type='Scaling')
-		else:
-			if kd.Key_Available:
-				try:
-					bpy.ops.anim.keyframe_insert_menu(type='Available')
-				except:
-					pass
-			if kd.Key_Position:
-				bpy.ops.anim.keyframe_insert_menu(type='Location')
-			if kd.Key_Rotation:
-				bpy.ops.anim.keyframe_insert_menu(type='Rotation')
-			if kd.Key_Scale:
-				bpy.ops.anim.keyframe_insert_menu(type='Scaling')
+		if key_data.available:
+			try:
+				anim.keyframe_insert_menu(type='Available')
+			except:
+				pass
+		
+		if key_data.location:
+			anim.keyframe_insert_menu(type='Location')
+		if key_data.rotation:
+			anim.keyframe_insert_menu(type='Rotation')
+		if key_data.scale:
+			anim.keyframe_insert_menu(type='Scaling')
+		
+		if key_data.visual_location:
+			anim.keyframe_insert_menu(type='BUILTIN_KSI_VisualLoc')
+		if key_data.visual_rotation:
+			anim.keyframe_insert_menu(type='BUILTIN_KSI_VisualRot')
+		if key_data.visual_scale:
+			anim.keyframe_insert_menu(type='BUILTIN_KSI_VisualScaling')
+
+		if key_data.bbone_shape:
+			anim.keyframe_insert_menu(type='BUILTIN_KSI_VisualScaling')
+		if key_data.whole_character:
+			anim.keyframe_insert_menu(type='WholeCharacter')
+		if key_data.whole_character_selected:
+			anim.keyframe_insert_menu(type='WholeCharacterSelected')
 
 		return{'FINISHED'}
 

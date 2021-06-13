@@ -1,3 +1,6 @@
+#0,1,0,20210611
+	Transfer tool for Rigg Selection set to other Rigg 'Pose mode: Right Panel/Tool/Selection(Pose bone)/Transform/(Copy/Past)'
+
 #0,1,0,20210606
 	Auto library override issue fixer caused to crash on heavy secens, disabled for now.
 

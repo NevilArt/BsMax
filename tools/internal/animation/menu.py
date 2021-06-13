@@ -47,8 +47,29 @@ class BsMax_MT_Animation_Tools(bpy.types.Menu):
 def animation_menu(self, ctx):
 	self.layout.menu('BSMAX_MT_animationtools')
 
+def key_menu(self, ctx):
+	self.layout.prop(ctx.preferences.edit,'keyframe_new_interpolation_type', text='')
+
+def key_filter_menu(self, ctx):
+	self.layout.operator('anim.set_key_filters', text='', icon='KEYINGSET')
+
+
 def register_menu():
 	bpy.utils.register_class(BsMax_MT_Animation_Tools)
+	bpy.types.TIME_MT_editor_menus.append(key_menu)
+	bpy.types.DOPESHEET_MT_editor_menus.append(key_menu)
+	bpy.types.GRAPH_MT_editor_menus.append(key_menu)
+	bpy.types.NLA_MT_view.append(key_menu)
+
+	bpy.types.TIME_MT_editor_menus.append(key_filter_menu)
 
 def unregister_menu():
 	bpy.utils.unregister_class(BsMax_MT_Animation_Tools)
+	bpy.types.TIME_MT_editor_menus.remove(key_menu)
+	bpy.types.DOPESHEET_MT_editor_menus.remove(key_menu)
+	bpy.types.GRAPH_MT_editor_menus.remove(key_menu)
+	bpy.types.NLA_MT_view.remove(key_menu)
+
+if __name__ == '__main__':
+	# register_menu()
+	bpy.types.TIME_MT_editor_menus.append(key_filter_menu)

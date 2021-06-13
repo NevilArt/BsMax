@@ -39,23 +39,18 @@ def tools_menu(self,ctx):
 	elif ctx.mode == 'POSE':
 		self.layout.menu('BSMAX_MT_animationtools')
 
-
-
-def default_key(self,ctx):
-	self.layout.prop(ctx.preferences.edit,'keyframe_new_interpolation_type',text='')
+	
 
 def register_menu():
 	bpy.utils.register_class(BsMax_MT_View3D_tools)
 	bpy.types.VIEW3D_MT_editor_menus.append(tools_menu)
-	bpy.types.TIME_MT_editor_menus.append(default_key)
-	bpy.types.DOPESHEET_MT_editor_menus.append(default_key)
-	bpy.types.GRAPH_MT_editor_menus.append(default_key)
-	bpy.types.NLA_MT_view.append(default_key)
+
+
+
 
 def unregister_menu():
 	bpy.utils.unregister_class(BsMax_MT_View3D_tools)
 	bpy.types.VIEW3D_MT_editor_menus.remove(tools_menu)
-	bpy.types.TIME_MT_editor_menus.remove(default_key)
-	bpy.types.DOPESHEET_MT_editor_menus.remove(default_key)
-	bpy.types.GRAPH_MT_editor_menus.remove(default_key)
-	bpy.types.NLA_MT_view.remove(default_key)
+
+if __name__ == '__main__':
+	register_menu()

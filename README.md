@@ -31,7 +31,12 @@ Do not worry about slowing down of Updates. it`s time to learn Blender c++ codin
 
 # latest Updates
 
-* Transfer tool for Rigg Selection set to other Rigg 'Pose mode: Right Panel/Tool/Selection(Pose bone)/Transform/(Copy/Past)'
+* Selection set Copy/past issue fixed.
+* Selection set interface simplified.
+* 'Ctrl + K' Insert Keyframe menu (Max mode).
+* 'Alt + K' Delete Key (Max mode).
+* 'Ctrl + Shift + K' 'Set Key Filter' (max mode).
+* 'Set Key Filter' added to Time slider.
 * [Update History...](https://github.com/NevilArt/BsMax_2_80/blob/master/HISTORY.TXT)
 
 # License
