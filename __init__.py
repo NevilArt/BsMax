@@ -20,7 +20,7 @@ bl_info = {
 	'name': 'BsMax',
 	'description': 'BsMax for Blender 2.80 ~ 3.0',
 	'author': 'Naser Merati (Nevil)',
-	'version': (0, 1, 0, 20210614),
+	'version': (0, 1, 0, 20210622),
 	'blender': (2, 80, 0),# 2.80 ~ 3.0
 	'location': 'Almost Everywhere in Blender',
 	'wiki_url': 'https://github.com/NevilArt/BsMax_2_80/wiki',
@@ -321,7 +321,8 @@ def isfloat(value):
     return False
 
 def load_preferences(preferences):
-	filename = bpy.utils.user_resource('SCRIPTS', 'addons') + '/BsMax.ini'
+	# filename = bpy.utils.user_resource('SCRIPTS', 'addons') + '/BsMax.ini'
+	filename = bpy.utils.user_resource('SCRIPTS') + '\\addons\\BsMax.ini'
 	if os.path.exists(filename):
 		string = open(filename).read()
 		props = string.splitlines()

@@ -20,10 +20,10 @@
 """ This file can be instaled as an stand alone add-on too """
 bl_info = {
 	"name": "BsMax-Backburner",
-	"description": "Backburner for Blender 2.80 ~ 2.92",
+	"description": "Backburner for Blender 2.80 ~ 2.93",
 	"author": "Matt Ebb | Blaize | Anthony Hunt | Spirou4D | Nevil",
 	"version": (0, 2, 0, 0),
-	"blender": (2, 80, 0),# to 2.92
+	"blender": (2, 80, 0),# to 2.93
 	"location": "Properties/ Output/ Backbrner",
 	"wiki_url": "https://github.com/NevilArt/BsMax_2_80/wiki",
 	"doc_url": "https://github.com/NevilArt/BsMax_2_80/wiki",
@@ -32,9 +32,8 @@ bl_info = {
 }
 
 import bpy, os, subprocess
-from subprocess import Popen, PIPE
 from bpy.props import PointerProperty, StringProperty, BoolProperty, IntProperty, EnumProperty
-from bpy.types import AddonPreferences, Panel, Operator, PropertyGroup
+from bpy.types import Panel, Operator, PropertyGroup
 
 default_path_backburner = '"C:\\Program Files (x86)\\Autodesk\\Backburner\\cmdjob.exe"'
 default_path_blender = bpy.app.binary_path
@@ -115,6 +114,9 @@ class Backburner_Settings(PropertyGroup):
 
 	manager: StringProperty(name='Manager', maxlen=400, default='localhost',
 		description='Name of render manager')
+	
+	port: IntProperty(name='Port', description='Manager Port',
+		min=0, max=999999, default=3234)
 
 	path_backburner: StringProperty(name='Backburner Path', description='Path to Backburner cmdjob.exe', 
 		maxlen=400, subtype='FILE_PATH', default=default_path_backburner)
@@ -193,10 +195,24 @@ class Render_OT_Submit_To_Backburner(Operator):
 		file_name = bpy.data.filepath
 		task_list_file = create_task_list_file(scene, file_name)
 	
+
+		# cmdjob.exe -jobname "testJob" 
+		# -description "job de test" 
+		# -timeout 6000 
+		# -manager "192.168.73.91" 
+		# -port "3234" 
+		# -logPath "Q:/PAUL/testMax2016" 
+		# -tasklist "Q:/PAUL/testMax2016/taskFileScript.txt" 
+		# -taskname 1 -jobParamFile "Q:/PAUL/testMax2016/jobParams.txt" 
+		# -priority 0 
+		# -servers "n091-a" "C:/Program Files/Autodesk/3ds Max 2016/3dsmax.exe" 
+		# -q -mip -silent -U MAXScript %tp2
+		
 		""" Backburner CMD """
 		cmd = cbb.path_backburner
 		cmd += ' -jobName:"' + cbb.job_name + '"'
 		cmd += ' -manager: ' + cbb.manager
+		# cmd += ' -port: '+ str(cbb.port)
 		# cmd += ' -netmask: ' + '255.255.0.0'
 		cmd += ' -description:"' + cbb.job_details + '"'
 		cmd += ' -priority:' + str(cbb.priority)
@@ -290,7 +306,9 @@ class RENDER_PT_Backburner(Panel):
 		if csbb.override_frame_range != 'FRAMES':
 			layout.prop(csbb, 'frames_per_task')
 		layout.separator()
-		layout.prop(csbb, 'manager')
+		row = layout.row()
+		row.prop(csbb, 'manager')
+		row.prop(csbb, 'port')
 		layout.prop(csbb, 'options')
 		if csbb.options:
 			box = layout.box()

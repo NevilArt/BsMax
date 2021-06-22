@@ -19,8 +19,13 @@ from bpy.props import StringProperty, EnumProperty
 from os import path, mkdir, access, W_OK
 from glob import glob
 
-preset_path = bpy.utils.user_resource('SCRIPTS', "presets") + "\\BsMax\\render\\"
+
+
+# preset_path = bpy.utils.user_resource('SCRIPTS', "presets") + "\\BsMax\\render\\"
+preset_path = bpy.utils.user_resource('SCRIPTS') + "\\presets\\BsMax\\render\\"
 preset_kay = '""" BsMax Render Preset File """'
+
+
 
 def refine_value(value):
 	""" get value and return an executable pyton string """

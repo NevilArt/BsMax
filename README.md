@@ -31,12 +31,7 @@ Do not worry about slowing down of Updates. it`s time to learn Blender c++ codin
 
 # latest Updates
 
-* Selection set Copy/past issue fixed.
-* Selection set interface simplified.
-* 'Ctrl + K' Insert Keyframe menu (Max mode).
-* 'Alt + K' Delete Key (Max mode).
-* 'Ctrl + Shift + K' 'Set Key Filter' (max mode).
-* 'Set Key Filter' added to Time slider.
+* 'bpy.utils.user_resource' issue fixed.
 * [Update History...](https://github.com/NevilArt/BsMax_2_80/blob/master/HISTORY.TXT)
 
 # License
