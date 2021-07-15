@@ -13,7 +13,7 @@
 #	along with this program.  If not, see <https://www.gnu.org/licenses/>.
 ############################################################################
 
-from .blender import register_blenderdefault,unregister_blenderdefault
+# from .blender import register_blenderdefault,unregister_blenderdefault
 from .quad import register_quad,unregister_quad
 # from .marking.init import *
 

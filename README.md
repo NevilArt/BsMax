@@ -31,7 +31,8 @@ Do not worry about slowing down of Updates. it`s time to learn Blender c++ codin
 
 # latest Updates
 
-* 'bpy.utils.user_resource' issue fixed.
+* Multiple Hair cache combine operator added to automate the index switch.
+* Add a new mode for keep Blender mode keymaps completly untoched.
 * [Update History...](https://github.com/NevilArt/BsMax_2_80/blob/master/HISTORY.TXT)
 
 # License

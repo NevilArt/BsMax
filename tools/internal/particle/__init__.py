@@ -12,13 +12,16 @@
 #	You should have received a copy of the GNU General Public License
 #	along with this program.  If not, see <https://www.gnu.org/licenses/>.
 ############################################################################
+from .hair_cache import register_hair_cache, unregister_hair_cache
 from .hair_guide import register_hair_guide, unregister_hair_guide
 from .paint import register_paint, unregister_paint
 
 def register_particle():
+	register_hair_cache()
 	register_hair_guide()
 	register_paint()
 
 def unregister_particle():
+	unregister_hair_cache()
 	unregister_hair_guide()
 	unregister_paint()

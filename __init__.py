@@ -20,7 +20,7 @@ bl_info = {
 	'name': 'BsMax',
 	'description': 'BsMax for Blender 2.80 ~ 3.0',
 	'author': 'Naser Merati (Nevil)',
-	'version': (0, 1, 0, 20210622),
+	'version': (0, 1, 0, 20210715),
 	'blender': (2, 80, 0),# 2.80 ~ 3.0
 	'location': 'Almost Everywhere in Blender',
 	'wiki_url': 'https://github.com/NevilArt/BsMax_2_80/wiki',
@@ -131,9 +131,14 @@ class BsMax_AddonPreferences(bpy.types.AddonPreferences):
 	custom: BoolProperty(name='Custom',default=False,
 		update= lambda self,ctx: update_preferences(self,ctx,'custom'))
 	
-	apps = [('3DsMax','3DsMax',''),('Maya','Maya',''),('Blender','Blender (Default)','')]
-	custom = [('Custom','Custom','')]
-	menus = [('3DsMax','3DsMax (QuadMenu)',''),('Maya','Maya (Not ready yet)',''),('Blender','Blender (Default)','')]
+	apps = [('3DsMax', '3DsMax', 'Try to simulate 3DsMax HotKeys and Menus'),
+		('Maya', 'Maya', 'Try to simulate Maya HotKeys'),
+		('None', 'Blender (Default)', 'Do not makes any changes on Keymaps'),
+		('Blender', 'Blender (Adapted)', 'Some Keymaps change to work with Bsmax')]
+	custom = [('Custom', 'Custom','')]
+	menus = [('3DsMax', '3DsMax (QuadMenu)','Simulate 3DsMax Quad menu'),
+		('Maya','Maya (Not ready yet)',''),
+		('Blender','Blender (Default)','')]
 	
 	""" Quick select mode """
 	aplication: EnumProperty(name='Aplication', items=apps+custom, default='Blender',

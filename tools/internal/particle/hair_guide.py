@@ -13,7 +13,6 @@
 #	along with this program.  If not, see <https://www.gnu.org/licenses/>.
 ############################################################################
 import bpy
-from mathutils import Vector, Matrix
 from bpy.types import Operator, Menu
 from bsmax.math import point_on_curve
 from bsmax.actions import set_origen, link_to_scene
