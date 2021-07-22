@@ -1,3 +1,7 @@
+#0,1,0,20210715
+	Multiple Hair cache combine operator added to automate the index switch.
+	Add a new mode for keep Blender mode keymaps completly untoched.
+
 #0,1,0,20210714
 	'bpy.utils.user_resource' issue fixed.
 

@@ -31,7 +31,7 @@ bl_info = {
 	"category": "Render"
 }
 
-import bpy, os, subprocess
+import bpy, os, subprocess, random
 from bpy.props import PointerProperty, StringProperty, BoolProperty, IntProperty, EnumProperty
 from bpy.types import Panel, Operator, PropertyGroup
 
@@ -99,6 +99,9 @@ class Backburner_Settings(PropertyGroup):
 
 	priority: IntProperty(name='Priority', description='Priority of this job',
 		min=1, max=1000, soft_min=1, soft_max=64, default=50)
+
+	suspended: BoolProperty (name='Suspended', default=True,
+		description='Submit Job as Suspended')
 
 	override_frame_range: EnumProperty(name='Frames', description='Override Render frames Range', 
 		default='ACTIVE', items=[('ACTIVE','Active Time',''),('RANGE','Range',''),('FRAMES','Specific Frames','')])
@@ -187,12 +190,22 @@ class Render_OT_Submit_To_Backburner(Operator):
 	@classmethod
 	def poll(cls, ctx):
 		return ctx.scene != None
+
+	def create_new_file_name(self, scene, file_name):
+		first_frame = str(scene.frame_start)
+		last_frame = str(scene.frame_end)
+		random_id = random.randint(1000,9999)
+		append_text = '_BackBurnerTemp['+ first_frame +'-'+ last_frame +']'
+		append_text += '_' + str(random_id)
+		return os.path.splitext(file_name)[0] + append_text + '.blend'
 	
 	def submit(self, scene):
 		self.report({'OPERATOR'},'Submitting...')
 		
 		cbb = scene.backburner
-		file_name = bpy.data.filepath
+		
+		file_name = self.create_new_file_name(scene, bpy.data.filepath)
+		bpy.ops.wm.save_as_mainfile(filepath=file_name, copy=True)
 		task_list_file = create_task_list_file(scene, file_name)
 	
 
@@ -208,7 +221,7 @@ class Render_OT_Submit_To_Backburner(Operator):
 		# -servers "n091-a" "C:/Program Files/Autodesk/3ds Max 2016/3dsmax.exe" 
 		# -q -mip -silent -U MAXScript %tp2
 		
-		""" Backburner CMD """
+		""" Create Backburner CMD Text """
 		cmd = cbb.path_backburner
 		cmd += ' -jobName:"' + cbb.job_name + '"'
 		cmd += ' -manager: ' + cbb.manager
@@ -217,7 +230,8 @@ class Render_OT_Submit_To_Backburner(Operator):
 		cmd += ' -description:"' + cbb.job_details + '"'
 		cmd += ' -priority:' + str(cbb.priority)
 		cmd += ' -timeout:' + str(cbb.timeout)
-		cmd += ' -suspended'
+		if cbb.suspended:
+			cmd += ' -suspended'
 		cmd += ' -taskList:"' + task_list_file + '"'
 		cmd += ' -taskName: 1'
 		cmd += ' "' + cbb.path_blender + '"'
@@ -230,12 +244,15 @@ class Render_OT_Submit_To_Backburner(Operator):
 		cmd += ' --render-anim'
 
 		try:
+			""" Try to Submit job to backburner """
 			subprocess.check_output(cmd, shell=True)
 			self.report({'OPERATOR'},'Job Submited to backburner manager')
 		except:
 			self.report({'WARNING'},'Backburner manager not found. Failed to submission.')
 			
+		""" Delete the Task list text file """
 		os.remove(task_list_file)
+		
 		return {'FINISHED'}
 
 	def execute(self, ctx):
@@ -276,7 +293,7 @@ class RENDER_PT_Backburner(Panel):
 	bl_region_type = 'WINDOW'
 	bl_context = 'output'
 	bl_label = 'Backburner'
-	bl_default_closed = True
+	bl_options = {'DEFAULT_CLOSED'}
 
 	def draw(self, ctx):
 		csbb = ctx.scene.backburner
@@ -288,12 +305,16 @@ class RENDER_PT_Backburner(Panel):
 		row = layout.row()
 		row.prop(csbb, 'job_name')
 		row.operator('render.update_job_name',text='', icon='FILE_REFRESH')
-		layout.prop(csbb, 'job_details')
+		
+		row = layout.row()
+		row.prop(csbb, 'job_details')
+		row.label(text='',icon='BLANK1')
 		layout.separator()
 
 		row = layout.row()
 		row.prop(csbb, 'timeout')
 		row.prop(csbb, 'priority')
+		row.prop(csbb, 'suspended', text='', icon='EVENT_S')
 		layout.separator()
 		layout.prop(csbb, 'override_frame_range')
 		row = layout.row()

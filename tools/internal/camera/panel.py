@@ -20,7 +20,7 @@ class Camera_PT_Panel(bpy.types.Panel):
 	bl_space_type = 'PROPERTIES'
 	bl_region_type = 'WINDOW'
 	bl_context = "data"
-	bl_default_closed = True
+	bl_options = {'DEFAULT_CLOSED'}
 
 	@classmethod
 	def poll(cls,ctx):

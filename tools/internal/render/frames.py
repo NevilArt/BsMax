@@ -23,7 +23,7 @@ class RENDER_PT_frames(Panel):
 	bl_context = "output"
 	bl_label = "Frames"
 	bl_parent_id = "RENDER_PT_dimensions"
-	bl_default_closed = True
+	bl_options = {'DEFAULT_CLOSED'}
 	COMPAT_ENGINES = {'BLENDER_RENDER', 'BLENDER_EEVEE', 'BLENDER_WORKBENCH'}
 
 	def draw(self, ctx):

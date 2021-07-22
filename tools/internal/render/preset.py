@@ -14,8 +14,9 @@
 ############################################################################
 
 import bpy
-from bpy.types import Panel, Operator
-from bpy.props import StringProperty, EnumProperty
+from bpy.types import Panel, Operator, PropertyGroup
+from bpy.props import PointerProperty, StringProperty, EnumProperty, BoolProperty
+from bpy.app.handlers import persistent
 from os import path, mkdir, access, W_OK
 from glob import glob
 
@@ -277,7 +278,7 @@ class RENDER_PT_Preset(Panel):
 	bl_region_type = 'WINDOW'
 	bl_context = 'render'
 	bl_label = 'Presets'
-	bl_default_closed = True
+	bl_options = {'DEFAULT_CLOSED'}
 
 	def draw(self, ctx):
 		layout = self.layout
@@ -289,17 +290,86 @@ class RENDER_PT_Preset(Panel):
 
 
 
+class Render_PrePostScript(PropertyGroup):
+	pre_render_active: BoolProperty (name='Active', default=False,
+		description='Run the Script befor render start')
+	
+	pre_render_script: StringProperty(name='Pre', default='',
+		description='The script has to run befor render start\n Just write the name of script on text editor')
+	
+	post_render_active: BoolProperty (name='Active', default=False,
+		description='Run the Script after render finished')
+	
+	post_render_script: StringProperty(name='Post', default='',
+		description='The script has to run after render finish\n Just write the name of script on text editor')
+
+
+
+class RENDER_PT_Script(Panel):
+	bl_space_type = 'PROPERTIES'
+	bl_region_type = 'WINDOW'
+	bl_context = 'render'
+	bl_label = 'Script'
+	bl_options = {'DEFAULT_CLOSED'}
+
+	def draw(self, ctx):
+		rpps = ctx.scene.render_prepost_script
+		layout = self.layout
+		row = layout.row()
+		row.prop(rpps, 'pre_render_active', text='', icon='PLAY')
+		row.prop(rpps, 'pre_render_script')
+		row = layout.row()
+		row.prop(rpps, 'post_render_active', text='', icon='PLAY')
+		row.prop(rpps, 'post_render_script')
+
+
+@persistent
+def pre_render(scene):
+	if scene.render_prepost_script.pre_render_active:
+		script_name = scene.render_prepost_script.pre_render_script
+		if script_name in bpy.data.texts:
+			script = bpy.data.texts[script_name].as_string()
+			try:
+				exec(script)
+			except:
+				pass
+
+@persistent
+def post_render(scene):
+	if scene.render_prepost_script.post_render_active:
+		script_name = scene.render_prepost_script.post_render_script
+		if script_name in bpy.data.texts:
+			script = bpy.data.texts[script_name].as_string()
+			try:
+				exec(script)
+			except:
+				pass
+
+
 classes = [	Render_OT_Save_Preset,
 			Render_OT_Copy_Preset,
 			Render_OT_Load_Preset,
 			Render_OT_Paste_Preset,
-			RENDER_PT_Preset]
+			Render_PrePostScript,
+			RENDER_PT_Preset,
+			RENDER_PT_Script]
+
+
 
 def register_preset():
 	[bpy.utils.register_class(c) for c in classes]
+	bpy.types.Scene.render_prepost_script = PointerProperty(type=Render_PrePostScript,
+		name='Pre/Post Render Script')
+	
+	bpy.app.handlers.render_init.append(pre_render)
+	bpy.app.handlers.render_complete.append(post_render)
+	
 
 def unregister_preset():
 	[bpy.utils.unregister_class(c) for c in classes]
+
+	bpy.app.handlers.render_init.remove(pre_render)
+	bpy.app.handlers.render_complete.remove(post_render)
 
 if __name__ == '__main__':
 	register_preset()
