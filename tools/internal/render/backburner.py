@@ -22,8 +22,8 @@ bl_info = {
 	"name": "BsMax-Backburner",
 	"description": "Backburner for Blender 2.80 ~ 2.93",
 	"author": "Matt Ebb | Blaize | Anthony Hunt | Spirou4D | Nevil",
-	"version": (0, 2, 0, 0),
-	"blender": (2, 80, 0),# to 2.93
+	"version": (0, 2, 0, 2),
+	"blender": (2, 80, 0),# to 3.0
 	"location": "Properties/ Output/ Backbrner",
 	"wiki_url": "https://github.com/NevilArt/BsMax_2_80/wiki",
 	"doc_url": "https://github.com/NevilArt/BsMax_2_80/wiki",
@@ -40,7 +40,7 @@ default_path_blender = bpy.app.binary_path
 
 
 def string_to_integer_array(frames):
-	string, ints = "", []
+	string, ints = '', []
 
 	""" check the string """
 	for l in frames:
@@ -136,39 +136,55 @@ class Backburner_Settings(PropertyGroup):
 	servers: StringProperty(name='Servers', maxlen=400, default='',
 		description='Render this job only with the servers specified (semi-colon separated list - ignored if group is used)')
 
-
+def task_fild(start, end):
+	field = 'Frame_' + str(start)
+	if start != end:
+		field += '-' + str(end)
+	field += '\t' + str(start) + '\t' + str(end) + '\n'
+	return field
 
 def create_task_list_file(scene, filename):
 	backburner = scene.backburner
 	mode = backburner.override_frame_range
 
 	""" Create Task data """
-	task = ''
+	task, frames = '', []
+	step = backburner.frames_per_task
 
+	""" Create Frame list """
 	if mode == 'FRAMES':
 		frames = string_to_integer_array(backburner.frames_bitarray)
-		for f in frames:
-			str_f = str(f)
-			task += 'Frame_' + str_f
-			task += '\t' + str_f
-			task += '\t' + str_f + '\n'
 	else:
-		step = backburner.frames_per_task
 		start_frame = backburner.frame_start if mode == 'RANGE' else scene.frame_start
 		end_frame = backburner.frame_end if mode == 'RANGE' else scene.frame_end
-		curent_frame = start_frame
-		while(curent_frame <= end_frame):
-			seq_start = curent_frame
-			seq_end = curent_frame + (step-1)
-			if seq_end > end_frame:
-				seq_end = end_frame
-			curent_frame = seq_end + 1
+		for frame in range(start_frame, end_frame):
+			frames.append(frame)
+		
+	if step == 1:
+		""" Single frame per task """
+		for frame in frames:
+			task += task_fild(frame, frame)
+	else:
+		""" Multi frame per task """
+		start = end = -1
+		for frame in frames:
+			if start == -1:
+				start = end = frame
+				continue
 
-			task += 'Frame_' + str(seq_start)
-			if seq_start != seq_end:
-				task += ' - ' + str(seq_end)
-			task += '\t' + str(seq_start)
-			task += '\t' + str(seq_end) + '\n'
+			if frame == end + 1:
+				end = frame
+			else:
+				task += task_fild(start, end)
+				start = end = frame
+
+			if end - start >= step:
+				task += task_fild(start, end)
+				start = end = -1
+
+			if frame == frames[-1]:
+				end = frame
+				task += task_fild(start, end)
 
 	""" Write task to file """
 	dir = os.path.dirname(filename)
@@ -192,11 +208,8 @@ class Render_OT_Submit_To_Backburner(Operator):
 		return ctx.scene != None
 
 	def create_new_file_name(self, scene, file_name):
-		first_frame = str(scene.frame_start)
-		last_frame = str(scene.frame_end)
-		random_id = random.randint(1000,9999)
-		append_text = '_BackBurnerTemp['+ first_frame +'-'+ last_frame +']'
-		append_text += '_' + str(random_id)
+		random_id = random.randint(1000000,9999999)
+		append_text = '_BACKBURNERTEMPFILE_' + str(random_id)
 		return os.path.splitext(file_name)[0] + append_text + '.blend'
 	
 	def submit(self, scene):
@@ -227,7 +240,8 @@ class Render_OT_Submit_To_Backburner(Operator):
 		cmd += ' -manager: ' + cbb.manager
 		# cmd += ' -port: '+ str(cbb.port)
 		# cmd += ' -netmask: ' + '255.255.0.0'
-		cmd += ' -description:"' + cbb.job_details + '"'
+		if cbb.job_details != '':
+			cmd += ' -description:"' + cbb.job_details + '"'
 		cmd += ' -priority:' + str(cbb.priority)
 		cmd += ' -timeout:' + str(cbb.timeout)
 		if cbb.suspended:
@@ -316,7 +330,11 @@ class RENDER_PT_Backburner(Panel):
 		row.prop(csbb, 'priority')
 		row.prop(csbb, 'suspended', text='', icon='EVENT_S')
 		layout.separator()
-		layout.prop(csbb, 'override_frame_range')
+		
+		row = layout.row()
+		row.prop(csbb, 'override_frame_range')
+		row.prop(csbb, 'frames_per_task')
+		
 		row = layout.row()
 		if csbb.override_frame_range == 'RANGE':
 			row.prop(csbb, 'frame_start')
@@ -324,8 +342,6 @@ class RENDER_PT_Backburner(Panel):
 		elif csbb.override_frame_range == 'FRAMES':
 			layout.prop(csbb, 'frames_bitarray', text='')
 		
-		if csbb.override_frame_range != 'FRAMES':
-			layout.prop(csbb, 'frames_per_task')
 		layout.separator()
 		row = layout.row()
 		row.prop(csbb, 'manager')

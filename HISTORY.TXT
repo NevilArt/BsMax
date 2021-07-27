@@ -1,3 +1,9 @@
+#0,1,0,20210722
+	Submit to Backburner Operator now create a seprate temp file for render.
+	Backburner has an option for submit as suspended or not.
+	Pre/Post Render Script operator added under Render Properties/Script.
+	Note: just write the name of script in text editor for Pre/Post Render script.
+
 #0,1,0,20210715
 	Multiple Hair cache combine operator added to automate the index switch.
 	Add a new mode for keep Blender mode keymaps completly untoched.

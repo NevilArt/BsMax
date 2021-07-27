@@ -31,10 +31,7 @@ Do not worry about slowing down of Updates. it`s time to learn Blender c++ codin
 
 # latest Updates
 
-* Submit to Backburner Operator now create a seprate temp file for render.
-* Backburner has an option for submit as suspended or not.
-* Pre/Post Render Script operator added under Render Properties/Script.
-* Note: just write the name of script in text editor for Pre/Post Render script.
+* In Backburner submiter 'frame per task' added for 'Specific frames' mode too.
 * [Update History...](https://github.com/NevilArt/BsMax_2_80/blob/master/HISTORY.TXT)
 
 # License
