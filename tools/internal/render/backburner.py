@@ -35,8 +35,10 @@ import bpy, os, subprocess, random
 from bpy.props import PointerProperty, StringProperty, BoolProperty, IntProperty, EnumProperty
 from bpy.types import Panel, Operator, PropertyGroup
 
+# from os import path, mkdir, access, W_OK
+
 default_path_backburner = '"C:\\Program Files (x86)\\Autodesk\\Backburner\\cmdjob.exe"'
-default_path_blender = bpy.app.binary_path
+default_blender_path = bpy.app.binary_path
 
 
 def string_to_integer_array(frames):
@@ -97,8 +99,8 @@ class Backburner_Settings(PropertyGroup):
 	timeout: IntProperty(name='Timeout', description='Timeout per task',
 		default=120, min=1, max=1000, soft_min=1, soft_max=64)
 
-	priority: IntProperty(name='Priority', description='Priority of this job',
-		min=1, max=1000, soft_min=1, soft_max=64, default=50)
+	priority: IntProperty(name='Priority', description='Priority of this job (0 is Critical)',
+		min=0, max=99, soft_min=0, soft_max=99, default=50)
 
 	suspended: BoolProperty (name='Suspended', default=True,
 		description='Submit Job as Suspended')
@@ -120,14 +122,19 @@ class Backburner_Settings(PropertyGroup):
 	
 	port: IntProperty(name='Port', description='Manager Port',
 		min=0, max=999999, default=3234)
+	
+	group: StringProperty(name='Groups', maxlen=400, default='',
+		description='Name of Render Group')
 
 	path_backburner: StringProperty(name='Backburner Path', description='Path to Backburner cmdjob.exe', 
 		maxlen=400, subtype='FILE_PATH', default=default_path_backburner)
 
-	path_blender: StringProperty(name='Blender Path', description='Path to blender.exe',
-		maxlen=400, subtype='FILE_PATH', default=default_path_blender)
+	use_custom_path: BoolProperty (name='Use Custom Blender', default=False)
+
+	blender_path: StringProperty(name='Blender Path', description='Path to blender.exe',
+		maxlen=400, subtype='FILE_PATH', default=default_blender_path)
 	
-	options: BoolProperty (name='More Options', default=False)
+	options: BoolProperty (name='More', default=False)
 
 	background_render: BoolProperty (name='Render in Background', default=True)
 	
@@ -135,6 +142,9 @@ class Backburner_Settings(PropertyGroup):
 	
 	servers: StringProperty(name='Servers', maxlen=400, default='',
 		description='Render this job only with the servers specified (semi-colon separated list - ignored if group is used)')
+
+
+
 
 def task_fild(start, end):
 	field = 'Frame_' + str(start)
@@ -240,6 +250,8 @@ class Render_OT_Submit_To_Backburner(Operator):
 		cmd += ' -manager: ' + cbb.manager
 		# cmd += ' -port: '+ str(cbb.port)
 		# cmd += ' -netmask: ' + '255.255.0.0'
+		# if cbb.group != '':
+		# 	cmd += ' -????????:"' + cbb.group + '"'
 		if cbb.job_details != '':
 			cmd += ' -description:"' + cbb.job_details + '"'
 		cmd += ' -priority:' + str(cbb.priority)
@@ -248,7 +260,10 @@ class Render_OT_Submit_To_Backburner(Operator):
 			cmd += ' -suspended'
 		cmd += ' -taskList:"' + task_list_file + '"'
 		cmd += ' -taskName: 1'
-		cmd += ' "' + cbb.path_blender + '"'
+		if cbb.use_custom_path:
+			cmd += ' "' + cbb.blender_path + '"'
+		else:
+			cmd += ' "' + default_blender_path + '"'
 		# cmd += ' -submit: "'+ bpy.data.filepath + '"'
 		if cbb.background_render:
 			cmd += ' --background'
@@ -272,7 +287,7 @@ class Render_OT_Submit_To_Backburner(Operator):
 	def execute(self, ctx):
 		if bpy.context.blend_data.filepath != '':
 			csbb = ctx.scene.backburner
-			if csbb.path_blender == '':
+			if csbb.blender_path == '':
 				self.report({'ERROR'}, "Network path to Blender hasn't been set")
 				return {'CANCELLED'}
 			if csbb.path_backburner == '':
@@ -302,6 +317,65 @@ class Render_OT_Update_Job_Name(Operator):
 
 
 
+def get_preset_file_path():
+	preset_path = bpy.utils.user_resource('CONFIG') + '\\BsMax\\'
+	if not os.path.isdir(preset_path):
+		os.mkdir(preset_path)
+	file_name = 'Backburner.ini'
+	return preset_path, file_name
+
+
+class Render_OT_Save_BackBurner(Operator):
+	""" Save curent state of Backburner setting """
+	bl_idname = "render.save_backburner_preset"
+	bl_label = "Save Backburner Preset"
+	bl_options = {'REGISTER', 'INTERNAL'}
+
+	def create_script_text(self, ctx):
+		backburner = ctx.scene.backburner
+		text = 'import bpy\n'
+		text += 'backburner = bpy.context.scene.backburner\n'
+		text += 'backburner.timeout = ' + str(backburner.timeout) + '\n'
+		text += 'backburner.priority = ' + str(backburner.priority) + '\n'
+		text += 'backburner.suspended = ' + str(backburner.suspended) + '\n'
+		text += 'backburner.override_frame_range = "' + backburner.override_frame_range + '"\n'
+		text += 'backburner.frames_per_task = ' + str(backburner.frames_per_task) + '\n'
+		text += 'backburner.manager = "' + backburner.manager + '"\n'
+		text += 'backburner.port = ' + str(backburner.port) + '\n'
+		text += 'backburner.group = "' + backburner.group + '"\n'
+		text += 'backburner.background_render = ' + str(backburner.background_render) + '\n'
+		text += 'backburner.use_custom_path = ' + str(backburner.use_custom_path) + '\n'
+		text += 'backburner.blender_path = r"' + backburner.blender_path +'"'
+		return text
+
+	def execute(self, ctx):
+		preset_path, file_name = get_preset_file_path()
+		string = self.create_script_text(ctx)
+		
+		if not os.path.exists(preset_path):
+			if os.access(preset_path, os.W_OK):
+				os.mkdir(preset_path)
+		
+		preset_file = open(preset_path + file_name, "w")
+		preset_file.write(string)
+		preset_file.close()
+		return{"FINISHED"}
+
+
+class Render_OT_Load_BackBurner(Operator):
+	""" Load and saved presets of Backburner """
+	bl_idname = "render.load_backburner_preset"
+	bl_label = "Load Backburner Preset"
+	bl_options = {'REGISTER', 'INTERNAL'}
+
+	def execute(self, ctx):
+		preset_path, file_name = get_preset_file_path()
+		script = open(preset_path + file_name).read()
+		exec(script)
+		return{"FINISHED"}
+
+
+
 class RENDER_PT_Backburner(Panel):
 	bl_space_type = 'PROPERTIES'
 	bl_region_type = 'WINDOW'
@@ -313,7 +387,10 @@ class RENDER_PT_Backburner(Panel):
 		csbb = ctx.scene.backburner
 
 		layout = self.layout
-		layout.operator('render.submit_to_backburner', icon='RENDER_ANIMATION')
+		row = layout.row()
+		row.operator('render.submit_to_backburner', icon='RENDER_ANIMATION')
+		row.operator('render.save_backburner_preset', text='', icon='ADD')
+		row.operator('render.load_backburner_preset', text='', icon='RECOVER_LAST')
 		layout.separator()
 		
 		row = layout.row()
@@ -346,20 +423,29 @@ class RENDER_PT_Backburner(Panel):
 		row = layout.row()
 		row.prop(csbb, 'manager')
 		row.prop(csbb, 'port')
+		# row.prop(csbb, 'group')
 		layout.prop(csbb, 'options')
 		if csbb.options:
 			box = layout.box()
 			col = box.column()
 			col.prop(csbb, 'background_render')
-			col = box.column()
-			col.enabled = False
-			col.prop(csbb, 'submit_file')
-			col.separator()
-			col.prop(csbb, 'servers')
+			col.prop(csbb, 'use_custom_path')
+			if csbb.use_custom_path:
+				col.prop(csbb, 'blender_path')
+			# col = box.column()
+			# col.enabled = False
+			# col.prop(csbb, 'submit_file')
+			# col.separator()
+			# col.prop(csbb, 'servers')
+			
 
 
-
-classes = [Backburner_Settings, Render_OT_Submit_To_Backburner, Render_OT_Update_Job_Name, RENDER_PT_Backburner]
+classes = [Backburner_Settings,
+	Render_OT_Save_BackBurner,
+	Render_OT_Load_BackBurner,
+	Render_OT_Submit_To_Backburner,
+	Render_OT_Update_Job_Name,
+	RENDER_PT_Backburner]
 
 def register_backburner():
 	[bpy.utils.register_class(c) for c in classes]

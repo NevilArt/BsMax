@@ -31,7 +31,8 @@ Do not worry about slowing down of Updates. it`s time to learn Blender c++ codin
 
 # latest Updates
 
-* In Backburner submiter 'frame per task' added for 'Specific frames' mode too.
+* Save/Load button added for backburner setting.
+* Backburner can send job for custom version (By default current Blender Version).
 * [Update History...](https://github.com/NevilArt/BsMax_2_80/blob/master/HISTORY.TXT)
 
 # License

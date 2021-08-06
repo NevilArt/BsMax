@@ -22,10 +22,7 @@ from glob import glob
 
 
 
-# preset_path = bpy.utils.user_resource('SCRIPTS', "presets") + "\\BsMax\\render\\"
-preset_path = bpy.utils.user_resource('SCRIPTS') + "\\presets\\BsMax\\render\\"
 preset_kay = '""" BsMax Render Preset File """'
-
 
 
 def refine_value(value):
@@ -118,6 +115,17 @@ def get_manual_part(ctx, engin_name):
 	return script
 
 
+def get_preset_path():
+	preset_path = bpy.utils.user_resource('CONFIG') + '\\BsMax\\'
+	if not path.isdir(preset_path):
+		mkdir(preset_path)
+
+	preset_path += 'render_presets\\'
+	if not path.isdir(preset_path):
+		mkdir(preset_path)
+
+	return preset_path
+
 
 def get_script(engin, engin_name):
 	""" 
@@ -183,6 +191,7 @@ class Render_OT_Save_Preset(Operator):
 	preset_name: StringProperty(name='Preset Name', default='New Preset')
 
 	def save_file(self, string):
+		preset_path = get_preset_path()
 		if not path.exists(preset_path):
 			if access(preset_path, W_OK):
 				mkdir(preset_path)
@@ -225,6 +234,7 @@ class Render_OT_Load_Preset(Operator):
 	bl_options = {'REGISTER', 'INTERNAL'}
 
 	def get_presets(self, ctx):
+		preset_path = get_preset_path()
 		preset_list = [path.splitext(path.basename(f))[0] for f in glob(preset_path+"/*.py")]
 		presets = []
 		for pl in preset_list:
@@ -237,6 +247,7 @@ class Render_OT_Load_Preset(Operator):
 		self.layout.prop(self, 'preset_name')
 
 	def read_file(self):
+		preset_path = get_preset_path()
 		filename = 	preset_path + self.preset_name + '.py'
 		return open(filename).read()
 

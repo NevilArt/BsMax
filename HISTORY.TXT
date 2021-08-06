@@ -1,3 +1,6 @@
+#0,1,0,20210726
+	In Backburner submiter 'frame per task' added for 'Specific frames' mode too.
+
 #0,1,0,20210722
 	Submit to Backburner Operator now create a seprate temp file for render.
 	Backburner has an option for submit as suspended or not.
