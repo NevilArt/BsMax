@@ -31,8 +31,9 @@ Do not worry about slowing down of Updates. it`s time to learn Blender c++ codin
 
 # latest Updates
 
-* Save/Load button added for backburner setting.
-* Backburner can send job for custom version (By default current Blender Version).
+* Backburner tool Inteface cleaned up and some bug fixed.
+* Backburner submitter as float dialog added to render menu.
+* 'New Editor' menu added to 'Windows' menu.
 * [Update History...](https://github.com/NevilArt/BsMax_2_80/blob/master/HISTORY.TXT)
 
 # License

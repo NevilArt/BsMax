@@ -41,7 +41,6 @@ Note: Tasks in [] can't apply for now because of python API limitation, I am loo
 	
 
 # Issue
-	Convert to (make Unique and apply all modifiers)
 	Helix height and last segment
 	Edge mode delete face most desolve edges too
 	Bone to Bone link_to net to fix transform

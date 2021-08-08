@@ -98,10 +98,10 @@ def add_show_types(km, space):
 	km.new(space,'view3d.show_camera_toggle','C','PRESS',[],shift=True)
 
 def add_float_editors(km, space):
-	km.new(space,'editor.float','M','PRESS',[('ui_type','ShaderNodeTree'),('shader_type','OBJECT')])
-	km.new(space,'editor.float','EIGHT','PRESS',[('ui_type','ShaderNodeTree'),('shader_type','WORLD')])
-	km.new(space,'editor.float','SIX','PRESS',[('ui_type','GeometryNodeTree')])
-	# km.new(space,'editor.float','H','PRESS',[('ui_type','OUTLINER')])
+	km.new(space,'editor.float','M','PRESS',[('ui_type','ShaderNodeTree'),('shader_type','OBJECT'),('multiple',False)])
+	km.new(space,'editor.float','EIGHT','PRESS',[('ui_type','ShaderNodeTree'),('shader_type','WORLD'),('multiple',False)])
+	km.new(space,'editor.float','SIX','PRESS',[('ui_type','GeometryNodeTree'),('multiple',False)])
+	# km.new(space,'editor.float','H','PRESS',[('ui_type','OUTLINER'),('multiple',False)])
 
 def add_float_menu(km, space, preferences):
 	fm = km_float_menu

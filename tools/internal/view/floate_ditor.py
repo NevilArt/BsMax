@@ -14,8 +14,8 @@
 ############################################################################
 
 import bpy
-from bpy.types import Operator
-from bpy.props import StringProperty
+from bpy.types import Operator, Menu
+from bpy.props import StringProperty, BoolProperty
 from operator import itemgetter
 
 
@@ -27,6 +27,7 @@ class Editor_OT_Open_As_Float_Window(Operator):
 	
 	ui_type: StringProperty(default='VIEW_3D')
 	shader_type: StringProperty(default='')
+	multiple: BoolProperty(default=True)
 
 	def execute(self,ctx):
 		version = bpy.app.version
@@ -45,17 +46,21 @@ class Editor_OT_Open_As_Float_Window(Operator):
 			""" New Method for Blender 2.93 and Newer """
 			windows = ctx.window_manager.windows
 			
-			""" Pass if exist """
-			for window in windows:
-				for area in window.screen.areas:
-					if area.ui_type == self.ui_type:
-						if self.shader_type != '':
-							for space in area.spaces:
-								if hasattr(space, 'shader_type'):
-									if space.shader_type == self.shader_type:
-										return{'FINISHED'}
-						else:
-							return{'FINISHED'}
+			""" Pass if exist and single mode"""
+			if not self.multiple:
+				for window in windows:
+					for area in window.screen.areas:
+						if area.ui_type == self.ui_type:
+							if self.shader_type != '':
+								for space in area.spaces:
+									if hasattr(space, 'shader_type'):
+										try:
+											if space.shader_type == self.shader_type:
+												return{'FINISHED'}
+										except:
+											pass
+							else:
+								return{'FINISHED'}
 
 			""" Create New Window """
 			bpy.ops.wm.window_new()
@@ -66,12 +71,14 @@ class Editor_OT_Open_As_Float_Window(Operator):
 
 		return{'FINISHED'}
 
+
+
 class Editor_OT_Script_Listener_Open(Operator):
 	bl_idname = 'editor.script_listener'
 	bl_label = 'Script Listener(Float)'
 	bl_options = {'REGISTER', 'INTERNAL'}
 	
-	def execute(self,ctx):
+	def execute(self, ctx):
 		version = bpy.app.version
 		if version[0] == 2 and version[1] <= 92:
 			""" Old Method for Blender 2.92 and older """
@@ -79,7 +86,7 @@ class Editor_OT_Script_Listener_Open(Operator):
 			bpy.ops.screen.userpref_show('INVOKE_DEFAULT')
 			area = windows[-1].screen.areas[0]
 			area.type = 'CONSOLE'
-			bpy.ops.screen.area_split(direction='HORIZONTAL',factor=0.5)
+			bpy.ops.screen.area_split(direction='HORIZONTAL', factor=0.5)
 			area = windows[-1].screen.areas[0]
 			area.type = 'INFO'
 		
@@ -98,18 +105,68 @@ class Editor_OT_Script_Listener_Open(Operator):
 			bpy.ops.wm.window_new()
 			area = windows[-1].screen.areas[0]
 			area.ui_type = 'CONSOLE'
-			bpy.ops.screen.area_split(direction='HORIZONTAL',factor=0.5)
+			bpy.ops.screen.area_split(direction='HORIZONTAL', factor=0.5)
 			area = windows[-1].screen.areas[0]
 			area.type = 'INFO'
 		
 		return{'FINISHED'}
 
-classes = [Editor_OT_Open_As_Float_Window,Editor_OT_Script_Listener_Open]
+
+
+class BsMax_MT_New_Editor(Menu):
+	bl_idname = 'BSMAX_MT_new_editor'
+	bl_label = 'New Editor'
+	def draw(self, ctx):
+		version = bpy.app.version
+		layout=self.layout
+		layout.operator("editor.float", text='3D Viewport', icon='VIEW3D').ui_type='VIEW_3D'
+		layout.operator("editor.float", text='Image Editor', icon='IMAGE').ui_type='IMAGE_EDITOR'
+		layout.operator("editor.float", text='UV Editor', icon='UV').ui_type='UV'
+		layout.operator("editor.float", text='Compositor', icon='NODE_COMPOSITING').ui_type='CompositorNodeTree'
+		layout.operator("editor.float", text='Texture Node Editor', icon='TEXTURE').ui_type='TextureNodeTree'
+		if (version[0] == 2 and version[1] <= 92) or version[0] > 2:
+			layout.operator("editor.float", text='Geometry Node Editor', icon='NODETREE').ui_type='GeometryNodeTree'
+		layout.operator("editor.float", text='Shader Node Editor', icon='NODE_MATERIAL').ui_type='ShaderNodeTree'
+		layout.operator("editor.float", text='Video Sequencer', icon='SEQUENCE').ui_type='SEQUENCE_EDITOR'
+		layout.operator("editor.float", text='Movie Clip Editor', icon='TRACKER').ui_type='CLIP_EDITOR'
+		layout.separator()
+		layout.operator('editor.float', text='Dope Sheet', icon='ACTION').ui_type='DOPESHEET'
+		layout.operator("editor.float", text='Time Line', icon='TIME').ui_type='TIMELINE'
+		layout.operator("editor.float", text='Graph Editor', icon='GRAPH').ui_type='FCURVES'
+		layout.operator("editor.float", text='Drivers', icon='DRIVER').ui_type='DRIVERS'
+		layout.operator("editor.float", text='Nonlinear Animation', icon='NLA').ui_type='NLA_EDITOR'
+		layout.separator()
+		layout.operator('editor.float', text='Text Editor', icon='TEXT').ui_type='TEXT_EDITOR'
+		layout.operator("editor.float", text='Python Console', icon='CONSOLE').ui_type='CONSOLE'
+		layout.operator("editor.float", text='Info', icon='INFO').ui_type='INFO'
+		layout.separator()
+		layout.operator('editor.float', text='Outliner', icon='OUTLINER').ui_type='OUTLINER'
+		layout.operator("editor.float", text='Properties', icon='PROPERTIES').ui_type='PROPERTIES'
+		layout.operator("editor.float", text='File Browser', icon='FILE_FOLDER').ui_type='FILES'
+		if version[0] >= 3:
+			layout.operator("editor.float", text='Sepreadsheet', icon='ASSET_MANAGER').ui_type='ASSETS'
+		if (version[0] == 2 and version[1] <= 93) or version[0] > 2:
+			layout.operator("editor.float", text='Sepreadsheet', icon='SPREADSHEET').ui_type='SPREADSHEET'
+		layout.operator("editor.float", text='Prefrences', icon='PREFERENCES').ui_type='PREFERENCES'
+
+def float_editor_menu(self, ctx):
+	layout = self.layout
+	layout.menu('BSMAX_MT_new_editor')
+
+
+
+classes = [Editor_OT_Open_As_Float_Window,
+	Editor_OT_Script_Listener_Open,
+	BsMax_MT_New_Editor]
+
+
 
 def register_float_editor():
 	[bpy.utils.register_class(c) for c in classes]
+	bpy.types.TOPBAR_MT_window.prepend(float_editor_menu)
 
 def unregister_float_editor():
+	bpy.types.TOPBAR_MT_window.remove(float_editor_menu)
 	[bpy.utils.unregister_class(c) for c in classes]
 
 if __name__ == "__main__":

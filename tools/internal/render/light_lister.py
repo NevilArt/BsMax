@@ -16,7 +16,7 @@ import bpy
 from bpy.types import Operator
 from bsmax.actions import set_as_active_object
 
-class Render_TO_Light_Lister(Operator):
+class Render_OT_Light_Lister(Operator):
 	bl_idname = 'render.light_lister'
 	bl_label = 'Light lister'
 	bl_options = {'REGISTER', 'INTERNAL'}
@@ -273,7 +273,7 @@ class Render_TO_Light_Lister(Operator):
 
 
 
-class Camera_TO_Actve_By_Name(Operator):
+class Camera_OT_Actve_By_Name(Operator):
 	""" Set as active camera  """
 	bl_idname = 'camera.active_by_name'
 	bl_label = 'Active Camera by name'
@@ -294,7 +294,7 @@ class Camera_TO_Actve_By_Name(Operator):
 
 
 
-class Render_TO_Camera_Lister(Operator):
+class Render_OT_Camera_Lister(Operator):
 	bl_idname = 'render.camera_lister'
 	bl_label = 'Camera lister'
 	bl_options = {'REGISTER', 'INTERNAL'}
@@ -370,9 +370,9 @@ def render_menu(self, ctx):
 
 
 
-classes = [Render_TO_Light_Lister, 
-		Camera_TO_Actve_By_Name,
-		Render_TO_Camera_Lister]
+classes = [Render_OT_Light_Lister, 
+		Camera_OT_Actve_By_Name,
+		Render_OT_Camera_Lister]
 
 def register_light_lister():
 	[bpy.utils.register_class(c) for c in classes]
