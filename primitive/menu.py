@@ -17,6 +17,16 @@ import bpy
 from bpy.types import Menu
 from bsmax.state import is_object_mode
 
+# Opption menu
+class BsMax_MT_PrimitiveOption(Menu):
+	bl_idname = "BSMAX_MT_primitive_option"
+	bl_label = "Setting"
+	def draw(self,ctx):
+		csps = ctx.scene.primitive_setting
+		layout=self.layout
+		layout.prop(csps, 'position', text='Auto Gride Position', icon='MESH_GRID')
+		layout.prop(csps, 'normal', text='Auto Gride Normal', icon='VIEW3D')
+
 # Mesh create menu
 class BsMax_MT_VertexCreate(Menu):
 	bl_idname = "BSMAX_MT_vertexcreatemenu"
@@ -265,6 +275,8 @@ class BsMax_MT_Create(Menu):
 
 	def draw(self,ctx):
 		layout = self.layout
+		# layout.menu("BSMAX_MT_primitive_option",icon='PREFERENCES')
+		# layout.separator()
 		layout.menu("BSMAX_MT_meshcreatemenu",icon='OUTLINER_OB_MESH')
 		layout.menu("BSMAX_MT_curvecreatemenu",icon='OUTLINER_OB_CURVE')
 		layout.menu("BSMAX_MT_surfacecreatemenu",icon='OUTLINER_OB_SURFACE')
@@ -298,23 +310,24 @@ def CreateMenu_CallBack(self,ctx):
 	if ctx.mode == 'OBJECT':
 		self.layout.menu("BSMAX_MT_createmenu")
 
-classes = [BsMax_MT_VertexCreate,
-		BsMax_MT_MeshCreate,
-		BsMax_MT_CurveCreate,
-		BsMax_MT_SurfaceCreate,
-		BsMax_MT_MetaballCreate,
-		BsMax_MT_TextCreate,
-		BsMax_MT_GreacePencilCreate,
-		BsMax_MT_ArmatureCreate,
-		BsMax_MT_LatticeCreate,
-		BsMax_MT_EmptyCreate,
-		BsMax_MT_ImageCreate,
-		BsMax_MT_LightCreate,
-		BsMax_MT_LightProbsCreate,
-		BsMax_MT_CameraCreate,
-		BsMax_MT_SpeakerCreate,
-		BsMax_MT_ForceFieldCreate,
-		BsMax_MT_Create]
+classes = [BsMax_MT_PrimitiveOption,
+	BsMax_MT_VertexCreate,
+	BsMax_MT_MeshCreate,
+	BsMax_MT_CurveCreate,
+	BsMax_MT_SurfaceCreate,
+	BsMax_MT_MetaballCreate,
+	BsMax_MT_TextCreate,
+	BsMax_MT_GreacePencilCreate,
+	BsMax_MT_ArmatureCreate,
+	BsMax_MT_LatticeCreate,
+	BsMax_MT_EmptyCreate,
+	BsMax_MT_ImageCreate,
+	BsMax_MT_LightCreate,
+	BsMax_MT_LightProbsCreate,
+	BsMax_MT_CameraCreate,
+	BsMax_MT_SpeakerCreate,
+	BsMax_MT_ForceFieldCreate,
+	BsMax_MT_Create]
 
 def register_menu():
 	[bpy.utils.register_class(c) for c in classes]

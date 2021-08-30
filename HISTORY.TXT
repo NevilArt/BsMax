@@ -1,3 +1,8 @@
+#0,1,0,20210808
+	Backburner tool Inteface cleaned up and some bug fixed.
+	Backburner submitter as float dialog added to render menu.
+	'New Editor' menu added to 'Windows' menu.
+
 #0,1,0,20210806
 	Save/Load button added for backburner setting.
 	Backburner can send job for custom version (By default current Blender Version).

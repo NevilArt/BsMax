@@ -15,7 +15,7 @@
 
 import bpy
 from bpy.props import *
-from bpy.types import Panel,Operator
+from bpy.types import Panel, Operator
 
 def get_plane_panel(self,layout):
 	layout.label(text="Plane",icon='MESH_PLANE')

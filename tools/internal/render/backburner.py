@@ -22,7 +22,7 @@ bl_info = {
 	"name": "BsMax-Backburner",
 	"description": "Backburner for Blender 2.80 ~ 3.0",
 	"author": "Matt Ebb | Blaize | Anthony Hunt | Spirou4D | Nevil",
-	"version": (0, 2, 0, 5),
+	"version": (0, 2, 0, 6),# 2021-08-28
 	"blender": (2, 80, 0),# to 3.0
 	"location": "Properties/ Output/ Backbrner",
 	"wiki_url": "https://github.com/NevilArt/BsMax_2_80/wiki",
@@ -173,31 +173,30 @@ def create_task_list_file(scene, filename):
 	else:
 		start_frame = backburner.frame_start if mode == 'RANGE' else scene.frame_start
 		end_frame = backburner.frame_end if mode == 'RANGE' else scene.frame_end
-		for frame in range(start_frame, end_frame):
+		for frame in range(start_frame, end_frame+1):
 			frames.append(frame)
 		
 	if step == 1:
 		""" Single frame per task """
 		for frame in frames:
 			task += task_fild(frame, frame)
-	else:
+	elif len(frames) > 0:
 		""" Multi frame per task """
-		start = end = -1
+		start = end = frames[0]
 		for frame in frames:
-			if start == -1:
-				start = end = frame
-				continue
-
+			""" check is the next frame is part of sequence """
 			if frame == end + 1:
 				end = frame
 			else:
 				task += task_fild(start, end)
 				start = end = frame
 
+			""" Split if reach to step size """
 			if end - start >= step:
 				task += task_fild(start, end)
-				start = end = -1
+				start = end = frame
 
+			""" pack the end part of sequence """
 			if frame == frames[-1]:
 				end = frame
 				task += task_fild(start, end)
@@ -256,8 +255,8 @@ class Render_OT_Submit_To_Backburner(Operator):
 		cmd += ' -manager: ' + cbb.manager
 		# cmd += ' -port: '+ str(cbb.port)
 		# cmd += ' -netmask: ' + '255.255.0.0'
-		# if cbb.group != '':
-		# 	cmd += ' -????????:"' + cbb.group + '"'
+		if cbb.group != '':
+			cmd += ' -group:"' + cbb.group + '"'
 		if cbb.job_details != '':
 			cmd += ' -description:"' + cbb.job_details + '"'
 		cmd += ' -priority:' + str(cbb.priority)
@@ -431,7 +430,7 @@ def draw_backburner_panel(self, ctx):
 	row = layout.row()
 	row.prop(csbb, 'manager')
 	row.prop(csbb, 'port')
-	# row.prop(csbb, 'group')
+	row.prop(csbb, 'group')
 	
 	row = layout.row()
 	row.prop(csbb, 'use_custom_path')

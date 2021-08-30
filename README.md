@@ -31,9 +31,10 @@ Do not worry about slowing down of Updates. it`s time to learn Blender c++ codin
 
 # latest Updates
 
-* Backburner tool Inteface cleaned up and some bug fixed.
-* Backburner submitter as float dialog added to render menu.
-* 'New Editor' menu added to 'Windows' menu.
+* Backburner submiter -1_end and miss last frame bug fixed.
+* Backburner submiter can submit Server Group name too.
+* Hair cache combine use cache name rather than 'combined' for combined forlder name.
+* Press 'Ctrl+Z' while Create Primitive object crash bug fixed.
 * [Update History...](https://github.com/NevilArt/BsMax_2_80/blob/master/HISTORY.TXT)
 
 # License

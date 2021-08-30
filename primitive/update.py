@@ -14,8 +14,10 @@
 ############################################################################
 
 import bpy
+from bpy.types import PropertyGroup
 from bpy.app.handlers import persistent
-from bpy.props import StringProperty,IntProperty,FloatProperty,BoolProperty,EnumProperty,PointerProperty
+from bpy.props import (StringProperty, IntProperty, FloatProperty,
+	BoolProperty, EnumProperty, PointerProperty)
 from primitive.box import Box
 from .capsule import Capsule
 from .cylinder import Cylinder, Cone
@@ -94,7 +96,13 @@ def primitive_frame_update(scene):
 		if data.primitivedata.animatable:
 			update(data)
 
-class PrimitiveData(bpy.types.PropertyGroup):
+class Primitive_Option(PropertyGroup):
+	position: BoolProperty(name='Position', default=False,
+		description='Create object on raycasted position aligned to view')
+	normal: BoolProperty(name='Normal', default=False,
+		description='Create object on raycasted position aligned to face normal')
+
+class PrimitiveData(PropertyGroup):
 	classname: StringProperty()
 	animatable: BoolProperty(update=primitive_update)
 	width: FloatProperty(unit='LENGTH', update=primitive_update, min= 0)
@@ -166,8 +174,12 @@ def register_update():
 		unregister_update()
 	try:
 		bpy.utils.register_class(PrimitiveData)
+		bpy.utils.register_class(Primitive_Option)
 	except:
 		pass
+		""" pass if it is allready exist and do not need to add again """
+
+	bpy.types.Scene.primitive_setting = PointerProperty(type=Primitive_Option, name='Primitive settings')
 	bpy.types.Mesh.primitivedata = PointerProperty(type=PrimitiveData)
 	bpy.types.Curve.primitivedata = PointerProperty(type=PrimitiveData)
 	bpy.app.handlers.frame_change_post.append(primitive_frame_update)
@@ -175,4 +187,7 @@ def register_update():
 def unregister_update():
 	del bpy.types.Mesh.primitivedata
 	del bpy.types.Curve.primitivedata
+	del bpy.types.Scene.primitive_setting
+	
 	bpy.utils.unregister_class(PrimitiveData)
+	bpy.utils.unregister_class(Primitive_Option)

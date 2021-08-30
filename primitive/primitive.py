@@ -73,7 +73,7 @@ class CreatePrimitive(Operator):
 	state = False
 	drag = False
 	mpos = Vector((0, 0, 0))
-	usedkeys = ['LEFTMOUSE', 'RIGHTMOUSE', 'ESC', 'MOUSEMOVE']
+	usedkeys = ['LEFTMOUSE', 'RIGHTMOUSE', 'ESC', 'MOUSEMOVE', 'Z']
 	cancelkeys = ['RIGHTMOUSE', 'ESC']
 	requestkey = []
 	forcefinish = False

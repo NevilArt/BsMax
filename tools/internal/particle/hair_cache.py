@@ -28,7 +28,7 @@ class Particle_OT_Hair_Cache_Combine(Operator):
 	bl_label = 'Combine Hair Caches'
 	bl_options = {'REGISTER', 'INTERNAL'}
 
-	def get_full_cache_path(self, cache_path):
+	def get_full_cache_path(self, cache_path, cache_name):
 		""" Check for path is absolut or relative """
 		if cache_path[0] == '/':
 			file_path = Path(bpy.data.filepath)
@@ -39,7 +39,8 @@ class Particle_OT_Hair_Cache_Combine(Operator):
 
 		""" Check is Combined or parent directory """
 		folder_name = os.path.dirname(ret_path).split('\\')[-1]
-		if folder_name == 'Combined':
+		# if folder_name == 'Combined':
+		if folder_name == cache_name:
 			""" Return Parent directory if path set in Combined folder """
 			ret_path = str(Path(ret_path).parent) + '\\'
 		
@@ -57,8 +58,9 @@ class Particle_OT_Hair_Cache_Combine(Operator):
 		
 		""" Create pathes """
 		cache_name = point_cache.name
-		cache_path = self.get_full_cache_path(point_cache.filepath)
-		combined_path = cache_path + 'Combined\\'
+		cache_path = self.get_full_cache_path(point_cache.filepath, cache_name)
+		# combined_path = cache_path + 'Combined\\'
+		combined_path = cache_path + cache_name + '\\'
 
 		if not os.path.exists(combined_path):
 			os.mkdir(combined_path)
