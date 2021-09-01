@@ -1,3 +1,9 @@
+#0,1,0,20210830
+	Backburner submiter -1_end and miss last frame bug fixed.
+	Backburner submiter can submit Server Group name too.
+	Hair cache combine use cache name rather than 'combined' for combined forlder name.
+	Press 'Ctrl+Z' while Create Primitive object crash bug fixed.
+
 #0,1,0,20210808
 	Backburner tool Inteface cleaned up and some bug fixed.
 	Backburner submitter as float dialog added to render menu.

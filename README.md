@@ -31,10 +31,8 @@ Do not worry about slowing down of Updates. it`s time to learn Blender c++ codin
 
 # latest Updates
 
-* Backburner submiter -1_end and miss last frame bug fixed.
-* Backburner submiter can submit Server Group name too.
-* Hair cache combine use cache name rather than 'combined' for combined forlder name.
-* Press 'Ctrl+Z' while Create Primitive object crash bug fixed.
+* The Abandoned SpiderWeb tool from "Maxime Herpin" updated to work with Blender 2.80+ and add as an operator to BsMax (Draw lines with anotation then Create/Mesh/Extera/SpiderWeb).
+* Note: SpiderWeb tool is buggy but works for most cases. Don't worry about Bugs all will be fix soon.
 * [Update History...](https://github.com/NevilArt/BsMax_2_80/blob/master/HISTORY.TXT)
 
 # License
