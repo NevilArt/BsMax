@@ -1,3 +1,7 @@
+# 0,1,0,20210902
+	The Abandoned SpiderWeb tool from "Maxime Herpin" updated to work with Blender 2.80+ and add as an operator to BsMax (Draw lines with anotation then Create/Mesh/Extera/SpiderWeb).
+	Note: SpiderWeb tool is buggy but works for most cases. Don't worry about Bugs all will be fix soon.
+
 #0,1,0,20210830
 	Backburner submiter -1_end and miss last frame bug fixed.
 	Backburner submiter can submit Server Group name too.

@@ -31,8 +31,8 @@ Do not worry about slowing down of Updates. it`s time to learn Blender c++ codin
 
 # latest Updates
 
-* The Abandoned SpiderWeb tool from "Maxime Herpin" updated to work with Blender 2.80+ and add as an operator to BsMax (Draw lines with anotation then Create/Mesh/Extera/SpiderWeb).
-* Note: SpiderWeb tool is buggy but works for most cases. Don't worry about Bugs all will be fix soon.
+* Spiderweb polished and some bugfiex (Create Bitmap not working yet disabled for now).
+* Set soft limit for some of SpiderWeb creator parameters to avoid crashing.
 * [Update History...](https://github.com/NevilArt/BsMax_2_80/blob/master/HISTORY.TXT)
 
 # License

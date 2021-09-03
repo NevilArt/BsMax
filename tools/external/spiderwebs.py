@@ -13,6 +13,7 @@
 #	along with this program.  If not, see <https://www.gnu.org/licenses/>.
 ############################################################################
 
+# from tools.internal.object.object_properties import enabled
 import bpy, bmesh, time
 import numpy as np
 from mathutils import Vector, Matrix, geometry
@@ -34,7 +35,7 @@ bl_info = {
 }
 
 
-def menu_func(self, context):
+def menu_func(self, ctx):
 	layout = self.layout
 	layout.label("Spider Webs:")
 	layout.operator("mesh.add_spider_web",
@@ -48,22 +49,59 @@ class Render_OT_Add_Spider_Web(Operator):
 	bl_label = "Add Spider Web Object"
 	bl_options = {'REGISTER', 'UNDO'}
 
-	size: FloatProperty(min=0.001, default=1)
-	density: FloatProperty(min=0, default=1)
-	randomness: FloatProperty(min=0, default=.2)
-	gravity: FloatProperty(name="gravity_strength", default=1)
-	detect_floor: BoolProperty(default=True)
-	number: IntProperty(name="number of webs", default=1, min=1)
-	draw_3d: BoolProperty(name="generate web strands", default=False)
-	draw_curve: BoolProperty(name="generate web strands", default=True)
-	draw_2d: BoolProperty(name="create textures and planes", default=False)
-	texture_size: IntProperty(name="texture size", default=1024, min=1)
-	SeedProp: IntProperty(name='seed', default=0)
+	size: FloatProperty(name='Size', min=0.001, default=1,
+		description='Distance of the corner that web will connect')
+	
+	density: FloatProperty(name='Densty', min=0.0001, default=1, soft_max=5,
+		description='5 is soft limit you can enter bigger number')
+	
+	randomness: FloatProperty(name='Randomness', min=0, default=0.2)
+	
+	gravity: FloatProperty(name="Gravity Strength", default=1,
+		soft_min=-2, soft_max=2, step=0.01)
+	
+	detect_floor: BoolProperty(name='Detect Floor', default=True)
+	number: IntProperty(name="Number of webs", default=1, min=1,
+		soft_max=5)
+	
+	draw_3d: BoolProperty(name="Create Mesh web strands", default=False)
+	
+	draw_curve: BoolProperty(name="Create Curve web strands", default=True)
+	
+	draw_2d: BoolProperty(name="Create Textures and Planes", default=False)
+	
+	texture_size: IntProperty(name="Texture size", default=1024, min=1)
+	
+	SeedProp: IntProperty(name='Seed', default=0)
 
-	def execute(self, context):
+	@classmethod
+	def poll(self, ctx):
+		return ctx.mode == "OBJECT"
+	
+	def draw(self, ctx):
+		layout = self.layout
+		box = layout.box()
+		box.prop(self, 'size')
+		box.prop(self, 'density')
+		box.prop(self, 'randomness')
+		box.prop(self, 'gravity')
+		box.prop(self, 'detect_floor')
+		box.prop(self, 'number')
+		box.prop(self, 'SeedProp')
+		box = layout.box()
+		box.prop(self, 'draw_3d', icon='OUTLINER_DATA_MESH')
+		box.prop(self, 'draw_curve', icon='OUTLINER_DATA_CURVE')
+		# box = layout.box()
+		# box.prop(self, 'draw_2d', icon='TEXTURE_DATA')
+		# box.prop(self, 'texture_size')
+
+	def execute(self, ctx):
 		seed(self.SeedProp)
-		Webs(size=self.size, webs_number=self.number, gravity_strength=self.gravity, draw_3d=self.draw_3d, draw_2d=self.draw_2d,
-			 texture_size=self.texture_size, draw_curve=self.draw_curve, density=self.density, detect_floor=self.detect_floor, randomness=self.randomness)
+		Webs(size=self.size, webs_number=self.number,
+			gravity_strength=self.gravity, draw_3d=self.draw_3d,
+			draw_2d=self.draw_2d, texture_size=self.texture_size,
+			draw_curve=self.draw_curve, density=self.density,
+			detect_floor=self.detect_floor, randomness=self.randomness)
 
 		return {'FINISHED'}
 
@@ -81,25 +119,29 @@ class Thread:
 			random_vect = Vector((random(), random(), random())) * randomness
 		else:
 			random_vect = Vector((0, 0, 0))
+		
 		point_a, point_c = self.web_parent.verts[self.points[segment_index]], self.web_parent.verts[self.points[segment_index + 1]]
+		
 		if self.thread_type == 'frame':
 			point_b = (point_a + point_c) / 2 + (point_a - point_c).length * (self.web_parent.position - (point_a + point_c) / 2) * 0.05
-			point_b += .2 * (point_a - point_c).length * self.gravity_strength * Vector((0, 0, -1))
+			point_b += 0.2 * (point_a - point_c).length * self.gravity_strength * Vector((0, 0, -1))
+
 		elif self.thread_type == 'support':
 			point_b = (point_a + point_c) / 2 + (point_a - point_c).length * (self.web_parent.position - (point_a + point_c) / 2) * .4
-			point_b += .2 * (point_a - point_c).length * self.gravity_strength * Vector((0, 0, -1))
+			point_b += 0.2 * (point_a - point_c).length * self.gravity_strength * Vector((0, 0, -1))
+
 		elif self.thread_type == 'filling':
-			point_b = (point_a + point_c) / 2 + .3 * (point_a - point_c).length * self.gravity_strength * Vector((0, 0, -1))
+			point_b = (point_a + point_c) / 2 + 0.3 * (point_a - point_c).length * self.gravity_strength * Vector((0, 0, -1))
 
 		elif self.thread_type == 'hub':
-			point_b = (point_a + point_c) / 2 + .3 * (point_a - point_c).length * self.gravity_strength * Vector((0, 0, -1))
+			point_b = (point_a + point_c) / 2 + 0.3 * (point_a - point_c).length * self.gravity_strength * Vector((0, 0, -1))
 
 		elif self.thread_type == 'radial':
 			vect = point_a - point_c
 			vect.normalize()
 			z = vect.z
-			z = .5 + z / 2
-			point_b = (point_a + point_c) / 2 + .3 * self.gravity_strength * z * Vector((0, 0, -1))
+			z = 0.5 + z / 2
+			point_b = (point_a + point_c) / 2 + 0.3 * self.gravity_strength * z * Vector((0, 0, -1))
 
 		if ground_z is not None:
 			point_b.z = max(point_b.z, ground_z)
@@ -122,7 +164,10 @@ class Thread:
 
 
 class Webs:
-	def __init__(self, size, webs_number, gravity_strength, draw_3d=False, draw_curve=False, draw_2d=False, texture_size=1024, density=1.0, detect_floor=True, randomness=.2):
+	def __init__(self, size, webs_number, gravity_strength, draw_3d=False,
+		draw_curve=False, draw_2d=False, texture_size=1024,
+		density=1.0, detect_floor=True, randomness=0.2):
+
 		self.randomness = randomness
 		self.detect_floor = detect_floor
 		self.density = density
@@ -139,16 +184,23 @@ class Webs:
 		self.clock.begin_clock('generating_webs')
 		self.generate_webs(webs_number)
 		self.clock.end_clock('generating_webs')
+		
 		if draw_curve:
 			self.draw_curve()
+		
 		if draw_3d:
 			self.draw_3d()
+		
 		if draw_2d:
 			self.draw_2d(texture_size)
 
 	def generate_webs(self, number):
-		for i in range(number):
-			web = Web(anchor_points_candidates=self.anchor_points, gravity_strength=self.gravity_strength, size=self.size, density=self.density, ground=self.detect_floor, randomness=self.randomness)
+		# for i in range(number):
+		for _ in range(number):
+			web = Web(anchor_points_candidates=self.anchor_points,
+				gravity_strength=self.gravity_strength, size=self.size,
+				density=self.density, ground=self.detect_floor,
+				randomness=self.randomness)
 			self.webs.append(web)
 			# new_anchors = [web.verts[i] for i in sample(range(len(web.verts)), min(10, len(web.verts)))]
 			# self.anchor_points.extend(new_anchors)
@@ -164,8 +216,10 @@ class Webs:
 		me.from_pydata(self.verts, self.edges, [])
 		obj = bpy.data.objects.new("webs", me)
 		self.object = obj
-		scene.objects.link(obj)
-		obj.select = False
+		# scene.objects.link(obj) # 2.79
+		scene.collection.objects.link(obj) # 2.8
+		# obj.select = False 2.79
+		obj.select_set(state = True) # 2.80
 
 	def draw_curve(self):
 		curve_data = bpy.data.curves.new('web', type='CURVE')
@@ -195,17 +249,17 @@ class Webs:
 		curveOB.select_set(state = True) # 2.80
 
 	def draw_2d(self, res=1024):
-		scene = bpy.context.scene
+		ctx = bpy.context
+		# scene = bpy.context.scene
 		self.clock.begin_clock('preparing_2d_data')
-		anchors = []
-		planes = []
-		locations = []
-		edges_vect = []
-		uvs = []
+		anchors, planes, uvs = [], [], []
+		locations, edges_vect = [], []
+
 		for i, web in enumerate(self.webs):
 			normal = web.plane_normal
-			index = len(planes)
+			# index = len(planes)
 			appending = True
+
 			if i > 0:
 				for j, n in enumerate(planes):
 					if n.angle(normal) < pi / 12 and (web.center - locations[j]).length < 1.5:
@@ -213,6 +267,7 @@ class Webs:
 						edges_vect[j].extend(web.get_edges_vect())
 						appending = False
 						break
+
 			if appending:
 				planes.append(normal)
 				anchors.append(web.anchor_points)
@@ -232,6 +287,7 @@ class Webs:
 			segments = [(points_2d[i], points_2d[i + 1]) for i in range(0, len(points_2d) - 1, 2)]
 			curr_anchors = convex_indexing(anchors[i], planes[i])
 			anchors_uv = []
+
 			for an in curr_anchors:
 				uv_coord = an.copy()
 				uv_coord.rotate(quat)
@@ -256,9 +312,11 @@ class Webs:
 
 		self.clock.end_clock('painting_pixels')
 		self.clock.begin_clock('creating_image')
+
 		for img in bpy.data.images:
 			if "web" in img.name:
 				img.user_clear()
+
 		for img in bpy.data.images:
 			if "web" in img.name:
 				if not img.users:
@@ -300,13 +358,14 @@ class Webs:
 			bm.to_mesh(me)
 
 			ob = bpy.data.objects.new("web_plane", me)
-			bpy.context.scene.objects.link(ob)
-			bpy.context.scene.update()
+			ctx.scene.objects.link(ob)
+			ctx.scene.update()
 			ob.select = True
 			objects.append(ob)
-			bpy.context.scene.objects.active = ob
+			ctx.scene.objects.active = ob
+		
 		bpy.ops.object.join()
-		ob = bpy.context.scene.objects.active
+		ob = ctx.scene.objects.active
 		bpy.ops.object.mode_set(mode='EDIT')
 		bpy.ops.mesh.select_all(action='SELECT')
 		bpy.ops.mesh.quads_convert_to_tris()
@@ -318,7 +377,10 @@ class Webs:
 
 
 class Web:
-	def __init__(self, gravity_strength, draw=False, draw_2d=False, curve=False, anchor_points_candidates=[], size=1, density=1, ground=False, randomness=.2):
+	def __init__(self, gravity_strength, draw=False, draw_2d=False,
+		curve=False, anchor_points_candidates=[], size=1,
+		density=1, ground=False, randomness=0.2):
+
 		self.density = density
 		self.size = size
 		self.verts = []
@@ -328,10 +390,12 @@ class Web:
 		self.position = Vector((0, 0, 0))
 		self.randomness = randomness
 		self.object = None
+
 		if ground:
 			self.ground_z = detect_ground(anchor_points_candidates)
 		else:
 			self.ground_z = None
+
 		self.anchor_points, self.plane_normal = find_anchor_points(anchor_points_candidates, size=self.size, min_angle=pi / 16)
 		self.center, self.normal = center_normal(self.anchor_points)
 		self.position = self.center
@@ -370,29 +434,36 @@ class Web:
 				length = (self.verts[thread.points[0]] - self.verts[thread.points[-1]]).length
 				resolution = int(length * default_res)
 			new_thread_points = []
+
 			for i in range(len(thread.points) - 1):
 				new_points_indexes = [thread.points[i]]
+
 				for j in range(1, resolution):
-					new_point = thread.position_on_curve(i, max(0, j + random() / 2 - .25) / resolution, randomness / resolution, ground_z=self.ground_z)
+					new_point = thread.position_on_curve(i, max(0, j + random() / 2 - 0.25) / resolution, randomness / resolution, ground_z=self.ground_z)
 					n = len(self.verts)
 					self.verts.append(new_point)
 					new_points_indexes.append(n)
+
 				new_points_indexes.append(thread.points[i + 1])
 				new_thread_points.extend(new_points_indexes)
+
 			thread.points = new_thread_points
 
-	def add_support_threads(self, reach_coef=.3, min_distance=.5):
+	def add_support_threads(self, reach_coef=0.3, min_distance=0.5):
 		from_threads = self.threads
 		new_indexes = [0]
 		i = 0
 		thread_max_index = len(from_threads)
+
 		while i < thread_max_index:
 			thread_a, thread_b = (from_threads[i], from_threads[(i + 1) % thread_max_index])
 			distance = (self.anchor_points[(i + 1) % len(self.anchor_points)] - self.anchor_points[i]).length
+
 			if distance < min_distance and i < thread_max_index - 1:
 				thread_b = from_threads[(i + 2) % thread_max_index]
 				i += 1
 				new_indexes.append(i)
+
 			new_point_a = thread_a.position_on_curve(-2, 1 - reach_coef, ground_z=self.ground_z)
 			new_point_b = thread_b.position_on_curve(0, reach_coef, ground_z=self.ground_z)
 			n = len(self.verts)
@@ -408,18 +479,22 @@ class Web:
 
 		self.threads = [self.threads[i] for i in new_indexes]
 
-	def add_radial_threads(self, thread_angle, randomness=.2):
+	def add_radial_threads(self, thread_angle, randomness=0.2):
 		curr_vect = Vector((0, 0, 1))
 		new_threads = []
 		center_index = len(self.verts)
 		self.center_index = center_index
-		center_coords = self.center + Vector((0, 0, -1)) * .6 * self.gravity_strength
+		center_coords = self.center + Vector((0, 0, -1)) * 0.6 * self.gravity_strength
+
 		if self.ground_z is not None:
 			center_coords.z = max(center_coords.z, self.ground_z)
+
 		self.center = center_coords
 		self.verts.append(center_coords)
+
 		for thread in self.threads:
 			draw_radial = True
+
 			if thread.thread_type == 'support':
 				points = thread.to_vectors()
 				before_points = [thread.points[0]]
@@ -441,17 +516,20 @@ class Web:
 				thread_dist = ((points[0] + points[1]) / 2 - self.position).length
 				angle_a = curr_vect.angle(points[0] - self.position)
 				angle_b = curr_vect.angle(points[1] - self.position)
+
 				if max(angle_a, angle_b) > thread_angle:
 					if angle_a > angle_b:
 						angle_a, angle_b = angle_b, angle_a
 						thread.points.reverse()
 						points.reverse()
+
 					coef_points = []
 					increment = thread_angle * thread_dist / thread_length
 					coef = increment / 2
+
 					while coef < 1:
 						coef_points.append(coef)
-						coef += ((1 - randomness) * 1 + randomness * (.5 + random())) * increment
+						coef += ((1 - randomness) * 1 + randomness * (0.5 + random())) * increment
 
 					new_points = [i for i in before_points]
 
@@ -462,61 +540,79 @@ class Web:
 						new_points.append(n)
 						new_threads.append(Thread([center_index, n], 'radial', self))
 						curr_vect = new_point - self.center
+
 					new_points.extend(after_points)
 					thread.points = new_points
+
 		self.threads.extend(new_threads)
 
-	def add_filling_threads(self, probability=.95, distance=1, randomness=0):
+	def add_filling_threads(self, probability=0.95, distance=1, randomness=0):
 		self.resolution(30 * self.density / (1 + self.size), [i for i in self.threads if i.thread_type == 'radial'], adaptative=True, randomness=randomness)
 		cond = False
 		radial_beginning_index = -1
 		center_indexes = []
 		center_limits = []
+
 		while not cond:
 			radial_beginning_index += 1
+			if radial_beginning_index < len(self.threads)-1:
+				cond = False
+				break
 			cond = self.threads[radial_beginning_index].thread_type == 'radial'
 
 		n = len(self.threads)
 
 		for i in range(radial_beginning_index, n - 1):
-			for k in range(1):
-				self.threads[i].points.pop(0)
-				center_indexes.append(self.threads[i].points[0])
+			# for _ in range(1):
+			self.threads[i].points.pop(0)
+			# if len(self.threads[i].points) > 0:
+			# 	center_indexes.append(self.threads[i].points[0])
+
 			if len(self.threads[i].points) > 0:
 				center_limits.append(self.threads[i].points[0])
 			next_thread = i + 1
+
 			if next_thread == n - 1:
 				next_thread = radial_beginning_index
 			links = dict([(i, False) for i in self.threads[next_thread].points])
+
 			for j, point_index in enumerate(self.threads[i].points):
 				used_proba = probability
+
 				if (self.verts[point_index] - self.center).length > distance:
 					used_proba /= 10
+
 				if random() < used_proba:
 					point = self.verts[point_index]
 					dist = inf
 					neighbour = point_index
+
 					for new_point_index in self.threads[next_thread].points:
 						new_point = self.verts[new_point_index]
 						new_dist = (point - new_point).length
+
 						if new_dist < dist and not links[new_point_index]:
 							dist = new_dist
 							neighbour = new_point_index
 					thread_type = 'filling' if j > 0 else 'hub'
+
 					if dist < .2*self.size/self.density:
 						self.threads.append(Thread([point_index, neighbour], thread_type, self))
 						links[neighbour] = True
 
 		center_indexes = list(set(center_indexes))
+
 		for point_index in center_indexes:
 			random_indexes = sample(range(len(center_limits)), min(2, len(center_limits)))
 			point_a, point_b = [self.verts[center_limits[i]] for i in random_indexes]
+
 			if len(center_limits) > 2:
 				index_a = randint(0, len(center_limits) - 1)
 				point_a = self.verts[center_limits[index_a]]
 				point_b = self.verts[center_limits[(index_a + len(center_limits) // 2) % len(center_limits)]]
 				factor = random()/2
-				self.verts[point_index] = factor * point_a + (.5 - factor) * point_b + .5 * self.verts[point_index]
+				self.verts[point_index] = factor * point_a + (0.5 - factor) * point_b + 0.5 * self.verts[point_index]
+
 		hub_indexes = [i for i in center_indexes]
 		center_indexes.extend(center_limits)
 		links = {i: [] for i in center_indexes}
@@ -590,8 +686,9 @@ class Web:
 		obj.select = True
 
 	def draw_plane(self):
-		scene = bpy.context.scene
-		if len(bpy.context.selected_objects) > 0:
+		ctx = bpy.context
+		scene = ctx.scene
+		if len(ctx.selected_objects) > 0:
 			bpy.ops.object.delete(use_global=False)
 
 		verts = self.anchor_points
@@ -618,8 +715,8 @@ class Web:
 
 		ob = bpy.data.objects.new("web_plane", me)
 		ob.active_material = bpy.data.materials.get("alpha_web")
-		bpy.context.scene.objects.link(ob)
-		bpy.context.scene.update()
+		scene.objects.link(ob)
+		scene.update()
 
 	def draw_2d(self, res=1024):
 		normal = self.plane_normal
@@ -627,6 +724,7 @@ class Web:
 		quat = normal.rotation_difference(up)
 		points_2d = []
 		boundaries = [0, 0, 0, 0]
+
 		for point in self.verts:
 			new_point = point.copy()
 			new_point.rotate(quat)
@@ -646,18 +744,20 @@ class Web:
 
 			if y > boundaries[3]:
 				boundaries[3] = y
+
 		scale = max(boundaries[2] - boundaries[0], boundaries[3] - boundaries[1])
 		# scale *= res/(res+1)
 		pos = Vector((boundaries[0], boundaries[1]))
 		uv_pos = []
 		self.uv_coords = uv_pos
+
 		for i, point in enumerate(points_2d):
 			point -= pos
 			point /= scale
 			if i < len(self.anchor_points):
 				uv_pos.append(point)
 
-		pixels = [(0, 0, 0, 0) for i in range(res ** 2)]
+		pixels = [(0, 0, 0, 0) for _ in range(res ** 2)]
 		segments = []
 
 		for thread in self.threads:
@@ -678,6 +778,7 @@ class Web:
 			image = bpy.data.images.new("web1", width=res, height=res)
 		else:
 			image = bpy.data.images.get('web1')
+
 		pixels = [chan for px in pixels for chan in px]
 		image.pixels = pixels
 		image.filepath_raw = "/tmp/temp.png"
@@ -721,7 +822,7 @@ class Clock:
 
 	def end_clock(self, name):
 		dt = time.time() - self.clocks.pop(name)
-		print(name, dt)
+		# print(name, dt)
 
 
 def draw_point(pixels, x, y, color, alpha, res, res_x):
@@ -742,16 +843,18 @@ def draw_line(pixels, x0, y0, x1, y1, color, res, res_x=None):
 	x, y = x0, y0
 	sx = -1 if x0 > x1 else 1
 	sy = -1 if y0 > y1 else 1
+
 	if dx > dy:
 		err = dx / 2.0
 		grad = 1 if dx == 0 else dy / dx
 		y1 = y
 		y2 = y + 1
+
 		while x != x1:
 			error1 = y1 - y
 			error2 = y2 - (y + 1)
 			side1 = sign(error1)
-			side2 = sign(error2)
+			# side2 = sign(error2)
 			error1, error2 = abs(error1), abs(error2)
 			draw_point(pixels, x, y + side1, color, error1, res, res_x)
 
@@ -772,6 +875,7 @@ def draw_line(pixels, x0, y0, x1, y1, color, res, res_x=None):
 		grad = 1 if dy == 0 else dx / dy
 		x1 = x
 		x2 = x + 1
+
 		while y != y1:
 			error1 = x1 - x
 			error2 = x2 - (x + 1)
@@ -788,6 +892,7 @@ def draw_line(pixels, x0, y0, x1, y1, color, res, res_x=None):
 				x += sx
 				err += dy
 			y += sy
+
 		draw_point(pixels, x, y, color, 1, res, res_x)
 
 
@@ -802,17 +907,21 @@ def web_hull(points, center):
 	vect_b = points[1] - center
 	curr_neighbour = points[1]
 	min_angle = vect_a.angle(vect_b)
+
 	while len(new_points) < len(points):
 		for i in range(len(points_left)):
 			vect_b = points_left[i]
 			angle = vect_a.angle(vect_b)
+
 			if angle < min_angle:
 				min_angle = angle
 				curr_neighbour = points_left[i]
+
 		new_points.append(curr_neighbour)
 		points_left = [i for i in points_left if i != curr_neighbour]
 		vect_a = curr_neighbour - center
 		min_angle = 10
+
 	return new_points
 
 
@@ -821,24 +930,29 @@ def simple_polygon(vertices=5, randomness=.1):
 	new_points = []
 	M = Matrix.Rotation(-2 * pi / vertices, 4, 'Y')
 	N = Matrix.Rotation(pi / 4, 4, 'X')
+
 	for i in range(vertices):
 		M = Matrix.Rotation(-2 * pi / vertices, 4, 'Y')
 		new_points.append(((1 - randomness) + randomness * (.5 - random())) * vector)
 		vector = M * vector
+
 	return [N * i for i in new_points]
 
 
 def center_normal(points):
 	center = Vector((0, 0, 0))
+
 	for i in points:
 		center += i
 	center /= len(points)
 	normals = []
 	curr_vect = points[0] - center
+
 	for point in points[1:]:
 		new_vect = point - center
 		normals.append(new_vect.cross(curr_vect))
 		curr_vect = new_vect
+
 	normal = Vector((0, 0, 0))
 	normal = (points[0] - center).cross(points[len(points) // 4] - center)
 	# for i in normals:
@@ -850,24 +964,29 @@ def center_normal(points):
 def get_grease_points():
 	points = []
 	gp = bpy.context.scene.grease_pencil
+
 	if gp is not None and gp.layers.active is not None and gp.layers.active.active_frame is not None and len(gp.layers.active.active_frame.strokes) > 0:
 		for stroke in gp.layers.active.active_frame.strokes:
 			points.extend([i.co.copy() for i in stroke.points.values()])
+
 	return points
 
 
 def find_anchor_points(points, size, min_angle=2 * pi / 8, max_distance=3):
 	points, plane_normal = setup_anchors(points, size, size*2)
 	center = Vector((0, 0, 0))
+
 	for i in points:
 		center += i
 	center /= max(1, len(points))
 	anchor_points = [Vector()] if len(points) == 0 else [points[0]]
+
 	if len(points) > 3:
 		for point in points:
 			angle = (center - anchor_points[-1]).angle(center - point)
 			if angle >= min_angle:
 				anchor_points.append(point)
+
 	return anchor_points, plane_normal
 
 
@@ -898,6 +1017,7 @@ def get_plane_from_points(points):
 	vec = Vector((1, 1, 1))
 	# vec2 = (vec * mat) / (vec * mat).length # 2.79
 	vec2 = (vec @ mat) / (vec @ mat).length # 2.80
+
 	while vec != vec2 and iter < itermax:
 		iter += 1
 		vec = vec2
@@ -921,6 +1041,7 @@ def setup_anchors(points, size, max_distance=3):
 		neighbours = [p for p in points if (p-random_start_point).length < max_distance]
 		neighbours_length = len(neighbours)
 		tries += 1
+
 	if tries < 5:
 		random_indices = sample([i for i in range(len(neighbours))], 20)
 		random_selection = [neighbours[i] for i in random_indices]
@@ -928,6 +1049,7 @@ def setup_anchors(points, size, max_distance=3):
 		new_points = []
 		barycenter = Vector()
 		shuffle(points)
+
 		for i, point in enumerate(neighbours):
 			barycenter += point
 			if (point - barycenter / (i + 1)).length < max_distance and abs(geometry.distance_point_to_plane(point, plane_co, plane_normal)) < .6 * size:
@@ -944,10 +1066,12 @@ def convex_indexing(points, direction):
 	new_points = [i.copy() for i in points]
 	up = Vector((0, 0, 1))
 	quat = direction.rotation_difference(up)
+
 	for point in new_points:
 		point.rotate(quat)
 		point.resize_2d()
 	convex_indices = geometry.convex_hull_2d(new_points)
+
 	return [points[i] for i in convex_indices]
 
 
@@ -956,6 +1080,7 @@ def points_to_uv_coords(points, normal):
 	quat = normal.rotation_difference(up)
 	points_2d = []
 	boundaries = [0, 0, 0, 0]
+
 	for point in points:
 		new_point = point.copy()
 		new_point.rotate(quat)
@@ -976,14 +1101,15 @@ def points_to_uv_coords(points, normal):
 			boundaries[3] = y
 	scale = max(boundaries[2] - boundaries[0], boundaries[3] - boundaries[1])
 	pos = Vector((boundaries[0], boundaries[1]))
-	for i, point in enumerate(points_2d):
+
+	for _, point in enumerate(points_2d):
 		point -= pos
 		point /= scale
 
 	return points_2d, quat, pos, scale
 
 
-def detect_ground(points, precision=.003):
+def detect_ground(points, precision=0.003):
 	z_locations = sorted([i.z for i in points])
 	counter = 0
 
