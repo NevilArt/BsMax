@@ -15,10 +15,6 @@ Your Reports and Ideas will help me alot and don't forget the sharing. let more 
 
 If not have Github account use 'NevilArt@Gmail.Com' for bug report.
 
-# Slow for a while
-
-Do not worry about slowing down of Updates. it`s time to learn Blender c++ coding to be able develope better tools. for this reason updating the BsMax will bee slower for a while, but Bug fix and Adapt for new version of Blender still has high-priority.
-
 # Installation
 
 * Download all the package as zip file.
@@ -31,8 +27,7 @@ Do not worry about slowing down of Updates. it`s time to learn Blender c++ codin
 
 # latest Updates
 
-* Spiderweb polished and some bugfiex (Create Bitmap not working yet disabled for now).
-* Set soft limit for some of SpiderWeb creator parameters to avoid crashing.
+* Experimental 'Autogrid' added for Create primitive operator.(Under Construction and not complete yet).
 * [Update History...](https://github.com/NevilArt/BsMax_2_80/blob/master/HISTORY.TXT)
 
 # License

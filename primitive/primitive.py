@@ -12,16 +12,17 @@
 #	You should have received a copy of the GNU General Public License
 #	along with this program.  If not,see <https://www.gnu.org/licenses/>.
 ############################################################################
-
 import bpy, bmesh, bgl, gpu
 from bpy.types import Operator
-from mathutils import Vector
+from mathutils import Vector, Matrix
 from math import sqrt
 from gpu_extras.batch import batch_for_shader
 from bsmax.state import is_object_mode
 from bsmax.actions import link_to_scene, set_as_active_object
 from bsmax.mouse import get_click_point_info, ClickPoint
 from bsmax.math import get_2_point_center
+
+
 
 class Dimantion:
 	width = 0
@@ -44,9 +45,9 @@ class Dimantion:
 	def from_click_points(self, cpa, cpb, cpo):
 		w = self.width = abs(cpa.local.x - cpb.local.x)
 		l = self.length = abs(cpa.local.y - cpb.local.y)
-		if cpo.view_name == 'TOP':
+		if cpo.view_orient == 'TOP':
 			height = cpb.screen.y - cpa.screen.y
-		elif cpo.view_name == 'BOTTOM':
+		elif cpo.view_orient == 'BOTTOM':
 			height = cpa.screen.y - cpb.screen.y
 		else:
 			height = cpb.screen.z - cpa.screen.z
@@ -60,7 +61,30 @@ class Dimantion:
 		wo = abs(cpo.local.x - cpb.local.x)
 		lo = abs(cpo.local.y - cpb.local.y)
 		self.radius_from_start_point = sqrt(wo * wo + lo * lo)
-		self.view_name = cpo.view_name
+		self.view_name = cpo.view_orient
+
+
+
+class LocalGride:
+	location = Vector((0.0, 0.0, 0.0))
+	matrix = None
+	rotation = None
+	start, end, normal = None, None, None
+
+	def get_direction(self):
+		if self.start and self.end and self.normal:
+			self.direction = (self.end - self.start).normalized()
+			self.matrix = Matrix([self.direction, -self.direction.cross(self.normal), self.normal]).transposed()
+			self.rotation = self.matrix.to_euler()
+		else:
+			self.rotation = None
+	
+	def reset(self):
+		self.location = Vector((0.0, 0.0, 0.0))
+		self.rotation = None
+		self.start, self.end, self.normal = None, None, None
+
+
 
 class CreatePrimitive(Operator):
 	bl_options = {'REGISTER','UNDO'}
@@ -68,6 +92,7 @@ class CreatePrimitive(Operator):
 	params = None
 	step = 0
 	start, end = Vector((0,0,0)), Vector((0,0,0))
+	cpoint_o = ClickPoint()
 	cpoint_a = ClickPoint()
 	cpoint_b = ClickPoint()
 	state = False
@@ -80,6 +105,7 @@ class CreatePrimitive(Operator):
 	shift = False
 	ctrl = False
 	alt = False
+	gride = LocalGride()
 
 	@classmethod
 	def poll(self, ctx):
@@ -88,40 +114,79 @@ class CreatePrimitive(Operator):
 	def is_drawed_enough(self):
 		return abs(self.start.x - self.end.x) + abs(self.start.y - self.end.y) > 8
 	
-	def modal(self, ctx, event):
-		ctx.area.tag_redraw()
-
+	def get_shift_state(self, event):
 		if event.type in {'LEFT_SHIFT', 'RIGHT_SHIFT'}:
 			if event.value == 'PRESS':
 				self.shift = True
 			if event.value == 'RELEASE':
 				self.shift = False
+	
+	def first_click(self, ctx, x, y):
+		self.step = 1
+		self.cpoint_o = self.cpoint_a = self.cpoint_b
+		self.create(ctx, self.cpoint_a)
+		self.start = Vector((x,y,0))
+		
+		if ctx.space_data.local_view:
+			self.subclass.owner.local_view_set(ctx.space_data, True)
+
+		""" if any surface detect on first click then get info for auto gride """	
+		if self.cpoint_o.surface_detected:
+			self.gride.location = self.cpoint_o.view
+			self.gride.start = self.cpoint_o.view
+			self.gride.normal = self.cpoint_o.surface_normal
+		else:
+			self.gride.location = Vector((0.0, 0.0, 0.0))
+		self.gride.rotation = None
+	
+	def click_count(self, event, x, y):
+		""" Count clicks and check movment (Draged or not) """
+		if event.value == 'PRESS':
+			self.state = True
+		if event.value =='RELEASE':
+			self.state = self.drag = False
+			self.step += 1
+			self.cpoint_a = self.cpoint_b
+			self.end = Vector((x,y,0))
+	
+	def set_rotation(self, ctx):
+		if ctx.scene.primitive_setting.normal:
+			if self.gride.rotation:
+				if self.subclass:
+					if self.subclass.owner:
+						self.subclass.owner.rotation_euler = self.gride.rotation
+	
+	def reset(self):
+		self.subclass.reset()
+		self.gride.reset()
+		self.cpoint_o.reset()
+		self.cpoint_a.reset()
+		self.cpoint_b.reset()
+		self.step = 0
+
+	def modal(self, ctx, event):
+		ctx.area.tag_redraw()
+
+		self.get_shift_state(event)
 
 		if self.subclass == None:
+			# cancel operation if deta type not defined
 			return {'CANCELLED'}
-		elif not event.type in self.usedkeys: 
+		elif not event.type in self.usedkeys:
+			# free the unused keys
 			return {'PASS_THROUGH'}
 		else:
 			dimantion = Dimantion()
 			x, y = event.mouse_region_x, event.mouse_region_y
 			self.mpos = Vector((x, y, 0))
-			self.cpoint_b = get_click_point_info(x, y, ctx)
+			self.cpoint_b = get_click_point_info(ctx, self.gride, x, y)
 
 			if event.type == 'LEFTMOUSE':
+				""" Detect First click """
 				if self.step == 0:
-					self.step = 1
-					self.cpoint_o = self.cpoint_a = self.cpoint_b
-					self.create(ctx, self.cpoint_a)
-					self.start = Vector((x,y,0))
-					if ctx.space_data.local_view:
-						self.subclass.owner.local_view_set(ctx.space_data, True)
-				if event.value == 'PRESS':
-					self.state = True
-				if event.value =='RELEASE':
-					self.state = self.drag = False
-					self.step += 1
-					self.cpoint_a = self.cpoint_b
-					self.end = Vector((x,y,0))
+					self.first_click(ctx, x, y)
+					
+				self.click_count(event, x, y)
 
 			if event.type in self.requestkey:
 				self.event(event.type, event.value)
@@ -131,9 +196,16 @@ class CreatePrimitive(Operator):
 			if event.type == 'MOUSEMOVE':
 				if self.state:
 					self.drag = True
+				
 				if self.step > 0:
+					if self.cpoint_o.surface_detected and not self.gride.end:
+						self.gride.end = self.cpoint_b.view
+						self.gride.get_direction()
+
 					dimantion.from_click_points(self.cpoint_a, self.cpoint_b, self.cpoint_o)
+					self.set_rotation(ctx)
 					self.update(ctx, self.step, dimantion)
+
 				if self.subclass.finishon > 0:
 					if self.step >= self.subclass.finishon:
 						self.step = 0
@@ -143,14 +215,14 @@ class CreatePrimitive(Operator):
 						else:
 							self.finish()
 							bpy.ops.ed.undo_push()
-						self.subclass.reset()
+						self.reset()
 
 			if event.type in self.cancelkeys or self.forcefinish:
 				self.forcefinish = False
 				RemoveCursurOveride(self.drawhandler)
 				if self.step > 0:
 					self.subclass.abort()
-				self.subclass.reset()
+				self.reset()
 				return {'CANCELLED'}
 
 		return {'RUNNING_MODAL'}
@@ -160,15 +232,17 @@ class CreatePrimitive(Operator):
 		ctx.window_manager.modal_handler_add(self)
 		return {'RUNNING_MODAL'}
 
+
+
 class PrimitiveGeometryClass:
 	def create_mesh(self, ctx, meshdata, classname):
 		verts,edges,faces, = meshdata
 		newmesh = bpy.data.meshes.new(classname)
-		newmesh.from_pydata(verts,edges,faces)
+		newmesh.from_pydata(verts,edges, faces)
 		newmesh.update(calc_edges=True)
-		self.owner = bpy.data.objects.new(classname,newmesh)
+		self.owner = bpy.data.objects.new(classname, newmesh)
 		link_to_scene(ctx, self.owner)
-		set_as_active_object(ctx,self.owner)
+		set_as_active_object(ctx, self.owner)
 		self.data = self.owner.data
 		self.data.use_auto_smooth = True
 
@@ -178,28 +252,30 @@ class PrimitiveGeometryClass:
 			""" Genarate New Data """
 			# ver = bpy.app.version
 			# if ver[0] == 2 and ver[1] == 80:
-			if True:
-				""" old method for V2.80 """
-				orgmesh = bpy.data.meshes[self.data.name]
-				tmpmesh = bpy.data.meshes.new("_NewTempMesh_")
-				tmpmesh.from_pydata(verts, edges, faces)
-				bm = bmesh.new()
-				bm.from_mesh(tmpmesh)
-				bm.to_mesh(orgmesh.id_data)
-				bm.free()
-				bpy.data.meshes.remove(tmpmesh)
-				for f in self.data.polygons:
-					f.use_smooth = True
-			else:
-				""" new method for V2.81 and above """
-				self.data.clear_geometry()
-				self.data.from_pydata(verts, edges, faces)
-				""" Note this method is faster but clear the keyframes too """
-				""" I had to skip this part till I find a solution for this """
+			""" old method for V2.80 """
+			orgmesh = bpy.data.meshes[self.data.name]
+			tmpmesh = bpy.data.meshes.new("_NewTempMesh_")
+			tmpmesh.from_pydata(verts, edges, faces)
+			bm = bmesh.new()
+			bm.from_mesh(tmpmesh)
+			bm.to_mesh(orgmesh.id_data)
+			bm.free()
+			bpy.data.meshes.remove(tmpmesh)
+			for f in self.data.polygons:
+				f.use_smooth = True
+			# else:
+			# 	""" new method for V2.81 and above """
+			# 	self.data.clear_geometry()
+			# 	self.data.from_pydata(verts, edges, faces)
+			# 	""" Note this method is faster but clear the keyframes too """
+			# 	""" I had to skip this part till I find a solution for this """
+
+
 
 class PrimitiveCurveClass:
 	def __init__(self):
 		self.close = False
+
 	def create_curve(self, ctx, shapes, classname):
 		# Create Spline
 		newcurve = bpy.data.curves.new(classname, type='CURVE')
@@ -210,10 +286,13 @@ class PrimitiveCurveClass:
 		link_to_scene(ctx, self.owner)
 		set_as_active_object(ctx, self.owner)
 		self.data = self.owner.data
+
 	def update_curve(self, shapes):
 		if self.data != None and bpy.context.mode == 'OBJECT':
 			curve = bpy.data.curves[self.data.name]
 			curve_from_shapes(curve, shapes, self.close)
+
+
 
 # Create Curve from Splines in the shape Data
 def curve_from_shapes(curve, shapes, close):
@@ -228,9 +307,13 @@ def curve_from_shapes(curve, shapes, close):
 			bez.co, bez.handle_left, bez.handle_left_type, bez.handle_right, bez.handle_right_type = shape[i]
 		newspline.use_cyclic_u = close
 
+
+
 def ClearPrimitiveData(obj):
 	if obj != None:
 		obj.primitivedata.classname = ""
+
+
 
 # Overide mouse pointer
 def GetCursurMesh(size, x, y):

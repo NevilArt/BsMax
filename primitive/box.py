@@ -258,6 +258,7 @@ class Create_OT_Box(CreatePrimitive):
 		self.params = owner.data.primitivedata
 		owner.location = clickpoint.view
 		owner.rotation_euler = clickpoint.orient
+
 	def update(self, ctx, clickcount, dimantion):
 		if clickcount == 1:
 			self.params.width = dimantion.width
@@ -265,8 +266,10 @@ class Create_OT_Box(CreatePrimitive):
 			self.subclass.owner.location = dimantion.center
 		elif clickcount == 2:
 			self.params.height = dimantion.height
+
 		if clickcount > 0:
 			self.subclass.update()
+
 	def finish(self):
 		pass
 

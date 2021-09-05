@@ -20,7 +20,7 @@ from bsmax.state import is_object_mode
 # Opption menu
 class BsMax_MT_PrimitiveOption(Menu):
 	bl_idname = "BSMAX_MT_primitive_option"
-	bl_label = "Setting"
+	bl_label = "Setting (Under Construction)"
 	def draw(self, ctx):
 		csps = ctx.scene.primitive_setting
 		layout=self.layout
@@ -286,8 +286,8 @@ class BsMax_MT_Create(Menu):
 
 	def draw(self, ctx):
 		layout = self.layout
-		# layout.menu("BSMAX_MT_primitive_option",icon='PREFERENCES')
-		# layout.separator()
+		layout.menu("BSMAX_MT_primitive_option",icon='PREFERENCES')
+		layout.separator()
 		layout.menu("BSMAX_MT_meshcreatemenu", icon='OUTLINER_OB_MESH')
 		layout.menu("BSMAX_MT_curvecreatemenu", icon='OUTLINER_OB_CURVE')
 		layout.menu("BSMAX_MT_surfacecreatemenu", icon='OUTLINER_OB_SURFACE')
