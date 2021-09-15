@@ -32,6 +32,7 @@ from .uv import register_uv,unregister_uv
 from .view import register_view,unregister_view
 from .rigg import register_rigg,unregister_rigg
 from .menu import register_menu,unregister_menu
+from .vse import register_vse, unregister_vse
 
 def register_internal(preferences):
 	register_animation()
@@ -53,6 +54,7 @@ def register_internal(preferences):
 	register_view(preferences)
 	register_rigg()
 	register_menu()
+	register_vse()
 
 def unregister_internal():
 	unregister_animation()
@@ -74,3 +76,4 @@ def unregister_internal():
 	unregister_view()
 	unregister_rigg()
 	unregister_menu()
+	unregister_vse()

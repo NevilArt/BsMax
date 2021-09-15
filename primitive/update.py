@@ -17,7 +17,7 @@ import bpy
 from bpy.types import PropertyGroup
 from bpy.app.handlers import persistent
 from bpy.props import (StringProperty, IntProperty, FloatProperty,
-	BoolProperty, EnumProperty, PointerProperty, FloatVectorProperty)
+	BoolProperty, EnumProperty, PointerProperty)
 from primitive.box import Box
 from .capsule import Capsule
 from .cylinder import Cylinder, Cone

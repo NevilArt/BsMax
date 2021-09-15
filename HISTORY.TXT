@@ -1,3 +1,6 @@
+#0,1,0,20210905
+	Experimental 'Autogrid' added for Create primitive operator.(Under Construction and not complete yet).
+
 #0,1,0,20210903
 	Spiderweb polished and some bugfiex (Create Bitmap not working yet disabled for now).
 	Set soft limit for some of SpiderWeb creator parameters to avoid crashing.

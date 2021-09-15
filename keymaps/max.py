@@ -819,10 +819,26 @@ def uv_editor(km, preferences):
 	km.new(space,'uv.weld','W','PRESS',[],ctrl=True)
 
 def sequence_editor(km):
+	km.mute('Clip Editor','transform.translate','EVT_TWEAK_L','ANY')
 	space = km.space('Sequencer','SEQUENCE_EDITOR','WINDOW')
 	add_search(km, space)
 	add_side_panel(km, space)
 	km.new(space,'wm.multi_item_rename','F2','PRESS',[])
+
+	km.new(space,'sequencer.zoom_extended','Z','PRESS',[])
+	km.new(space,'sequencer.mute_toggle','H','PRESS',[])
+	km.new(space,'sequencer.shift','UP_ARROW','PRESS',[('direction', 'UP')],alt=True)
+	km.new(space,'sequencer.shift','DOWN_ARROW','PRESS',[('direction', 'DOWN')],alt=True)
+	km.new(space,'sequencer.shift','RIGHT_ARROW','PRESS',[('direction', 'RIGHT')],alt=True)
+	km.new(space,'sequencer.shift','LEFT_ARROW','PRESS',[('direction', 'LEFT')],alt=True)
+
+	km.new(space,'sequencer.select_all','A','PRESS',[('action','SELECT')],ctrl=True)
+	km.new(space,'sequencer.select_all','D','PRESS',[('action','DESELECT')],ctrl=True)
+
+	km.new(space,'anim.frame_set','HOME','PRESS',[('frame','First')])
+	km.new(space,'anim.frame_set','END','PRESS',[('frame','Last')])
+	km.new(space,'anim.frame_set','PERIOD','PRESS',[('frame','Next')])
+	km.new(space,'anim.frame_set','COMMA','PRESS',[('frame','Previous')])
 
 def file_browser(km):
 	space = km.space('File Browser','FILE_BROWSER','WINDOW')

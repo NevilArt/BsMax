@@ -15,12 +15,11 @@
 #	You should have received a copy of the GNU General Public License
 #	along with this program.  If not, see <https://www.gnu.org/licenses/>.
 ############################################################################
-
 bl_info = {
 	'name': 'BsMax',
 	'description': 'BsMax for Blender 2.80 ~ 3.0',
 	'author': 'Naser Merati (Nevil)',
-	'version': (0, 1, 0, 20210905),
+	'version': (0, 1, 0, 20210915),
 	'blender': (2, 80, 0),# 2.80 ~ 3.0
 	'location': 'Almost Everywhere in Blender',
 	'wiki_url': 'https://github.com/NevilArt/BsMax_2_80/wiki',
@@ -52,7 +51,7 @@ wiki = 'https://github.com/NevilArt/BsMax_2_80/wiki/'
 
 # Addon preferences
 def update_preferences(self, ctx, action):
-	""" Radiobuttons """
+	""" make checkboxes act as Radiobuttons """
 	if action == 'quick' and self.quick:
 		self.simple = self.custom = False
 		self.refine()
@@ -61,6 +60,7 @@ def update_preferences(self, ctx, action):
 		self.refine()
 	elif action == 'custom' and self.custom:
 		self.simple = self.quick = False
+
 	if not self.quick and not self.simple and not self.custom:
 		if action == 'quick':
 			self.quick = True
@@ -126,8 +126,10 @@ class BsMax_AddonPreferences(bpy.types.AddonPreferences):
 	
 	quick: BoolProperty(name='Quick',default=False,
 		update= lambda self,ctx: update_preferences(self,ctx,'quick'))
+
 	simple: BoolProperty(name='Simple',default=True,
 		update= lambda self,ctx: update_preferences(self,ctx,'simple'))
+
 	custom: BoolProperty(name='Custom',default=False,
 		update= lambda self,ctx: update_preferences(self,ctx,'custom'))
 	
@@ -135,7 +137,9 @@ class BsMax_AddonPreferences(bpy.types.AddonPreferences):
 		('Maya', 'Maya', 'Try to simulate Maya HotKeys'),
 		('None', 'Blender (Default)', 'Do not makes any changes on Keymaps'),
 		('Blender', 'Blender (Adapted)', 'Some Keymaps change to work with Bsmax')]
+
 	custom = [('Custom', 'Custom','')]
+
 	menus = [('3DsMax', '3DsMax (QuadMenu)','Simulate 3DsMax Quad menu'),
 		('Maya','Maya (Not ready yet)',''),
 		('Blender','Blender (Default)','')]
@@ -166,42 +170,55 @@ class BsMax_AddonPreferences(bpy.types.AddonPreferences):
 	navigation_3d: EnumProperty(name='Navigation 3D', items=apps, default='Blender',
 		update= lambda self,ctx: update_preferences(self,ctx,'navigation_3d'),
 		description='Overide navigation on 3D View')
+
 	navigation_2d: EnumProperty(name='Navigation 2D', items=apps, default='Blender',
 		update= lambda self,ctx: update_preferences(self,ctx,'navigation_2d'),
 		description='Overide navigation in 2D Views')
+
 	viowport: EnumProperty(name='View 3D', items=apps, default='Blender',
 		update= lambda self,ctx: update_preferences(self,ctx,'viowport'),
 		description='Overide keymaps in 3D view')
+
 	sculpt: EnumProperty(name='Sculp/Paint', items=apps, default='Blender',
 		update= lambda self,ctx: update_preferences(self,ctx,'sculpt'),
 		description='Overide keymaps in sculpt and paint mode')
+
 	uv_editor: EnumProperty(name='UV Editor', items=apps, default='Blender',
 		update= lambda self,ctx: update_preferences(self,ctx,'uv_editor'),
 		description='Overide keymaps in UV editor')
+
 	node_editor: EnumProperty(name='Node Editor', items=apps, default='Blender',
 		update= lambda self,ctx: update_preferences(self,ctx,'node_editor'),
 		description='Overide keymaps in Node editors')
+
 	graph_editor: EnumProperty(name='Graph Editor', items=apps, default='Blender',
 		update= lambda self,ctx: update_preferences(self,ctx,'graph_editor'),
 		description='Overide keymaps in Time ediotrs')
+
 	clip_editor: EnumProperty(name='Clip Editor', items=apps, default='Blender',
 		update= lambda self,ctx: update_preferences(self,ctx,'clip_editor'),
 		description='Overide keymaps in Clip editor')
-	video_sequencer: EnumProperty(name='Video Sequencer', items=apps, default='Blender',
+	
+	video_sequencer: EnumProperty(name='Video Sequencer', default='Blender',
+		items=apps + [('Premiere','Premiere','')],
 		update= lambda self,ctx: update_preferences(self,ctx,'video_sequencer'),
 		description='Overide keymaps in Video sequencer')
+	
 	text_editor: EnumProperty(name='Text Editor', items=apps, default='Blender',
 		update= lambda self,ctx: update_preferences(self,ctx,'text_editopr'),
 		description='Overide keymaps in text editor')
+
 	file_browser: EnumProperty(name='File Browser', items=apps, default='Blender',
 		update= lambda self,ctx: update_preferences(self,ctx,'file_browser'),
 		description='Overide keymaps in File Browser')
 
 	""" Global options """
 	options: BoolProperty(default=False)
+
 	view_undo: BoolProperty(name='View Undo',default=False,
 		update= lambda self, ctx: update_preferences(self,ctx,'view_undo'),
 		description='undo the only view angle')
+
 	menu_scale: FloatProperty(name='Float Menu Scale', min=1, max=3, description='')
 
 	blender_transform_type: BoolProperty(name='Blender Transform Type', default=False,
@@ -302,21 +319,28 @@ class BsMax_AddonPreferences(bpy.types.AddonPreferences):
 			row.prop(self, 'menu_scale')
 			row = box.row()
 			row.prop(self, 'blender_transform_type')
+
 		if self.menu_scale < 1:
 			self.menu_scale = 1
+
+
 
 def save_preferences(preferences):
 	filename = bpy.utils.user_resource('SCRIPTS', 'addons') + '/BsMax.ini'
 	string = ''
+
 	for prop in preferences.bl_rna.properties:
 		if not prop.is_readonly:
 			key = prop.identifier
 			if key != 'bl_idname':
 				val = str(getattr(preferences, key))
 				string += key + '=' + val + os.linesep
+
 	ini = open(filename, 'w')
 	ini.write(string)
 	ini.close()
+
+
 
 def isfloat(value):
   try:
@@ -324,6 +348,8 @@ def isfloat(value):
     return True
   except ValueError:
     return False
+
+
 
 def load_preferences(preferences):
 	# filename = bpy.utils.user_resource('SCRIPTS', 'addons') + '/BsMax.ini'
@@ -346,6 +372,8 @@ def load_preferences(preferences):
 				except:
 					pass
 
+
+
 class BsMax_OT_Save_Preferences(bpy.types.Operator):
 	bl_idname = 'bsmax.save_preferences'
 	bl_label = 'Save BsMax Preferences'
@@ -354,10 +382,14 @@ class BsMax_OT_Save_Preferences(bpy.types.Operator):
 		save_preferences(addons[__name__].preferences)
 		return{'FINISHED'}
 
+
+
 def register_delay(preferences):
 	sleep(0.2)
 	register_keymaps(preferences)
 	register_startup(preferences)
+
+
 
 def register():
 	bpy.utils.register_class(BsMax_OT_Save_Preferences)
@@ -371,6 +403,8 @@ def register():
 	# templates.register()
 	start_new_thread(register_delay,tuple([preferences]))
 	
+
+
 def unregister():
 	save_preferences(addons[__name__].preferences)
 	unregister_keymaps()

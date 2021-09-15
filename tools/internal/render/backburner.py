@@ -22,7 +22,7 @@ bl_info = {
 	"name": "BsMax-Backburner",
 	"description": "Backburner for Blender 2.80 ~ 3.0",
 	"author": "Matt Ebb | Blaize | Anthony Hunt | Spirou4D | Nevil",
-	"version": (0, 2, 0, 6),# 2021-08-28
+	"version": (0, 2, 0, 7),# 2021-09-15
 	"blender": (2, 80, 0),# to 3.0
 	"location": "Properties/ Output/ Backbrner",
 	"wiki_url": "https://github.com/NevilArt/BsMax_2_80/wiki",
@@ -31,14 +31,22 @@ bl_info = {
 	"category": "Render"
 }
 
-import bpy, os, subprocess, random
+import bpy, os, subprocess, random, platform
 from bpy.props import PointerProperty, StringProperty, BoolProperty, IntProperty, EnumProperty
 from bpy.types import Panel, Operator, PropertyGroup
 
-# from os import path, mkdir, access, W_OK
+os_name = platform.system()
 
-default_path_backburner = '"C:\\Program Files (x86)\\Autodesk\\Backburner\\cmdjob.exe"'
+default_path_backburner = ''
+if os_name == 'Windows':
+	default_path_backburner = '"C:\\Program Files (x86)\\Autodesk\\Backburner\\cmdjob.exe"'
+elif os_name == 'Linux':
+	default_path_backburner = '"\\opt\\Autodesk\\backburner\\"'
+elif os_name == 'Darwin':
+	default_path_backburner = '"\\opt\\Autodesk\\backburner\\"'
+
 default_blender_path = bpy.app.binary_path
+
 
 
 def string_to_integer_array(frames):
@@ -67,17 +75,30 @@ def string_to_integer_array(frames):
 	ints.sort()
 	return ints
 
+
+
+def create_new_file_name(file_name):
+	random_id = random.randint(1000000, 9999999)
+	append_text = '_BACKBURNERTEMPFILE_' + str(random_id)
+	return os.path.splitext(file_name)[0] + append_text + '.blend'
+
+
+
 def check_start_frame(self, ctx):
 	""" Make sure star frame allways smaller then end frame """
 	csbb = ctx.scene.backburner
 	if csbb.frame_start > csbb.frame_end:
 		csbb.frame_end = csbb.frame_start
 
+
+
 def check_end_frame(self, ctx):
 	""" Make sure end frame allways bigger then start frame """
 	csbb = ctx.scene.backburner
 	if csbb.frame_end < csbb.frame_start:
 		csbb.frame_start = csbb.frame_end
+
+
 
 def filter_frames_bitarray(self, ctx):
 	""" Remove illeagle character from Frames field """
@@ -88,6 +109,8 @@ def filter_frames_bitarray(self, ctx):
 			string += l
 	if csbb.frames_bitarray != string:
 		csbb.frames_bitarray = string
+
+
 
 class Backburner_Settings(PropertyGroup):
 	job_name: StringProperty(name='Job Name', maxlen=256, default='New Job',
@@ -158,6 +181,8 @@ def task_fild(start, end):
 	field += '\t' + str(start) + '\t' + str(end) + '\n'
 	return field
 
+
+
 def create_task_list_file(scene, filename):
 	""" Combine all taskes and write in file for submit to Backburner manager """
 	backburner = scene.backburner
@@ -167,7 +192,7 @@ def create_task_list_file(scene, filename):
 	task, frames = '', []
 	step = backburner.frames_per_task
 
-	""" Create Frame list """
+	""" Get user given range and genarate array of frames most render """
 	if mode == 'FRAMES':
 		frames = string_to_integer_array(backburner.frames_bitarray)
 	else:
@@ -175,15 +200,17 @@ def create_task_list_file(scene, filename):
 		end_frame = backburner.frame_end if mode == 'RANGE' else scene.frame_end
 		for frame in range(start_frame, end_frame+1):
 			frames.append(frame)
-		
+
 	if step == 1:
 		""" Single frame per task """
 		for frame in frames:
 			task += task_fild(frame, frame)
+
 	elif len(frames) > 0:
 		""" Multi frame per task """
 		start = end = frames[0]
-		for frame in frames:
+		
+		for frame in frames[1:]: # skip first element
 			""" check is the next frame is part of sequence """
 			if frame == end + 1:
 				end = frame
@@ -208,7 +235,61 @@ def create_task_list_file(scene, filename):
 		file = open(task_list_file_name, 'w')
 		file.write(task)
 		file.close()
+
 	return task_list_file_name
+
+
+
+def create_cmd_command(scene):
+	cbb = scene.backburner
+
+	file_name = create_new_file_name(bpy.data.filepath)
+	bpy.ops.wm.save_as_mainfile(filepath=file_name, copy=True)
+	task_list_file = create_task_list_file(scene, file_name)
+
+	# cmdjob.exe -jobname "testJob"
+	# -description "job de test"
+	# -timeout 6000
+	# -manager "192.168.73.91"
+	# -port "3234"
+	# -logPath "Q:/PAUL/testMax2016" 
+	# -tasklist "Q:/PAUL/testMax2016/taskFileScript.txt"
+	# -numTasks 10
+	# -group "Blender"
+	# -taskname 1 -jobParamFile "Q:/PAUL/testMax2016/jobParams.txt"
+	# -priority 0
+	# -servers "n091-a" "C:/Program Files/Autodesk/3ds Max 2016/3dsmax.exe"
+	# -q -mip -silent -U MAXScript %tp2
+
+	""" Create Backburner CMD Text """
+	cmd = cbb.path_backburner
+	cmd += ' -jobName:"' + cbb.job_name + '"'
+	cmd += ' -manager: ' + cbb.manager
+	# cmd += ' -port: '+ str(cbb.port)
+	# cmd += ' -netmask: ' + '255.255.0.0'
+	if cbb.group != '':
+		cmd += ' -group:"' + cbb.group + '"'
+	if cbb.job_details != '':
+		cmd += ' -description:"' + cbb.job_details + '"'
+	cmd += ' -priority:' + str(cbb.priority)
+	cmd += ' -timeout:' + str(cbb.timeout)
+	if cbb.suspended:
+		cmd += ' -suspended'
+	cmd += ' -taskList:"' + task_list_file + '"'
+	cmd += ' -taskName: 1'
+	if cbb.use_custom_path:
+		cmd += ' "' + cbb.blender_path + '"'
+	else:
+		cmd += ' "' + default_blender_path + '"'
+	# cmd += ' -submit: "'+ bpy.data.filepath + '"'
+	if cbb.background_render:
+		cmd += ' --background'
+	cmd += ' "' + file_name + '"'
+	cmd += ' --frame-start %tp2'
+	cmd += ' --frame-end %tp3'
+	cmd += ' --render-anim'
+	
+	return task_list_file, cmd
 
 
 
@@ -222,63 +303,13 @@ class Render_OT_Submit_To_Backburner(Operator):
 	def poll(cls, ctx):
 		return ctx.scene != None
 
-	def create_new_file_name(self, scene, file_name):
-		random_id = random.randint(1000000,9999999)
-		append_text = '_BACKBURNERTEMPFILE_' + str(random_id)
-		return os.path.splitext(file_name)[0] + append_text + '.blend'
-	
 	def submit(self, scene):
 		self.report({'OPERATOR'},'Submitting...')
-		
-		cbb = scene.backburner
-		
-		file_name = self.create_new_file_name(scene, bpy.data.filepath)
-		bpy.ops.wm.save_as_mainfile(filepath=file_name, copy=True)
-		task_list_file = create_task_list_file(scene, file_name)
-	
 
-		# cmdjob.exe -jobname "testJob" 
-		# -description "job de test" 
-		# -timeout 6000 
-		# -manager "192.168.73.91" 
-		# -port "3234" 
-		# -logPath "Q:/PAUL/testMax2016" 
-		# -tasklist "Q:/PAUL/testMax2016/taskFileScript.txt" 
-		# -taskname 1 -jobParamFile "Q:/PAUL/testMax2016/jobParams.txt" 
-		# -priority 0 
-		# -servers "n091-a" "C:/Program Files/Autodesk/3ds Max 2016/3dsmax.exe" 
-		# -q -mip -silent -U MAXScript %tp2
-		
-		""" Create Backburner CMD Text """
-		cmd = cbb.path_backburner
-		cmd += ' -jobName:"' + cbb.job_name + '"'
-		cmd += ' -manager: ' + cbb.manager
-		# cmd += ' -port: '+ str(cbb.port)
-		# cmd += ' -netmask: ' + '255.255.0.0'
-		if cbb.group != '':
-			cmd += ' -group:"' + cbb.group + '"'
-		if cbb.job_details != '':
-			cmd += ' -description:"' + cbb.job_details + '"'
-		cmd += ' -priority:' + str(cbb.priority)
-		cmd += ' -timeout:' + str(cbb.timeout)
-		if cbb.suspended:
-			cmd += ' -suspended'
-		cmd += ' -taskList:"' + task_list_file + '"'
-		cmd += ' -taskName: 1'
-		if cbb.use_custom_path:
-			cmd += ' "' + cbb.blender_path + '"'
-		else:
-			cmd += ' "' + default_blender_path + '"'
-		# cmd += ' -submit: "'+ bpy.data.filepath + '"'
-		if cbb.background_render:
-			cmd += ' --background'
-		cmd += ' "' + file_name + '"'
-		cmd += ' --frame-start %tp2'
-		cmd += ' --frame-end %tp3'
-		cmd += ' --render-anim'
+		task_list_file, cmd = create_cmd_command(scene)
 
+		""" Try to Submit job to backburner """
 		try:
-			""" Try to Submit job to backburner """
 			subprocess.check_output(cmd, shell=True)
 			self.report({'OPERATOR'},'Job Submited to backburner manager')
 		except:
@@ -286,19 +317,22 @@ class Render_OT_Submit_To_Backburner(Operator):
 			
 		""" Delete the Task list text file """
 		os.remove(task_list_file)
-		
-		return {'FINISHED'}
 
+		return {'FINISHED'}
+	
 	def execute(self, ctx):
 		if bpy.context.blend_data.filepath != '':
 			csbb = ctx.scene.backburner
 			if csbb.blender_path == '':
 				self.report({'ERROR'}, "Network path to Blender hasn't been set")
 				return {'CANCELLED'}
+
 			if csbb.path_backburner == '':
 				self.report({'ERROR'}, "Path to Backburner cmdjob.exe hasn't been set")
 				return {'CANCELLED'}
+
 			self.submit(ctx.scene)
+
 		else:
 			self.report({'WARNING'},'Save File Befor Submit')
 		return{"FINISHED"}
@@ -313,12 +347,15 @@ class Render_OT_Update_Job_Name(Operator):
 
 	def execute(self, ctx):
 		blend_file_name = ctx.blend_data.filepath
+
 		if blend_file_name != "":
 			file_name = bpy.path.basename(blend_file_name)
 			the_name = (file_name.split('.'))[0]
 		else:
 			the_name = "New Job"
+
 		ctx.scene.backburner.job_name = the_name
+
 		return{"FINISHED"}
 
 
@@ -334,12 +371,15 @@ def get_preset_file_path():
 
 	''' if Backburner.ini file not exist create an empty one '''
 	backburner_file = preset_path + file_name
+	
 	if not os.path.exists(backburner_file):
 		if os.access(backburner_file, os.W_OK):
 			file = open(backburner_file, 'w')
 			file.write('')
 			file.close()
+	
 	return preset_path, file_name
+
 
 
 class Render_OT_Save_BackBurner(Operator):
@@ -371,11 +411,13 @@ class Render_OT_Save_BackBurner(Operator):
 		if not os.path.exists(preset_path):
 			if os.access(preset_path, os.W_OK):
 				os.mkdir(preset_path)
-		
+
 		preset_file = open(preset_path + file_name, "w")
 		preset_file.write(string)
 		preset_file.close()
+
 		return{"FINISHED"}
+
 
 
 class Render_OT_Load_BackBurner(Operator):
@@ -388,7 +430,10 @@ class Render_OT_Load_BackBurner(Operator):
 		preset_path, file_name = get_preset_file_path()
 		script = open(preset_path + file_name).read()
 		exec(script)
+
 		return{"FINISHED"}
+
+
 
 def draw_backburner_panel(self, ctx):
 	csbb = ctx.scene.backburner
