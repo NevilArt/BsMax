@@ -76,14 +76,15 @@ def get_class(name):
 	else: return None
 
 def primitive_update(self,ctx):
-	subclass = get_class(ctx.object.data.primitivedata.classname)
-	if subclass != None:
-		subclass.data = ctx.object.data
-		subclass.update()
+	if ctx.object:
+		subclass = get_class(ctx.object.data.primitivedata.classname)
+		if subclass:
+			subclass.data = ctx.object.data
+			subclass.update()
 
 def update(data):
 	subclass = get_class(data.primitivedata.classname)
-	if subclass != None:
+	if subclass:
 		subclass.data = data
 		subclass.update()
 
@@ -96,11 +97,22 @@ def primitive_frame_update(scene):
 		if data.primitivedata.animatable:
 			update(data)
 
+
+
 class Primitive_Option(PropertyGroup):
+	draw_mode: EnumProperty(name='Draw Mode (Under Construction)', default='FLOOR',
+		update = primitive_update,
+		items =[('FLOOR', 'Draw on Floor', ''),
+			('VIEW', 'Draw on View', ''),
+			('SURFACE', 'Draw on Surface', '')])
+
+	# temprary will remove #
 	position: BoolProperty(name='Position', default=False,
 		description='Create object on raycasted position aligned to view')
 	normal: BoolProperty(name='Normal', default=False,
 		description='Create object on raycasted position aligned to face normal')
+	
+	
 
 class PrimitiveData(PropertyGroup):
 	classname: StringProperty()
@@ -158,19 +170,27 @@ class PrimitiveData(PropertyGroup):
 	mode: StringProperty(update=primitive_update)
 	target: StringProperty(update=primitive_update)
 
-	profilo_mode: EnumProperty(name='Shape',default='Angle',
+	profilo_mode: EnumProperty(name='Shape', default='Angle',
 		update = primitive_update,
-		items =[('Angle','Angle',''),('Bar','Bar',''),
-				('Channel','Channel',''),('Cylinder','Cylinder',''),
-				('Pipe','Pipe',''),('Tee','Tee',''),('Tube','Tube',''),
-				('Width_flange','Width_flange',''),('Elipse','Elipse','')])
+		items =[('Angle', 'Angle', ''),
+			('Bar', 'Bar', ''),
+			('Channel', 'Channel', ''),
+			('Cylinder', 'Cylinder', ''),
+			('Pipe', 'Pipe', ''),
+			('Tee', 'Tee', ''),
+			('Tube', 'Tube', ''),
+			('Width_flange', 'Width_flange', ''),
+			('Elipse', 'Elipse', '')])
 
-	extrude_segmode: EnumProperty(name='Segment Type',default='Curve',
+	extrude_segmode: EnumProperty(name='Segment Type', default='Curve',
 		update = primitive_update,
-		items =[('Curve','Curve',''),('Manual','Manual',''),('Optimized','Optimized',''),('Adaptive','Adaptive','')])
+		items =[('Curve', 'Curve', ''),
+			('Manual', 'Manual', ''),
+			('Optimized', 'Optimized', ''),
+			('Adaptive', 'Adaptive', '')])
 
 def register_update():
-	if hasattr(bpy.types.Mesh,'primitivedata') or hasattr(bpy.types.Curve,'primitivedata'):
+	if hasattr(bpy.types.Mesh, 'primitivedata') or hasattr(bpy.types.Curve, 'primitivedata'):
 		unregister_update()
 	try:
 		bpy.utils.register_class(PrimitiveData)

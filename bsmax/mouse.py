@@ -86,18 +86,17 @@ def get_rotation_from_orient(orient):
 	r = pi/2
 	if orient == 'FRONT': 
 		return (r, 0, 0)
-	elif orient == 'BACK':
+	if orient == 'BACK':
 		return (-r, 0, 0)
-	elif orient == 'LEFT':
+	if orient == 'LEFT':
 		return (r, 0, -r)
-	elif orient == 'RIGHT':
+	if orient == 'RIGHT':
 		return (r, 0, r)
-	elif orient == 'TOP':
+	if orient == 'TOP':
 		return (0, 0, 0)
-	elif orient == 'BOTTOM':
-		return (r*2, 0, 0)
-	else:
-		return (0, 0, 0)
+	if orient == 'BOTTOM':
+		return (pi, 0, 0)
+	return (0, 0, 0)
 
 def get_click_point_info(ctx, gride, x, y):
 	""" Get mouse screen position and context
@@ -186,9 +185,6 @@ def obj_ray_cast(obj, matrix, ray_origin, ray_target):
 		return None, None, None
 
 
-# Raycast function is from Oliver Weissbarth`s BookGen add-on #
-# https://blenderartists.org/u/Oweissbarth #
-# Thanks him for Greate add-on # 
 def ray_cast(ctx, mouse_x, mouse_y):
 	""" Shoots a ray from the cursor position into the scene and returns the closest intersection
 

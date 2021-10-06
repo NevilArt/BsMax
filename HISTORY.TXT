@@ -1,3 +1,10 @@
+#0,1,0,20210915
+	Backburner submitter`s double first frame issue fixed.
+	New 'Premiere' keyspap added for VSE addes (BsMax/Custom/Video sequencer) (Under Construction)
+	VSE 'Alt + Arrow' keys Move active Strip (like in premire) (Max and Premiere Mode)
+	VSE 'H' Mute/Unmute toggle (Max and Premiere Mode)
+	Maxscript folder added, will contain some tools. for now trasfer Camera + Keyframes from 3DsMax to Blender.
+
 #0,1,0,20210905
 	Experimental 'Autogrid' added for Create primitive operator.(Under Construction and not complete yet).
 

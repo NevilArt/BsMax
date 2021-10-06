@@ -17,16 +17,6 @@ import bpy
 from bpy.types import Menu
 from bsmax.state import is_object_mode
 
-# Opption menu
-class BsMax_MT_PrimitiveOption(Menu):
-	bl_idname = "BSMAX_MT_primitive_option"
-	bl_label = "Setting (Under Construction)"
-	def draw(self, ctx):
-		csps = ctx.scene.primitive_setting
-		layout=self.layout
-		layout.prop(csps, 'position', text='Auto Gride Position', icon='MESH_GRID')
-		layout.prop(csps, 'normal', text='Auto Gride Normal', icon='VIEW3D')
-
 # Mesh create menu
 class BsMax_MT_VertexCreate(Menu):
 	bl_idname = "BSMAX_MT_vertexcreatemenu"
@@ -286,7 +276,7 @@ class BsMax_MT_Create(Menu):
 
 	def draw(self, ctx):
 		layout = self.layout
-		layout.menu("BSMAX_MT_primitive_option",icon='PREFERENCES')
+		layout.prop(ctx.scene.primitive_setting, 'draw_mode', text='', icon='VIEW3D')
 		layout.separator()
 		layout.menu("BSMAX_MT_meshcreatemenu", icon='OUTLINER_OB_MESH')
 		layout.menu("BSMAX_MT_curvecreatemenu", icon='OUTLINER_OB_CURVE')
@@ -321,8 +311,7 @@ def CreateMenu_CallBack(self, ctx):
 	if ctx.mode == 'OBJECT':
 		self.layout.menu("BSMAX_MT_createmenu")
 
-classes = [BsMax_MT_PrimitiveOption,
-	BsMax_MT_VertexCreate,
+classes = [BsMax_MT_VertexCreate,
 	BsMax_MT_Mesh_Extera,
 	BsMax_MT_MeshCreate,
 	BsMax_MT_CurveCreate,

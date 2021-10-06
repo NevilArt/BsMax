@@ -15,14 +15,14 @@
 # Original code for blender 2.7x from "Matt Ebb | Blaize | Anthony Hunt | Spirou4D" #
 # https://blenderartists.org/t/addon-blender-to-backburner-free-autodesk-network-renderer/661539 #
 # https://www.dropbox.com/s/ivschytl309jm2n/render_backburner.zip?dl=0 #
-# Update and Modified for Blender 2.8x by Nevil #
+# Update and Modified for Blender 2.8x to 3.x by Nevil #
 
 """ This file can be instaled as an stand alone add-on too """
 bl_info = {
 	"name": "BsMax-Backburner",
 	"description": "Backburner for Blender 2.80 ~ 3.0",
 	"author": "Matt Ebb | Blaize | Anthony Hunt | Spirou4D | Nevil",
-	"version": (0, 2, 0, 7),# 2021-09-15
+	"version": (0, 2, 0, 8),# 2021-10-06
 	"blender": (2, 80, 0),# to 3.0
 	"location": "Properties/ Output/ Backbrner",
 	"wiki_url": "https://github.com/NevilArt/BsMax_2_80/wiki",
@@ -35,17 +35,22 @@ import bpy, os, subprocess, random, platform
 from bpy.props import PointerProperty, StringProperty, BoolProperty, IntProperty, EnumProperty
 from bpy.types import Panel, Operator, PropertyGroup
 
-os_name = platform.system()
 
-default_path_backburner = ''
-if os_name == 'Windows':
-	default_path_backburner = '"C:\\Program Files (x86)\\Autodesk\\Backburner\\cmdjob.exe"'
-elif os_name == 'Linux':
-	default_path_backburner = '"\\opt\\Autodesk\\backburner\\"'
-elif os_name == 'Darwin':
-	default_path_backburner = '"\\opt\\Autodesk\\backburner\\"'
 
-default_blender_path = bpy.app.binary_path
+def backburner_path():
+	os_name = platform.system()
+	if os_name == 'Windows':
+		return '"C:\\Program Files (x86)\\Autodesk\\Backburner\\cmdjob.exe"'
+	if os_name == 'Linux':
+		return '"/opt/Autodesk/backburner/cmdjob"'
+	if os_name == 'Darwin':
+		return '"/opt/Autodesk/backburner/cmdjob"'
+	return '""'
+
+
+
+def blender_path():
+	return bpy.app.binary_path
 
 
 
@@ -154,12 +159,12 @@ class Backburner_Settings(PropertyGroup):
 		description='Name of Render Group')
 
 	path_backburner: StringProperty(name='Backburner Path', description='Path to Backburner cmdjob.exe', 
-		maxlen=400, subtype='FILE_PATH', default=default_path_backburner)
+		maxlen=400, subtype='FILE_PATH', default=backburner_path())
 
 	use_custom_path: BoolProperty (name='Use Custom Blender', default=False)
 
 	blender_path: StringProperty(name='Blender Path', description='Path to blender.exe',
-		maxlen=400, subtype='FILE_PATH', default=default_blender_path)
+		maxlen=400, subtype='FILE_PATH', default=blender_path())
 	
 	# options: BoolProperty (name='More', default=False)
 
@@ -280,7 +285,7 @@ def create_cmd_command(scene):
 	if cbb.use_custom_path:
 		cmd += ' "' + cbb.blender_path + '"'
 	else:
-		cmd += ' "' + default_blender_path + '"'
+		cmd += ' "' + blender_path() + '"'
 	# cmd += ' -submit: "'+ bpy.data.filepath + '"'
 	if cbb.background_render:
 		cmd += ' --background'

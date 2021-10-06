@@ -72,7 +72,7 @@ def link_to_scene(ctx, obj):
 		pass
 
 def set_as_active_object(ctx, obj):
-	if obj != None:
+	if obj:
 		bpy.ops.object.select_all(action = 'DESELECT')
 		obj.select_set(state = True)
 		ctx.view_layer.objects.active = obj
@@ -88,9 +88,8 @@ def set_create_target(obj, target, distance=(0.0, 0.0, -2.0), align=True):
 		target = bpy.data.objects.new('empty', None)
 		target.empty_display_type = 'CUBE'
 		target.empty_display_size = 0.25
-		active_layer_name = bpy.context.view_layer.active_layer_collection.name
-		col = bpy.data.collections[active_layer_name]
-		col.objects.link(target)
+		collection = obj.users_collection[0]
+		collection.objects.link(target)
 		target.name = obj.name + '_target'
 	if align:
 		target.location = obj.location

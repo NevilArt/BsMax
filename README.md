@@ -27,11 +27,9 @@ If not have Github account use 'NevilArt@Gmail.Com' for bug report.
 
 # latest Updates
 
-* Backburner submitter`s double first frame issue fixed.
-* New 'Premiere' keyspap added for VSE addes (BsMax/Custom/Video sequencer) (Under Construction)
-* VSE 'Alt + Arrow' keys Move active Strip (like in premire) (Max and Premiere Mode)
-* VSE 'H' Mute/Unmute toggle (Max and Premiere Mode)
-* Maxscript folder added, will contain some tools. for now trasfer Camera + Keyframes from 3DsMax to Blender.
+* Camera target and FOV create in same collection as the camera is.
+* Backburner submitter works on Mac (thanks to CalvinAndHobbies).
+* Note: New Create object operator (create on Floor, Surface, View) is under construction, the temprary one removed for now.
 * [Update History...](https://github.com/NevilArt/BsMax_2_80/blob/master/HISTORY.TXT)
 
 # License

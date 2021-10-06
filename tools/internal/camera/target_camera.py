@@ -13,9 +13,8 @@
 #	along with this program.  If not, see <https://www.gnu.org/licenses/>.
 ############################################################################
 
-import bpy, mathutils
+import bpy
 from bpy.types import Operator
-from mathutils import Matrix
 from bsmax.actions import set_create_target, set_as_active_object, delete_objects
 from bsmax.state import has_constraint
 
@@ -28,20 +27,18 @@ class Camera_OT_Create_Target(Operator):
 
 	@classmethod
 	def poll(self, ctx):
-		if ctx.active_object != None:
-			obj = ctx.active_object
-			if obj.type == 'CAMERA' and not has_constraint(obj, 'TRACK_TO'):
+		if ctx.object:
+			if ctx.object.type == 'CAMERA' and not has_constraint(ctx.object, 'TRACK_TO'):
 				return True
 		return False
 
 	def execute(self, ctx):
-		cam = ctx.active_object
+		cam = ctx.object
 		size = cam.data.display_size
-		target = set_create_target(cam, None, distance=(0,0,-size*3))
+		target = set_create_target(cam, None, distance=(0, 0, -size*3))
 		target.empty_display_size = size / 10
 		target.name = cam.name + "_target"
 		set_as_active_object(ctx, cam)
-		# self.report({'OPERATOR'},"bpy.ops.camera.create_target()")
 		return {'FINISHED'}
 
 
@@ -53,14 +50,13 @@ class Camera_OT_Clear_Target(Operator):
 
 	@classmethod
 	def poll(self, ctx):
-		if ctx.active_object != None:
-			obj = ctx.active_object
-			if obj.type == 'CAMERA' and has_constraint(obj, 'TRACK_TO'):
+		if ctx.object:
+			if ctx.object.type == 'CAMERA' and has_constraint(ctx.object, 'TRACK_TO'):
 				return True
 		return False
 
 	def execute(self, ctx):
-		cam = ctx.active_object
+		cam = ctx.object
 		cam.data.dof.driver_remove('aperture_fstop')
 		transfoem = cam.matrix_world.copy()
 		targ = cam.constraints["Track To"].target
@@ -69,7 +65,6 @@ class Camera_OT_Clear_Target(Operator):
 		for c in TrackToConts:
 			cam.constraints.remove(c)
 		cam.matrix_world = transfoem
-		# self.report({'OPERATOR'},'bpy.ops.camera.clear_targte()')
 		return {'FINISHED'}
 
 
@@ -81,15 +76,13 @@ class Camera_OT_Select_Target(Operator):
 
 	@classmethod
 	def poll(self, ctx):
-		if ctx.active_object != None:
-			obj = ctx.active_object
-			if obj.type in ['CAMERA', 'LIGHT'] and has_constraint(obj, 'TRACK_TO'):
+		if ctx.object:
+			if ctx.object.type in ['CAMERA', 'LIGHT'] and has_constraint(ctx.object, 'TRACK_TO'):
 				return True
 		return False
 
 	def execute(self, ctx):
-		obj = ctx.active_object
-		targ = obj.constraints["Track To"].target
+		targ = ctx.object.constraints["Track To"].target
 		set_as_active_object(ctx, targ)
 		return {'FINISHED'}
 
@@ -102,15 +95,18 @@ class Camera_OT_Create_DOF_Target(Operator):
 
 	@classmethod
 	def poll(self, ctx):
-		if ctx.active_object != None:
-			obj = ctx.active_object
-			if obj.type == 'CAMERA':
-				return obj.data.dof.focus_object == None
+		if ctx.object:
+			if ctx.object.type == 'CAMERA':
+				return ctx.object.data.dof.focus_object == None
 		return False
 	
-	def cretae_target_object(self, ctx):
-		bpy.ops.object.empty_add(type='SPHERE')
-		return ctx.active_object
+	def cretae_target_object(self, parent):
+		target = bpy.data.objects.new('empty', None)
+		target.empty_display_type = 'SPHERE'
+		target.empty_display_size = parent.data.display_size
+		collection = parent.users_collection[0]
+		collection.objects.link(target)
+		return target
 	
 	def create_driver(self, cam, target):
 		cam.data.dof.driver_remove('aperture_fstop')
@@ -145,19 +141,16 @@ class Camera_OT_Create_DOF_Target(Operator):
 		driver.driver.expression = 's*((x+y+z)/3)'
 
 	def execute(self, ctx):
-		cam = ctx.active_object
+		cam = ctx.object
 		size = cam.data.display_size
-		target = self.cretae_target_object(ctx)
+		target = self.cretae_target_object(cam)
 		target.location = cam.location
-		# target.rotation_euler = cam.rotation_euler
-		# target.matrix_basis @= Matrix.Translation((0, 0, 0))
 		target.empty_display_size = size
 		target.name = cam.name + "_FOV_target"
 		cam.data.dof.use_dof = True
 		cam.data.dof.focus_object = target
 		self.create_driver(cam, target)
 		set_as_active_object(ctx, cam)
-		# self.report({'OPERATOR'},"bpy.ops.camera.create_dof_target()")
 		return {'FINISHED'}
 
 
@@ -168,10 +161,9 @@ class Camera_OT_Select_DOF_Target(Operator):
 
 	@classmethod
 	def poll(self, ctx):
-		if ctx.active_object != None:
-			obj = ctx.active_object
-			if obj.type == 'CAMERA':
-				return obj.data.dof.focus_object != None
+		if ctx.object:
+			if ctx.object.type == 'CAMERA':
+				return ctx.object.data.dof.focus_object != None
 		return False
 
 	def execute(self, ctx):
@@ -185,6 +177,8 @@ def camera_menu(self, ctx):
 	layout.operator("camera.create_target")
 	layout.operator("camera.clear_targte")
 	layout.operator("camera.select_target")
+
+
 
 classes = [Camera_OT_Create_Target,
 		Camera_OT_Clear_Target,

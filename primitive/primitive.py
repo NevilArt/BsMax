@@ -121,6 +121,20 @@ class CreatePrimitive(Operator):
 			if event.value == 'RELEASE':
 				self.shift = False
 	
+	def get_ctrl_state(self, event):
+		if event.type in {'LEFT_CTRL', 'RIGHT_CTRL'}:
+			if event.value == 'PRESS':
+				self.ctrl = True
+			if event.value == 'RELEASE':
+				self.ctrl = False
+	
+	def get_alt_state(self, event):
+		if event.type in {'LEFT_ALT', 'RIGHT_ALT'}:
+			if event.value == 'PRESS':
+				self.alt = True
+			if event.value == 'RELEASE':
+				self.alt = False
+	
 	def first_click(self, ctx, x, y):
 		self.step = 1
 		self.cpoint_o = self.cpoint_a = self.cpoint_b
@@ -168,6 +182,8 @@ class CreatePrimitive(Operator):
 		ctx.area.tag_redraw()
 
 		self.get_shift_state(event)
+		self.get_ctrl_state(event)
+		self.get_alt_state(event)
 
 		if self.subclass == None:
 			# cancel operation if deta type not defined
