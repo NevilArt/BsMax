@@ -14,7 +14,7 @@
 ############################################################################
 
 import bpy
-from primitive.primitive import CreatePrimitive
+from primitive.gride import Draw_Primitive
 from bsmax.actions import delete_objects
 
 class Speaker:
@@ -26,18 +26,19 @@ class Speaker:
 	def abort(self):
 		delete_objects([self.owner])
 
-class Create_OT_Speaker(CreatePrimitive):
+class Create_OT_Speaker(Draw_Primitive):
 	bl_idname="create.speaker"
 	bl_label="Speaker"
 	subclass = Speaker()
+	use_single_click = True
 
-	def create(self, ctx, clickpoint):
-		bpy.ops.object.speaker_add(location=clickpoint.view)
+	def create(self, ctx):
+		bpy.ops.object.speaker_add(location=self.gride.location)
 		self.subclass.owner = ctx.active_object
-		self.subclass.owner.rotation_euler = clickpoint.orient
+		self.subclass.owner.rotation_euler = self.gride.rotation
 	def update(self, ctx, clickcount, dimantion):
 		if self.drag:
-			self.subclass.owner.location = dimantion.view
+			self.subclass.owner.location = dimantion.location
 	def finish(self):
 		pass
 
@@ -46,3 +47,6 @@ def register_speaker():
 
 def unregister_speaker():	
 	bpy.utils.unregister_class(Create_OT_Speaker)
+
+if __name__ == "__main__":
+	register_speaker()

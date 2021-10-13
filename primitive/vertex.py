@@ -16,6 +16,7 @@
 import bpy
 from bpy.props import EnumProperty
 from primitive.primitive import CreatePrimitive,PrimitiveGeometryClass
+from primitive.gride import Draw_Primitive
 
 def get_vertex_mesh(verts, mode):
 	edges,faces = [],[]
@@ -54,7 +55,9 @@ class Vertex(PrimitiveGeometryClass):
 		if self.owner != None:
 			bpy.ops.object.origin_set(type='ORIGIN_GEOMETRY', center='MEDIAN')
 
-class Create_OT_Vertex(CreatePrimitive):
+
+
+class Create_OT_Vertex(Draw_Primitive):
 	bl_idname="create.vertex"
 	bl_label="Vertex"
 	subclass = Vertex()
@@ -63,27 +66,32 @@ class Create_OT_Vertex(CreatePrimitive):
 		items =[('NONE','None',''),('VERT','Vertex Only',''),
 				('EDGE','Connect Edges',''),('FACE','Create Face','')])
 
-	def create(self, ctx, clickpoint):
+	def create(self, ctx):
 		if self.fill_type == "NONE":
 			self.subclass.finishon = 2
 		self.subclass.mode = self.fill_type
-		self.subclass.verts.append(clickpoint.view)
+		self.subclass.verts.append(self.point_current.location)
 		self.subclass.create(ctx)
 		self.params = self.subclass.owner.data.primitivedata
 	def update(self, ctx, clickcount, dimantion):
 		if self.drag:
-			self.subclass.verts[-1] = dimantion.view
+			self.subclass.verts[-1] = dimantion.location
 		else:
 			if clickcount != self.lastclick:
-				self.subclass.verts.append(dimantion.view)
+				self.subclass.verts.append(dimantion.location)
 				self.lastclick = clickcount
 		self.subclass.update()
 	def finish(self):
 		bpy.ops.object.origin_set(type='ORIGIN_GEOMETRY',center='MEDIAN')
 		self.subclass.reset()
 
+
+
 def register_vertex():
 	bpy.utils.register_class(Create_OT_Vertex)
 	
 def unregister_vertex():
 	bpy.utils.unregister_class(Create_OT_Vertex)
+
+if __name__ == "__main__":
+	register_vertex()

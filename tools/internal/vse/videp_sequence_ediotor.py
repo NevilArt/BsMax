@@ -176,10 +176,12 @@ classes = [Sequencer_OT_Shift,
 	Sequencer_OT_Zoom_Extended]
 
 def register_video_sequence_ediotor():
-	[bpy.utils.register_class(c) for c in classes]
+	for c in classes:
+		bpy.utils.register_class(c)
 
 def unregister_video_sequence_ediotor():
-	[bpy.utils.unregister_class(c) for c in classes]
+	for c in classes:
+		bpy.utils.unregister_class(c)
 
 if __name__ == "__main__":
 	register_video_sequence_ediotor()

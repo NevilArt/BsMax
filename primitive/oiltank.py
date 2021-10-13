@@ -14,9 +14,10 @@
 ############################################################################
 
 import bpy
-from bpy.types import Operator
 from math import pi, sin, cos, radians
+from primitive.monkey import register_monkey
 from primitive.primitive import PrimitiveGeometryClass, CreatePrimitive
+from primitive.gride import Draw_Primitive
 from bsmax.actions import delete_objects
 
 def get_oiltank_mesh(radius,height,capheight,blend,ssegs,csegs,hsegs,sliceon,sfrom,sto):
@@ -170,23 +171,26 @@ class OilTank(PrimitiveGeometryClass):
 	def abort(self):
 		delete_objects([self.owner])
 
-class Create_OT_OilTank(CreatePrimitive):
+
+
+class Create_OT_OilTank(Draw_Primitive):
 	bl_idname = "create.oiltank"
 	bl_label = "OilTank"
 	subclass = OilTank()
+	use_gride = True
 
-	def create(self, ctx, clickpoint):
+	def create(self, ctx):
 		self.subclass.create(ctx)
 		self.params = self.subclass.owner.data.primitivedata
-		self.subclass.owner.location = clickpoint.view
-		self.subclass.owner.rotation_euler = clickpoint.orient
+		self.subclass.owner.location = self.gride.location
+		self.subclass.owner.rotation_euler = self.gride.rotation
 	def update(self, ctx, clickcount, dimantion):
 		if clickcount == 1:
 			self.params.radius1 = dimantion.radius
 		elif clickcount == 2:
 			self.params.height = dimantion.height
 		elif clickcount == 3:
-			self.params.thickness = dimantion.height
+			self.params.thickness = dimantion.radius
 		if clickcount > 0:
 			self.subclass.update()
 	def finish(self):
@@ -197,3 +201,6 @@ def register_oiltank():
 	
 def unregister_oiltank():
 	bpy.utils.unregister_class(Create_OT_OilTank)
+
+if __name__ == "__main__":
+	register_oiltank()

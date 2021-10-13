@@ -15,7 +15,9 @@
 
 import bpy
 from math import pi, sin, cos, radians
+from bsmax.math import get_distance
 from primitive.primitive import CreatePrimitive, PrimitiveGeometryClass
+from primitive.gride import Draw_Primitive
 from bsmax.actions import delete_objects
 
 def get_cylinder_mesh(radius1, radius2, height, hsegs, csegs, ssegs, sliceon, sfrom, sto):
@@ -266,16 +268,19 @@ class Cone(PrimitiveGeometryClass):
 	def abort(self):
 		delete_objects([self.owner])
 
-class Create_OT_Cylinder(CreatePrimitive):
+
+
+class Create_OT_Cylinder(Draw_Primitive):
 	bl_idname = "create.cylinder"
 	bl_label = "Cylinder"
 	subclass = Cylinder()
+	use_gride = True
 
-	def create(self, ctx, clickpoint):
+	def create(self, ctx):
 		self.subclass.create(ctx)
 		self.params = self.subclass.owner.data.primitivedata
-		self.subclass.owner.location = clickpoint.view
-		self.subclass.owner.rotation_euler = clickpoint.orient
+		self.subclass.owner.location = self.gride.location
+		self.subclass.owner.rotation_euler = self.gride.rotation
 
 	def update(self, ctx, clickcount, dimantion):
 		if clickcount == 1:
@@ -288,16 +293,19 @@ class Create_OT_Cylinder(CreatePrimitive):
 	def finish(self):
 		pass
 
-class Create_OT_Cone(CreatePrimitive):
+
+
+class Create_OT_Cone(Draw_Primitive):
 	bl_idname = "create.cone"
 	bl_label = "Cone"
 	subclass = Cone()
+	use_gride = True
 
-	def create(self, ctx, clickpoint):
+	def create(self, ctx):
 		self.subclass.create(ctx)
 		self.params = self.subclass.owner.data.primitivedata
-		self.subclass.owner.location = clickpoint.view
-		self.subclass.owner.rotation_euler = clickpoint.orient
+		self.subclass.owner.location = self.gride.location
+		self.subclass.owner.rotation_euler = self.gride.rotation
 
 	def update(self, ctx, clickcount, dimantion):
 		if clickcount == 1:
@@ -305,9 +313,10 @@ class Create_OT_Cone(CreatePrimitive):
 			self.params.radius2 = dimantion.radius
 		elif clickcount == 2:
 			self.params.height = dimantion.height
+			#TODO need to re calculate gride
+			self.cent = self.point_current.location.copy()
 		elif clickcount == 3:
-			radius2 = self.params.radius1 + dimantion.height_np
-			self.params.radius2 = 0 if radius2 < 0 else radius2
+			self.params.radius2 = get_distance(self.cent, self.point_current.location)
 		if clickcount > 0:
 			self.subclass.update()
 
@@ -321,3 +330,6 @@ def register_cylinder():
 
 def unregister_cylinder():
 	[bpy.utils.unregister_class(c) for c in classes]
+
+if __name__ == "__main__":
+	register_cylinder()

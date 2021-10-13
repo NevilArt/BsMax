@@ -14,10 +14,12 @@
 ############################################################################
 
 import bpy
-from math import radians, pi, sin, cos
+from math import pi, sin, cos
+from primitive import gride
 from primitive.primitive import PrimitiveCurveClass, CreatePrimitive
+from primitive.gride import Draw_Primitive
 from bsmax.actions import delete_objects
-from bsmax.math import get_bias
+from bsmax.math import get_bias, get_distance
 
 def get_helix_shape(radius1, radius2, height, turns, segs, bias, ccw):
 	shape = []
@@ -69,25 +71,28 @@ class Helix(PrimitiveCurveClass):
 	def abort(self):
 		delete_objects([self.owner])
 
-class Create_OT_Helix(CreatePrimitive):
+class Create_OT_Helix(Draw_Primitive):
 	bl_idname = "create.helix"
 	bl_label = "Helix"
 	subclass = Helix()
 
-	def create(self, ctx, clickpoint):
+	def create(self, ctx):
 		self.subclass.create(ctx)
 		self.params = self.subclass.owner.data.primitivedata
-		self.subclass.owner.location = clickpoint.view
-		self.subclass.owner.rotation_euler = clickpoint.orient
+		self.subclass.owner.location = self.gride.location
+		self.subclass.owner.rotation_euler = self.gride.rotation
 	def update(self, ctx, clickcount, dimantion):
 		if clickcount == 1:
 			self.params.radius1 = dimantion.radius
 			self.params.radius2 = dimantion.radius
 		if clickcount == 2:
 			self.params.height = dimantion.height
+			#TODO need to re calculate gride
+			self.cent = self.point_current.location.copy()
 		if clickcount == 3:
-			radius = self.params.radius1 + dimantion.height_np
-			self.params.radius2 = 0 if radius < 0 else radius
+			self.params.radius2 = get_distance(self.cent, self.point_current.location)
+			# radius = self.params.radius1 + dimantion.height_np
+			# self.params.radius2 = 0 if radius < 0 else radius
 		if clickcount > 0:
 			self.subclass.update()
 	def finish(self):
@@ -98,3 +103,6 @@ def register_helix():
 	
 def unregister_helix():
 	bpy.utils.unregister_class(Create_OT_Helix)
+
+if __name__ == "__main__":
+	register_helix()

@@ -16,8 +16,9 @@
 import bpy
 from bpy.types import Operator
 from mathutils import Vector
-from bsmax.math import get_axis_constraint, get_distance
-from primitive.primitive import CreatePrimitive, PrimitiveCurveClass
+from bsmax.math import get_axis_constraint
+from primitive.primitive import PrimitiveCurveClass
+from primitive.gride import Draw_Primitive
 from bsmax.actions import delete_objects
 from bpy_extras.view3d_utils import location_3d_to_region_2d
 
@@ -83,38 +84,43 @@ def check_for_close(self, ctx):
 		if abs(p0.x-pl.x) < 10 and abs(p0.y-pl.y) < 10:
 			bpy.ops.curve.closeline('INVOKE_DEFAULT')
 
-class Create_OT_Line(CreatePrimitive):
+
+
+class Create_OT_Line(Draw_Primitive):
 	bl_idname = "create.line"
 	bl_label = "Line"
 	subclass = Line()
+	use_gride = False
 	lastclick = 1
 
-	def create(self, ctx, clickpoint):
-		self.usedkeys += ['LEFT_SHIFT', 'RIGHT_SHIFT', 'BACK_SPACE']
-		self.requestkey = ['BACK_SPACE']
+	def create(self, ctx):
+		self.used_keys += ['LEFT_SHIFT', 'RIGHT_SHIFT', 'BACK_SPACE']
+		self.request_key = ['BACK_SPACE']
 		self.subclass.create(ctx)
 		self.params = self.subclass.owner.data.primitivedata
-		newknot = knot(clickpoint.view, clickpoint.view, clickpoint.view, "VECTOR")
+		location = self.gride.location
+		newknot = knot(location, location, location, "VECTOR")
 		self.subclass.knots.append(newknot)
 		LineData.close = False
 
 	def update(self, ctx, clickcount, dimantion):
-		dim = dimantion
+		dim = self.point_current.location.copy()
+		# dim = dimantion
 		if self.shift:
 			index = -1 if len(self.subclass.knots) < 2 else -2
 			lastpoint = self.subclass.knots[index].pos
-			dim.view = get_axis_constraint(lastpoint, dim.view)
+			dim = get_axis_constraint(lastpoint, dim)
 
 		if self.drag:
 			pos = self.subclass.knots[-1].pos
-			outvec = dim.view
+			outvec = dim
 			invec = Vector((0,0,0))
 			invec.x = pos.x - (outvec.x - pos.x)
 			invec.y = pos.y - (outvec.y - pos.y)
 			invec.z = pos.z - (outvec.z - pos.z)
 			newknot = knot(pos, invec, outvec, 'ALIGNED')
 		else:
-			newknot = knot(dim.view, dim.view, dim.view, "VECTOR")
+			newknot = knot(dim, dim, dim, "VECTOR")
 
 		if clickcount != self.lastclick:
 			self.subclass.knots.append(newknot)
@@ -127,7 +133,7 @@ class Create_OT_Line(CreatePrimitive):
 			self.forcefinish = True
 
 		self.subclass.knots[-1] = newknot
-		self.subclass.lastknot = [knot(dim.view, dim.view, dim.view, "VECTOR")]
+		self.subclass.lastknot = [knot(dim, dim, dim, "VECTOR")]
 
 		self.subclass.update(ctx)
 
@@ -139,6 +145,8 @@ class Create_OT_Line(CreatePrimitive):
 	def finish(self):
 		pass
 
+
+
 classes = [Create_OT_Line, Curve_OT_CloseLine]
 
 def register_line():
@@ -146,3 +154,6 @@ def register_line():
 
 def unregister_line():
 	[bpy.utils.unregister_class(c) for c in classes]
+
+if __name__ == "__main__":
+	register_line()

@@ -14,8 +14,10 @@
 ############################################################################
 
 import bpy
+from math import pi
 from primitive.primitive import CreatePrimitive
-from bsmax.actions import set_create_target, delete_objects
+from primitive.gride import Draw_Primitive
+from bsmax.actions import delete_objects
 from bsmax.math import get_distance
 
 class Camera:
@@ -27,16 +29,22 @@ class Camera:
 		self.__init__()
 	def abort(self):
 		delete_objects([self.owner])
+		if self.target:
+			delete_objects([self.target])
 
-class Create_OT_Camera(CreatePrimitive):
+
+
+class Create_OT_Camera(Draw_Primitive):
 	bl_idname="create.camera"
 	bl_label="Camera Free/Target"
 	subclass = Camera()
+	use_single_click = True
 
-	def create(self, ctx, clickpoint):
-		bpy.ops.object.camera_add(align='WORLD', location=clickpoint.view)
+	def create(self, ctx):
+		bpy.ops.object.camera_add(align='WORLD', location=self.gride.location)
 		self.subclass.owner = ctx.active_object
-		self.subclass.owner.rotation_euler = clickpoint.orient
+		self.subclass.owner.rotation_euler = self.gride.rotation
+		self.subclass.owner.rotation_euler.x += pi/2
 
 	def update(self, ctx, clickcount, dimantion):
 		if clickcount == 1:
@@ -47,7 +55,7 @@ class Create_OT_Camera(CreatePrimitive):
 				bpy.ops.camera.create_target()
 				self.subclass.target = self.subclass.owner.constraints["Track To"].target
 
-			self.subclass.target.location = dimantion.view
+			self.subclass.target.location = dimantion.location
 
 			size = get_distance(self.subclass.owner.location,self.subclass.target.location)/3
 			self.subclass.owner.data.display_size = size
@@ -61,3 +69,6 @@ def register_camera():
 
 def unregister_camera():
 	bpy.utils.unregister_class(Create_OT_Camera)
+
+if __name__ == "__main__":
+	register_camera()

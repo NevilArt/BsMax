@@ -31,7 +31,7 @@ def get_box_panel(self,layout):
 	col = layout.column(align=True)
 	col.prop(self,"width",text="width")
 	col.prop(self,"length",text="length")
-	col.prop(self,"height",text="Heigth")
+	col.prop(self,"height",text="Height")
 	col = layout.column(align=True)
 	col.prop(self,"wsegs",text="WSegs")
 	col.prop(self,"lsegs",text="LSegs")

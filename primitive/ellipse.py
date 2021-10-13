@@ -15,6 +15,7 @@
 
 import bpy
 from primitive.primitive import PrimitiveCurveClass, CreatePrimitive
+from primitive.gride import Draw_Primitive
 from bsmax.actions import delete_objects
 
 def get_ellipse_shape(length, width, outline, Thickness):
@@ -76,6 +77,25 @@ class Create_OT_Ellipse(CreatePrimitive):
 			self.subclass.update()
 	def finish(self):
 		pass
+
+# class Create_OT_Ellipse(Draw_Primitive):
+# 	bl_idname = "create.ellipse"
+# 	bl_label = "Ellipse"
+# 	subclass = Ellipse()
+
+# 	def create(self, ctx):
+# 		self.subclass.create(ctx)
+# 		self.params = self.subclass.owner.data.primitivedata
+# 		self.subclass.owner.location = self.gride.location
+# 		self.subclass.owner.rotation_euler = self.gride.rotation
+# 	def update(self, ctx, clickcount, dimantion):
+# 		if clickcount == 1:
+# 			self.params.width = dimantion.width
+# 			self.params.length = dimantion.length
+# 		if clickcount > 0:
+# 			self.subclass.update()
+# 	def finish(self):
+# 		pass
 
 def register_ellipse():
 	bpy.utils.register_class(Create_OT_Ellipse)

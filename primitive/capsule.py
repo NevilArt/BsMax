@@ -17,6 +17,7 @@ import bpy
 from bpy.types import Operator
 from math import pi, sin, cos, radians
 from primitive.primitive import PrimitiveGeometryClass, CreatePrimitive
+from primitive.gride import Draw_Primitive
 from bsmax.actions import delete_objects
 
 def get_capsule_mesh(radius, height, ssegs, csegs, hsegs, sliceon, sfrom, sto):
@@ -151,16 +152,19 @@ class Capsule(PrimitiveGeometryClass):
 	def abort(self):
 		delete_objects([self.owner])
 
-class Create_OT_Capsule(CreatePrimitive):
+
+
+class Create_OT_Capsule(Draw_Primitive):
 	bl_idname = "create.capsule"
 	bl_label = "Capsule"
 	subclass = Capsule()
+	use_gride = True
 
-	def create(self, ctx, clickpoint):
+	def create(self, ctx):
 		self.subclass.create(ctx)
 		self.params = self.subclass.owner.data.primitivedata
-		self.subclass.owner.location = clickpoint.view
-		self.subclass.owner.rotation_euler = clickpoint.orient
+		self.subclass.owner.location = self.gride.location
+		self.subclass.owner.rotation_euler = self.gride.rotation
 	def update(self, ctx, clickcount, dimantion):
 		if clickcount == 1:
 			self.params.radius1 = dimantion.radius
@@ -176,3 +180,6 @@ def register_capsule():
 	
 def unregister_capsule():
 	bpy.utils.unregister_class(Create_OT_Capsule)
+
+if __name__ == "__main__":
+	register_capsule()

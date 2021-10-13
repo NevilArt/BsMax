@@ -27,9 +27,8 @@ If not have Github account use 'NevilArt@Gmail.Com' for bug report.
 
 # latest Updates
 
-* Camera target and FOV create in same collection as the camera is.
-* Backburner submitter works on Mac (thanks to CalvinAndHobbies).
-* Note: New Create object operator (create on Floor, Surface, View) is under construction, the temprary one removed for now.
+* New Create Primitive operator for draw object on surface.
+* Note: for now just Applyed for objects without width and length parameter (those are will add after some fixes).
 * [Update History...](https://github.com/NevilArt/BsMax_2_80/blob/master/HISTORY.TXT)
 
 # License

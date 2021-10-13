@@ -16,6 +16,7 @@
 import bpy
 from bpy.props import EnumProperty
 from primitive.primitive import CreatePrimitive
+from primitive.gride import Draw_Primitive
 from bsmax.actions import delete_objects
 
 class Text:
@@ -30,7 +31,7 @@ class Text:
 	def abort(self):
 		delete_objects([self.owner])
 
-class Create_OT_Text(CreatePrimitive):
+class Create_OT_Text(Draw_Primitive):
 	bl_idname="create.text"
 	bl_label="Text (Create)"
 	subclass = Text()
@@ -41,15 +42,17 @@ class Create_OT_Text(CreatePrimitive):
 				('BACK', 'Back', ''),
 				('BOTH', 'Both', '')])
 
-	def create(self, ctx, clickpoint):
+	def create(self, ctx):
 		self.subclass.create(ctx)
 		owner = self.subclass.owner
-		owner.location = clickpoint.view
 		owner.data.fill_mode = self.fill_mode
-		owner.rotation_euler = clickpoint.orient
+		owner.location = self.gride.location
+		owner.rotation_euler = self.gride.rotation
+	
 	def update(self, ctx, clickcount, dimantion):
 		if clickcount == 1:
 			self.subclass.owner.data.size = dimantion.radius
+	
 	def finish(self):
 		pass
 
@@ -58,3 +61,6 @@ def register_text():
 
 def unregister_text():
 	bpy.utils.unregister_class(Create_OT_Text)
+
+if __name__ == "__main__":
+	register_text()

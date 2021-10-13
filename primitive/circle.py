@@ -15,6 +15,7 @@
 
 import bpy
 from primitive.primitive import CreatePrimitive, PrimitiveCurveClass
+from primitive.gride import Draw_Primitive
 from bsmax.actions import delete_objects
 
 def get_circle_shape(radius):
@@ -54,16 +55,35 @@ class Circle(PrimitiveCurveClass):
 	def abort(self):
 		delete_objects([self.owner])
 
-class Create_OT_Circle(CreatePrimitive):
+# class Create_OT_Circle(CreatePrimitive):
+# 	bl_idname = "create.circle"
+# 	bl_label = "Circle"
+# 	subclass = Circle()
+
+# 	def create(self, ctx, clickpoint):
+# 		self.subclass.create(ctx)
+# 		self.params = self.subclass.owner.data.primitivedata
+# 		self.subclass.owner.location = clickpoint.view
+# 		self.subclass.owner.rotation_euler = clickpoint.orient
+# 	def update(self, ctx, clickcount, dimantion):
+# 		if clickcount == 1:
+# 			self.params.radius1 = dimantion.radius
+# 		if clickcount > 0:
+# 			self.subclass.update()
+# 	def finish(self):
+# 		pass
+
+class Create_OT_Circle(Draw_Primitive):
 	bl_idname = "create.circle"
 	bl_label = "Circle"
 	subclass = Circle()
 
-	def create(self, ctx, clickpoint):
+	def create(self, ctx):
 		self.subclass.create(ctx)
-		self.params = self.subclass.owner.data.primitivedata
-		self.subclass.owner.location = clickpoint.view
-		self.subclass.owner.rotation_euler = clickpoint.orient
+		owner = self.subclass.owner
+		self.params = owner.data.primitivedata
+		owner.location = self.gride.location
+		owner.rotation_euler = self.gride.rotation
 	def update(self, ctx, clickcount, dimantion):
 		if clickcount == 1:
 			self.params.radius1 = dimantion.radius

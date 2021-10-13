@@ -16,6 +16,7 @@
 import bpy, math
 from math import pi, sin, cos, radians
 from primitive.primitive import CreatePrimitive, PrimitiveGeometryClass
+from primitive.gride import Draw_Primitive
 from bsmax.actions import delete_objects
 
 def get_tube_mesh(radius1, radius2, height, hsegs, csegs, ssegs, sliceon, sfrom, sto):
@@ -222,26 +223,31 @@ class Tube(PrimitiveGeometryClass):
 	def abort(self):
 		delete_objects([self.owner])
 
-class Create_OT_Tube(CreatePrimitive):
+
+
+class Create_OT_Tube(Draw_Primitive):
 	bl_idname = "create.tube"
 	bl_label = "Tube"
 	subclass = Tube()
+	use_gride = True
 
-	def create(self, ctx, clickpoint):
+	def create(self, ctx):
 		self.subclass.create(ctx)
 		self.params = self.subclass.owner.data.primitivedata
-		self.subclass.owner.location = clickpoint.view
-		self.subclass.owner.rotation_euler = clickpoint.orient
+		self.subclass.owner.location = self.gride.location
+		self.subclass.owner.rotation_euler = self.gride.rotation
+
 	def update(self, ctx, clickcount, dimantion):
 		if clickcount == 1:
 			self.params.radius1 = dimantion.radius
 			self.params.radius2 = self.params.radius1 * 0.9
 		elif clickcount == 2:
-			self.params.radius2 = dimantion.radius_from_start_point
+			self.params.radius2 = dimantion.distance
 		elif clickcount == 3:
 			self.params.height = dimantion.height
 		if clickcount > 0:
 			self.subclass.update()
+
 	def finish(self):
 		pass
 
@@ -250,3 +256,6 @@ def register_tube():
 
 def unregister_tube():
 	bpy.utils.unregister_class(Create_OT_Tube)
+
+if __name__ == "__main__":
+	register_tube()

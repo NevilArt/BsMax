@@ -16,6 +16,7 @@
 import bpy
 from bpy.props import EnumProperty
 from primitive.primitive import CreatePrimitive
+from primitive.gride import Draw_Primitive
 from bsmax.actions import delete_objects
 
 class Effector:
@@ -27,10 +28,11 @@ class Effector:
 	def abort(self):
 		delete_objects([self.owner])
 
-class Create_OT_Effector(CreatePrimitive):
+class Create_OT_Effector(Draw_Primitive):
 	bl_idname="create.effector"
 	bl_label="Effector"
 	subclass = Effector()
+	use_single_click = True
 
 	effector_type: EnumProperty(name='Type',default='FORCE',
 		items =[('FORCE','Force',''),('WIND','Wind',''),
@@ -40,11 +42,11 @@ class Create_OT_Effector(CreatePrimitive):
 				('GUIDE','Guide',''),('BOID','Boid',''),('TURBULENCE','Turbulence',''),
 				('DRAG','Drag',''),('SMOKE','Smoke','')])
 
-	def create(self, ctx, clickpoint):
-		bpy.ops.object.effector_add(type=self.effector_type,radius=1,
-									location=clickpoint.view)
+	def create(self, ctx):
+		bpy.ops.object.effector_add(type=self.effector_type,
+			radius=1, location=self.gride.location)
 		self.subclass.owner = ctx.active_object
-		self.subclass.owner.rotation_euler = clickpoint.orient
+		self.subclass.owner.rotation_euler = self.gride.rotation
 	def update(self, ctx, clickcount, dimantion):
 		if clickcount == 1:
 			self.subclass.owner.empty_display_size = dimantion.radius
@@ -56,3 +58,6 @@ def register_effector():
 
 def unregister_effector():
 	bpy.utils.unregister_class(Create_OT_Effector)
+
+if __name__ == "__main__":
+	register_effector()

@@ -16,6 +16,7 @@
 import bpy
 from mathutils import Vector
 from primitive.primitive import CreatePrimitive
+from primitive.gride import Draw_Primitive
 from bsmax.actions import delete_objects
 from bsmax.math import get_offset_by_orient
 
@@ -84,16 +85,16 @@ class Create_OT_Light_Probe_Planer(CreatePrimitive):
 	def finish(self):
 		pass
 
-class Create_OT_Light_Probe_Cubemap(CreatePrimitive):
+class Create_OT_Light_Probe_Cubemap(Draw_Primitive):
 	bl_idname = "create.light_probe_cubemap"
 	bl_label = "Reflection Cubemap"
 	subclass = LightProbe()
 
-	def create(self, ctx, clickpoint):
-		bpy.ops.object.lightprobe_add(type='CUBEMAP', location=clickpoint.view)
+	def create(self, ctx):
+		bpy.ops.object.lightprobe_add(type='CUBEMAP', location=self.gride.location)
 		self.subclass.owner = ctx.active_object
 		self.subclass.owner.scale = (0,0,0)
-		self.subclass.owner.rotation_euler = clickpoint.orient
+		self.subclass.owner.rotation_euler = self.gride.rotation
 	def update(self, ctx, clickcount, dimantion):
 		if clickcount == 1:
 			self.subclass.owner.data.influence_distance = dimantion.radius
@@ -106,7 +107,12 @@ classes = [Create_OT_Light_Probe_Grid,
 			Create_OT_Light_Probe_Cubemap]
 
 def register_lightprobe():
-	[bpy.utils.register_class(c) for c in classes]
+	for c in classes:
+		bpy.utils.register_class(c)
 
 def unregister_lightprobe():
-	[bpy.utils.unregister_class(c) for c in classes]
+	for c in classes:
+		bpy.utils.unregister_class(c)
+
+if __name__ == "__main__":
+	register_lightprobe()

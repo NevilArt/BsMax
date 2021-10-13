@@ -15,6 +15,7 @@
 
 import bpy
 from primitive.primitive import CreatePrimitive,PrimitiveGeometryClass
+from primitive.gride import Draw_Primitive
 from bsmax.actions import delete_objects
 from bsmax.math import get_axis_constraint
 
@@ -50,18 +51,21 @@ class Armature(PrimitiveGeometryClass):
 			delete_objects([self.owner])
 		self.reset()
 
-class Create_OT_Bone(CreatePrimitive):
+
+
+class Create_OT_Bone(Draw_Primitive):
 	bl_idname="create.bone"
 	bl_label="Bone"
 	subclass = Armature()
+	use_gride = False
 	lastclick = 1
 	startpoint = None
 
-	def create(self, ctx, clickpoint):
-		self.usedkeys += ['LEFT_SHIFT', 'RIGHT_SHIFT', 'BACK_SPACE']
-		self.requestkey = ['BACK_SPACE']
+	def create(self, ctx):
+		self.used_keys += ['LEFT_SHIFT', 'RIGHT_SHIFT', 'BACK_SPACE']
+		self.request_key = ['BACK_SPACE']
 		self.subclass.create(ctx)
-		self.startpoint = clickpoint.view
+		self.startpoint = self.gride.location
 		bpy.ops.object.mode_set(mode='EDIT', toggle=False)
 		edit_bones = self.subclass.data.edit_bones 
 		for bone in edit_bones:
@@ -73,17 +77,17 @@ class Create_OT_Bone(CreatePrimitive):
 
 		if self.shift:
 			if len(edit_bones) > 0:
-				dimantion.view = get_axis_constraint(edit_bones[-1].head, dimantion.view)
+				dimantion.end = get_axis_constraint(edit_bones[-1].head, dimantion.end)
 
 		if len(edit_bones) > 0:
-			edit_bones[-1].tail = dimantion.view
+			edit_bones[-1].tail = dimantion.end
 		if clickcount != self.lastclick:
 			newbone = edit_bones.new('Bone')
 			if len(edit_bones) == 1:
 				newbone.head = self.startpoint
 			else:
 				newbone.head = edit_bones[-2].tail
-			newbone.tail = dimantion.view
+			newbone.tail = dimantion.end
 			self.lastclick = clickcount
 
 	def event(self, event, value):
@@ -101,3 +105,6 @@ def register_bone():
 
 def unregister_bone():
 	bpy.utils.unregister_class(Create_OT_Bone)
+
+if __name__ == "__main__":
+	register_bone()

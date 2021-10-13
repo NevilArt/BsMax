@@ -17,7 +17,9 @@ import bpy
 from bpy.props import BoolProperty
 from math import pi, sin, cos
 from primitive.primitive import PrimitiveCurveClass, CreatePrimitive
+from primitive.gride import Draw_Primitive
 from bsmax.actions import set_create_target, delete_objects
+from primitive.profilo import Tube
 
 def get_compass_shape(radius):
 	r = radius
@@ -67,52 +69,57 @@ class Compass(PrimitiveCurveClass):
 	def abort(self):
 		delete_objects([self.owner])
 
-class Create_OT_PointLight(CreatePrimitive):
+class Create_OT_PointLight(Draw_Primitive):
 	bl_idname="create.pointlight"
 	bl_label="Point Light"
 	subclass = Light()
+	use_single_click = True
 
-	def create(self, ctx, clickpoint):
+	def create(self, ctx):
 		self.subclass.create(ctx, 'POINT')
-		self.subclass.owner.location = clickpoint.view
-		self.subclass.owner.rotation_euler = clickpoint.orient
+		self.subclass.owner.location = self.gride.location
+		self.subclass.owner.rotation_euler = self.gride.rotation
 	def update(self, ctx, clickcount, dimantion):
 		if self.drag:
-			self.subclass.owner.location = dimantion.view
+			self.subclass.owner.location = dimantion.location
 	def finish(self):
 		pass
 
-class Create_OT_SpotLight(CreatePrimitive):
+class Create_OT_SpotLight(Draw_Primitive):
 	bl_idname="create.spotlight"
 	bl_label="Spot Light (Create)"
 	subclass = Light()
+	use_single_click = True
 	subclass.finishon = 2
 
-	def create(self, ctx, clickpoint):
+	def create(self, ctx):
 		self.subclass.create(ctx, 'SPOT')
-		self.subclass.owner.location = clickpoint.view
-		self.subclass.owner.rotation_euler = clickpoint.orient
+		self.subclass.owner.location = self.gride.location
+		self.subclass.owner.rotation_euler = self.gride.rotation
 	def update(self, ctx, clickcount, dimantion):
 		if clickcount == 1:
 			if self.drag and self.subclass.target == None:
 				self.subclass.target = set_create_target(self.subclass.owner, None)
 			if self.subclass.target != None:
-				self.subclass.target.location = dimantion.view
+				self.subclass.target.location = dimantion.location
 	def finish(self):
 		pass
 
-class Create_OT_SunLight(CreatePrimitive):
+
+
+class Create_OT_SunLight(Draw_Primitive):
 	bl_idname="create.sunlight"
 	bl_label="Sun Light"
 	subclass = Light()
 	compass = Compass()
+	use_gride = True
 	distance = 0
 	context = None
 
-	def create(self, ctx, clickpoint):
+	def create(self, ctx):
 		self.subclass.finishon = 3
 		self.compass.create(ctx)
-		self.compass.owner.location = clickpoint.view
+		self.compass.owner.location = self.gride.location
 		self.params = self.compass.owner.data.primitivedata
 		self.context = ctx
 	def update(self, ctx, clickcount, dimantion):
@@ -144,6 +151,8 @@ class Create_OT_SunLight(CreatePrimitive):
 	def finish(self):
 		self.subclass.owner.parent = self.subclass.target
 		self.subclass.owner.matrix_parent_inverse = self.subclass.target.matrix_world.inverted()
+
+
 
 class Create_OT_AreaLight(CreatePrimitive):
 	bl_idname="create.arealight"
@@ -179,7 +188,12 @@ classes = [Create_OT_PointLight, Create_OT_SunLight,
 			Create_OT_SpotLight, Create_OT_AreaLight]
 
 def register_light():
-	[bpy.utils.register_class(c) for c in classes]
+	for c in classes:
+		bpy.utils.register_class(c)
 
 def unregister_light():
-	[bpy.utils.unregister_class(c) for c in classes]
+	for c in classes:
+		bpy.utils.unregister_class(c)
+
+if __name__ == "__main__":
+	register_light()

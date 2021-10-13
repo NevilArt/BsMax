@@ -16,7 +16,9 @@
 import bpy
 from math import pi, sin, cos
 from random import random, seed
+from primitive import gride
 from primitive.primitive import CreatePrimitive, PrimitiveCurveClass
+from primitive.gride import Draw_Primitive
 from bsmax.actions import delete_objects
 
 def get_star_shape(radius1, radius2, points, distortion, 
@@ -62,24 +64,49 @@ class Star(PrimitiveCurveClass):
 	def abort(self):
 		delete_objects([self.owner])
 
-class Create_OT_Star(CreatePrimitive):
+# class Create_OT_Star(CreatePrimitive):
+# 	bl_idname = "create.star"
+# 	bl_label = "Star"
+# 	subclass = Star()
+
+# 	def create(self, ctx, clickpoint):
+# 		self.subclass.create(ctx)
+# 		self.params = self.subclass.owner.data.primitivedata
+# 		self.subclass.owner.location = clickpoint.view
+# 		self.subclass.owner.rotation_euler = clickpoint.orient
+# 	def update(self, ctx, clickcount, dimantion):
+# 		if clickcount == 1:
+# 			self.params.radius1 = dimantion.radius
+# 			self.params.radius2 = self.params.radius1 / 2
+# 		elif clickcount == 2:
+# 			self.params.radius2 = dimantion.radius_from_start_point
+# 		if clickcount > 0:
+# 			self.subclass.update()
+# 	def finish(self):
+# 		pass
+
+class Create_OT_Star(Draw_Primitive):
 	bl_idname = "create.star"
 	bl_label = "Star"
 	subclass = Star()
+	use_gride = True
 
-	def create(self, ctx, clickpoint):
+	def create(self, ctx):
 		self.subclass.create(ctx)
 		self.params = self.subclass.owner.data.primitivedata
-		self.subclass.owner.location = clickpoint.view
-		self.subclass.owner.rotation_euler = clickpoint.orient
+		self.subclass.owner.location = self.gride.location
+		self.subclass.owner.rotation_euler = self.gride.rotation
+
 	def update(self, ctx, clickcount, dimantion):
 		if clickcount == 1:
 			self.params.radius1 = dimantion.radius
 			self.params.radius2 = self.params.radius1 / 2
 		elif clickcount == 2:
-			self.params.radius2 = dimantion.radius_from_start_point
+			# self.params.radius2 = dimantion.radius_from_start_point
+			self.params.radius2 = dimantion.distance
 		if clickcount > 0:
 			self.subclass.update()
+
 	def finish(self):
 		pass
 
@@ -88,3 +115,6 @@ def register_star():
 
 def unregister_star():
 	bpy.utils.unregister_class(Create_OT_Star)
+
+if __name__ == "__main__":
+	register_star()

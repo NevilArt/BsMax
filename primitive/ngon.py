@@ -15,7 +15,9 @@
 
 import bpy
 from math import pi, sqrt, sin, cos
+import primitive
 from primitive.primitive import PrimitiveCurveClass, CreatePrimitive
+from primitive.gride import Draw_Primitive
 from bsmax.actions import delete_objects
 
 def get_ngon_shape(radius, sides, cornerradius, circular):
@@ -65,16 +67,16 @@ class NGon(PrimitiveCurveClass):
 	def abort(self):
 		delete_objects([self.owner])
 
-class Create_OT_NGon(CreatePrimitive):
+class Create_OT_NGon(Draw_Primitive):
 	bl_idname = "create.ngon"
 	bl_label = "NGon"
 	subclass = NGon()
 
-	def create(self, ctx, clickpoint):
+	def create(self, ctx):
 		self.subclass.create(ctx)
 		self.params = self.subclass.owner.data.primitivedata
-		self.subclass.owner.location = clickpoint.view
-		self.subclass.owner.rotation_euler = clickpoint.orient
+		self.subclass.owner.location = self.gride.location
+		self.subclass.owner.rotation_euler = self.gride.rotation
 	def update(self, ctx, clickcount, dimantion):
 		if clickcount == 1:
 			self.params.radius1 = dimantion.radius
@@ -88,3 +90,6 @@ def register_ngon():
 	
 def unregister_ngon():
 	bpy.utils.unregister_class(Create_OT_NGon)
+
+if __name__ == "__main__":
+	register_ngon()

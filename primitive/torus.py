@@ -15,7 +15,8 @@
 
 import bpy
 from math import sin, cos, pi, radians
-from primitive.primitive import CreatePrimitive, PrimitiveGeometryClass
+from primitive.primitive import PrimitiveGeometryClass
+from primitive.gride import Draw_Primitive
 from bsmax.actions import delete_objects
 
 def get_torus_mesh( radius1, radius2, rotation, twist, 
@@ -109,16 +110,19 @@ class Torus(PrimitiveGeometryClass):
 	def abort(self):
 		delete_objects([self.owner])
 
-class Create_OT_Torus(CreatePrimitive):
+
+
+class Create_OT_Torus(Draw_Primitive):
 	bl_idname = "create.torus"
 	bl_label = "Torus"
 	subclass = Torus()
 
-	def create(self, ctx, clickpoint):
+	def create(self, ctx):
 		self.subclass.create(ctx)
 		self.params = self.subclass.owner.data.primitivedata
-		self.subclass.owner.location = clickpoint.view
-		self.subclass.owner.rotation_euler = clickpoint.orient
+		self.subclass.owner.location = self.gride.location
+		self.subclass.owner.rotation_euler = self.gride.rotation
+
 	def update(self, ctx, clickcount, dimantion):
 		if clickcount == 1:
 			self.params.radius1 = dimantion.radius
@@ -127,6 +131,7 @@ class Create_OT_Torus(CreatePrimitive):
 			self.params.radius2 = dimantion.radius
 		if clickcount > 0:
 			self.subclass.update()
+
 	def finish(self):
 		pass
 
@@ -135,3 +140,6 @@ def register_torus():
 
 def unregister_torus():
 	bpy.utils.unregister_class(Create_OT_Torus)
+
+if __name__ == "__main__":
+	register_torus()

@@ -1,14 +1,26 @@
+############################################################################
+#	This program is free software: you can redistribute it and/or modify
+#	it under the terms of the GNU General Public License as published by
+#	the Free Software Foundation,either version 3 of the License,or
+#	(at your option) any later version.
+#
+#	This program is distributed in the hope that it will be useful,
+#	but WITHOUT ANY WARRANTY; without even the implied warranty of
+#	MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+#	GNU General Public License for more details.
+#
+#	You should have received a copy of the GNU General Public License
+#	along with this program.  If not,see <https://www.gnu.org/licenses/>.
+############################################################################
+
 import bpy, numpy
 from bpy.types import Operator
 from mathutils import Vector, geometry, Matrix, Euler
 from math import pi, sin, cos, sqrt
-from bpy_extras.view3d_utils import (region_2d_to_location_3d,
-	region_2d_to_vector_3d, region_2d_to_origin_3d)
-
-from primitive.box import Box
-from primitive.circle import Circle
+from bpy_extras.view3d_utils import region_2d_to_location_3d
 from bsmax.state import is_object_mode
 from bsmax.mouse import ray_cast
+from .primitive import AddCursurOveride, RemoveCursurOveride
 
 
 def get_view_orientation(ctx):
@@ -67,22 +79,18 @@ def transfer_points_to(points ,location, direction):
 	
 
 
-def get_click_point_on_triangle(ctx, triangle, x, y):
-	region = ctx.region
-	region_data = ctx.space_data.region_3d
-	view_matrix = region_data.view_matrix.inverted()
-	ray_start = view_matrix.to_translation()
-	ray_depth = view_matrix @ Vector((0, 0, -1000000)) #TODO from view
-	ray_end = region_2d_to_location_3d(region, region_data, (x, y), ray_depth)
-	return geometry.intersect_ray_tri(triangle[0], triangle[1], triangle[2], ray_end, ray_start, False)
-
-
-
-def get_click_point_on_floor(ctx, view_type, flore_triangle, x, y):
+def get_click_point_on_face(ctx, face, x, y):
 		region = ctx.region
 		region_data = ctx.space_data.region_3d
+		_, view_type = get_view_orientation(ctx)
 		if view_type in {'PERSP', 'CAMERA'}:
-			return get_click_point_on_triangle(ctx, flore_triangle, x, y)
+			region = ctx.region
+			region_data = ctx.space_data.region_3d
+			view_matrix = region_data.view_matrix.inverted()
+			ray_start = view_matrix.to_translation()
+			ray_depth = view_matrix @ Vector((0, 0, -1000000)) #TODO from view
+			ray_end = region_2d_to_location_3d(region, region_data, (x, y), ray_depth)
+			return geometry.intersect_ray_tri(face[0], face[1], face[2], ray_end, ray_start, False)
 		return region_2d_to_location_3d(region, region_data, (x, y), (0, 0, 0))
 
 
@@ -92,35 +100,46 @@ class Dimantion:
 		self.gride = gride
 		self.start = start
 		self.end = end
+		self.location = end
 
 		self.width = 0
 		self.length = 0
 		self.height = 0
+		""" Distance of start and current """
 		self.radius = 0
+		""" Distance of gride and current """
+		self.distance = 0
 		self.center = Vector((0, 0, 0))
 		self.calculate()
 	
 	def calculate(self):
+		# radiue distance of start and end point
 		x = self.end.x - self.start.x
 		y = self.end.y - self.start.y
-		z = self.end.y - self.start.y
+		z = self.end.z - self.start.z
 		self.radius = sqrt(x**2 + y**2 + z**2)
 		
+		# distance of gride and end point
+		x = self.end.x - self.gride.location.x
+		y = self.end.y - self.gride.location.y
+		z = self.end.z - self.gride.location.z
+		self.distance = sqrt(x**2 + y**2 + z**2)
+		
+		# weidth length height
 		theta = self.gride.rotation.z
 		
 		width = self.radius*cos(pi - theta)
 		length = self.radius*cos(theta)
-		# print(theta, pi-theta)
 		
 		self.width = abs(width)
 		self.length = abs(length)
 		self.height = self.radius
 		
-		cx = self.start.x + width/2
-		cy = self.start.y + length/2
-		cz = self.start.z + self.height/2
-		# self.center = Vector((cx, cy, cz))
-		self.center = self.gride.location
+		# center
+		cx = (self.start.x + self.end.x) / 2
+		cy = (self.start.y + self.end.y) / 2
+		cz = (self.start.z + self.end.z) / 2
+		self.center = Vector((cx, cy, cz))
 	
 
 class Click_Point:
@@ -141,10 +160,14 @@ class Gride:
 		self.rotation = Vector((0, 0, 0)) #orientation
 		# Object rotaton (Direction)
 		self.direction = Vector((0, 0, 0))
+		# Floor oriantation
+		self.orient = Vector((0, 0, 0))
 		# Size of gride for graphic drawing
 		self.size = 1
-		# Click detector virtual mesh (Face)
+		# Click detector virtual mesh (Face) on surface
 		self.face = self.get_defualt_face()
+		# Click detector virtual mesh (Face) on floore
+		self.floor = self.get_defualt_face()
 	
 	def get_defualt_face(self):
 		return (Vector((-self.size, -self.size, 0)), Vector((self.size, -self.size, 0)),
@@ -158,6 +181,9 @@ class Gride:
 
 	def genarate_face(self):
 		self.face = transfer_points_to(self.get_defualt_face(), self.location, self.rotation)
+	
+	def genarate_floor(self):
+		self.floor = transfer_points_to(self.get_defualt_face(), Vector((0, 0, 0)), Vector((0, 0, 0)))
 
 	def get_normal_direction(self, normal):
 		if normal:
@@ -175,21 +201,22 @@ class Gride:
 			self.rotation = matrix.to_euler()
 		else:
 			self.rotation = Euler((0, 0, 0), 'XYZ')
+
+	def get_click_point_gride(self, ctx, x, y):
+		return get_click_point_on_face(ctx, self.face, x, y)
 	
-
-
-	def get_click_point(self, ctx, x, y):
-		""" return Vector((0,0,0)) of x,y and face touch point """
-		region = ctx.region
-		region_data = ctx.space_data.region_3d
-		_, view_type = get_view_orientation(ctx)
-		if view_type in {'PERSP', 'CAMERA'}:
-			return get_click_point_on_triangle(ctx, self.face, x, y)
-		return region_2d_to_location_3d(region, region_data, (x, y), (0, 0, 0))
+	def get_click_point_surface(self, ctx, x, y):
+		point, _, _, _ = ray_cast(ctx, x, y)
+		if point:
+			return point
+		view_orient, _ = get_view_orientation(ctx)
+		self.rotation = get_rotation_of_view_orient(view_orient)
+		self.genarate_face()
+		return get_click_point_on_face(ctx, self.face, x, y)
 	
 	def get_coordinate(self, ctx, x, y):
+		""" call once at first click to ganarate virtual gride """
 		draw_mode = ctx.scene.primitive_setting.draw_mode
-		""" Call once for get grid information """
 		if draw_mode == 'VIEW':
 			region = ctx.region
 			region_3d = ctx.space_data.region_3d
@@ -219,14 +246,15 @@ class Gride:
 			self.get_vector_direction(start, end, normal)
 			self.location = start
 			self.direction = self.rotation.copy()
+			if start:
+				self.genarate_face()
 
 		if draw_mode == 'FLOOR' or not self.location:
-			view_orient, view_type = get_view_orientation(ctx)
+			view_orient, _ = get_view_orientation(ctx)
 			self.rotation = get_rotation_of_view_orient(view_orient)
-			self.location = get_click_point_on_floor(ctx, view_type, self.face, x, y)
+			self.genarate_floor()
+			self.location = get_click_point_on_face(ctx, self.floor, x, y)
 			self.direction = self.rotation.copy()
-		
-		self.genarate_face()
 
 
 
@@ -252,18 +280,25 @@ class Draw_Primitive(Operator):
 	shift, ctrl, alt = False, False, False
 	""" click point info """
 	gride = Gride()
+	""" 3D coordinate and info of click points """
 	point_start, point_current = Click_Point(), Click_Point()
-	""" """
+	""" flag that choos click point type use gride or not """
+	use_gride = False
+	use_surface = False
+	use_single_click = False
+	""" mouse override graphic handler """
 	draw_handler = None
+    # Temprary #
+	mpos = Vector((0, 0, 0))
 	
 	@classmethod
 	def poll(self, ctx):
 		return is_object_mode(ctx)
 	
-	def is_drawed_enough(self):
-		""" Masaur mouse movment after object create start
-		# to meke sure do not create tiny invisible object accidentaly """
-		return abs(self.mouse_start.x - self.mouse_curent.x) + abs(self.mouse_start.y - self.mouse_curent.y) > 8
+	def acceptable(self):
+		""" Check mouse movment make sure do not create tiny invisible object"""
+		length = abs(self.mouse_start.x - self.mouse_curent.x) + abs(self.mouse_start.y - self.mouse_curent.y)
+		return length > 8 or (length == 0 and self.use_single_click)
 	
 	def get_shift_state(self, event):
 		if event.type in {'LEFT_SHIFT', 'RIGHT_SHIFT'}:
@@ -291,20 +326,14 @@ class Draw_Primitive(Operator):
 		""" Get first click and initial basic setups """
 		self.step = 1
 		self.mouse_start = Vector((x,y,0))
+		self.use_surface = ctx.scene.primitive_setting.draw_mode == 'SURFACE'
 
 		""" Create local Gride """
 		self.gride.get_coordinate(ctx, x, y)
 
 		""" Get First Click Point """
-		self.point_current.location = self.gride.get_click_point(ctx, x, y)
+		self.point_current.location = self.gride.location.copy()
 		self.point_start.location = self.point_current.location.copy()
-
-		""" Gride Tester """
-		rotation = self.gride.rotation
-		location = self.point_current.location
-		bpy.ops.object.empty_add(type='ARROWS', location=location, rotation=rotation)
-		for point in self.gride.face:
-			bpy.ops.object.empty_add(type='SPHERE', location=point, radius=0.1)
 
 		self.create(ctx)
 		
@@ -324,6 +353,7 @@ class Draw_Primitive(Operator):
 		self.point_start.reset()
 		self.point_current.reset()
 		self.step = 0
+	
 
 	def modal(self, ctx, event):
 		""" Refresh Viewport """
@@ -344,6 +374,8 @@ class Draw_Primitive(Operator):
 		
 		""" Get mouse screen position """
 		x, y = event.mouse_region_x, event.mouse_region_y
+		#TODO replace with Start End after all operator replace with Draw_Primitive
+		self.mpos = Vector((x, y, 0))
 		
 		""" Detect First click """
 		if event.type == 'LEFTMOUSE':
@@ -360,7 +392,14 @@ class Draw_Primitive(Operator):
 			if self.step > 0:
 				""" Get mouse click point virtual gride"""
 				self.mouse_curent = Vector((x,y,0))
-				self.point_current.location = self.gride.get_click_point(ctx, x, y)
+				
+				if self.use_gride:
+					self.point_current.location = self.gride.get_click_point_gride(ctx, x, y)
+				elif self.use_surface:
+					self.point_current.location = self.gride.get_click_point_surface(ctx, x, y)
+				else:
+					self.point_current.location = self.gride.get_click_point_gride(ctx, x, y)
+				
 				dimantion = Dimantion(self.gride, self.point_start.location, self.point_current.location)
 				self.update(ctx, self.step, dimantion)
 
@@ -369,17 +408,22 @@ class Draw_Primitive(Operator):
 				
 				if self.step >= self.subclass.finishon:
 					""" Delete accidently drawed very tiny objects """
-					if not self.is_drawed_enough():
-						self.subclass.abort()
-					else:
+					if self.acceptable():
 						self.finish()
 						bpy.ops.ed.undo_push()
+					else:
+						self.subclass.abort()
+						
 
 					self.reset()
+		
+		""" abort if pointer go out of screen """
+		# if self.step == 0 and out of screen:
+		# 	self.kill = True
 
 		""" finish and drop the operator """
 		if event.type in self.cancel_keys or self.kill:
-			# RemoveCursurOveride(self.draw_handler)
+			RemoveCursurOveride(self.draw_handler)
 			self.kill = False
 			if self.step > 0:
 				self.subclass.abort()
@@ -389,75 +433,6 @@ class Draw_Primitive(Operator):
 		return {'RUNNING_MODAL'}
 
 	def invoke(self, ctx, event):
-		# self.draw_handler = AddCursurOveride(self)
+		self.draw_handler = AddCursurOveride(self)
 		ctx.window_manager.modal_handler_add(self)
 		return {'RUNNING_MODAL'}
-
-
-class Create_OT_Box(Draw_Primitive):
-	bl_idname = "create.box_test"
-	bl_label = "Box test"
-	subclass = Box()
-
-	def create(self, ctx):
-		self.subclass.create(ctx)
-		owner = self.subclass.owner
-		self.params = owner.data.primitivedata
-		# owner.location = self.point_start.location
-		owner.location = self.gride.location
-		owner.rotation_euler = self.gride.rotation
-
-	def update(self, ctx, clickcount, dimantion):
-		if clickcount == 1:
-			self.params.width = dimantion.width
-			self.params.length = dimantion.length
-			self.subclass.owner.location = dimantion.center
-		elif clickcount == 2:
-			self.params.height = dimantion.height
-
-		if clickcount > 0:
-			self.subclass.update()
-
-	def finish(self):
-		print("Finish")
-		pass
-
-class Create_OT_Circle(Draw_Primitive):
-	bl_idname = "create.circle_test"
-	bl_label = "Circle test"
-	subclass = Circle()
-
-	def create(self, ctx):
-		self.subclass.create(ctx)
-		owner = self.subclass.owner
-		self.params = owner.data.primitivedata
-		owner.location = self.gride.location
-		owner.rotation_euler = self.gride.rotation
-	def update(self, ctx, clickcount, dimantion):
-		if clickcount == 1:
-			self.params.radius1 = dimantion.radius
-		
-		if clickcount > 0:
-			self.subclass.update()
-	def finish(self):
-		pass
-
-def delete_helpers():
-	bpy.ops.object.select_all(action='DESELECT')
-	for obj in bpy.context.scene.objects:
-		obj.select_set(obj.type == "EMPTY")
-	bpy.ops.object.delete()
-
-classes = [Create_OT_Box, Create_OT_Circle]
-
-def register_box():
-	for c in classes:
-		bpy.utils.register_class(c)
-
-def unregister_box():
-	for c in classes:
-		bpy.utils.unregister_class(c)
-
-if __name__ == '__main__':
-	register_box()
-	delete_helpers()
