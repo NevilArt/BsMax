@@ -216,7 +216,6 @@ def view3d(km,preferences):
 	# km.new(space,'scene.hold','H','PRESS',[],ctrl=True,alt=True)
 	# km.new(space,'scene.fetch','F','PRESS',[],ctrl=True,alt=True)
 	km.new(space,'wm.call_menu','A','PRESS',[('name','BSMAX_MT_createmenu')],ctrl=True,shift=True)
-	km.new(space,'wm.call_menu','T','PRESS',[('name','TOPBAR_MT_file_external_data')],shift=True)
 	km.new(space,'view3d.homeview','HOME','PRESS',[],alt=True)
 	km.new(space,'screen.animation_play','SLASH','PRESS',[])
 	km.new(space,'view.undoredo','Z','PRESS',[('redo',False)],shift=True)
@@ -240,7 +239,8 @@ def view3d_generic(km):
 	space = km.space('3D View Generic','VIEW_3D','WINDOW')
 	km.new(space,'view3d.properties','LEFT_BRACKET','PRESS',[])
 	km.new(space,'view3d.toolshelf','RIGHT_BRACKET','PRESS',[])
-
+	km.new(space,'wm.call_menu','V','PRESS',[('name','VIEW3D_MT_preview')],shift=True)
+	km.new(space,'wm.call_menu','T','PRESS',[('name','TOPBAR_MT_file_external_data')],shift=True)
 
 def view3d_tweak(km):
 	# space = km.space('3D View Tool: Tweak','VIEW_3D','WINDOW')
@@ -340,6 +340,7 @@ def object_mode(km, preferences):
 	km.new(space,'object.select_children','LEFTMOUSE','DOUBLE_CLICK',[('full',True)])
 	km.new(space,'object.select_children','LEFTMOUSE','DOUBLE_CLICK',[('full',True),('extend',True)],ctrl=True)
 	km.new(space,'object.delete_plus','DEL','PRESS',[])
+	km.new(space,'wm.call_menu','M','PRESS',[('name','VIEW3D_MT_object_collection')],shift=True)
 
 def mesh(km, preferences):
 	km.mute('Mesh','mesh.shortest_path_pick','LEFTMOUSE','CLICK',ctrl=True)
@@ -403,6 +404,7 @@ def mesh(km, preferences):
 	km.new(space,'object.transform_type_in','F12','PRESS',[])
 	km.new(space,'mesh.subdivide','M','PRESS',[],ctrl=True)
 	km.new(space,'transform.skin_resize','A','PRESS',[],ctrl=True,shift=True)
+	km.new(space,'editor.float','M','PRESS',[('ui_type','ShaderNodeTree'),('shader_type','OBJECT'),('multiple',False)])
 	# Tools #
 	km.new(space,'view3d.shade_selected_faces','F2','PRESS',[])
 	km.new(space,'anim.auto_key_toggle','N','PRESS',[])
@@ -617,6 +619,7 @@ def outliner(km):
 	
 	space = km.space('Outliner','OUTLINER','WINDOW')
 	add_search(km, space)
+	add_subobject(km, space)
 	ver = bpy.app.version
 	if ver[0] == 2 and ver[1] < 81:
 		km.new(space,'outliner.item_activate','LEFTMOUSE','PRESS',[('extend',True)],ctrl=True)
@@ -641,6 +644,7 @@ def outliner(km):
 
 	km.new(space,'outliner.show_active','Z','PRESS',[])
 	km.new(space,'anim.keyframe_insert','K','PRESS',[])
+	km.new(space,'camera.select','C','PRESS',[])
 	# km.new(space,'outliner.rename_selection','F2','PRESS',[])
 
 def node_editor(km):
@@ -680,7 +684,8 @@ def text(km):
 	km.new(space,'text.autocomplete','SPACE','PRESS',[],ctrl=True)
 	km.new(space,'text.new','N','PRESS',[],ctrl=True)
 	km.new(space,'text.open','O','PRESS',[],ctrl=True)
-	km.new(space,'text.save','S','PRESS',[],ctrl=True)
+	# km.new(space,'text.save','S','PRESS',[],ctrl=True)
+	km.new(space,'text.smart_save','S','PRESS',[],ctrl=True)
 	km.new(space,'text.save_as','S','PRESS',[],ctrl=True,shift=True)
 	km.new(space,'text.reload','R','PRESS',[],ctrl=True)
 	km.new(space,'text.unlink','W','PRESS',[],ctrl=True)
@@ -728,6 +733,7 @@ def graph_editor(km):
 	km.new(space,'graph.view_selected','Z','PRESS',[])
 	# km.new(space,'graph.view_all','??','PRESS',[])
 	km.new(space,'anim.delete_key','DEL','PRESS',[])
+	km.new(space,'camera.select','C','PRESS',[])
 
 def dopesheet_editor(km):
 	""" (Timeline) """
@@ -749,6 +755,7 @@ def dopesheet_editor(km):
 	km.new(space,'action.select_more','PAGE_UP','PRESS',[],ctrl=True)
 	km.new(space,'action.select_less','PAGE_DOWN','PRESS',[],ctrl=True)
 	km.new(space,'action.zoom_extended','Z','PRESS',[])
+	km.new(space,'camera.select','C','PRESS',[])
 
 def nla_editor(km):
 	space = km.space('NLA Editor','NLA_EDITOR','WINDOW')
@@ -757,6 +764,7 @@ def nla_editor(km):
 	add_time(km, space)
 	# km.new(space,'nla.view_all','Z','PRESS',[])
 	km.new(space,'nla.view_selected','Z','PRESS',[])
+	km.new(space,'camera.select','C','PRESS',[])
 
 def clip_editor(km):
 	km.mute('Clip Editor','transform.translate','EVT_TWEAK_L','ANY')

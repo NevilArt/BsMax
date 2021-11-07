@@ -27,8 +27,11 @@ If not have Github account use 'NevilArt@Gmail.Com' for bug report.
 
 # latest Updates
 
-* New Create Primitive operator for draw object on surface.
-* Note: for now just Applyed for objects without width and length parameter (those are will add after some fixes).
+* save_preferences issu fixed for Blender 3.0
+* 'Shift+M' call collection Menu (Max mode) (replacment for 'M' that used for Material Editor).
+* 'Path Constraint' by default set keys type as Linear.
+* 'Ctrl+S' in text editor Save text if external Save blend file if internal (Max Mode).
+* 'Shift+V' Preview Menu (Max Mode).
 * [Update History...](https://github.com/NevilArt/BsMax_2_80/blob/master/HISTORY.TXT)
 
 # License

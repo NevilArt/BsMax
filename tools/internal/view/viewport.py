@@ -14,8 +14,7 @@
 ############################################################################
 
 import bpy
-from bpy.types import Operator
-from bpy.props import StringProperty
+from bpy.types import Operator, Menu
 
 class View3DData:
 	def __init__(self):
@@ -255,6 +254,22 @@ class View3D_OT_Show_Camera_Toggle(Operator):
 		return{"FINISHED"}
 
 
+class VIEW3D_MT_Preview(Menu):
+	bl_idname = "VIEW3D_MT_preview"
+	bl_label = "Preview"
+
+	def draw(self, ctx):
+		layout=self.layout
+		layout.operator_context = 'INVOKE_REGION_WIN'
+		layout.operator("render.opengl",
+			text="Viewport Render Image", icon='RENDER_STILL')
+		layout.operator("render.opengl",
+			text="Viewport Render Animation", icon='RENDER_ANIMATION').animation = True
+		props = layout.operator("render.opengl",
+			text="Viewport Render Keyframes", icon='RENDER_ANIMATION').animation = True
+		props.render_keyed_only = True
+
+
 
 classes = [View3D_OT_Wireframe_Toggle,
 	View3D_OT_Edge_Face_Toggle,
@@ -266,13 +281,16 @@ classes = [View3D_OT_Wireframe_Toggle,
 	View3D_OT_Show_Light_Toggle,
 	View3D_OT_Show_Bone_Toggle,
 	View3D_OT_Show_Camera_Toggle,
-	View3D_OT_Lighting_Toggle]
+	View3D_OT_Lighting_Toggle,
+	VIEW3D_MT_Preview]
 	
 def register_viewport():
-	[bpy.utils.register_class(c) for c in classes]
+	for c in classes:
+		bpy.utils.register_class(c)
 
 def unregister_viewport():
-	[bpy.utils.unregister_class(c) for c in classes]
+	for c in classes:
+		bpy.utils.unregister_class(c)
 
 if __name__ == "__main__":
 	register_viewport()

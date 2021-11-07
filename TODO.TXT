@@ -3,9 +3,7 @@ Note: Tasks in [] can't apply for now because of python API limitation, I am loo
 # Keymaps/Menu
 	[Loop ring short key in UV Editor]
 	Brush Size control hot keys (for max mode)
-	Sequencer in pr mode Alt + Arrows move step by step
 	[F9 if no active camera in scene create one befor render and delete after render]
-	in some PCs 'E' calls Scale rather then Rotate ??
 	3DsMax Adapted key map for animators
 
 # Tools
@@ -23,7 +21,6 @@ Note: Tasks in [] can't apply for now because of python API limitation, I am loo
 	Armature
 		Smartkey mode (new key type same as previes key type)
 		Selection tools for rigg (create button, add/remove new item, rest pose, isolate and ...)
-		Blend pose tool
 		Fill key (Set key any where any controller has a key)
 		Curve key keys between first and last key
 		Time range marker

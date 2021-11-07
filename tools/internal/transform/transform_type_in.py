@@ -13,7 +13,7 @@
 #	along with this program.  If not, see <https://www.gnu.org/licenses/>.
 ############################################################################
 
-import bpy, math
+import bpy
 from bpy.types import Operator
 from bpy.props import FloatProperty, BoolProperty, EnumProperty
 
@@ -120,7 +120,7 @@ def read_objects_values(self, ctx):
 		rot.append(obj.rotation_euler.copy())
 		scl.append(obj.scale.copy())
 
-class Object_OT_Transform_Type_In(bpy.types.Operator):
+class Object_OT_Transform_Type_In(Operator):
 	bl_idname = "object.transform_type_in"
 	bl_label = "Transform Type-in"
 	bl_options = {'REGISTER', 'UNDO'}
@@ -223,10 +223,12 @@ class Object_OT_TTI_Call(Operator):
 classes = [Object_OT_Transform_Type_In, Object_OT_TTI_Call]
 
 def register_transform_type_in():
-	[bpy.utils.register_class(c) for c in classes]
+	for c in classes:
+		bpy.utils.register_class(c)
 
 def unregister_transform_type_in():
-	[bpy.utils.unregister_class(c) for c in classes]
+	for c in classes:
+		bpy.utils.unregister_class(c)
 
 if __name__ == "__main__":
 	register_transform_type_in()

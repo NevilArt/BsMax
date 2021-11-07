@@ -152,7 +152,9 @@ classes = [Object_OT_Snap_Setting,
 	Object_OT_Placment]
 
 def register_snap():
-	[bpy.utils.register_class(c) for c in classes]
+	for c in classes:
+		bpy.utils.register_class(c)
 
 def unregister_snap():
-	[bpy.utils.unregister_class(c) for c in classes]
+	for c in classes:
+		bpy.utils.unregister_class(c)

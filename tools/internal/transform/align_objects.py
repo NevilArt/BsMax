@@ -13,8 +13,8 @@
 #	along with this program.  If not, see <https://www.gnu.org/licenses/>.
 ############################################################################
 import bpy
-from bpy.props import EnumProperty, BoolProperty, FloatProperty, StringProperty
-from mathutils import Vector, Matrix
+from bpy.props import EnumProperty, BoolProperty, FloatProperty
+from mathutils import Vector
 from bpy.types import Operator
 from bsmax.operator import PickOperator
 
@@ -524,10 +524,12 @@ class Object_OT_Align_Selected_to_Target(PickOperator):
 classes = [Object_OT_Align_Selected_to_Active, Object_OT_Align_Selected_to_Target]
 
 def register_align_objects():
-	[bpy.utils.register_class(c) for c in classes]
+	for c in classes:
+		bpy.utils.register_class(c)
 
 def unregister_align_objects():
-	[bpy.utils.unregister_class(c) for c in classes]
+	for c in classes:
+		bpy.utils.unregister_class(c)
 
 if __name__ == "__main__":
 	register_align_objects()

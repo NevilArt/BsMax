@@ -1,16 +1,20 @@
+#0,1,0,20211013
+	New Create Primitive operator for draw object on surface.
+	Note: for now just Applyed for objects without width and length parameter.
+
 #0,1,0,20211006
 	Camera target and FOV create in same collection as the camera is.
 	Backburner submitter works on Mac (thanks to CalvinAndHobbies).
 
 #0,1,0,20210915
 	Backburner submitter`s double first frame issue fixed.
-	New 'Premiere' keyspap added for VSE addes (BsMax/Custom/Video sequencer) (Under Construction)
+	New 'Premiere' keyspap added for VSE addes (BsMax/Custom/Video sequencer)
 	VSE 'Alt + Arrow' keys Move active Strip (like in premire) (Max and Premiere Mode)
 	VSE 'H' Mute/Unmute toggle (Max and Premiere Mode)
 	Maxscript folder added, will contain some tools. for now trasfer Camera + Keyframes from 3DsMax to Blender.
 
 #0,1,0,20210905
-	Experimental 'Autogrid' added for Create primitive operator.(Under Construction and not complete yet).
+	Experimental 'Autogrid' added for Create primitive operator..
 
 #0,1,0,20210903
 	Spiderweb polished and some bugfiex (Create Bitmap not working yet disabled for now).

@@ -44,7 +44,9 @@ class Info_OT_NewScript(Operator):
 classes = [Info_OT_Clear]#,Info_OT_NewScript]
 
 def register_info():
-	[bpy.utils.register_class(c) for c in classes]
+	for c in classes:
+		bpy.utils.register_class(c)
 
 def unregister_info():
-	[bpy.utils.unregister_class(c) for c in classes]
+	for c in classes:
+		bpy.utils.unregister_class(c)

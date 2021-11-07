@@ -13,7 +13,7 @@
 #	along with this program.  If not, see <https://www.gnu.org/licenses/>.
 ############################################################################
 
-import bpy, mathutils
+import bpy
 from bpy.types import Operator
 from mathutils import Vector
 from bsmax.state import has_constraint
@@ -249,8 +249,10 @@ class Anim_OT_Path_Constraint(PickOperator):
 		start, end = ctx.scene.frame_start, ctx.scene.frame_end
 		const.offset = 0
 		obj.keyframe_insert(data_path=data_path, frame=start)
+		set_last_key_type(obj, 'LINEAR')
 		const.offset = -100
 		obj.keyframe_insert(data_path=data_path, frame=end)
+		set_last_key_type(obj, 'LINEAR')
 
 	def picked(self, ctx, source, subsource, target, subtarget):
 		for obj in source:
@@ -342,13 +344,13 @@ classes = [	Anim_OT_Link_Constraint,
 			Anim_OT_Location_Constraint,
 			Anim_OT_Orientation_Constraint]
 
-
-
 def register_parent():
-	[bpy.utils.register_class(c) for c in classes]
+	for c in classes:
+		bpy.utils.register_class(c)
 
 def unregister_parent():
-	[bpy.utils.unregister_class(c) for c in classes]
+	for c in classes:
+		bpy.utils.unregister_class(c)
 
 if __name__ == "__main__":
 	register_parent()

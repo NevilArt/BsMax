@@ -14,8 +14,11 @@
 ############################################################################
 
 import bpy
+from bpy.types import Operator
 
-class BsMax_OT_ScaleIcons(bpy.types.Operator):
+
+
+class BsMax_OT_ScaleIcons(Operator):
 	bl_idname = "filebrowser.scaleicons"
 	bl_label = "Scale Icons"
 	up: bpy.props.BoolProperty(name="scaleup",default=True)
@@ -47,8 +50,17 @@ class BsMax_OT_ScaleIcons(bpy.types.Operator):
 				params.display_type = large
 		return{"FINISHED"}
 
+
+
+classes = [BsMax_OT_ScaleIcons]
+
 def register_filebrowser():
-	bpy.utils.register_class(BsMax_OT_ScaleIcons)
+	for c in classes:
+		bpy.utils.register_class(c)
 
 def unregister_filebrowser():
-	bpy.utils.unregister_class(BsMax_OT_ScaleIcons)
+	for c in classes:
+		bpy.utils.unregister_class(c)
+
+if __name__ == "__main__":
+	register_filebrowser()

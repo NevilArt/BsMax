@@ -21,7 +21,7 @@ from bpy.props import StringProperty
 class Object_OT_Coord_System(Operator):
 	bl_idname = "object.coordinate_system"
 	bl_label = "Coordinate System"
-	coordsys: bpy.props.StringProperty(default = 'GLOBAL')
+	coordsys: StringProperty(default = 'GLOBAL')
 	def execute(self, ctx):
 		# NORMAL, GIMBAL, LOCAL, VIEW, GLOBAL, CURSOR
 		ctx.window.scene.transform_orientation_slots[0].type = self.coordsys
@@ -38,7 +38,9 @@ class Object_OT_Set_Local_Coord_in_Pose_Mode(Operator):
 classes = [Object_OT_Coord_System, Object_OT_Set_Local_Coord_in_Pose_Mode]
 
 def register_coordinate():
-	[bpy.utils.register_class(c) for c in classes]
+	for c in classes:
+		bpy.utils.register_class(c)
 
 def unregister_coordinate():
-	[bpy.utils.unregister_class(c) for c in classes]
+	for c in classes:
+		bpy.utils.unregister_class(c)

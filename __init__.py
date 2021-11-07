@@ -17,10 +17,10 @@
 ############################################################################
 bl_info = {
 	'name': 'BsMax',
-	'description': 'BsMax for Blender 2.80 ~ 3.0',
+	'description': 'BsMax for Blender 2.80 ~ 3.1',
 	'author': 'Naser Merati (Nevil)',
-	'version': (0, 1, 0, 20211013),
-	'blender': (2, 80, 0),# 2.80 ~ 3.0
+	'version': (0, 1, 0, 20211107),
+	'blender': (2, 80, 0),# 2.80 ~ 3.1
 	'location': 'Almost Everywhere in Blender',
 	'wiki_url': 'https://github.com/NevilArt/BsMax_2_80/wiki',
 	'doc_url': 'https://github.com/NevilArt/BsMax_2_80/wiki',
@@ -326,7 +326,7 @@ class BsMax_AddonPreferences(bpy.types.AddonPreferences):
 
 
 def save_preferences(preferences):
-	filename = bpy.utils.user_resource('SCRIPTS', 'addons') + '/BsMax.ini'
+	filename = bpy.utils.user_resource('SCRIPTS') + '\\addons\\BsMax.ini'
 	string = ''
 
 	for prop in preferences.bl_rna.properties:
@@ -352,7 +352,6 @@ def isfloat(value):
 
 
 def load_preferences(preferences):
-	# filename = bpy.utils.user_resource('SCRIPTS', 'addons') + '/BsMax.ini'
 	filename = bpy.utils.user_resource('SCRIPTS') + '\\addons\\BsMax.ini'
 	if os.path.exists(filename):
 		string = open(filename).read()

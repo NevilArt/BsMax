@@ -23,51 +23,14 @@
 # 5.run the script
 #	same camera with same key frames will recreate in blender
 #
-# Note: for now key types donot transfer corectly.
+# Note: for now key types do not transfer.
 ########################################################################*/
-
 function as_frame t = ((t as string) as integer) as string
 
 function python_public =
 (
 	str = "import bpy\n"
-	str += "ctx = bpy.context\n"
-	str += "\n"
-	str += "def set_last_key_type(chanel, key_type):\n"
-	str += "    ''' Find the newest added key and change the key type '''\n"
-	str += "    for fcurve in chanel.animation_data.action.fcurves:\n"
-	str += "        fcurve.keyframe_points[-1].interpolation = key_type\n"
-	str += "\n"
-	str += "def create_camera(name, location, rotation):\n"
-	str += "    bpy.ops.object.camera_add()\n"
-	str += "    cam = ctx.active_object\n"
-	str += "    cam.name = name\n"
-	str += "    cam.location = location #(0, 0, 0)\n"
-	str += "    cam.rotation_euler = rotation #(0, 0, 0)\n"
-	str += "    return cam\n"
-	str += "\n"
-	str += "def create_target(obj):\n"
-	str += "    constraint = obj.constraints.new('TRACK_TO')\n"
-	str += "    target = bpy.data.objects.new('empty', None)\n"
-	str += "    target.empty_display_type = 'CUBE'\n"
-	str += "    target.empty_display_size = 0.25\n"
-	str += "    active_layer_name = bpy.context.view_layer.active_layer_collection.name\n"
-	str += "    col = bpy.data.collections[active_layer_name]\n"
-	str += "    col.objects.link(target)\n"
-	str += "    target.name = obj.name + '_target'\n"
-	str += "    constraint.target = target\n"
-	str += "    constraint.track_axis = 'TRACK_NEGATIVE_Z'\n"
-	str += "    constraint.up_axis = 'UP_Y'\n"
-	str += "    return target\n"
-	str += "\n"
-	str += "def set_positon_key(obj, time, pos_x, pos_y, pos_z):\n"
-	str += "    obj.location = (pos_x, pos_y, pos_z)\n"
-	str += "    obj.keyframe_insert(data_path='location', index=-1, frame=time)\n"
-	str += "\n"
-	str += "def set_rotation_eular_key(obj, time, rot_x, rot_y, rot_z):\n"
-	str += "    obj.rotation_euler = (rot_x, rot_y, rot_z)\n"
-	str += "    obj.keyframe_insert(data_path='rotation_euler', index=-1, frame=time)\n"
-	str += "\n"
+
 	return str
 )
 
@@ -230,12 +193,13 @@ function target_camera_to_blender_python cam =
 	str += "cam.data.lens_unit = 'FOV'\n"
 	str += "\n"
 
-	for key in cam.fov.keys do (
-		frame = as_frame(key.time)
-		str += "cam.data.angle = " + (DegToRad key.value) as string + "\n"
-		str += "cam.data.keyframe_insert(data_path='lens', index=-1, frame=" + frame + ")\n"
-		str += "\n"
-	)
+	if classof cam.fov.controller != UndefinedClass do
+		for key in cam.fov.keys do (
+			frame = as_frame(key.time)
+			str += "cam.data.angle = " + (DegToRad key.value) as string + "\n"
+			str += "cam.data.keyframe_insert(data_path='lens', index=-1, frame=" + frame + ")\n"
+			str += "\n"
+		)
 	str += "\n"
 	str += "cam.data.lens_unit = 'MILLIMETERS'\n"
 	
@@ -245,7 +209,7 @@ function target_camera_to_blender_python cam =
 
 function creat_python_script_and_copy_to_clipboard =
 (
-	script = python_public()
+	script = "from bsmax.max_to_blender import *\n"
 	for obj in selection do (
 		if classof obj == Freecamera do
 			script += free_camera_to_blender_python obj
