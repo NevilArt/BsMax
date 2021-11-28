@@ -136,7 +136,8 @@ classes = [Anim_OT_Auto_Key_Toggle,
 	Anim_OT_Auto_Use_Select_Pick_Depth_Toggle]
 
 def register_frame_update():
-	[bpy.utils.register_class(c) for c in classes]
+	for c in classes:
+		bpy.utils.register_class(c)
 	scene_state.store(bpy.context)
 	# bpy.app.handlers.frame_change_pre.append(frame_Update)
 	# bpy.app.handlers.render_init.append(render_init)
@@ -148,7 +149,8 @@ def unregister_frame_update():
 	# bpy.app.handlers.frame_change_pre.remove(frame_Update)
 	# bpy.app.handlers.render_init.remove(render_init)
 	bpy.app.handlers.depsgraph_update_pre.remove(depsgraph_update)
-	[bpy.utils.unregister_class(c) for c in classes]
+	for c in classes:
+		bpy.utils.unregister_class(c)
 
 if __name__ == '__main__':
 	register_frame_update()

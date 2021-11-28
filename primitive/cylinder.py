@@ -326,10 +326,12 @@ class Create_OT_Cone(Draw_Primitive):
 classes = [Create_OT_Cylinder, Create_OT_Cone]
 
 def register_cylinder():
-	[bpy.utils.register_class(c) for c in classes]
+	for c in classes:
+		bpy.utils.register_class(c)
 
 def unregister_cylinder():
-	[bpy.utils.unregister_class(c) for c in classes]
+	for c in classes:
+		bpy.utils.unregister_class(c)
 
 if __name__ == "__main__":
 	register_cylinder()

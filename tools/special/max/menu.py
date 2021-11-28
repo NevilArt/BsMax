@@ -23,7 +23,7 @@ def ffd_menu(self, ctx):
 	layout.operator("modifier.ffd_4x4x4_set",text='FFD 4x4x4 (Set)',icon="OUTLINER_OB_LATTICE")
 
 def register_menu():
-	bpy.types.BSMAX_MT_latticecreatemenu.append(ffd_menu)
+	bpy.types.BSMAX_MT_lattice_create_menu.append(ffd_menu)
 
 def unregister_menu():
-	bpy.types.BSMAX_MT_latticecreatemenu.remove(ffd_menu)
+	bpy.types.BSMAX_MT_lattice_create_menu.remove(ffd_menu)

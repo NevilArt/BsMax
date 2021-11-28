@@ -15,7 +15,7 @@
 
 import bpy
 from bpy.types import Operator
-from bpy.props import BoolProperty, FloatProperty, IntProperty
+# from bpy.props import BoolProperty, FloatProperty, IntProperty
 
 
 
@@ -255,10 +255,12 @@ classes = [Mesh_OT_Create_Curve_From_Edges,
 		Mesh_OT_Remove_Isolated_Geometry]
 
 def register_meshs():
-	[bpy.utils.register_class(c) for c in classes]
+	for c in classes:
+		bpy.utils.register_class(c)
 
 def unregister_meshs():
-	[bpy.utils.unregister_class(c) for c in classes]
+	for c in classes:
+		bpy.utils.unregister_class(c)
 
 if __name__ == "__main__":
 	register_meshs()

@@ -19,7 +19,7 @@ bl_info = {
 	'name': 'BsMax',
 	'description': 'BsMax for Blender 2.80 ~ 3.1',
 	'author': 'Naser Merati (Nevil)',
-	'version': (0, 1, 0, 20211107),
+	'version': (0, 1, 0, 20211128),
 	'blender': (2, 80, 0),# 2.80 ~ 3.1
 	'location': 'Almost Everywhere in Blender',
 	'wiki_url': 'https://github.com/NevilArt/BsMax_2_80/wiki',
@@ -140,7 +140,8 @@ class BsMax_AddonPreferences(bpy.types.AddonPreferences):
 
 	custom = [('Custom', 'Custom','')]
 
-	menus = [('3DsMax', '3DsMax (QuadMenu)','Simulate 3DsMax Quad menu'),
+	menus = [('3DsMax', '3DsMax (Quad Menu)','Simulate 3DsMax Quad menu'),
+		('PieMax', '3DsMax (Pie Menu) (Under Construction)','Simulate 3DsMax Quad menu as Pie Menu'),
 		('Maya','Maya (Not ready yet)',''),
 		('Blender','Blender (Default)','')]
 	

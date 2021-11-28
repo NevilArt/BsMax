@@ -15,7 +15,7 @@
 
 import bpy
 from bpy.props import BoolProperty, FloatProperty, IntProperty
-from bsmax.curve import Curve
+# from bsmax.curve import Curve
 from bsmax.operator import CurveTool
 
 class BsMax_OT_OutlineCurve(CurveTool):

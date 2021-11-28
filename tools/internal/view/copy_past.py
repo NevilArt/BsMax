@@ -92,10 +92,12 @@ class View3D_OT_Copy_Data(Operator):
 classes = [View3D_OT_Copy_Data]
 
 def register_copy_past():
-	[bpy.utils.register_class(c) for c in classes]
+	for c in classes:
+		bpy.utils.register_class(c)
 
 def unregister_copy_past():
-	[bpy.utils.unregister_class(c) for c in classes]
+	for c in classes:
+		bpy.utils.unregister_class(c)
 
 if __name__ == "__main__":
 	register_copy_past()

@@ -187,12 +187,14 @@ classes = [Camera_OT_Create_Target,
 		Camera_OT_Select_DOF_Target]
 
 def register_terget_camera():
-	[bpy.utils.register_class(c) for c in classes]
+	for c in classes:
+		bpy.utils.register_class(c)
 	bpy.types.VIEW3D_MT_view_cameras.append(camera_menu)
 
 def unregister_terget_camera():
 	bpy.types.VIEW3D_MT_view_cameras.remove(camera_menu)
-	[bpy.utils.unregister_class(c) for c in classes]
+	for c in classes:
+		bpy.utils.unregister_class(c)
 
 if __name__ == "__main__":
 	register_terget_camera()

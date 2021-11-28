@@ -35,7 +35,9 @@ class Scene_OT_Fetch(Operator):
 classes = [Scene_OT_Hold, Scene_OT_Fetch]
 
 def register_hold():
-	[bpy.utils.register_class(c) for c in classes]
+	for c in classes:
+		bpy.utils.register_class(c)
 
 def unregister_hold():
-	[bpy.utils.unregister_class(c) for c in classes]
+	for c in classes:
+		bpy.utils.unregister_class(c)

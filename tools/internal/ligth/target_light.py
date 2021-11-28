@@ -66,7 +66,9 @@ class Light_OT_Clear_Target(Operator):
 classes = [Light_OT_Create_Target, Light_OT_Clear_Target]
 
 def register_target_light():
-	[bpy.utils.register_class(c) for c in classes]
+	for c in classes:
+		bpy.utils.register_class(c)
 
 def unregister_target_light():
-	[bpy.utils.unregister_class(c) for c in classes]
+	for c in classes:
+		bpy.utils.unregister_class(c)

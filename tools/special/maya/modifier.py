@@ -18,13 +18,17 @@ from bpy.types import Operator
 from bsmax.actions import modifier_add
 from bsmax.state import is_objects_selected
 
+
+
 class Modifier_OT_Add_Revolve(Operator):
 	bl_idname = "modifier.add_revolve"
 	bl_label = "Revolve (add)"
 	bl_options = {'REGISTER','UNDO'}
+
 	@classmethod
 	def poll(self, ctx):
 		return is_objects_selected(ctx)
+
 	def execute(self, ctx):
 		modifier_add(ctx,ctx.selected_objects,'SCREW',name='Revolve')
 		self.report({'OPERATOR'},'bpy.ops.modifier.add_revolve()')
@@ -32,11 +36,15 @@ class Modifier_OT_Add_Revolve(Operator):
 
 classes = [Modifier_OT_Add_Revolve]
 
+
+
 def register_modifier():
-	[bpy.utils.register_class(c) for c in classes]
+	for c in classes:
+		bpy.utils.register_class(c)
+
+
 
 def unregister_modifier():
-	# [bpy.utils.unregister_class(c) for c in classes]
 	for c in classes:
 		if hasattr(bpy.types, eval("bpy.ops." + c.bl_idname + ".idname()")):
 			bpy.utils.unregister_class(c)

@@ -84,10 +84,10 @@ classes = [Modifier_OT_Add_Bevel,
 	Modifier_OT_Add_TurboSmooth]
 
 def register_modifier():
-	[bpy.utils.register_class(c) for c in classes]
+	for c in classes:
+		bpy.utils.register_class(c)
 
 def unregister_modifier():
-	# [bpy.utils.unregister_class(c) for c in classes]
 	for c in classes:
 		if hasattr(bpy.types, eval("bpy.ops." + c.bl_idname + ".idname()")):
 			bpy.utils.unregister_class(c)

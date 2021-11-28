@@ -19,6 +19,8 @@ from mathutils import Vector
 from bsmax.curve import Curve
 from bsmax.graphic import Rubber_Band, get_screen_pos
 
+
+
 class CurveTool(Operator):
 	bl_options = {'REGISTER', 'UNDO'}
 	curve, obj = None, None

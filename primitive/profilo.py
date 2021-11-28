@@ -401,7 +401,9 @@ class Create_OT_Set_Profilo_Pivot_Aligne(Operator):
 classes = [Create_OT_Profilo, Create_OT_Set_Profilo_Pivot_Aligne]
 
 def register_profilo():
-	[bpy.utils.register_class(c) for c in classes]
+	for c in classes:
+		bpy.utils.register_class(c)
 
 def unregister_profilo():
-	[bpy.utils.unregister_class(c) for c in classes]
+	for c in classes:
+		bpy.utils.unregister_class(c)

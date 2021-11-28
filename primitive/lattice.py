@@ -127,7 +127,9 @@ class Lattice_OT_Edit(Operator):
 classes = [Create_OT_Lattice,Lattice_OT_Edit]
 
 def register_lattice():
-	[bpy.utils.register_class(c) for c in classes]
+	for c in classes:
+		bpy.utils.register_class(c)
 
 def unregister_lattice():
-	[bpy.utils.unregister_class(c) for c in classes]
+	for c in classes:
+		bpy.utils.unregister_class(c)

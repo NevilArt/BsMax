@@ -107,10 +107,12 @@ classes = [	Mesh_OT_Target_Weld,
 			Mesh_OT_Weld]
 
 def register_weld():
-	[bpy.utils.register_class(c) for c in classes]
+	for c in classes:
+		bpy.utils.register_class(c)
 
 def unregister_weld():
-	[bpy.utils.unregister_class(c) for c in classes]
+	for c in classes:
+		bpy.utils.unregister_class(c)
 
 if __name__ == "__main__":
 	register_weld()

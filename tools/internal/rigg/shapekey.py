@@ -161,12 +161,14 @@ def shapekey_tools(self, ctx):
 classes = [Mesh_TO_Shapekeys_Sort_by_name, Mesh_TO_Create_Multi_Target_Shapekeys]
 
 def register_shapekey():
-	[bpy.utils.register_class(c) for c in classes]
+	for c in classes:
+		bpy.utils.register_class(c)
 	bpy.types.DATA_PT_shape_keys.append(shapekey_tools)
 
 def unregister_shapekey():
 	bpy.types.DATA_PT_shape_keys.remove(shapekey_tools)
-	[bpy.utils.unregister_class(c) for c in classes]
+	for c in classes:
+		bpy.utils.unregister_class(c)
 
 if __name__ == "__main__":
 	register_shapekey()

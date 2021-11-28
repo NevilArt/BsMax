@@ -64,7 +64,9 @@ class BsMax_MT_ToolMenuGraph(bpy.types.Menu):
 classes = [BsMax_EM_EditAlignGraph_MT, BsMax_MT_ToolMenuGraph]
 
 def grapheditor_register():
-	[bpy.utils.register_class(c) for c in classes]
+	for c in classes:
+		bpy.utils.register_class(c)
 
 def grapheditor_unregister():
-	[bpy.utils.unregister_class(c) for c in classes]
+	for c in classes:
+		bpy.utils.unregister_class(c)

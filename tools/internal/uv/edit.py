@@ -72,7 +72,9 @@ class UV_OT_Plane_Projection(Operator):
 classes = [UV_OT_Turn,UV_OT_Plane_Projection]
 
 def register_edit():
-	[bpy.utils.register_class(c) for c in classes]
+	for c in classes:
+		bpy.utils.register_class(c)
 
 def unregister_edit():
-	[bpy.utils.unregister_class(c) for c in classes]
+	for c in classes:
+		bpy.utils.unregister_class(c)

@@ -108,10 +108,12 @@ class Object_OT_Hide(Operator):
 classes = [Object_OT_Freeze, Object_OT_Hide, Object_TO_Select_By_Name]
 
 def register_freeze():
-	[bpy.utils.register_class(c) for c in classes]
+	for c in classes:
+		bpy.utils.register_class(c)
 
 def unregister_freeze():
-	[bpy.utils.unregister_class(c) for c in classes]
+	for c in classes:
+		bpy.utils.unregister_class(c)
 
 if __name__ == "__main__":
 	register_freeze()

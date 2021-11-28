@@ -73,7 +73,9 @@ class Armature_OT_Bone_Devide(Operator):
 classes = [Armature_OT_Bone_Type, Armature_OT_Bone_Devide]
 
 def register_bone():
-	[bpy.utils.register_class(c) for c in classes]
+	for c in classes:
+		bpy.utils.register_class(c)
 
 def unregister_bone():
-	[bpy.utils.unregister_class(c) for c in classes]
+	for c in classes:
+		bpy.utils.unregister_class(c)

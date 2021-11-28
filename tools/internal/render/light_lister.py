@@ -375,12 +375,14 @@ classes = [Render_OT_Light_Lister,
 		Render_OT_Camera_Lister]
 
 def register_light_lister():
-	[bpy.utils.register_class(c) for c in classes]
+	for c in classes:
+		bpy.utils.register_class(c)
 	bpy.types.TOPBAR_MT_render.append(render_menu)
 
 def unregister_light_lister():
 	bpy.types.TOPBAR_MT_render.remove(render_menu)
-	[bpy.utils.unregister_class(c) for c in classes]
+	for c in classes:
+		bpy.utils.unregister_class(c)
 
 if __name__ == '__main__':
 	[bpy.utils.register_class(c) for c in classes]

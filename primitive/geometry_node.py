@@ -37,12 +37,14 @@ class Object_OT_Geometry_Node_Primitive(Operator):
 classes = [Object_OT_Geometry_Node_Primitive]
 
 def register_geometry_node():
-	[bpy.utils.register_class(c) for c in classes]
+	for c in classes:
+		bpy.utils.register_class(c)
 	# bpy.types.VIEW3D_MT_view_cameras.append(camera_menu)
 
 def unregister_geometry_node():
 	# bpy.types.VIEW3D_MT_view_cameras.remove(camera_menu)	
-	[bpy.utils.unregister_class(c) for c in classes]
+	for c in classes:
+		bpy.utils.unregister_class(c)
 
 if __name__ == "__main__":
 	register_geometry_node()

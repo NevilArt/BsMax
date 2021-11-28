@@ -17,7 +17,7 @@ from .droptool import register_droptool,unregister_droptool
 from .filebrowser import register_filebrowser,unregister_filebrowser
 from .floate_ditor import register_float_editor,unregister_float_editor
 from .gride import register_gride, unregister_gride
-from .hold import register_hold,unregister_hold
+# from .hold import register_hold,unregister_hold
 from .undo import register_undo,unregister_undo
 from .view3d import register_view3d,unregister_view3d
 from .viewport import register_viewport,unregister_viewport

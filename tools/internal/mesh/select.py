@@ -230,10 +230,12 @@ classes = [	Mesh_OT_Select_Element_Toggle,
 			Particle_OT_Select_Max]
 
 def register_select():
-	[bpy.utils.register_class(c) for c in classes]
+	for c in classes:
+		bpy.utils.register_class(c)
 
 def unregister_select():
-	[bpy.utils.unregister_class(c) for c in classes]
+	for c in classes:
+		bpy.utils.unregister_class(c)
 
 if __name__ == "__main__":
 	register_select()

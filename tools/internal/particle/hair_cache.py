@@ -105,12 +105,14 @@ def hair_cache_panle(self, ctx):
 classes = [Particle_OT_Hair_Cache_Combine]
 
 def register_hair_cache():
-	[bpy.utils.register_class(c) for c in classes]
+	for c in classes:
+		bpy.utils.register_class(c)
 	bpy.types.PARTICLE_PT_cache.append(hair_cache_panle)
 
 def unregister_hair_cache():
 	bpy.types.PARTICLE_PT_cache.remove(hair_cache_panle)
-	[bpy.utils.unregister_class(c) for c in classes]
+	for c in classes:
+		bpy.utils.unregister_class(c)
 
 if __name__ == "__main__":
 	register_hair_cache()

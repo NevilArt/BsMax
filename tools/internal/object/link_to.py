@@ -104,12 +104,14 @@ def linkto_menu(self, ctx):
 classes = [Object_OT_Link_to, Object_OT_Unlink]
 
 def register_link_to():
-	[bpy.utils.register_class(c) for c in classes]
+	for c in classes:
+		bpy.utils.register_class(c)
 	bpy.types.VIEW3D_MT_object_parent.append(linkto_menu)
 
 def unregister_link_to():
 	bpy.types.VIEW3D_MT_object_parent.remove(linkto_menu)
-	[bpy.utils.unregister_class(c) for c in classes]
+	for c in classes:
+		bpy.utils.unregister_class(c)
 
 if __name__ == "__main__":
 	register_link_to()

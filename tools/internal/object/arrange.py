@@ -128,12 +128,14 @@ def object_sort_menu(self, ctx):
 classes = [Object_OT_Distance_Sort, Object_OT_Path_Sort, Object_OT_Path_Sort_Apply]
 
 def register_arrange():
-	[bpy.utils.register_class(c) for c in classes]
+	for c in classes:
+		bpy.utils.register_class(c)
 	bpy.types.VIEW3D_MT_transform_object.append(object_sort_menu)
 
 def unregister_arrange():
 	bpy.types.VIEW3D_MT_transform_object.remove(object_sort_menu)
-	[bpy.utils.unregister_class(c) for c in classes]
+	for c in classes:
+		bpy.utils.unregister_class(c)
 
 if __name__ == "__main__":
 	register_arrange()

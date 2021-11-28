@@ -56,11 +56,11 @@ class Armature_Selection_Set:
 		self.orig_coumns = armature.data.selection_set.columns
 		self.orig_raws = armature.data.selection_set.rows
 
-		print("---------------------------------")
+		# print("---------------------------------")
 		for bone in armature.pose.bones:
 			name = bone.name
-			selection_groups = bone.selection_groups
-			print(name, selection_groups)
+			# selection_groups = bone.selection_groups
+			# print(name, selection_groups)
 			new_bone = Bone_Group(name, [])
 			self.orig_bones.append(new_bone)
 		
@@ -402,13 +402,15 @@ classes = [
 	ARMATURE_OT_Selection_Set_Dimantion_Resize]
 
 def register_selection_set():
-	[bpy.utils.register_class(c) for c in classes]
+	for c in classes:
+		bpy.utils.register_class(c)
 	bpy.types.Scene.selection_set = PointerProperty(type=Selection_Set_Scene)
 	bpy.types.Armature.selection_set = PointerProperty(type=Selection_Set_Armature)
 	bpy.types.PoseBone.selection_groups = StringProperty(name='Selection Groups', default='')
 
 def unregister_selection_set():
-	[bpy.utils.unregister_class(c) for c in classes]
+	for c in classes:
+		bpy.utils.unregister_class(c)
 	del bpy.types.Scene.selection_set
 	del bpy.types.Armature.selection_set
 	del bpy.types.PoseBone.selection_groups

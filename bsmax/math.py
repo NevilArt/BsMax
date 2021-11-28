@@ -16,6 +16,8 @@
 from math import sqrt, acos, atan2
 from mathutils import Vector
 
+
+
 class BitArray:
 	def __init__(self):
 		self.string = ""
@@ -53,12 +55,16 @@ class BitArray:
 def point_on_line(a, b, t):
 	return a+(b-a)*t
 
+
+
 def point_on_vector(a, b, c, d, t):
 	C1 = d-3*c+3*b-a
 	C2 = 3*c-6*b+3*a
 	C3 = 3*b-3*a
 	C4 = a
 	return C1*t**3+C2*t*t+C3*t+C4
+
+
 
 def point_on_curve(curve, index, time):
 	spline = curve.data.splines[index]
@@ -94,6 +100,8 @@ def point_on_curve(curve, index, time):
 		t = length / lengths[index]
 		return point_on_vector(a, b, c, d, t)
 
+
+
 # def get_spline_left_index(spline, index):
 # 	left = index - 1
 # 	if index == 0:
@@ -110,6 +118,8 @@ def point_on_curve(curve, index, time):
 # 	a,b = p1.y-p2.y, p2.x-p1.x
 # 	return atan2(b,a)
 
+
+
 def split_segment(p1, p2, p3, p4, t):
 	# start.co start.out end.in end.co
 	p12 = (p2 - p1) * t + p1
@@ -121,9 +131,13 @@ def split_segment(p1, p2, p3, p4, t):
 	# start.co start.out center.in center.co center.out end.in end.co
 	return [p1,p12,p123,p1234,p234,p34,p4]
 
+
+
 def get_distance(a, b):
 	x,y,z = a.x - b.x, a.y - b.y, a.z - b.z
 	return sqrt(x**2 + y**2 + z**2)
+
+
 
 def get_2_pont_size(pmin, pmax):
 	w = pmax[0] - pmin[0]
@@ -131,11 +145,15 @@ def get_2_pont_size(pmin, pmax):
 	h = pmax[2] - pmin[2]
 	return Vector((w, l, h))
 
+
+
 def get_2_point_center(sp, ep):
 	x = sp.x + ((ep.x - sp.x) / 2)
 	y = sp.y + ((ep.y - sp.y) / 2)
 	z = sp.z + ((ep.z - sp.z) / 2)
 	return Vector((x, y, z))
+
+
 
 def get_segment_length(a, b, c, d, steps):
 	points = [a]
@@ -150,11 +168,17 @@ def get_segment_length(a, b, c, d, steps):
 	#bpy.context.active_object.data.splines[0].calc_length()
 	return lenght
 
+
+
 def get_2_points_angel_2d(p1, p2):
 	return atan2(p2.x-p1.x, p1.y-p2.y)
 
+
+
 def get_3_points_angle_2d(a, b, c):
 	return atan2(c.y-b.y, c.x-b.x) - atan2(a.y-b.y, a.x-b.x)
+
+
 
 def get_3_points_angle_3d(a, b, c):
 	v1 = Vector((a.x - b.x, a.y - b.y, a.z - b.z))
@@ -170,6 +194,8 @@ def get_3_points_angle_3d(a, b, c):
 	res = -1 if res < -1 else res
 	return acos(res)
 
+
+
 def get_lines_intersection(p1,p2,p3,p4):
 	delta = ((p1.x-p2.x)*(p3.y-p4.y)-(p1.y-p2.y)*(p3.x-p4.x))
 	if delta == 0:
@@ -178,6 +204,9 @@ def get_lines_intersection(p1,p2,p3,p4):
 		x=((p1.x*p2.y-p1.y*p2.x)*(p3.x-p4.x)-(p1.x-p2.x)*(p3.x*p4.y-p3.y*p4.x))/delta
 		y=((p1.x*p2.y-p1.y*p2.x)*(p3.y-p4.y)-(p1.y-p2.y)*(p3.x*p4.y-p3.y*p4.x))/delta
 	return Vector((x,y,0))
+
+
+
 #############################################
 # def get_2_line_intersection(line1, line2):
 # 	def line1(x1,y1,x2,y2,x3,y3,x4,y4):
@@ -196,6 +225,7 @@ def get_lines_intersection(p1,p2,p3,p4):
 # 	return line2(line1.p1, line1.p2, line2.p1, line2.p2)
 ###############################################
 
+
 def get_axis_constraint(oring, current):
 	# Keep bigger axis and set the other zero
 	delta_x = abs(oring.x - current.x)
@@ -209,6 +239,8 @@ def get_axis_constraint(oring, current):
 	elif side == delta_z:
 		current.x, current.y = oring.x, oring.y
 	return current
+
+
 
 def get_offset_by_orient(offset ,orient):
 	x, y, z = offset
@@ -228,6 +260,8 @@ def get_offset_by_orient(offset ,orient):
 	else:
 		return offset
 
+
+
 def get_bias(bias, time):
 	if bias > 0:
 		return (1-pow(1-time,9*bias+1))
@@ -236,6 +270,8 @@ def get_bias(bias, time):
 	else:
 		return time
 
+
+
 def shift_number(number, value, minimum, maximum):
 	number += value
 	if number > maximum:
@@ -243,6 +279,8 @@ def shift_number(number, value, minimum, maximum):
 	if number < minimum:
 		number += maximum - minimum + 1
 	return number
+
+
 
 def get_index_str(count, index):
 	length = len(str(index))

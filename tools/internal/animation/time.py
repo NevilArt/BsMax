@@ -110,14 +110,16 @@ classes = [Anim_OT_Set_TimeLine_Range,
 		Anim_OT_Keys_Range_Set]
 
 def register_time():
-	[bpy.utils.register_class(c) for c in classes]
+	for c in classes:
+		bpy.utils.register_class(c)
 	bpy.types.DOPESHEET_MT_context_menu.append(time_context_menu)
 	bpy.types.SEQUENCER_MT_context_menu.append(time_context_menu)
 
 def unregister_time():
 	bpy.types.DOPESHEET_MT_context_menu.remove(time_context_menu)
 	bpy.types.SEQUENCER_MT_context_menu.remove(time_context_menu)
-	[bpy.utils.unregister_class(c) for c in classes]
+	for c in classes:
+		bpy.utils.unregister_class(c)
 
 if __name__ == "__main__":
 	register_time()

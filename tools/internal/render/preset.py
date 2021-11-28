@@ -368,7 +368,8 @@ classes = [	Render_OT_Save_Preset,
 
 
 def register_preset():
-	[bpy.utils.register_class(c) for c in classes]
+	for c in classes:
+		bpy.utils.register_class(c)
 	bpy.types.Scene.render_prepost_script = PointerProperty(type=Render_PrePostScript,
 		name='Pre/Post Render Script')
 	
@@ -377,7 +378,8 @@ def register_preset():
 	
 
 def unregister_preset():
-	[bpy.utils.unregister_class(c) for c in classes]
+	for c in classes:
+		bpy.utils.unregister_class(c)
 
 	bpy.app.handlers.render_init.remove(pre_render)
 	bpy.app.handlers.render_complete.remove(post_render)

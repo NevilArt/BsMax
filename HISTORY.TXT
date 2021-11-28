@@ -1,3 +1,10 @@
+#0,1,0,20211107
+	save_preferences issu fixed for Blender 3.0
+	'Shift+M' call collection Menu (Max mode) (replacment for 'M' that used for Material Editor).
+	'Path Constraint' by default set keys type as Linear.
+	'Ctrl+S' in text editor Save text if external Save blend file if internal (Max Mode).
+	'Shift+V' Preview Menu (Max Mode).
+
 #0,1,0,20211013
 	New Create Primitive operator for draw object on surface.
 	Note: for now just Applyed for objects without width and length parameter.

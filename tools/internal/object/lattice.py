@@ -214,9 +214,11 @@ classes = [Lattice_OT_Set_On_Selection,
 
 def register_lattice(preferences):
 	ld.preferences = preferences
-	[bpy.utils.register_class(c) for c in classes]
-	bpy.types.BSMAX_MT_latticecreatemenu.append(lattice_menu)
+	for c in classes:
+		bpy.utils.register_class(c)
+	bpy.types.BSMAX_MT_lattice_create_menu.append(lattice_menu)
 
 def unregister_lattice():
-	bpy.types.BSMAX_MT_latticecreatemenu.remove(lattice_menu)
-	[bpy.utils.unregister_class(c) for c in classes]
+	bpy.types.BSMAX_MT_lattice_create_menu.remove(lattice_menu)
+	for c in classes:
+		bpy.utils.unregister_class(c)

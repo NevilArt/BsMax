@@ -13,5 +13,10 @@
 #	along with this program.  If not, see <https://www.gnu.org/licenses/>.
 ############################################################################
 
-import bpy
+from .max_pie_menu import register_pie_max, unregister_pie_max
 
+def register_quad(preferences):
+	register_pie_max(preferences)
+
+def unregister_quad():
+	unregister_pie_max()

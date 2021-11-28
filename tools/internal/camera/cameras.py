@@ -243,12 +243,14 @@ classes = [Camera_OT_Set_Active,
 			Camera_OT_Show_Safe_Area]
 
 def register_cameras():
-	[bpy.utils.register_class(c) for c in classes]
+	for c in classes:
+		bpy.utils.register_class(c)
 	bpy.types.VIEW3D_MT_view_cameras.append(camera_menu)
 
 def unregister_cameras():
 	bpy.types.VIEW3D_MT_view_cameras.remove(camera_menu)	
-	[bpy.utils.unregister_class(c) for c in classes]
+	for c in classes:
+		bpy.utils.unregister_class(c)
 
 if __name__ == '__main__':
 	register_cameras()

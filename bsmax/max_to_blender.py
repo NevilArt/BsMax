@@ -17,24 +17,33 @@
 ############################################################################
 
 import bpy
+
 ctx = bpy.context
 
 def transform_to_matrix(transform):
 	matrix = None
 	return matrix
 
+
+
 def set_last_key_type(chanel, key_type):
 	''' Find the newest added key and change the key type '''
 	for fcurve in chanel.animation_data.action.fcurves:
 		fcurve.keyframe_points[-1].interpolation = key_type
 
+
+
 def set_positon_key(obj, time, pos_x, pos_y, pos_z):
 	obj.location = (pos_x, pos_y, pos_z)
 	obj.keyframe_insert(data_path='location', index=-1, frame=time)
 
+
+
 def set_rotation_eular_key(obj, time, rot_x, rot_y, rot_z):
 	obj.rotation_euler = (rot_x, rot_y, rot_z)
 	obj.keyframe_insert(data_path='rotation_euler', index=-1, frame=time)
+
+
 
 def create_camera(name, location, rotation):
 	bpy.ops.object.camera_add()
@@ -44,8 +53,12 @@ def create_camera(name, location, rotation):
 	cam.rotation_euler = rotation #(0, 0, 0)
 	return cam
 
+
+
 def set_attribute():
 	pass
+
+
 
 def create_target(obj):
 	constraint = obj.constraints.new('TRACK_TO')
@@ -61,11 +74,17 @@ def create_target(obj):
 	constraint.up_axis = 'UP_Y'
 	return target
 
+
+
 def create_mesh(data):
 	return
 
+
+
 def create_curve(data):
 	return
+
+
 
 def create_object(type, name, transform):
 	if type == 'CAMERA':

@@ -1670,12 +1670,14 @@ class MotionTrailProps(PropertyGroup):
 classes = (MotionTrailProps, Anim_OT_MotionTrail, PANEL_PT_MotionTrail)
 
 def register():
-	[bpy.utils.register_class(c) for c in classes]
+	for c in classes:
+		bpy.utils.register_class(c)
 	bpy.types.WindowManager.motion_trail = PointerProperty(type=MotionTrailProps)
 
 def unregister():
 	Anim_OT_MotionTrail.handle_remove()
-	[bpy.utils.unregister_class(c) for c in classes]
+	for c in classes:
+		bpy.utils.unregister_class(c)
 	del bpy.types.WindowManager.motion_trail
  
 if __name__ == "__main__":

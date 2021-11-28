@@ -14,7 +14,7 @@
 ############################################################################
 
 from .modifier import register_modifier,unregister_modifier
-from .menu import register_menu,unregister_menu
+# from .menu import register_menu,unregister_menu
 
 def register_maya():
 	register_modifier()

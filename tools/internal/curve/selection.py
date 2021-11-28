@@ -184,12 +184,14 @@ def selection_menu(self, ctx):
 classes = [Curve_OT_Select_By_Length, Curve_OT_Select_By_Segment_Count]
 
 def register_selection():
-	[bpy.utils.register_class(c) for c in classes]
+	for c in classes:
+		bpy.utils.register_class(c)
 	bpy.types.VIEW3D_MT_select_edit_curve.append(selection_menu)
 
 def unregister_selection():
 	bpy.types.VIEW3D_MT_select_edit_curve.remove(selection_menu)
-	[bpy.utils.unregister_class(c) for c in classes]
+	for c in classes:
+		bpy.utils.unregister_class(c)
 
 if __name__ == "__main__":
 	register_selection()

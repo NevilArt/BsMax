@@ -14,9 +14,11 @@
 ############################################################################
 
 # import bpy#, mathutils
-from mathutils import Vector, Matrix, geometry
+from mathutils import Vector, geometry
 from math import pi
 from bpy_extras.view3d_utils import region_2d_to_location_3d, region_2d_to_vector_3d, region_2d_to_origin_3d
+
+
 
 class ClickPoint:
 	# View contain the click opoint on 3D view flore or surface
@@ -42,6 +44,8 @@ class ClickPoint:
 		self.surface_detected = False
 		self.surface_normal = None
 
+
+
 def get_view_orientation(ctx):
 	r = lambda x: round(x, 2)
 	
@@ -57,6 +61,8 @@ def get_view_orientation(ctx):
 	
 	return view_orientation, view_type
 
+
+
 def get_triface_from_orient(gride, click_point):
 	orient = click_point.view_orient
 	x, y, z, = gride.location if gride else Vector((0.0, 0.0, 0.0))
@@ -70,6 +76,8 @@ def get_triface_from_orient(gride, click_point):
 	else:
 		return ((0,0,z),(0,1,z),(1,0,z))
 
+
+
 def switch_axis_by_orient(orient, point):
 	x, y, z = point
 	# Top bottom are same as Prespective then can be ignored
@@ -81,6 +89,8 @@ def switch_axis_by_orient(orient, point):
 	
 	else:
 		return Vector((x, y, z))
+
+
 
 def get_rotation_from_orient(orient):
 	r = pi/2
@@ -97,6 +107,8 @@ def get_rotation_from_orient(orient):
 	if orient == 'BOTTOM':
 		return (pi, 0, 0)
 	return (0, 0, 0)
+
+
 
 def get_click_point_info(ctx, gride, x, y):
 	""" Get mouse screen position and context
@@ -153,6 +165,7 @@ def get_click_point_info(ctx, gride, x, y):
 	return cp
 
 
+
 def visible_objects_and_duplis(ctx):
 	""" Loop over (object, matrix) pairs (mesh only) """
 
@@ -183,6 +196,7 @@ def obj_ray_cast(obj, matrix, ray_origin, ray_target):
 		return location, normal, face
 	else:
 		return None, None, None
+
 
 
 def ray_cast(ctx, mouse_x, mouse_y):

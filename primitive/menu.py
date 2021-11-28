@@ -19,7 +19,7 @@ from bsmax.state import is_object_mode
 
 # Mesh create menu
 class BsMax_MT_VertexCreate(Menu):
-	bl_idname = "BSMAX_MT_vertexcreatemenu"
+	bl_idname = "BSMAX_MT_vertex_create_menu"
 	bl_label = "Vertex"
 	def draw(self, ctx):
 		layout=self.layout
@@ -38,7 +38,7 @@ class BsMax_MT_Mesh_Extera(Menu):
 
 # Mesh create menu
 class BsMax_MT_MeshCreate(Menu):
-	bl_idname = "BSMAX_MT_meshcreatemenu"
+	bl_idname = "BSMAX_MT_mesh_create_menu"
 	bl_label = "Mesh"
 	def draw(self, ctx):
 		layout=self.layout
@@ -57,7 +57,7 @@ class BsMax_MT_MeshCreate(Menu):
 		layout.operator("create.teapot", text="Teapot", icon="NODE_MATERIAL")
 		layout.operator("create.monkey", text="Monkey", icon="MESH_MONKEY")
 		layout.separator()
-		layout.menu("BSMAX_MT_vertexcreatemenu", icon='DOT')
+		layout.menu("BSMAX_MT_vertex_create_menu", icon='DOT')
 		layout.separator()
 		#layout.operator("create.mesher", text="Mesher", icon="META_CUBE")
 		layout.operator("create.extrude", text="Extrude Mesh (Add)", icon="EXPORT").mode='Mesh'
@@ -67,7 +67,7 @@ class BsMax_MT_MeshCreate(Menu):
 		
 # curve / shape / spline create menu
 class BsMax_MT_CurveCreate(Menu):
-	bl_idname = "BSMAX_MT_curvecreatemenu"
+	bl_idname = "BSMAX_MT_curve_create_menu"
 	bl_label = "Curve"
 	def draw(self, ctx):
 		layout = self.layout
@@ -86,7 +86,7 @@ class BsMax_MT_CurveCreate(Menu):
 
 # Surface create menu
 class BsMax_MT_SurfaceCreate(Menu):
-	bl_idname = "BSMAX_MT_surfacecreatemenu"
+	bl_idname = "BSMAX_MT_surface_create_menu"
 	bl_label = "Surface"
 	def draw(self, ctx):
 		layout = self.layout
@@ -94,7 +94,7 @@ class BsMax_MT_SurfaceCreate(Menu):
 
 # Metaball create menu
 class BsMax_MT_MetaballCreate(Menu):
-	bl_idname = "BSMAX_MT_metaballcreatemenu"
+	bl_idname = "BSMAX_MT_metaball_create_menu"
 	bl_label = "Metaball"
 	def draw(self, ctx):
 		layout = self.layout
@@ -111,7 +111,7 @@ class BsMax_MT_MetaballCreate(Menu):
 
 # Text create menu
 class BsMax_MT_TextCreate(Menu):
-	bl_idname = "BSMAX_MT_textcreatemenu"
+	bl_idname = "BSMAX_MT_text_create_menu"
 	bl_label = "Text"
 	def draw(self, ctx):
 		layout = self.layout
@@ -122,7 +122,7 @@ class BsMax_MT_TextCreate(Menu):
 
 # Greace Pencil create menu
 class BsMax_MT_GreacePencilCreate(Menu):
-	bl_idname = "BSMAX_MT_gracepencilcreatemenu"
+	bl_idname = "BSMAX_MT_gracepencil_create_menu"
 	bl_label = "Greace Pencil"
 	def draw(self, ctx):
 		layout = self.layout
@@ -135,7 +135,7 @@ class BsMax_MT_GreacePencilCreate(Menu):
 
 # Armature create menu
 class BsMax_MT_ArmatureCreate(Menu):
-	bl_idname = "BSMAX_MT_armaturecreatemenu"
+	bl_idname = "BSMAX_MT_armature_create_menu"
 	bl_label = "Armature"
 	def draw(self, ctx):
 		layout = self.layout
@@ -144,7 +144,7 @@ class BsMax_MT_ArmatureCreate(Menu):
 
 # Lattice create menu
 class BsMax_MT_LatticeCreate(Menu):
-	bl_idname = "BSMAX_MT_latticecreatemenu"
+	bl_idname = "BSMAX_MT_lattice_create_menu"
 	bl_label = "Lattice"
 	def draw(self, ctx):
 		layout = self.layout
@@ -157,7 +157,7 @@ class BsMax_MT_LatticeCreate(Menu):
 
 # Empty create menu
 class BsMax_MT_EmptyCreate(Menu):
-	bl_idname = "BSMAX_MT_emptycreatemenu"
+	bl_idname = "BSMAX_MT_empty_create_menu"
 	bl_label = "Empty"
 	def draw(self, ctx):
 		layout = self.layout
@@ -180,7 +180,7 @@ class BsMax_MT_EmptyCreate(Menu):
 
 # Image create menu
 class BsMax_MT_ImageCreate(Menu):
-	bl_idname = "BSMAX_MT_imagecreatemenu"
+	bl_idname = "BSMAX_MT_image_create_menu"
 	bl_label = "Image"
 	def draw(self, ctx):
 		layout = self.layout
@@ -191,7 +191,7 @@ class BsMax_MT_ImageCreate(Menu):
 
 # Light create menu
 class BsMax_MT_LightCreate(Menu):
-	bl_idname = "BSMAX_MT_lightcreatemenu"
+	bl_idname = "BSMAX_MT_light_create_menu"
 	bl_label = "Light"
 	def draw(self,  ctx):
 		layout = self.layout
@@ -203,7 +203,7 @@ class BsMax_MT_LightCreate(Menu):
 
 # Light Probs create menu
 class BsMax_MT_LightProbsCreate(Menu):
-	bl_idname = "BSMAX_MT_lightProbsprimitives"
+	bl_idname = "BSMAX_MT_lightProbs_primitives"
 	bl_label = "Light Probe"
 	def draw(self, ctx):
 		layout = self.layout
@@ -216,7 +216,7 @@ class BsMax_MT_LightProbsCreate(Menu):
 
 # Camera create menu
 class BsMax_MT_CameraCreate(Menu):
-	bl_idname = "BSMAX_MT_cameracreatemenu"
+	bl_idname = "BSMAX_MT_camera_create_menu"
 	bl_label = "Camera"
 	def draw(self, ctx):
 		layout = self.layout
@@ -233,7 +233,7 @@ class BsMax_MT_SpeakerCreate(Menu):
 
 # Force field create menu
 class BsMax_MT_ForceFieldCreate(Menu):
-	bl_idname = "BSMAX_MT_forcefieldcecreatemenu"
+	bl_idname = "BSMAX_MT_forcefield_cecreate_menu"
 	bl_label = "Force field"
 	def draw(self, ctx):
 		layout = self.layout
@@ -266,7 +266,7 @@ class BsMax_MT_ForceFieldCreate(Menu):
 
 # View 3D Create Menu
 class BsMax_MT_Create(Menu):
-	bl_idname = "BSMAX_MT_createmenu"
+	bl_idname = "BSMAX_MT_create_menu"
 	bl_label = "Create"
 	bl_context = "objectmode"
 
@@ -278,28 +278,27 @@ class BsMax_MT_Create(Menu):
 		layout = self.layout
 		layout.prop(ctx.scene.primitive_setting, 'draw_mode', text='', icon='VIEW3D')
 		layout.separator()
-		layout.menu("BSMAX_MT_meshcreatemenu", icon='OUTLINER_OB_MESH')
-		layout.menu("BSMAX_MT_curvecreatemenu", icon='OUTLINER_OB_CURVE')
-		layout.menu("BSMAX_MT_surfacecreatemenu", icon='OUTLINER_OB_SURFACE')
-		layout.menu("BSMAX_MT_metaballcreatemenu", icon='OUTLINER_OB_META')
-		layout.menu("BSMAX_MT_textcreatemenu", icon='OUTLINER_OB_FONT')
-		layout.menu("BSMAX_MT_gracepencilcreatemenu", icon='OUTLINER_OB_GREASEPENCIL')
+		layout.menu("BSMAX_MT_mesh_create_menu", icon='OUTLINER_OB_MESH')
+		layout.menu("BSMAX_MT_curve_create_menu", icon='OUTLINER_OB_CURVE')
+		layout.menu("BSMAX_MT_surface_create_menu", icon='OUTLINER_OB_SURFACE')
+		layout.menu("BSMAX_MT_metaball_create_menu", icon='OUTLINER_OB_META')
+		layout.menu("BSMAX_MT_text_create_menu", icon='OUTLINER_OB_FONT')
+		layout.menu("BSMAX_MT_gracepencil_create_menu", icon='OUTLINER_OB_GREASEPENCIL')
 		layout.separator()
-		layout.menu("BSMAX_MT_armaturecreatemenu", icon='OUTLINER_OB_ARMATURE')
-		layout.menu("BSMAX_MT_latticecreatemenu", icon='OUTLINER_OB_LATTICE')
+		layout.menu("BSMAX_MT_armature_create_menu", icon='OUTLINER_OB_ARMATURE')
+		layout.menu("BSMAX_MT_lattice_create_menu", icon='OUTLINER_OB_LATTICE')
 		layout.separator()
-		layout.menu("BSMAX_MT_emptycreatemenu", icon='OUTLINER_OB_EMPTY')
-		layout.menu("BSMAX_MT_imagecreatemenu", icon='OUTLINER_OB_IMAGE')
+		layout.menu("BSMAX_MT_empty_create_menu", icon='OUTLINER_OB_EMPTY')
+		layout.menu("BSMAX_MT_image_create_menu", icon='OUTLINER_OB_IMAGE')
 		layout.separator()
-		layout.menu("BSMAX_MT_lightcreatemenu", icon='OUTLINER_OB_LIGHT')
-		layout.menu("BSMAX_MT_lightProbsprimitives", icon='OUTLINER_OB_LIGHTPROBE')
+		layout.menu("BSMAX_MT_light_create_menu", icon='OUTLINER_OB_LIGHT')
+		layout.menu("BSMAX_MT_lightProbs_primitives", icon='OUTLINER_OB_LIGHTPROBE')
 		layout.separator()
-		layout.menu("BSMAX_MT_cameracreatemenu", icon='OUTLINER_OB_CAMERA')
+		layout.menu("BSMAX_MT_camera_create_menu", icon='OUTLINER_OB_CAMERA')
 		layout.separator()
-		#layout.menu("BSMAX_MT_speakercreatemenu",icon='OUTLINER_OB_SPEAKER')
 		layout.operator("create.speaker", icon="OUTLINER_OB_SPEAKER")
 		layout.separator()
-		layout.menu("BSMAX_MT_forcefieldcecreatemenu", icon='OUTLINER_OB_FORCE_FIELD')
+		layout.menu("BSMAX_MT_forcefield_cecreate_menu", icon='OUTLINER_OB_FORCE_FIELD')
 		# OUTLINER_OB_GROUP_INSTANCE
 
 def objects_context_menu(self, ctx):
@@ -309,7 +308,7 @@ def objects_context_menu(self, ctx):
 
 def CreateMenu_CallBack(self, ctx):
 	if ctx.mode == 'OBJECT':
-		self.layout.menu("BSMAX_MT_createmenu")
+		self.layout.menu("BSMAX_MT_create_menu")
 
 classes = [BsMax_MT_VertexCreate,
 	BsMax_MT_Mesh_Extera,
@@ -331,11 +330,13 @@ classes = [BsMax_MT_VertexCreate,
 	BsMax_MT_Create]
 
 def register_menu():
-	[bpy.utils.register_class(c) for c in classes]
+	for c in classes:
+		bpy.utils.register_class(c)
 	bpy.types.VIEW3D_MT_editor_menus.prepend(CreateMenu_CallBack)
 	bpy.types.VIEW3D_MT_object_context_menu.append(objects_context_menu)
 
 def unregister_menu():
 	bpy.types.VIEW3D_MT_editor_menus.remove(CreateMenu_CallBack)  
 	bpy.types.VIEW3D_MT_object_context_menu.remove(objects_context_menu)
-	[bpy.utils.unregister_class(c) for c in classes]
+	for c in classes:
+		bpy.utils.unregister_class(c)

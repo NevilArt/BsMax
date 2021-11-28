@@ -100,10 +100,12 @@ class Create_OT_Image(Operator):
 classes = [Create_OT_Empty, Create_OT_Image]
 
 def register_empty():
-	[bpy.utils.register_class(c) for c in classes]
+	for c in classes:
+		bpy.utils.register_class(c)
 
 def unregister_empty():
-	[bpy.utils.unregister_class(c) for c in classes]
+	for c in classes:
+		bpy.utils.unregister_class(c)
 
 if __name__ == "__main__":
 	register_empty()

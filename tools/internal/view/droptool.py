@@ -86,7 +86,9 @@ classes = [View_OT_Blender_Default_Menue_Call ,View3D_OT_Drop_Tool]
 
 def register_droptool(preferences):
 	View3D_OT_Drop_Tool.preferences = preferences
-	[bpy.utils.register_class(c) for c in classes]
+	for c in classes:
+		bpy.utils.register_class(c)
 
 def unregister_droptool():
-	[bpy.utils.unregister_class(c) for c in classes]
+	for c in classes:
+		bpy.utils.unregister_class(c)

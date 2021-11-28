@@ -15,6 +15,9 @@ Your Reports and Ideas will help me alot and don't forget the sharing. let more 
 
 If not have Github account use 'NevilArt@Gmail.Com' for bug report.
 
+# Donation
+[Support and Donation](https://nevilart.gumroad.com/l/BsMax).
+
 # Installation
 
 * Download all the package as zip file.
@@ -25,14 +28,18 @@ If not have Github account use 'NevilArt@Gmail.Com' for bug report.
 * It is better to restart the Blender after install.
 * Note: Some times need to reset factory the blender to make addon work fine (happens when addons install to alpha version).
 
-# latest Updates
+# Recent Updates and Changes
 
-* save_preferences issu fixed for Blender 3.0
-* 'Shift+M' call collection Menu (Max mode) (replacment for 'M' that used for Material Editor).
-* 'Path Constraint' by default set keys type as Linear.
-* 'Ctrl+S' in text editor Save text if external Save blend file if internal (Max Mode).
-* 'Shift+V' Preview Menu (Max Mode).
+* Draw object on master collection in Blender 3.0 problem solved.
+* Convert to operator issue with some modifiers fiexed.
+* Code review and some clean up and arangment.
 * [Update History...](https://github.com/NevilArt/BsMax_2_80/blob/master/HISTORY.TXT)
+
+# In Production 
+
+* PieMax: Combanition of 3DsMax Quad menu and Blender Pie Menu.
+* Walker: Automation of a manually created walk cycle along a path on a surface.
+* Primitive draw on surface and view (Half Done).
 
 # License
 

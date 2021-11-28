@@ -16,17 +16,23 @@
 import bpy
 from mathutils import Matrix
 
+
+
 def solve_missing_activeobject(ctx, objs):
 	""" Make first selected object as active_object if missing """
 	if ctx.active_object == None:
 		if len(objs) > 0:
 			ctx.view_layer.objects.active = objs[0]
 
+
+
 def lock_transform(obj, move, rotate, scale):
 	for i in range(3):
 		obj.lock_location[i] = move
 		obj.lock_rotation[i] = rotate
 		obj.lock_scale[i] = scale
+
+
 
 def set_transform(obj, coordinate, location, rotation, dimantion):
 	if coordinate == 'locaL':
@@ -39,12 +45,16 @@ def set_transform(obj, coordinate, location, rotation, dimantion):
 	obj.rotation_euler = rotation
 	obj.dimensions = dimantion
 
+
+
 def duplicate_linked(ctx, obj):
 	# not a god method has to fix
 	bpy.ops.object.select_all(action='DESELECT')
 	obj.select_set(state = True)
 	bpy.ops.object.duplicate(linked=True, mode='TRANSLATION')
 	return ctx.view_layer.objects.active
+
+
 
 def duplicate_copy(ctx, obj):
 	# not a god method has to fix
@@ -53,14 +63,18 @@ def duplicate_copy(ctx, obj):
 	bpy.ops.object.duplicate(linked=False, mode='TRANSLATION')
 	return ctx.view_layer.objects.active
 
+
+
 def modifier_add(ctx, objs, modifier, name=''):
 	for obj in objs:
 		the_name = modifier if name == '' else name
 		obj.modifiers.new(name=the_name, type=modifier)
 
+
+
 def link_to_scene(ctx, obj):
 	activelayername = ctx.view_layer.active_layer_collection.name
-	if activelayername == 'Master Collection':
+	if activelayername in {'Master Collection', 'Scene Collection'}:
 		collection = ctx.scene.collection
 	else:
 		collection = bpy.data.collections[activelayername]
@@ -71,14 +85,20 @@ def link_to_scene(ctx, obj):
 	except:
 		pass
 
+
+
 def set_as_active_object(ctx, obj):
 	if obj:
 		bpy.ops.object.select_all(action = 'DESELECT')
 		obj.select_set(state = True)
 		ctx.view_layer.objects.active = obj
 
+
+
 def delete_objects(objs):
 	bpy.ops.object.delete({'selected_objects': objs})
+
+
 
 def set_create_target(obj, target, distance=(0.0, 0.0, -2.0), align=True):
 	""" Add a lookat constraint with basic setting """
@@ -100,12 +120,18 @@ def set_create_target(obj, target, distance=(0.0, 0.0, -2.0), align=True):
 	constraint.up_axis = 'UP_Y'
 	return target
 
+
+
 def link_to(obj, target):
 	obj.parent = target
 	obj.matrix_parent_inverse = target.matrix_world.inverted()
 
+
+
 def get_object_target(obj):
 	return None
+
+
 
 def set_origen(ctx, obj, location):
 	scene = ctx.scene
@@ -118,6 +144,8 @@ def set_origen(ctx, obj, location):
 	bpy.ops.object.origin_set(type='ORIGIN_CURSOR', center='MEDIAN')
 	scene.cursor.location = saved_location
 	scene.cursor.rotation_euler = saved_rotation
+
+
 
 def freeze_transform(objs):
 	""" simulate freeze transform action """

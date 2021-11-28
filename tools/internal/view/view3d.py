@@ -80,10 +80,12 @@ class Object_OT_Viewport_Display(Operator):
 classes = [View3D_OT_perespective, Object_OT_Viewport_Display]
 
 def register_view3d():
-	[bpy.utils.register_class(c) for c in classes]
+	for c in classes:
+		bpy.utils.register_class(c)
 
 def unregister_view3d():
-	[bpy.utils.unregister_class(c) for c in classes]
+	for c in classes:
+		bpy.utils.unregister_class(c)
 
 if __name__ == "__main__":
 	register_view3d()

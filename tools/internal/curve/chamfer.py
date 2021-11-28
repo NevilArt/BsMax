@@ -15,7 +15,7 @@
 
 import bpy
 from bpy.props import BoolProperty, FloatProperty
-from bsmax.curve import Curve
+# from bsmax.curve import Curve
 from bsmax.operator import CurveTool
 
 class Curve_OT_Chamfer(CurveTool):

@@ -88,10 +88,12 @@ class Object_TO_Connect_Script_to_Object(Operator):
 classes = [Object_TO_Connect_Script_to_Object]
 
 def register_attach():
-	[bpy.utils.register_class(c) for c in classes]
+	for c in classes:
+		bpy.utils.register_class(c)
 
 def unregister_attach():
-	[bpy.utils.unregister_class(c) for c in classes]
+	for c in classes:
+		bpy.utils.unregister_class(c)
 
 if __name__ == "__main__":
 	register_attach()

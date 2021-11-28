@@ -263,7 +263,6 @@ km_graph_editor = KeyMaps()
 km_clip_editor = KeyMaps()
 km_video_sequencer = KeyMaps()
 km_file_browser = KeyMaps()
-km_float_menu = KeyMaps()
 
 def register_maya(preferences):
 	if bpy.context.window_manager.keyconfigs.addon:
@@ -373,7 +372,6 @@ def unregister_maya():
 	km_clip_editor.unregister()
 	km_video_sequencer.unregister()
 	km_file_browser.unregister()
-	km_float_menu.unregister()
 
 """
 2D Pan/Zoom

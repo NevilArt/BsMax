@@ -92,7 +92,7 @@ def object_mode(km):
 	if blender_state.select_mouse == 'LEFT':
 		km.new(space,"view3d.drop_tool","RIGHTMOUSE","PRESS",[])
 	km.new(space,"bsmax.mode_set",'F9',"PRESS",[])
-	km.new(space,'wm.call_menu','A','PRESS',[('name','BSMAX_MT_createmenu')],ctrl=True,shift=True)
+	km.new(space,'wm.call_menu','A','PRESS',[('name','BSMAX_MT_create_menu')],ctrl=True,shift=True)
 	km.new(space,'object.join_plus','J','PRESS',[],ctrl=True)
 
 def mesh(km):
@@ -196,7 +196,6 @@ km_graph_editor = KeyMaps()
 km_clip_editor = KeyMaps()
 km_video_sequencer = KeyMaps()
 km_file_browser = KeyMaps()
-km_float_menu = KeyMaps()
 
 def register_blender(preferences):
 	ctx = bpy.context
@@ -306,4 +305,3 @@ def unregister_blender():
 	km_clip_editor.unregister()
 	km_video_sequencer.unregister()
 	km_file_browser.unregister()
-	km_float_menu.unregister()

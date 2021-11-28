@@ -64,10 +64,12 @@ class Object_TO_Make_Unique(Operator):
 classes = [OBJECT_TO_Date_Rename]
 
 def register_instancer():
-	[bpy.utils.register_class(c) for c in classes]
+	for c in classes:
+		bpy.utils.register_class(c)
 
 def unregister_instancer():
-	[bpy.utils.unregister_class(c) for c in classes]
+	for c in classes:
+		bpy.utils.unregister_class(c)
 
 if __name__ == "__main__":
 	register_instancer()

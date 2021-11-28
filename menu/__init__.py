@@ -13,12 +13,13 @@
 #	along with this program.  If not, see <https://www.gnu.org/licenses/>.
 ############################################################################
 
-# from .blender import register_blenderdefault,unregister_blenderdefault
-from .quad import register_quad,unregister_quad
-# from .marking.init import *
+from .quad import register_quad, unregister_quad
+from .pie_max import register_pie_max, unregister_pie_max
 
 def register_menu(preferences):
 	register_quad(preferences)
+	register_pie_max()
 
 def unregister_menu():
 	unregister_quad()
+	unregister_pie_max()

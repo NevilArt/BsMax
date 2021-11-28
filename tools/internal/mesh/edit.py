@@ -15,7 +15,7 @@
 
 import bpy
 from bpy.types import Operator
-from bsmax.state import is_mode
+# from bsmax.state import is_mode
 
 class Mesh_OT_Chamfer(Operator):
 	bl_idname = "mesh.chamfer"
@@ -61,10 +61,12 @@ class Mesh_OT_Drag(Operator):
 classes = [Mesh_OT_Chamfer, Mesh_OT_Drag]
 
 def register_edit():
-	[bpy.utils.register_class(c) for c in classes]
+	for c in classes:
+		bpy.utils.register_class(c)
 
 def unregister_edit():
-	[bpy.utils.unregister_class(c) for c in classes]
+	for c in classes:
+		bpy.utils.unregister_class(c)
 
 if __name__ == "__main__":
 	register_edit()

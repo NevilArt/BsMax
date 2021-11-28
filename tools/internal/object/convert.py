@@ -44,10 +44,6 @@ class Object_OT_Convert_TO(Operator):
 			""" make unique """
 			obj.data = obj.data.copy()
 			
-			""" collaps modifiers """
-			for modifier in obj.modifiers:
-				bpy.ops.object.modifier_apply(modifier=modifier.name)
-			
 			""" set the target mode """
 			bpy.ops.object.convert(target=self.target)
 
@@ -126,10 +122,12 @@ class Object_OT_Join_Plus(Operator):
 classes = [Object_OT_Convert_TO, Object_OT_Join_Plus]
 
 def register_convert():
-	[bpy.utils.register_class(c) for c in classes]
+	for c in classes:
+		bpy.utils.register_class(c)
 
 def unregister_convert():
-	[bpy.utils.unregister_class(c) for c in classes]
+	for c in classes:
+		bpy.utils.unregister_class(c)
 
 if __name__ == "__main__":
 	register_convert()

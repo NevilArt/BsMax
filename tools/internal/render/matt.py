@@ -74,10 +74,12 @@ class Render_OT_Mat_Unset(Operator):
 classes = [Render_OT_Matt_Set, Render_OT_Mat_Unset]
 
 def register_matt():
-    [bpy.utils.register_class(c) for c in classes]
+    for c in classes:
+        bpy.utils.register_class(c)
 
 def unregister_matt():
-    [bpy.utils.unregister_class(c) for c in classes]
+    for c in classes:
+        bpy.utils.unregister_class(c)
 
 if __name__ == '__main__':
     register_matt()

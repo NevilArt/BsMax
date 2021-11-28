@@ -15,7 +15,7 @@
 
 import bpy
 from bpy.props import StringProperty, BoolProperty
-from bpy.types import Scene, Panel, Operator
+from bpy.types import Operator
 from bsmax.operator import PickOperator
 
 class Mesh_OT_Attach(PickOperator):
@@ -126,10 +126,12 @@ class Mesh_OT_Detach(Operator):
 classes = [Mesh_OT_Attach, Mesh_OT_Detach] #Mesh_OT_Attach_List
 
 def register_attach():
-	[bpy.utils.register_class(c) for c in classes]
+	for c in classes:
+		bpy.utils.register_class(c)
 
 def unregister_attach():
-	[bpy.utils.unregister_class(c) for c in classes]
+	for c in classes:
+		bpy.utils.unregister_class(c)
 
 if __name__ == '__main__':
 	register_attach()

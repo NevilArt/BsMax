@@ -142,13 +142,15 @@ def select_menu(self, ctx):
 classes = [Object_OT_Select_Instance, Object_OT_Select_Similar, Object_OT_Select_Children]
 
 def register_selection():
-	[bpy.utils.register_class(c) for c in classes]
+	for c in classes:
+		bpy.utils.register_class(c)
 	bpy.types.VIEW3D_MT_select_object.append(select_menu)
 
 
 def unregister_selection():
 	bpy.types.VIEW3D_MT_select_object.remove(select_menu)
-	[bpy.utils.unregister_class(c) for c in classes]
+	for c in classes:
+		bpy.utils.unregister_class(c)
 
 if __name__ == "__main__":
 	register_selection()

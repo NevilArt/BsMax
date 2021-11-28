@@ -78,10 +78,12 @@ classes = [Object_OT_Freeze_Transform,
 	Object_OT_Rotation_To_Zero]
 
 def register_transform_control():
-	[bpy.utils.register_class(c) for c in classes]
+	for c in classes:
+		bpy.utils.register_class(c)
 
 def unregister_transform_control():
-	[bpy.utils.unregister_class(c) for c in classes]
+	for c in classes:
+		bpy.utils.unregister_class(c)
 
 if __name__ == "__main__":
 	register_transform_control()

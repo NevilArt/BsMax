@@ -16,8 +16,6 @@
 import bpy
 from bpy.types import Operator, Menu
 from bpy.props import StringProperty, BoolProperty
-from operator import itemgetter
-
 
 
 class Editor_OT_Open_As_Float_Window(Operator):
@@ -162,12 +160,14 @@ classes = [Editor_OT_Open_As_Float_Window,
 
 
 def register_float_editor():
-	[bpy.utils.register_class(c) for c in classes]
+	for c in classes:
+		bpy.utils.register_class(c)
 	bpy.types.TOPBAR_MT_window.prepend(float_editor_menu)
 
 def unregister_float_editor():
 	bpy.types.TOPBAR_MT_window.remove(float_editor_menu)
-	[bpy.utils.unregister_class(c) for c in classes]
+	for c in classes:
+		bpy.utils.unregister_class(c)
 
 if __name__ == "__main__":
 	register_float_editor()

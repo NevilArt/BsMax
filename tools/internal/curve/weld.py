@@ -16,8 +16,7 @@
 import bpy
 from bpy.types import Operator
 from bpy.props import BoolProperty, FloatProperty
-from bsmax.math import get_distance
-from bsmax.curve import Curve, Spline
+from bsmax.curve import Curve#, Spline
 from bsmax.operator import CurveTool
 
 class Curve_OT_Break(Operator):
@@ -102,7 +101,9 @@ class Curve_OT_Merge_By_Distance(CurveTool):
 classes = [Curve_OT_Merge_By_Distance, Curve_OT_Break, Curve_OT_Make_First]
 
 def register_weld():
-	[bpy.utils.register_class(c) for c in classes]
+	for c in classes:
+		bpy.utils.register_class(c)
 
 def unregister_weld():
-	[bpy.utils.unregister_class(c) for c in classes]
+	for c in classes:
+		bpy.utils.unregister_class(c)

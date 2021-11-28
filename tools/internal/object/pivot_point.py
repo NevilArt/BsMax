@@ -202,12 +202,14 @@ classes = [Object_OT_Pivot_To_First_Point,
 	OBJECT_MT_Set_Pivot_Point]
 
 def register_pivot_point():
-	[bpy.utils.register_class(c) for c in classes]
+	for c in classes:
+		bpy.utils.register_class(c)
 	bpy.types.VIEW3D_MT_snap.append(snap_menu)
 
 def unregister_pivot_point():
 	bpy.types.VIEW3D_MT_snap.remove(snap_menu)
-	[bpy.utils.unregister_class(c) for c in classes]
+	for c in classes:
+		bpy.utils.unregister_class(c)
 
 if __name__ == "__main__":
 	register_pivot_point()

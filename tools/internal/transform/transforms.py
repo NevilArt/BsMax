@@ -236,10 +236,12 @@ classes = [	View3D_OT_Transform_Gizmo_Size,
 
 
 def register_transforms(preferences):
-	[bpy.utils.register_class(c) for c in classes]
+	for c in classes:
+		bpy.utils.register_class(c)
 
 def unregister_transforms():
-	[bpy.utils.unregister_class(c) for c in classes]
+	for c in classes:
+		bpy.utils.unregister_class(c)
 
 if __name__ == "__main__":
 	[bpy.utils.register_class(c) for c in classes]

@@ -441,12 +441,14 @@ def joystick_connectore_menu(self,ctx):
 classes = [Rigg_TO_Joy_Stick_Creator, Rigg_TO_Joystick_Shapekey_Connector]
 
 def register_joystic():
-	[bpy.utils.register_class(c) for c in classes]
+	for c in classes:
+		bpy.utils.register_class(c)
 	bpy.types.VIEW3D_MT_make_links.append(joystick_connectore_menu)
 
 def unregister_joystic():
 	bpy.types.VIEW3D_MT_make_links.remove(joystick_connectore_menu)
-	[bpy.utils.unregister_class(c) for c in classes]
+	for c in classes:
+		bpy.utils.unregister_class(c)
 
 if __name__ == '__main__':
 	register_joystic()

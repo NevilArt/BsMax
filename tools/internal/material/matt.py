@@ -52,12 +52,14 @@ def matt_menu(self, ctx):
 classes = [Material_OT_Assign_To_Selection,BsMax_MT_material_Tools]
 
 def register_matt():
-	[bpy.utils.register_class(c) for c in classes]
+	for c in classes:
+		bpy.utils.register_class(c)
 	bpy.types.NODE_MT_editor_menus.append(matt_menu)
 
 def unregister_matt():
 	bpy.types.NODE_MT_editor_menus.remove(matt_menu)
-	[bpy.utils.unregister_class(c) for c in classes]
+	for c in classes:
+		bpy.utils.unregister_class(c)
 
 if __name__ == "__main__":
 	register_matt()

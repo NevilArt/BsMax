@@ -697,7 +697,8 @@ classes = [
 		Modifier_OT_SOFT_BODY_Add]
 		
 def register_modifier():
-	[bpy.utils.register_class(c) for c in classes]
+	for c in classes:
+		bpy.utils.register_class(c)
 
 def unregister_modifier():
 	for c in classes:

@@ -178,10 +178,12 @@ class Curve_OT_Refine(Operator):
 classes = [Curve_OT_divid_plus, Curve_OT_Refine]
 
 def register_divid():
-	[bpy.utils.register_class(c) for c in classes]
+	for c in classes:
+		bpy.utils.register_class(c)
 
 def unregister_divid():
-	[bpy.utils.unregister_class(c) for c in classes]
+	for c in classes:	
+		bpy.utils.unregister_class(c)
 
 if __name__ == "__main__":
 	register_divid()

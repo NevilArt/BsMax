@@ -23,7 +23,7 @@ def lattice_menu(self, ctx):
 	layout.operator("modifier.lattice_4x4x4_set",text='Lattice 4x4x4 (Set)',icon="OUTLINER_OB_LATTICE")
 
 def register_menu():
-	bpy.types.BSMAX_MT_latticecreatemenu.append(lattice_menu)
+	bpy.types.BSMAX_MT_lattice_create_menu.append(lattice_menu)
 
 def unregister_menu():
-	bpy.types.BSMAX_MT_latticecreatemenu.remove(lattice_menu)
+	bpy.types.BSMAX_MT_lattice_create_menu.remove(lattice_menu)

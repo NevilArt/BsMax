@@ -13,14 +13,14 @@
 #	along with this program.  If not, see <https://www.gnu.org/licenses/>.
 ############################################################################
 
-import bpy
-
 def is_active_object(ctx, types):
 	if ctx.area.type == 'VIEW_3D':
 		if ctx.active_object != None:
 			if ctx.active_object.type in types:
 				return True
 	return False
+
+
 
 def is_active_primitive(ctx):
 	active_obj = ctx.active_object
@@ -30,9 +30,13 @@ def is_active_primitive(ctx):
 				return True
 	return False
 
+
+
 def is_objects_selected(ctx):
 	if ctx.area.type == 'VIEW_3D':
 		return len(ctx.selected_objects) > 0
+
+
 
 def is_object_mode(ctx):
 	if ctx.area.type == 'VIEW_3D':
@@ -46,6 +50,8 @@ def is_object_mode(ctx):
 			return True
 	return False
 
+
+
 def is_mode(ctx, mode):
 	if ctx.area.type == 'VIEW_3D':
 		if len(ctx.scene.objects) > 0:
@@ -58,14 +64,20 @@ def is_mode(ctx, mode):
 			return True
 	return False
 
+
+
 def has_constraint(obj, constrainttype):
 	for c in obj.constraints:
 		if c.type == constrainttype:
 			return True
 	return False
 
+
+
 def get_active_type(ctx):
 	return None if ctx.active_object == None else ctx.active_object.type
+
+
 
 def get_obj_class(obj):
 	if obj.type in ['MESH', 'CURVE']:

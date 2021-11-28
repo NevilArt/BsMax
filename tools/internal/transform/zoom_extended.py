@@ -83,10 +83,12 @@ classes = [View3d_OT_HomeView,
 			Node_OT_Zoom_Extended]
 
 def register_zoom_extended():
-	[bpy.utils.register_class(c) for c in classes]
+	for c in classes:
+		bpy.utils.register_class(c)
 
 def unregister_zoom_extended():
-	[bpy.utils.unregister_class(c) for c in classes]
+	for c in classes:
+		bpy.utils.unregister_class(c)
 
 if __name__ == '__main__':
 	register_zoom_extended()

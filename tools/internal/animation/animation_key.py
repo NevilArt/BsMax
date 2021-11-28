@@ -431,10 +431,12 @@ classes = [ Anim_OT_Set_Key_Filters,
 			Anim_OP_Selection_Set]
 
 def register_animation_key():
-	[bpy.utils.register_class(c) for c in classes]
+	for c in classes:
+		bpy.utils.register_class(c)
 
 def unregister_animation_key():
-	[bpy.utils.unregister_class(c) for c in classes]
+	for c in classes:
+		bpy.utils.unregister_class(c)
 
 if __name__ == '__main__':
 	register_animation_key()

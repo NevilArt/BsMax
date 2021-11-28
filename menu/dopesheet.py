@@ -61,7 +61,9 @@ class BsMax_MT_ToolMenuDopesheet(bpy.types.Menu):
 classes = [BsMax_MT_EditAlignDopesheet, BsMax_MT_ToolMenuDopesheet]
 
 def dopesheet_register():
-	[bpy.utils.register_class(c) for c in classes]
+	for c in classes:
+		bpy.utils.register_class(c)
 
 def dopesheet_unregister():
-	[bpy.utils.unregister_class(c) for c in classes]
+	for c in classes:
+		bpy.utils.unregister_class(c)

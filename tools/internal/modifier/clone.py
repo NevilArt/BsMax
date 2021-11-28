@@ -76,10 +76,12 @@ class Modifier_OT_Match_Selection(Operator):
 classes = [Modifier_OT_Copy_To_Selection, Modifier_OT_Match_Selection]
 
 def register_clone():
-	[bpy.utils.register_class(c) for c in classes]
+	for c in classes:
+		bpy.utils.register_class(c)
 
 def unregister_clone():
-	[bpy.utils.unregister_class(c) for c in classes]
+	for c in classes:
+		bpy.utils.unregister_class(c)
 
 if __name__ == '__main__':
 	register_clone()

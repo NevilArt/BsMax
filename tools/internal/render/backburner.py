@@ -535,13 +535,15 @@ classes = [Backburner_Settings,
 	RENDER_PT_Backburner]
 
 def register_backburner():
-	[bpy.utils.register_class(c) for c in classes]
+	for c in classes:
+		bpy.utils.register_class(c)
 	bpy.types.Scene.backburner = PointerProperty(type=Backburner_Settings, name='Backburner Submission')
 	bpy.types.TOPBAR_MT_render.prepend(backburner_menu)
 
 def unregister_backburner():
 	bpy.types.TOPBAR_MT_render.remove(backburner_menu)
-	[bpy.utils.unregister_class(c) for c in classes]
+	for c in classes:
+		bpy.utils.unregister_class(c)
 
 
 
