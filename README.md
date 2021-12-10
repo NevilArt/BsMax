@@ -4,7 +4,7 @@
 BsMax is package of many different tools and UI simulator (much as possible) for [Blender 3D](https://www.blender.org/).
 
 * Animatable Primitive Objects.
-* Many Different tools.
+* Collection of many different tools (Modeling, Rigging, Animation, Pipeline).
 * Make you comfortable if you are from other software (for now mostly 3DsMax).
 * BsMax do not makes dependency in you project. you can continue your project on other Blender without BsMax.
 * Note: the only future the will not works without BsMax is "Animated Primitives" (Not the static ones).
@@ -16,7 +16,8 @@ Your Reports and Ideas will help me alot and don't forget the sharing. let more 
 If not have Github account use 'NevilArt@Gmail.Com' for bug report.
 
 # Donation
-[Support and Donation](https://nevilart.gumroad.com/l/BsMax).
+
+If you found this product useful and want to motivate and support me you can donate me from [Gumroad](https://nevilart.gumroad.com/l/BsMax).
 
 # Installation
 
@@ -30,9 +31,8 @@ If not have Github account use 'NevilArt@Gmail.Com' for bug report.
 
 # Recent Updates and Changes
 
-* Draw object on master collection in Blender 3.0 problem solved.
-* Convert to operator issue with some modifiers fiexed.
-* Code review and some clean up and arangment.
+* 'Select Camera' Operator issue fixed for scene without Camera.
+* Show types toggle keys added to pose mode (Max mode).
 * [Update History...](https://github.com/NevilArt/BsMax_2_80/blob/master/HISTORY.TXT)
 
 # In Production 
@@ -43,4 +43,4 @@ If not have Github account use 'NevilArt@Gmail.Com' for bug report.
 
 # License
 
-This project is licensed under the GPL (GENERAL PUBLIC LICENSE) license. See LICENSE for more information.
+This project is licensed under the GPL (GENERAL PUBLIC LICENSE) license. See [LICENSE](https://www.gnu.org/licenses/gpl-3.0.en.html) for more information.

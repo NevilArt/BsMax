@@ -43,6 +43,7 @@ class View3D_Gride:
 			else:
 				self.colors.append(self.color_g)
 				self.colors.append(self.color_g)
+		
 		for y in range(-self.count,self.count+1):
 			py = y*self.size
 			self.vertices.append((s,py,0))
@@ -58,7 +59,10 @@ class View3D_Gride:
 		bgl.glEnable(bgl.GL_BLEND)
 		bgl.glLineWidth(1)
 		self.shader.bind()
+		gpu.state.depth_test_set('LESS_EQUAL')
+		gpu.state.depth_mask_set(True)
 		self.batch.draw(self.shader)
+		gpu.state.depth_mask_set(False)
 		# bgl.glDisable(bgl.GL_BLEND)
 	
 	def register(self):
@@ -109,7 +113,7 @@ class View3D_OT_Show_Hide_Gride(bpy.types.Operator):
 			self.blender_gride(ctx, True)
 			self.max_gride(ctx, False)
 
-		self.report({'OPERATOR'},'bpy.ops.view3d.show_hide_gride()')
+		# self.report({'OPERATOR'},'bpy.ops.view3d.show_hide_gride()')
 		return{"FINISHED"}
 
 def register_gride():

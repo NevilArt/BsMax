@@ -117,32 +117,38 @@ class Camera_OT_Select(Operator):
 	def set_cam(self,ctx,cameras):
 		if len(cameras) == 1:
 			ctx.scene.camera = cameras[0]
+			return True
 		elif len(cameras) > 1:
 			bpy.ops.camera.search('INVOKE_DEFAULT')
+			return True
+		return False
 
 	def execute(self,ctx):
+		cam_detected = False
 		if ctx.active_object:
 			if ctx.active_object.type == 'CAMERA':
 				if ctx.active_object.select_get():
 					ctx.scene.camera = ctx.active_object
 				else:
 					cameras = [obj for obj in bpy.data.objects if obj.type == 'CAMERA']
-					self.set_cam(ctx,cameras)
+					cam_detected = self.set_cam(ctx,cameras)
 			else:
 				cameras = [obj for obj in bpy.data.objects if obj.type == 'CAMERA']
-				self.set_cam(ctx,cameras)
+				cam_detected = self.set_cam(ctx,cameras)
 		else:
 			if ctx.selected_objects:
 				cameras = [obj for obj in ctx.selected_objects if obj.type == 'CAMERA']
-				self.set_cam(ctx,cameras)
+				cam_detected = self.set_cam(ctx,cameras)
 			else:
 				cameras = [obj for obj in bpy.data.objects if obj.type == 'CAMERA']
-				self.set_cam(ctx,cameras)
+				cam_detected = self.set_cam(ctx,cameras)
 		
 		if ctx.scene.camera:
 			ctx.area.spaces[0].region_3d.view_perspective = 'CAMERA'
+			cam_detected = True
 
-		bpy.ops.view3d.view_center_camera('INVOKE_DEFAULT')
+		if cam_detected:
+			bpy.ops.view3d.view_center_camera('INVOKE_DEFAULT')
 		return{'FINISHED'}
 
 

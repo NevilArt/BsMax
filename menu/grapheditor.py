@@ -23,13 +23,13 @@ class BsMax_EM_EditAlignGraph_MT(bpy.types.Menu):
 
 	def draw(self, ctx):
 		layout = self.layout
-		layout.operator("graph.snap", text = "Flatten Handles").type='HORIZONTAL'
+		layout.operator("graph.snap", text="Flatten Handles").type='HORIZONTAL'
 		layout.separator()
-		layout.operator("graph.snap", text = "Selection To Cursor Value").type='VALUE'
-		layout.operator("graph.snap", text = "Selection To Cursor Frame").type='CFRA'
-		layout.operator("graph.snap", text = "Selection To Nearest Frame").type='NEAREST_FRAME'
-		layout.operator("graph.snap", text = "Selection To Nearest Second").type='NEAREST_SECOND'
-		layout.operator("graph.snap", text = "Selection To Nearest Marker").type='NEAREST_MARKER'
+		layout.operator("graph.snap", text="Selection To Cursor Value").type='VALUE'
+		layout.operator("graph.snap", text="Selection To Cursor Frame").type='CFRA'
+		layout.operator("graph.snap", text="Selection To Nearest Frame").type='NEAREST_FRAME'
+		layout.operator("graph.snap", text="Selection To Nearest Second").type='NEAREST_SECOND'
+		layout.operator("graph.snap", text="Selection To Nearest Marker").type='NEAREST_MARKER'
 		layout.separator()
 		layout.operator("graph.frame_jump", text = "Cursor To Selection")
 
@@ -41,16 +41,16 @@ class BsMax_MT_ToolMenuGraph(bpy.types.Menu):
 		layout = self.layout
 		layout.operator_context = 'INVOKE_REGION_WIN'
 
-		layout.operator("screen.redo_last", text = "Edit Last Action...", icon = "UI")
+		layout.operator("screen.redo_last", text="Edit Last Action...", icon="UI")
 		layout.separator()
 		layout.menu("BMAX_EM_EditAlignGraph_MT", icon="ALIGN")
-		layout.operator("graph.duplicate_move", text = "Clone And Move", icon="MOD_BOOLEAN")
+		layout.operator("graph.duplicate_move", text="Clone And Move", icon="MOD_BOOLEAN")
 		layout.separator()
-		layout.operator("graph.handle_type", text = "Handle Type", icon="CURVE_BEZCURVE")
-		layout.operator("graph.easing_type", text = "Easing Type", icon="IPO_EASE_IN_OUT")
-		layout.operator("graph.interpolation_type", text = "Interpolation", icon="IPO_CONSTANT")
+		layout.operator("graph.handle_type", text="Handle Type", icon="CURVE_BEZCURVE")
+		layout.operator("graph.easing_type", text="Easing Type", icon="IPO_EASE_IN_OUT")
+		layout.operator("graph.interpolation_type", text="Interpolation", icon="IPO_CONSTANT")
 		layout.separator()
-		op = layout.operator("wm.context_set_enum", text = "Switch To Dopesheet", icon="ACTION")
+		op = layout.operator("wm.context_set_enum", text="Switch To Dopesheet", icon="ACTION")
 		op.data_path = 'area.type'
 		op.value = 'DOPESHEET_EDITOR'
 		layout.separator()

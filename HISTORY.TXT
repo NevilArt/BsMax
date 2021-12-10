@@ -1,3 +1,8 @@
+#0,1,0,20211128
+	Draw object on master collection in Blender 3.0 problem solved.
+	Convert to operator issue with some modifiers fiexed.
+	Code review and some clean up and arangment.
+
 #0,1,0,20211107
 	save_preferences issu fixed for Blender 3.0
 	'Shift+M' call collection Menu (Max mode) (replacment for 'M' that used for Material Editor).

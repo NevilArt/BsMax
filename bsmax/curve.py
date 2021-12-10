@@ -703,12 +703,16 @@ class Spline:
 		lengths, total_length = [], 0
 		if time <= 0:
 			return self.bezier_points[0].co.copy()
+		
 		if time >= 1:
 			return self.bezier_points[-1].co.copy()
+		
 		else:
 			segs = [point for point in self.bezier_points]
+			
 			if self.use_cyclic_u:
 				segs.append(self.bezier_points[0])
+			
 			# collect the segment length
 			for i in range(len(segs) - 1):
 				a = segs[i].co
@@ -719,17 +723,20 @@ class Spline:
 				lengths.append(l)
 				total_length += l
 			length = total_length * time
+			
 			for i in range(len(lengths)):
 				if length >= lengths[i]:
 					length -= lengths[i]
 				else:
 					index = i
 					break
+			
 			a = segs[index].co
 			b = segs[index].handle_right
 			c = segs[index+1].handle_left
 			d = segs[index+1].co
 			t = length / lengths[index]	
+		
 		return point_on_vector(a, b, c, d, t)
 
 	def set_free(self, full=False):

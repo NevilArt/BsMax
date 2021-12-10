@@ -17,8 +17,8 @@ import bpy
 from bpy.types import Operator
 from bpy.props import IntProperty, EnumProperty
 from mathutils import Vector
-from bsmax.state import has_constraint, get_obj_class
-from bsmax.actions import link_to, set_origen, set_as_active_object
+from bsmax.state import get_obj_class
+from bsmax.actions import set_origen, set_as_active_object
 
 
 

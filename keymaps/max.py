@@ -606,6 +606,7 @@ def pos(km, preferences):
 	space = km.space('Pose','EMPTY','WINDOW')
 	add_view3d_click_selection(km, space)
 	add_subobject(km, space)
+	add_show_types(km, space)
 	add_time(km, space)
 	add_float_menu(km, space, preferences)
 	add_transform_tool(km, space, preferences, smax=False)

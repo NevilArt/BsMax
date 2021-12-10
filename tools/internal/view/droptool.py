@@ -16,9 +16,12 @@
 import bpy
 from bpy.types import Operator
 
+
+
 class View_OT_Blender_Default_Menue_Call(Operator):
 	bl_idname = "bsmax.blenderdefaultmenucall"
 	bl_label = "Call Blender Menu"
+	bl_options = {'REGISTER', 'INTERNAL'}
 	
 	def execute(self, ctx):
 		mode = ctx.mode
@@ -45,9 +48,12 @@ class View_OT_Blender_Default_Menue_Call(Operator):
 		bpy.ops.wm.call_menu(name = mt)
 		return{"FINISHED"}
 
+
+
 class View3D_OT_Drop_Tool(Operator):
 	bl_idname = "view3d.drop_tool"
 	bl_label = "Drop Tool"
+	bl_options = {'REGISTER', 'INTERNAL'}
 
 	preferences = None
 
@@ -81,6 +87,8 @@ class View3D_OT_Drop_Tool(Operator):
 		if not self.drop_tool(ctx):
 			self.call_menu(ctx)
 		return{"FINISHED"}
+
+
 
 classes = [View_OT_Blender_Default_Menue_Call ,View3D_OT_Drop_Tool]
 
