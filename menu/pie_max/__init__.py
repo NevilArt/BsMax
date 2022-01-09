@@ -14,9 +14,12 @@
 ############################################################################
 
 from .max_pie_menu import register_pie_max, unregister_pie_max
+from .sub_menu import register_sub_menu, unregister_sub_menu
 
 def register_quad(preferences):
+	register_sub_menu()
 	register_pie_max(preferences)
 
 def unregister_quad():
 	unregister_pie_max()
+	unregister_sub_menu()

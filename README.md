@@ -31,14 +31,16 @@ If you found this product useful and want to motivate and support me you can don
 
 # Recent Updates and Changes
 
-* 'Select Camera' Operator issue fixed for scene without Camera.
-* Show types toggle keys added to pose mode (Max mode).
+* 'Align object' tool completely renewed based on world martix (better and faster).
+* 'Align object' can align perfectly on pose bone (Rotation and Scale).
+* 'Align object' do not affect selection anymore.
+* 'Fix override driver' tool none mesh type error solved.
+* 'Create object' set 'Object type visablity' on while create.
 * [Update History...](https://github.com/NevilArt/BsMax_2_80/blob/master/HISTORY.TXT)
 
 # In Production 
 
 * PieMax: Combanition of 3DsMax Quad menu and Blender Pie Menu.
-* Walker: Automation of a manually created walk cycle along a path on a surface.
 * Primitive draw on surface and view (Half Done).
 
 # License

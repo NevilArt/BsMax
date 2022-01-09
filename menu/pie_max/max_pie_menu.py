@@ -15,24 +15,14 @@
 
 import bpy
 from bpy.types import Menu
+from keymaps.max import text
 
-class VIEW3D_MT_PIE_Create_Light(Menu):
-	bl_idname = "BSMAX_MT_create_light_pi"
-	bl_label = "Light/Prob"
-	def draw(self, ctx):
-		layout = self.layout
-		layout.operator("create.pointlight", text="Point", icon="LIGHT_POINT")
-		layout.operator("create.sunlight", text="Sun", icon="LIGHT_SUN")
-		layout.operator("create.spotlight", text="Spot Light Free/Target", icon="LIGHT_SPOT")
-		layout.operator("create.arealight",text="Free Area",icon="LIGHT_AREA").free = True
-		layout.operator("create.arealight",text="Target Area",icon="LIGHT_AREA")
-		layout.separator()
-		layout.operator("create.light_probe_cubemap",
-			text="Reflection Cubemap", icon="LIGHTPROBE_CUBEMAP")
-		layout.operator("create.light_probe_planer",
-			text="Reflection Plane", icon="LIGHTPROBE_PLANAR")
-		layout.operator("create.light_probe_grid",
-			text="Irradiance Volume", icon="LIGHTPROBE_GRID")
+# Piemenu Order by Index
+#			4
+#		5		6
+#	1				2
+#		7		8
+#			3
 
 
 class VIEW3D_MT_PIE_Create(Menu):
@@ -64,10 +54,40 @@ class VIEW3D_MT_PIE_Create(Menu):
 		# pie.menu("BSMAX_MT_forcefield_cecreate_menu", icon='OUTLINER_OB_FORCE_FIELD')
 
 
+#			4
+#		5		6
+#	1				2
+#		7		8
+#			3
+
+class VIEW3D_MT_PIE_Default(Menu):
+	bl_idname = "BSMAX_MT_default_pi"
+	bl_label = "Default"
+
+	def draw(self, ctx):
+		pie = self.layout.menu_pie()
+
+		pie.separator()
+		pie.separator()
+		pie.separator()
+		pie.menu("VIEW3D_MT_object_context_menu", text="Blender")
+		pie.menu("BSMAX_MT_transform_pi", text="Tool 1")
+		pie.menu("BSMAX_MT_transform_pi", text="Display")
+		pie.menu("BSMAX_MT_transform_pi", text="Tool 2")
+		pie.menu("BSMAX_MT_transform_pi", text="TransformA")
+		
+		# pie.menu("BSMAX_MT_curve_create_menu", icon='OUTLINER_OB_CURVE')
+		# pie.menu("BSMAX_MT_create_menu", text="Armature/Lattice")
+		# pie.prop(ctx.scene.primitive_setting, 'draw_mode', text='', icon='VIEW3D')
+		# pie.menu("BSMAX_MT_create_menu", text="Others")
+		# pie.menu("BSMAX_MT_mesh_create_menu", icon='OUTLINER_OB_MESH')
+		# pie.menu("BSMAX_MT_forcefield_cecreate_menu", icon='OUTLINER_OB_FORCE_FIELD')
+		# pie.menu("BSMAX_MT_empty_create_menu", text="Empty/Image")
+
+
 classes = [
-	VIEW3D_MT_PIE_Create,
-	VIEW3D_MT_PIE_Create_Light
-]
+	VIEW3D_MT_PIE_Default,
+	VIEW3D_MT_PIE_Create]
 
 
 def register_pie_max():
@@ -83,4 +103,4 @@ def unregister_pie_max():
 if __name__ == "__main__":
 	register_pie_max()
 
-	bpy.ops.wm.call_menu_pie(name="BSMAX_MT_create_pi")
+	# bpy.ops.wm.call_menu_pie(name="BSMAX_MT_create_pi")

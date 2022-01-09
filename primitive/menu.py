@@ -262,7 +262,7 @@ class BsMax_MT_ForceFieldCreate(Menu):
 		layout.operator("create.effector", text="Drag",
 			icon="FORCE_DRAG").effector_type = 'DRAG'
 		layout.operator("create.effector", text="Smoke",
-			icon="FORCE_SMOKEFLOW").effector_type = 'SMOKE'
+			icon="FORCE_FLUIDFLOW").effector_type = 'SMOKE'
 
 # View 3D Create Menu
 class BsMax_MT_Create(Menu):

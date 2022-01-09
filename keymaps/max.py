@@ -143,6 +143,7 @@ def add_float_menu(km, space, preferences):
 		km.new(space,'bsmax.view3dquadmenue','RIGHTMOUSE','PRESS',[('menu','custom'),('space','View3D')],alt=True,ctrl=True,shift=True)
 	
 	if preferences.floatmenus == 'PieMax':
+		km.new(space,'wm.call_menu_pie','RIGHTMOUSE','PRESS',[('name','BSMAX_MT_default_pi')])
 		km.new(space,'wm.call_menu_pie','RIGHTMOUSE','PRESS',[('name','BSMAX_MT_create_pi')],ctrl=True)
 
 

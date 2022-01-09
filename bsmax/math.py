@@ -13,8 +13,9 @@
 #	along with this program.  If not, see <https://www.gnu.org/licenses/>.
 ############################################################################
 
-from math import sqrt, acos, atan2
-from mathutils import Vector
+import numpy
+from math import sin, cos, sqrt, acos, atan2
+from mathutils import Vector, Matrix
 
 
 
@@ -102,24 +103,6 @@ def point_on_curve(curve, index, time):
 
 
 
-# def get_spline_left_index(spline, index):
-# 	left = index - 1
-# 	if index == 0:
-# 		left = len(spline.bezier_points) - 1 if spline.use_cyclic_u else index
-# 	return left
-
-# def get_spline_rigth_index(spline, index):
-# 	right = index + 1
-# 	if index >= len(spline.bezier_points) - 1:
-# 		right = 0 if spline.use_cyclic_u else index
-# 	return right
-
-# def get_line_tilt(p1, p2):
-# 	a,b = p1.y-p2.y, p2.x-p1.x
-# 	return atan2(b,a)
-
-
-
 def split_segment(p1, p2, p3, p4, t):
 	# start.co start.out end.in end.co
 	p12 = (p2 - p1) * t + p1
@@ -136,6 +119,11 @@ def split_segment(p1, p2, p3, p4, t):
 def get_distance(a, b):
 	x,y,z = a.x - b.x, a.y - b.y, a.z - b.z
 	return sqrt(x**2 + y**2 + z**2)
+
+
+def value_by_percent(orig, targ, percent):
+	""" Return a number between argoments by percent """
+	return (targ - orig) * percent + orig
 
 
 
@@ -289,3 +277,37 @@ def get_index_str(count, index):
 		for i in range(length, count):
 			string += "0"
 	return (string + str(index))
+
+
+def matrix_from_elements(location, euler_rotation, scale):
+	""" Return Transform Matrix from argoments """
+	roll, pitch, yaw = euler_rotation
+
+	Rz_yaw = numpy.array([
+		[cos(yaw), -sin(yaw), 0],
+		[sin(yaw),  cos(yaw), 0],
+		[       0,         0, 1]])
+	
+	Ry_pitch = numpy.array([
+		[ cos(pitch), 0, sin(pitch)],
+		[          0, 1,          0],
+		[-sin(pitch), 0, cos(pitch)]])
+
+	Rx_roll = numpy.array([
+		[1,         0,          0],
+		[0, cos(roll), -sin(roll)],
+		[0, sin(roll),  cos(roll)]])
+
+	m = numpy.dot(Rz_yaw, numpy.dot(Ry_pitch, Rx_roll))
+
+	# Convert Arry to Matrix and apply location and scale
+	lx, ly, lz = location
+	sx, sy, sz = scale
+
+	matrix = Matrix((
+		(m[0][0]*sx, m[0][1]*sy, m[0][2]*sz, lx),
+		(m[1][0]*sx, m[1][1]*sy, m[1][2]*sz, ly),
+		(m[2][0]*sx, m[2][1]*sy, m[2][2]*sz, lz),
+		(      0,       0,       0,   1)))
+
+	return matrix

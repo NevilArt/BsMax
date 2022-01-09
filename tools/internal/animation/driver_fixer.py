@@ -29,8 +29,20 @@ class Driver_Reconnect:
 				for target in var.targets:
 					if target.id:
 						name = target.id.name
-						if name in bpy.data.objects:
-							target.id = bpy.data.objects[name]
+						# print(">>>>", target.id.type)
+						if target.id.type == 'MESH':
+							if name in bpy.data.objects:
+								target.id = bpy.data.objects[name]
+						
+						elif target.id.type == 'PERSP':
+							if name in bpy.data.cameras:
+								target.id = bpy.data.cameras[name]
+						
+						elif target.id.type in {'POINT', 'SUN', 'SPOT'}:
+							if name in bpy.data.lights:
+								target.id = bpy.data.lights[name]
+						#TODO add all other types
+						
 				var.targets.update()
 
 	def fix_shapekey(self, obj):

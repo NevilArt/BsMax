@@ -1,3 +1,7 @@
+#0,1,0,20211210
+	'Select Camera' Operator issue fixed for scene without Camera.
+	Show types toggle keys added to pose mode (Max mode).
+
 #0,1,0,20211128
 	Draw object on master collection in Blender 3.0 problem solved.
 	Convert to operator issue with some modifiers fiexed.

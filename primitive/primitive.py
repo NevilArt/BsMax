@@ -135,6 +135,39 @@ class CreatePrimitive(Operator):
 			if event.value == 'RELEASE':
 				self.alt = False
 	
+	def fix_type_visablity(self, ctx):
+		if self.subclass:
+			if self.subclass.owner:
+				owner_type = self.subclass.owner.type
+				if owner_type == 'MESH':
+					ctx.space_data.show_object_viewport_mesh = True
+				elif owner_type == 'CURVE':
+					ctx.space_data.show_object_viewport_curve = True
+				elif owner_type == 'SURFACE':
+					ctx.space_data.show_object_viewport_surf = True
+				elif owner_type == 'META':
+					ctx.space_data.show_object_viewport_meta = True
+				elif owner_type == 'FONT':
+					ctx.space_data.show_object_viewport_font = True
+				elif owner_type == 'VOLUME':
+					ctx.space_data.show_object_viewport_volume = True
+				elif owner_type == 'GPENCIL':
+					ctx.space_data.show_object_viewport_grease_pencil = True
+				elif owner_type == 'ARMATURE':
+					ctx.space_data.show_object_viewport_armature = True
+				elif owner_type == 'LATTICE':
+					ctx.space_data.show_object_viewport_lattice = True
+				elif owner_type == 'EMPTY':
+					ctx.space_data.show_object_viewport_empty = True
+				elif owner_type == 'LIGHT':
+					ctx.space_data.show_object_viewport_light = True
+				elif owner_type == 'LIGHT_PROBE':
+					ctx.space_data.show_object_viewport_light_probe = True
+				elif owner_type == 'CAMERA':
+					ctx.space_data.show_object_viewport_camera = True
+				elif owner_type == 'SPEAKER':
+					ctx.space_data.show_object_viewport_speaker = True
+	
 	def first_click(self, ctx, x, y):
 		self.step = 1
 		self.cpoint_o = self.cpoint_a = self.cpoint_b
@@ -201,7 +234,8 @@ class CreatePrimitive(Operator):
 				""" Detect First click """
 				if self.step == 0:
 					self.first_click(ctx, x, y)
-					
+					self.fix_type_visablity(ctx)
+
 				self.click_count(event, x, y)
 
 			if event.type in self.requestkey:

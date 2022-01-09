@@ -36,15 +36,15 @@ class View_OT_Blender_Default_Menue_Call(Operator):
 		elif mode == 'EDIT_ARMATURE':
 			mt = "VIEW3D_MT_armature_context_menu"
 		elif mode == 'EDIT_LATTICE':
-		   mt = "VIEW3D_MT_edit_lattice_context_menu"
+			mt = "VIEW3D_MT_edit_lattice_context_menu"
 		elif mode == 'EDIT_TEXT':
 			mt = "VIEW3D_MT_edit_text_context_menu"
 		elif mode == 'POSE':
 			mt = "VIEW3D_MT_pose_context_menu"
 		elif mode == 'GPENCIL_EDIT':
-		   mt = "VIEW3D_MT_gpencil_edit_context_menu"
+			mt = "VIEW3D_MT_gpencil_edit_context_menu"
 		elif mode == 'PARTICLE':
-		   mt = "VIEW3D_MT_particle_context_menu"
+			mt = "VIEW3D_MT_particle_context_menu"
 		bpy.ops.wm.call_menu(name = mt)
 		return{"FINISHED"}
 

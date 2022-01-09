@@ -16,7 +16,7 @@
 import bpy
 from bpy.types import Operator
 from bpy.props import BoolProperty
-from bsmax.actions import set_as_active_object,link_to_scene
+from bsmax.actions import set_as_active_object
 
 class UV_OT_Turn(Operator):
 	bl_idname = "uv.turn"

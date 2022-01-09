@@ -29,31 +29,7 @@ class Empty:
 	def abort(self):
 		delete_objects([self.owner])
 
-# class Create_OT_Empty(CreatePrimitive):
-# 	bl_idname="create.empty"
-# 	bl_label="Empty"
-# 	subclass = Empty()
 
-# 	empty_type: EnumProperty(name='Type',default='PLAIN_AXES',
-# 		items =[('PLAIN_AXES','Point axis',''),('ARROWS','Arrows',''),
-# 				('SINGLE_ARROW','Single Arrow',''),('CIRCLE','Circle',''),
-# 				('CUBE','Cube',''),('SPHERE','Sphere',''),
-# 				('CONE','Cone',''),('IMAGE','Image','')])
-# 	depth: EnumProperty(name='Depth',default='DEFAULT',
-# 		items =[('DEFAULT','Default',''),('FRONT','Front',''),('BACK','Back','')])
-
-# 	def create(self, ctx, clickpoint):
-# 		bpy.ops.object.empty_add(type=self.empty_type,location=clickpoint.view)
-# 		self.subclass.owner = ctx.active_object
-# 		self.subclass.owner.rotation_euler = clickpoint.orient
-# 		if self.empty_type == "IMAGE":
-# 			self.subclass.owner.empty_image_depth = self.depth
-
-# 	def update(self, ctx, clickcount, dimantion):
-# 		if clickcount == 1:
-# 			self.subclass.owner.empty_display_size = dimantion.radius
-# 	def finish(self):
-# 		pass
 
 class Create_OT_Empty(Draw_Primitive):
 	bl_idname="create.empty"
