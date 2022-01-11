@@ -30,16 +30,16 @@ def register_animation():
 	register_frame_update()
 	register_parent()
 	register_pose()
-	register_menu()
 	register_selection_set()
 	register_time()
+	register_menu()
 
 def unregister_animation():
+	unregister_menu()
 	unregister_animation_key()
 	unregister_character_lister()
 	unregister_driver_fixer()
 	unregister_frame_update()
-	unregister_menu()
 	unregister_pose()
 	unregister_parent()
 	unregister_selection_set()

@@ -69,6 +69,8 @@ def unregister_menu():
 	bpy.types.DOPESHEET_MT_editor_menus.remove(key_menu)
 	bpy.types.GRAPH_MT_editor_menus.remove(key_menu)
 	bpy.types.NLA_MT_view.remove(key_menu)
+	
+	bpy.types.TIME_MT_editor_menus.remove(key_filter_menu)
 
 if __name__ == '__main__':
 	# register_menu()

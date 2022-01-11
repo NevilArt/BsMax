@@ -35,24 +35,14 @@ class BsMax_MT_View3D_tools(bpy.types.Menu):
 
 
 def tools_menu(self,ctx):
-	self.layout.menu('BSMAX_MT_view3dtools')
 	if ctx.mode == 'OBJECT':
 		self.layout.menu('BSMAX_MT_view3dtools')
 	elif ctx.mode == 'POSE':
-		# self.layout.menu('BSMAX_MT_animationtools')
-		self.layout.menu(BsMax_MT_Animation_Tools.bl_idname)
-	self.layout.menu(BsMax_MT_Animation_Tools.bl_idname)
-		
-
-	
+		self.layout.menu('BSMAX_MT_animationtools')
 
 def register_menu():
 	bpy.utils.register_class(BsMax_MT_View3D_tools)
 	bpy.types.VIEW3D_MT_editor_menus.append(tools_menu)
-	bpy.types.VIEW3D_MT_editor_menus.append(tools_menu)
-	bpy.types.VIEW3D_MT_pose.append(tools_menu)
-
-
 
 def unregister_menu():
 	bpy.utils.unregister_class(BsMax_MT_View3D_tools)

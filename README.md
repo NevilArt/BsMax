@@ -31,11 +31,9 @@ If you found this product useful and want to motivate and support me you can don
 
 # Recent Updates and Changes
 
-* 'Align object' tool completely renewed based on world martix (better and faster).
-* 'Align object' can align perfectly on pose bone (Rotation and Scale).
-* 'Align object' do not affect selection anymore.
-* 'Fix override driver' tool none mesh type error solved.
-* 'Create object' set 'Object type visablity' on while create.
+* Tool menu issue from last update fixed.
+* The error on Disable/Enalble of addon fixed.
+* 'anim.set_key_filters' unregister issue fixed.
 * [Update History...](https://github.com/NevilArt/BsMax_2_80/blob/master/HISTORY.TXT)
 
 # In Production 

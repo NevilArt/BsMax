@@ -38,5 +38,5 @@ def unregister_curve():
 	unregister_boolean()
 	unregister_divid()
 	unregister_menu()
-	unregister_selection
+	unregister_selection()
 	unregister_weld()

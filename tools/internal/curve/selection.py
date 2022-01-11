@@ -181,7 +181,8 @@ def selection_menu(self, ctx):
 
 
 
-classes = [Curve_OT_Select_By_Length, Curve_OT_Select_By_Segment_Count]
+classes = [Curve_OT_Select_By_Length,
+	Curve_OT_Select_By_Segment_Count]
 
 def register_selection():
 	for c in classes:

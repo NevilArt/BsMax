@@ -1,3 +1,10 @@
+#0,1,0,20220109
+	'Align object' tool completely renewed based on world martix (better and faster).
+	'Align object' can align perfectly on pose bone (Rotation and Scale).
+	'Align object' do not affect selection anymore.
+	'Fix override driver' tool none mesh type error solved.
+	'Create object' set 'Object type visablity' on while create.
+
 #0,1,0,20211210
 	'Select Camera' Operator issue fixed for scene without Camera.
 	Show types toggle keys added to pose mode (Max mode).
