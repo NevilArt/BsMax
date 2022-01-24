@@ -14,11 +14,12 @@
 ############################################################################
 
 import bpy
+from mathutils import Vector
 from math import pi, sin, cos, radians
-from bsmax.math import get_distance
-from primitive.primitive import CreatePrimitive, PrimitiveGeometryClass
-from primitive.gride import Draw_Primitive
+from primitive.primitive import PrimitiveGeometryClass, Draw_Primitive
 from bsmax.actions import delete_objects
+
+
 
 def get_cylinder_mesh(radius1, radius2, height, hsegs, csegs, ssegs, sliceon, sfrom, sto):
 	verts,edges,faces = [],[],[]
@@ -213,6 +214,8 @@ def get_cylinder_mesh(radius1, radius2, height, hsegs, csegs, ssegs, sliceon, sf
 		faces.append(cap)
 	return verts, edges, faces
 
+
+
 class Cylinder(PrimitiveGeometryClass):
 	def __init__(self):
 		self.classname = "Cylinder"
@@ -240,6 +243,8 @@ class Cylinder(PrimitiveGeometryClass):
 
 	def abort(self):
 		delete_objects([self.owner])
+
+
 
 class Cone(PrimitiveGeometryClass):
 	def __init__(self):
@@ -284,11 +289,18 @@ class Create_OT_Cylinder(Draw_Primitive):
 
 	def update(self, ctx, clickcount, dimantion):
 		if clickcount == 1:
-			self.params.radius1 = dimantion.radius
+			if self.ctrl:
+				self.params.radius1 = dimantion.radius
+				self.params.height = dimantion.radius*2
+			else:
+				self.params.radius1 = dimantion.radius
+
 		elif clickcount == 2:
+			if self.use_single_draw:
+				self.jump_to_end()
+				return
+			
 			self.params.height = dimantion.height
-		if clickcount > 0:
-			self.subclass.update()
 
 	def finish(self):
 		pass
@@ -300,6 +312,7 @@ class Create_OT_Cone(Draw_Primitive):
 	bl_label = "Cone"
 	subclass = Cone()
 	use_gride = True
+	gride_updated = False
 
 	def create(self, ctx):
 		self.subclass.create(ctx)
@@ -309,19 +322,34 @@ class Create_OT_Cone(Draw_Primitive):
 
 	def update(self, ctx, clickcount, dimantion):
 		if clickcount == 1:
-			self.params.radius1 = dimantion.radius
-			self.params.radius2 = dimantion.radius
+			if self.ctrl:
+				self.params.radius1 = dimantion.radius
+				self.params.radius2 = dimantion.radius/2
+				self.params.height = dimantion.radius
+			else:
+				self.params.radius1 = dimantion.radius
+				self.params.radius2 = dimantion.radius
+		
 		elif clickcount == 2:
+			if self.use_single_draw:
+				self.jump_to_end()
+				return
+			
 			self.params.height = dimantion.height
-			#TODO need to re calculate gride
-			self.cent = self.point_current.location.copy()
+			
 		elif clickcount == 3:
-			self.params.radius2 = get_distance(self.cent, self.point_current.location)
-		if clickcount > 0:
-			self.subclass.update()
+			if not self.gride_updated:
+				center = self.gride.gride_matrix @ Vector((0,0,self.params.height))
+				self.gride.location = center
+				self.gride.update()
+				self.gride_updated = True
+
+			self.params.radius2 = dimantion.distance
 
 	def finish(self):
-		pass
+		self.gride_updated = False
+
+
 
 classes = [Create_OT_Cylinder, Create_OT_Cone]
 

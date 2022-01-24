@@ -14,7 +14,7 @@
 ############################################################################
 
 import bpy
-from primitive.primitive import CreatePrimitive, PrimitiveGeometryClass
+from primitive.primitive import PrimitiveGeometryClass, Draw_Primitive
 from bsmax.actions import delete_objects
 
 def get_box_mesh(width, length, height, wsegs, lsegs, hsegs):
@@ -247,28 +247,36 @@ class Box(PrimitiveGeometryClass):
 	def abort(self):
 		delete_objects([self.owner])
 
-class Create_OT_Box(CreatePrimitive):
+
+
+class Create_OT_Box(Draw_Primitive):
 	bl_idname = "create.box"
 	bl_label = "Box"
 	subclass = Box()
+	use_gride = True
 
-	def create(self, ctx, clickpoint):
+	def create(self, ctx):
 		self.subclass.create(ctx)
-		owner = self.subclass.owner
-		self.params = owner.data.primitivedata
-		owner.location = clickpoint.view
-		owner.rotation_euler = clickpoint.orient
+		self.params = self.subclass.owner.data.primitivedata
+		self.subclass.owner.location = self.gride.location
+		self.subclass.owner.rotation_euler = self.gride.rotation
 
 	def update(self, ctx, clickcount, dimantion):
 		if clickcount == 1:
-			self.params.width = dimantion.width
-			self.params.length = dimantion.length
-			self.subclass.owner.location = dimantion.center
+			if self.ctrl:
+				self.params.width = dimantion.radius
+				self.params.length = dimantion.radius
+				self.params.height = dimantion.radius
+			else:
+				self.params.width = dimantion.width
+				self.params.length = dimantion.length
+				self.subclass.owner.location = dimantion.center
+		
 		elif clickcount == 2:
+			if self.use_single_draw:
+				self.jump_to_end()
+				return
 			self.params.height = dimantion.height
-
-		if clickcount > 0:
-			self.subclass.update()
 
 	def finish(self):
 		pass
@@ -278,3 +286,6 @@ def register_box():
 
 def unregister_box():
 	bpy.utils.unregister_class(Create_OT_Box)
+
+if __name__ == '__main__':
+	register_box()

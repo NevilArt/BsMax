@@ -50,7 +50,6 @@ def get_class(name):
 	elif name == "Capsule": return Capsule()
 	elif name == "Cone": return Cone()
 	elif name == "Cylinder": return Cylinder()
-	# elif name == "GeoSphere": return GeoSphere()
 	elif name == "Icosphere": return Icosphere()
 	elif name == "Mesher": return Mesher()
 	elif name == "Monkey": return Monkey()
@@ -75,7 +74,7 @@ def get_class(name):
 	elif name == "Compass": return Compass()
 	else: return None
 
-def primitive_update(self,ctx):
+def primitive_update(self, ctx):
 	if ctx.object:
 		subclass = get_class(ctx.object.data.primitivedata.classname)
 		if subclass:

@@ -17,7 +17,8 @@ import bpy, math
 from bpy.types import Operator
 from bpy.props import *
 from primitive.primitive import *
-from bsmax.actions import delete_objects
+
+
 
 def get_snake_shape(scale):
 	S1, S2, S3, s = [], [], [], scale
@@ -124,6 +125,8 @@ class Create_OT_Logo(Operator):
 	def invoke(self, ctx, event):
 		ctx.window_manager.modal_handler_add(self)
 		return {'RUNNING_MODAL'}
+
+
 
 def register_logo():
 	bpy.utils.register_class(Create_OT_Logo)

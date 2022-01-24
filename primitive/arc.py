@@ -13,12 +13,14 @@
 #	along with this program.  If not,see <https://www.gnu.org/licenses/>.
 ############################################################################
 
-import bpy, math
+import bpy
 from mathutils import Vector
-from primitive.primitive import CreatePrimitive, PrimitiveCurveClass
+from primitive.primitive import PrimitiveCurveClass, Draw_Primitive
 from bsmax.mouse import switch_axis_by_orient
 from math import hypot, atan2, sqrt, sin, cos, pi, radians
 from bsmax.actions import delete_objects
+
+
 
 def circle_from_three_points(p1, p2, p3):
 	x1, y1 = p1.x, p1.y
@@ -32,17 +34,23 @@ def circle_from_three_points(p1, p2, p3):
 	y = -c / (2 * a)
 	return Vector((x, y, 0)), hypot(x-x1, y-y1) # center, radius
 
+
+
 def angle_between(center, point):
 	x = point.x - center.x
 	y = point.y - center.y
 	angel = atan2(y, x)
 	return angel
 
+
+
 def arc_from_three_points(p1, p2, p3):
 	center, radius = circle_from_three_points(p1, p2, p3)
 	start = angle_between(center, p1)
 	end = angle_between(center, p2)
 	return center, radius, start, end
+
+
 
 def get_arc_shape(radius, start, end, pie):
 	Shape = []
@@ -74,11 +82,15 @@ def get_arc_shape(radius, start, end, pie):
 		Shape.append([pcn,pln,lknottype,prn,rknottype])
 	return [Shape]
 
+
+
 def get_line_shape(p1, p2):
 	Shape = []
 	Shape.append([p1,p1,'FREE',p1,'FREE'])
 	Shape.append([p2,p2,'FREE',p2,'FREE'])
 	return [Shape]
+
+
 
 class Arc(PrimitiveCurveClass):
 	def __init__(self):
@@ -126,7 +138,9 @@ class Arc(PrimitiveCurveClass):
 	def abort(self):
 		delete_objects([self.owner])
 
-class Create_OT_Arc(CreatePrimitive):
+
+
+class Create_OT_Arc(Draw_Primitive):
 	bl_idname = "create.arc"
 	bl_label = "Arc"
 	subclass = Arc()
@@ -134,30 +148,39 @@ class Create_OT_Arc(CreatePrimitive):
 	orient = None
 	gotp1 = False
 
-	def create(self, ctx, clickpoint):
+	def create(self, ctx):
 		self.subclass.create(ctx)
 		self.params = self.subclass.owner.data.primitivedata
-		self.view = clickpoint.view
-		self.orient = clickpoint.orient
+		self.subclass.owner.location = self.gride.location
+		self.subclass.owner.rotation_euler = self.gride.rotation
+
+		self.view = self.gride.location
+		self.orient = self.gride.rotation
+
 	def update(self, ctx, clickcount, dimantion):
 		if clickcount == 1:
 			if not self.gotp1:
-				self.subclass.p1 = dimantion.local
-				self.orient = dimantion.orient
+				self.subclass.p1 = dimantion.end
+				self.orient = self.gride.rotation
 				self.gotp1 = True
-			self.subclass.p2 = dimantion.local
+			self.subclass.p2 = dimantion.end
 		elif clickcount == 2:
-			self.subclass.p3 = dimantion.local
-			self.subclass.owner.location = dimantion.view
-			self.subclass.owner.rotation_euler = dimantion.orient
+			self.subclass.p3 = dimantion.end
+			self.subclass.owner.location = dimantion.end
+			self.subclass.owner.rotation_euler = self.gride.rotation
 		if clickcount > 0:
-			self.subclass.orient = dimantion.view_name
 			self.subclass.draw(ctx)
+
 	def finish(self):
 		self.gotp1 = False
+
+
 
 def register_arc():
 	bpy.utils.register_class(Create_OT_Arc)
 
 def unregister_arc():
 	bpy.utils.unregister_class(Create_OT_Arc)
+
+if __name__ == "__main__":
+	register_arc()

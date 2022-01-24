@@ -14,17 +14,26 @@
 ############################################################################
 
 import bpy
-from primitive.gride import Draw_Primitive
+from primitive.primitive import Draw_Primitive
 from bsmax.actions import delete_objects
+
+
 
 class Speaker:
 	def __init__(self):
 		self.finishon = 2
 		self.owner = None
+
 	def reset(self):
 		self.__init__()
+	
+	def update(self):
+		pass
+
 	def abort(self):
 		delete_objects([self.owner])
+
+
 
 class Create_OT_Speaker(Draw_Primitive):
 	bl_idname="create.speaker"
@@ -36,11 +45,15 @@ class Create_OT_Speaker(Draw_Primitive):
 		bpy.ops.object.speaker_add(location=self.gride.location)
 		self.subclass.owner = ctx.active_object
 		self.subclass.owner.rotation_euler = self.gride.rotation
+
 	def update(self, ctx, clickcount, dimantion):
 		if self.drag:
-			self.subclass.owner.location = dimantion.location
+			self.subclass.owner.location = dimantion.end
+
 	def finish(self):
 		pass
+
+
 
 def register_speaker():
 	bpy.utils.register_class(Create_OT_Speaker)

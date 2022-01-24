@@ -13,14 +13,19 @@
 #	along with this program.  If not,see <https://www.gnu.org/licenses/>.
 ############################################################################
 
+import re
 import bpy
 from bpy.types import Operator
 from mathutils import Vector
 from bsmax.math import get_axis_constraint
-from primitive.primitive import PrimitiveCurveClass
-from primitive.gride import Draw_Primitive
+from primitive.primitive import PrimitiveCurveClass, Draw_Primitive
 from bsmax.actions import delete_objects
 from bpy_extras.view3d_utils import location_3d_to_region_2d
+
+# global variable
+close_line = False
+
+
 
 class knot:
 	def __init__(self, pos, invec, outvec, mode):
@@ -29,11 +34,15 @@ class knot:
 		self.outvec = outvec
 		self.mode = mode
 
+
+
 def get_line_shape(knots):
 	shape = []
 	for k in knots:
 		shape.append((k.pos, k.invec, k.mode, k.outvec, k.mode))
 	return [shape]
+
+
 
 class Line(PrimitiveCurveClass):
 	def __init__(self):
@@ -45,34 +54,46 @@ class Line(PrimitiveCurveClass):
 		self.knots = []
 		self.lastknot = []
 		self.ctx = None
+
 	def reset(self):
 		self.__init__()
+
 	def create(self, ctx):
+		global close_line
+		close_line = False
 		self.ctx = ctx
 		shapes = get_line_shape([])
 		self.create_curve(ctx,shapes,self.classname)
-	def update(self, ctx):
+
+	def update(self):
 		shapes = get_line_shape(self.knots + self.lastknot)
 		self.update_curve(shapes)
+
 	def abort(self):
 		if len(self.knots) < 2:
 			delete_objects([self.owner])
 		else:
 			self.lastknot = []
 			self.knots.pop()
-			self.update(self.ctx) # abort does not have ctx argument
+			self.update()
 			bpy.ops.object.origin_set(type='ORIGIN_CENTER_OF_VOLUME', center='MEDIAN')
 
-class LineData:
-	close = False
+
 
 class Curve_OT_CloseLine(Operator):
 	bl_idname = "curve.closeline"
 	bl_label = "Close Line?"
 	bl_options = {'REGISTER', 'INTERNAL'}
+	
 	def execute(self, ctx):
-		LineData.close = True
+		global close_line
+		close_line = True
 		return {'FINISHED'}
+	
+	def cancel(self,ctx):
+		global close_line
+		close_line = False
+	
 	def invoke(self, ctx, event):
 		return ctx.window_manager.invoke_confirm(self, event)
 
@@ -94,18 +115,20 @@ class Create_OT_Line(Draw_Primitive):
 	lastclick = 1
 
 	def create(self, ctx):
+		global close_line
 		self.used_keys += ['LEFT_SHIFT', 'RIGHT_SHIFT', 'BACK_SPACE']
 		self.request_key = ['BACK_SPACE']
+		self.subclass.close = close_line = False
 		self.subclass.create(ctx)
 		self.params = self.subclass.owner.data.primitivedata
 		location = self.gride.location
 		newknot = knot(location, location, location, "VECTOR")
 		self.subclass.knots.append(newknot)
-		LineData.close = False
 
 	def update(self, ctx, clickcount, dimantion):
+		global close_line
 		dim = self.point_current.location.copy()
-		# dim = dimantion
+		
 		if self.shift:
 			index = -1 if len(self.subclass.knots) < 2 else -2
 			lastpoint = self.subclass.knots[index].pos
@@ -126,24 +149,25 @@ class Create_OT_Line(Draw_Primitive):
 			self.subclass.knots.append(newknot)
 			self.lastclick = clickcount
 			check_for_close(self, ctx)
-
-		if LineData.close:
-			self.subclass.knots.pop()
+		
+		if close_line:
 			self.subclass.close = True
 			self.forcefinish = True
+			self.subclass.knots.pop()
+			self.step = -1 #force to finish not kill
+		else:
+			self.subclass.knots[-1] = newknot
+			self.subclass.lastknot = [knot(dim, dim, dim, "VECTOR")]
 
-		self.subclass.knots[-1] = newknot
-		self.subclass.lastknot = [knot(dim, dim, dim, "VECTOR")]
-
-		self.subclass.update(ctx)
-
-	def event(self, event, value):
-		if event == 'BACK_SPACE':
-			if value == 'RELEASE':
+	def check_event(self, key, action):
+		if key == 'BACK_SPACE':
+			if action == 'RELEASE':
 				if len(self.subclass.knots) > 2:
 					self.subclass.knots.pop()
+					self.changed = True
+
 	def finish(self):
-		pass
+		self.subclass.reset()
 
 
 

@@ -31,15 +31,17 @@ If you found this product useful and want to motivate and support me you can don
 
 # Recent Updates and Changes
 
-* Tool menu issue from last update fixed.
-* The error on Disable/Enalble of addon fixed.
-* 'anim.set_key_filters' unregister issue fixed.
+* Create Line, Empty and Lights issu from last update fixed.
+* Primitive draw on surface and view Done.
+* Hold 'Ctrl' while draw primitive opjects draws on one step.
+* Better method for calculate second radius (Cone, Helix).
+* Note: Some of primitive (e.g. Arc) not working for now but will fix and update soon.
 * [Update History...](https://github.com/NevilArt/BsMax_2_80/blob/master/HISTORY.TXT)
 
 # In Production 
 
+* Primitives: all will update for better performance.
 * PieMax: Combanition of 3DsMax Quad menu and Blender Pie Menu.
-* Primitive draw on surface and view (Half Done).
 
 # License
 

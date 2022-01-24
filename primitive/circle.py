@@ -14,15 +14,13 @@
 ############################################################################
 
 import bpy
-from primitive.primitive import CreatePrimitive, PrimitiveCurveClass
-from primitive.gride import Draw_Primitive
+from primitive.primitive import PrimitiveCurveClass, Draw_Primitive
 from bsmax.actions import delete_objects
 
 def get_circle_shape(radius):
 	Shapes = []
 	r = radius
 	t = r * 0.551786
-	#t = r * 0.5522847498307933984022516322796
 	pc1,pl1,pr1 = (0,-r,0),(-t,-r,0),(t,-r,0)
 	pc2,pl2,pr2 = (r,0,0),(r,-t,0),(r,t,0)
 	pc3,pl3,pr3 = (0,r,0),(t,r,0),(-t,r,0)
@@ -41,42 +39,31 @@ class Circle(PrimitiveCurveClass):
 		self.owner = None
 		self.data = None
 		self.close = True
+
 	def reset(self):
 		self.__init__()
+
 	def create(self, ctx):
 		shapes = get_circle_shape(0)
 		self.create_curve(ctx, shapes, self.classname)
 		pd = self.data.primitivedata
 		pd.classname = self.classname
+
 	def update(self):
 		pd = self.data.primitivedata
 		shapes = get_circle_shape(pd.radius1)
 		self.update_curve(shapes)
+
 	def abort(self):
 		delete_objects([self.owner])
 
-# class Create_OT_Circle(CreatePrimitive):
-# 	bl_idname = "create.circle"
-# 	bl_label = "Circle"
-# 	subclass = Circle()
 
-# 	def create(self, ctx, clickpoint):
-# 		self.subclass.create(ctx)
-# 		self.params = self.subclass.owner.data.primitivedata
-# 		self.subclass.owner.location = clickpoint.view
-# 		self.subclass.owner.rotation_euler = clickpoint.orient
-# 	def update(self, ctx, clickcount, dimantion):
-# 		if clickcount == 1:
-# 			self.params.radius1 = dimantion.radius
-# 		if clickcount > 0:
-# 			self.subclass.update()
-# 	def finish(self):
-# 		pass
 
 class Create_OT_Circle(Draw_Primitive):
 	bl_idname = "create.circle"
 	bl_label = "Circle"
 	subclass = Circle()
+	use_gride = True
 
 	def create(self, ctx):
 		self.subclass.create(ctx)
@@ -84,11 +71,11 @@ class Create_OT_Circle(Draw_Primitive):
 		self.params = owner.data.primitivedata
 		owner.location = self.gride.location
 		owner.rotation_euler = self.gride.rotation
+	
 	def update(self, ctx, clickcount, dimantion):
 		if clickcount == 1:
 			self.params.radius1 = dimantion.radius
-		if clickcount > 0:
-			self.subclass.update()
+	
 	def finish(self):
 		pass
 

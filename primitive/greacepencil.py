@@ -14,31 +14,39 @@
 ############################################################################
 
 import bpy
-from mathutils import Vector
 from bpy.props import EnumProperty
-from primitive.primitive import CreatePrimitive
-from primitive.gride import Draw_Primitive
+from primitive.primitive import Draw_Primitive
 from bsmax.actions import delete_objects
+
+
 
 class GreacePencil:
 	def __init__(self):
 		self.finishon = 2
 		self.owner = None
+
 	def reset(self):
 		self.__init__()
+
 	def create(self, ctx, gpencil_type):
 		bpy.ops.object.gpencil_add(location=(0,0,0),type=gpencil_type)
 		self.owner = ctx.active_object
 		self.data = self.owner.data
-	def update(self, ctx):
+
+	def update(self):
 		pass
+
 	def abort(self):
 		delete_objects([self.owner])
+
+
 
 class Create_OT_GreacePencil(Draw_Primitive):
 	bl_idname="create.greacepencil"
 	bl_label="GreacePencil"
 	subclass = GreacePencil()
+	use_gride = True
+	use_single_click = True
 
 	gpencil_type: EnumProperty(name='Type',default='EMPTY',
 		items =[('EMPTY','Blank',''),('STROKE','Stroke',''),('MONKEY','Monkey','')])
@@ -47,9 +55,8 @@ class Create_OT_GreacePencil(Draw_Primitive):
 		self.subclass.create(ctx, self.gpencil_type)
 		owner = self.subclass.owner
 		owner.location = self.gride.location
-		owner.rotation_euler = self.gride.rotation# + Vector((-1.5708,0,0))
+		owner.rotation_euler = self.gride.rotation
 		owner.rotation_euler.x -= 1.5708
-		# clickpoint.orient + Vector((-1.5708,0,0))
 
 	def update(self, ctx, clickcount, dimantion):
 		if clickcount == 1:
@@ -60,6 +67,8 @@ class Create_OT_GreacePencil(Draw_Primitive):
 
 	def finish(self):
 		pass
+
+
 
 def register_greacepencil():
 	bpy.utils.register_class(Create_OT_GreacePencil)

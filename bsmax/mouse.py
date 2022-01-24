@@ -20,32 +20,6 @@ from bpy_extras.view3d_utils import region_2d_to_location_3d, region_2d_to_vecto
 
 
 
-class ClickPoint:
-	# View contain the click opoint on 3D view flore or surface
-	view = Vector((0,0,0))
-	local = Vector((0,0,0))
-	screen = Vector((0,0,0))
-	orient = Vector((0,0,0))
-	# viewport orient name string
-	view_orient = None
-	# viewport type
-	view_type = None
-	# view_name = ""
-	surface_detected = False
-	surface_normal = None
-
-	def reset(self):
-		self.view = Vector((0,0,0))
-		self.local = Vector((0,0,0))
-		self.screen = Vector((0,0,0))
-		self.orient = Vector((0,0,0))
-		self.view_orient = None
-		self.view_type = None
-		self.surface_detected = False
-		self.surface_normal = None
-
-
-
 def get_view_orientation(ctx):
 	r = lambda x: round(x, 2)
 	
@@ -89,80 +63,6 @@ def switch_axis_by_orient(orient, point):
 	
 	else:
 		return Vector((x, y, z))
-
-
-
-def get_rotation_from_orient(orient):
-	r = pi/2
-	if orient == 'FRONT': 
-		return (r, 0, 0)
-	if orient == 'BACK':
-		return (-r, 0, 0)
-	if orient == 'LEFT':
-		return (r, 0, -r)
-	if orient == 'RIGHT':
-		return (r, 0, r)
-	if orient == 'TOP':
-		return (0, 0, 0)
-	if orient == 'BOTTOM':
-		return (pi, 0, 0)
-	return (0, 0, 0)
-
-
-
-def get_click_point_info(ctx, gride, x, y):
-	""" Get mouse screen position and context
-		return ....	
-	"""
-	primitive_setting = ctx.scene.primitive_setting
-	surface_posion, surface_normal = None, None
-
-	cp = ClickPoint()
-	cp.view_orient, cp.view_type = get_view_orientation(ctx)
-	region = ctx.region
-	region_data = ctx.space_data.region_3d
-
-	if primitive_setting.position or primitive_setting.normal:
-		surface_posion, surface_normal, _, _ = ray_cast(ctx, x, y)
-	
-	if cp.view_type in ['PERSP', 'CAMERA']:
-		view_matrix = region_data.view_matrix.inverted()
-		ray_start = view_matrix.to_translation()
-		ray_depth = view_matrix @ Vector((0,0,-1000000))#TODO from view
-		ray_end = region_2d_to_location_3d(region,region_data, (x, y), ray_depth)
-		
-		p = get_triface_from_orient(gride, cp)
-		
-		cp.view = geometry.intersect_ray_tri(p[0],p[1],p[2],ray_end,ray_start,False)
-		
-		if cp.view == None:
-			cp.view = Vector((0,0,0))
-
-		# replace click point on surface if detected and requested
-		if primitive_setting.position:
-			if surface_posion:
-				cp.view = surface_posion
-				cp.surface_detected = True
-				cp.surface_normal = surface_normal
-		
-		if primitive_setting.normal:
-			pass
-
-	else:
-		cp.view = region_2d_to_location_3d(region, region_data, (x, y), (0, 0, 0))
-	
-	cp.screen = region_2d_to_location_3d(region, region_data, (x, y), (0, 0, 0))
-	
-	cp.local = switch_axis_by_orient(cp.view_orient, cp.view)
-	cp.orient = Vector(get_rotation_from_orient(cp.view_orient))
-	
-	if cp.view_type == 'ORTHO' and cp.view_orient == 'USER':
-		pass
-		# TODO in orthografic user view not work correctly
-		# r3d = ctx.area.spaces.active.region_3d
-		# view_rot = r3d.view_matrix.to_euler()
-	# cp.view_name = cp.view_orient
-	return cp
 
 
 
@@ -240,3 +140,18 @@ def ray_cast(ctx, mouse_x, mouse_y):
 					closest_obj = obj
 
 	return closest_loc, closest_normal, closest_face, closest_obj
+
+
+def get_click_point_on_face(ctx, face, x, y):
+	region = ctx.region
+	region_data = ctx.space_data.region_3d
+	_, view_type = get_view_orientation(ctx)
+	if view_type in {'PERSP', 'CAMERA'}:
+		region = ctx.region
+		region_data = ctx.space_data.region_3d
+		view_matrix = region_data.view_matrix.inverted()
+		ray_start = view_matrix.to_translation()
+		ray_depth = view_matrix @ Vector((0, 0, -1000000))
+		ray_end = region_2d_to_location_3d(region, region_data, (x, y), ray_depth)
+		return geometry.intersect_ray_tri(face[0], face[1], face[2], ray_end, ray_start, False)
+	return region_2d_to_location_3d(region, region_data, (x, y), (0, 0, 0))

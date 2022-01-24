@@ -14,8 +14,7 @@
 ############################################################################
 
 import bpy
-from primitive.primitive import PrimitiveCurveClass
-from primitive.gride import Draw_Primitive
+from primitive.primitive import PrimitiveCurveClass, Draw_Primitive
 from bsmax.actions import delete_objects
 
 def get_donut_shape(radius1, radius2):
@@ -61,19 +60,28 @@ class Create_OT_Donut(Draw_Primitive):
 	bl_idname = "create.donut"
 	bl_label = "Donut"
 	subclass = Donut()
+	use_gride = True
 
 	def create(self, ctx):
 		self.subclass.create(ctx)
 		self.params = self.subclass.owner.data.primitivedata
 		self.subclass.owner.location = self.gride.location
 		self.subclass.owner.rotation_euler = self.gride.rotation
+
 	def update(self, ctx, clickcount, dimantion):
 		if clickcount == 1:
-			self.params.radius1 = dimantion.radius
+			if self.ctrl:
+				self.params.radius1 = dimantion.radius
+				self.params.radius2 = dimantion.radius/2
+			else:
+				self.params.radius1 = dimantion.radius
+		
 		if clickcount == 2:
+			if self.use_single_draw:
+				self.jump_to_end()
+				return
 			self.params.radius2 = dimantion.distance
-		if clickcount > 0:
-			self.subclass.update()
+
 	def finish(self):
 		pass
 

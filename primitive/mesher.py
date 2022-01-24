@@ -14,14 +14,18 @@
 ############################################################################
 
 import bpy, bmesh
-from primitive.primitive import PrimitiveGeometryClass, CreatePrimitive
+from primitive.primitive import PrimitiveGeometryClass, Draw_Primitive
 from bsmax.actions import delete_objects
+
+
 
 def get_mesher_mesh(radius):
 	r, h = radius / 2, radius
 	verts = [(-r,-r,0),(r,-r,0),(r,r,0),(-r,r,0),(0,0,h)]
 	faces = [(3,2,1,0),(1,4,0),(2,4,1),(3,4,2),(0,4,3)]
 	return verts, [], faces
+
+
 
 def update_mesher(self, ctx):
 	""" check is target avalible """
@@ -44,6 +48,8 @@ def update_mesher(self, ctx):
 			bpy.ops.object.delete()
 			self.owner.select_set(True)
 			ctx.view_layer.objects.active = self.owner
+
+
 
 class Mesher(PrimitiveGeometryClass):
 	def __init__(self):
@@ -69,24 +75,30 @@ class Mesher(PrimitiveGeometryClass):
 	def abort(self):
 		delete_objects([self.owner])
 
-class Create_OT_Mesher(CreatePrimitive):
+
+
+class Create_OT_Mesher(Draw_Primitive):
 	bl_idname = "create.mesher"
 	bl_label = "Mesher"
 	subclass = Mesher()
 
-	def create(self, ctx, clickpoint):
+	def create(self, ctx):
 		self.subclass.create(ctx)
 		self.params = self.subclass.owner.data.primitivedata
-		self.subclass.owner.location = clickpoint.view
-		self.subclass.owner.rotation_euler = clickpoint.orient
+		self.subclass.owner.location = self.gride.location
+		self.subclass.owner.rotation_euler = self.gride.rotation
+
 	def update(self, ctx, clickcount, dimantion):
 		if clickcount == 1:
 			self.params.radius1 = dimantion.radius / 2
 			self.subclass.owner.location = dimantion.center
 		if clickcount > 0:
 			self.subclass.update(ctx)
+
 	def finish(self):
 		pass
+
+
 
 def register_mesher():
 	bpy.utils.register_class(Create_OT_Mesher)

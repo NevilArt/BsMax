@@ -15,8 +15,7 @@
 
 import bpy, math
 from math import pi, sin, cos, radians
-from primitive.primitive import CreatePrimitive, PrimitiveGeometryClass
-from primitive.gride import Draw_Primitive
+from primitive.primitive import PrimitiveGeometryClass, Draw_Primitive
 from bsmax.actions import delete_objects
 
 def get_tube_mesh(radius1, radius2, height, hsegs, csegs, ssegs, sliceon, sfrom, sto):
@@ -239,14 +238,22 @@ class Create_OT_Tube(Draw_Primitive):
 
 	def update(self, ctx, clickcount, dimantion):
 		if clickcount == 1:
-			self.params.radius1 = dimantion.radius
-			self.params.radius2 = self.params.radius1 * 0.9
+			if self.ctrl:
+				self.params.radius1 = dimantion.radius
+				self.params.radius2 = dimantion.radius * 0.6
+				self.params.height = dimantion.radius*2
+			else:
+				self.params.radius1 = dimantion.radius
+				self.params.radius2 = self.params.radius1 * 0.9
+		
 		elif clickcount == 2:
+			if self.use_single_draw:
+				self.jump_to_end()
+				return
 			self.params.radius2 = dimantion.distance
+		
 		elif clickcount == 3:
 			self.params.height = dimantion.height
-		if clickcount > 0:
-			self.subclass.update()
 
 	def finish(self):
 		pass

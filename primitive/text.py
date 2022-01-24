@@ -15,26 +15,35 @@
 
 import bpy
 from bpy.props import EnumProperty
-from primitive.primitive import CreatePrimitive
-from primitive.gride import Draw_Primitive
+from primitive.primitive import Draw_Primitive
 from bsmax.actions import delete_objects
 
 class Text:
 	def __init__(self):
 		self.finishon = 2
 		self.owner = None
+
 	def reset(self):
 		self.__init__()
+
 	def create(self, ctx):
 		bpy.ops.object.text_add()
 		self.owner = ctx.active_object
+	
+	def update(self):
+		pass
+
 	def abort(self):
 		delete_objects([self.owner])
+
+
 
 class Create_OT_Text(Draw_Primitive):
 	bl_idname="create.text"
 	bl_label="Text (Create)"
 	subclass = Text()
+	use_gride = True
+	use_single_click = True
 
 	fill_mode: EnumProperty( name = 'Fill Mode',  default = 'NONE',
 		items =[('NONE', 'None', ''),

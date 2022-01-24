@@ -14,10 +14,8 @@
 ############################################################################
 
 import bpy
-from bpy.types import Operator
 from math import pi, sin, cos, radians
-from primitive.primitive import PrimitiveGeometryClass, CreatePrimitive
-from primitive.gride import Draw_Primitive
+from primitive.primitive import PrimitiveGeometryClass, Draw_Primitive
 from bsmax.actions import delete_objects
 
 def get_capsule_mesh(radius, height, ssegs, csegs, hsegs, sliceon, sfrom, sto):
@@ -167,11 +165,18 @@ class Create_OT_Capsule(Draw_Primitive):
 		self.subclass.owner.rotation_euler = self.gride.rotation
 	def update(self, ctx, clickcount, dimantion):
 		if clickcount == 1:
-			self.params.radius1 = dimantion.radius
+			if self.ctrl:
+				self.params.radius1 = dimantion.radius
+				self.params.height = dimantion.radius
+			else:
+				self.params.radius1 = dimantion.radius
+
 		elif clickcount == 2:
+			if self.use_single_draw:
+				self.jump_to_end()
+				return
 			self.params.height = dimantion.height
-		if clickcount > 0:
-			self.subclass.update()
+
 	def finish(self):
 		pass
 

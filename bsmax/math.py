@@ -279,6 +279,12 @@ def get_index_str(count, index):
 	return (string + str(index))
 
 
+
+def dot(v1, v2):
+	return v1.x*v2.x + v1.y*v2.y + v1.z*v2.z
+
+
+
 def matrix_from_elements(location, euler_rotation, scale):
 	""" Return Transform Matrix from argoments """
 	roll, pitch, yaw = euler_rotation
@@ -308,6 +314,46 @@ def matrix_from_elements(location, euler_rotation, scale):
 		(m[0][0]*sx, m[0][1]*sy, m[0][2]*sz, lx),
 		(m[1][0]*sx, m[1][1]*sy, m[1][2]*sz, ly),
 		(m[2][0]*sx, m[2][1]*sy, m[2][2]*sz, lz),
-		(      0,       0,       0,   1)))
+		(         0,          0,          0,  1)))
 
 	return matrix
+
+
+
+def transform_points_to_matrix(points, matrix):
+	m = matrix
+	rxv = Vector((m[0][0], m[0][1], m[0][2]))
+	ryv = Vector((m[1][0], m[1][1], m[1][2]))
+	rzv = Vector((m[2][0], m[2][1], m[2][2]))
+	tv  = Vector((m[0][3], m[1][3], m[2][3]))
+	new_points = []
+	for pv in points:
+		x = dot(pv, rxv) + tv.x
+		y = dot(pv, ryv) + tv.y
+		z = dot(pv, rzv) + tv.z
+		new_points.append(Vector((x, y, z)))
+	return new_points
+
+
+
+def to_local_matrix(point, matrix):
+	# Untranslating
+	p = point - matrix.translation
+
+	euler = matrix.to_euler()
+	# UnYawing
+	s, c = sin(-euler.z), cos(-euler.z)
+	p = Vector((p.x*c - p.y*s, p.y*c + p.x*s, p.z))
+
+	# Unpinching
+	s, c = sin(-euler.x), cos(-euler.x)
+	p = Vector((p.x, p.y*c - p.z*s, p.z*c + p.y*s))
+
+	# Unrolling
+	s, c = sin(-euler.y), cos(-euler.y)
+	p = Vector((p.x*c + p.z*s, p.y, p.z*c - p.x*s))
+
+	scale = matrix.to_scale()
+	# UnScaling and return
+	s = Vector((1/scale.x, 1/scale.y, 1/scale.z))
+	return Vector((p.x*s.x, p.y*s.y, p.z*s.z))

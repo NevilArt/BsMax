@@ -13,274 +13,14 @@
 #	along with this program.  If not,see <https://www.gnu.org/licenses/>.
 ############################################################################
 import bpy, bmesh, bgl, gpu
-from bpy.types import Operator
-from mathutils import Vector, Matrix
-from math import sqrt
 from gpu_extras.batch import batch_for_shader
-from bsmax.state import is_object_mode
+from bpy.types import Operator
+from mathutils import Vector
+
 from bsmax.actions import link_to_scene, set_as_active_object
-from bsmax.mouse import get_click_point_info, ClickPoint
-from bsmax.math import get_2_point_center
+from bsmax.state import is_object_mode
 
-
-
-class Dimantion:
-	width = 0
-	length = 0
-	height = 0
-	radius = 0
-	center = Vector((0,0,0))
-	orient = Vector((0,0,0))
-	view = Vector((0,0,0))
-	local = Vector((0, 0, 0))
-	view_name = ""
-
-	height_np = 0
-
-	width_from_start_point = 0
-	length_from_start_point = 0
-	height_from_start_point = 0
-	radius_from_start_point = 0
-
-	def from_click_points(self, cpa, cpb, cpo):
-		w = self.width = abs(cpa.local.x - cpb.local.x)
-		l = self.length = abs(cpa.local.y - cpb.local.y)
-		if cpo.view_orient == 'TOP':
-			height = cpb.screen.y - cpa.screen.y
-		elif cpo.view_orient == 'BOTTOM':
-			height = cpa.screen.y - cpb.screen.y
-		else:
-			height = cpb.screen.z - cpa.screen.z
-		self.height_np = height
-		self.height = height if height > 0 else 0
-		self.radius = sqrt(w * w + l * l)
-		self.orient = cpa.orient
-		self.center = get_2_point_center(cpa.view, cpb.view)
-		self.view = cpb.view
-		self.local = cpb.view
-		wo = abs(cpo.local.x - cpb.local.x)
-		lo = abs(cpo.local.y - cpb.local.y)
-		self.radius_from_start_point = sqrt(wo * wo + lo * lo)
-		self.view_name = cpo.view_orient
-
-
-
-class LocalGride:
-	location = Vector((0.0, 0.0, 0.0))
-	matrix = None
-	rotation = None
-	start, end, normal = None, None, None
-
-	def get_direction(self):
-		if self.start and self.end and self.normal:
-			self.direction = (self.end - self.start).normalized()
-			self.matrix = Matrix([self.direction, -self.direction.cross(self.normal), self.normal]).transposed()
-			self.rotation = self.matrix.to_euler()
-		else:
-			self.rotation = None
-	
-	def reset(self):
-		self.location = Vector((0.0, 0.0, 0.0))
-		self.rotation = None
-		self.start, self.end, self.normal = None, None, None
-
-
-
-class CreatePrimitive(Operator):
-	bl_options = {'REGISTER','UNDO'}
-	subclass = None
-	params = None
-	step = 0
-	start, end = Vector((0,0,0)), Vector((0,0,0))
-	cpoint_o = ClickPoint()
-	cpoint_a = ClickPoint()
-	cpoint_b = ClickPoint()
-	state = False
-	drag = False
-	mpos = Vector((0, 0, 0))
-	usedkeys = ['LEFTMOUSE', 'RIGHTMOUSE', 'ESC', 'MOUSEMOVE', 'Z']
-	cancelkeys = ['RIGHTMOUSE', 'ESC']
-	requestkey = []
-	forcefinish = False
-	shift = False
-	ctrl = False
-	alt = False
-	gride = LocalGride()
-
-	@classmethod
-	def poll(self, ctx):
-		return is_object_mode(ctx)
-	
-	def is_drawed_enough(self):
-		return abs(self.start.x - self.end.x) + abs(self.start.y - self.end.y) > 8
-	
-	def get_shift_state(self, event):
-		if event.type in {'LEFT_SHIFT', 'RIGHT_SHIFT'}:
-			if event.value == 'PRESS':
-				self.shift = True
-			if event.value == 'RELEASE':
-				self.shift = False
-	
-	def get_ctrl_state(self, event):
-		if event.type in {'LEFT_CTRL', 'RIGHT_CTRL'}:
-			if event.value == 'PRESS':
-				self.ctrl = True
-			if event.value == 'RELEASE':
-				self.ctrl = False
-	
-	def get_alt_state(self, event):
-		if event.type in {'LEFT_ALT', 'RIGHT_ALT'}:
-			if event.value == 'PRESS':
-				self.alt = True
-			if event.value == 'RELEASE':
-				self.alt = False
-	
-	def fix_type_visablity(self, ctx):
-		if self.subclass:
-			if self.subclass.owner:
-				owner_type = self.subclass.owner.type
-				if owner_type == 'MESH':
-					ctx.space_data.show_object_viewport_mesh = True
-				elif owner_type == 'CURVE':
-					ctx.space_data.show_object_viewport_curve = True
-				elif owner_type == 'SURFACE':
-					ctx.space_data.show_object_viewport_surf = True
-				elif owner_type == 'META':
-					ctx.space_data.show_object_viewport_meta = True
-				elif owner_type == 'FONT':
-					ctx.space_data.show_object_viewport_font = True
-				elif owner_type == 'VOLUME':
-					ctx.space_data.show_object_viewport_volume = True
-				elif owner_type == 'GPENCIL':
-					ctx.space_data.show_object_viewport_grease_pencil = True
-				elif owner_type == 'ARMATURE':
-					ctx.space_data.show_object_viewport_armature = True
-				elif owner_type == 'LATTICE':
-					ctx.space_data.show_object_viewport_lattice = True
-				elif owner_type == 'EMPTY':
-					ctx.space_data.show_object_viewport_empty = True
-				elif owner_type == 'LIGHT':
-					ctx.space_data.show_object_viewport_light = True
-				elif owner_type == 'LIGHT_PROBE':
-					ctx.space_data.show_object_viewport_light_probe = True
-				elif owner_type == 'CAMERA':
-					ctx.space_data.show_object_viewport_camera = True
-				elif owner_type == 'SPEAKER':
-					ctx.space_data.show_object_viewport_speaker = True
-	
-	def first_click(self, ctx, x, y):
-		self.step = 1
-		self.cpoint_o = self.cpoint_a = self.cpoint_b
-		self.create(ctx, self.cpoint_a)
-		self.start = Vector((x,y,0))
-		
-		if ctx.space_data.local_view:
-			self.subclass.owner.local_view_set(ctx.space_data, True)
-
-		""" if any surface detect on first click then get info for auto gride """	
-		if self.cpoint_o.surface_detected:
-			self.gride.location = self.cpoint_o.view
-			self.gride.start = self.cpoint_o.view
-			self.gride.normal = self.cpoint_o.surface_normal
-		else:
-			self.gride.location = Vector((0.0, 0.0, 0.0))
-		self.gride.rotation = None
-	
-	def click_count(self, event, x, y):
-		""" Count clicks and check movment (Draged or not) """
-		if event.value == 'PRESS':
-			self.state = True
-		if event.value =='RELEASE':
-			self.state = self.drag = False
-			self.step += 1
-			self.cpoint_a = self.cpoint_b
-			self.end = Vector((x,y,0))
-	
-	def set_rotation(self, ctx):
-		if ctx.scene.primitive_setting.normal:
-			if self.gride.rotation:
-				if self.subclass:
-					if self.subclass.owner:
-						self.subclass.owner.rotation_euler = self.gride.rotation
-	
-	def reset(self):
-		self.subclass.reset()
-		self.gride.reset()
-		self.cpoint_o.reset()
-		self.cpoint_a.reset()
-		self.cpoint_b.reset()
-		self.step = 0
-
-	def modal(self, ctx, event):
-		ctx.area.tag_redraw()
-
-		self.get_shift_state(event)
-		self.get_ctrl_state(event)
-		self.get_alt_state(event)
-
-		if self.subclass == None:
-			# cancel operation if deta type not defined
-			return {'CANCELLED'}
-		elif not event.type in self.usedkeys:
-			# free the unused keys
-			return {'PASS_THROUGH'}
-		else:
-			dimantion = Dimantion()
-			x, y = event.mouse_region_x, event.mouse_region_y
-			self.mpos = Vector((x, y, 0))
-			self.cpoint_b = get_click_point_info(ctx, self.gride, x, y)
-
-			if event.type == 'LEFTMOUSE':
-				""" Detect First click """
-				if self.step == 0:
-					self.first_click(ctx, x, y)
-					self.fix_type_visablity(ctx)
-
-				self.click_count(event, x, y)
-
-			if event.type in self.requestkey:
-				self.event(event.type, event.value)
-				dimantion.from_click_points(self.cpoint_a, self.cpoint_b, self.cpoint_o)	
-				self.update(ctx, self.step, dimantion)
-
-			if event.type == 'MOUSEMOVE':
-				if self.state:
-					self.drag = True
-				
-				if self.step > 0:
-					if self.cpoint_o.surface_detected and not self.gride.end:
-						self.gride.end = self.cpoint_b.view
-						self.gride.get_direction()
-
-					dimantion.from_click_points(self.cpoint_a, self.cpoint_b, self.cpoint_o)
-					self.set_rotation(ctx)
-					self.update(ctx, self.step, dimantion)
-
-				if self.subclass.finishon > 0:
-					if self.step >= self.subclass.finishon:
-						self.step = 0
-						""" Delete object if was very tiny """
-						if not self.is_drawed_enough():
-							self.subclass.abort()
-						else:
-							self.finish()
-							bpy.ops.ed.undo_push()
-						self.reset()
-
-			if event.type in self.cancelkeys or self.forcefinish:
-				self.forcefinish = False
-				RemoveCursurOveride(self.drawhandler)
-				if self.step > 0:
-					self.subclass.abort()
-				self.reset()
-				return {'CANCELLED'}
-
-		return {'RUNNING_MODAL'}
-
-	def invoke(self, ctx, event):
-		self.drawhandler = AddCursurOveride(self)
-		ctx.window_manager.modal_handler_add(self)
-		return {'RUNNING_MODAL'}
+from .gride import Gride, Dimantion, Click_Point
 
 
 
@@ -384,6 +124,8 @@ def GetCursurMesh(size, x, y):
 			(8, 9, 11), (11, 9, 10))
 	return verts, faces
 
+
+
 def DrawCursurOveride(self):
 	bgl.glEnable(bgl.GL_BLEND)
 	shader = gpu.shader.from_builtin('2D_UNIFORM_COLOR')
@@ -394,17 +136,260 @@ def DrawCursurOveride(self):
 	batch.draw(shader)
 	bgl.glDisable(bgl.GL_BLEND)
 
+
+
 def AddCursurOveride(self):
 	SV3D = bpy.types.SpaceView3D
 	handle = SV3D.draw_handler_add(DrawCursurOveride, tuple([self]), 
 						'WINDOW', 'POST_PIXEL')
 	return handle
 
+
+
 def RemoveCursurOveride(handle):
 	bpy.types.SpaceView3D.draw_handler_remove(handle, 'WINDOW')
+
+
 
 def is_true_class(ctx, classname):
 	if ctx.active_object != None:
 		if classname == ctx.active_object.primitivedata.classname:
 			return True
 	return False
+
+
+
+def fix_type_visablity(subclass, ctx):
+	if subclass:
+		if subclass.owner:
+			owner_type = subclass.owner.type
+			if owner_type == 'MESH':
+				ctx.space_data.show_object_viewport_mesh = True
+			elif owner_type == 'CURVE':
+				ctx.space_data.show_object_viewport_curve = True
+			elif owner_type == 'SURFACE':
+				ctx.space_data.show_object_viewport_surf = True
+			elif owner_type == 'META':
+				ctx.space_data.show_object_viewport_meta = True
+			elif owner_type == 'FONT':
+				ctx.space_data.show_object_viewport_font = True
+			elif owner_type == 'VOLUME':
+				ctx.space_data.show_object_viewport_volume = True
+			elif owner_type == 'GPENCIL':
+				ctx.space_data.show_object_viewport_grease_pencil = True
+			elif owner_type == 'ARMATURE':
+				ctx.space_data.show_object_viewport_armature = True
+			elif owner_type == 'LATTICE':
+				ctx.space_data.show_object_viewport_lattice = True
+			elif owner_type == 'EMPTY':
+				ctx.space_data.show_object_viewport_empty = True
+			elif owner_type == 'LIGHT':
+				ctx.space_data.show_object_viewport_light = True
+			elif owner_type == 'LIGHT_PROBE':
+				ctx.space_data.show_object_viewport_light_probe = True
+			elif owner_type == 'CAMERA':
+				ctx.space_data.show_object_viewport_camera = True
+			elif owner_type == 'SPEAKER':
+				ctx.space_data.show_object_viewport_speaker = True
+
+
+
+class Draw_Primitive(Operator):
+	bl_options = {'REGISTER','UNDO'}
+	""" Subclass is Primitive object type """
+	subclass = None
+	""" Params = object.data.primitivedata """
+	params = None
+	""" click push/release count """
+	step = 0
+	""" first and current position of click point """	
+	mouse_start, mouse_curent = Vector((0,0,0)), Vector((0,0,0))
+	""" list of nececery keys """
+	used_keys = ['LEFTMOUSE', 'RIGHTMOUSE', 'ESC', 'MOUSEMOVE', 'Z']
+	""" keys for cancel opration """
+	cancel_keys = ['RIGHTMOUSE', 'ESC']
+	""" reserved for specila operators that needs more keys """
+	request_key = []
+	""" State (LMB is down), Draging wile LMB is down, cancel every thing """
+	state, drag, kill = False, False, False
+	""" keyboad S,C,A Flags """
+	shift, ctrl, alt = False, False, False
+	""" click point info """
+	gride = Gride()
+	""" 3D coordinate and info of click points """
+	point_start, point_current = Click_Point(), Click_Point()
+	""" flag that choos click point type use gride or not """
+	use_gride = False
+	use_surface = False
+	use_single_click = False
+	changed = False
+	""" mouse override graphic handler """
+	draw_handler = None
+	# need to replace
+	mpos = Vector((0, 0, 0))
+	
+	@classmethod
+	def poll(self, ctx):
+		return is_object_mode(ctx)
+	
+	def acceptable(self):
+		""" Check mouse movment make sure do not create tiny invisible object"""
+		length = abs(self.mouse_start.x - self.mouse_curent.x) + abs(self.mouse_start.y - self.mouse_curent.y)
+		return length > 8 or (length == 0 and self.use_single_click)
+	
+	def get_shift_state(self, event):
+		if event.type in {'LEFT_SHIFT', 'RIGHT_SHIFT'}:
+			if event.value == 'PRESS':
+				self.shift = True
+			if event.value == 'RELEASE':
+				self.shift = False
+	
+	def get_ctrl_state(self, event):
+		if event.type in {'LEFT_CTRL', 'RIGHT_CTRL'}:
+			if event.value == 'PRESS':
+				self.ctrl = True
+			if event.value == 'RELEASE':
+				self.ctrl = False
+	
+	def get_alt_state(self, event):
+		if event.type in {'LEFT_ALT', 'RIGHT_ALT'}:
+			if event.value == 'PRESS':
+				self.alt = True
+			if event.value == 'RELEASE':
+				self.alt = False
+	
+	def first_click(self, ctx, x, y):
+		""" Get first click and initial basic setups """
+		self.step = 1
+		self.mouse_start = Vector((x,y,0))
+		self.use_surface = ctx.scene.primitive_setting.draw_mode == 'SURFACE'
+
+		""" Create local Gride """
+		self.gride.get_coordinate(ctx, x, y)
+
+		""" Get First Click Point """
+		self.point_current.location = self.gride.location.copy()
+		self.point_start.location = self.point_current.location.copy()
+
+		self.create(ctx)
+		
+	def click_count(self, event, x, y):
+		""" Count clicks and check movment (Draged or not) """
+		if event.value == 'PRESS':
+			self.state = True
+		
+		if event.value =='RELEASE':
+			self.state = self.drag = False
+			self.step += 1
+			self.curent = Vector((x,y,0))
+			self.point_start.location = self.point_current.location.copy()
+	
+	def reset(self):
+		self.subclass.reset()
+		self.gride.reset()
+		self.point_start.reset()
+		self.point_current.reset()
+		self.step = 0
+	
+	def jump_to_end(self):
+		self.use_single_draw = False
+		self.step = self.subclass.finishon
+	
+	def finish_it(self):
+		""" Delete accidently drawed very tiny objects """
+		if self.acceptable():
+			self.finish()
+			bpy.ops.ed.undo_push()
+		else:
+			self.subclass.abort()
+		self.reset()
+		""" Now you can lout MORTAL COMBAT Ha Ha Ha """
+	
+	def check_event(self, key, action):
+		pass
+
+	def modal(self, ctx, event):
+		""" Refresh Viewport """
+		ctx.area.tag_redraw()
+
+		""" Read ctrl, shiftm alt state """
+		self.get_shift_state(event)
+		self.get_ctrl_state(event)
+		self.get_alt_state(event)
+
+		""" Cancel operation if subclass not defined """
+		if self.subclass == None:
+			return {'CANCELLED'}
+		
+		""" Free non used keys """
+		if not event.type in self.used_keys:
+			return {'PASS_THROUGH'}
+
+		""" Get mouse screen position """
+		x, y = event.mouse_region_x, event.mouse_region_y
+		self.mpos = Vector((x, y, 0))
+		
+		""" Call Event function """
+		self.check_event(event.type, event.value)
+		
+		""" Detect First click """
+		if event.type == 'LEFTMOUSE':
+			if self.step == 0:
+				self.first_click(ctx, x, y)
+				fix_type_visablity(self.subclass, ctx)
+				
+			self.click_count(event, x, y)
+
+		""" Check and update any movment """
+		if event.type == 'MOUSEMOVE' or self.changed:
+			if self.state:
+				self.drag = True
+					
+			if self.step > 0:
+				""" Set true if used in first drag only """
+				if self.step == 1:
+					self.use_single_draw = self.ctrl
+				
+				""" Get mouse click point virtual gride"""
+				self.mouse_curent = Vector((x,y,0))
+				
+				if self.use_gride:
+					self.point_current.location = self.gride.get_click_point_gride(ctx, x, y)
+				elif self.use_surface:
+					self.point_current.location = self.gride.get_click_point_surface(ctx, x, y)
+				else:
+					self.point_current.location = self.gride.get_click_point_gride(ctx, x, y)
+				
+				dimantion = Dimantion(self.gride, self.point_start.location, self.point_current.location)
+				self.update(ctx, self.step, dimantion)
+
+				""" Updat Data object """
+				self.subclass.update()
+
+			""" finish or cancel operatoin by click count """
+			if self.subclass.finishon > 0:
+				if self.step >= self.subclass.finishon:
+					self.finish_it()
+			else:
+				if self.step == -1:
+					self.finish_it()
+				
+		""" abort if pointer go out of screen """
+		# if self.step == 0 and out of screen:
+		# 	self.kill = True
+
+		""" finish and drop the operator """
+		if event.type in self.cancel_keys or self.kill:
+			RemoveCursurOveride(self.draw_handler)
+			self.kill = False
+			if self.step > 0:
+				self.subclass.abort()
+			self.reset()
+			return {'CANCELLED'}
+
+		return {'RUNNING_MODAL'}
+
+	def invoke(self, ctx, event):
+		self.draw_handler = AddCursurOveride(self)
+		ctx.window_manager.modal_handler_add(self)
+		return {'RUNNING_MODAL'}

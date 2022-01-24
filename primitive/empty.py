@@ -16,16 +16,22 @@
 import bpy
 from bpy.types import Operator
 from bpy.props import EnumProperty
-from primitive.primitive import CreatePrimitive
-from primitive.gride import Draw_Primitive
+from primitive.primitive import Draw_Primitive
 from bsmax.actions import delete_objects
+
+
 
 class Empty:
 	def __init__(self):
 		self.finishon = 2
 		self.owner = None
+
 	def reset(self):
 		self.__init__()
+	
+	def update(self):
+		pass
+
 	def abort(self):
 		delete_objects([self.owner])
 
@@ -35,6 +41,8 @@ class Create_OT_Empty(Draw_Primitive):
 	bl_idname="create.empty"
 	bl_label="Empty"
 	subclass = Empty()
+	use_gride = True
+	use_single_click = True
 
 	empty_type: EnumProperty(name='Type',default='PLAIN_AXES',
 		items =[('PLAIN_AXES','Point axis',''),('ARROWS','Arrows',''),
@@ -54,8 +62,11 @@ class Create_OT_Empty(Draw_Primitive):
 	def update(self, ctx, clickcount, dimantion):
 		if clickcount == 1:
 			self.subclass.owner.empty_display_size = dimantion.radius
+
 	def finish(self):
 		pass
+
+
 
 class Create_OT_Image(Operator):
 	bl_idname="create.image"
@@ -63,15 +74,19 @@ class Create_OT_Image(Operator):
 	bl_options={"UNDO"}
 	image_type: EnumProperty(name='Type',default='REFERENCE',
 		items =[('REFERENCE','Reference',''),('BACKGROUND','Background','')])
+
 	@classmethod
 	def poll(self, ctx):
 		return ctx.area.type == 'VIEW_3D'
+
 	def execute(self, ctx):
 		if self.image_type == "REFERENCE":
 			bpy.ops.create.empty('INVOKE_DEFAULT',empty_type="IMAGE",depth="DEFAULT")
 		else:
 			bpy.ops.create.empty('INVOKE_DEFAULT',empty_type="IMAGE",depth="BACK")
 		return {'FINISHED'}
+
+
 
 classes = [Create_OT_Empty, Create_OT_Image]
 

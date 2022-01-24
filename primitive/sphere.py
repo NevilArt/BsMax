@@ -15,8 +15,7 @@
 
 import bpy
 from math import pi, sin, cos, radians
-from primitive.primitive import CreatePrimitive, PrimitiveGeometryClass
-from primitive.gride import Draw_Primitive
+from primitive.primitive import PrimitiveGeometryClass, Draw_Primitive
 from bsmax.actions import delete_objects
 
 def get_sphere_mesh(radius, ssegs, hsegs, hemisphere, chop, sliceon, sfrom, sto, base):
@@ -156,23 +155,7 @@ class Sphere(PrimitiveGeometryClass):
 	def abort(self):
 		delete_objects([self.owner])
 
-# class Create_OT_Sphere(CreatePrimitive):
-# 	bl_idname = "create.sphere"
-# 	bl_label = "Sphere"
-# 	subclass = Sphere()
 
-# 	def create(self, ctx, clickpoint):
-# 		self.subclass.create(ctx)
-# 		self.params = self.subclass.owner.data.primitivedata
-# 		self.subclass.owner.location = clickpoint.view
-# 		self.subclass.owner.rotation_euler = clickpoint.orient
-# 	def update(self, ctx, clickcount, dimantion):
-# 		if clickcount == 1:
-# 			self.params.radius1 = dimantion.radius
-# 		if clickcount > 0:
-# 			self.subclass.update()
-# 	def finish(self):
-# 		pass
 
 class Create_OT_Sphere(Draw_Primitive):
 	bl_idname = "create.sphere"

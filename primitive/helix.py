@@ -15,11 +15,12 @@
 
 import bpy
 from math import pi, sin, cos
-from primitive import gride
-from primitive.primitive import PrimitiveCurveClass, CreatePrimitive
-from primitive.gride import Draw_Primitive
+from mathutils import Vector
+from primitive.primitive import PrimitiveCurveClass, Draw_Primitive
 from bsmax.actions import delete_objects
 from bsmax.math import get_bias, get_distance
+
+
 
 def get_helix_shape(radius1, radius2, height, turns, segs, bias, ccw):
 	shape = []
@@ -46,6 +47,8 @@ def get_helix_shape(radius1, radius2, height, turns, segs, bias, ccw):
 		shape.append((p,p,vector_type,p,vector_type))
 	return [shape]
 
+
+
 class Helix(PrimitiveCurveClass):
 	def __init__(self):
 		self.classname = "Helix"
@@ -71,32 +74,51 @@ class Helix(PrimitiveCurveClass):
 	def abort(self):
 		delete_objects([self.owner])
 
+
+
 class Create_OT_Helix(Draw_Primitive):
 	bl_idname = "create.helix"
 	bl_label = "Helix"
 	subclass = Helix()
+	use_gride = True
+	gride_updated = False
 
 	def create(self, ctx):
 		self.subclass.create(ctx)
 		self.params = self.subclass.owner.data.primitivedata
 		self.subclass.owner.location = self.gride.location
 		self.subclass.owner.rotation_euler = self.gride.rotation
+
 	def update(self, ctx, clickcount, dimantion):
 		if clickcount == 1:
-			self.params.radius1 = dimantion.radius
-			self.params.radius2 = dimantion.radius
+			if self.ctrl:
+				self.params.radius1 = dimantion.radius
+				self.params.radius2 = dimantion.radius
+				self.params.height = dimantion.radius*2
+			else:
+				self.params.radius1 = dimantion.radius
+				self.params.radius2 = dimantion.radius
+
 		if clickcount == 2:
+			if self.use_single_draw:
+				self.jump_to_end()
+				return
+
 			self.params.height = dimantion.height
-			#TODO need to re calculate gride
-			self.cent = self.point_current.location.copy()
+
 		if clickcount == 3:
-			self.params.radius2 = get_distance(self.cent, self.point_current.location)
-			# radius = self.params.radius1 + dimantion.height_np
-			# self.params.radius2 = 0 if radius < 0 else radius
-		if clickcount > 0:
-			self.subclass.update()
+			if not self.gride_updated:
+				center = self.gride.gride_matrix @ Vector((0,0,self.params.height))
+				self.gride.location = center
+				self.gride.update()
+				self.gride_updated = True
+
+			self.params.radius2 = dimantion.distance
+
 	def finish(self):
-		pass
+		self.gride_updated = False
+
+
 
 def register_helix():
 	bpy.utils.register_class(Create_OT_Helix)

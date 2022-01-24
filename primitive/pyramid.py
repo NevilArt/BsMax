@@ -14,7 +14,7 @@
 ############################################################################
 
 import bpy
-from primitive.primitive import CreatePrimitive, PrimitiveGeometryClass
+from primitive.primitive import PrimitiveGeometryClass, Draw_Primitive
 from bsmax.actions import delete_objects
 
 def get_pyramid_mesh(width, depth, height, wsegs, dsegs, hsegs):
@@ -148,41 +148,55 @@ class Pyramid(PrimitiveGeometryClass):
 		self.finishon = 3
 		self.owner = None
 		self.data = None
+
 	def reset(self):
 		self.__init__()
+
 	def create(self, ctx):
 		mesh = get_pyramid_mesh(0, 0, 0, 1, 1, 1)
 		self.create_mesh(ctx, mesh, self.classname)
 		pd = self.data.primitivedata
 		pd.classname = self.classname
 		pd.wsegs, pd.lsegs, pd.hsegs = 1, 1, 1
+
 	def update(self):
 		pd = self.data.primitivedata
 		mesh = get_pyramid_mesh(pd.width, pd.length, pd.height,
 					pd.wsegs, pd.lsegs, pd.hsegs)
 		self.update_mesh(mesh)
+
 	def abort(self):
 		delete_objects([self.owner])
 
-class Create_OT_Pyramid(CreatePrimitive):
+class Create_OT_Pyramid(Draw_Primitive):
 	bl_idname = "create.pyramid"
 	bl_label = "Pyramid (Create)"
 	subclass = Pyramid()
+	use_gride = True
 
-	def create(self, ctx, clickpoint):
+	def create(self, ctx):
 		self.subclass.create(ctx)
 		self.params = self.subclass.owner.data.primitivedata
-		self.subclass.owner.location = clickpoint.view
-		self.subclass.owner.rotation_euler = clickpoint.orient
+		self.subclass.owner.location = self.gride.location
+		self.subclass.owner.rotation_euler = self.gride.rotation
+
 	def update(self, ctx, clickcount, dimantion):
 		if clickcount == 1:
-			self.params.width = dimantion.width
-			self.params.length = dimantion.length
-			self.subclass.owner.location = dimantion.center
+			if self.ctrl:
+				self.params.width = dimantion.radius
+				self.params.length = dimantion.radius
+				self.params.height = dimantion.radius*0.6
+			else:
+				self.params.width = dimantion.width
+				self.params.length = dimantion.length
+				self.subclass.owner.location = dimantion.center
+		
 		elif clickcount == 2:
+			if self.use_single_draw:
+				self.jump_to_end()
+				return
 			self.params.height = dimantion.height
-		if clickcount > 0:
-			self.subclass.update()
+
 	def finish(self):
 		pass
 
@@ -191,3 +205,6 @@ def register_pyramid():
 
 def unregister_pyramid():
 	bpy.utils.unregister_class(Create_OT_Pyramid)
+
+if __name__ == '__main__':
+	register_pyramid()

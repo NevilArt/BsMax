@@ -14,8 +14,7 @@
 ############################################################################
 
 import bpy
-from primitive.primitive import PrimitiveGeometryClass
-from primitive.gride import Draw_Primitive
+from primitive.primitive import PrimitiveGeometryClass, Draw_Primitive
 from bsmax.actions import delete_objects
 
 def get_monkey_mesh(radius):
@@ -294,8 +293,10 @@ class Monkey(PrimitiveGeometryClass):
 		self.data = None
 		""" Default Settings """
 		self.auto_smooth_angle = 3.14159
+
 	def reset(self):
 		self.__init__()
+
 	def create(self, ctx):
 		mesh = get_monkey_mesh(0)
 		self.create_mesh(ctx, mesh, self.classname)
@@ -303,10 +304,12 @@ class Monkey(PrimitiveGeometryClass):
 		pd.classname = self.classname
 		""" Apply Default Settings """
 		self.data.auto_smooth_angle = self.auto_smooth_angle
+
 	def update(self):
 		pd = self.data.primitivedata
 		mesh = get_monkey_mesh(pd.radius1)
 		self.update_mesh(mesh)
+
 	def abort(self):
 		delete_objects([self.owner])
 
@@ -322,13 +325,17 @@ class Create_OT_Monkey(Draw_Primitive):
 		self.params = self.subclass.owner.data.primitivedata
 		self.subclass.owner.location = self.gride.location
 		self.subclass.owner.rotation_euler = self.gride.rotation
+
 	def update(self, ctx, clickcount, dimantion):
 		if clickcount == 1:
 			self.params.radius1 = dimantion.radius
 		if clickcount > 0:
 			self.subclass.update()
+
 	def finish(self):
 		pass
+
+
 
 def register_monkey():
 	bpy.utils.register_class(Create_OT_Monkey)

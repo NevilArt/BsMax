@@ -14,9 +14,10 @@
 ############################################################################
 
 import bpy
-from primitive.primitive import PrimitiveCurveClass, CreatePrimitive
-from primitive.gride import Draw_Primitive
+from primitive.primitive import PrimitiveCurveClass, Draw_Primitive
 from bsmax.actions import delete_objects
+
+
 
 def get_ellipse_shape(length, width, outline, Thickness):
 	Shapes = []
@@ -37,6 +38,8 @@ def get_ellipse_shape(length, width, outline, Thickness):
 		Shapes.append([pt1, pt2, pt3, pt4])
 	return Shapes
 
+
+
 class Ellipse(PrimitiveCurveClass):
 	def __init__(self):
 		self.classname = "Ellipse"
@@ -44,61 +47,59 @@ class Ellipse(PrimitiveCurveClass):
 		self.owner = None
 		self.data = None
 		self.close = True
+
 	def reset(self):
 		self.__init__()
+
 	def create(self, ctx):
 		shapes = get_ellipse_shape(0, 0, False, 0)
 		self.create_curve(ctx, shapes, self.classname)
 		pd = self.data.primitivedata
 		pd.classname = self.classname
+
 	def update(self):
 		pd = self.data.primitivedata
 		# length, width, outline, Thickness
 		shapes = get_ellipse_shape(pd.width, pd.length, pd.outline, pd.thickness)
 		self.update_curve(shapes)
+
 	def abort(self):
 		delete_objects([self.owner])
 
-class Create_OT_Ellipse(CreatePrimitive):
+
+
+class Create_OT_Ellipse(Draw_Primitive):
 	bl_idname = "create.ellipse"
 	bl_label = "Ellipse"
 	subclass = Ellipse()
+	use_gride = True
 
-	def create(self, ctx, clickpoint):
+	def create(self, ctx):
 		self.subclass.create(ctx)
 		self.params = self.subclass.owner.data.primitivedata
-		self.subclass.owner.location = clickpoint.view
-		self.subclass.owner.rotation_euler = clickpoint.orient
+		self.subclass.owner.location = self.gride.location
+		self.subclass.owner.rotation_euler = self.gride.rotation
+
 	def update(self, ctx, clickcount, dimantion):
 		if clickcount == 1:
-			self.params.width = dimantion.width
-			self.params.length = dimantion.length
-		if clickcount > 0:
-			self.subclass.update()
+			if self.ctrl:
+				self.params.width = dimantion.width
+				self.params.length = dimantion.length
+			else:
+				self.params.width = dimantion.width/2
+				self.params.length = dimantion.length/2
+				self.subclass.owner.location = dimantion.center
+
 	def finish(self):
 		pass
 
-# class Create_OT_Ellipse(Draw_Primitive):
-# 	bl_idname = "create.ellipse"
-# 	bl_label = "Ellipse"
-# 	subclass = Ellipse()
 
-# 	def create(self, ctx):
-# 		self.subclass.create(ctx)
-# 		self.params = self.subclass.owner.data.primitivedata
-# 		self.subclass.owner.location = self.gride.location
-# 		self.subclass.owner.rotation_euler = self.gride.rotation
-# 	def update(self, ctx, clickcount, dimantion):
-# 		if clickcount == 1:
-# 			self.params.width = dimantion.width
-# 			self.params.length = dimantion.length
-# 		if clickcount > 0:
-# 			self.subclass.update()
-# 	def finish(self):
-# 		pass
 
 def register_ellipse():
 	bpy.utils.register_class(Create_OT_Ellipse)
 
 def unregister_ellipse():
 	bpy.utils.unregister_class(Create_OT_Ellipse)
+
+if __name__ == '__main__':
+	register_ellipse()

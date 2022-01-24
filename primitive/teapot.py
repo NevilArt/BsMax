@@ -15,11 +15,10 @@
 
 import bpy
 from mathutils import Vector
-from math import sin,cos,pi,radians
+from math import sin,cos,pi
 from bsmax.curve import Spline,Bezier_point
-from bsmax.math import point_on_vector,get_distance
-from primitive.primitive import PrimitiveGeometryClass
-from primitive.gride import Draw_Primitive
+from bsmax.math import point_on_vector
+from primitive.primitive import PrimitiveGeometryClass, Draw_Primitive
 from bsmax.actions import delete_objects
 
 def get_path(part):

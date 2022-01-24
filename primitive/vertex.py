@@ -15,8 +15,9 @@
 
 import bpy
 from bpy.props import EnumProperty
-from primitive.primitive import CreatePrimitive,PrimitiveGeometryClass
-from primitive.gride import Draw_Primitive
+from primitive.primitive import PrimitiveGeometryClass, Draw_Primitive
+
+
 
 def get_vertex_mesh(verts, mode):
 	edges,faces = [],[]
@@ -33,6 +34,8 @@ def get_vertex_mesh(verts, mode):
 			edges.append([0,1])
 	return verts, edges, faces
 
+
+
 class Vertex(PrimitiveGeometryClass):
 	def __init__(self):
 		self.classname = "Vertex"
@@ -41,16 +44,20 @@ class Vertex(PrimitiveGeometryClass):
 		self.data = None
 		self.mode = "NONE"#'VERT' 'EDGE' 'FACE'
 		self.verts = []
+
 	def reset(self):
 		mode = self.mode
 		self.__init__()
 		self.mode = mode
+
 	def create(self, ctx):
 		mesh = get_vertex_mesh([], self.mode)
 		self.create_mesh(ctx, mesh, self.classname)
+
 	def update(self):
 		mesh = get_vertex_mesh(self.verts, self.mode)
 		self.update_mesh(mesh)
+
 	def abort(self):
 		if self.owner != None:
 			bpy.ops.object.origin_set(type='ORIGIN_GEOMETRY', center='MEDIAN')
@@ -73,16 +80,18 @@ class Create_OT_Vertex(Draw_Primitive):
 		self.subclass.verts.append(self.point_current.location)
 		self.subclass.create(ctx)
 		self.params = self.subclass.owner.data.primitivedata
+
 	def update(self, ctx, clickcount, dimantion):
 		if self.drag:
-			self.subclass.verts[-1] = dimantion.location
+			self.subclass.verts[-1] = dimantion.end
 		else:
 			if clickcount != self.lastclick:
-				self.subclass.verts.append(dimantion.location)
+				self.subclass.verts.append(dimantion.end)
 				self.lastclick = clickcount
 		self.subclass.update()
+
 	def finish(self):
-		bpy.ops.object.origin_set(type='ORIGIN_GEOMETRY',center='MEDIAN')
+		bpy.ops.object.origin_set(type='ORIGIN_GEOMETRY', center='MEDIAN')
 		self.subclass.reset()
 
 

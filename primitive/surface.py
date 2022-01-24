@@ -14,8 +14,7 @@
 ############################################################################
 
 import bpy
-from primitive.primitive import PrimitiveGeometryClass, CreatePrimitive
-from bsmax.actions import delete_objects
+from primitive.primitive import PrimitiveGeometryClass, Draw_Primitive
 
 def cylindersurface(radius, height):
 
@@ -43,12 +42,12 @@ class Surface(PrimitiveGeometryClass):
 		#delete_objects([self.owner])
 		#self.reset()
 
-class Create_OT_Surface(CreatePrimitive):
+class Create_OT_Surface(Draw_Primitive):
 	bl_idname="create.surface"
 	bl_label="Surface (Create)"
 	subclass = Surface()
 
-	def create(self, ctx, clickpoint):
+	def create(self, ctx):
 		self.subclass.create(ctx)
 			
 	def update(self, ctx, clickcount, dimantion):

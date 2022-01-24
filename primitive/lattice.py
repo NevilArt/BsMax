@@ -17,26 +17,35 @@ import bpy
 from bpy.types import Operator
 from mathutils import Vector
 from bpy.props import IntProperty, FloatProperty
-from primitive.primitive import CreatePrimitive
+from primitive.primitive import Draw_Primitive
 from bsmax.actions import delete_objects
 from bsmax.math import get_offset_by_orient
+
+
 
 class Lattice:
 	def __init__(self):
 		self.finishon = 3
 		self.owner = None
+
 	def reset(self):
 		self.__init__()
-	def create(self, ctx, clickpoint):
-		bpy.ops.object.add(type='LATTICE', location=clickpoint.view)
+
+	def create(self, ctx, gride):
+		
+		bpy.ops.object.add(type='LATTICE', location=gride.location)
 		self.owner = ctx.active_object
-		self.owner.rotation_euler = clickpoint.orient
-	def update(self, ctx):
+		self.owner.rotation_euler = gride.rotation
+
+	def update(self):
 		pass
+
 	def abort(self):
 		delete_objects([self.owner])
 
-class Create_OT_Lattice(CreatePrimitive):
+
+
+class Create_OT_Lattice(Draw_Primitive):
 	bl_idname = "create.lattice"
 	bl_label = "Lattice"
 	subclass = Lattice()
@@ -45,8 +54,8 @@ class Create_OT_Lattice(CreatePrimitive):
 	width, length, height = 0, 0, 0
 	location = Vector((0,0,0))
 
-	def create(self, ctx, clickpoint):
-		self.subclass.create(ctx, clickpoint)
+	def create(self, ctx):
+		self.subclass.create(ctx, self.gride)
 		self.subclass.owner.scale = (0,0,0)
 		self.subclass.owner.data.points_u = self.resolution
 		self.subclass.owner.data.points_v = self.resolution
@@ -57,13 +66,18 @@ class Create_OT_Lattice(CreatePrimitive):
 			self.width = dimantion.width
 			self.length = dimantion.length
 			self.location = self.subclass.owner.location = dimantion.center
+
 		if clickcount == 2:
 			self.height = dimantion.height
-			offset = get_offset_by_orient(Vector((0,0,dimantion.height / 2)), dimantion.view_name)
-			self.subclass.owner.location = self.location + offset
+			# offset = get_offset_by_orient(Vector((0,0,dimantion.height / 2)), dimantion.view_name)
+			self.subclass.owner.location = self.location #+ offset
+
 		self.subclass.owner.scale = (self.width, self.length, self.height)
+
 	def finish(self):
 		pass
+
+
 
 class Lattice_OT_Edit(Operator):
 	bl_idname = "lattice.edit"
@@ -124,6 +138,8 @@ class Lattice_OT_Edit(Operator):
 		wm = ctx.window_manager
 		return wm.invoke_props_dialog(self, width = 140)
 
+
+
 classes = [Create_OT_Lattice,Lattice_OT_Edit]
 
 def register_lattice():
@@ -133,3 +149,6 @@ def register_lattice():
 def unregister_lattice():
 	for c in classes:
 		bpy.utils.unregister_class(c)
+
+if __name__ == '__main__':
+	register_lattice()

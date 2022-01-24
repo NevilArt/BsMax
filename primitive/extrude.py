@@ -17,9 +17,11 @@ import bpy
 from bpy.types import Operator
 from bpy.props import EnumProperty
 from mathutils import Vector
-from primitive.primitive import PrimitiveCurveClass,PrimitiveGeometryClass
+from primitive.primitive import PrimitiveCurveClass, PrimitiveGeometryClass
 from bsmax.actions import delete_objects
 from bsmax.curve import Curve,Segment
+
+
 
 def get_heights(height,hsegs,start_height,end_height):
 	heights = [0]
@@ -111,6 +113,8 @@ def get_extrude_mesh(curve, height, hsegs, csegs, segmode, capu, capl, start_hei
 			first += len(sverts)
 	return verts,edges,faces
 
+
+
 class Extrude_Curve(PrimitiveCurveClass):
 	def __init__(self):
 		self.classname = "Extrude_Curve"
@@ -133,6 +137,8 @@ class Extrude_Curve(PrimitiveCurveClass):
 		self.update_curve(shapes)
 	def abort(self):
 		delete_objects([self.owner])
+
+
 
 class Extrude_Mesh(PrimitiveGeometryClass):
 	def __init__(self):
@@ -162,6 +168,8 @@ class Extrude_Mesh(PrimitiveGeometryClass):
 	def abort(self):
 		delete_objects([self.owner])
 
+
+
 class Create_OT_Extrude(Operator):
 	bl_idname = "create.extrude"
 	bl_label = "Extrude"
@@ -190,6 +198,8 @@ class Create_OT_Extrude(Operator):
 			self.subclass.owner.location = target.location
 			self.subclass.owner.rotation_euler = target.rotation_euler
 		return{"FINISHED"}
+
+
 
 def register_extrude():
 	bpy.utils.register_class(Create_OT_Extrude)

@@ -15,8 +15,7 @@
 
 import bpy
 from math import pi
-from primitive.primitive import CreatePrimitive
-from primitive.gride import Draw_Primitive
+from primitive.primitive import Draw_Primitive
 from bsmax.actions import delete_objects
 from bsmax.math import get_distance
 
@@ -25,8 +24,13 @@ class Camera:
 		self.finishon = 2
 		self.owner = None
 		self.target = None
+
 	def reset(self):
 		self.__init__()
+	
+	def update(self):
+		pass
+
 	def abort(self):
 		delete_objects([self.owner])
 		if self.target:
@@ -55,7 +59,7 @@ class Create_OT_Camera(Draw_Primitive):
 				bpy.ops.camera.create_target()
 				self.subclass.target = self.subclass.owner.constraints["Track To"].target
 
-			self.subclass.target.location = dimantion.location
+			self.subclass.target.location = dimantion.end
 
 			size = get_distance(self.subclass.owner.location,self.subclass.target.location)/3
 			self.subclass.owner.data.display_size = size

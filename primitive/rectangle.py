@@ -14,8 +14,10 @@
 ############################################################################
 
 import bpy
-from primitive.primitive import CreatePrimitive, PrimitiveCurveClass
+from primitive.primitive import PrimitiveCurveClass, Draw_Primitive
 from bsmax.actions import delete_objects
+
+
 
 def get_rectangle_shapes(width, length, corner):
 	Shapes = []
@@ -48,6 +50,8 @@ def get_rectangle_shapes(width, length, corner):
 		Shapes.append([pt1, pt2, pt3, pt4, pt5, pt6, pt7, pt8])
 	return Shapes
 
+
+
 class Rectangle(PrimitiveCurveClass):
 	def __init__(self):
 		self.classname = "Rectangle"
@@ -55,42 +59,58 @@ class Rectangle(PrimitiveCurveClass):
 		self.owner = None
 		self.data = None
 		self.close = True
+
 	def reset(self):
 		self.__init__()
+
 	def create(self, ctx):
 		shapes = get_rectangle_shapes(0, 0, 0)
 		self.create_curve(ctx, shapes, self.classname)
 		pd = self.data.primitivedata
 		pd.classname = self.classname
+
 	def update(self):
 		pd = self.data.primitivedata
 		shapes = get_rectangle_shapes(pd.width, pd.length, pd.chamfer1)
 		self.update_curve(shapes)
+
 	def abort(self):
 		delete_objects([self.owner])
 
-class Create_OT_Rectangle(CreatePrimitive):
+
+
+class Create_OT_Rectangle(Draw_Primitive):
 	bl_idname = "create.rectangle"
 	bl_label = "Rectangle"
 	subclass = Rectangle()
+	use_gride = True
 
-	def create(self, ctx, clickpoint):
+	def create(self, ctx):
 		self.subclass.create(ctx)
 		self.params = self.subclass.owner.data.primitivedata
-		self.subclass.owner.location = clickpoint.view
-		self.subclass.owner.rotation_euler = clickpoint.orient
+		self.subclass.owner.location = self.gride.location
+		self.subclass.owner.rotation_euler = self.gride.rotation
+
 	def update(self, ctx, clickcount, dimantion):
 		if clickcount == 1:
-			self.params.width = dimantion.width
-			self.params.length = dimantion.length
-			self.subclass.owner.location = dimantion.center
-		if clickcount > 0:
-			self.subclass.update()
+			if self.ctrl:
+				self.params.width = dimantion.radius
+				self.params.length = dimantion.radius
+			else:
+				self.params.width = dimantion.width
+				self.params.length = dimantion.length
+				self.subclass.owner.location = dimantion.center
+
 	def finish(self):
 		pass
+
+
 
 def register_rectangle():
 	bpy.utils.register_class(Create_OT_Rectangle)
 
 def unregister_rectangle():
 	bpy.utils.unregister_class(Create_OT_Rectangle)
+
+if __name__ == '__main__':
+	register_rectangle()

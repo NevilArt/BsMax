@@ -14,8 +14,10 @@
 ############################################################################
 
 import bpy
-from primitive.primitive import PrimitiveGeometryClass, CreatePrimitive
+from primitive.primitive import PrimitiveGeometryClass, Draw_Primitive
 from bsmax.actions import delete_objects
+
+
 
 def get_plane_mesh(width, length, WSegs, LSegs):
 	verts, edges, faces = [], [], []
@@ -38,48 +40,68 @@ def get_plane_mesh(width, length, WSegs, LSegs):
 			faces.append((d, c, b, a)) 
 	return verts, edges, faces
 
+
+
 class Plane(PrimitiveGeometryClass):
 	def __init__(self):
 		self.classname = "Plane"
 		self.finishon = 2
 		self.owner = None
 		self.data = None
+
 	def reset(self):
 		self.__init__()
+
 	def create(self, ctx):
 		mesh = get_plane_mesh(0, 0, 1, 1)
 		self.create_mesh(ctx, mesh, self.classname)
 		pd = self.data.primitivedata
 		pd.classname = self.classname
+
 	def update(self):
 		pd = self.data.primitivedata
 		mesh = get_plane_mesh(pd.width, pd.length, pd.wsegs, pd.lsegs)
 		self.update_mesh(mesh)
+
 	def abort(self):
 		delete_objects([self.owner])
 
-class Create_OT_Plane(CreatePrimitive):
+
+
+class Create_OT_Plane(Draw_Primitive):
 	bl_idname = "create.plane"
 	bl_label = "Plane"
 	subclass = Plane()
+	use_gride = True
 
-	def create(self, ctx, clickpoint):
+	def create(self, ctx):
 		self.subclass.create(ctx)
 		self.params = self.subclass.owner.data.primitivedata
-		self.subclass.owner.location = clickpoint.view
-		self.subclass.owner.rotation_euler = clickpoint.orient
+		self.subclass.owner.location = self.gride.location
+		self.subclass.owner.rotation_euler = self.gride.rotation
+
 	def update(self, ctx, clickcount, dimantion):
 		if clickcount == 1:
-			self.params.width = dimantion.width
-			self.params.length = dimantion.length
-			self.subclass.owner.location = dimantion.center
+			if self.ctrl:
+				self.params.width = dimantion.radius
+				self.params.length = dimantion.radius
+			else:
+				self.params.width = dimantion.width
+				self.params.length = dimantion.length
+				self.subclass.owner.location = dimantion.center
 		if clickcount > 0:
 			self.subclass.update()
+
 	def finish(self):
 		pass
+
+
 
 def register_plane():
 	bpy.utils.register_class(Create_OT_Plane)
 
 def unregister_plane():
 	bpy.utils.unregister_class(Create_OT_Plane)
+
+if __name__ == '__main__':
+	register_plane()

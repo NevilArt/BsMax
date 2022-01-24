@@ -15,10 +15,10 @@
 
 import bpy
 from math import pi, sin, cos, radians
-from primitive.monkey import register_monkey
-from primitive.primitive import PrimitiveGeometryClass, CreatePrimitive
-from primitive.gride import Draw_Primitive
+from primitive.primitive import PrimitiveGeometryClass, Draw_Primitive
 from bsmax.actions import delete_objects
+
+
 
 def get_oiltank_mesh(radius,height,capheight,blend,ssegs,csegs,hsegs,sliceon,sfrom,sto):
 	verts,edges,faces = [],[],[]
@@ -133,14 +133,18 @@ def get_oiltank_mesh(radius,height,capheight,blend,ssegs,csegs,hsegs,sliceon,sfr
 			faces.append((c,f,a))
 	return verts,edges,faces
 
+
+
 class OilTank(PrimitiveGeometryClass):
 	def __init__(self):
 		self.classname = "OilTank"
 		self.finishon = 4
 		self.owner = None
 		self.data = None
+
 	def reset(self):
 		self.__init__()
+
 	def create(self, ctx):
 		mesh = get_oiltank_mesh(0,0,0,0,18,8,6,False,0,360)
 		self.create_mesh(ctx, mesh, self.classname)
@@ -148,6 +152,7 @@ class OilTank(PrimitiveGeometryClass):
 		pd.classname = self.classname
 		pd.ssegs, pd.csegs, pd.hsegs = 18,8,3
 		pd.center = True
+
 	def update(self):
 		pd = self.data.primitivedata
 		csegs = pd.csegs if not pd.seglock else pd.ssegs-2
@@ -168,6 +173,7 @@ class OilTank(PrimitiveGeometryClass):
 			pd.ssegs, csegs, pd.hsegs,
 			pd.sliceon, pd.sfrom, pd.sto)
 		self.update_mesh(mesh)
+
 	def abort(self):
 		delete_objects([self.owner])
 
@@ -184,17 +190,29 @@ class Create_OT_OilTank(Draw_Primitive):
 		self.params = self.subclass.owner.data.primitivedata
 		self.subclass.owner.location = self.gride.location
 		self.subclass.owner.rotation_euler = self.gride.rotation
+
 	def update(self, ctx, clickcount, dimantion):
 		if clickcount == 1:
-			self.params.radius1 = dimantion.radius
+			if self.ctrl:
+				self.params.radius1 = dimantion.radius
+				self.params.height = dimantion.radius*3
+				self.params.thickness = dimantion.radius/2
+			else:
+				self.params.radius1 = dimantion.radius
+		
 		elif clickcount == 2:
+			if self.use_single_draw:
+				self.jump_to_end()
+				return
 			self.params.height = dimantion.height
+		
 		elif clickcount == 3:
 			self.params.thickness = dimantion.radius
-		if clickcount > 0:
-			self.subclass.update()
+
 	def finish(self):
 		pass
+
+
 
 def register_oiltank():
 	bpy.utils.register_class(Create_OT_OilTank)

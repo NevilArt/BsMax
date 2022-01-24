@@ -1,3 +1,8 @@
+#0,1,0,20220111
+	Tool menu issue from last update fixed.
+	The error on Disable/Enalble of addon fixed.
+	'anim.set_key_filters' unregister issue fixed.
+
 #0,1,0,20220109
 	'Align object' tool completely renewed based on world martix (better and faster).
 	'Align object' can align perfectly on pose bone (Rotation and Scale).

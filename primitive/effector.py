@@ -15,18 +15,26 @@
 
 import bpy
 from bpy.props import EnumProperty
-from primitive.primitive import CreatePrimitive
-from primitive.gride import Draw_Primitive
+from primitive.primitive import Draw_Primitive
 from bsmax.actions import delete_objects
+
+
 
 class Effector:
 	def __init__(self):
 		self.finishon = 2
 		self.owner = None
+
 	def reset(self):
 		self.__init__()
+
+	def update(self):
+		pass
+
 	def abort(self):
 		delete_objects([self.owner])
+
+
 
 class Create_OT_Effector(Draw_Primitive):
 	bl_idname="create.effector"
@@ -47,11 +55,15 @@ class Create_OT_Effector(Draw_Primitive):
 			radius=1, location=self.gride.location)
 		self.subclass.owner = ctx.active_object
 		self.subclass.owner.rotation_euler = self.gride.rotation
+
 	def update(self, ctx, clickcount, dimantion):
 		if clickcount == 1:
 			self.subclass.owner.empty_display_size = dimantion.radius
+
 	def finish(self):
 		pass
+
+
 
 def register_effector():
 	bpy.utils.register_class(Create_OT_Effector)
