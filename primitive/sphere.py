@@ -15,8 +15,10 @@
 
 import bpy
 from math import pi, sin, cos, radians
-from primitive.primitive import PrimitiveGeometryClass, Draw_Primitive
+from primitive.primitive import Primitive_Geometry_Class, Draw_Primitive
 from bsmax.actions import delete_objects
+
+
 
 def get_sphere_mesh(radius, ssegs, hsegs, hemisphere, chop, sliceon, sfrom, sto, base):
 	verts, edges, faces = [], [], []
@@ -129,20 +131,20 @@ def get_sphere_mesh(radius, ssegs, hsegs, hemisphere, chop, sliceon, sfrom, sto,
 
 	return verts, edges, faces
 
-class Sphere(PrimitiveGeometryClass):
-	def __init__(self):
+
+
+class Sphere(Primitive_Geometry_Class):
+	def init(self):
 		self.classname = "Sphere"
 		self.finishon = 2
-		self.owner = None
-		self.data = None
-	def reset(self):
-		self.__init__()
+
 	def create(self, ctx):
 		mesh = get_sphere_mesh(0,32,32,0,False,False,0,360,False)
 		self.create_mesh(ctx, mesh, self.classname)
 		pd = self.data.primitivedata
 		pd.classname = self.classname
 		pd.ssegs, pd.hsegs, pd.seglock = 32,30,True
+
 	def update(self):
 		pd = self.data.primitivedata
 		hsegs = pd.hsegs if not pd.seglock else pd.ssegs - 2
@@ -152,6 +154,7 @@ class Sphere(PrimitiveGeometryClass):
 				pd.sliceon, pd.sfrom, pd.sto,
 				pd.base)
 		self.update_mesh(mesh)
+
 	def abort(self):
 		delete_objects([self.owner])
 
@@ -175,8 +178,7 @@ class Create_OT_Sphere(Draw_Primitive):
 		if clickcount > 0:
 			self.subclass.update()
 
-	def finish(self):
-		pass
+
 
 def register_sphere():
 	bpy.utils.register_class(Create_OT_Sphere)

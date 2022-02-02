@@ -14,7 +14,7 @@
 ############################################################################
 
 import bpy
-from primitive.primitive import PrimitiveCurveClass, Draw_Primitive
+from primitive.primitive import Primitive_Curve_Class, Draw_Primitive
 from bsmax.actions import delete_objects
 
 
@@ -52,16 +52,11 @@ def get_rectangle_shapes(width, length, corner):
 
 
 
-class Rectangle(PrimitiveCurveClass):
-	def __init__(self):
+class Rectangle(Primitive_Curve_Class):
+	def init(self):
 		self.classname = "Rectangle"
 		self.finishon = 2
-		self.owner = None
-		self.data = None
 		self.close = True
-
-	def reset(self):
-		self.__init__()
 
 	def create(self, ctx):
 		shapes = get_rectangle_shapes(0, 0, 0)
@@ -100,9 +95,6 @@ class Create_OT_Rectangle(Draw_Primitive):
 				self.params.width = dimantion.width
 				self.params.length = dimantion.length
 				self.subclass.owner.location = dimantion.center
-
-	def finish(self):
-		pass
 
 
 

@@ -18,7 +18,6 @@ from mathutils import Vector
 from bpy.props import EnumProperty
 from primitive.primitive import Draw_Primitive
 from bsmax.actions import delete_objects
-from bsmax.math import get_offset_by_orient
 
 
 
@@ -26,15 +25,22 @@ class Metaball:
 	def __init__(self):
 		self.finishon = 3
 		self.owner = None
+
 	def reset(self):
 		self.__init__()
+
 	def create(self, ctx, metaball_type):
 		bpy.ops.object.metaball_add(type=metaball_type)
 		self.owner = ctx.active_object
+
 	def update(self):
 		pass
+
 	def abort(self):
 		delete_objects([self.owner])
+	
+	def finish(self):
+		pass
 
 
 
@@ -114,7 +120,6 @@ class Create_OT_Metaball(Draw_Primitive):
 
 			elif clickcount == 2:
 				height = dimantion.height / 2
-				# offset = get_offset_by_orient(Vector((0,0,height)), dimantion.view_name)
 				data.elements[0].size_z = height
 				self.subclass.owner.location = self.location #+ offset
 
@@ -122,9 +127,6 @@ class Create_OT_Metaball(Draw_Primitive):
 				data.elements[0].radius = 0.01 + dimantion.radius
 		#TODO adapt resolation by size
 		#self.subclass.data.resolution = 1.33
-
-	def finish(self):
-		pass
 
 
 

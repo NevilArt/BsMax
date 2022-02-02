@@ -14,7 +14,7 @@
 ############################################################################
 
 import bpy, bmesh
-from primitive.primitive import PrimitiveGeometryClass, Draw_Primitive
+from primitive.primitive import Primitive_Geometry_Class, Draw_Primitive
 from bsmax.actions import delete_objects
 
 
@@ -51,19 +51,19 @@ def update_mesher(self, ctx):
 
 
 
-class Mesher(PrimitiveGeometryClass):
+class Mesher(Primitive_Geometry_Class):
 	def __init__(self):
 		self.classname = "Mesher"
 		self.finishon = 2
 		self.owner = None
 		self.data = None
-	def reset(self):
-		self.__init__()
+
 	def create(self, ctx):
 		mesh = get_mesher_mesh(0)
 		self.create_mesh(ctx, mesh, self.classname)
 		pd = self.data.primitivedata
 		pd.classname = self.classname
+
 	def update(self):
 		pd = self.data.primitivedata
 		if pd.target == "":
@@ -72,6 +72,7 @@ class Mesher(PrimitiveGeometryClass):
 		else:
 			self.target = pd.target
 			update_mesher(self, bpy.context)
+
 	def abort(self):
 		delete_objects([self.owner])
 
@@ -95,8 +96,6 @@ class Create_OT_Mesher(Draw_Primitive):
 		if clickcount > 0:
 			self.subclass.update(ctx)
 
-	def finish(self):
-		pass
 
 
 

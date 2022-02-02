@@ -14,7 +14,7 @@
 ############################################################################
 
 import bpy
-from primitive.primitive import PrimitiveGeometryClass, Draw_Primitive
+from primitive.primitive import Primitive_Geometry_Class, Draw_Primitive
 from bsmax.actions import delete_objects
 
 
@@ -42,15 +42,10 @@ def get_plane_mesh(width, length, WSegs, LSegs):
 
 
 
-class Plane(PrimitiveGeometryClass):
+class Plane(Primitive_Geometry_Class):
 	def __init__(self):
 		self.classname = "Plane"
 		self.finishon = 2
-		self.owner = None
-		self.data = None
-
-	def reset(self):
-		self.__init__()
 
 	def create(self, ctx):
 		mesh = get_plane_mesh(0, 0, 1, 1)
@@ -91,9 +86,6 @@ class Create_OT_Plane(Draw_Primitive):
 				self.subclass.owner.location = dimantion.center
 		if clickcount > 0:
 			self.subclass.update()
-
-	def finish(self):
-		pass
 
 
 

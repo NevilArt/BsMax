@@ -15,20 +15,16 @@
 
 import bpy, bmesh
 from mathutils import Matrix
-from primitive.primitive import PrimitiveGeometryClass, Draw_Primitive
+from primitive.primitive import Primitive_Geometry_Class, Draw_Primitive
 from bsmax.actions import delete_objects
 
 
 
-class Icosphere(PrimitiveGeometryClass):
-	def __init__(self):
+class Icosphere(Primitive_Geometry_Class):
+	def init(self):
 		self.classname = "Icosphere"
 		self.finishon = 2
-		self.owner = None
-		self.data = None
-
-	def reset(self):
-		self.__init__()
+		self.version = bpy.app.version[0]
 
 	def create(self, ctx):
 		# Create an empty mesh and the object.
@@ -40,7 +36,7 @@ class Icosphere(PrimitiveGeometryClass):
 		self.owner.select_set(state=True)
 		# Construct the bmesh icosphere and assign it to the blender mesh
 		bm = bmesh.new()
-		bmesh.ops.create_icosphere(bm, matrix=Matrix.Scale(0, 4), calc_uvs=True)
+		bmesh.ops.create_icosphere(bm, matrix=Matrix.Scale(0, 4), calc_uvs=False)
 		bm.to_mesh(new_mesh)
 		bm.free()
 		self.data = self.owner.data
@@ -52,7 +48,12 @@ class Icosphere(PrimitiveGeometryClass):
 		pd = self.data.primitivedata
 		orgmesh = bpy.data.meshes[self.data.name]
 		bm = bmesh.new()
-		bmesh.ops.create_icosphere(bm, subdivisions=pd.wsegs,
+		if self.version >= 3:
+			bmesh.ops.create_icosphere(bm, subdivisions=pd.wsegs,
+							radius=pd.radius1,
+							matrix=Matrix(), calc_uvs=True)
+		else:
+			bmesh.ops.create_icosphere(bm, subdivisions=pd.wsegs,
 							diameter=pd.radius1,
 							matrix=Matrix(), calc_uvs=True)
 		bm.to_mesh(orgmesh.id_data)
@@ -80,9 +81,11 @@ class Create_OT_Icosphere(Draw_Primitive):
 			self.params.radius1 = dimantion.radius
 		if clickcount > 0:
 			self.subclass.update()
-
+	
 	def finish(self):
+		# claculate uv at the end
 		pass
+
 
 
 def register_icosphere():

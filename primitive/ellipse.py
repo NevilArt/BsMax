@@ -14,7 +14,7 @@
 ############################################################################
 
 import bpy
-from primitive.primitive import PrimitiveCurveClass, Draw_Primitive
+from primitive.primitive import Primitive_Curve_Class, Draw_Primitive
 from bsmax.actions import delete_objects
 
 
@@ -40,16 +40,13 @@ def get_ellipse_shape(length, width, outline, Thickness):
 
 
 
-class Ellipse(PrimitiveCurveClass):
+class Ellipse(Primitive_Curve_Class):
 	def __init__(self):
 		self.classname = "Ellipse"
 		self.finishon = 2
 		self.owner = None
 		self.data = None
 		self.close = True
-
-	def reset(self):
-		self.__init__()
 
 	def create(self, ctx):
 		shapes = get_ellipse_shape(0, 0, False, 0)
@@ -89,9 +86,6 @@ class Create_OT_Ellipse(Draw_Primitive):
 				self.params.width = dimantion.width/2
 				self.params.length = dimantion.length/2
 				self.subclass.owner.location = dimantion.center
-
-	def finish(self):
-		pass
 
 
 

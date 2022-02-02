@@ -16,7 +16,8 @@
 import bpy
 from bpy.props import BoolProperty
 from math import pi, sin, cos
-from primitive.primitive import PrimitiveCurveClass, Draw_Primitive
+from primitive.primitive import (Draw_Primitive,
+	Primitive_Curve_Class, Primitive_Public_Class)
 from bsmax.actions import set_create_target, delete_objects
 
 
@@ -30,14 +31,13 @@ def get_compass_shape(radius):
 	shape = [(v,v,'FREE',v,'FREE') for v in verts]
 	return [shape]
 
-class Light:
-	def __init__(self):
+
+
+class Light(Primitive_Public_Class):
+	def init(self):
 		self.finishon = 2
 		self.owner = None
 		self.target = None
-
-	def reset(self):
-		self.__init__()
 
 	def create(self, ctx, datatype):
 		name = datatype.capitalize()
@@ -47,25 +47,19 @@ class Light:
 		ctx.view_layer.objects.active = newlight
 		newlight.select_set(True)
 		self.owner = newlight
-	
-	def update(self):
-		pass
 
 	def abort(self):
 		delete_objects([self.owner, self.target])
 
 
 
-class Compass(PrimitiveCurveClass):
+class Compass(Primitive_Curve_Class):
 	def __init__(self):
 		self.classname = "Compass"
 		self.finishon = 3
 		self.owner = None
 		self.data = None
 		self.close = True
-
-	def reset(self):
-		self.__init__()
 
 	def create(self, ctx):
 		shapes = get_compass_shape(0)
@@ -98,9 +92,6 @@ class Create_OT_PointLight(Draw_Primitive):
 		if self.drag:
 			self.subclass.owner.location = dimantion.end
 
-	def finish(self):
-		pass
-
 
 
 class Create_OT_SpotLight(Draw_Primitive):
@@ -123,8 +114,6 @@ class Create_OT_SpotLight(Draw_Primitive):
 			if self.subclass.target != None:
 				self.subclass.target.location = dimantion.end
 
-	def finish(self):
-		pass
 
 
 
@@ -213,8 +202,6 @@ class Create_OT_AreaLight(Draw_Primitive):
 				self.subclass.target = set_create_target(self.subclass.owner, None)
 			self.subclass.target.location = dimantion.end
 
-	def finish(self):
-		pass
 
 
 

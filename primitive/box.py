@@ -14,8 +14,10 @@
 ############################################################################
 
 import bpy
-from primitive.primitive import PrimitiveGeometryClass, Draw_Primitive
+from primitive.primitive import Primitive_Geometry_Class, Draw_Primitive
 from bsmax.actions import delete_objects
+
+
 
 def get_box_mesh(width, length, height, wsegs, lsegs, hsegs):
 	verts, edges, faces = [], [], []
@@ -206,44 +208,30 @@ def get_box_mesh(width, length, height, wsegs, lsegs, hsegs):
 			faces.append((d, c, b, a))
 	return verts, edges, faces
 
-class Box_Data:
-	def __init__(self):
-		self.width = 1
-		self.length = 1
-		self.height = 1
-		self.wsegs = 1
-		self.lsegs = 1
-		self.hsegs = 1
-	
-	def update(self, target):
-		self.width = 1
-		self.length = 1
-		self.height = 1
-		self.wsegs = 1
-		self.lsegs = 1
-		self.hsegs = 1
 
-box_data = Box_Data()
 
-class Box(PrimitiveGeometryClass):
-	def __init__(self):
+class Box(Primitive_Geometry_Class):
+	def init(self):
 		self.classname = "Box"
 		self.finishon = 3
-		self.owner = None
-		self.data = None
-	def reset(self):
-		self.__init__()
+
 	def create(self, ctx):
-		mesh = get_box_mesh(0,0,0,1,1,1)
+		w, l, h = 1, 1, 1
+		# Create Mesh Data
+		mesh = get_box_mesh(0, 0, 0, w, l, h)
+		# Create object and link mesh data
 		self.create_mesh(ctx, mesh, self.classname)
+		# Save custom atrributes on object data
 		pd = self.data.primitivedata
 		pd.classname = self.classname
-		pd.wsegs, pd.lsegs, pd.hsegs = 1,1,1
+		pd.wsegs, pd.lsegs, pd.hsegs = w, l, h
+
 	def update(self):
 		pd = self.data.primitivedata
 		mesh = get_box_mesh(pd.width, pd.length, pd.height,
 					pd.wsegs, pd.lsegs, pd.hsegs)
 		self.update_mesh(mesh)
+
 	def abort(self):
 		delete_objects([self.owner])
 
@@ -273,13 +261,15 @@ class Create_OT_Box(Draw_Primitive):
 				self.subclass.owner.location = dimantion.center
 		
 		elif clickcount == 2:
-			if self.use_single_draw:
+			width_length = self.params.width + self.params.length
+
+			if self.use_single_draw or width_length == 0:
 				self.jump_to_end()
 				return
+
 			self.params.height = dimantion.height
 
-	def finish(self):
-		pass
+
 
 def register_box():
 	bpy.utils.register_class(Create_OT_Box)

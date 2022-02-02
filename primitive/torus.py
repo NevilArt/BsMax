@@ -15,8 +15,10 @@
 
 import bpy
 from math import sin, cos, pi, radians
-from primitive.primitive import PrimitiveGeometryClass, Draw_Primitive
+from primitive.primitive import Primitive_Geometry_Class, Draw_Primitive
 from bsmax.actions import delete_objects
+
+
 
 def get_torus_mesh( radius1, radius2, rotation, twist, 
 				segments, sides, sliceon, sfrom, sto):
@@ -83,16 +85,15 @@ def get_torus_mesh( radius1, radius2, rotation, twist,
 			faces.append((d,c,b,a))
 	return verts, edges, faces
 
-class Torus(PrimitiveGeometryClass):
-	def __init__(self):
+
+
+class Torus(Primitive_Geometry_Class):
+	def init(self):
 		self.classname = "Torus"
 		self.finishon = 3
-		self.owner = None
-		self.data = None
 		""" Default Settings """
 		self.auto_smooth_angle = 0.785398
-	def reset(self):
-		self.__init__()
+
 	def create(self, ctx):
 		mesh = get_torus_mesh(0, 0, 0, 0, 24, 12, False, 0, 360)
 		self.create_mesh(ctx, mesh, self.classname)
@@ -101,11 +102,13 @@ class Torus(PrimitiveGeometryClass):
 		pd.ssegs, pd.ssegs_b = 24, 12
 		""" Apply Default Settings """
 		self.data.auto_smooth_angle = self.auto_smooth_angle
+
 	def update(self):
 		pd = self.data.primitivedata
 		mesh = get_torus_mesh(pd.radius1, pd.radius2, pd.rotation, pd.twist, 
 				pd.ssegs, pd.ssegs_b, pd.sliceon, pd.sfrom, pd.sto)
 		self.update_mesh(mesh)
+
 	def abort(self):
 		delete_objects([self.owner])
 
@@ -137,8 +140,7 @@ class Create_OT_Torus(Draw_Primitive):
 				return
 			self.params.radius2 = dimantion.radius
 
-	def finish(self):
-		pass
+
 
 def register_torus():
 	bpy.utils.register_class(Create_OT_Torus)

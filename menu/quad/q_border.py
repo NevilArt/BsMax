@@ -13,9 +13,11 @@
 #	along with this program.  If not, see <https://www.gnu.org/licenses/>.
 ############################################################################
 
-from .q_refrence import QuadMenuRef
+from .q_refrence import quadmenuref
 from .q_graphic import get_frame
 from .q_items import ItemShape
+
+
 
 class QuadBorderFrame:
 	def __init__(self, x, y, width, height, mirror):
@@ -23,7 +25,7 @@ class QuadBorderFrame:
 		self.y = y - height
 		self.width = width
 		self.height = height
-		self.color = QuadMenuRef.border_color
+		self.color = quadmenuref.border_color
 		self.mirror = mirror
 		self.controllers = []
 		self.create()

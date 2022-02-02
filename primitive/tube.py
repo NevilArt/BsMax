@@ -13,10 +13,12 @@
 #	along with this program.  If not,see <https://www.gnu.org/licenses/>.
 ############################################################################
 
-import bpy, math
+import bpy
 from math import pi, sin, cos, radians
-from primitive.primitive import PrimitiveGeometryClass, Draw_Primitive
+from primitive.primitive import Primitive_Geometry_Class, Draw_Primitive
 from bsmax.actions import delete_objects
+
+
 
 def get_tube_mesh(radius1, radius2, height, hsegs, csegs, ssegs, sliceon, sfrom, sto):
 	Sides = []
@@ -199,26 +201,27 @@ def get_tube_mesh(radius1, radius2, height, hsegs, csegs, ssegs, sliceon, sfrom,
 
 	return verts, edges, faces
 
-class Tube(PrimitiveGeometryClass):
-	def __init__(self):
+
+
+class Tube(Primitive_Geometry_Class):
+	def init(self):
 		self.classname = "Tube"
 		self.finishon = 4
-		self.owner = None
-		self.data = None
-	def reset(self):
-		self.__init__()
+
 	def create(self, ctx):
 		mesh = get_tube_mesh(0, 0, 0, 1, 1, 18, False, 0, 360)
 		self.create_mesh(ctx, mesh, self.classname)
 		pd = self.data.primitivedata
 		pd.classname = self.classname
 		pd.ssegs = 18
+
 	def update(self):
 		pd = self.data.primitivedata
 		mesh = get_tube_mesh(pd.radius1, pd.radius2, pd.height,
 			pd.hsegs, pd.csegs, pd.ssegs,
 			pd.sliceon, pd.sfrom, pd.sto)
 		self.update_mesh(mesh)
+
 	def abort(self):
 		delete_objects([self.owner])
 
@@ -255,8 +258,7 @@ class Create_OT_Tube(Draw_Primitive):
 		elif clickcount == 3:
 			self.params.height = dimantion.height
 
-	def finish(self):
-		pass
+
 
 def register_tube():
 	bpy.utils.register_class(Create_OT_Tube)

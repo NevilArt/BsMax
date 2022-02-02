@@ -17,14 +17,44 @@ from gpu_extras.batch import batch_for_shader
 from bpy.types import Operator
 from mathutils import Vector
 
-from bsmax.actions import link_to_scene, set_as_active_object
+from bsmax.actions import link_to_scene, set_as_active_object, delete_objects
 from bsmax.state import is_object_mode
 
 from .gride import Gride, Dimantion, Click_Point
 
+class Primitive_Public_Class:
+	def __init__(self):
+		self.init()
+	
+	def init(self):
+		pass
+
+	def reset(self):
+		self.__init__()
+
+	def update(self):
+		pass
+
+	def abort(self):
+		pass
+	
+	def finish(self):
+		pass
 
 
-class PrimitiveGeometryClass:
+
+class Primitive_Geometry_Class:
+	def __init__(self):
+		self.classname = ""
+		self.finishon = 0
+		self.owner = None
+		self.data = None
+		self.ready = False
+		self.init()
+	
+	def reset(self):
+		self.__init__()
+
 	def create_mesh(self, ctx, meshdata, classname):
 		verts,edges,faces, = meshdata
 		newmesh = bpy.data.meshes.new(classname)
@@ -59,12 +89,30 @@ class PrimitiveGeometryClass:
 			# 	self.data.from_pydata(verts, edges, faces)
 			# 	""" Note this method is faster but clear the keyframes too """
 			# 	""" I had to skip this part till I find a solution for this """
+	
+	def update(self):
+		pass
+
+	def abort(self):
+		pass
+	
+	def finish(self):
+		self.ready = True
 
 
 
-class PrimitiveCurveClass:
+class Primitive_Curve_Class:
 	def __init__(self):
+		self.classname = ""
+		self.finishon = 0
+		self.owner = None
+		self.data = None
+		self.ready = False
 		self.close = False
+		self.init()
+	
+	def reset(self):
+		self.__init__()
 
 	def create_curve(self, ctx, shapes, classname):
 		# Create Spline
@@ -81,6 +129,15 @@ class PrimitiveCurveClass:
 		if self.data != None and bpy.context.mode == 'OBJECT':
 			curve = bpy.data.curves[self.data.name]
 			curve_from_shapes(curve, shapes, self.close)
+	
+	def update(self):
+		pass
+
+	def abort(self):
+		pass
+
+	def finish(self):
+		self.ready = True
 
 
 
@@ -129,10 +186,10 @@ def GetCursurMesh(size, x, y):
 def DrawCursurOveride(self):
 	bgl.glEnable(bgl.GL_BLEND)
 	shader = gpu.shader.from_builtin('2D_UNIFORM_COLOR')
-	v,f = GetCursurMesh(20,self.mpos.x, self.mpos.y)
-	batch = batch_for_shader(shader,'TRIS',{"pos":v},indices=f)
+	v,f = GetCursurMesh(20, self.mpos.x, self.mpos.y)
+	batch = batch_for_shader(shader, 'TRIS', {"pos":v}, indices=f)
 	shader.bind()
-	shader.uniform_float("color",(0.8,0.8,0.8,0.6))
+	shader.uniform_float("color",(0.8, 0.8, 0.8, 0.6))
 	batch.draw(shader)
 	bgl.glDisable(bgl.GL_BLEND)
 
@@ -160,37 +217,42 @@ def is_true_class(ctx, classname):
 
 
 def fix_type_visablity(subclass, ctx):
+	owner_type = ''
+
 	if subclass:
 		if subclass.owner:
 			owner_type = subclass.owner.type
-			if owner_type == 'MESH':
-				ctx.space_data.show_object_viewport_mesh = True
-			elif owner_type == 'CURVE':
-				ctx.space_data.show_object_viewport_curve = True
-			elif owner_type == 'SURFACE':
-				ctx.space_data.show_object_viewport_surf = True
-			elif owner_type == 'META':
-				ctx.space_data.show_object_viewport_meta = True
-			elif owner_type == 'FONT':
-				ctx.space_data.show_object_viewport_font = True
-			elif owner_type == 'VOLUME':
-				ctx.space_data.show_object_viewport_volume = True
-			elif owner_type == 'GPENCIL':
-				ctx.space_data.show_object_viewport_grease_pencil = True
-			elif owner_type == 'ARMATURE':
-				ctx.space_data.show_object_viewport_armature = True
-			elif owner_type == 'LATTICE':
-				ctx.space_data.show_object_viewport_lattice = True
-			elif owner_type == 'EMPTY':
-				ctx.space_data.show_object_viewport_empty = True
-			elif owner_type == 'LIGHT':
-				ctx.space_data.show_object_viewport_light = True
-			elif owner_type == 'LIGHT_PROBE':
-				ctx.space_data.show_object_viewport_light_probe = True
-			elif owner_type == 'CAMERA':
-				ctx.space_data.show_object_viewport_camera = True
-			elif owner_type == 'SPEAKER':
-				ctx.space_data.show_object_viewport_speaker = True
+
+	if owner_type == '':
+		return
+	elif owner_type == 'MESH':
+		ctx.space_data.show_object_viewport_mesh = True
+	elif owner_type == 'CURVE':
+		ctx.space_data.show_object_viewport_curve = True
+	elif owner_type == 'SURFACE':
+		ctx.space_data.show_object_viewport_surf = True
+	elif owner_type == 'META':
+		ctx.space_data.show_object_viewport_meta = True
+	elif owner_type == 'FONT':
+		ctx.space_data.show_object_viewport_font = True
+	elif owner_type == 'VOLUME':
+		ctx.space_data.show_object_viewport_volume = True
+	elif owner_type == 'GPENCIL':
+		ctx.space_data.show_object_viewport_grease_pencil = True
+	elif owner_type == 'ARMATURE':
+		ctx.space_data.show_object_viewport_armature = True
+	elif owner_type == 'LATTICE':
+		ctx.space_data.show_object_viewport_lattice = True
+	elif owner_type == 'EMPTY':
+		ctx.space_data.show_object_viewport_empty = True
+	elif owner_type == 'LIGHT':
+		ctx.space_data.show_object_viewport_light = True
+	elif owner_type == 'LIGHT_PROBE':
+		ctx.space_data.show_object_viewport_light_probe = True
+	elif owner_type == 'CAMERA':
+		ctx.space_data.show_object_viewport_camera = True
+	elif owner_type == 'SPEAKER':
+		ctx.space_data.show_object_viewport_speaker = True
 
 
 
@@ -222,6 +284,7 @@ class Draw_Primitive(Operator):
 	use_gride = False
 	use_surface = False
 	use_single_click = False
+	use_single_draw = False
 	changed = False
 	""" mouse override graphic handler """
 	draw_handler = None
@@ -271,6 +334,9 @@ class Draw_Primitive(Operator):
 		self.point_current.location = self.gride.location.copy()
 		self.point_start.location = self.point_current.location.copy()
 
+		""" Triger Draw mode for object """
+		self.subclass.on_draw = True
+
 		self.create(ctx)
 		
 	def click_count(self, event, x, y):
@@ -299,6 +365,7 @@ class Draw_Primitive(Operator):
 		""" Delete accidently drawed very tiny objects """
 		if self.acceptable():
 			self.finish()
+			self.subclass.finish()
 			bpy.ops.ed.undo_push()
 		else:
 			self.subclass.abort()
@@ -306,6 +373,9 @@ class Draw_Primitive(Operator):
 		""" Now you can lout MORTAL COMBAT Ha Ha Ha """
 	
 	def check_event(self, key, action):
+		pass
+	
+	def finish(self):
 		pass
 
 	def modal(self, ctx, event):

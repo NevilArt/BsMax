@@ -13,9 +13,11 @@
 #	along with this program.  If not, see <https://www.gnu.org/licenses/>.
 ############################################################################
 
-from .q_refrence import QuadMenuRef
+from .q_refrence import quadmenuref
 from .q_graphic import get_rectangle
 from .q_items import ItemShape
+
+
 
 class QuadSeprator:
 	def __init__(self, x, y, width, y_offset, mirror):
@@ -26,7 +28,8 @@ class QuadSeprator:
 		self.height = 1
 		self.my_x = x
 		self.my_y = y - y_offset
-		self.color = QuadMenuRef.border_color
+		global quadmenuref
+		self.color = quadmenuref.border_color
 		self.mirror = mirror
 		self.controllers = []
 		self.create()

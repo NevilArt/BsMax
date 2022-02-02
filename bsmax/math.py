@@ -230,25 +230,6 @@ def get_axis_constraint(oring, current):
 
 
 
-def get_offset_by_orient(offset ,orient):
-	x, y, z = offset
-	# Z cheked x and y not tested yet
-	if orient == 'FRONT': 
-		return Vector((x, z, -y))
-	elif orient == 'BACK':
-		return Vector((-x, -z, y))
-	elif orient == 'LEFT':
-		return Vector((z, -y, -x))
-	elif orient == 'RIGHT':
-		return Vector((-z, y, x))
-	elif orient == 'TOP':
-		return Vector((x, y, z))
-	elif orient == 'BOTTOM':
-		return Vector((x, -y, -z))
-	else:
-		return offset
-
-
 
 def get_bias(bias, time):
 	if bias > 0:
@@ -336,6 +317,19 @@ def transform_points_to_matrix(points, matrix):
 
 
 
+def transform_point_to_matrix(point, matrix):
+	m = matrix
+	rxv = Vector((m[0][0], m[0][1], m[0][2]))
+	ryv = Vector((m[1][0], m[1][1], m[1][2]))
+	rzv = Vector((m[2][0], m[2][1], m[2][2]))
+	tv  = Vector((m[0][3], m[1][3], m[2][3]))
+	x = dot(point, rxv) + tv.x
+	y = dot(point, ryv) + tv.y
+	z = dot(point, rzv) + tv.z
+	return Vector((x, y, z))
+
+
+
 def to_local_matrix(point, matrix):
 	# Untranslating
 	p = point - matrix.translation
@@ -357,3 +351,34 @@ def to_local_matrix(point, matrix):
 	# UnScaling and return
 	s = Vector((1/scale.x, 1/scale.y, 1/scale.z))
 	return Vector((p.x*s.x, p.y*s.y, p.z*s.z))
+
+
+def inverse_transform_matrix(matrix):
+	m = matrix
+	n = matrix = Matrix((
+		(1, 0, 0, -m[0][3]),
+		(0, 1, 0, -m[1][3]),
+		(0, 0, 1, -m[2][3]),
+		(0, 0, 0, 1)))
+
+	m00, m01, m02, _ = m[0]
+	m10, m11, m12, _ = m[1]
+	m20, m21, m22, _ = m[2]
+	
+	a1 = m00*m11*m22 + m01*m12*m20 + m02*m10*m21
+	a2 = m20*m11*m02 + m21*m12*m00 + m22*m10*m01
+	a = 1/(a1-a2)
+
+	n[0][0] =  (m11*m22 - m12*m21) * a
+	n[1][0] = -(m10*m22 - m12*m20) * a
+	n[2][0] =  (m10*m21 - m11*m20) * a
+
+	n[0][1] = -(m01*m22 - m02*m21) * a
+	n[1][1] =  (m00*m22 - m02*m20) * a
+	n[2][1] = -(m00*m21 - m01*m20) * a
+
+	n[0][2] =  (m01*m22 - m02*m21) * a
+	n[1][2] = -(m00*m12 - m02*m10) * a
+	n[2][2] =  (m00*m11 - m01*m10) * a
+
+	return n

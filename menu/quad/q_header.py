@@ -14,16 +14,19 @@
 ############################################################################
 
 import bpy
-from .q_refrence import QuadMenuRef
+from .q_refrence import quadmenuref
 from .q_graphic import get_rectangle
 from .q_items import ItemShape, ItemText
 
+
+
 class QuadHeader:
 	def __init__(self, x, y, width, text, mirror):
+		global quadmenuref
 		self.x = x
 		self.y = y
 		self.width = width
-		self.height = QuadMenuRef.size
+		self.height = quadmenuref.size
 		self.text = text
 		self.mirror = mirror
 		self.controllers = []
@@ -38,9 +41,11 @@ class QuadHeader:
 			c.update_lbl()
 
 	def create(self):
+		global quadmenuref
+
 		btn_width = self.height
 		btn_height = -self.height
-		btn_color = QuadMenuRef.hover_color
+		btn_color = quadmenuref.hover_color
 
 		btn_x = self.x
 		if self.mirror[0]:
@@ -56,7 +61,7 @@ class QuadHeader:
 
 		lbl_width = self.width - btn_width
 		lbl_height = btn_height
-		lbl_color = QuadMenuRef.header_color
+		lbl_color = quadmenuref.header_color
 
 		lbl_x = btn_x + btn_width
 		if self.mirror[0]:
@@ -68,8 +73,8 @@ class QuadHeader:
 		self.controllers.append(label)
 
 		txt_x = lbl_x - 3
-		txt_y = lbl_y - QuadMenuRef.size + 3
-		txt_color = QuadMenuRef.text_color
+		txt_y = lbl_y - quadmenuref.size + 3
+		txt_color = quadmenuref.text_color
 		txt = ItemText(txt_x, txt_y, self.text, self.width, txt_color, self.mirror[0])
 		self.controllers.append(txt)
 
@@ -83,6 +88,8 @@ class QuadHeader:
 		bpy.ops.bsmax.blenderdefaultmenucall('INVOKE_DEFAULT')
 
 	def mousehover(self, x, y, clicked):
+		global quadmenuref
+
 		sxs = self.x
 		sxe = self.x + self.width
 		if self.mirror[0]:
@@ -90,9 +97,9 @@ class QuadHeader:
 			sxe = self.x
 
 		sys = self.y
-		sye = self.y + QuadMenuRef.size
+		sye = self.y + quadmenuref.size
 		if self.mirror[1]:
-			sys = self.y - QuadMenuRef.size
+			sys = self.y - quadmenuref.size
 			sye = self.y 
 			
 		if ((sxs <= x <= sxe) and (sys <= y <= sye)):

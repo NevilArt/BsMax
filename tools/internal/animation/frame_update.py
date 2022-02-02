@@ -17,8 +17,6 @@ import bpy
 from bpy.types import Operator
 from bpy.app.handlers import persistent
 
-from .driver_fixer import Driver_Reconnect
-
 
 
 class Scene_Stata:

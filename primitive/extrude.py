@@ -17,9 +17,9 @@ import bpy
 from bpy.types import Operator
 from bpy.props import EnumProperty
 from mathutils import Vector
-from primitive.primitive import PrimitiveCurveClass, PrimitiveGeometryClass
+from primitive.primitive import Primitive_Curve_Class, Primitive_Geometry_Class
 from bsmax.actions import delete_objects
-from bsmax.curve import Curve,Segment
+from bsmax.curve import Curve, Segment
 
 
 
@@ -115,15 +115,10 @@ def get_extrude_mesh(curve, height, hsegs, csegs, segmode, capu, capl, start_hei
 
 
 
-class Extrude_Curve(PrimitiveCurveClass):
-	def __init__(self):
+class Extrude_Curve(Primitive_Curve_Class):
+	def init(self):
 		self.classname = "Extrude_Curve"
-		self.finishon = 0
-		self.owner = None
-		self.data = None
-		self.close = False
-	def reset(self):
-		self.__init__()
+
 	def create(self, ctx):
 		shapes = get_extrude_curve(1,1,0,0)
 		self.create_curve(ctx, shapes, self.classname)
@@ -131,24 +126,23 @@ class Extrude_Curve(PrimitiveCurveClass):
 		pd = self.data.primitivedata
 		pd.classname = self.classname
 		pd.height = 1
+
 	def update(self):
 		pd = self.data.primitivedata
 		shapes = get_extrude_curve(pd.height,pd.hsegs,pd.chamfer2,pd.chamfer1)
 		self.update_curve(shapes)
+
 	def abort(self):
 		delete_objects([self.owner])
 
 
 
-class Extrude_Mesh(PrimitiveGeometryClass):
-	def __init__(self):
+class Extrude_Mesh(Primitive_Geometry_Class):
+	def init(self):
 		self.classname = "Extrude_Mesh"
 		self.finishon = 0
-		self.owner = None
-		self.data = None
 		self.target = ""
-	def reset(self):
-		self.__init__()
+
 	def create(self, ctx):
 		target = ctx.active_object
 		mesh = get_extrude_mesh(target,1,5,3,"Manual",True,True,0,0)
@@ -158,6 +152,7 @@ class Extrude_Mesh(PrimitiveGeometryClass):
 		pd.height,pd.hsegs,pd.csegs = 1,5,3
 		pd.bool1,pd.bool2 = True,True
 		pd.target = target.name
+
 	def update(self, ctx):
 		pd = self.data.primitivedata
 		target = None if pd.target == "" else bpy.context.scene.objects[pd.target]
@@ -165,6 +160,7 @@ class Extrude_Mesh(PrimitiveGeometryClass):
 								pd.extrude_segmode,pd.bool1,pd.bool2,
 								pd.chamfer2,pd.chamfer1)
 		self.update_mesh(mesh)
+
 	def abort(self):
 		delete_objects([self.owner])
 

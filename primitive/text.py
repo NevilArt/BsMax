@@ -15,24 +15,20 @@
 
 import bpy
 from bpy.props import EnumProperty
-from primitive.primitive import Draw_Primitive
+from primitive.primitive import Draw_Primitive, Primitive_Public_Class
 from bsmax.actions import delete_objects
 
-class Text:
-	def __init__(self):
+
+
+class Text(Primitive_Public_Class):
+	def init(self):
 		self.finishon = 2
 		self.owner = None
-
-	def reset(self):
-		self.__init__()
 
 	def create(self, ctx):
 		bpy.ops.object.text_add()
 		self.owner = ctx.active_object
 	
-	def update(self):
-		pass
-
 	def abort(self):
 		delete_objects([self.owner])
 
@@ -61,9 +57,8 @@ class Create_OT_Text(Draw_Primitive):
 	def update(self, ctx, clickcount, dimantion):
 		if clickcount == 1:
 			self.subclass.owner.data.size = dimantion.radius
-	
-	def finish(self):
-		pass
+
+
 
 def register_text():
 	bpy.utils.register_class(Create_OT_Text)

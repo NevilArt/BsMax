@@ -14,30 +14,22 @@
 ############################################################################
 
 import bpy
-from primitive.primitive import PrimitiveGeometryClass, Draw_Primitive
+from primitive.primitive import Primitive_Geometry_Class, Draw_Primitive
 from bsmax.actions import delete_objects
 from bsmax.math import get_axis_constraint
 
 
 
-class Armature(PrimitiveGeometryClass):
-	def __init__(self):
+class Armature(Primitive_Geometry_Class):
+	def init(self):
 		self.classname = "Armature"
 		self.finishon = 0 # infinit
-		self.owner = None
-		self.data = None
 		self.bones = []
-
-	def reset(self):
-		self.__init__()
 
 	def create(self, ctx):
 		bpy.ops.object.armature_add(enter_editmode=False, location=(0, 0, 0))
 		self.owner = ctx.active_object
 		self.data = self.owner.data
-
-	def update(self):
-		pass
 
 	def abort(self):
 		bpy.ops.object.mode_set(mode='EDIT', toggle=False)
@@ -102,9 +94,6 @@ class Create_OT_Bone(Draw_Primitive):
 				edit_bones = self.subclass.data.edit_bones
 				if len(edit_bones) > 1:
 					edit_bones.remove(edit_bones[-1])
-
-	def finish(self):
-		pass
 
 
 

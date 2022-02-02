@@ -11,28 +11,50 @@
 #
 #	You should have received a copy of the GNU General Public License
 #	along with this program.  If not, see <https://www.gnu.org/licenses/>.
-############################################################################
-
-import bpy,sys
+##################################################################
+import bpy
+from bsmax.state import version
 
 class QuadMenuRef:
-	action = None
-	finish = False
-	size = 15
-	header_color  = (0.23, 0.23, 0.23, 1.0) 
-	bg_color      = (0.27, 0.27, 0.27, 1.0)
-	hover_color   = ( 0.0,  0.5,  1.0, 1.0)
-	text_color    = ( 0.9,  0.9,  0.9, 1.0)
-	text_hover    = ( 0.1,  0.1,  0.1, 1.0)
-	text_disable  = ( 0.5,  0.5,  0.5, 1.0)
-	border_color  = ( 0.0,  0.0,  0.0, 1.0)
+	def __init__(self):
+		self.action = None
+		self.finish = False
+		self.size = 15
+		
+		if version() < 310:
+			# version 2.8 ~ 3.0
+			self.header_color  = (0.23, 0.23, 0.23, 1.0)
+			self.bg_color      = (0.27, 0.27, 0.27, 1.0)
+			self.hover_color   = ( 0.0,  0.5,  1.0, 1.0)
+			self.text_color    = ( 0.9,  0.9,  0.9, 1.0)
+			self.text_hover    = ( 0.1,  0.1,  0.1, 1.0)
+			self.text_disable  = ( 0.5,  0.5,  0.5, 1.0)
+			self.border_color  = ( 0.0,  0.0,  0.0, 1.0)
+		else:
+			# version 3.1 ~ upper
+			self.header_color  = (0.23, 0.23, 0.23, 1.0)
+			self.bg_color      = (0.27, 0.27, 0.27, 1.0)
+			self.hover_color   = ( 0.0,  0.5,  1.0, 1.0)
+			self.text_color    = ( 0.9,  0.9,  0.9, 1.0)
+			self.text_hover    = ( 0.1,  0.1,  0.1, 1.0)
+			self.text_disable  = ( 0.5,  0.5,  0.5, 1.0)
+			self.border_color  = ( 0.0,  0.0,  0.0, 1.0)
 
-	def execute():
-		QuadMenuRef.finish = True
-		if QuadMenuRef.action != None:
-			action = QuadMenuRef.action
-			QuadMenuRef.action = None
+			# self.header_color  = (0.115, 0.115, 0.115, 1.0)
+			# self.bg_color      = (0.135, 0.135, 0.135, 1.0)
+			# self.hover_color   = ( 0.0,  0.25,  0.5, 1.0)
+			# self.text_color    = ( 0.45,  0.45,  0.45, 1.0)
+			# self.text_hover    = ( 0.05,  0.05,  0.05, 1.0)
+			# self.text_disable  = ( 0.25,  0.25,  0.25, 1.0)
+			# self.border_color  = ( 0.0,  0.0,  0.0, 1.0)
+	
+	def execute(self):
+		if self.action:
 			try:
-				exec(action)
+				exec('bpy.ops.' + self.action)
 			except:
-				print("An exception occurred with " + action)
+				print("An exception occurred with " + self.action)
+		self.action = None
+		self.finish = True
+
+quadmenuref = QuadMenuRef()

@@ -19,7 +19,7 @@ bl_info = {
 	'name': 'BsMax',
 	'description': 'BsMax for Blender 2.80 ~ 3.1',
 	'author': 'Naser Merati (Nevil)',
-	'version': (0, 1, 0, 20220124),
+	'version': (0, 1, 0, 20220202),
 	'blender': (2, 80, 0),# 2.80 ~ 3.1
 	'location': 'Almost Everywhere in Blender',
 	'wiki_url': 'https://github.com/NevilArt/BsMax_2_80/wiki',
@@ -27,6 +27,8 @@ bl_info = {
 	'tracker_url': 'https://github.com/NevilArt/BsMax_2_80/issues',
 	'category': 'Interface'
 }
+
+
 
 import bpy,sys,os
 from bpy.props import EnumProperty, BoolProperty, FloatProperty
@@ -49,9 +51,11 @@ from .tools import register_tools, unregister_tools
 addons = bpy.context.preferences.addons
 wiki = 'https://github.com/NevilArt/BsMax_2_80/wiki/'
 
+
+
 # Addon preferences
 def update_preferences(self, ctx, action):
-	""" make checkboxes act as Radiobuttons """
+	""" Make Checkboxes Act as Radiobuttons """
 	if action == 'quick' and self.quick:
 		self.simple = self.custom = False
 		self.refine()
@@ -114,10 +118,13 @@ def update_preferences(self, ctx, action):
 				return
 			
 		""" Custom Selection """
-		if action in {'navigation_3d','navigation_2d','viowport', 'sculpt',
-			'uv_editor', 'node_editor', 'text_editopr', 'graph_editor','clip_editor',
-			'video_sequencer', 'text_editor','file_browser', 'floatmenus', 'view_undo'}:
+		if action in {'navigation_3d', 'navigation_2d','viowport',
+			'sculpt', 'uv_editor', 'node_editor', 'text_editopr',
+			'graph_editor','clip_editor', 'video_sequencer',
+			'text_editor','file_browser', 'floatmenus', 'view_undo'}:
 			register_keymaps(addons[__name__].preferences)
+
+
 
 class BsMax_AddonPreferences(bpy.types.AddonPreferences):
 	bl_idname = __name__

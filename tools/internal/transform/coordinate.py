@@ -17,25 +17,34 @@ import bpy
 from bpy.types import Operator
 from bpy.props import StringProperty
 
+
+
 # Coordinate
 class Object_OT_Coord_System(Operator):
 	bl_idname = "object.coordinate_system"
 	bl_label = "Coordinate System"
 	coordsys: StringProperty(default = 'GLOBAL')
+
 	def execute(self, ctx):
 		# NORMAL, GIMBAL, LOCAL, VIEW, GLOBAL, CURSOR
 		ctx.window.scene.transform_orientation_slots[0].type = self.coordsys
 		return{"FINISHED"}
 
+
+
 class Object_OT_Set_Local_Coord_in_Pose_Mode(Operator):
 	bl_idname = "object.set_local_coord_in_pose_mode"
 	bl_label = "Local (Pose)"
+
 	def execute(self, ctx):
 		ctx.window.scene.transform_orientation_slots[0].type = 'LOCAL'
 		ctx.scene.tool_settings.transform_pivot_point = 'INDIVIDUAL_ORIGINS'
 		return{"FINISHED"} 
 
-classes = [Object_OT_Coord_System, Object_OT_Set_Local_Coord_in_Pose_Mode]
+
+
+classes = [Object_OT_Coord_System,
+	Object_OT_Set_Local_Coord_in_Pose_Mode]
 
 def register_coordinate():
 	for c in classes:

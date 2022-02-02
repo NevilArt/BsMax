@@ -14,8 +14,10 @@
 ############################################################################
 
 import bpy
-from primitive.primitive import PrimitiveCurveClass, Draw_Primitive
+from primitive.primitive import Primitive_Curve_Class, Draw_Primitive
 from bsmax.actions import delete_objects
+
+
 
 def get_circle_shape(radius):
 	Shapes = []
@@ -32,16 +34,15 @@ def get_circle_shape(radius):
 	Shapes.append([pt1,pt2,pt3,pt4])
 	return Shapes
 
-class Circle(PrimitiveCurveClass):
+
+
+class Circle(Primitive_Curve_Class):
 	def __init__(self):
 		self.classname = "Circle"
 		self.finishon = 2
 		self.owner = None
 		self.data = None
 		self.close = True
-
-	def reset(self):
-		self.__init__()
 
 	def create(self, ctx):
 		shapes = get_circle_shape(0)
@@ -76,8 +77,7 @@ class Create_OT_Circle(Draw_Primitive):
 		if clickcount == 1:
 			self.params.radius1 = dimantion.radius
 	
-	def finish(self):
-		pass
+
 
 def register_circle():
 	bpy.utils.register_class(Create_OT_Circle)

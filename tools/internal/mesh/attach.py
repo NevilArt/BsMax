@@ -18,6 +18,8 @@ from bpy.props import StringProperty, BoolProperty
 from bpy.types import Operator
 from bsmax.operator import PickOperator
 
+
+
 class Mesh_OT_Attach(PickOperator):
 	bl_idname = 'mesh.attach'
 	bl_label = 'Attach'
@@ -67,7 +69,8 @@ class Mesh_OT_Attach(PickOperator):
 		bpy.ops.object.mode_set(mode='EDIT', toggle=False)
 		bpy.ops.ed.undo_push()
 		bpy.ops.mesh.attach('INVOKE_DEFAULT')
-		self.report({'OPERATOR'},'bpy.ops.mesh.attach()')
+
+
 
 class Mesh_OT_Attach_List(Operator):
 	bl_idname = 'mesh.attach_list'
@@ -83,8 +86,9 @@ class Mesh_OT_Attach_List(Operator):
 
 	def execute(self, ctx):
 		# print("Attach by list working on progress")
-		# self.report({'OPERATOR'},'bpy.ops.object.attach_list()')
 		return{'FINISHED'}
+
+
 
 class Mesh_OT_Detach(Operator):
 	bl_idname = 'mesh.detach'
@@ -122,6 +126,8 @@ class Mesh_OT_Detach(Operator):
 		if ctx.active_object != None:
 			self.name = ctx.active_object.name
 		return ctx.window_manager.invoke_props_dialog(self, width=200)
+
+
 
 classes = [Mesh_OT_Attach, Mesh_OT_Detach] #Mesh_OT_Attach_List
 

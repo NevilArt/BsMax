@@ -17,28 +17,21 @@ import bpy
 from bpy.types import Operator
 from mathutils import Vector
 from bpy.props import IntProperty, FloatProperty
-from primitive.primitive import Draw_Primitive
+from primitive.primitive import Draw_Primitive, Primitive_Public_Class
+from bsmax.math import transform_point_to_matrix
 from bsmax.actions import delete_objects
-from bsmax.math import get_offset_by_orient
 
 
 
-class Lattice:
-	def __init__(self):
+class Lattice(Primitive_Public_Class):
+	def init(self):
 		self.finishon = 3
 		self.owner = None
 
-	def reset(self):
-		self.__init__()
-
 	def create(self, ctx, gride):
-		
 		bpy.ops.object.add(type='LATTICE', location=gride.location)
 		self.owner = ctx.active_object
 		self.owner.rotation_euler = gride.rotation
-
-	def update(self):
-		pass
 
 	def abort(self):
 		delete_objects([self.owner])
@@ -53,6 +46,7 @@ class Create_OT_Lattice(Draw_Primitive):
 	resolution: IntProperty(name="Resolation", min= 2, max= 64)
 	width, length, height = 0, 0, 0
 	location = Vector((0,0,0))
+	owner_matrix = None
 
 	def create(self, ctx):
 		self.subclass.create(ctx, self.gride)
@@ -66,16 +60,22 @@ class Create_OT_Lattice(Draw_Primitive):
 			self.width = dimantion.width
 			self.length = dimantion.length
 			self.location = self.subclass.owner.location = dimantion.center
+			self.owner_matrix = self.subclass.owner.matrix_world.copy()
 
 		if clickcount == 2:
 			self.height = dimantion.height
-			# offset = get_offset_by_orient(Vector((0,0,dimantion.height / 2)), dimantion.view_name)
-			self.subclass.owner.location = self.location #+ offset
+			# offset = Vector((self.width/2, self.length/2, self.height/2))
+			# offset = Vector((0, 0, self.height/2))
+			# location = transform_point_to_matrix(offset, self.gride.gride_matrix)
+			# self.subclass.owner.location = location
 
 		self.subclass.owner.scale = (self.width, self.length, self.height)
-
+	
 	def finish(self):
-		pass
+		self.width, self.length, self.height = 0, 0, 0
+		self.location = Vector((0,0,0))
+		self.owner_matrix = None	
+	
 
 
 
@@ -104,10 +104,12 @@ class Lattice_OT_Edit(Operator):
 		row = layout.row()
 		Box = row.box()
 		Col = Box.column(align = True)
+		
 		Col.label(text = "Parameters")
 		Col.prop(self, "width")
 		Col.prop(self, "length")
 		Col.prop(self, "height")
+		
 		Col = Box.column(align = True)
 		Col.prop(self, "u_res")
 		Col.prop(self, "v_res")

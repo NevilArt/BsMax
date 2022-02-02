@@ -18,7 +18,7 @@ import bpy
 from bpy.types import Operator
 from mathutils import Vector
 from bsmax.math import get_axis_constraint
-from primitive.primitive import PrimitiveCurveClass, Draw_Primitive
+from primitive.primitive import Primitive_Curve_Class, Draw_Primitive
 from bsmax.actions import delete_objects
 from bpy_extras.view3d_utils import location_3d_to_region_2d
 
@@ -44,7 +44,7 @@ def get_line_shape(knots):
 
 
 
-class Line(PrimitiveCurveClass):
+class Line(Primitive_Curve_Class):
 	def __init__(self):
 		self.classname = "Line"
 		self.finishon = 0 # infinit
@@ -77,6 +77,9 @@ class Line(PrimitiveCurveClass):
 			self.knots.pop()
 			self.update()
 			bpy.ops.object.origin_set(type='ORIGIN_CENTER_OF_VOLUME', center='MEDIAN')
+	
+	def finish(self):
+		pass
 
 
 
@@ -90,7 +93,7 @@ class Curve_OT_CloseLine(Operator):
 		close_line = True
 		return {'FINISHED'}
 	
-	def cancel(self,ctx):
+	def cancel(self, ctx):
 		global close_line
 		close_line = False
 	

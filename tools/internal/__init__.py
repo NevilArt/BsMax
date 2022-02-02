@@ -21,7 +21,6 @@ from .curve import register_curve,unregister_curve
 from .ligth import register_light,unregister_light
 from .material import register_material,unregister_material
 from .mesh import register_mesh,unregister_mesh
-from .modifier import register_modifier,unregister_modifier
 from .object import register_object,unregister_object
 from .particle import register_particle,unregister_particle
 from .render import register_render,unregister_render
@@ -43,7 +42,6 @@ def register_internal(preferences):
 	register_light()
 	register_material()
 	register_mesh()
-	register_modifier()
 	register_object(preferences)
 	register_particle()
 	register_render()
@@ -65,7 +63,6 @@ def unregister_internal():
 	unregister_light()
 	unregister_material()
 	unregister_mesh()
-	unregister_modifier()
 	unregister_object()
 	unregister_particle()
 	unregister_render()

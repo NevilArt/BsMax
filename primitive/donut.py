@@ -14,8 +14,10 @@
 ############################################################################
 
 import bpy
-from primitive.primitive import PrimitiveCurveClass, Draw_Primitive
+from primitive.primitive import Primitive_Curve_Class, Draw_Primitive
 from bsmax.actions import delete_objects
+
+
 
 def get_donut_shape(radius1, radius2):
 	shapes = []
@@ -33,24 +35,27 @@ def get_donut_shape(radius1, radius2):
 		shapes.append([pt1,pt2,pt3,pt4])
 	return shapes
 
-class Donut(PrimitiveCurveClass):
+
+
+class Donut(Primitive_Curve_Class):
 	def __init__(self):
 		self.classname = "Donut"
 		self.finishon = 3
 		self.owner = None
 		self.data = None
 		self.close = True
-	def reset(self):
-		self.__init__()
+
 	def create(self, ctx):
 		shapes = get_donut_shape(0, 0)
 		self.create_curve(ctx, shapes, self.classname)
 		pd = self.data.primitivedata
 		pd.classname = self.classname
+
 	def update(self):
 		pd = self.data.primitivedata
 		shapes = get_donut_shape(pd.radius1, pd.radius2)
 		self.update_curve(shapes)
+
 	def abort(self):
 		delete_objects([self.owner])
 
@@ -82,8 +87,7 @@ class Create_OT_Donut(Draw_Primitive):
 				return
 			self.params.radius2 = dimantion.distance
 
-	def finish(self):
-		pass
+
 
 def register_donut():
 	bpy.utils.register_class(Create_OT_Donut)

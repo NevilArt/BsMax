@@ -14,12 +14,14 @@
 ############################################################################
 
 import blf
-from .q_refrence import QuadMenuRef
+from .q_refrence import quadmenuref
 from .q_border import QuadBorderFrame
 from .q_button import QuadButton
 from .q_subbutton import QuadSubMenuButton
 from .q_seprator import QuadSeprator
 from .q_header import QuadHeader
+
+
 
 class QuadMenu:
 	def __init__(self, x, y, text, items, index):
@@ -40,6 +42,8 @@ class QuadMenu:
 			c.update_lbl()
 
 	def create(self):
+		global quadmenuref
+
 		mirror = (False, False)
 		if self.index == 2:
 			mirror = (False, True)
@@ -52,17 +56,17 @@ class QuadMenu:
 		width = 100 # minimum width is 100
 		for i in self.items:
 			if i.text != None:
-				size = int(QuadMenuRef.size * 0.75)
+				size = int(quadmenuref.size * 0.75)
 				blf.size(0, size, 72)
-				w, h = blf.dimensions(0, i.text)
+				w, _ = blf.dimensions(0, i.text)
 				if w > width:
 					width = int(w)
-		width += int(QuadMenuRef.size * 2)
+		width += int(quadmenuref.size * 2)
 
 		header = QuadHeader(self.x, self.y, width, self.text, mirror)
 		self.controllers.append(header)
 
-		y_offset = QuadMenuRef.size
+		y_offset = quadmenuref.size
 
 		for i in range(len(self.items)):
 			item = self.items[i]
@@ -70,7 +74,7 @@ class QuadMenu:
 			if item.text == None:
 				y_offset += 1
 			else:
-				y_offset += QuadMenuRef.size
+				y_offset += quadmenuref.size
 
 			if item.text == None:
 				newitem = QuadSeprator(self.x, self.y, width, y_offset, mirror)

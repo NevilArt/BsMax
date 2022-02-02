@@ -16,48 +16,53 @@
 import bpy
 from math import pi, sin, cos
 from mathutils import Vector
-from primitive.primitive import PrimitiveCurveClass, Draw_Primitive
+from primitive.primitive import Primitive_Curve_Class, Draw_Primitive
 from bsmax.actions import delete_objects
-from bsmax.math import get_bias, get_distance
+from bsmax.math import get_bias
 
 
 
 def get_helix_shape(radius1, radius2, height, turns, segs, bias, ccw):
-	shape = []
-	r1,r2 = radius1,radius2
-	totatdig = (pi*2)*turns
+
+	total_degree = (pi*2)*turns
+
 	if ccw:
-		totatdig *= -1
+		total_degree *= -1
+
 	if turns == 0:
 		turns = 0.0001
-	piece = totatdig/(segs*turns)
-	hpiece = height/(segs*turns)
-	rpiece = (r1-r2)/(segs*turns)
-	segments = int(segs*turns)
+
+	segments = int(segs*turns)+1
+	piece = total_degree / (segs*turns)
+	height_pieces = height / (segments-1)
+	round_pieces = (radius1-radius2) / (segs*turns)
+
+	shape = []
 	for i in range(segments):
-		x = sin(piece*i)*(r1-(rpiece*i))
-		y = cos(piece*i)*(r1-(rpiece*i))
+		teta, length = piece*i, radius1-(round_pieces*i)
+		x, y = sin(teta)*length, cos(teta)*length
+
 		if height > 0:
-			percent = (hpiece*i)/height
+			percent = (height_pieces*i)/height
 		else:
 			percent = 0
-		z = height*get_bias(bias,percent)
-		p = (x,y,z)
-		vector_type = 'FREE' if 0 < i > segments else 'AUTO'#'ALIGNED'
-		shape.append((p,p,vector_type,p,vector_type))
+
+		z = height*get_bias(bias, percent)
+		point = (x, y, z)
+
+		vector_type = 'FREE' if 0 < i > segments else 'AUTO'
+		shape.append((point, point, vector_type, point, vector_type))
+
 	return [shape]
 
 
 
-class Helix(PrimitiveCurveClass):
-	def __init__(self):
+class Helix(Primitive_Curve_Class):
+	def init(self):
 		self.classname = "Helix"
 		self.finishon = 4
-		self.owner = None
-		self.data = None
 		self.close = False
-	def reset(self):
-		self.__init__()
+
 	def create(self, ctx):
 		shapes = get_helix_shape(0,0,0,3,20,0,False)
 		self.create_curve(ctx, shapes, self.classname)
@@ -65,12 +70,14 @@ class Helix(PrimitiveCurveClass):
 		pd.classname = self.classname
 		pd.turns = 3
 		pd.ssegs = 20
+
 	def update(self):
 		pd = self.data.primitivedata
 		# radius1, radius2, height, turns, segs, bias, ccw
 		shapes = get_helix_shape(pd.radius1, pd.radius2, pd.height,
 					pd.turns, pd.ssegs, pd.bias_np, pd.ccw)
 		self.update_curve(shapes)
+
 	def abort(self):
 		delete_objects([self.owner])
 

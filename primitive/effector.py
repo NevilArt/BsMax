@@ -15,21 +15,15 @@
 
 import bpy
 from bpy.props import EnumProperty
-from primitive.primitive import Draw_Primitive
+from primitive.primitive import Draw_Primitive, Primitive_Public_Class
 from bsmax.actions import delete_objects
 
 
 
-class Effector:
-	def __init__(self):
+class Effector(Primitive_Public_Class):
+	def init(self):
 		self.finishon = 2
 		self.owner = None
-
-	def reset(self):
-		self.__init__()
-
-	def update(self):
-		pass
 
 	def abort(self):
 		delete_objects([self.owner])
@@ -59,9 +53,6 @@ class Create_OT_Effector(Draw_Primitive):
 	def update(self, ctx, clickcount, dimantion):
 		if clickcount == 1:
 			self.subclass.owner.empty_display_size = dimantion.radius
-
-	def finish(self):
-		pass
 
 
 

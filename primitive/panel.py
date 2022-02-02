@@ -19,27 +19,27 @@ from bpy.types import Panel, Operator
 
 
 
-def get_plane_panel(self,layout):
-	layout.label(text="Plane",icon='MESH_PLANE')
+def get_plane_panel(self, layout):
+	layout.label(text="Plane", icon='MESH_PLANE')
 	col = layout.column(align=True)
-	col.prop(self,"width",text="width")
-	col.prop(self,"length",text="length")
+	col.prop(self, "width", text="width")
+	col.prop(self, "length", text="length")
 	col = layout.column(align=True)
-	col.prop(self,"wsegs",text="WSegs")
-	col.prop(self,"lsegs",text="LSegs")
+	col.prop(self, "wsegs", text="WSegs")
+	col.prop(self, "lsegs", text="LSegs")
 
 
 
 def get_box_panel(self,layout):
-	layout.label(text="Box",icon='MESH_CUBE')
+	layout.label(text="Box", icon='MESH_CUBE')
 	col = layout.column(align=True)
-	col.prop(self,"width",text="width")
-	col.prop(self,"length",text="length")
-	col.prop(self,"height",text="Height")
+	col.prop(self, "width", text="width")
+	col.prop(self, "length", text="length")
+	col.prop(self, "height", text="Height")
 	col = layout.column(align=True)
-	col.prop(self,"wsegs",text="WSegs")
-	col.prop(self,"lsegs",text="LSegs")
-	col.prop(self,"hsegs",text="HSegs")
+	col.prop(self, "wsegs", text="WSegs")
+	col.prop(self, "lsegs", text="LSegs")
+	col.prop(self, "hsegs", text="HSegs")
 
 
 
@@ -354,6 +354,7 @@ def get_profilo_panel(self,layout):
 	col = layout.column(align=True)
 	col.prop(self,"profilo_mode")
 	col = layout.column(align=True)
+
 	if self.profilo_mode == 'Angle':
 		col.prop(self,"length",text="Length")
 		col.prop(self,"width",text="Width")
@@ -365,10 +366,12 @@ def get_profilo_panel(self,layout):
 		if not self.corner:
 			col.prop(self,"chamfer2",text="Corner Radius2")
 		col.prop(self,"chamfer3",text="Edge Radius")
+
 	elif self.profilo_mode == 'Bar':
 		col.prop(self,"length",text="Length")
 		col.prop(self,"width",text="Width")
 		col.prop(self,"chamfer1",text="Corner Radius")
+
 	elif self.profilo_mode == 'Channel':
 		col.prop(self,"length",text="Length")
 		col.prop(self,"width",text="width")
@@ -379,19 +382,23 @@ def get_profilo_panel(self,layout):
 		col.prop(self,"chamfer1",text="Corner Radius1")
 		if not self.corner:
 			col.prop(self,"chamfer2",text="Corner Radius2")
+
 	elif self.profilo_mode == 'Cylinder':
-		col.prop(self,"radius",text="Radius")
+		col.prop(self,"radius1",text="Radius")
 		col.prop(self,"slicefrom",text="Slice From")
 		col.prop(self,"sliceto",text="Slice To")
+
 	elif self.profilo_mode == 'Pipe':
 		col.prop(self,"radius1",text="Radius")
 		col.prop(self,"thickness",text="Thickness")
+
 	elif self.profilo_mode == 'Tee':
 		col.prop(self,"length",text="Length")
 		col.prop(self,"width",text="Width")
 		col.prop(self,"thickness",text="Thickness")
 		col = layout.column(align=True)
 		col.prop(self,"chamfer1",text="Corner Radius")
+
 	elif self.profilo_mode == 'Tube':
 		col.prop(self,"length",text="Length")
 		col.prop(self,"width",text="Width")
@@ -401,11 +408,13 @@ def get_profilo_panel(self,layout):
 		col.prop(self,"chamfer1",text="Corner Radius1")
 		if not self.corner:
 			col.prop(self,"chamfer2",text="Corner Radius2")
+
 	elif self.profilo_mode == 'Width_flange':
 		col.prop(self,"length",text="Length")
 		col.prop(self,"width",text="Width")
 		col.prop(self,"thickness",text="Thickness")
 		col.prop(self,"chamfer1",text="Corner Radius")
+
 	elif self.profilo_mode == 'Elipse':
 		col.prop(self,"length",text="Length")
 		col.prop(self,"width",text="Width")
@@ -414,6 +423,8 @@ def get_profilo_panel(self,layout):
 		if self.outline:
 			col = layout.column(align=True)
 			col.prop(self,"thickness",text="Thickness")
+
+	# Transform
 	col = layout.column(align=True)
 	row = col.row(align = True)
 	row.prop(self,"offset_x",text="Offset X")
@@ -423,6 +434,8 @@ def get_profilo_panel(self,layout):
 	row.prop(self,"mirror_y",text="Mirror Y")
 	col = layout.column(align=True)
 	col.prop(self,"rotation",text="Angle")
+	
+	# Pivot offset
 	col = layout.column(align=True)
 	row = col.row(align = True)
 	row.operator("create.set_profilo_pivotaligne",text="",icon="BLANK1").pivotaligne = 1

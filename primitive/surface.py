@@ -14,10 +14,11 @@
 ############################################################################
 
 import bpy
-from primitive.primitive import PrimitiveGeometryClass, Draw_Primitive
+from primitive.primitive import Primitive_Geometry_Class, Draw_Primitive
+
+
 
 def cylindersurface(radius, height):
-
 	bpy.context.object.data.splines[0].points[0].co[0] = 0
 	bpy.context.object.data.splines[0].points[0].co[1] = -0.99
 	bpy.context.object.data.splines[0].points[0].co[1] = -1
@@ -25,22 +26,30 @@ def cylindersurface(radius, height):
 	bpy.context.object.data.splines[0].type = 'NURBS'
 	bpy.context.object.data.splines[0].use_smooth = True
 
-class Surface(PrimitiveGeometryClass):
+
+
+class Surface(Primitive_Geometry_Class):
 	def __init__(self):
 		self.classname = "Surface"
 		self.finishon = 2
 		self.owner = None
 		self.data = None
+
 	def reset(self):
 		self.__init__()
+
 	def create(self, ctx):
 		pass
+
 	def update(self, ctx):
 		pass
+
 	def abort(self):
 		pass
 		#delete_objects([self.owner])
 		#self.reset()
+
+
 
 class Create_OT_Surface(Draw_Primitive):
 	bl_idname="create.surface"
@@ -55,6 +64,8 @@ class Create_OT_Surface(Draw_Primitive):
 
 	def finish(self):
 		pass
+
+
 
 def register_surface():
 	bpy.utils.register_class(Create_OT_Surface)

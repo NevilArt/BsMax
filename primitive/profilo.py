@@ -13,12 +13,14 @@
 #	along with this program.  If not,see <https://www.gnu.org/licenses/>.
 ############################################################################
 
-import bpy, math
+import bpy
 from mathutils import Vector
 from bpy.types import Operator
 from bpy.props import IntProperty
-from primitive.primitive import PrimitiveCurveClass, Draw_Primitive
+from math import radians
+from primitive.primitive import Primitive_Curve_Class, Draw_Primitive
 from bsmax.actions import delete_objects
+from bsmax.math import matrix_from_elements, transform_points_to_matrix
 
 
 
@@ -92,6 +94,8 @@ def Circle(length, width, revers):
 			p = points[i]
 			shape.append([p[0], p[1], 'FREE', p[2], 'FREE'])
 	return shape
+
+
 
 def Angle(length, width, thickness, synccorner, cornerradius1, cornerradius2, edgeradius):
 	shape = []
@@ -304,6 +308,7 @@ def get_profilo_shape(Mode, length, width, thickness,
 					radius, slicefrom, sliceto,	outline, synccorner,
 					offset_x, offset_y, mirror_x, mirror_y,
 					angel, pivotaligne): # pivotaligne int 1-9
+
 	shapes = []
 	if Mode == "Angle":
 		shapes = Angle(length, width, thickness, synccorner, cornerradius1, cornerradius2, edgeradius)
@@ -324,13 +329,6 @@ def get_profilo_shape(Mode, length, width, thickness,
 	elif Mode == "Elipse":
 		shapes = Elipse(length, width, outline, thickness)
 
-	#[p_0, p_1, 'FREE', p_3, 'FREE']
-	angel = math.radians(angel)
-	# sa = math.sin(angel)
-	# ca = math.cos(angel)
-	# Rotation
-			#p[0].x,p[1].x,p[3].x = (p[0].x*sa),(p[1].x*sa),(p[3].x*sa)
-			#p[0].y,p[1].y,p[3].y = (p[0].y*ca),(p[1].y*ca),(p[3].y*ca)
 	# pivotangel
 	pcos = []
 	for shape in shapes:
@@ -347,6 +345,7 @@ def get_profilo_shape(Mode, length, width, thickness,
 		oy += pmin.y
 	if pivotaligne in (7, 8, 9):
 		oy += pmax.y
+	
 	# mirrot and offset
 	for shape in shapes:
 		for p in shape:
@@ -357,34 +356,45 @@ def get_profilo_shape(Mode, length, width, thickness,
 			# offset
 			p[0].x,p[1].x,p[3].x = (p[0].x+ox),(p[1].x+ox),(p[3].x+ox)
 			p[0].y,p[1].y,p[3].y = (p[0].y+oy),(p[1].y+oy),(p[3].y+oy)
+	
+	
+	# angel = radians(angel)
+	# matrix = matrix_from_elements(Vector((0,0,0)), Vector((0,0,angel)), Vector((1,1,1)))
+	# #[p_0, p_1, 'FREE', p_3, 'FREE']
+	# for s, spline in enumerate(shapes):
+	# 	for p, point in enumerate(spline):
+	# 		print(point)
+	# 		# shapes[s][p][0] = transform_points_to_matrix(Vector(point[0]), matrix)
+	# 		# shapes[s][p][1] = transform_points_to_matrix(Vector(point[1]), matrix)
+	# 		# shapes[s][p][3] = transform_points_to_matrix(Vector(point[3]), matrix)
+
 	return shapes
 
 
 
-class Profilo(PrimitiveCurveClass):
-	def __init__(self):
+class Profilo(Primitive_Curve_Class):
+	def init(self):
 		self.classname = "Profilo"
 		self.finishon = 2
-		self.owner = None
-		self.data = None
 		self.close = True
-	def reset(self):
-		self.__init__()
+
 	def create(self, ctx, mode):
-		shapes = get_profilo_shape(mode,0,0,0,0,0,0,0, 0, 0,
+		shapes = get_profilo_shape(mode,0, 0, 0, 0, 0, 0, 0, 0, 0,
 					False, False, 0, 0,	False, False, 0, 5)
 		self.create_curve(ctx, shapes, self.classname)
 		pd = self.data.primitivedata
 		pd.classname = self.classname
 		pd.profilo_mode = mode
+
 	def update(self):
 		pd = self.data.primitivedata
-		shapes = get_profilo_shape(pd.profilo_mode,pd.length, pd.width, pd.thickness,
+		shapes = get_profilo_shape(pd.profilo_mode, pd.length, pd.width, pd.thickness,
 					pd.chamfer1, pd.chamfer2, pd.chamfer3,
 					pd.radius1, pd.sfrom, pd.sto, pd.outline, pd.corner,
 					pd.offset_x, pd.offset_y, pd.mirror_x, pd.mirror_y,
 					pd.rotation, pd.pivotaligne)
 		self.update_curve(shapes)
+
 	def abort(self):
 		delete_objects([self.owner])
 
@@ -409,8 +419,7 @@ class Create_OT_Profilo(Draw_Primitive):
 			self.params.thickness = min(width, length) / 5
 			self.subclass.owner.location = dimantion.center
 
-	def finish(self):
-		pass
+
 
 class Create_OT_Set_Profilo_Pivot_Aligne(Operator):
 	bl_idname = "create.set_profilo_pivotaligne"

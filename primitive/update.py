@@ -18,6 +18,7 @@ from bpy.types import PropertyGroup
 from bpy.app.handlers import persistent
 from bpy.props import (StringProperty, IntProperty, FloatProperty,
 	BoolProperty, EnumProperty, PointerProperty)
+
 from primitive.box import Box
 from .capsule import Capsule
 from .cylinder import Cylinder, Cone
@@ -43,6 +44,8 @@ from .profilo import Profilo
 from .rectangle import Rectangle
 from .star import Star
 from .light import Compass
+
+
 
 # Classes
 def get_class(name):
@@ -74,6 +77,9 @@ def get_class(name):
 	elif name == "Compass": return Compass()
 	else: return None
 
+
+
+# call if parametrs updated from ui manualy
 def primitive_update(self, ctx):
 	if ctx.object:
 		subclass = get_class(ctx.object.data.primitivedata.classname)
@@ -81,12 +87,18 @@ def primitive_update(self, ctx):
 			subclass.data = ctx.object.data
 			subclass.update()
 
+
+
+# call if parameter are animatable and time changed
 def update(data):
 	subclass = get_class(data.primitivedata.classname)
 	if subclass:
 		subclass.data = data
 		subclass.update()
 
+
+
+# Callback function for update primitives if are animatable
 @persistent
 def primitive_frame_update(scene):
 	for data in bpy.data.meshes:
@@ -99,19 +111,13 @@ def primitive_frame_update(scene):
 
 
 class Primitive_Option(PropertyGroup):
-	draw_mode: EnumProperty(name='Draw Mode (Under Construction)', default='FLOOR',
+	draw_mode: EnumProperty(name='Draw Mode', default='FLOOR',
 		update = primitive_update,
 		items =[('FLOOR', 'Draw on Floor', ''),
 			('VIEW', 'Draw on View', ''),
 			('SURFACE', 'Draw on Surface', '')])
 
-	# temprary will remove #
-	position: BoolProperty(name='Position', default=False,
-		description='Create object on raycasted position aligned to view')
-	normal: BoolProperty(name='Normal', default=False,
-		description='Create object on raycasted position aligned to face normal')
-	
-	
+
 
 class PrimitiveData(PropertyGroup):
 	classname: StringProperty()
@@ -187,6 +193,8 @@ class PrimitiveData(PropertyGroup):
 			('Manual', 'Manual', ''),
 			('Optimized', 'Optimized', ''),
 			('Adaptive', 'Adaptive', '')])
+
+
 
 def register_update():
 	if hasattr(bpy.types.Mesh, 'primitivedata') or hasattr(bpy.types.Curve, 'primitivedata'):

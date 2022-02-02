@@ -15,8 +15,10 @@
 
 import bpy
 from math import pi, sin, cos, radians
-from primitive.primitive import PrimitiveGeometryClass, Draw_Primitive
+from primitive.primitive import Primitive_Geometry_Class, Draw_Primitive
 from bsmax.actions import delete_objects
+
+
 
 def get_capsule_mesh(radius, height, ssegs, csegs, hsegs, sliceon, sfrom, sto):
 	verts, edges, faces = [], [], []
@@ -118,14 +120,13 @@ def get_capsule_mesh(radius, height, ssegs, csegs, hsegs, sliceon, sfrom, sto):
 			faces.append((c, f, a))
 	return verts, edges, faces
 
-class Capsule(PrimitiveGeometryClass):
-	def __init__(self):
+
+
+class Capsule(Primitive_Geometry_Class):
+	def init(self):
 		self.classname = "Capsule"
 		self.finishon = 3
-		self.owner = None
-		self.data = None
-	def reset(self):
-		self.__init__()
+
 	def create(self, ctx):
 		mesh = get_capsule_mesh(0, 0, 18, 8, 6, False, 0, 360)
 		self.create_mesh(ctx, mesh, self.classname)
@@ -133,6 +134,7 @@ class Capsule(PrimitiveGeometryClass):
 		pd.classname = self.classname
 		pd.ssegs, pd.csegs, pd.hsegs = 18, 8, 3
 		pd.center = True
+
 	def update(self):
 		pd = self.data.primitivedata
 		csegs = pd.csegs if not pd.seglock else pd.ssegs - 2
@@ -147,6 +149,7 @@ class Capsule(PrimitiveGeometryClass):
 			pd.ssegs, csegs, pd.hsegs,
 			pd.sliceon, pd.sfrom, pd.sto)
 		self.update_mesh(mesh)
+
 	def abort(self):
 		delete_objects([self.owner])
 
@@ -163,6 +166,7 @@ class Create_OT_Capsule(Draw_Primitive):
 		self.params = self.subclass.owner.data.primitivedata
 		self.subclass.owner.location = self.gride.location
 		self.subclass.owner.rotation_euler = self.gride.rotation
+
 	def update(self, ctx, clickcount, dimantion):
 		if clickcount == 1:
 			if self.ctrl:
@@ -177,8 +181,7 @@ class Create_OT_Capsule(Draw_Primitive):
 				return
 			self.params.height = dimantion.height
 
-	def finish(self):
-		pass
+
 
 def register_capsule():
 	bpy.utils.register_class(Create_OT_Capsule)

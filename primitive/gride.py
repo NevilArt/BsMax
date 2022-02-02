@@ -137,13 +137,9 @@ class Dimantion:
 		self.local = Vector((ex, ey, ez))
 	
 		# Get Center in world matrix
-		# cx = (self.start.x + self.end.x) / 2
-		# cy = (self.start.y + self.end.y) / 2
-		# cz = 0#(self.start.z + self.end.z) / 2
 		self.center.x = (self.start.x + self.end.x) / 2
 		self.center.y = (self.start.y + self.end.y) / 2
 		self.center.z = (self.start.z + self.end.z) / 2
-		# self.center = to_local_matrix(Vector((cx, cy, cz)), self.gride.gride_matrix)
 
 
 

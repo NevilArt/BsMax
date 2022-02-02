@@ -15,7 +15,7 @@
 
 import bpy
 from math import pi, sqrt, sin, cos
-from primitive.primitive import PrimitiveCurveClass, Draw_Primitive
+from primitive.primitive import Primitive_Curve_Class, Draw_Primitive
 from bsmax.actions import delete_objects
 
 
@@ -46,26 +46,25 @@ def get_ngon_shape(radius, sides, cornerradius, circular):
 
 
 
-class NGon(PrimitiveCurveClass):
-	def __init__(self):
+class NGon(Primitive_Curve_Class):
+	def init(self):
 		self.classname = "NGon"
 		self.finishon = 2
-		self.owner = None
-		self.data = None
 		self.close = True
-	def reset(self):
-		self.__init__()
+
 	def create(self, ctx):
 		shapes = get_ngon_shape(0,5,0,False)
 		self.create_curve(ctx, shapes, self.classname)
 		pd = self.data.primitivedata
 		pd.classname = self.classname
 		pd.ssegs = 5
+
 	def update(self):
 		pd = self.data.primitivedata
 		# radius, sides, cornerradius, circular
 		shapes = get_ngon_shape(pd.radius1, pd.ssegs, pd.chamfer1, pd.smooth)
 		self.update_curve(shapes)
+
 	def abort(self):
 		delete_objects([self.owner])
 
@@ -86,9 +85,6 @@ class Create_OT_NGon(Draw_Primitive):
 	def update(self, ctx, clickcount, dimantion):
 		if clickcount == 1:
 			self.params.radius1 = dimantion.radius
-
-	def finish(self):
-		pass
 
 
 

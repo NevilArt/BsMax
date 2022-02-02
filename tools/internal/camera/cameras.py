@@ -12,7 +12,7 @@
 #	You should have received a copy of the GNU General Public License
 #	along with this program.  If not, see <https://www.gnu.org/licenses/>.
 ############################################################################
-import bpy, mathutils
+import bpy
 from bpy.props import EnumProperty, BoolProperty
 from bpy.types import Operator
 from bsmax.state import has_constraint
@@ -230,6 +230,26 @@ class Camera_OT_Show_Safe_Area(Operator):
 		return {'FINISHED'}
 
 
+class Camera_OT_Lock_Toggle(Operator):
+	bl_idname = 'camera.lock_toggle'
+	bl_label = 'Show Safe Area'
+	bl_description = 'Show Safe Area'
+
+	name: EnumProperty(name='Name', default='CAMERA',
+		items=[('CAMERA', 'Camera',''), ('CURSOR', 'Cursor','')])
+
+	@classmethod
+	def poll(self, ctx):
+		return ctx.area.type == 'VIEW_3D'
+
+	def execute(self, ctx):
+		if self.name == 'CAMERA':
+			ctx.space_data.lock_camera = not ctx.space_data.lock_camera
+		elif self.name == 'CURSOR':
+			ctx.space_data.lock_cursor = not ctx.space_data.lock_cursor
+		return {'FINISHED'}
+
+
 
 def camera_menu(self, ctx):
 	layout = self.layout
@@ -246,7 +266,8 @@ classes = [Camera_OT_Set_Active,
 			Camera_OT_Lock_To_View_Toggle,
 			Camera_OT_Lock_Transform,
 			Camera_OT_Select_Active_Camera,
-			Camera_OT_Show_Safe_Area]
+			Camera_OT_Show_Safe_Area,
+			Camera_OT_Lock_Toggle]
 
 def register_cameras():
 	for c in classes:

@@ -1,3 +1,10 @@
+#0,1,0,20220124
+	Create Line, Empty and Lights issu from last update fixed.
+	Primitive draw on surface and view Done.
+	Hold 'Ctrl' while draw primitive opjects draws on one step.
+	Better method for calculate second radius (Cone, Helix).
+	Note: Some of primitive (e.g. Arc) not working for now but will fix and update soon.
+
 #0,1,0,20220111
 	Tool menu issue from last update fixed.
 	The error on Disable/Enalble of addon fixed.

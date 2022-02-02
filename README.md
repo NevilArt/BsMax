@@ -1,5 +1,5 @@
 
-# BsMax 2.80 ~ 3.0
+# BsMax 2.80 ~ 3.1
 
 BsMax is package of many different tools and UI simulator (much as possible) for [Blender 3D](https://www.blender.org/).
 
@@ -17,7 +17,7 @@ If not have Github account use 'NevilArt@Gmail.Com' for bug report.
 
 # Donation
 
-If you found this product useful and want to motivate and support me you can donate me from [Gumroad](https://nevilart.gumroad.com/l/BsMax).
+If you found this product useful and want to motivate and support me you can Donate me from [Gumroad](https://nevilart.gumroad.com/l/BsMax).
 
 # Installation
 
@@ -31,16 +31,15 @@ If you found this product useful and want to motivate and support me you can don
 
 # Recent Updates and Changes
 
-* Create Line, Empty and Lights issu from last update fixed.
-* Primitive draw on surface and view Done.
-* Hold 'Ctrl' while draw primitive opjects draws on one step.
-* Better method for calculate second radius (Cone, Helix).
-* Note: Some of primitive (e.g. Arc) not working for now but will fix and update soon.
+* Helix primitive height miscalculation fixed.
+* Primitive Icosphere issue with Blender 3.0 fixed (API update).
+* All Quadmenu Items rechecked and refiend much as possible.
+* Some code cleaning
 * [Update History...](https://github.com/NevilArt/BsMax_2_80/blob/master/HISTORY.TXT)
 
 # In Production 
 
-* Primitives: all will update for better performance.
+* Cleanup: All Operator and Tools need to review.
 * PieMax: Combanition of 3DsMax Quad menu and Blender Pie Menu.
 
 # License

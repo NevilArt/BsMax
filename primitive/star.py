@@ -16,8 +16,10 @@
 import bpy
 from math import pi, sin, cos
 from random import random, seed
-from primitive.primitive import PrimitiveCurveClass, Draw_Primitive
+from primitive.primitive import Primitive_Curve_Class, Draw_Primitive
 from bsmax.actions import delete_objects
+
+
 
 def get_star_shape(radius1, radius2, points, distortion, 
 						filletradius1, filletradius2, randseed, randval):
@@ -38,27 +40,28 @@ def get_star_shape(radius1, radius2, points, distortion,
 		shape.append((pc1,pl1,'VECTOR',pr1,'VECTOR'))
 	return [shape]
 
-class Star(PrimitiveCurveClass):
-	def __init__(self):
+
+
+class Star(Primitive_Curve_Class):
+	def init(self):
 		self.classname = "Star"
 		self.finishon = 3
-		self.owner = None
-		self.data = None
 		self.close = True
-	def reset(self):
-		self.__init__()
+
 	def create(self, ctx):
 		shapes = get_star_shape(0,0,5,0,0,0,0,0)
 		self.create_curve(ctx, shapes, self.classname)
 		pd = self.data.primitivedata
 		pd.classname = self.classname
 		pd.ssegs = 5
+
 	def update(self):
 		pd = self.data.primitivedata
 		#radius1, radius2, points, distortion, filletradius1, filletradius2, seed, randval
 		shapes = get_star_shape(pd.radius1, pd.radius2, pd.ssegs, pd.twist, 
 						pd.chamfer1, pd.chamfer2, pd.seed, pd.random)
 		self.update_curve(shapes)
+
 	def abort(self):
 		delete_objects([self.owner])
 
@@ -91,8 +94,7 @@ class Create_OT_Star(Draw_Primitive):
 				return
 			self.params.radius2 = dimantion.distance
 
-	def finish(self):
-		pass
+
 
 def register_star():
 	bpy.utils.register_class(Create_OT_Star)

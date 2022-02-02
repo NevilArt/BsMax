@@ -14,11 +14,13 @@
 ############################################################################
 
 import blf
-from .q_refrence import QuadMenuRef
+from .q_refrence import quadmenuref
 from .q_border import QuadBorderFrame
 from .q_button import QuadButton
 from .q_seprator import QuadSeprator
 from .q_subbutton import * # QuadSubMenuButton
+
+
 
 class QuadSubMenu:
 	def __init__(self, x, y, items, parent):
@@ -38,25 +40,26 @@ class QuadSubMenu:
 			c.update_lbl()
 
 	def create(self):
+		global quadmenuref
 		mirror = self.parent.mirror
 		# calculate the width from texts lenght
 		width = 100 # minimum width is 100
 		for i in self.items:
 			if i.text != None:
-				size = int(QuadMenuRef.size * 0.75)
+				size = int(quadmenuref.size * 0.75)
 				blf.size(0, size, 72)
 				w,h = blf.dimensions(0, i.text)
 				if w > width:
 					width = int(w)
 		
-		width += int(QuadMenuRef.size * 2)
+		width += int(quadmenuref.size * 2)
 
 		y_offset = 0
 
 		my_x = self.x + self.parent.width - 1
 		if mirror[0]:
 			my_x = self.x + 1
-		my_y = self.y + QuadMenuRef.size + 1
+		my_y = self.y + quadmenuref.size + 1
 		if mirror[1]:
 			my_y = self.y - 1
 
@@ -66,7 +69,7 @@ class QuadSubMenu:
 			if item.text == None:
 				y_offset += 1
 			else:
-				y_offset += QuadMenuRef.size
+				y_offset += quadmenuref.size
 
 			#item(text, check, menu, action, setting)
 			if item.text == None:

@@ -16,7 +16,7 @@
 import bpy
 from mathutils import Vector
 from math import pi, sin, cos, radians
-from primitive.primitive import PrimitiveGeometryClass, Draw_Primitive
+from primitive.primitive import Primitive_Geometry_Class, Draw_Primitive
 from bsmax.actions import delete_objects
 
 
@@ -216,15 +216,12 @@ def get_cylinder_mesh(radius1, radius2, height, hsegs, csegs, ssegs, sliceon, sf
 
 
 
-class Cylinder(PrimitiveGeometryClass):
-	def __init__(self):
+class Cylinder(Primitive_Geometry_Class):
+	def init(self):
 		self.classname = "Cylinder"
 		self.finishon = 3
 		self.owner = None
 		self.data = None
-
-	def reset(self):
-		self.__init__()
 
 	def create(self, ctx):
 		mesh = get_cylinder_mesh(0,0,0,1,1,18,False,0,360)
@@ -246,15 +243,10 @@ class Cylinder(PrimitiveGeometryClass):
 
 
 
-class Cone(PrimitiveGeometryClass):
-	def __init__(self):
+class Cone(Primitive_Geometry_Class):
+	def init(self):
 		self.classname = "Cone"
 		self.finishon = 4
-		self.owner = None
-		self.data = None
-
-	def reset(self):
-		self.__init__()
 
 	def create(self, ctx):
 		mesh = get_cylinder_mesh(0,0,0,1,1,18,False,0,360)
@@ -301,9 +293,6 @@ class Create_OT_Cylinder(Draw_Primitive):
 				return
 			
 			self.params.height = dimantion.height
-
-	def finish(self):
-		pass
 
 
 

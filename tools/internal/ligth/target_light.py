@@ -13,10 +13,13 @@
 #	along with this program.  If not, see <https://www.gnu.org/licenses/>.
 ############################################################################
 
-import bpy, mathutils
+import bpy
 from bpy.types import Operator
+from bpy.props import EnumProperty
 from bsmax.actions import set_create_target, set_as_active_object, delete_objects
 from bsmax.state import has_constraint
+
+
 
 class Light_OT_Create_Target(Operator):
 	bl_idname = 'light.create_target'
@@ -25,7 +28,7 @@ class Light_OT_Create_Target(Operator):
 
 	@classmethod
 	def poll(self, ctx):
-		if ctx.active_object != None:
+		if ctx.active_object:
 			obj = ctx.active_object
 			if obj.type == 'LIGHT' and not has_constraint(obj, 'TRACK_TO'):
 				return True
@@ -35,8 +38,9 @@ class Light_OT_Create_Target(Operator):
 		light = ctx.active_object
 		set_create_target(light, None)
 		set_as_active_object(ctx, light)
-		# self.report({'OPERATOR'},'bpy.ops.light.create_target()')
 		return {'FINISHED'}
+
+
 
 class Light_OT_Clear_Target(Operator):
 	bl_idname = 'light.clear_target'
@@ -45,7 +49,7 @@ class Light_OT_Clear_Target(Operator):
 
 	@classmethod
 	def poll(self, ctx):
-		if ctx.active_object != None:
+		if ctx.active_object:
 			obj = ctx.active_object
 			if obj.type == 'LIGHT' and has_constraint(obj, 'TRACK_TO'):
 				return True
@@ -60,10 +64,55 @@ class Light_OT_Clear_Target(Operator):
 		for c in TrackToConts:
 			obj.constraints.remove(c)
 		obj.matrix_world = transfoem
-		# self.report({'OPERATOR'},'bpy.ops.light.clear_target()')
 		return {'FINISHED'}
 
-classes = [Light_OT_Create_Target, Light_OT_Clear_Target]
+
+
+class Light_OT_Set_Type(Operator):
+	bl_idname = 'light.set_type'
+	bl_label = 'Set Type'
+	bl_options = {'REGISTER', 'UNDO'}
+
+	mode: EnumProperty(name='Mode', default='POINT',
+		items=[('POINT', 'Point',''), ('SUN', 'Sun',''), ('SPOT','Spot',''), ('AREA','Area','')])
+
+	@classmethod
+	def poll(self, ctx):
+		if ctx.active_object:
+			return ctx.active_object.type == 'LIGHT'
+		return False
+
+	def execute(self, ctx):
+		ctx.object.data.type = self.mode
+		return {'FINISHED'}
+
+
+
+class Light_OT_Setting(Operator):
+	bl_idname = 'light.setting'
+	bl_label = 'Light Setting'
+	bl_options = {'REGISTER', 'UNDO'}
+
+	name: EnumProperty(name='Name', default='SHADOW',
+		items=[('SHADOW', 'Shadow','')])
+
+	@classmethod
+	def poll(self, ctx):
+		if ctx.active_object:
+			return ctx.active_object.type == 'LIGHT'
+		return False
+
+	def execute(self, ctx):
+		if self.name == 'SHADOW':
+			ctx.object.data.use_shadow = not ctx.object.data.use_shadow
+		return {'FINISHED'}
+
+
+
+classes = [Light_OT_Create_Target,
+	Light_OT_Clear_Target,
+	Light_OT_Set_Type,
+	Light_OT_Setting]
 
 def register_target_light():
 	for c in classes:

@@ -15,21 +15,16 @@
 
 import bpy
 from math import pi
-from primitive.primitive import Draw_Primitive
+from primitive.primitive import Draw_Primitive, Primitive_Public_Class
 from bsmax.actions import delete_objects
-from bsmax.math import get_distance
+# from bsmax.math import get_distance
 
-class Camera:
-	def __init__(self):
+
+class Camera(Primitive_Public_Class):
+	def init(self):
 		self.finishon = 2
 		self.owner = None
 		self.target = None
-
-	def reset(self):
-		self.__init__()
-	
-	def update(self):
-		pass
 
 	def abort(self):
 		delete_objects([self.owner])
@@ -61,12 +56,12 @@ class Create_OT_Camera(Draw_Primitive):
 
 			self.subclass.target.location = dimantion.end
 
-			size = get_distance(self.subclass.owner.location,self.subclass.target.location)/3
+			# size = get_distance(self.subclass.owner.location,self.subclass.target.location)/3
+			size = dimantion.height/3
 			self.subclass.owner.data.display_size = size
 			self.subclass.target.empty_display_size = size / 10
 
-	def finish(self):
-		pass
+
 
 def register_camera():
 	bpy.utils.register_class(Create_OT_Camera)

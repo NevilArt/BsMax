@@ -12,6 +12,14 @@
 #	You should have received a copy of the GNU General Public License
 #	along with this program.  If not, see <https://www.gnu.org/licenses/>.
 ############################################################################
+import bpy
+
+def version():
+	v = bpy.app.version
+	if v[1] < 10:
+		return v[0]*100+v[1]*10
+	return v[0]*100+v[1]
+
 
 def is_active_object(ctx, types):
 	if ctx.area.type == 'VIEW_3D':

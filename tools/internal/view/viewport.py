@@ -15,6 +15,7 @@
 
 import bpy
 from bpy.types import Operator, Menu
+from bpy.props import EnumProperty
 
 class View3DData:
 	def __init__(self):
@@ -254,6 +255,58 @@ class View3D_OT_Show_Camera_Toggle(Operator):
 		return{"FINISHED"}
 
 
+
+class View3D_OT_Setting(Operator):
+	bl_idname = 'view3d.setting'
+	bl_label = 'Setting'
+	bl_options = {'REGISTER', 'UNDO'}
+
+	name: EnumProperty(name='Name', default='SHADOW',
+		items=[('SHADOW', 'Shadow',''),
+			('WIREFRAME', 'Wireframe',''),
+			('SOLID', 'Solid',''),
+			('MATERIAL', 'Material',''),
+			('RENDERED', 'Rendered',''),
+			('COMBINED', 'Combined',''),
+			('EMISSION', 'emission',''),
+			('ENVIRONMENT', 'Environment',''),
+			('DIFFUSE_LIGHT', 'Diffuse Light',''),
+			('DIFFUSE_COLOR', 'Diffuse Color',''),
+			('SPECULAR_LIGHT', 'Specular Light',''),
+			('VOLUME_TRANSMITTANCE', 'Volum Transmittance',''),
+			('VOLUME_SCATTER', 'Volum Scater',''),
+			('NORMAL', 'Normal',''),
+			('MIST', 'Mist',''),
+			('use_transform_skip_children', 'Use transform skip children',''),
+			('use_scene_lights_render', 'Use scene lights render',''),
+			('use_scene_world_render', 'Use scene world render','')])
+
+	@classmethod
+	def poll(self, ctx):
+		if ctx.active_object:
+			return ctx.active_object.type == 'LIGHT'
+		return False
+
+	def execute(self, ctx):
+		if self.name in {'WIREFRAME', 'SOLID', 'MATERIAL', 'RENDERED'}:
+			ctx.space_data.shading.type = self.name
+		
+		elif self.name in {'COMBINED', 'EMISSION', 'ENVIRONMENT', 'SHADOW',
+			'DIFFUSE_LIGHT', 'DIFFUSE_COLOR', 'SPECULAR_LIGHT', 'SPECULAR_COLOR',
+			'VOLUME_TRANSMITTANCE', 'VOLUME_SCATTER', 'NORMAL', 'MIST'}:
+			ctx.space_data.shading.render_pass = self.name
+		
+		elif self.name == 'use_transform_skip_children':
+			ctx.scene.tool_settings.use_transform_skip_children = not ctx.scene.tool_settings.use_transform_skip_children
+		elif self.name == 'use_scene_lights_render':
+			ctx.space_data.shading.use_scene_lights_render = not ctx.space_data.shading.use_scene_lights_render
+		elif self.name == 'use_scene_world_render':
+			ctx.space_data.shading.use_scene_world_render = not ctx.space_data.shading.use_scene_world_render
+
+		return {'FINISHED'}
+
+
+
 class VIEW3D_MT_Preview(Menu):
 	bl_idname = "VIEW3D_MT_preview"
 	bl_label = "Preview"
@@ -282,6 +335,7 @@ classes = [View3D_OT_Wireframe_Toggle,
 	View3D_OT_Show_Bone_Toggle,
 	View3D_OT_Show_Camera_Toggle,
 	View3D_OT_Lighting_Toggle,
+	View3D_OT_Setting,
 	VIEW3D_MT_Preview]
 	
 def register_viewport():

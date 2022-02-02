@@ -18,8 +18,10 @@ from mathutils import Vector
 from math import sin,cos,pi
 from bsmax.curve import Spline,Bezier_point
 from bsmax.math import point_on_vector
-from primitive.primitive import PrimitiveGeometryClass, Draw_Primitive
+from primitive.primitive import Primitive_Geometry_Class, Draw_Primitive
 from bsmax.actions import delete_objects
+
+
 
 def get_path(part):
 	body_path = Spline(None)
@@ -66,6 +68,8 @@ def get_path(part):
 		body_path.bezier_points.append(newbp)
 	return body_path
 
+
+
 def get_ring(point1, point2, scale):
 	ring = Spline(None)
 	d = Vector((0,scale*1.25,0))
@@ -82,6 +86,8 @@ def get_ring(point1, point2, scale):
 	ring.use_cyclic_u = True
 	return ring
 
+
+
 def get_verts_body(spline,ssegs,scale):
 	verts = []
 	for index in range(len(spline.bezier_points)):
@@ -91,6 +97,8 @@ def get_verts_body(spline,ssegs,scale):
 			newvert = point_on_vector(a,b,c,d,t)
 			verts.append(newvert*scale)
 	return verts
+
+
 
 def get_verts_pipe(spline,ssegs,scale):
 	verts = []
@@ -111,6 +119,8 @@ def get_verts_pipe(spline,ssegs,scale):
 			if index == len(spline.bezier_points)-2:
 				verts.append(d*scale)
 	return verts
+
+
 
 def get_teapot_mesh(radius,csegs,body,handle,spout,lid):
 	verts,edges,faces = [],[],[]
@@ -199,29 +209,32 @@ def get_teapot_mesh(radius,csegs,body,handle,spout,lid):
 
 	return verts,edges,faces
 
-class Teapot(PrimitiveGeometryClass):
-	def __init__(self):
+
+
+class Teapot(Primitive_Geometry_Class):
+	def init(self):
 		self.classname = "Teapot"
 		self.finishon = 2
-		self.owner = None
-		self.data = None
+
 		""" Default Settings """
 		self.auto_smooth_angle = 1.5708
-	def reset(self):
-		self.__init__()
+
 	def create(self, ctx):
-		mesh = get_teapot_mesh(0,4,True,True,True,True)
+		mesh = get_teapot_mesh(0, 4, True, True, True, True)
 		self.create_mesh(ctx, mesh, self.classname)
 		pd = self.data.primitivedata
 		pd.classname = self.classname
 		pd.csegs = 4
-		pd.bool1,pd.bool2,pd.bool3,pd.bool4 = True,True,True,True
+		pd.bool1, pd.bool2, pd.bool3, pd.bool4 = True, True, True, True
 		""" Apply Default Settings """
 		self.data.auto_smooth_angle = self.auto_smooth_angle
+
 	def update(self):
 		pd = self.data.primitivedata
-		mesh = get_teapot_mesh(pd.radius1,pd.csegs,pd.bool1,pd.bool2,pd.bool3,pd.bool4)
+		mesh = get_teapot_mesh(pd.radius1, pd.csegs, 
+			pd.bool1, pd.bool2, pd.bool3, pd.bool4)
 		self.update_mesh(mesh)
+
 	def abort(self):
 		delete_objects([self.owner])
 
@@ -244,8 +257,7 @@ class Create_OT_Teapot(Draw_Primitive):
 		if clickcount > 0:
 			self.subclass.update()
 
-	def finish(self):
-		pass
+
 
 def register_teapot():
 	bpy.utils.register_class(Create_OT_Teapot)

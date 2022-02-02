@@ -16,17 +16,20 @@
 import bpy
 from bpy.types import Operator
 from bpy.props import StringProperty
-from .q_refrence import QuadMenuRef
+from .q_refrence import quadmenuref
 from .q_menu import QuadMenu
 from .menu_standard import * # all functions started with "get_" came frome here
+
+
 
 class BsMax_OT_View3D_QuadMenu(Operator):
 	bl_idname = "bsmax.view3dquadmenue"
 	bl_label = "Viewport QuadMenu"
+
 	x, y = 0, 0
 	handler = None
 	controllers = []
-	# TODO make enom 
+	# TODO make enom
 	menu: StringProperty(name = 'default')
 	space: StringProperty(name = 'View3D')
 	# TODO remove space just make it auto
@@ -34,6 +37,8 @@ class BsMax_OT_View3D_QuadMenu(Operator):
 	#ClipEditor, ImageEditor, NLA, NodeEditorPath, Outliner3D
 
 	def modal(self, ctx, event):
+		global quadmenuref
+
 		if ctx.area:
 			ctx.area.tag_redraw()
 		if event.type == 'MOUSEMOVE':
@@ -44,19 +49,19 @@ class BsMax_OT_View3D_QuadMenu(Operator):
 		if event.type == 'RIGHTMOUSE':
 			if event.value == 'PRESS':
 				if self.handler != None:
-					QuadMenuRef.finish = True
+					quadmenuref.finish = True
 
 		# resize the quad menu
 		# if event.type == 'NUMPAD_MINUS':
 		# 	if event.value == 'PRESS':
-		# 		if QuadMenuRef.size > 15:
-		# 			QuadMenuRef.size -= 1
+		# 		if quadmenuref.size > 15:
+		# 			quadmenuref.size -= 1
 		# if event.type == 'NUMPAD_PLUS':
 		# 	if event.value == 'PRESS':
-		# 		if QuadMenuRef.size < 60:
-		# 			QuadMenuRef.size += 1
+		# 		if quadmenuref.size < 60:
+		# 			quadmenuref.size += 1
 
-		if event.type in {'ESC'} or QuadMenuRef.finish:
+		if event.type in {'ESC'} or quadmenuref.finish:
 			self.unregister_handler()
 			return {'CANCELLED'}
 		return {'RUNNING_MODAL'}
@@ -68,7 +73,8 @@ class BsMax_OT_View3D_QuadMenu(Operator):
 	def click(self, x, y):
 		for c in self.controllers:
 			c.mousehover(x, y, True)
-		QuadMenuRef.execute()
+		global quadmenuref
+		quadmenuref.execute()
 
 	def draw(self, ctx):
 		for c in self.controllers:
@@ -80,7 +86,7 @@ class BsMax_OT_View3D_QuadMenu(Operator):
 		if name == 'View3D':
 			return bpy.types.SpaceView3D
 		elif name == 'UVEditor':
-		    return bpy.types.SpaceUVEditor
+			return bpy.types.SpaceUVEditor
 		elif name == 'GraphEditor':
 			return bpy.types.SpaceGraphEditor
 		elif name == 'DopeSheetEditor':
@@ -102,7 +108,8 @@ class BsMax_OT_View3D_QuadMenu(Operator):
 				
 	def create(self, ctx):
 		self.controllers.clear()
-		QuadMenuRef.finish = False
+		global quadmenuref
+		quadmenuref.finish = False
 		Menus = []
 		########################################
 		# all this function are "from .menu_standard import *"
@@ -159,13 +166,16 @@ class BsMax_OT_View3D_QuadMenu(Operator):
 				self.controllers.append(NewQuad)
 
 	def invoke(self, ctx, event):
-		QuadMenuRef.size = qmd.get_scale() * 15
-		self.x = event.mouse_region_x - int(QuadMenuRef.size / 2)
-		self.y = event.mouse_region_y + int(QuadMenuRef.size / 2)
+		global quadmenuref
+		quadmenuref.size = qmd.get_scale() * 15
+		self.x = event.mouse_region_x - int(quadmenuref.size / 2)
+		self.y = event.mouse_region_y + int(quadmenuref.size / 2)
 		self.create(ctx)
 		self.register_handler(ctx)
 		ctx.window_manager.modal_handler_add(self)
 		return {'RUNNING_MODAL'}
+
+
 
 class Quad_Menu_Data:
 	preferences = None
@@ -174,6 +184,8 @@ class Quad_Menu_Data:
 			return 1
 		else:
 			return self.preferences.menu_scale
+
+
 
 qmd = Quad_Menu_Data()
 

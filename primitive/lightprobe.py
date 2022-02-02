@@ -15,23 +15,16 @@
 
 import bpy
 from mathutils import Vector
-from primitive.primitive import Draw_Primitive
+from primitive.primitive import Draw_Primitive, Primitive_Public_Class
 from bsmax.actions import delete_objects
-from bsmax.math import get_offset_by_orient
 
 
 
-class LightProbe:
-	def __init__(self):
+class LightProbe(Primitive_Public_Class):
+	def init(self):
 		self.finishon = 2
 		self.owner = None
 		self.data = None
-
-	def reset(self):
-		self.__init__()
-
-	def update(self):
-		pass
 
 	def abort(self):
 		delete_objects([self.owner])
@@ -57,19 +50,21 @@ class Create_OT_Light_Probe_Grid(Draw_Primitive):
 			self.width = dimantion.width / 2
 			self.length = dimantion.length / 2
 			self.location = self.subclass.owner.location = dimantion.center
+
 		if clickcount == 2:
 			self.height = dimantion.height / 2
-			# offset = get_offset_by_orient(Vector((0,0,dimantion.height / 2)), dimantion.view_name)
 			self.subclass.owner.location = self.location #+ offset
+
 		if clickcount == 3:
 			scale = 1 / max(self.width, self.length, self.height)
 			self.distance = dimantion.height * scale
+
 		if clickcount > 0:
 			self.subclass.owner.scale = (self.width, self.length, self.height)
 			self.subclass.owner.data.influence_distance = self.distance
 
 	def finish(self):
-		self.width,self.length,self.height,self.distance = 0,0,0,0
+		self.width, self.length, self.height, self.distance = 0,0,0,0
 
 
 
@@ -77,7 +72,7 @@ class Create_OT_Light_Probe_Planer(Draw_Primitive):
 	bl_idname="create.light_probe_planer"
 	bl_label="Reflection Plane"
 	subclass = LightProbe()
-	width,length,distance = 0,0,0
+	width, length, distance = 0,0,0
 
 	def create(self, ctx):
 		self.subclass.finishon = 3
@@ -90,14 +85,13 @@ class Create_OT_Light_Probe_Planer(Draw_Primitive):
 		if clickcount == 1:
 			self.width = dimantion.width
 			self.length = dimantion.length
+
 		if clickcount == 2:
 			self.distance = dimantion.height
+
 		if clickcount > 0:
 			self.subclass.owner.scale = (self.width, self.length, 1)
 			self.subclass.owner.data.influence_distance = self.distance
-
-	def finish(self):
-		pass
 
 
 
@@ -111,12 +105,11 @@ class Create_OT_Light_Probe_Cubemap(Draw_Primitive):
 		self.subclass.owner = ctx.active_object
 		self.subclass.owner.scale = (0,0,0)
 		self.subclass.owner.rotation_euler = self.gride.rotation
+
 	def update(self, ctx, clickcount, dimantion):
 		if clickcount == 1:
 			self.subclass.owner.data.influence_distance = dimantion.radius
 			self.subclass.owner.scale = (1,1,1)
-	def finish(self):
-		pass
 
 
 

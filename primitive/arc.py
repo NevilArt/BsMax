@@ -15,36 +15,41 @@
 
 import bpy
 from mathutils import Vector
-from primitive.primitive import PrimitiveCurveClass, Draw_Primitive
-from bsmax.mouse import switch_axis_by_orient
-from math import hypot, atan2, sqrt, sin, cos, pi, radians
+from primitive.primitive import Primitive_Curve_Class, Draw_Primitive
+from math import hypot, atan2, sqrt, sin, cos, pi, degrees, radians
 from bsmax.actions import delete_objects
-
+from bsmax.math import to_local_matrix, inverse_transform_matrix
 
 
 def circle_from_three_points(p1, p2, p3):
+	""" Get 3 3D points return Center and radius of Circle """
 	x1, y1 = p1.x, p1.y
 	x2, y2 = p2.x, p2.y
 	x3, y3 = p3.x, p3.y
+	
 	a = x1*(y2-y3)-y1*(x2-x3)+x2*y3-x3*y2
-	a = a if a != 0 else 0.000001
+	a = a if a != 0 else 0.000001 # protect from devide by zero
 	b = (x1*x1+y1*y1)*(y3-y2)+(x2*x2+y2*y2)*(y1-y3)+(x3*x3+y3*y3)*(y2-y1)
 	c = (x1*x1+y1*y1)*(x2-x3)+(x2*x2+y2*y2)*(x3-x1)+(x3*x3+y3*y3)*(x1-x2)
+	
 	x = -b / (2 * a)
 	y = -c / (2 * a)
+	# z = ??
+
 	return Vector((x, y, 0)), hypot(x-x1, y-y1) # center, radius
 
 
 
 def angle_between(center, point):
+	"""  """
 	x = point.x - center.x
 	y = point.y - center.y
-	angel = atan2(y, x)
-	return angel
+	return degrees(atan2(y, x))
 
 
 
 def arc_from_three_points(p1, p2, p3):
+	"""  """
 	center, radius = circle_from_three_points(p1, p2, p3)
 	start = angle_between(center, p1)
 	end = angle_between(center, p2)
@@ -53,6 +58,8 @@ def arc_from_three_points(p1, p2, p3):
 
 
 def get_arc_shape(radius, start, end, pie):
+	""" Get Radius Start End as Degre and Pie on/off return curve data """
+	start, end = radians(start), radians(end)
 	Shape = []
 	kappa = 4 * (sqrt(2) - 1) / 3
 	step = (end - start) / 4.0
@@ -60,10 +67,10 @@ def get_arc_shape(radius, start, end, pie):
 	lx = radius
 	ly = 0
 	if pie:
-		s = radians(start)
-		sx, sy = radius * sin(s), radius * cos(s)
+		sx, sy = radius * sin(start), radius * cos(start)
 		pc1, pl1, pr1 = (0,0,0), (0,0,0), (sx,sy,0)
 		Shape.append([pc1,pl1,'VECTOR',pr1,'VECTOR'])
+
 	for i in range(5):
 		theta = start + (step*i)
 		lx = radius * cos(theta)
@@ -74,12 +81,14 @@ def get_arc_shape(radius, start, end, pie):
 		pln = ((lx-xTan),(ly-yTan),0)
 		prn = ((lx+xTan),(ly+yTan),0)
 		lknottype = rknottype = 'ALIGNED'
+
 		if pie:
 			if i == 0:
 				lknottype, rknottype = 'VECTOR', 'FREE'
 			elif i == 4:
 				lknottype, rknottype = 'FREE', 'VECTOR'
 		Shape.append([pcn,pln,lknottype,prn,rknottype])
+
 	return [Shape]
 
 
@@ -92,44 +101,52 @@ def get_line_shape(p1, p2):
 
 
 
-class Arc(PrimitiveCurveClass):
-	def __init__(self):
+class Arc(Primitive_Curve_Class):
+	def init(self):
 		self.classname = "Arc"
 		self.finishon = 3
-		self.owner = None
-		self.data = None
 		self.close = False
-		self.p1 = Vector((0,0,0))
-		self.p2 = None
-		self.p3 = None
-		self.orient = None
 
-	def reset(self):
-		self.__init__()
+		# Local space draw arc
+		self.point1 = Vector((0,0,0))
+		self.point2 = Vector((0,0,0))
+		self.point3 = None
+		# World space draw line
+		self.start = Vector((0,0,0))
+		self.end = Vector((0,0,0))
+		# Control stuff
+		self.drawing = False
+		self.matrix = None
+		# second methods
+		self.radius = 0
 
 	def create(self, ctx):
-		shapes = get_arc_shape(0, 0, 360, False)
+		shapes = get_arc_shape(0, 0, 270, False)
 		self.create_curve(ctx, shapes, self.classname)
 		pd = self.data.primitivedata
 		pd.classname = self.classname
 
-	def draw(self, ctx):
-		pd = self.data.primitivedata
-		if self.p3 == None:
-			shapes = get_line_shape(self.p1, self.p2)
-		else:
-			p1, p2, p3 = self.p1, self.p2, self.p3
-			p1 = switch_axis_by_orient(self.orient, p1)
-			p2 = switch_axis_by_orient(self.orient, p2)
-			p3 = switch_axis_by_orient(self.orient, p3)
-			center, pd.radius1, pd.sfrom, pd.sto = arc_from_three_points(p1, p2, p3)
-			center = switch_axis_by_orient(self.orient, center)
-			self.owner.location = center
+	def draw(self):
+		if self.point3:
+			pd = self.data.primitivedata
 			self.close = pd.sliceon = True
+			p1, p2, p3 = self.point1, self.point2, self.point3
+			center, pd.radius1, pd.sfrom, pd.sto = arc_from_three_points(p1, p2, p3)
+			
 			shapes = get_arc_shape(pd.radius1, pd.sfrom, pd.sto, pd.sliceon)
+
+			location = to_local_matrix(center, self.matrix)
+			self.owner.location = location
+
+		else:
+			shapes = get_line_shape(self.start, self.end)
+
 		self.update_curve(shapes)
 
 	def update(self):
+		if self.drawing:
+			return
+
 		pd = self.data.primitivedata
 		self.close = pd.sliceon
 		shapes = get_arc_shape(pd.radius1, pd.sfrom, pd.sto, pd.sliceon)
@@ -144,35 +161,43 @@ class Create_OT_Arc(Draw_Primitive):
 	bl_idname = "create.arc"
 	bl_label = "Arc"
 	subclass = Arc()
-	view = None
-	orient = None
-	gotp1 = False
+	use_gride = True
 
 	def create(self, ctx):
 		self.subclass.create(ctx)
 		self.params = self.subclass.owner.data.primitivedata
-		self.subclass.owner.location = self.gride.location
-		self.subclass.owner.rotation_euler = self.gride.rotation
-
-		self.view = self.gride.location
-		self.orient = self.gride.rotation
+		self.subclass.matrix = inverse_transform_matrix(self.gride.gride_matrix)
+		self.subclass.drawing = True
 
 	def update(self, ctx, clickcount, dimantion):
 		if clickcount == 1:
-			if not self.gotp1:
-				self.subclass.p1 = dimantion.end
-				self.orient = self.gride.rotation
-				self.gotp1 = True
-			self.subclass.p2 = dimantion.end
+			if self.ctrl:
+				self.subclass.drawing = False
+				self.params.radius1 = dimantion.radius
+				self.params.sfrom = 0
+				self.params.sto = 270
+				self.params.sliceon = True
+				self.subclass.owner.location = self.gride.location
+				self.subclass.owner.rotation_euler = self.gride.rotation
+			else:
+				self.subclass.start = dimantion.start
+				self.subclass.end = dimantion.end
+				self.subclass.point2 = dimantion.local
+				self.subclass.drawing = True
+
 		elif clickcount == 2:
-			self.subclass.p3 = dimantion.end
-			self.subclass.owner.location = dimantion.end
+			if self.use_single_draw:
+				self.jump_to_end()
+				return
+
+			self.subclass.point3 = dimantion.local
 			self.subclass.owner.rotation_euler = self.gride.rotation
-		if clickcount > 0:
-			self.subclass.draw(ctx)
+
+		if clickcount > 0 and not self.use_single_draw:
+			self.subclass.draw()
 
 	def finish(self):
-		self.gotp1 = False
+		self.subclass.drawing = False
 
 
 

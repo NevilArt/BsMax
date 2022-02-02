@@ -15,30 +15,24 @@
 
 import bpy
 from bpy.props import EnumProperty
-from primitive.primitive import Draw_Primitive
+from primitive.primitive import Draw_Primitive, Primitive_Public_Class
 from bsmax.actions import delete_objects
 
 
 
-class GreacePencil:
-	def __init__(self):
+class GreacePencil(Primitive_Public_Class):
+	def init(self):
 		self.finishon = 2
 		self.owner = None
-
-	def reset(self):
-		self.__init__()
 
 	def create(self, ctx, gpencil_type):
 		bpy.ops.object.gpencil_add(location=(0,0,0),type=gpencil_type)
 		self.owner = ctx.active_object
 		self.data = self.owner.data
 
-	def update(self):
-		pass
-
 	def abort(self):
 		delete_objects([self.owner])
-
+	
 
 
 class Create_OT_GreacePencil(Draw_Primitive):
@@ -64,9 +58,6 @@ class Create_OT_GreacePencil(Draw_Primitive):
 			owner.location = dimantion.center
 			r = dimantion.radius/2
 			owner.scale = (r,r,r)
-
-	def finish(self):
-		pass
 
 
 

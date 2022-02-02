@@ -15,7 +15,7 @@
 
 import bpy
 from math import pi, sin, cos, radians
-from primitive.primitive import PrimitiveGeometryClass, Draw_Primitive
+from primitive.primitive import Primitive_Geometry_Class, Draw_Primitive
 from bsmax.actions import delete_objects
 
 
@@ -135,15 +135,10 @@ def get_oiltank_mesh(radius,height,capheight,blend,ssegs,csegs,hsegs,sliceon,sfr
 
 
 
-class OilTank(PrimitiveGeometryClass):
+class OilTank(Primitive_Geometry_Class):
 	def __init__(self):
 		self.classname = "OilTank"
 		self.finishon = 4
-		self.owner = None
-		self.data = None
-
-	def reset(self):
-		self.__init__()
 
 	def create(self, ctx):
 		mesh = get_oiltank_mesh(0,0,0,0,18,8,6,False,0,360)
@@ -156,6 +151,7 @@ class OilTank(PrimitiveGeometryClass):
 	def update(self):
 		pd = self.data.primitivedata
 		csegs = pd.csegs if not pd.seglock else pd.ssegs-2
+
 		if pd.center:
 			height = pd.height
 		else:
@@ -163,15 +159,19 @@ class OilTank(PrimitiveGeometryClass):
 			if pd.height < diameter:
 				pd.height = diameter
 			height = pd.height-pd.radius1*2
+
 		""" limit the cao height with heaight """
 		if pd.thickness*2 > height:
 			pd.thickness = height/2
+
 		if pd.thickness*2 < -height:
 			pd.thickness = -height/2
+
 		mesh = get_oiltank_mesh(pd.radius1, height,
 			pd.thickness, pd.chamfer1, # capheight, blend
 			pd.ssegs, csegs, pd.hsegs,
 			pd.sliceon, pd.sfrom, pd.sto)
+
 		self.update_mesh(mesh)
 
 	def abort(self):
@@ -208,9 +208,6 @@ class Create_OT_OilTank(Draw_Primitive):
 		
 		elif clickcount == 3:
 			self.params.thickness = dimantion.radius
-
-	def finish(self):
-		pass
 
 
 

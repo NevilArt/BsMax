@@ -14,8 +14,10 @@
 ############################################################################
 
 import bpy
-from primitive.primitive import PrimitiveGeometryClass, Draw_Primitive
+from primitive.primitive import Primitive_Geometry_Class, Draw_Primitive
 from bsmax.actions import delete_objects
+
+
 
 def get_pyramid_mesh(width, depth, height, wsegs, dsegs, hsegs):
 	verts, edges, faces = [], [], []
@@ -142,15 +144,12 @@ def get_pyramid_mesh(width, depth, height, wsegs, dsegs, hsegs):
 			faces.append((v, b, a))
 	return verts, edges, faces
 
-class Pyramid(PrimitiveGeometryClass):
-	def __init__(self):
+
+
+class Pyramid(Primitive_Geometry_Class):
+	def init(self):
 		self.classname = "Pyramid"
 		self.finishon = 3
-		self.owner = None
-		self.data = None
-
-	def reset(self):
-		self.__init__()
 
 	def create(self, ctx):
 		mesh = get_pyramid_mesh(0, 0, 0, 1, 1, 1)
@@ -167,6 +166,8 @@ class Pyramid(PrimitiveGeometryClass):
 
 	def abort(self):
 		delete_objects([self.owner])
+
+
 
 class Create_OT_Pyramid(Draw_Primitive):
 	bl_idname = "create.pyramid"
@@ -197,8 +198,8 @@ class Create_OT_Pyramid(Draw_Primitive):
 				return
 			self.params.height = dimantion.height
 
-	def finish(self):
-		pass
+
+
 
 def register_pyramid():
 	bpy.utils.register_class(Create_OT_Pyramid)

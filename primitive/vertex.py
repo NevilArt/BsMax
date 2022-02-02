@@ -15,7 +15,7 @@
 
 import bpy
 from bpy.props import EnumProperty
-from primitive.primitive import PrimitiveGeometryClass, Draw_Primitive
+from primitive.primitive import Primitive_Geometry_Class, Draw_Primitive
 
 
 
@@ -36,12 +36,10 @@ def get_vertex_mesh(verts, mode):
 
 
 
-class Vertex(PrimitiveGeometryClass):
+class Vertex(Primitive_Geometry_Class):
 	def __init__(self):
 		self.classname = "Vertex"
 		self.finishon = 0 # infinit
-		self.owner = None
-		self.data = None
 		self.mode = "NONE"#'VERT' 'EDGE' 'FACE'
 		self.verts = []
 

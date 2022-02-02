@@ -14,21 +14,15 @@
 ############################################################################
 
 import bpy
-from primitive.primitive import Draw_Primitive
+from primitive.primitive import Draw_Primitive, Primitive_Public_Class
 from bsmax.actions import delete_objects
 
 
 
-class Speaker:
-	def __init__(self):
+class Speaker(Primitive_Public_Class):
+	def init(self):
 		self.finishon = 2
 		self.owner = None
-
-	def reset(self):
-		self.__init__()
-	
-	def update(self):
-		pass
 
 	def abort(self):
 		delete_objects([self.owner])
@@ -49,9 +43,6 @@ class Create_OT_Speaker(Draw_Primitive):
 	def update(self, ctx, clickcount, dimantion):
 		if self.drag:
 			self.subclass.owner.location = dimantion.end
-
-	def finish(self):
-		pass
 
 
 
