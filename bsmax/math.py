@@ -355,7 +355,7 @@ def to_local_matrix(point, matrix):
 
 def inverse_transform_matrix(matrix):
 	m = matrix
-	n = matrix = Matrix((
+	n = Matrix((
 		(1, 0, 0, -m[0][3]),
 		(0, 1, 0, -m[1][3]),
 		(0, 0, 1, -m[2][3]),
@@ -382,3 +382,46 @@ def inverse_transform_matrix(matrix):
 	n[2][2] =  (m00*m11 - m01*m10) * a
 
 	return n
+
+
+class BsMatrix:
+	def __init__(self):
+		self.matrix = [
+			[1, 0, 0, 0],
+			[0, 1, 0, 0],
+			[0, 0, 1, 0],
+			[0, 0, 0, 1]]
+	
+	def as_matrix(self):
+		m = self.matrix
+		return Matrix((
+			(m[0][0], m[0][1], m[0][2], m[0][3]),
+			(m[1][0], m[1][1], m[1][2], m[1][3]),
+			(m[2][0], m[2][1], m[2][2], m[2][3]),
+			(m[3][0], m[3][1], m[3][2], m[3][3]))) 
+	
+	def from_euler(self, yaw, pitch, roll):
+		sy, cy = sin(yaw), cos(yaw)
+		Rz_yaw = (
+			Vector((cy, -sy, 0)),
+			Vector((sy,  cy, 0)),
+			Vector((0,    0, 1)))
+
+		sp, cp = sin(pitch), cos(pitch)
+		Ry_pitch = (
+			Vector(( cp, 0, sp)),
+			Vector((  0, 1, 0)),
+			Vector((-sp, 0, cp)))
+
+		sr, cr = sin(roll), cos(roll) 
+		Rx_roll = (
+			Vector((1,  0,   0)),
+			Vector((0, cr, -sr)),
+			Vector((0, sr,  cr)))
+			
+		m = numpy.dot(Rz_yaw, numpy.dot(Ry_pitch, Rx_roll))
+
+		mt = self.matrix
+		mt[0][0], mt[0][1], mt[0][2] = m[0][0], m[0][1], m[0][2]
+		mt[1][0], mt[1][1], mt[1][2] = m[1][0], m[1][1], m[1][2]
+		mt[2][0], mt[2][1], mt[2][2] = m[2][0], m[2][1], m[2][2]

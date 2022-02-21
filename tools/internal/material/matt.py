@@ -14,8 +14,13 @@
 ############################################################################
 
 import bpy
+from os import path
+from bpy.types import Operator, Menu
+from bpy.props import StringProperty
 
-class Material_OT_Assign_To_Selection(bpy.types.Operator):
+
+
+class Material_OT_Assign_To_Selection(Operator):
 	bl_idname = "material.assign_to_selection"
 	bl_label = "Assign to selected objects"
 	bl_description = "Assign Material to selected objects"
@@ -30,14 +35,66 @@ class Material_OT_Assign_To_Selection(bpy.types.Operator):
 	def execute(self, ctx):
 		if ctx.mode == 'OBJECT':
 			bpy.ops.object.make_links_data(type='MATERIAL')
-			# self.report({'OPERATOR'},'bpy.ops.object.make_links_data(type="MATERIAL")')
 		elif ctx.mode == 'EDIT_MESH':
 			bpy.ops.object.material_slot_assign()
-			# self.report({'OPERATOR'}, 'bpy.ops.object.material_slot_assign()')
 		return{"FINISHED"}
 
-class BsMax_MT_material_Tools(bpy.types.Menu):
-	bl_idname = "BSMAX_MT_materialtools"
+
+
+class Material_OT_Import(Operator):
+	bl_idname = "material.import_node_groupe"
+	bl_label = "Import Node Groupe Preset"
+	bl_description = "Import Node Groupe Presets"
+	bl_options = {'REGISTER'}
+
+	name: StringProperty()
+
+	@classmethod
+	def poll(self, ctx):
+		if ctx.space_data.type == "NODE_EDITOR":
+			return ctx.space_data.shader_type == 'OBJECT'
+		return False
+
+	def execute(self, ctx):
+		# Check for exist
+		if not self.name in bpy.data.node_groups:
+			# Get current script path
+			dirs = path.dirname(__file__).split('\\')
+			
+			# Remove 3 step of sub folders to get Addon root Directory
+			root_path = ''
+			for i in range(len(dirs)-3):
+				root_path += dirs[i] + '\\'
+
+			# Make Path
+			directory = root_path + 'presets.blend\\NodeTree\\'
+
+			# Append the Node Tree
+			bpy.ops.wm.append(filename=self.name, directory=directory)
+
+		# Add to node editor
+		value = 'bpy.data.node_groups["' + self.name + '"]'
+		bpy.ops.node.add_node(type="ShaderNodeGroup", use_transform=True,
+			settings=[{"name":"node_tree", "value":value}])
+
+		return{"FINISHED"}
+
+
+
+class BsMax_MT_material_presets(Menu):
+	bl_idname = "BSMAX_MT_material_import"
+	bl_label = "Append Node Trees"
+
+	def draw(self, ctx):
+		layout=self.layout
+		layout.operator("material.import_node_groupe", text="Blure").name = 'Blure V01'
+		layout.operator("material.import_node_groupe", text="Falloff").name = 'Falloff V01'
+		layout.operator("material.import_node_groupe", text="Untile").name = 'Untile V01'
+
+
+
+class BsMax_MT_material_Tools(Menu):
+	bl_idname = "BSMAX_MT_material_tools"
 	bl_label = "Tools"
 
 	def draw(self, ctx):
@@ -45,11 +102,19 @@ class BsMax_MT_material_Tools(bpy.types.Menu):
 		if ctx.space_data.type == "NODE_EDITOR":
 			if ctx.space_data.shader_type == 'OBJECT':
 				layout.operator("material.assign_to_selection", text="Assign to selected")
+				layout.menu("BSMAX_MT_material_import")
+
+
 
 def matt_menu(self, ctx):
-	self.layout.menu("BSMAX_MT_materialtools")
+	self.layout.menu("BSMAX_MT_material_tools")
 
-classes = [Material_OT_Assign_To_Selection,BsMax_MT_material_Tools]
+
+
+classes = [Material_OT_Assign_To_Selection,
+	Material_OT_Import,
+	BsMax_MT_material_presets,
+	BsMax_MT_material_Tools]
 
 def register_matt():
 	for c in classes:

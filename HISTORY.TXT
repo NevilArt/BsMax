@@ -1,3 +1,8 @@
+#0,1,0,20220202
+	Helix primitive height miscalculation fixed.
+	Primitive Icosphere issue with Blender 3.0 fixed (API update).
+	All Quadmenu Items rechecked and refiend much as possible.
+
 #0,1,0,20220124
 	Create Line, Empty and Lights issu from last update fixed.
 	Primitive draw on surface and view Done.

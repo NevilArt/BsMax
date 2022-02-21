@@ -31,10 +31,7 @@ If you found this product useful and want to motivate and support me you can Don
 
 # Recent Updates and Changes
 
-* Helix primitive height miscalculation fixed.
-* Primitive Icosphere issue with Blender 3.0 fixed (API update).
-* All Quadmenu Items rechecked and refiend much as possible.
-* Some code cleaning
+* Image Blure, Fallof, Untile Node preset can be append from "Shader editor/Tools/Append Node Trees/..."
 * [Update History...](https://github.com/NevilArt/BsMax_2_80/blob/master/HISTORY.TXT)
 
 # In Production 
