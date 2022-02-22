@@ -58,7 +58,7 @@ c0040="wm.tool_set_by_id(name='builtin.bevel')"
 c0041="mesh.remove_doubles(threshold=0.001, use_unselected=False)"
 c0042="mesh.weld()"
 c0043="mesh.dissolve_edges()"
-c0044=""
+c0044="object.paths_calculate('INVOKE_DEFAULT')"
 c0045="mesh.subdivide()"
 c0046="wm.tool_set_by_id(name='builtin.extrude_region')"
 c0047="wm.tool_set_by_id(name='builtin.bevel')"
@@ -229,9 +229,19 @@ c0211="curve.refine('INVOKE_DEFAULT')"
 c0212="object.convert_to(target='GPENCIL')"
 c0213="object.convert_to(target='POINTCLOUD')"
 c0214="editor.float(ui_type='GeometryNodeTree')"
-c0215=''
-c0216=''
-c0217=''
-c0218=''
-c0219=''
-c0220=''
+c0215="anim.path_constraint('INVOKE_DEFAULT')"
+c0216="anim.location_constraint('INVOKE_DEFAULT')"
+c0217="anim.link_constraint('INVOKE_DEFAULT')"
+c0218="anim.link_to_world('INVOKE_DEFAULT')"
+c0219="anim.lookat_constraint('INVOKE_DEFAULT')"
+c0220="anim.orientation_constraint('INVOKE_DEFAULT')"
+c0221="anim.freeze_on('INVOKE_DEFAULT')"
+c0222="object.paths_update()"
+c0223=''
+c0224=''
+c0225=''
+c0226=''
+c0227=''
+c0228=''
+c0229=''
+c0230=''

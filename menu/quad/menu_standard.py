@@ -25,8 +25,6 @@ from bsmax.state import is_active_primitive, get_active_type
 ##########
 t,f,n = True,False,None
 
-
-
 def seprator():
 	return QuadItem(n,f,f,n,n,n)
 
@@ -139,9 +137,10 @@ def get_view3d_display(ctx):
 
 def get_view3d_tool1(ctx):
 	items = []
-	vert,edge,face = ctx.tool_settings.mesh_select_mode
+	vert, edge, face = ctx.tool_settings.mesh_select_mode
 	if ctx.mode == 'OBJECT':
-		vert,edge,face = False,False,False
+		vert, edge, face = False, False, False
+
 	if get_active_type(ctx) == 'MESH':
 		if not is_active_primitive(ctx):
 			#  text, check, enabled,menu,action,setting
@@ -168,14 +167,17 @@ def get_view3d_tool1(ctx):
 			items.append(seprator())
 			items.append(QuadItem("Ignore Backfacing",f,t,n,c0029,n))
 			items.append(QuadItem("NURMS Toggle",f,f,n,"",n))
+
 	elif get_active_type(ctx) == 'CURVE':
 		items.append(QuadItem("Extrude",f,t,n,c0134,n))
+
 		if not is_active_primitive(ctx):
 			items.append(seprator())
 			items.append(QuadItem("Top-level",(ctx.mode=='OBJECT'),t,n,c0018,n))
 			items.append(QuadItem("Vertex",f,t,n,c0019,n))
 			items.append(QuadItem("Segment",f,f,n,c0020,n))
 			items.append(QuadItem("Spline",f,f,n,c0021,n))
+
 			if ctx.mode == 'EDIT_CURVE':
 				items.append(seprator())
 				items.append(QuadItem("Reset Tangents",f,f,n,"",n))
@@ -194,6 +196,7 @@ def get_view3d_tool1(ctx):
 			else:
 				items.append(seprator())
 				items.append(QuadItem("Attach",f,t,n,c0210,n))
+
 	if get_active_type(ctx) == 'ARMATURE':
 		items.append(QuadItem("Octahedral",f,t,n,c0150,n))
 		items.append(QuadItem("Stick",f,t,n,c0151,n))
@@ -389,13 +392,14 @@ def get_view3d_set(ctx):
 	items.append(QuadItem("Set Keyframe",f,t,n,c0079,n))
 	items.append(QuadItem("Set Key Filter",f,t,n,c0080,n))
 	items.append(seprator())
-	items.append(QuadItem("Motion path",f,f,n,"",n))
+	items.append(QuadItem("Motion path",f,t,n,c0044,n))
 	items.append(seprator())
 	items.append(QuadItem("Delete Selected Animation",f,t,n,c0081,n))
 	items.append(seprator())
-	items.append(QuadItem("Driver Editor...",f,f,n,"",n))
-	items.append(QuadItem("Dope Sheet...",f,f,n,"",n))
-	items.append(QuadItem("Curve Editor...",f,f,n,"",n))
+	items.append(QuadItem("Curve Editor...",f,t,n,c0167,n))
+	items.append(QuadItem("Dope sheet...",f,t,n,c0168,n))
+	items.append(QuadItem("Driver Editor...",f,t,n,c0170,n))
+	items.append(QuadItem("NLA Editor...",f,t,n,c0169,n))
 	return "Set",items,1
 
 
@@ -430,6 +434,17 @@ def get_view3d_transform2(ctx):
 	items.append(seprator())
 	items.append(QuadItem("Freeze Rotation",f,t,n,c0156,n))
 	items.append(QuadItem("Freeze Transform",f,t,n,c0155,n))
+	items.append(seprator())
+	items.append(QuadItem('Path Constraint',f,t,n,c0215,n))
+	items.append(QuadItem('Location Constraint',f,t,n,c0216,n))
+	items.append(seprator())
+	items.append(QuadItem('Parent Constraint',f,t,n,c0217,n))
+	items.append(QuadItem('Parent to World',f,t,n,c0218,n))
+	items.append(seprator())
+	items.append(QuadItem('Lookat Constraint',f,t,n,c0219,n))
+	items.append(QuadItem('Orientation Constraint',f,t,n,c0220,n))
+	items.append(seprator())
+	items.append(QuadItem('Freeze On',f,t,n,c0221,n))
 	return "Transform",items,3
 
 

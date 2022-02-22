@@ -53,7 +53,7 @@ class QuadMenuRef:
 			try:
 				exec('bpy.ops.' + self.action)
 			except:
-				print("An exception occurred with " + self.action)
+				print("An exception occurred with: bpy.ops." + self.action)
 		self.action = None
 		self.finish = True
 

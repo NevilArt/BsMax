@@ -1,3 +1,6 @@
+#0,1,0,20220221
+	Image Blure, Fallof, Untile Node preset can be append from "Shader editor/Tools/Append Node Trees/..."
+
 #0,1,0,20220202
 	Helix primitive height miscalculation fixed.
 	Primitive Icosphere issue with Blender 3.0 fixed (API update).

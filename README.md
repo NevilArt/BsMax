@@ -15,9 +15,9 @@ Your Reports and Ideas will help me alot and don't forget the sharing. let more 
 
 If not have Github account use 'NevilArt@Gmail.Com' for bug report.
 
-# Donation
+# Support
 
-If you found this product useful and want to motivate and support me you can Donate me from [Gumroad](https://nevilart.gumroad.com/l/BsMax).
+If you found this product useful and want to support this project you can Donate in [Gumroad](https://nevilart.gumroad.com/l/BsMax).
 
 # Installation
 
@@ -31,7 +31,8 @@ If you found this product useful and want to motivate and support me you can Don
 
 # Recent Updates and Changes
 
-* Image Blure, Fallof, Untile Node preset can be append from "Shader editor/Tools/Append Node Trees/..."
+* Parent Constraint stuff added to animation Quadmenu 'Alt + RMB'
+* Some minor Bugs Fixed.
 * [Update History...](https://github.com/NevilArt/BsMax_2_80/blob/master/HISTORY.TXT)
 
 # In Production 

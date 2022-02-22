@@ -281,12 +281,6 @@ class View3D_OT_Setting(Operator):
 			('use_scene_lights_render', 'Use scene lights render',''),
 			('use_scene_world_render', 'Use scene world render','')])
 
-	@classmethod
-	def poll(self, ctx):
-		if ctx.active_object:
-			return ctx.active_object.type == 'LIGHT'
-		return False
-
 	def execute(self, ctx):
 		if self.name in {'WIREFRAME', 'SOLID', 'MATERIAL', 'RENDERED'}:
 			ctx.space_data.shading.type = self.name
