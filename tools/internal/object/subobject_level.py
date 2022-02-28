@@ -61,7 +61,7 @@ class Object_OT_Subobject_Level(bpy.types.Operator):
 				#    else:
 				#        self.set('EDIT')
 				#        self.mesh(ctx,False,True,False)
-				elif self.level == 3: # Mesh mode
+				elif self.level == 4: # Mesh mode
 					if mode == "EDIT_MESH" and f:
 						self.set('OBJECT')
 					else:

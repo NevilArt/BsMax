@@ -31,8 +31,11 @@ If you found this product useful and want to support this project you can Donate
 
 # Recent Updates and Changes
 
-* Parent Constraint stuff added to animation Quadmenu 'Alt + RMB'
-* Some minor Bugs Fixed.
+* Paralax Node tree added "Shader editor/Tools/Append Node Trees/...".
+* Note: Paralax map works on coordinate system and Not suport UVMap yet.
+* Backburner submitter 'Frame per task' miscalculation fixed.
+* Backburner submitter load preset error fixed.
+* Some other minor bug fixed.
 * [Update History...](https://github.com/NevilArt/BsMax_2_80/blob/master/HISTORY.TXT)
 
 # In Production 

@@ -16,13 +16,16 @@
 from .external import register_external, unregister_external
 from .internal import register_internal, unregister_internal
 from .special import register_special, Unregister_special
+# from .patrion import register_patreon, unregister_patreon
 
 def register_tools(preferences):
 	register_external()
 	register_internal(preferences)
 	register_special(preferences)
+	# register_patreon()
 
 def unregister_tools():
 	unregister_external()
 	unregister_internal()
 	Unregister_special()
+	# unregister_patreon()

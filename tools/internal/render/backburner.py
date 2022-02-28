@@ -20,10 +20,10 @@
 """ This file can be instaled as an stand alone add-on too """
 bl_info = {
 	"name": "BsMax-Backburner",
-	"description": "Backburner for Blender 2.80 ~ 3.0",
+	"description": "Backburner for Blender 2.80 ~ 3.1",
 	"author": "Matt Ebb | Blaize | Anthony Hunt | Spirou4D | Nevil",
-	"version": (0, 2, 0, 8),# 2021-10-06
-	"blender": (2, 80, 0),# to 3.0
+	"version": (0, 2, 0, 9),# 2022-02-28
+	"blender": (2, 80, 0),# to 3.2
 	"location": "Properties/ Output/ Backbrner",
 	"wiki_url": "https://github.com/NevilArt/BsMax_2_80/wiki",
 	"doc_url": "https://github.com/NevilArt/BsMax_2_80/wiki",
@@ -40,7 +40,7 @@ from bpy.types import Panel, Operator, PropertyGroup
 def backburner_path():
 	os_name = platform.system()
 	if os_name == 'Windows':
-		return '"C:\\Program Files (x86)\\Autodesk\\Backburner\\cmdjob.exe"'
+		return '"C:/Program Files (x86)/Autodesk/Backburner/cmdjob.exe"'
 	if os_name == 'Linux':
 		return '"/opt/Autodesk/backburner/cmdjob"'
 	if os_name == 'Darwin':
@@ -73,9 +73,9 @@ def string_to_integer_array(frames):
 			if n[0] != '':
 				ints.append(int(n[0]))
 		elif len(n) == 2:
-			n1,n2 = int(n[0]),int(n[1])
+			n1,n2 = int(n[0]), int(n[1])
 			if n2 > n1:
-				for i in range(n1,n2+1):
+				for i in range(n1, n2+1):
 					ints.append(i)
 	ints.sort()
 	return ints
@@ -225,7 +225,7 @@ def create_task_list_file(scene, filename):
 
 			""" Split if reach to step size """
 			if end - start >= step:
-				task += task_fild(start, end)
+				task += task_fild(start, end-1)
 				start = end = frame
 
 			""" pack the end part of sequence """
@@ -326,7 +326,7 @@ class Render_OT_Submit_To_Backburner(Operator):
 		return {'FINISHED'}
 	
 	def execute(self, ctx):
-		if bpy.context.blend_data.filepath != '':
+		if ctx.blend_data.filepath != '':
 			csbb = ctx.scene.backburner
 			if csbb.blender_path == '':
 				self.report({'ERROR'}, "Network path to Blender hasn't been set")
@@ -367,7 +367,7 @@ class Render_OT_Update_Job_Name(Operator):
 
 def get_preset_file_path():
 	''' Return the pathand file name of preset file '''
-	preset_path = bpy.utils.user_resource('CONFIG') + '\\BsMax\\'
+	preset_path = bpy.utils.user_resource('CONFIG') + '/BsMax/'
 	
 	''' Creat preset directory if not exist '''
 	if not os.path.isdir(preset_path):
@@ -433,9 +433,10 @@ class Render_OT_Load_BackBurner(Operator):
 
 	def execute(self, ctx):
 		preset_path, file_name = get_preset_file_path()
-		script = open(preset_path + file_name).read()
-		exec(script)
-
+		preset_file = preset_path + file_name
+		if os.path.isfile(preset_file):
+			script = open(preset_file).read()
+			exec(script)
 		return{"FINISHED"}
 
 

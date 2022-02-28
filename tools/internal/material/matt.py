@@ -89,6 +89,8 @@ class BsMax_MT_material_presets(Menu):
 		layout=self.layout
 		layout.operator("material.import_node_groupe", text="Blure").name = 'Blure V01'
 		layout.operator("material.import_node_groupe", text="Falloff").name = 'Falloff V01'
+		layout.operator("material.import_node_groupe", text="Parallax Box").name = 'Parallax Box X4 V01'
+		layout.operator("material.import_node_groupe", text="Parallax Layer").name = 'Parallax Layer X4 V01'
 		layout.operator("material.import_node_groupe", text="Untile").name = 'Untile V01'
 
 

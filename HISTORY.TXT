@@ -1,3 +1,7 @@
+#0,1,0,20220222
+	Parent Constraint stuff added to animation Quadmenu 'Alt + RMB'
+	Some minor Bugs Fixed.
+
 #0,1,0,20220221
 	Image Blure, Fallof, Untile Node preset can be append from "Shader editor/Tools/Append Node Trees/..."
 
