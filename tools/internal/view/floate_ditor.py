@@ -65,7 +65,11 @@ class Editor_OT_Open_As_Float_Window(Operator):
 			area = windows[-1].screen.areas[0]
 			area.ui_type = self.ui_type
 			if self.shader_type != '':
-				ctx.space_data.shader_type = self.shader_type
+				#TODO check has attribute
+				try:
+					ctx.space_data.shader_type = self.shader_type
+				except:
+					pass
 
 		return{'FINISHED'}
 
@@ -142,7 +146,7 @@ class BsMax_MT_New_Editor(Menu):
 		layout.operator("editor.float", text='Properties', icon='PROPERTIES').ui_type='PROPERTIES'
 		layout.operator("editor.float", text='File Browser', icon='FILE_FOLDER').ui_type='FILES'
 		if version[0] >= 3:
-			layout.operator("editor.float", text='Sepreadsheet', icon='ASSET_MANAGER').ui_type='ASSETS'
+			layout.operator("editor.float", text='Asset Manager', icon='ASSET_MANAGER').ui_type='ASSETS'
 		if (version[0] == 2 and version[1] <= 93) or version[0] > 2:
 			layout.operator("editor.float", text='Sepreadsheet', icon='SPREADSHEET').ui_type='SPREADSHEET'
 		layout.operator("editor.float", text='Prefrences', icon='PREFERENCES').ui_type='PREFERENCES'

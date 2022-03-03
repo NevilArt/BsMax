@@ -20,12 +20,13 @@ from bsmax.actions import set_as_active_object
 
 
 class Object_TO_Select_By_Name(Operator):
-	""" Select """
+	""" Select By Name """
 	bl_idname = "object.select_by_name"
-	bl_label = "select object by name"
-	bl_options = {'REGISTER', 'UNDO'}
+	bl_label = "Select Object By Name"
+	# bl_description = ""
+	bl_options = {'REGISTER', 'UNDO', 'INTERNAL'}
 	
-	name: bpy.props.StringProperty(default="")
+	name: StringProperty(default="")
 	
 	@classmethod
 	def poll(self, ctx):
@@ -34,15 +35,15 @@ class Object_TO_Select_By_Name(Operator):
 	def execute(self,ctx):
 		bpy.ops.object.select_all(action='DESELECT')
 		if self.name != "":
-			set_as_active_object(ctx,bpy.data.objects[self.name])
+			set_as_active_object(ctx, bpy.data.objects[self.name])
 		return{"FINISHED"}
 
 
 
 class Object_OT_Freeze(Operator):
-	""" Freeze/Unfreeze Objects """
+	""" Freeze / Unfreeze Objects """
 	bl_idname = "object.freeze"
-	bl_label = "Freeze/Unfreeze"
+	bl_label = "Freeze / Unfreeze"
 	# bl_description = ""
 	bl_options = {'REGISTER', 'UNDO'}
 
@@ -55,14 +56,19 @@ class Object_OT_Freeze(Operator):
 		if self.mode == 'selection':
 			for obj in ctx.selected_objects:
 				obj.hide_select = True
+				obj.display_type = 'SOLID'
+
 		elif self.mode == 'unselected':
 			for obj in bpy.data.objects:
 				if not obj.select_get():
 					obj.hide_select = True
+					obj.display_type = 'SOLID'
+
 		elif self.mode == 'clear':
 			for obj in bpy.data.objects:
 				obj.hide_select = False
-		self.report({'OPERATOR'},'bpy.ops.object.freeze()')
+				obj.display_type = 'TEXTURED'
+
 		return{"FINISHED"}
 
 
@@ -83,23 +89,22 @@ class Object_OT_Hide(Operator):
 	def execute(self, ctx):
 		if self.mode == 'selection':
 			for obj in ctx.selected_objects:
-				obj.hide_render = True
 				obj.hide_viewport = True
+
 		elif self.mode == 'unselected':
 			for obj in bpy.data.objects:
 				if not obj.select_get():
-					obj.hide_render = True
 					obj.hide_viewport = True
+
 		elif self.mode == 'clear':
 			if self.collection:
 				for collection in bpy.data.collections:
-					collection.hide_render = False
 					collection.hide_viewport = False
+
 			for obj in bpy.data.objects:
-				obj.hide_render = False
 				obj.hide_viewport = False
+
 			bpy.ops.object.hide_view_clear('INVOKE_DEFAULT')
-		self.report({'OPERATOR'},'bpy.ops.object.hide()')
 		return{"FINISHED"}
 
 

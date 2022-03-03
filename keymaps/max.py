@@ -241,7 +241,7 @@ def view3d(km,preferences):
 	km.new(space,'view3d.select','LEFTMOUSE','CLICK',[('extend',True),('center',True),('enumerate',True),('object',True)],ctrl=True)
 	km.new(space,'view3d.select','LEFTMOUSE','CLICK',[('deselect',True)],alt=True)
 	km.new(space,'view3d.zoom_extended','Z','PRESS',[])
-	km.new(space,'camera.set_active','C','PRESS',[])
+	km.new(space,'camera.select','C','PRESS',[])
 	km.new(space,'view3d.show_hide_gride','G','PRESS',[])
 	km.new(space,'view3d.show_statistics','SEVEN','PRESS',[])
 	km.new(space,'wm.multi_item_rename','F2','PRESS',[])
@@ -463,6 +463,7 @@ def mesh(km, preferences):
 	#km.new(space,'smooth','M','PRESS',[],ctrl=True)
 	#km.new(space,'wm.tool_set_by_name','Q','PRESS',[('name','Bisect')],shift=True,ctrl=True)
 	#km.new(space,'mesh.remove_doubles','W','PRESS',[],shift=True,ctrl=True)
+	km.new(space,'view3d.localview','Q','PRESS',[],alt=True)
 	km.new(space,'mesh.target_weld','W','PRESS',[],shift=True,ctrl=True)
 	km.new(space,'mesh.remove','BACK_SPACE','PRESS',[('vert',False)])
 	km.new(space,'mesh.remove','BACK_SPACE','PRESS',[('vert',True)],ctrl=True)
@@ -517,6 +518,7 @@ def curve(km, preferences):
 
 	km.new(space,'anim.auto_key_toggle','N','PRESS',[])
 	km.new(space,'camera.select','C','PRESS',[])
+	km.new(space,'view3d.localview','Q','PRESS',[],alt=True)
 	# km.new(space,'wm.tool_set_by_id','E','PRESS',[('name','builtin.rotate')])
 	km.new(space,'curve.chamfer','C','PRESS',[('fillet',True),('typein',False)],ctrl=True,shift=True)
 	# km.new(space,'curve.chamfer','C','DOUBLE_CLICK',[('fillet',True),('typein',True)],ctrl=True,shift=True)
@@ -554,6 +556,7 @@ def armature(km, preferences):
 	# Tools #
 	km.new(space,'anim.auto_key_toggle','N','PRESS',[])
 	km.new(space,'camera.select','C','PRESS',[])
+	km.new(space,'view3d.localview','Q','PRESS',[],alt=True)
 	# km.new(space,'wm.tool_set_by_id','E','PRESS',[('name','builtin.rotate')])
 
 
@@ -572,6 +575,7 @@ def metaball(km, preferences):
 	km.new(space,'screen.screen_full_area','X','PRESS',[],ctrl=True)
 	km.new(space,'anim.auto_key_toggle','N','PRESS',[])
 	km.new(space,'camera.select','C','PRESS',[])
+	km.new(space,'view3d.localview','Q','PRESS',[],alt=True)
 
 
 
@@ -591,6 +595,7 @@ def lattice(km, preferences):
 	km.new(space,'screen.screen_full_area','X','PRESS',[],ctrl=True)
 	km.new(space,'anim.auto_key_toggle','N','PRESS',[])
 	km.new(space,'camera.select','C','PRESS',[])
+	km.new(space,'view3d.localview','Q','PRESS',[],alt=True)
 
 
 
@@ -624,6 +629,7 @@ def pos(km, preferences):
 	km.new(space,'pose.select_hierarchy_plus','PAGE_DOWN','PRESS',[('direction','CHILDREN'),('full',False),('extend',True)],ctrl=True)
 	km.new(space,'pose.select_hierarchy_plus','LEFTMOUSE','DOUBLE_CLICK',[('direction','CHILDREN'),('full',True),('extend',True)])
 	km.new(space,'camera.select','C','PRESS',[])
+	km.new(space,'view3d.localview','Q','PRESS',[],alt=True)
 	km.new(space,'pose.hide','H','PRESS',[],alt=True)
 	km.new(space,'pose.hide','I','PRESS',[('unselected',True)],alt=True)
 	km.new(space,'pose.reveal','U','PRESS',[],alt=True)
@@ -634,7 +640,8 @@ def vertex_paint(km):
 	space = km.space('Vertex Paint','EMPTY','WINDOW')
 	add_switch_view(km, space)
 	add_show_types(km, space)
-	km.new(space,'camera.set_active','C','PRESS',[])
+	km.new(space,'camera.select','C','PRESS',[])
+	km.new(space,'view3d.localview','Q','PRESS',[],alt=True)
 
 
 
@@ -645,7 +652,8 @@ def weight_paint(km):
 	add_view3d_click_selection(km, space)
 	add_view3d_tweak_selection(km, space)
 	
-	km.new(space,'camera.set_active','C','PRESS',[])
+	km.new(space,'camera.select','C','PRESS',[])
+	km.new(space,'view3d.localview','Q','PRESS',[],alt=True)
 	km.new(space,'wm.context_toggle','ONE','PRESS',[('data_path','weight_paint_object.data.use_paint_mask_vertex')])
 	km.new(space,'wm.context_toggle','TWO','PRESS',[('data_path','weight_paint_object.data.use_paint_mask')])
 	km.new(space,'paint.vert_select_all','A','PRESS',[('action','SELECT')],ctrl=True)
@@ -657,6 +665,8 @@ def weight_paint(km):
 def image_paint(km):
 	space = km.space('Image Paint','EMPTY','WINDOW')
 	add_side_panel(km, space)
+	km.new(space,'camera.select','C','PRESS',[])
+	km.new(space,'view3d.localview','Q','PRESS',[],alt=True)
 
 
 
@@ -668,7 +678,8 @@ def sculpt(km, preferences):
 	add_show_types(km, space)
 	add_transform_tool(km, space, preferences)
 
-	km.new(space,'camera.set_active','C','PRESS',[])
+	km.new(space,'camera.select','C','PRESS',[])
+	km.new(space,'view3d.localview','Q','PRESS',[],alt=True)
 	# km.new(space,'object.move','W','PRESS',[])
 	# km.new(space,'object.rotate','E','PRESS',[])
 	# km.new(space,'object.scale','R','PRESS',[])
@@ -691,7 +702,7 @@ def sculpt(km, preferences):
 def particle(km):
 	space = km.space('Particle','EMPTY','WINDOW')
 	add_switch_view(km, space)
-	km.new(space,'camera.set_active','C','PRESS',[])
+	km.new(space,'camera.select','C','PRESS',[])
 	km.new(space,'mesh.select_element_toggle','FIVE','PRESS',[('mode','SET')])
 	km.new(space,'particle.select_max','LEFTMOUSE','CLICK',[('mode','SET')])
 	km.new(space,'particle.select_max','LEFTMOUSE','CLICK',[('mode','ADD')],ctrl=True)

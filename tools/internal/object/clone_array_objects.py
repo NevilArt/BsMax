@@ -18,14 +18,19 @@ from bpy.props import StringProperty, BoolProperty, FloatProperty, IntProperty
 from math import radians
 
 # TODO
-# fix coordinate system
-# add randomize option
+# Naming Name Start:0 Step:1
+# Fix coordinate system
+# Local / world coordinate
+# Randomize option
+# Cubic clone
 
 def BsMax_Clone_Reset(self, ctx):
 	for N in self.NewNds:
 		for O in N:
 			bpy.data.objects.remove(O, do_unlink = True)
 	self.NewNds = []
+
+
 
 def BsMax_Clone_Create(self, ctx):
 	self.NewNds = []
@@ -40,6 +45,8 @@ def BsMax_Clone_Create(self, ctx):
 		self.NewNds.append(Nodes)
 	for p in self.parents:
 		p.select_set(True)
+
+
 
 def BsMax_Clone_SetTransform(self, ctx):
 	px, py, pz = [], [], []
@@ -91,6 +98,8 @@ def BsMax_Clone_SetTransform(self, ctx):
 				N[j].scale.y = -N[j].scale.y
 			if self.mirror_z and i % 2 == 0:
 				N[j].scale.z = -N[j].scale.z
+
+
 
 class Object_OT_Clone_Array(bpy.types.Operator):
 	bl_idname = "object.clone"
@@ -170,7 +179,6 @@ class Object_OT_Clone_Array(bpy.types.Operator):
 		BsMax_Clone_SetTransform(self, ctx)
 
 	def execute(self, ctx):
-		self.report({'OPERATOR'},'bpy.ops.object.clone()')
 		return {'FINISHED'}
 
 	def cancel(self, ctx):
@@ -182,6 +190,8 @@ class Object_OT_Clone_Array(bpy.types.Operator):
 		self.parents = ctx.selected_objects
 		ctx.window_manager.invoke_props_dialog(self)
 		return {'RUNNING_MODAL'}
+
+
 
 def object_menu(self, ctx):
 	layout = self.layout
@@ -195,3 +205,6 @@ def register_clone_object():
 def unregister_clone_object():
 	bpy.types.VIEW3D_MT_object.remove(object_menu)
 	bpy.utils.unregister_class(Object_OT_Clone_Array)
+
+if __name__ == "__main__":
+	register_clone_object()

@@ -31,11 +31,10 @@ If you found this product useful and want to support this project you can Donate
 
 # Recent Updates and Changes
 
-* Paralax Node tree added "Shader editor/Tools/Append Node Trees/...".
-* Note: Paralax map works on coordinate system and Not suport UVMap yet.
-* Backburner submitter 'Frame per task' miscalculation fixed.
-* Backburner submitter load preset error fixed.
-* Some other minor bug fixed.
+* Quadmenu 'Freeze' Operator makes object display as solid color.
+* 'Hide/Unhide' Operator in Quadmenu do not affect render setting anymore.
+* 'Alt+Q' works on all Modes in View3d (3DsMax mode only).
+* Some Bug fixed.
 * [Update History...](https://github.com/NevilArt/BsMax_2_80/blob/master/HISTORY.TXT)
 
 # In Production 

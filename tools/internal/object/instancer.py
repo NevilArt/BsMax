@@ -15,10 +15,11 @@
 import bpy
 from bpy.types import Operator
 
-class OBJECT_TO_Date_Rename(Operator):
+class OBJECT_TO_Date_Auto_Rename(Operator):
 	""" Object.Data.Name = Object.Name in selection """
-	bl_idname = 'object.data_rename'
-	bl_label = 'Data Rename'
+	bl_idname = 'object.data_auto_rename'
+	bl_label = 'Data Auto Rename'
+	bl_description = 'Copy Object Name to Data Name much as possible'
 	bl_options = {'REGISTER', 'UNDO'}
 
 	@classmethod
@@ -26,7 +27,6 @@ class OBJECT_TO_Date_Rename(Operator):
 		return ctx.mode == 'OBJECT'
 	
 	def execute(self,ctx):
-		# TODO find a clear solution for instanced(linked) objects
 		for obj in ctx.selected_objects:
 			obj.data.name = obj.name
 		return{"FINISHED"}
@@ -56,12 +56,12 @@ class Object_TO_Make_Unique(Operator):
 		return ctx.mode == 'OBJECT'
 	
 	def execute(self,ctx):
-		# collect ans select object has data with siliar name
+		# collect and select object has data with similiar name
 		return{"FINISHED"}
 
 
 
-classes = [OBJECT_TO_Date_Rename]
+classes = [OBJECT_TO_Date_Auto_Rename]
 
 def register_instancer():
 	for c in classes:
