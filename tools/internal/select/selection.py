@@ -17,30 +17,7 @@ import bpy
 from bpy.types import Operator
 from bpy.props import BoolProperty
 
-class Object_OT_Select_Instance(Operator):
-	bl_idname = "object.select_instance"
-	bl_label = "Select Instance"
-	bl_options = {'REGISTER', 'UNDO'}
-	
-	@classmethod
-	def poll(self, ctx):
-		if ctx.area.type == 'VIEW_3D':
-			return len(ctx.selected_objects) > 0
-		return False
-	
-	def execute(self, ctx):
-		if ctx.active_object != None and len(ctx.selected_objects) == 1:
-			for obj in ctx.scene.objects:
-				if ctx.active_object.data == obj.data:
-					obj.select_set(True)
-		self.report({'OPERATOR'},'bpy.ops.object.select_instance()')
-		return{"FINISHED"}
 
-def BsMax_ReadPrimitiveData(obj):
-	params = []
-	if obj != None:
-		params = obj.PrimitiveData.split(' ,')
-	return params
 
 class Object_OT_Select_Similar(Operator):
 	bl_idname = "object.select_similar"
@@ -54,46 +31,56 @@ class Object_OT_Select_Similar(Operator):
 		return False
 	
 	def execute(self, ctx):
-		matt,clss,inst,subcls = [],[],[],[]
-		if ctx.active_object != None and len(ctx.selected_objects) == 1:
+		matt, clss, inst, subcls = [], [], [], []
+
+		if ctx.active_object and len(ctx.selected_objects) == 1:
+
 			me = ctx.active_object
 			for obj in ctx.scene.objects:
 				if me != obj:
 					# Collect instances
 					if me.data == obj.data:
 						inst.append(obj)
+
 					# type and sub types
 					if me.type == obj.type:
 						clss.append(obj)
+
 						if me.type in ['MESH','CURVE']:
 							if me.data.primitivedata.classname != "":
-								mecls = me.data.primitivedata.classname
-								objcls = obj.data.primitivedata.classname
-								if mecls == objcls:
+								my_cls = me.data.primitivedata.classname
+								obj_cls = obj.data.primitivedata.classname
+								if my_cls == obj_cls:
 									subcls.append(obj)
 							# Material
 							if me.data.materials == obj.data.materials:
 								matt.append(obj)	
+
 						if me.type == 'EMPTY':
 							if me.empty_display_type == obj.empty_display_type:
 								subcls.append(obj)
+
 						if me.type == 'LIGHT':
 							if me.data.type == obj.data.type:
 								subcls.append(obj)
-		if len(matt) > 0:
+
+		# Chose Selection type by preiroty 
+		if matt:
 			for o in matt:
 				o.select_set(True)
-		elif len(subcls) > 0:
+		elif subcls:
 			for o in subcls:
 				o.select_set(True)
-		elif len(clss) > 0:
+		elif clss:
 			for o in clss:
 				o.select_set(True)
-		elif len(inst) > 0:
+		elif inst:
 			for o in inst:
 				o.select_set(True)
-		self.report({'OPERATOR'},'bpy.ops.object.select_similar()')
+
 		return{"FINISHED"}
+
+
 
 class Object_OT_Select_Children(Operator):
 	bl_idname = "object.select_children"
@@ -106,7 +93,9 @@ class Object_OT_Select_Children(Operator):
 
 	@classmethod
 	def poll(self, ctx):
-		return ctx.mode == 'OBJECT'
+		if ctx.mode == 'OBJECT':
+			return len(ctx.selected_objects) > 0
+		return False
 
 	def collect_children(self, objs):
 		children = []
@@ -129,17 +118,20 @@ class Object_OT_Select_Children(Operator):
 			for obj in selected:
 				for child in obj.children:
 					child.select_set(state = True)
-		self.report({'OPERATOR'},'bpy.ops.object.select_children()')
 		return{"FINISHED"}
+
+
 
 def select_menu(self, ctx):
 	layout = self.layout
 	layout.separator()
-	layout.operator("object.select_instance")
 	layout.operator("object.select_similar")
 	layout.operator("object.select_children")
 
-classes = [Object_OT_Select_Instance, Object_OT_Select_Similar, Object_OT_Select_Children]
+
+
+classes = [Object_OT_Select_Similar,
+	Object_OT_Select_Children]
 
 def register_selection():
 	for c in classes:

@@ -15,23 +15,27 @@
 
 import bpy
 from bpy.types import Operator
-# from bsmax.state import is_mode
+from tools.internal.curve import chamfer
+
+
 
 class Mesh_OT_Chamfer(Operator):
 	bl_idname = "mesh.chamfer"
 	bl_label = "Chamfer"
 	bl_options = {'REGISTER', 'UNDO'}
 
-	# @classmethod
-	# def poll(self, ctx):
-	# 	return ctx.mode == "MESH_EDIT"
+	@classmethod
+	def poll(self, ctx):
+		return ctx.mode == "EDIT_MESH"
 	
 	def execute(self, ctx):
-		vert,edge,face = ctx.tool_settings.mesh_select_mode
-		v = vert and not edge and not face
-		bpy.ops.mesh.bevel(vertex_only=v)
-		self.report({'OPERATOR'},'bpy.ops.mesh.chamfer()')
+		vert, edge, face = ctx.tool_settings.mesh_select_mode
+		vertex_only = (vert and not edge and not face)
+		affect = 'VERTICES' if vertex_only else 'EDGES'
+		bpy.ops.mesh.bevel('INVOKE_DEFAULT', affect=affect)
 		return{"FINISHED"}
+
+
 
 class Mesh_OT_Drag(Operator):
 	bl_idname = "mesh.drag"
@@ -40,7 +44,7 @@ class Mesh_OT_Drag(Operator):
 
 	# @classmethod
 	# def poll(self, ctx):
-	# 	return ctx.mode == "MESH_EDIT"
+	# 	return ctx.mode == "EDIT_MESH"
 	
 	# def modal(self, ctx, event):
 	# 	print("--> Draging")
@@ -56,6 +60,7 @@ class Mesh_OT_Drag(Operator):
 	# def invoke(self, ctx, event):
 	# 	ctx.window_manager.modal_handler_add(self)
 	# 	return {'RUNNING_MODAL'}
+
 
 
 classes = [Mesh_OT_Chamfer, Mesh_OT_Drag]

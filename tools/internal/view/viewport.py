@@ -17,10 +17,16 @@ import bpy
 from bpy.types import Operator, Menu
 from bpy.props import EnumProperty
 
+
+#TODO Open ViewLayer as float dialog for Set State in quad menu
+
+
 class View3DData:
 	def __init__(self):
 		self._shading_type = 'SOLID'
 v3dd = View3DData()
+
+
 
 # new one will cretae for NewStyle mode
 class View3D_OT_Wireframe_Toggle(Operator):
@@ -32,6 +38,7 @@ class View3D_OT_Wireframe_Toggle(Operator):
 		return ctx.area.type == 'VIEW_3D'
 
 	def execute(self, ctx):
+		global v3dd
 		shading = ctx.area.spaces[0].shading
 		if shading.type == 'WIREFRAME':
 			shading.type = v3dd._shading_type #'SOLID''MATERIAL''RENDERED'
@@ -45,7 +52,8 @@ class View3D_OT_Wireframe_Toggle(Operator):
 class Lighting_type:
 	def __init__(self):
 		self.shading_type = 'SOLID'
-LST = Lighting_type()
+lst = Lighting_type()
+
 
 
 class View3D_OT_Lighting_Toggle(Operator):
@@ -57,14 +65,15 @@ class View3D_OT_Lighting_Toggle(Operator):
 		return ctx.area.type == 'VIEW_3D'
 	
 	def execute(self, ctx):
+		global lst
 		if len(ctx.selected_objects) and ctx.active_object != None:
 			bpy.ops.wm.call_menu(name='VIEW3D_MT_make_links')
 		else:
 			shading = ctx.area.spaces[0].shading
 			if shading.type == 'RENDERED':
-				shading.type = LST.shading_type
+				shading.type = lst.shading_type
 			else:
-				LST.shading_type = shading.type
+				lst.shading_type = shading.type
 				shading.type = 'RENDERED'
 		return{"FINISHED"}
 
@@ -318,6 +327,22 @@ class VIEW3D_MT_Preview(Menu):
 
 
 
+class VIEW3D_MT_ViewLayer(Menu):
+	bl_idname = "VIEW3D_MT_viewlayer"
+	bl_label = "View Layer"
+
+	def draw(self, ctx):
+		layout=self.layout
+		window = ctx.window
+		scene = window.scene
+		layout.template_search(
+			window, "view_layer",
+			scene, "view_layers",
+			new="scene.view_layer_add",
+			unlink="scene.view_layer_remove")
+
+
+
 classes = [View3D_OT_Wireframe_Toggle,
 	View3D_OT_Edge_Face_Toggle,
 	View3D_OT_Shade_Selected_Faces,
@@ -330,7 +355,8 @@ classes = [View3D_OT_Wireframe_Toggle,
 	View3D_OT_Show_Camera_Toggle,
 	View3D_OT_Lighting_Toggle,
 	View3D_OT_Setting,
-	VIEW3D_MT_Preview]
+	VIEW3D_MT_Preview,
+	VIEW3D_MT_ViewLayer]
 	
 def register_viewport():
 	for c in classes:

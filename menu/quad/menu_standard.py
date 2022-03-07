@@ -53,7 +53,7 @@ def get_view3d_transform(ctx):
 	items.append(seprator())
 	items.append(QuadItem("Select",f,t,n,c0009,n))
 	items.append(QuadItem("Select Similar",f,t,n,c0010,n))
-	items.append(QuadItem("Select Instance",f,t,n,c0001,n))
+	items.append(QuadItem("Select Instance",f,t,n,c0000,n))
 	items.append(seprator())
 	items.append(QuadItem("Clone",f,(len(ctx.selected_objects) > 0),n,c0011,n))
 	items.append(QuadItem("Align Objects...",f,(len(ctx.selected_objects) > 0),n,c0144,n))
@@ -109,8 +109,7 @@ def get_view3d_lighting_sub(ctx):
 def get_view3d_display(ctx):
 	items = []
 				#  text, check, enabled,menu,action,setting
-	items.append(QuadItem("Manage State Sets...",f,f,n,"",n))
-	items.append(QuadItem("State Sets",f,f,n,"",n))
+	items.append(QuadItem("State Sets",f,t,n,c0223,n))
 	items.append(seprator())
 	# mode = get_active_type(ctx)
 	mode = ctx.mode

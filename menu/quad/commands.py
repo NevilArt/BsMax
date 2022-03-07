@@ -14,7 +14,7 @@
 ############################################################################
 
 
-c0000="object.select_instance()"
+c0000="object.select_linked(type='OBDATA')"
 c0001="object.convert_to(target='MESH')"
 c0002="object.convert_to(target='CURVE')"
 c0003="wm.tool_set_by_id(name='builtin.move')"
@@ -54,9 +54,9 @@ c0036="mesh.dissolve_verts()"
 c0037="mesh.separate()"
 c0038="mesh.connect()"
 c0039="wm.tool_set_by_id(name='builtin.extrude_region')"
-c0040="wm.tool_set_by_id(name='builtin.bevel')"
-c0041="mesh.remove_doubles(threshold=0.001, use_unselected=False)"
-c0042="mesh.weld()"
+c0040="mesh.chamfer()"
+c0041="mesh.weld('INVOKE_DEFAULT')"
+c0042="wm.call_menu(name='VIEW3D_MT_edit_mesh_weld')"
 c0043="mesh.dissolve_edges()"
 c0044="object.paths_calculate('INVOKE_DEFAULT')"
 c0045="mesh.subdivide()"
@@ -237,7 +237,7 @@ c0219="anim.lookat_constraint('INVOKE_DEFAULT')"
 c0220="anim.orientation_constraint('INVOKE_DEFAULT')"
 c0221="anim.freeze_on('INVOKE_DEFAULT')"
 c0222="object.paths_update()"
-c0223=''
+c0223="wm.call_menu(name='VIEW3D_MT_viewlayer')"
 c0224=''
 c0225=''
 c0226=''

@@ -17,6 +17,7 @@ import bpy
 from bpy.types import Operator
 from bpy.props import BoolProperty
 
+# TODO Make unique Add realize instance to geometry node before apply
 
 
 class Object_OT_Convert_TO(Operator):

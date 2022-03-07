@@ -13,14 +13,16 @@
 #	along with this program.  If not, see <https://www.gnu.org/licenses/>.
 ############################################################################
 
+from email.policy import default
 import bpy#,bmesh
 from bpy.types import Operator, Menu
-from bpy.props import FloatProperty
+from bpy.props import FloatProperty, BoolProperty
 from bsmax.graphic import register_line,unregister_line
 
 # TARGET WELD
 # Original Coded from Stromberg90 updated by Nevil
 # https://github.com/Stromberg90/Scripts/tree/master/Blender
+
 
 def SelectVert(ctx, event, started):
 	coord = event.mouse_region_x, event.mouse_region_y
@@ -30,6 +32,8 @@ def SelectVert(ctx, event, started):
 		result = bpy.ops.view3d.select(extend=False,location=coord)
 	if result == {'PASS_THROUGH'}:
 		bpy.ops.mesh.select_all(action='DESELECT')
+
+
 
 class Mesh_OT_Target_Weld(Operator):
 	bl_idname = "mesh.target_weld"
@@ -89,18 +93,41 @@ class Mesh_OT_Target_Weld(Operator):
 		return {'CANCELLED'}
 
 
+
 class VIEW3D_MT_edit_mesh_weld(Menu):
 	bl_label = "Weld"
 	def draw(self, ctx):
 		self.layout.operator_enum("mesh.merge", "type")
 		self.layout.operator("mesh.remove_doubles", text="Weld by distance")
 
+
+
 class Mesh_OT_Weld(Operator):
 	bl_idname = "mesh.weld"
 	bl_label = "Weld"
+	bl_options = {'REGISTER', 'UNDO'}
+
+	threshold: FloatProperty(name='Merge Distance',
+		min=0.00001, max=10, default=0.001, unit='LENGTH')
+	use_unselected: BoolProperty()
+	use_sharp_edge: BoolProperty()
+
+	def draw(self, ctx):
+		layout = self.layout
+		layout.prop(self, 'threshold')
+		layout.prop(self, 'use_unselected')
+		layout.prop(self, 'use_sharp_edge')
+
 	def execute(self,ctx):
-		bpy.ops.wm.call_menu(name = 'VIEW3D_MT_edit_mesh_weld')
+		bpy.ops.mesh.remove_doubles(threshold=self.threshold,
+			use_unselected=self.use_unselected,
+			use_sharp_edge_from_normals=self.use_sharp_edge)
 		return{"FINISHED"}
+	
+	def invoke(self, ctx, event):
+		return ctx.window_manager.invoke_props_dialog(self)
+
+
 
 classes = [	Mesh_OT_Target_Weld,
 			VIEW3D_MT_edit_mesh_weld,

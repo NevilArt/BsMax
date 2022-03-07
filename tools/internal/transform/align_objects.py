@@ -20,6 +20,9 @@ from bpy.types import Operator
 from bsmax.operator import PickOperator
 from bsmax.math import value_by_percent, matrix_from_elements
 
+# TODO Apply button
+# TODO Align along the path
+# TODO Align to vertex or Face + Normal
 
 
 class BoolVector:

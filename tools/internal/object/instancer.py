@@ -15,6 +15,8 @@
 import bpy
 from bpy.types import Operator
 
+
+
 class OBJECT_TO_Date_Auto_Rename(Operator):
 	""" Object.Data.Name = Object.Name in selection """
 	bl_idname = 'object.data_auto_rename'
@@ -32,6 +34,7 @@ class OBJECT_TO_Date_Auto_Rename(Operator):
 		return{"FINISHED"}
 
 
+
 class Object_TO_Instancer_Select(Operator):
 	""" collect and select object may suld be instance """
 	bl_idname = 'object.instancer_select'
@@ -45,6 +48,8 @@ class Object_TO_Instancer_Select(Operator):
 	def execute(self,ctx):
 		# collect ans select object has data with siliar name
 		return{"FINISHED"}
+
+
 
 class Object_TO_Make_Unique(Operator):
 	bl_idname = 'object.make_unique'
