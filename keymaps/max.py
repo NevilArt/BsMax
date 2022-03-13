@@ -121,6 +121,7 @@ def add_show_types(km, space):
 
 def add_float_editors(km, space):
 	km.new(space,'editor.float','M','PRESS',[('ui_type','ShaderNodeTree'),('shader_type','OBJECT'),('multiple',False)])
+	# km.new(space,'wm.call_menu_pie','RIGHTMOUSE','PRESS',[('name','BSMAX_MT_material_collection')])
 	km.new(space,'editor.float','EIGHT','PRESS',[('ui_type','ShaderNodeTree'),('shader_type','WORLD'),('multiple',False)])
 	km.new(space,'editor.float','SIX','PRESS',[('ui_type','GeometryNodeTree'),('multiple',False)])
 	# km.new(space,'editor.float','H','PRESS',[('ui_type','OUTLINER'),('multiple',False)])
@@ -444,9 +445,12 @@ def mesh(km, preferences):
 	km.new(space,'mesh.select_similar','Q','PRESS',[],ctrl=True)
 	km.new(space,'screen.screen_full_area','X','PRESS',[],ctrl=True)
 	# Hide/Unhide #
-	km.new(space,'mesh.hide','H','PRESS',[],alt=True)
-	km.new(space,'mesh.hide','I','PRESS',[('unselected',True)],alt=True)
-	km.new(space,'mesh.reveal','U','PRESS',[],alt=True)
+	# km.new(space,'mesh.hide','H','PRESS',[],alt=True)
+	# km.new(space,'mesh.hide','I','PRESS',[('unselected',True)],alt=True)
+	# km.new(space,'mesh.reveal','U','PRESS',[],alt=True)
+	km.new(space,'mesh.hide_plus','H','PRESS',[('mode','SELECTED')],alt=True)
+	km.new(space,'mesh.hide_plus','I','PRESS',[('mode','UNSELECTED')],alt=True)
+	km.new(space,'mesh.hide_plus','U','PRESS',[('mode','UNHIDE')],alt=True)
 	# Edit #
 	km.new(space,'mesh.connect','E','PRESS',[],ctrl=True,shift=True)
 	km.new(space,'view3d.edit_mesh_extrude_move_normal','E','PRESS',[],shift=True)
@@ -512,6 +516,10 @@ def curve(km, preferences):
 	km.new(space,'curve.select_less','PAGE_DOWN','PRESS',[],ctrl=True)
 	km.new(space,'curve.select_similar','Q','PRESS',[],ctrl=True)
 	km.new(space,'screen.screen_full_area','X','PRESS',[],ctrl=True)
+
+	km.new(space,'curve.hide','H','PRESS',[],alt=True)
+	km.new(space,'curve.hide','I','PRESS',[('unselected',True)],alt=True)
+	km.new(space,'curve.reveal','U','PRESS',[],alt=True)
 	
 	km.new(space,'curve.break','B','PRESS',[('action','DESELECT')],ctrl=True)
 	km.new(space,'curve.extrude_move','E','PRESS',[('action','DESELECT')],ctrl=True,shift=True)
@@ -611,6 +619,7 @@ def grease_pencil(km, preferences):
 def pos(km, preferences):
 	space = km.space('Pose','EMPTY','WINDOW')
 	add_view3d_click_selection(km, space)
+	add_view3d_tweak_selection(km, space)
 	add_subobject(km, space)
 	add_show_types(km, space)
 	add_time(km, space)

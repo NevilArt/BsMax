@@ -13,16 +13,17 @@
 #	along with this program.  If not, see <https://www.gnu.org/licenses/>.
 ############################################################################
 
-from email.policy import default
-import bpy#,bmesh
+import bpy
 from bpy.types import Operator, Menu
 from bpy.props import FloatProperty, BoolProperty
-from bsmax.graphic import register_line,unregister_line
+from bsmax.graphic import register_line, unregister_line
 
 # TARGET WELD
 # Original Coded from Stromberg90 updated by Nevil
 # https://github.com/Stromberg90/Scripts/tree/master/Blender
 
+
+#TODO Target weld for edge mode same as vertex by face orient order
 
 def SelectVert(ctx, event, started):
 	coord = event.mouse_region_x, event.mouse_region_y

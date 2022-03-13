@@ -24,6 +24,8 @@ checkParams = ["BsMaxAxisPivotPoint_"]
 rotAxis = None
 locAxis = None
 
+
+
 def ModifyPivotPoint(ctx):
 	if ctx.active_object != None:
 		ops = bpy.ops
@@ -103,6 +105,8 @@ def ModifyPivotPoint(ctx):
 			ops.object.delete({"selected_objects": [objAxis]})
 			ctx.scene.cursor.location = currentCursorLocation
 
+
+
 class Object_OT_Modify_Pivot(Operator):
 	bl_idname = "object.modify_pivotpoint"
 	bl_label = "Modify Pivot Point"
@@ -121,6 +125,8 @@ class Object_OT_Modify_Pivot(Operator):
 			ctx.scene.tool_settings.use_transform_data_origin = not state
 		return {"FINISHED"}
 	
+
+
 
 # TODO add this for mesh objects too
 class Object_OT_Pivot_To_First_Point(Operator):
@@ -148,6 +154,8 @@ class Object_OT_Pivot_To_First_Point(Operator):
 					obj.matrix_world.translation = old_origin
 		self.report({'OPERATOR'},'bpy.ops.object.pivot_to_first_point()')
 		return {"FINISHED"}
+
+
 
 class Object_OT_Pivot_To_Buttom_Center(Operator):
 	bl_idname = "object.pivot_to_buttom_center"
@@ -178,6 +186,8 @@ class Object_OT_Pivot_To_Buttom_Center(Operator):
 		self.report({'OPERATOR'},'bpy.ops.object.pivot_to_buttom_center()')
 		return {"FINISHED"}
 
+
+
 class OBJECT_MT_Set_Pivot_Point(Menu):
 	bl_idname = "OBJECT_MT_Set_Pivot_Point"
 	bl_label = "Set Pivot Point"
@@ -190,6 +200,8 @@ class OBJECT_MT_Set_Pivot_Point(Menu):
 		layout.operator("object.origin_set",text="Pivot to Geometry").type='ORIGIN_CENTER_OF_MASS'
 		layout.operator("object.pivot_to_buttom_center",text="Pivot to Buttom Center")
 		layout.operator("object.pivot_to_first_point",text="Pivot to First BezierPoint")
+
+
 
 def snap_menu(self, ctx):
 	layout = self.layout

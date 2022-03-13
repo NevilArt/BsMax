@@ -109,6 +109,11 @@ class Object_OT_Hide(Operator):
 
 
 
+#TODO isolate mode
+# view3d.localview
+# view3d.localview_remove_from
+
+
 
 classes = [Object_OT_Freeze, Object_OT_Hide, Object_TO_Select_By_Name]
 

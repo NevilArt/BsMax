@@ -95,6 +95,21 @@ class BsMax_MT_material_presets(Menu):
 
 
 
+class BsMax_MT_Materia_Collection(Menu):
+	bl_idname = "BSMAX_MT_material_collection"
+	bl_label = "Material/Collection"
+
+	def draw(self, ctx):
+		layout=self.layout
+		material_editor = layout.operator("editor.float", text="Material Editor", icon='MATERIAL')
+		material_editor.ui_type='ShaderNodeTree'
+		material_editor.shader_type='OBJECT'
+		material_editor.multiple=False
+		layout.operator("object.move_to_collection",
+			text="Move To Collection", icon='OUTLINER_COLLECTION')
+
+
+
 class BsMax_MT_material_Tools(Menu):
 	bl_idname = "BSMAX_MT_material_tools"
 	bl_label = "Tools"
@@ -116,6 +131,7 @@ def matt_menu(self, ctx):
 classes = [Material_OT_Assign_To_Selection,
 	Material_OT_Import,
 	BsMax_MT_material_presets,
+	BsMax_MT_Materia_Collection,
 	BsMax_MT_material_Tools]
 
 def register_matt():

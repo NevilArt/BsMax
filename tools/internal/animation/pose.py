@@ -16,6 +16,8 @@ import bpy
 from bpy.types import Operator
 from bpy.props import BoolProperty, EnumProperty
 
+
+
 class Pose_OT_Select_Hierarchy_Plus(Operator):
 	bl_idname = "pose.select_hierarchy_plus"
 	bl_label = "Select Hierarchy (Plus)"
@@ -73,8 +75,9 @@ class Pose_OT_Select_Hierarchy_Plus(Operator):
 				for bone in child_less:
 					bone.select = False
 
-		self.report({'OPERATOR'},'bpy.ops.pose.select_hierarchy_plus()')
 		return{"FINISHED"}
+
+
 
 def register_pose():
 	bpy.utils.register_class(Pose_OT_Select_Hierarchy_Plus)

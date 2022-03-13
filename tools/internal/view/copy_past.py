@@ -18,6 +18,8 @@ import bpy
 from bpy.types import Operator
 from bpy.props import BoolProperty
 
+
+
 class View3D_OT_Copy_Data(Operator):
 	bl_idname = "view3d.copy_data"
 	bl_label = "Copy Object/Data"
@@ -88,6 +90,8 @@ class View3D_OT_Copy_Data(Operator):
 	
 	def invoke(self, ctx, event):
 		return ctx.window_manager.invoke_props_dialog(self, width=100)
+
+
 
 classes = [View3D_OT_Copy_Data]
 

@@ -13,9 +13,8 @@
 #	along with this program.  If not, see <https://www.gnu.org/licenses/>.
 ############################################################################
 
-from re import S
 import bpy
-from bpy.types import Operator
+from bpy.types import Operator, Menu
 from bpy.props import BoolProperty, EnumProperty
 
 
@@ -169,10 +168,21 @@ class Object_OT_Placment(Operator):
 
 
 
+class OBJECT_MT_snap_setting(Menu):
+	bl_idname = "OBJECT_MT_snap_setting"
+	bl_label = "Snap Setting"
+
+	def draw(self, ctx):
+		layout=self.layout
+		layout.popover(panel="VIEW3D_PT_snapping")
+
+
+
 classes = [Object_OT_Snap_Setting,
 	Object_OT_Snap_Toggle,
 	Object_OT_Angel_Snap,
-	Object_OT_Placment]
+	Object_OT_Placment,
+	OBJECT_MT_snap_setting]
 
 def register_snap():
 	for c in classes:
@@ -181,3 +191,6 @@ def register_snap():
 def unregister_snap():
 	for c in classes:
 		bpy.utils.unregister_class(c)
+
+if __name__ == "__main__":
+	register_snap()

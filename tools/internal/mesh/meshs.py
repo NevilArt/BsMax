@@ -14,8 +14,8 @@
 ############################################################################
 
 import bpy
-from bpy.types import Operator
-# from bpy.props import BoolProperty, FloatProperty, IntProperty
+from bpy.types import Operator, Menu
+from bpy.props import BoolProperty, EnumProperty
 
 
 
@@ -25,6 +25,8 @@ class Mesh_OT_Connect_Data:
 		self.pinch = 0
 		self.slide = 0
 mocd = Mesh_OT_Connect_Data()
+
+
 
 class Mesh_OT_Connect(Operator):
 	bl_idname = "mesh.connect"
@@ -68,6 +70,7 @@ class Mesh_OT_Connect(Operator):
 	# 	return{"FINISHED"}
 
 
+
 class Mesh_OT_Create_Curve_From_Edges(Operator):
 	bl_idname = "mesh.create_curve_from_edge"
 	bl_label = "Create Shape from Edges"
@@ -83,7 +86,6 @@ class Mesh_OT_Create_Curve_From_Edges(Operator):
 		if ctx.mode == 'EDIT_MESH' and e:
 			bpy.ops.mesh.duplicate(mode=1)
 			bpy.ops.mesh.separate(type='SELECTED')
-		self.report({'OPERATOR'},'bpy.ops.mesh.create_curve_from_edge()')
 		return{"FINISHED"}
 
 
@@ -105,7 +107,6 @@ class Mesh_OT_Auto_Loop_Select(Operator):
 			elif f:
 				#TODO "Face loop"
 				pass
-		self.report({'OPERATOR'},'bpy.ops.mesh.auto_loop_select()')
 		return{"FINISHED"}
 
 
@@ -127,7 +128,6 @@ class Mesh_OT_Auto_Ring_Select(Operator):
 			elif f:
 				# TODO face ring
 				pass
-		self.report({'OPERATOR'},'bpy.ops.mesh.auto_ring_select()')
 		return{"FINISHED"}
 
 
@@ -145,7 +145,6 @@ class Mesh_OT_Dot_Loop_Select(Operator):
 		if ctx.mode == 'EDIT_MESH':
 			bpy.ops.mesh.smart_select_loop()
 			bpy.ops.mesh.select_nth()
-		self.report({'OPERATOR'},'bpy.ops.mesh.dot_loop_select()')
 		return{"FINISHED"}
 
 
@@ -163,7 +162,6 @@ class Mesh_OT_Dot_Ring_Select(Operator):
 		if ctx.mode == 'EDIT_MESH':
 			bpy.ops.mesh.smart_select_ring()
 			bpy.ops.mesh.select_nth()
-		self.report({'OPERATOR'},'bpy.ops.mesh.dot_ring_select()')
 		return{"FINISHED"}
 
 
@@ -173,7 +171,7 @@ class Mesh_OT_Remove(Operator):
 	bl_label = "Remove"
 	bl_options = {'REGISTER', 'UNDO'}
 	
-	vert: bpy.props.BoolProperty(name="Use Verts",default=False)
+	vert: BoolProperty(name="Use Verts", default=False)
 	
 	@classmethod
 	def poll(self, ctx):
@@ -188,7 +186,6 @@ class Mesh_OT_Remove(Operator):
 				bpy.ops.mesh.dissolve_edges(use_verts=self.vert)
 			if f:
 				bpy.ops.mesh.dissolve_faces(use_verts=self.vert)
-		self.report({'OPERATOR'},'bpy.ops.mesh.remove(vert='+ str(self.vert) +')')
 		return{"FINISHED"}
 
 
@@ -215,7 +212,6 @@ class Mesh_OT_Delete_Auto(Operator):
 				# ctx.tool_settings.mesh_select_mode = v,e,f # restore mode
 			if f:
 				bpy.ops.mesh.delete(type='FACE')
-		self.report({'OPERATOR'},'bpy.ops.mesh.delete_auto()')
 		return{"FINISHED"}
 
 
@@ -239,26 +235,135 @@ class Mesh_OT_Remove_Isolated_Geometry(Operator):
 			bpy.ops.mesh.delete(type='EDGE')
 		if f:
 			bpy.ops.mesh.delete(type='FACE')
-		self.report({'OPERATOR'},'bpy.ops.mesh.remove_isolated_geometry()')
 		return {'FINISHED'}
+
+
+
+class Mesh_OT_NURMS_Toggle(Operator):
+	bl_idname = "mesh.nurms_toggle"
+	bl_label = "Nurms Toggle"
+	bl_options = {'REGISTER', 'UNDO'}
+	
+	@classmethod
+	def poll(self, ctx):
+		return ctx.mode == 'EDIT_MESH'
+	
+	def execute(self, ctx):
+		subdive = None
+		for mod in ctx.object.modifiers:
+			if mod.type == 'SUBSURF':
+				subdive = mod
+		
+		if subdive:
+			subdive.show_in_editmode = not subdive.show_in_editmode
+
+		else:
+			ctx.object.modifiers.new(name='Subdivision', type='SUBSURF')
+
+		return{"FINISHED"}
+
+
+
+class Mesh_OT_Hide_Plus(Operator):
+	bl_idname = "mesh.hide_plus"
+	bl_label = "Hide+"
+	bl_options = {'REGISTER', 'UNDO'}
+
+	mode: EnumProperty(name="Hide", default='SELECTED',
+		items=[('SELECTED', "Selected", ""),
+		('UNSELECTED', "Unselected", ""),
+		('UNHIDE', "Unhide", ""),
+		('INVERT', "Invert", "")])
+	
+	@classmethod
+	def poll(self, ctx):
+		return ctx.mode == 'EDIT_MESH'
+	
+	def execute(self, ctx):
+		v,e,f = ctx.tool_settings.mesh_select_mode
+		bpy.ops.object.mode_set(mode="OBJECT")
+		data = ctx.object.data
+		if self.mode == 'SELECTED':
+			if v:
+				for vert in data.vertices:
+					vert.hide = vert.select
+			if e:
+				for edge in data.edges:
+					edge.hide = edge.select
+			if f:
+				for poly in data.polygons:
+					poly.hide = poly.select
+
+		elif self.mode == 'UNSELECTED':
+			if v:
+				for vert in data.vertices:
+					vert.hide = not vert.select
+			if e:
+				for edge in data.edges:
+					edge.hide = not edge.select
+			if f:
+				for poly in data.polygons:
+					poly.hide = not poly.select
+
+		if self.mode == 'UNHIDE':
+			if v:
+				for vert in data.vertices:
+					vert.hide = False
+			if e:
+				for edge in data.edges:
+					edge.hide = False
+			if f:
+				for poly in data.polygons:
+					poly.hide = False
+
+		if self.mode == 'INVERT':
+			if v:
+				for vert in data.vertices:
+					vert.hide = not vert.hide
+			if e:
+				for edge in data.edges:
+					edge.hide = not edge.hide
+			if f:
+				for poly in data.polygons:
+					poly.hide = not poly.hide
+
+		bpy.ops.object.mode_set(mode="EDIT")
+		return{"FINISHED"}
+
+
+
+def mesh_show_hide_plus_menu(self, ctx):
+	layout = self.layout
+	layout.menu("BSMAX_MT_create_menu")
+	layout.separator()
+	layout.operator("mesh.hide_plus",text="Hide Selected").mode='SELECTED'
+	layout.operator("mesh.hide_plus",text="Hide Unselected").mode='UNSELECTED'
+	layout.operator("mesh.hide_plus",text="Invert Hide").mode='INVERT'
+	layout.operator("mesh.hide_plus",text="Unhide All").mode='UNHIDE'
 
 
 
 classes = [Mesh_OT_Create_Curve_From_Edges,
 		Mesh_OT_Auto_Loop_Select,
 		Mesh_OT_Auto_Ring_Select,
+		Mesh_OT_Connect,
+		Mesh_OT_Delete_Auto,
 		Mesh_OT_Dot_Loop_Select,
 		Mesh_OT_Dot_Ring_Select,
-		Mesh_OT_Connect,
+		Mesh_OT_Hide_Plus,
+		Mesh_OT_NURMS_Toggle,
 		Mesh_OT_Remove,
-		Mesh_OT_Delete_Auto,
 		Mesh_OT_Remove_Isolated_Geometry]
+
+
 
 def register_meshs():
 	for c in classes:
 		bpy.utils.register_class(c)
+	bpy.types.VIEW3D_MT_edit_mesh_showhide.append(mesh_show_hide_plus_menu)
 
 def unregister_meshs():
+	bpy.types.VIEW3D_MT_edit_mesh_showhide.remove(mesh_show_hide_plus_menu)
 	for c in classes:
 		bpy.utils.unregister_class(c)
 

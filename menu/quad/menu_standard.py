@@ -58,7 +58,8 @@ def get_view3d_transform(ctx):
 	items.append(QuadItem("Clone",f,(len(ctx.selected_objects) > 0),n,c0011,n))
 	items.append(QuadItem("Align Objects...",f,(len(ctx.selected_objects) > 0),n,c0144,n))
 	items.append(seprator())
-	items.append(QuadItem("Object Properties...",f,t,n,c0166,n))
+	obj_props = (ctx.active_object != None)
+	items.append(QuadItem("Object Properties...",f,obj_props,n,c0166,n))
 	items.append(seprator())
 	items.append(QuadItem("Curve Editor...",f,t,n,c0167,n))
 	items.append(QuadItem("Dope sheet...",f,t,n,c0168,n))
@@ -117,11 +118,19 @@ def get_view3d_display(ctx):
 		items.append(QuadItem("Hide Selection",f,t,n,c0204,n))
 		items.append(QuadItem("Hide Unselected",f,t,n,c0205,n))
 		items.append(QuadItem("Unhide All",f,t,n,c0206,n))
+	elif mode == 'EDIT_MESH':
+		items.append(QuadItem("Hide Selection",f,t,n,c0231,n))
+		items.append(QuadItem("Hide Unselected",f,t,n,c0232,n))
+		items.append(QuadItem("Unhide All",f,t,n,c0233,n))
+	elif mode == 'EDIT_CURVE':
+		items.append(QuadItem("Hide Selection",f,t,n,c0234,n))
+		items.append(QuadItem("Hide Unselected",f,t,n,c0235,n))
+		items.append(QuadItem("Unhide All",f,t,n,c0236,n))
 	else:
 		items.append(QuadItem("Hide Selection",f,t,n,c0012,n))
 		items.append(QuadItem("Hide Unselected",f,t,n,c0013,n))
 		items.append(QuadItem("Unhide All",f,t,n,c0014,n))
-		items.append(QuadItem("Unhide by Name",f,f,n,"",n))
+		# items.append(QuadItem("Unhide by Name",f,f,n,"",n))
 	items.append(seprator())
 	items.append(QuadItem("Freeze Selection",f,t,n,c0015,n))
 	items.append(QuadItem("Unfreeze All",f,t,n,c0016,n))
@@ -130,7 +139,7 @@ def get_view3d_display(ctx):
 	items.append(seprator())
 	submenu = get_view3d_lighting_sub(ctx)
 	items.append(QuadItem("Viewport Lighting",f,t,submenu,n,n))
-	return "Display",items,2
+	return "Display", items, 2
 
 
 
@@ -165,7 +174,7 @@ def get_view3d_tool1(ctx):
 			items.append(QuadItem("Hide Unselected",f,IsEditMode,n,c0028,n))
 			items.append(seprator())
 			items.append(QuadItem("Ignore Backfacing",f,t,n,c0029,n))
-			items.append(QuadItem("NURMS Toggle",f,f,n,"",n))
+			items.append(QuadItem("NURMS Toggle",f,f,n,c0224,n))
 
 	elif get_active_type(ctx) == 'CURVE':
 		items.append(QuadItem("Extrude",f,t,n,c0134,n))
@@ -250,7 +259,7 @@ def get_view3d_tool2(ctx):
 				items.append(QuadItem("Weld",f,t,n,c0041,""))
 				items.append(QuadItem("Target Weld",f,f,n,"",n))
 				items.append(seprator())
-				items.append(QuadItem("Edit Triangulation",f,f,n,"",n))
+				items.append(QuadItem("Triangulation",f,f,n,c0225,n))
 				items.append(QuadItem("Create Shape",f,t,n,c0049,n))
 				items.append(seprator())
 				items.append(QuadItem("Remove Isolated Edges",f,t,n,c0135,n))
@@ -259,10 +268,10 @@ def get_view3d_tool2(ctx):
 				items.append(QuadItem("Detach",f,t,n,c0051,n))
 				items.append(QuadItem("Bridge",f,t,n,c0143,n))
 				items.append(seprator())
-				items.append(QuadItem("Extrude",f,t,n,c0052,""))
-				items.append(QuadItem("Bevel",f,f,n,"",""))
-				items.append(QuadItem("Outline",f,t,n,"",""))
-				items.append(QuadItem("Inset",f,t,n,c0053,""))
+				items.append(QuadItem("Extrude",f,t,n,c0052,n))
+				items.append(QuadItem("Bevel",f,f,n,c0227,n))
+				items.append(QuadItem("Outline",f,t,n,c0226,n))
+				items.append(QuadItem("Inset",f,t,n,c0053,n))
 				items.append(seprator())
 				items.append(QuadItem("Edit Triangulation",f,f,n,"",n))
 				items.append(QuadItem("Flip Normal",f,t,n,c0054,n))
@@ -450,11 +459,12 @@ def get_view3d_transform2(ctx):
 
 def get_view3d_pose(ctx):
 	items = []
+	#  text, check, enabled,menu,action,setting
 	items.append(QuadItem("Set Perf Angles",f,f,n,"",n))
 	items.append(QuadItem("Assume Perf Angles",f,f,n,"",n))
 	items.append(seprator())
-	items.append(QuadItem("Set as Skin Pose",f,f,n,"",n))
-	items.append(QuadItem("Assume Skin Pose",f,f,n,"",n))
+	items.append(QuadItem("Set as Skin Pose",f,t,n,c0228,n))
+	items.append(QuadItem("Assume Skin Pose",f,t,n,c0229,n))
 	return "Pose",items,4
 
 
@@ -482,7 +492,7 @@ def get_view3d_snap_toggles(ctx):
 	items.append(QuadItem("Move",move,t,n,c0110,n))
 	items.append(QuadItem("Rotate",rotate,t,n,c0111,n))
 	items.append(QuadItem("Scale",scale,t,n,c0112,n))
-	return "Snap Toggles",items,1
+	return "Snap Toggles", items, 1
 
 
 
@@ -501,17 +511,17 @@ def get_view3d_snap_override(ctx):
 	#items.append(QuadItem("Body Snaps",f,f,n,"",n))
 	#items.append(QuadItem("NURBS",f,f,n,"",n))
 	#items.append(QuadItem("Point Cloud Objects",f,f,n,"",n))
-	return "Snap Override",items,2
+	return "Snap Override", items, 2
 
 
 
 def get_view3d_snap_options(ctx):
 	items = []
 	items.append(QuadItem("Enable Axis Constrants in Snap",f,f,n,"",n))
-	items.append(QuadItem("Snap To Frozen Objects",f,f,n,"",n))
+	# items.append(QuadItem("Snap To Frozen Objects",f,f,n,"",n))
 	items.append(seprator())
-	items.append(QuadItem("Gride and Snap Setting...",f,f,n,"",n))
-	return "Snap Options",items,3
+	items.append(QuadItem("Gride and Snap Setting...",f,t,n,c0230,n))
+	return "Snap Options", items, 3
 
 
 

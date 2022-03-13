@@ -31,16 +31,20 @@ If you found this product useful and want to support this project you can Donate
 
 # Recent Updates and Changes
 
-* 'Chamfer' Operator 'Ctrl+Shift+C' and same in Quadmenu works fine (3DsMax model).
-* 'Chamfer' Operator automatically switch to vertex and edge mode depends on mode.
-* Object Properties is better than before but still far from perfect (3DsMax model).
-* 'Weld' Operator in quadmenu now is working (3DsMax model).
-* Quadmenu Select instance issue fixed (3DsMax mode).
+* Selction issue in pose mode fixed (3DsMax mode).
+* New operator select Splines by Close/Open (EditCurve/Select/Select Close).
+* Hide/Unhie on Edit Mode affect only on active element(Vertex, Edge or Face).
+* Hide/Unhide menu and key maps fixed for Curve and Armature too.
+* 'Quadmenu' Mesh edit NURMS Toggle actived.
+* 'Quadmenu' Mesh Edit'Triangulate' placed as 'Edit Triangulation'.
+* 'Quadmenu' Outline and Bevel tools are active.
+* Some other minor bugs fiexed.
 * [Update History...](https://github.com/NevilArt/BsMax_2_80/blob/master/HISTORY.TXT)
 
 # In Production 
 
 * Cleanup: All Operator and Tools need to review.
+* Cleanup Step 1: Make all quadmenu Item works.
 * PieMax: Combanition of 3DsMax Quad menu and Blender Pie Menu.
 
 # License

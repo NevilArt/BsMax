@@ -17,6 +17,8 @@ import bpy
 from bpy.types import Operator
 from bpy.props import EnumProperty,BoolProperty
 
+
+
 class Mesh_Subobject_Mode:
 	def __init__(self):
 		self.active = False
@@ -27,6 +29,8 @@ class Mesh_Subobject_Mode:
 		self.uv = False
 
 msm = Mesh_Subobject_Mode()
+
+
 
 class Mesh_OT_Select_Element_Toggle(Operator):
 	bl_idname = "mesh.select_element_toggle"
@@ -142,6 +146,8 @@ class Mesh_OT_Select_Element_Setting(Operator):
 		self.uv = msm.uv
 		return ctx.window_manager.invoke_props_dialog(self)
 
+
+
 class Mesh_OT_Select_Max(Operator):
 	bl_idname = "mesh.select_max"
 	bl_label = "Select (3DsMax)"
@@ -168,6 +174,8 @@ class Mesh_OT_Select_Max(Operator):
 	def invoke(self, ctx, event):
 		self.x, self.y = event.mouse_region_x, event.mouse_region_y
 		return self.execute(ctx)
+
+
 
 class Curve_OT_Select_Max(Operator):
 	bl_idname = "curve.select_max"
@@ -196,6 +204,8 @@ class Curve_OT_Select_Max(Operator):
 		self.x, self.y = event.mouse_region_x, event.mouse_region_y
 		return self.execute(ctx)
 
+
+
 class Particle_OT_Select_Max(Operator):
 	bl_idname = "particle.select_max"
 	bl_label = "Select (3DsMax)"
@@ -222,6 +232,8 @@ class Particle_OT_Select_Max(Operator):
 	def invoke(self, ctx, event):
 		self.x, self.y = event.mouse_region_x, event.mouse_region_y
 		return self.execute(ctx)
+
+
 
 classes = [	Mesh_OT_Select_Element_Toggle,
 			Mesh_OT_Select_Element_Setting,

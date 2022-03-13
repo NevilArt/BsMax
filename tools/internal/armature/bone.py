@@ -18,6 +18,8 @@ from bpy.types import Operator
 from bpy.props import IntProperty, EnumProperty, BoolProperty
 from bsmax.state import is_active_object
 
+
+
 # Set Armatur bone type 
 class Armature_OT_Bone_Type(Operator):
 	bl_idname = "armature.bone_type"
@@ -38,6 +40,8 @@ class Armature_OT_Bone_Type(Operator):
 			ctx.object.data.display_type = self.mode
 		self.report({'OPERATOR'},'bpy.ops.armature.bone_type(mode="'+ self.mode +'")')
 		return{"FINISHED"}
+
+
 
 # Devide Bone by number dialog 
 class Armature_OT_Bone_Devide(Operator):
@@ -69,6 +73,8 @@ class Armature_OT_Bone_Devide(Operator):
 		else:
 			ctx.window_manager.modal_handler_add(self)
 			return {'RUNNING_MODAL'}
+
+
 
 classes = [Armature_OT_Bone_Type, Armature_OT_Bone_Devide]
 

@@ -14,7 +14,7 @@
 ############################################################################
 
 import bpy
-from bpy.types import Operator, Menu
+from bpy.types import Operator
 
 
 
@@ -53,6 +53,7 @@ class Collection_OT_Move_To_Active(Operator):
 
 
 
+#TODO make this Link to selected collections
 class Collection_OT_Link_To_Active(Operator):
 	bl_idname = "collection.link_to_active"
 	bl_label = "Link to active collection"
@@ -67,8 +68,29 @@ class Collection_OT_Link_To_Active(Operator):
 		active_collection = get_active_collection(ctx)
 		active_layer = ctx.view_layer.active_layer_collection
 		for obj in ctx.selected_objects:
-			#TODO check is in coolection or not
-			active_collection.objects.link(obj)
+			if not active_collection in obj.users_collection:
+				active_collection.objects.link(obj)
+		ctx.view_layer.active_layer_collection = active_layer
+		return{"FINISHED"}
+
+
+
+class Collection_OT_Remove_From_Collection(Operator):
+	bl_idname = "collection.remove_from_collection"
+	bl_label = "Remove from collections"
+	bl_description = "Remove objects from selected collection"
+	bl_options = {'REGISTER', 'UNDO'}
+
+	@classmethod
+	def poll(self, ctx):
+		return True
+
+	def execute(self, ctx):
+		active_collection = get_active_collection(ctx)
+		active_layer = ctx.view_layer.active_layer_collection
+		for obj in ctx.selected_objects:
+			if len(obj.users_collection) > 1:
+				active_collection.objects.unlink(obj)
 		ctx.view_layer.active_layer_collection = active_layer
 		return{"FINISHED"}
 
@@ -95,11 +117,13 @@ class Outliner_OT_Rename_Selection(Operator):
 
 def outliner_header(self, ctx):
 	self.layout.operator("collection.move_to_active", text="", icon='ADD')
+	self.layout.operator("collection.remove_from_collection", text="", icon='REMOVE')
 	self.layout.operator("collection.link_to_active", text="", icon='LIBRARY_DATA_DIRECT')
 
 
 classes = [Collection_OT_Move_To_Active,
 	Collection_OT_Link_To_Active,
+	Collection_OT_Remove_From_Collection,
 	Outliner_OT_Rename_Selection]
 
 

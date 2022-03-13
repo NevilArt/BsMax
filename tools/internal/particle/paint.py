@@ -24,6 +24,8 @@ from mathutils import Color
 from bpy.props import BoolProperty
 from bpy.types import Operator
 
+
+
 class Object_OT_Weight_to_Vertex_Color(Operator):
 	bl_idname = "object.weight_to_vertex_color"
 	bl_label = "Weight to Vertex Color"
@@ -85,9 +87,11 @@ class Object_OT_Weight_to_Vertex_Color(Operator):
 		return {'FINISHED'}
 
 
-def paint_menu(self,ctx):
-	self.layout.separator()
-	self.layout.operator("object.weight_to_vertex_color")
+
+def paint_menu(self, ctx):
+	layout = self.layout
+	layout.separator()
+	layout.operator("object.weight_to_vertex_color")
 
 def register_paint():
 	bpy.utils.register_class(Object_OT_Weight_to_Vertex_Color)

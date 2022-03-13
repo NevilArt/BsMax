@@ -16,6 +16,8 @@ import bpy
 from bsmax.operator import PickOperator
 from bsmax.actions import link_to_scene
 
+
+
 class Armature_OT_Attach(PickOperator):
 	bl_idname = "armature.attach"
 	bl_label = "Attach"
@@ -94,6 +96,8 @@ class Armature_OT_Attach(PickOperator):
 				bpy.ops.object.mode_set(mode=mode, toggle=False)
 
 		self.report({'OPERATOR'},'bpy.ops.armature.attach()')
+
+
 
 classes = [Armature_OT_Attach]
 

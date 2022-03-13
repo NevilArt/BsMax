@@ -1,3 +1,10 @@
+#0,1,0,20220307
+	'Chamfer' Operator 'Ctrl+Shift+C' and same in Quadmenu works fine (3DsMax model).
+	'Chamfer' Operator automatically switch to vertex and edge mode depends on mode.
+	Object Properties is better than before but still far from perfect (3DsMax model).
+	'Weld' Operator in quadmenu now is working (3DsMax model).
+	Quadmenu Select instance issue fixed (3DsMax mode).
+
 #0,1,0,20220303
 	Quadmenu 'Freeze' Operator makes object display as solid color.
 	'Hide/Unhide' Operator in Quadmenu do not affect render setting anymore.
