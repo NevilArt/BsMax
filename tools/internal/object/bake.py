@@ -13,7 +13,7 @@
 #	along with this program.  If not, see <https://www.gnu.org/licenses/>.
 ############################################################################
 import bpy
-from bpy.props import BoolProperty,EnumProperty
+from bpy.props import BoolProperty, EnumProperty
 
 def bake(self,ctx,hi,low,cage,bake_type):
 	bpy.ops.object.select_all(action='DESELECT')

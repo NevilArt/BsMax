@@ -14,13 +14,13 @@
 ############################################################################
 
 bl_info = {
-    "name" : "MaxivzsTools",
-    "author" : "Maxi Vazquez",
-    "description" : "Collection of context sensitive and time saving tools",
-    "blender" : (2, 80, 0),
-    "location" : "View3D",
-    "warning" : "",
-    "category" : "Generic"
+	"name" : "MaxivzsTools",
+	"author" : "Maxi Vazquez",
+	"description" : "Collection of context sensitive and time saving tools",
+	"blender" : (2, 80, 0),
+	"location" : "View3D",
+	"warning" : "",
+	"category" : "Generic"
 }
 
 import bpy
@@ -76,4 +76,4 @@ classes = (MESH_OT_SuperSmartCreate,
 register,unregister = bpy.utils.register_classes_factory(classes)
 
 if __name__ == "__main__":
-    register()
+	register()

@@ -16,6 +16,7 @@
 import bpy
 from bpy.types import Operator
 from bpy.props import StringProperty
+from bsmax.actions import set_as_active_object
 
 class CharacterSet:
 	def __init__(self):
@@ -128,16 +129,55 @@ class Anim_TO_Character_Lister(Operator):
 
 
 
+class Object_TO_Make_Override_Library_plus(Operator):
+	""" Convert Multiple selection to library overide """
+	bl_idname = "object.make_override_library_multi"
+	bl_label = "Make Library Override (Multi)"
+	bl_options={'REGISTER'}
+
+	@classmethod
+	def poll(self, ctx):
+		return bpy.ops.object.make_override_library.poll()
+	
+	def execute(self,ctx):
+		objs = []
+		for obj in ctx.selected_objects:
+			if obj.type == 'EMPTY':
+				if obj.instance_type == 'COLLECTION':
+					objs.append(obj)
+
+		bpy.ops.object.select_all(action='DESELECT')
+
+		for obj in objs:
+			set_as_active_object(ctx, obj)
+			if bpy.ops.object.make_override_library.poll():
+				bpy.ops.object.make_override_library()
+
+		return{"FINISHED"}
+
+
+
+def library_override_menu(self, ctx):
+	self.layout.operator('object.make_override_library_multi')
+
+
+
 classes = [Armature_TO_Character_Hide,
 	Armature_TO_Character_Isolate,
 	Armature_TO_Character_Rest,
-	Anim_TO_Character_Lister]
+	Anim_TO_Character_Lister,
+	Object_TO_Make_Override_Library_plus]
 
 def register_character_lister():
 	for c in classes:
 		bpy.utils.register_class(c)
 
+	bpy.types.VIEW3D_MT_object_relations.prepend(library_override_menu)
+	
+
 def unregister_character_lister():
+	bpy.types.VIEW3D_MT_object_relations.remove(library_override_menu)
+
 	for c in classes:
 		bpy.utils.unregister_class(c)
 

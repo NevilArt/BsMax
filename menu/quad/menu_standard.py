@@ -20,7 +20,7 @@ from bsmax.state import is_active_primitive, get_active_type
 
 # Indexes
 # [3] [2]
-#    +
+#	 +
 # [4] [1]
 ##########
 t,f,n = True,False,None

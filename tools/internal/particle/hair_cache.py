@@ -17,8 +17,8 @@ import bpy, os, shutil
 from pathlib import Path
 from bpy.types import Operator
 
-# swich between hair caches not working as aspected                  #
-# this is a temprary solution till problem solvein blender itself    #
+# swich between hair caches not working as aspected				 	 #
+# this is a temprary solution till problem solvein blender itself	#
 # all cache files rename as index 0 and same name in Combined folder #
 # this helps to load all of files only by frame nombrt automaticaly  #
 

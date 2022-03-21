@@ -78,7 +78,7 @@ def Circle(length, width, revers):
 	l, w = length, width
 	tl, tw = l * 0.551786, w * 0.551786
 	points = []
-	#                Knut                Left             Right
+	#				Knut				Left			 Right
 	points.append([Vector((-w,0,0)),Vector((-w,-tl,0)),Vector((-w,tl,0))])
 	points.append([Vector((0,l,0)),Vector((-tw,l,0)),Vector((tw,l,0))])
 	points.append([Vector((w,0,0)),Vector((w,tl,0)),Vector((w,-tl,0))])

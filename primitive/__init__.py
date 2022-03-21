@@ -13,51 +13,53 @@
 #	along with this program.  If not, see <https://www.gnu.org/licenses/>.
 ############################################################################
 
-from .ui import register_ui,unregister_ui
-from .panel import register_panel,unregister_panel
-from .update import register_update,unregister_update
+from .ui import register_ui, unregister_ui
+from .panel import register_panel, unregister_panel
+from .update import register_update, unregister_update
 # # Meshes
-from .box import register_box,unregister_box
-from .capsule import register_capsule,unregister_capsule
-from .cylinder import register_cylinder,unregister_cylinder
-from .icosphere import register_icosphere,unregister_icosphere
-from .mesher import register_mesher,unregister_mesher
-from .monkey import register_monkey,unregister_monkey
-from .oiltank import register_oiltank,unregister_oiltank
-from .plane import register_plane,unregister_plane
-from .pyramid import register_pyramid,unregister_pyramid
-from .sphere import register_sphere,unregister_sphere
-from .teapot import register_teapot,unregister_teapot
-from .tube import register_tube,unregister_tube
-from .torus import register_torus,unregister_torus
-from .vertex import register_vertex,unregister_vertex
+from .box import register_box, unregister_box
+from .capsule import register_capsule, unregister_capsule
+from .cylinder import register_cylinder, unregister_cylinder
+from .icosphere import register_icosphere, unregister_icosphere
+from .mesher import register_mesher, unregister_mesher
+from .monkey import register_monkey, unregister_monkey
+from .oiltank import register_oiltank, unregister_oiltank
+from .plane import register_plane, unregister_plane
+from .pyramid import register_pyramid, unregister_pyramid
+from .sphere import register_sphere, unregister_sphere
+from .teapot import register_teapot, unregister_teapot
+from .tube import register_tube, unregister_tube
+from .torus import register_torus, unregister_torus
+from .vertex import register_vertex, unregister_vertex
 # # Curves
-from .arc import register_arc,unregister_arc
-from .circle import register_circle,unregister_circle
-from .ellipse import register_ellipse,unregister_ellipse
-from .extrude import register_extrude,unregister_extrude
-from .donut import register_donut,unregister_donut
-from .ngon import register_ngon,unregister_ngon
-from .helix import register_helix,unregister_helix
-from .line import register_line,unregister_line
-# from .logo import register_logo,unregister_logo
-from .profilo import register_profilo,unregister_profilo
-from .rectangle import register_rectangle,unregister_rectangle
-from .star import register_star,unregister_star
+from .arc import register_arc, unregister_arc
+from .circle import register_circle, unregister_circle
+from .ellipse import register_ellipse, unregister_ellipse
+from .extrude import register_extrude, unregister_extrude
+from .donut import register_donut, unregister_donut
+from .ngon import register_ngon, unregister_ngon
+from .helix import register_helix, unregister_helix
+from .line import register_line, unregister_line
+# from .logo import register_logo, unregister_logo
+from .profilo import register_profilo, unregister_profilo
+from .rectangle import register_rectangle, unregister_rectangle
+from .star import register_star, unregister_star
 # Others
-from .bone import register_bone,unregister_bone
-from .effector import register_effector,unregister_effector
-from .empty import register_empty,unregister_empty
-from .camera import register_camera,unregister_camera
-from .lattice import register_lattice,unregister_lattice
-from .light import register_light,unregister_light
-from .lightprobe import register_lightprobe,unregister_lightprobe
-from .metaball import register_metaball,unregister_metaball
-from .speaker import register_speaker,unregister_speaker
-from .text import register_text,unregister_text
-from .greacepencil import register_greacepencil,unregister_greacepencil
+from .bone import register_bone, unregister_bone
+from .effector import register_effector, unregister_effector
+from .empty import register_empty, unregister_empty
+from .camera import register_camera, unregister_camera
+from .lattice import register_lattice, unregister_lattice
+from .light import register_light, unregister_light
+from .lightprobe import register_lightprobe, unregister_lightprobe
+from .metaball import register_metaball, unregister_metaball
+from .speaker import register_speaker, unregister_speaker
+from .text import register_text, unregister_text
+from .greacepencil import register_greacepencil, unregister_greacepencil
+# Extera
+from .presets import register_preset, unregister_preset
 # UI
-from .menu import register_menu,unregister_menu
+from .menu import register_menu, unregister_menu
 
 def register_primitives():
 	register_update()
@@ -90,6 +92,7 @@ def register_primitives():
 	register_oiltank()
 	register_ngon()
 	register_plane()
+	register_preset()
 	register_profilo()
 	register_pyramid()
 	register_rectangle()
@@ -133,6 +136,7 @@ def unregister_primitives():
 	unregister_oiltank()
 	unregister_ngon()
 	unregister_plane()
+	unregister_preset()
 	unregister_profilo()
 	unregister_pyramid()
 	unregister_rectangle()

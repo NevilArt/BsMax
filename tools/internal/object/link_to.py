@@ -34,7 +34,7 @@ class Object_OT_Link_to(PickOperator):
 		t = Matrix.Translation(bone.tail - bone.head)
 		tmw = armature.matrix_world @ t @ bone.matrix
 		cmw = obj.matrix_world.copy()
-     
+
 		cml = tmw.inverted() @ cmw
 		obj.matrix_parent_inverse = cml @ obj.matrix_basis.inverted()
 		

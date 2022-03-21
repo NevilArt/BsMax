@@ -16,6 +16,8 @@ import bpy
 from bpy.types import Operator
 from bpy.props import EnumProperty, IntProperty
 
+#TODO show/hide isolate ... tools
+
 # scene = bpy.context.scene 
 # active_strip = scene.sequence_editor.active_strip
 # active_strip.frame_start

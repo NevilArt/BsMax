@@ -17,6 +17,8 @@ import bpy
 from bpy.types import Menu
 from bsmax.state import is_object_mode
 
+
+
 # Mesh create menu
 class BsMax_MT_VertexCreate(Menu):
 	bl_idname = "BSMAX_MT_vertex_create_menu"
@@ -28,6 +30,8 @@ class BsMax_MT_VertexCreate(Menu):
 		layout.operator("create.vertex", text="Edge", icon="CON_TRACKTO").fill_type='EDGE'
 		layout.operator("create.vertex", text="Face", icon="LIGHTPROBE_PLANAR").fill_type='FACE'
 
+
+
 # Mesh create menu
 class BsMax_MT_Mesh_Extera(Menu):
 	bl_idname = "BSMAX_MT_mesh_extera_menu"
@@ -35,6 +39,9 @@ class BsMax_MT_Mesh_Extera(Menu):
 	def draw(self, ctx):
 		layout=self.layout
 		layout.operator("mesh.add_spider_web", text="Spider Web", icon="FREEZE")
+		layout.operator("mesh.make_pillow", text="Pillow", icon="GHOST_ENABLED")
+		
+
 
 # Mesh create menu
 class BsMax_MT_MeshCreate(Menu):
@@ -64,7 +71,8 @@ class BsMax_MT_MeshCreate(Menu):
 		layout.separator()
 		layout.menu("BSMAX_MT_mesh_extera_menu", icon='DOCUMENTS')
 
-		
+
+
 # curve / shape / spline create menu
 class BsMax_MT_CurveCreate(Menu):
 	bl_idname = "BSMAX_MT_curve_create_menu"
@@ -84,6 +92,8 @@ class BsMax_MT_CurveCreate(Menu):
 		layout.separator()
 		layout.operator("create.extrude",text="Extrude Curve (Add)",icon="EXPORT").mode='Curve'
 
+
+
 # Surface create menu
 class BsMax_MT_SurfaceCreate(Menu):
 	bl_idname = "BSMAX_MT_surface_create_menu"
@@ -91,6 +101,8 @@ class BsMax_MT_SurfaceCreate(Menu):
 	def draw(self, ctx):
 		layout = self.layout
 		layout.label(text="coming soon")
+
+
 
 # Metaball create menu
 class BsMax_MT_MetaballCreate(Menu):
@@ -109,6 +121,8 @@ class BsMax_MT_MetaballCreate(Menu):
 		layout.operator("create.metaball", text="Cube",
 						icon="META_CUBE").metaball_type='CUBE'
 
+
+
 # Text create menu
 class BsMax_MT_TextCreate(Menu):
 	bl_idname = "BSMAX_MT_text_create_menu"
@@ -119,6 +133,8 @@ class BsMax_MT_TextCreate(Menu):
 			icon="OUTLINER_OB_FONT").fill_mode='BOTH'
 		layout.operator("create.text", text="Text",
 			icon="FONT_DATA").fill_mode="NONE"
+
+
 
 # Greace Pencil create menu
 class BsMax_MT_GreacePencilCreate(Menu):
@@ -133,6 +149,8 @@ class BsMax_MT_GreacePencilCreate(Menu):
 		layout.operator("create.greacepencil", text="Monkey",
 				icon="MESH_MONKEY").gpencil_type="MONKEY"
 
+
+
 # Armature create menu
 class BsMax_MT_ArmatureCreate(Menu):
 	bl_idname = "BSMAX_MT_armature_create_menu"
@@ -141,6 +159,8 @@ class BsMax_MT_ArmatureCreate(Menu):
 		layout = self.layout
 		layout.operator("create.bone", text="Bone", icon="BONE_DATA")
 		#layout.operator("create.bone",text="Armature",icon="ARMATURE_DATA")
+
+
 
 # Lattice create menu
 class BsMax_MT_LatticeCreate(Menu):
@@ -154,6 +174,8 @@ class BsMax_MT_LatticeCreate(Menu):
 						icon="OUTLINER_OB_LATTICE").resolution=3
 		layout.operator("create.lattice", text='Lattice 4x4x4 (Create)',
 						icon="OUTLINER_OB_LATTICE").resolution=4
+
+
 
 # Empty create menu
 class BsMax_MT_EmptyCreate(Menu):
@@ -178,6 +200,8 @@ class BsMax_MT_EmptyCreate(Menu):
 		layout.operator("create.empty", text="Image",
 						icon="FILE_IMAGE").empty_type='IMAGE'
 
+
+
 # Image create menu
 class BsMax_MT_ImageCreate(Menu):
 	bl_idname = "BSMAX_MT_image_create_menu"
@@ -188,6 +212,8 @@ class BsMax_MT_ImageCreate(Menu):
 						icon="IMAGE_REFERENCE").image_type='REFERENCE'
 		layout.operator("create.image", text="BackGround",
 						icon="IMAGE_BACKGROUND").image_type='BACKGROUND'
+
+
 
 # Light create menu
 class BsMax_MT_LightCreate(Menu):
@@ -200,6 +226,8 @@ class BsMax_MT_LightCreate(Menu):
 		layout.operator("create.spotlight", text="Spot Light Free/Target", icon="LIGHT_SPOT")
 		layout.operator("create.arealight",text="Free Area",icon="LIGHT_AREA").free = True
 		layout.operator("create.arealight",text="Target Area",icon="LIGHT_AREA")
+
+
 
 # Light Probs create menu
 class BsMax_MT_LightProbsCreate(Menu):
@@ -214,6 +242,8 @@ class BsMax_MT_LightProbsCreate(Menu):
 		layout.operator("create.light_probe_grid",
 			text="Irradiance Volume", icon="LIGHTPROBE_GRID")
 
+
+
 # Camera create menu
 class BsMax_MT_CameraCreate(Menu):
 	bl_idname = "BSMAX_MT_camera_create_menu"
@@ -223,6 +253,8 @@ class BsMax_MT_CameraCreate(Menu):
 		layout.operator("create.camera", text="Camera Free/Target", icon="OUTLINER_OB_CAMERA")
 		layout.operator("camera.create_from_view", icon="OUTLINER_OB_CAMERA")
 
+
+
 # Speaker create menu
 class BsMax_MT_SpeakerCreate(Menu):
 	bl_idname = "BSMAX_MT_speakercreatemenu"
@@ -230,6 +262,8 @@ class BsMax_MT_SpeakerCreate(Menu):
 	def draw(self, ctx):
 		layout = self.layout
 		layout.operator("create.speaker", text="Speaker", icon="OUTLINER_OB_SPEAKER")
+
+
 
 # Force field create menu
 class BsMax_MT_ForceFieldCreate(Menu):
@@ -263,6 +297,8 @@ class BsMax_MT_ForceFieldCreate(Menu):
 			icon="FORCE_DRAG").effector_type = 'DRAG'
 		layout.operator("create.effector", text="Smoke",
 			icon="FORCE_FLUIDFLOW").effector_type = 'SMOKE'
+
+
 
 # View 3D Create Menu
 class BsMax_MT_Create(Menu):
@@ -300,6 +336,8 @@ class BsMax_MT_Create(Menu):
 		layout.separator()
 		layout.menu("BSMAX_MT_forcefield_cecreate_menu", icon='OUTLINER_OB_FORCE_FIELD')
 		# OUTLINER_OB_GROUP_INSTANCE
+
+
 
 def objects_context_menu(self, ctx):
 	layout = self.layout

@@ -35,7 +35,7 @@ def get_star_shape(radius1, radius2, points, distortion,
 		x1 = sin(s+(step/2))*radius2+r[2]
 		y1 = cos(s+(step/2))*radius2+r[3]
 		pc0,pl0,pr0 = (x0,y0,0),(x0,y0,0),(x0,y0,0)
-		pc1,pl1,pr1 = (x1,y1,0),(x1,y1,0),(x1,y1,0)       
+		pc1,pl1,pr1 = (x1,y1,0),(x1,y1,0),(x1,y1,0)
 		shape.append((pc0,pl0,'VECTOR',pr0,'VECTOR'))
 		shape.append((pc1,pl1,'VECTOR',pr1,'VECTOR'))
 	return [shape]

@@ -17,7 +17,7 @@ from .q_items import QuadItem
 
 # Indexes #
 # [3] [2] #
-#    +    #
+# 	 +	  #
 # [4] [1] #
 ###########
 t, f, n = True, False, None

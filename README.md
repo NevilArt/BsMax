@@ -31,14 +31,10 @@ If you found this product useful and want to support this project you can Donate
 
 # Recent Updates and Changes
 
-* Selction issue in pose mode fixed (3DsMax mode).
-* New operator select Splines by Close/Open (EditCurve/Select/Select Close).
-* Hide/Unhie on Edit Mode affect only on active element(Vertex, Edge or Face).
-* Hide/Unhide menu and key maps fixed for Curve and Armature too.
-* 'Quadmenu' Mesh edit NURMS Toggle actived.
-* 'Quadmenu' Mesh Edit'Triangulate' placed as 'Edit Triangulation'.
-* 'Quadmenu' Outline and Bevel tools are active.
-* Some other minor bugs fiexed.
+* 'Make Library Override (Multi)' Convert selected object rather than only active object (Object/Relation/..).
+* 'Distance Sort' & 'Path Sort' improved and bug fixed (Object/Transform/..).
+* 'Distance Sort' & 'Path Sort' renamed to 'Arrange by Distance', 'Arrange on Curve'
+* Quick setup for create pillows 'Create/Mesh/Extera/Pillow' (Basic one will be improved).
 * [Update History...](https://github.com/NevilArt/BsMax_2_80/blob/master/HISTORY.TXT)
 
 # In Production 

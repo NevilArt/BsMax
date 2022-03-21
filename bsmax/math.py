@@ -52,7 +52,6 @@ class BitArray:
 
 
 
-
 def point_on_line(a, b, t):
 	return a+(b-a)*t
 
@@ -67,39 +66,97 @@ def point_on_vector(a, b, c, d, t):
 
 
 
+def point_rotation_on_segment(a, b, c, d, time):
+	# Get segment and time return direction
+	# Tamprary solution but its work for now
+	t1, t2 = time - 0.001, time + 0.001
+	if t1 < 0:
+		t1, t2 = 0, 0.001
+	if t2 > 1:
+		t1, t2 = 0.999, 1
+	p1 = point_on_vector(a, b, c, d, t1)
+	p2 = point_on_vector(a, b, c, d, t2)
+	lx, ly, lz = p2 - p1
+	x = atan2(lz, ly)
+	y = atan2(lz, lx)
+	z = atan2(ly, lx)
+	return Vector((x, y, z))
+
+
+
 def point_on_curve(curve, index, time):
+	""" Arguments(Curve Object, Spline index, time) return: Location, Rotation, Scale """
+	# Safty Check
+	if not curve.data.splines:
+		return Vector((0, 0, 0)), Vector((0, 0, 0)), Vector((1, 1, 1))
+
 	spline = curve.data.splines[index]
+
+	# Safty Check
+	if len(spline.bezier_points) < 2:
+		return Vector((0, 0, 0)), Vector((0, 0, 0)), Vector((1, 1, 1))
+	
 	lengths, total_length = [], 0
+
+	# Add one more segment if spline is close
+	segs = [point for point in spline.bezier_points]
+	if spline.use_cyclic_u:
+		segs.append(spline.bezier_points[0])
+	
+	# Fast solution for speciyal conditions
 	if time <= 0:
-		return spline.bezier_points[0].co.copy()
+		location = spline.bezier_points[0].co.copy()
+		a = segs[0].co
+		b = segs[0].handle_right
+		c = segs[1].handle_left
+		d = segs[1].co
+		rotaion = point_rotation_on_segment(a, b, c, d, 0)
+		scale = Vector((1, 1, 1))
+		return location, rotaion, scale
+
 	if time >= 1:
-		return spline.bezier_points[-1].co.copy()
-	else:
-		segs = [point for point in spline.bezier_points]
-		if spline.use_cyclic_u:
-			segs.append(spline.bezier_points[0])
-		# collect the segment length
-		for i in range(len(segs) - 1):
-			a = segs[i].co
-			b = segs[i].handle_right
-			c = segs[i+1].handle_left
-			d = segs[i+1].co
-			l = get_segment_length(a,b,c,d,100)
-			lengths.append(l)
-			total_length += l
-		length = total_length * time
-		for i in range(len(lengths)):
-			if length >= lengths[i]:
-				length -= lengths[i]
-			else:
-				index = i
-				break
-		a = segs[index].co
-		b = segs[index].handle_right
-		c = segs[index+1].handle_left
-		d = segs[index+1].co
-		t = length / lengths[index]
-		return point_on_vector(a, b, c, d, t)
+		location = spline.bezier_points[-1].co.copy()
+		a = segs[-2].co
+		b = segs[-2].handle_right
+		c = segs[-1].handle_left
+		d = segs[-1].co
+		rotaion = point_rotation_on_segment(a, b, c, d, 1)
+		scale = Vector((1, 1, 1))
+		return location, rotaion, scale
+
+	# Sum segment lengths
+	for i in range(len(segs) - 1):
+		a = segs[i].co
+		b = segs[i].handle_right
+		c = segs[i+1].handle_left
+		d = segs[i+1].co
+		l = get_segment_length(a,b,c,d,100)
+		lengths.append(l)
+		total_length += l
+
+	# Find segment that point on it	
+	length = total_length * time
+	for i in range(len(lengths)):
+		if length >= lengths[i]:
+			length -= lengths[i]
+		else:
+			index = i
+			break
+
+	# Calculate point location on segment
+	a = segs[index].co
+	b = segs[index].handle_right
+	c = segs[index+1].handle_left
+	d = segs[index+1].co
+	t = length / lengths[index]
+	location = point_on_vector(a, b, c, d, t)
+	
+	# Calculate Point Rotation on Secmetn/Splie/Curve
+	rotaion = point_rotation_on_segment(a, b, c, d, time)
+	
+	scale = Vector((1,1,1))
+	
+	return location, rotaion, scale
 
 
 
@@ -233,9 +290,9 @@ def get_axis_constraint(oring, current):
 
 def get_bias(bias, time):
 	if bias > 0:
-		return (1-pow(1-time,9*bias+1))
+		return 1 - pow(1 - time, 9*bias + 1)
 	elif bias < 0:
-		return pow(time,1-9*bias)
+		return pow(time, 1 - 9*bias)
 	else:
 		return time
 
@@ -272,18 +329,18 @@ def matrix_from_elements(location, euler_rotation, scale):
 
 	Rz_yaw = numpy.array([
 		[cos(yaw), -sin(yaw), 0],
-		[sin(yaw),  cos(yaw), 0],
-		[       0,         0, 1]])
+		[sin(yaw), cos(yaw), 0],
+		[0, 0, 1]])
 	
 	Ry_pitch = numpy.array([
-		[ cos(pitch), 0, sin(pitch)],
-		[          0, 1,          0],
+		[cos(pitch), 0, sin(pitch)],
+		[0, 1, 0],
 		[-sin(pitch), 0, cos(pitch)]])
 
 	Rx_roll = numpy.array([
-		[1,         0,          0],
+		[1, 0, 0],
 		[0, cos(roll), -sin(roll)],
-		[0, sin(roll),  cos(roll)]])
+		[0, sin(roll), cos(roll)]])
 
 	m = numpy.dot(Rz_yaw, numpy.dot(Ry_pitch, Rx_roll))
 
@@ -295,7 +352,7 @@ def matrix_from_elements(location, euler_rotation, scale):
 		(m[0][0]*sx, m[0][1]*sy, m[0][2]*sz, lx),
 		(m[1][0]*sx, m[1][1]*sy, m[1][2]*sz, ly),
 		(m[2][0]*sx, m[2][1]*sy, m[2][2]*sz, lz),
-		(         0,          0,          0,  1)))
+		(0, 0, 0, 1)))
 
 	return matrix
 

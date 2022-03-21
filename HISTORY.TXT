@@ -1,3 +1,13 @@
+#0,1,0,20220313
+	Selction issue in pose mode fixed (3DsMax mode).
+	New operator select Splines by Close/Open (EditCurve/Select/Select Close).
+	Hide/Unhie on Edit Mode affect only on active element(Vertex, Edge or Face).
+	Hide/Unhide menu and key maps fixed for Curve and Armature too.
+	'Quadmenu' Mesh edit NURMS Toggle actived.
+	'Quadmenu' Mesh Edit'Triangulate' placed as 'Edit Triangulation'.
+	'Quadmenu' Outline and Bevel tools are active.
+	Some other minor bugs fiexed.
+
 #0,1,0,20220307
 	'Chamfer' Operator 'Ctrl+Shift+C' and same in Quadmenu works fine (3DsMax model).
 	'Chamfer' Operator automatically switch to vertex and edge mode depends on mode.

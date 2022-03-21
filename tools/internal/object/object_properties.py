@@ -384,7 +384,7 @@ class Object_OT_Properties(bpy.types.Operator):
 			elif obj.type == 'ARMATURE':
 				row.prop(self,"verteces", text='Bones (NonDeform)')	
 				row.prop(self,"faces", text='Bones (Deform)')
-     
+
 			row =layout.row()
 			col =row.column()
 			box =col.box()

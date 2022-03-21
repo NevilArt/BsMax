@@ -26,7 +26,7 @@ bl_info = {
 	"name": "Spider Webs",
 	"author": "Create by Maxime Herpin / Update by Nevil",
 	"version": (1, 0, 1), # 2021-09-02
-	"blender": (2, 80, 0), # 2.8 ~ 3
+	"blender": (2, 80, 0), # 2.8 ~ 3.x
 	"location": "View 3d > Toolbar > Create panel > Spider Webs",
 	"description": "Adds a new spider web object",
 	"warning": "",
@@ -195,7 +195,6 @@ class Webs:
 			self.draw_2d(texture_size)
 
 	def generate_webs(self, number):
-		# for i in range(number):
 		for _ in range(number):
 			web = Web(anchor_points_candidates=self.anchor_points,
 				gravity_strength=self.gravity_strength, size=self.size,
@@ -474,7 +473,7 @@ class Web:
 			threads_length = len(self.threads)
 			new_indexes.append(threads_length)
 			new_indexes.append(i + 1)
-			self.threads.append(Thread([n, n + 1], 'support', self))
+			self.threads.append(Thread([n, n+1], 'support', self))
 			i += 1
 
 		self.threads = [self.threads[i] for i in new_indexes]
@@ -563,10 +562,7 @@ class Web:
 		n = len(self.threads)
 
 		for i in range(radial_beginning_index, n - 1):
-			# for _ in range(1):
 			self.threads[i].points.pop(0)
-			# if len(self.threads[i].points) > 0:
-			# 	center_indexes.append(self.threads[i].points[0])
 
 			if len(self.threads[i].points) > 0:
 				center_limits.append(self.threads[i].points[0])
@@ -617,26 +613,6 @@ class Web:
 		center_indexes.extend(center_limits)
 		links = {i: [] for i in center_indexes}
 
-		# for l in range(1):
-		#	 for point_index in hub_indexes:
-		#		 point = self.verts[point_index]
-		#		 dist = inf
-		#		 neighbour = 0
-		#		 for new_point_index in center_indexes:
-		#			 if new_point_index != point_index and len(links[new_point_index]) < l + 3:
-		#				 new_point = self.verts[new_point_index]
-		#				 new_dist = (point - new_point).length
-		#				 if new_dist < dist and point_index not in links[new_point_index] and new_point_index not in links[point_index] and not (
-		#						 new_point_index in center_limits and point_index in center_limits):
-		#					 dist = new_dist
-		#					 neighbour = new_point_index
-		#		 self.threads.append(Thread([point_index, neighbour], 'hub', self))
-		#		 links[point_index].append(neighbour)
-		#		 try:
-		#			 links[neighbour].append(point_index)
-		#		 except:
-		#			 pass
-
 		self.hub_indexes = center_indexes
 		self.resolution(5, [i for i in self.threads if i.thread_type == 'filling'], adaptative=False)
 		self.resolution(5, [i for i in self.threads if i.thread_type == 'hub'], adaptative=False)
@@ -651,7 +627,7 @@ class Web:
 		return edges
 
 	def get_threads_vects(self):
-		threads_vects = [[] for thread in self.threads]  # if not (thread.thread_type == 'frame' and len(thread.points) == 2)]
+		threads_vects = [[] for thread in self.threads]
 		for i, thread in enumerate(self.threads):
 			if not (thread.thread_type == 'frame' and len(thread.points) == 2):
 				threads_vects[i] = [self.verts[j] for j in thread.points]
@@ -675,8 +651,6 @@ class Web:
 			if random() < (1 - break_proba):
 				new_edges.append(i)
 		edges = new_edges
-
-		# self.verts = self.anchor_points
 
 		me = bpy.data.meshes.new("web")
 		me.from_pydata(self.verts, edges, [])
@@ -728,7 +702,6 @@ class Web:
 		for point in self.verts:
 			new_point = point.copy()
 			new_point.rotate(quat)
-			# point.rotate(quat)
 			new_point.resize_2d()
 			points_2d.append(new_point)
 			x, y = new_point
@@ -746,7 +719,6 @@ class Web:
 				boundaries[3] = y
 
 		scale = max(boundaries[2] - boundaries[0], boundaries[3] - boundaries[1])
-		# scale *= res/(res+1)
 		pos = Vector((boundaries[0], boundaries[1]))
 		uv_pos = []
 		self.uv_coords = uv_pos

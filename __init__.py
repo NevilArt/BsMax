@@ -19,7 +19,7 @@ bl_info = {
 	'name': 'BsMax',
 	'description': 'BsMax for Blender 2.80 ~ 3.1',
 	'author': 'Naser Merati (Nevil)',
-	'version': (0, 1, 0, 20220313),
+	'version': (0, 1, 0, 20220321),
 	'blender': (2, 80, 0),# 2.80 ~ 3.1
 	'location': 'Almost Everywhere in Blender',
 	'wiki_url': 'https://github.com/NevilArt/BsMax_2_80/wiki',
@@ -351,11 +351,11 @@ def save_preferences(preferences):
 
 
 def isfloat(value):
-  try:
-    float(value)
-    return True
-  except ValueError:
-    return False
+	try:
+		float(value)
+		return True
+	except ValueError:
+		return False
 
 
 

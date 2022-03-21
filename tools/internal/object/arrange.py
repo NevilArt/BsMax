@@ -14,15 +14,71 @@
 ############################################################################
 
 import bpy
+from mathutils import Vector
 from bpy.types import Operator
-from bpy.props import FloatProperty
-from bsmax.math import get_distance,point_on_curve
+from bpy.props import FloatProperty, EnumProperty
+from bsmax.math import get_distance, point_on_curve, matrix_from_elements, get_bias
 from bsmax.operator import PickOperator
 
-class Object_OT_Distance_Sort(Operator):
-	bl_idname = "object.distance_sort"
-	bl_label = "Distance Sort"
-	bl_description = "Sort Selected object in Line"
+class ObjectData:
+	def __init__(self, obj):
+		self.owner = obj
+		self.matrix_world = obj.matrix_world.copy()
+	
+	def set_transform(self, matrix):
+		self.owner.matrix_world = matrix
+
+	def reset(self):
+		self.owner.matrix_world = self.matrix_world
+
+
+def get_farest_objects(objs):
+	""" return two farest object in given list """
+	first, last, max_distance = objs[1], objs[2], 0
+	for i in range(len(objs)):
+		for j in range(i, len(objs)):
+			# Get location in world coordinate
+			location_i = objs[i].matrix_world.to_translation()
+			location_j = objs[j].matrix_world.to_translation()
+			current_distance = get_distance(location_i, location_j)
+			# Get longest distance
+			if current_distance > max_distance:
+				max_distance = current_distance
+				first, last = objs[i], objs[j]
+	return 	first, last
+
+
+
+def collect_distances(first, objs):
+	""" Collect and sort all objects distance from the first one """
+	distances = []
+	location_first = first.matrix_world.to_translation()
+	for obj in objs:
+		location_current = obj.matrix_world.to_translation()
+		distances.append(get_distance(location_first, location_current))
+	distances.sort()
+	return distances
+
+
+
+def sort_object_by_distance_order(first, distances, objs):
+	""" Sort objects by distance order to keep the Original order """
+	sorted_objs = []
+	location_first = first.matrix_world.to_translation()
+	for distance in distances:
+		for obj in objs:
+			location_current = obj.matrix_world.to_translation()
+			if get_distance(location_first, location_current) == distance:
+				sorted_objs.append(obj)
+	return sorted_objs
+
+
+
+class Object_OT_Arrange_by_Distance(Operator):
+	""" Get two farest object and arrange other objects between them """
+	bl_idname = "object.arrange_by_distance"
+	bl_label = "Arrange By Distance"
+	bl_description = "Arrange Selected object in a line"
 	bl_options = {'REGISTER', 'UNDO'}
 
 	@classmethod
@@ -32,100 +88,149 @@ class Object_OT_Distance_Sort(Operator):
 		return False
 
 	def execute(self, ctx):
-		objs,md = ctx.selected_objects, 0
-		if len(objs) > 2:
-			A,B = objs[1],objs[2]
-			for i in range(len(objs)):
-				for j in range(i,len(objs)):
-					if get_distance (objs[i].location,objs[j].location) > md:
-						md = get_distance(objs[i].location,objs[j].location)
-						A,B= objs[i],objs[j]
-			dis,Sobj = [],[]
-			for o in objs:
-				dis.append(get_distance(A.location,o.location))
-			dis.sort()
-			for i in range(len(dis)):
-				for j in range(len(objs)):
-					if get_distance(A.location,objs[j].location) == dis[i]:
-						Sobj.append(objs[j])
-			for i in range(1,len(Sobj) - 1):
-				Sobj[i].location = A.location+(((B.location - A.location)/(len(Sobj) - 1))*i)
-			for i in range(1,len(Sobj) - 1):
-				Sobj[i].scale = A.scale+(((B.scale - A.scale)/(len(Sobj) - 1))*i)
-			XA,YA,ZA = A.rotation_euler
-			XB,YB,ZB = B.rotation_euler
+		# Collect basic infos
+		objs = ctx.selected_objects
+		first, last = get_farest_objects(objs)
+		distances = collect_distances(first, objs)
+		objs = sort_object_by_distance_order(first, distances, objs)
 
-			# TODO probleam in linked objects place by global location
-			for i in range(1,(len(Sobj) - 1)):
-				Sobj[i].rotation_euler.x = XA+((XB - XA)/(len(Sobj) - 1))*i
-			for i in range(1,(len(Sobj) - 1)):
-				Sobj[i].rotation_euler.y = YA+((YB - YA)/(len(Sobj) - 1))*i
-			for i in range(1,(len(Sobj) - 1)):
-				Sobj[i].rotation_euler.z = ZA+((ZB - ZA)/(len(Sobj) - 1))*i
-		self.report({'OPERATOR'},"bpy.ops.object.distance_sort()")
+		# Get Location step
+		location_first = first.matrix_world.to_translation()
+		location_last = last.matrix_world.to_translation()
+		location_step = (location_last - location_first) / (len(objs) - 1)
+
+		# get Rotation Steps
+		sx, sy, sz = first.matrix_world.to_euler()
+		ex, ey, ez = last.matrix_world.to_euler()
+		step_x = (ex - sx) / (len(objs) - 1)
+		step_y = (ey - sy) / (len(objs) - 1)
+		step_z = (ez - sz) / (len(objs) - 1)
+
+		# Get Scale Step
+		scale_first = first.matrix_world.to_scale()
+		scale_last = last.matrix_world.to_scale()
+		scale_step = (scale_last - scale_first) / (len(objs) - 1)
+
+		# Set Transform for each object
+		for i, obj in enumerate(objs[1:-1], start=1):
+
+			location = location_first + (location_step * i)
+
+			x = sx + step_x*i
+			y = sy + step_y*i
+			z = sz + step_z*i
+			euler_rotation = Vector((x, y, z))
+
+			scale = scale_first + (scale_step * i)
+
+			obj.matrix_world = matrix_from_elements(location, euler_rotation, scale)
+
 		return{"FINISHED"}
 
 
 
-class Object_OT_Path_Sort_Apply(Operator):
-	bl_idname = "object.path_sort_apply"
+class Object_OT_Arrange_On_Path(Operator):
+	bl_idname = "object.arrange_on_path"
 	bl_label = "Path Sort Apply"
 	bl_options = {'REGISTER', 'INTERNAL','UNDO'}
 	
 	objs, path = [], None
-	start: FloatProperty(name="Start:",min=0,max=1,step=0.01,precision=3,default=0.0)
-	end: FloatProperty(name="End:",min=0,max=1,step=0.01,precision=3,default=1.0)
+	start: FloatProperty(name="Start:",
+		min=0, max=1, step=0.01, precision=3, default=0.0)
+	bias: FloatProperty(name="Bias:",
+		min=-1, max=1, step=0.01, precision=3, default=0)
+	end: FloatProperty(name="End:",
+		min=0, max=1, step=0.01, precision=3, default=1.0)
+
+	align: EnumProperty(name="align", options = {"ENUM_FLAG"},
+		items=[('X', 'X', ''), ('Y', 'Y', ''), ('Z', 'Z', '')])
 
 	def draw(self, ctx):
 		layout = self.layout
 		row = layout.row(align=True)
-		row.prop(self,"start")
-		row.prop(self,"end")
+		row.prop(self, "start")
+		row.prop(self, "bias")
+		row.prop(self, "end")
+		#TODO ther is a miss calculation on rotaion need to fix befo enable is
+		# row = layout.row(align=True)
+		# row.prop(self, "align")
 	
-	def set_location(self, obj, path, time):
-		p = point_on_curve(path, 0, time)
-		p.x *= path.scale.x**2
-		p.y *= path.scale.y**2
-		p.z *= path.scale.z**2
-		location = p @ path.matrix_world.inverted() + path.location
-		obj.location = location
-	
+	def set_transform(self, obj, path, time):
+		location, rotation, _ = point_on_curve(path, 0, time)
+		location.x *= path.scale.x ** 2
+		location.y *= path.scale.y ** 2
+		location.z *= path.scale.z ** 2
+		location = location @ path.matrix_world.inverted() + path.location
+		euler_rotation = obj.matrix_world.to_euler()
+		if 'X' in self.align:
+			euler_rotation.x = rotation.x
+		if 'Y' in self.align:
+			euler_rotation.y = rotation.y
+		if 'Z' in self.align:
+			euler_rotation.z = rotation.z
+		scale = obj.matrix_world.to_scale()
+		obj.set_transform(matrix_from_elements(location, euler_rotation, scale))
+		
 	def check(self, ctx):
+		# Collect basic info
 		close = self.path.data.splines[0].use_cyclic_u
 		count = len(self.objs)
-		length = (self.end - self.start) / 1
+		length = self.end - self.start
+
+		# sort by distance to keep original order
+		first, _ = get_farest_objects(self.objs)
+		distances = collect_distances(first, self.objs)
+		self.objs = sort_object_by_distance_order(first, distances, self.objs)
+
 		for i in range(count):
 			t = i/count if close else i / (count - 1) if count > 1 else 0
+			t = get_bias(self.bias, t)
 			time = self.start + t * length
-			self.set_location(self.objs[i], self.path, time)
+			self.set_transform(self.objs[i], self.path, time)
 
 	def execute(self,ctx):
+
 		return {'FINISHED'}
+	
+	def cancel(self, ctx):
+		for obj in self.objs:
+			obj.reset()
 
 	def invoke(self, ctx, event):
-		self.objs = ctx.selected_objects
+		self.objs.clear()
+		for obj in ctx.selected_objects:
+			if obj != ctx.active_object:
+				self.objs.append(ObjectData(obj))
 		self.path = ctx.active_object
 		self.check(ctx)
 		return ctx.window_manager.invoke_props_dialog(self)
-	
-class Object_OT_Path_Sort(PickOperator):
-	bl_idname = "object.path_sort"
-	bl_label = "Path Sort"
+
+
+
+class Object_OT_Arrange_Path_picker(PickOperator):
+	bl_idname = "object.arrange_path_picker"
+	bl_label = "Arrange on Curve"
 	bl_description = "Sort Selected object on a Curve"
 	
 	filters = ['CURVE']
 	def picked(self, ctx, source, subsource, target, subtarget):
 		ctx.view_layer.objects.active = target
-		bpy.ops.object.path_sort_apply('INVOKE_DEFAULT')
+		bpy.ops.object.arrange_on_path('INVOKE_DEFAULT')
+
+
 
 def object_sort_menu(self, ctx):
 	layout = self.layout
 	layout.operator("object.align_selected_to_target", text='Align Objects (BsMax)')
 	layout.separator()
-	layout.operator("object.distance_sort")
-	layout.operator("object.path_sort")
+	layout.operator("object.arrange_by_distance", text="Arrange By Distance")
+	layout.operator("object.arrange_path_picker", text="Arrange on Curve")
 
-classes = [Object_OT_Distance_Sort, Object_OT_Path_Sort, Object_OT_Path_Sort_Apply]
+
+
+classes = [Object_OT_Arrange_by_Distance,
+	Object_OT_Arrange_On_Path,
+	Object_OT_Arrange_Path_picker]
 
 def register_arrange():
 	for c in classes:

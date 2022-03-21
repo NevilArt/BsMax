@@ -14,7 +14,7 @@
 ############################################################################
 import bpy
 from bpy.types import Operator
-from bpy.props import BoolProperty,StringProperty,IntProperty,EnumProperty
+from bpy.props import BoolProperty, StringProperty, IntProperty, EnumProperty
 from bsmax.math import get_index_str
 
 def get_active_collection(ctx):

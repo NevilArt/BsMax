@@ -535,7 +535,7 @@ class MESH_OT_SuperSmartCreate(Operator):
 				mesh_f2.bpy.ops.mesh.f2('INVOKE_DEFAULT')
 			elif verts_share_face(selection):
 				self.connect_verts_to_last(ctx, selection)
-			else:    
+			else:
 				bpy.ops.mesh.vert_connect()
 		#if Edge is selected
 		elif selectionMode[1]:
@@ -613,7 +613,7 @@ class MESH_OT_SmartSelectLoop(Operator):
 			return distance
 		else:
 			return 0 
-        
+
 	def organize_elements_by_loop(self, ctx, element_selection,verts = False, edges = False, faces = False):
 		selected_elements = []
 		elements_to_check = element_selection
@@ -636,7 +636,7 @@ class MESH_OT_SmartSelectLoop(Operator):
 			elements_to_check = list_difference(elements_to_check,element_loop)
 		select_from_index(ctx, indexes =element_selection, verts = sel_set[0] , edges = sel_set[1], faces = sel_set[2], replace = True)
 		return selected_elements
-    
+
 	def is_step_selection(self, ctx, elements_selection, verts = False, edges = False, faces = False):
 		if verts:
 			sel_set = [True, False, False]
@@ -663,7 +663,7 @@ class MESH_OT_SmartSelectLoop(Operator):
 				return [False,[]]
 		else:
 			return [False,[]]
-    
+
 	def complete_step_selection(self, ctx, verts = False, edges = False, faces = False):
 		iteration = 0
 		last_selection = []
@@ -704,14 +704,14 @@ class MESH_OT_SmartSelectLoop(Operator):
 					bpy.ops.mesh.shortest_path_select()
 				elif self.distance_between_elements(ctx, loop[0],loop[1], verts = sel_set[0] , edges = sel_set[1], faces = sel_set[2]) == 0:
 					select_from_index(ctx, loop, verts = sel_set[0] , edges = sel_set[1], faces = sel_set[2], replace = True, add_to_history = True)
-					self.complete_step_selection(ctx, verts = sel_set[0] , edges = sel_set[1], faces = sel_set[2])                    
+					self.complete_step_selection(ctx, verts = sel_set[0] , edges = sel_set[1], faces = sel_set[2])
 			else:
 				if selectionMode[1] == True: 
 					select_from_index(ctx, loop, verts = sel_set[0] , edges = sel_set[1], faces = sel_set[2], replace = True, add_to_history = True)
 					bpy.ops.mesh.loop_multi_select(ring=False)
 			final_selection += get_selected(ctx, verts = sel_set[0] , edges = sel_set[1], faces = sel_set[2])
 			#print(final_selection)
-		select_from_index(ctx, final_selection, verts = sel_set[0] , edges = sel_set[1], faces = sel_set[2], replace = True, add_to_history = True)    
+		select_from_index(ctx, final_selection, verts = sel_set[0] , edges = sel_set[1], faces = sel_set[2], replace = True, add_to_history = True)
 
 	def execute(self, ctx):
 		self.smart_loop(ctx)
@@ -764,7 +764,7 @@ class MESH_OT_SmartSelectRing(Operator):
 			return distance
 		else:
 			return 0 
-        
+
 	def organize_elements_by_ring(self, ctx, element_selection,verts = False, edges = False, faces = False):
 		selected_elements = []
 		elements_to_check = element_selection
@@ -787,7 +787,7 @@ class MESH_OT_SmartSelectRing(Operator):
 			elements_to_check = list_difference(elements_to_check,element_loop)
 		select_from_index(ctx, indexes =element_selection, verts = sel_set[0] , edges = sel_set[1], faces = sel_set[2], replace = True)
 		return selected_elements
-    
+
 	def is_step_selection(self, ctx, elements_selection, verts = False, edges = False, faces = False):
 		if verts:
 			sel_set = [True, False, False]
@@ -813,7 +813,7 @@ class MESH_OT_SmartSelectRing(Operator):
 				return [False,[]]
 		else:
 			return [False,[]]
-    
+
 	def complete_step_selection(self, ctx, verts = False, edges = False, faces = False):
 		iteration = 0
 		last_selection = []
@@ -854,14 +854,14 @@ class MESH_OT_SmartSelectRing(Operator):
 					bpy.ops.mesh.shortest_path_select(use_face_step=True)
 				elif self.distance_between_elements(ctx, loop[0],loop[1], verts = sel_set[0] , edges = sel_set[1], faces = sel_set[2]) == 0:
 					select_from_index(ctx, loop, verts = sel_set[0] , edges = sel_set[1], faces = sel_set[2], replace = True, add_to_history = True)
-					self.complete_step_selection(ctx, verts = sel_set[0] , edges = sel_set[1], faces = sel_set[2])                    
+					self.complete_step_selection(ctx, verts = sel_set[0] , edges = sel_set[1], faces = sel_set[2])
 			else:
 				if selectionMode[1] == True: 
 					select_from_index(ctx, loop, verts = sel_set[0] , edges = sel_set[1], faces = sel_set[2], replace = True, add_to_history = True)
 					bpy.ops.mesh.loop_multi_select(ring=True)
 			final_selection += get_selected(ctx, verts = sel_set[0] , edges = sel_set[1], faces = sel_set[2])
 			#print(final_selection)
-		select_from_index(ctx, final_selection, verts = sel_set[0] , edges = sel_set[1], faces = sel_set[2], replace = True, add_to_history = True)    
+		select_from_index(ctx, final_selection, verts = sel_set[0] , edges = sel_set[1], faces = sel_set[2], replace = True, add_to_history = True)
 
 	def execute(self, ctx):
 		self.smart_ring(ctx)
@@ -1125,7 +1125,7 @@ class MESH_OT_QuickRadialSymmetry(Operator):
 				self.calculate_iterations(ctx, event, self.selection)
 			self.calculate_rotation(self.sym_axis, self.selection)
 
-            	
+
 		elif event.type == 'LEFTMOUSE':  # Confirm
 			if event.value == 'RELEASE':
  				return {'FINISHED'}

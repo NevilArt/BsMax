@@ -5,7 +5,7 @@ Code on this directory are taked from other addons with owner permission.
 # Only smart ring/loop tools registered from this addon
 
 # spiderwebs Originaly Coded by Maxime Herpin, last update was Nov 19, 2017 for Blender 2.79
-# I just made some changes that make it work on Blender 2.80 ~ 3.0
+# I just made some changes that make it work on Blender 2.80 ~ 3.x
 # https://github.com/MaximeHerpin/Blender_Spiderwebs
 # https://blendermarket.com/products/spider-web-generator
 

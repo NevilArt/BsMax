@@ -55,12 +55,12 @@ class Object_OT_Subobject_Level(bpy.types.Operator):
 						self.set('EDIT')
 						self.mesh(ctx,False,True,False)
 				#elif self.level == 3: # Reserved for Border mode
-				#    # this is reserved for border mode for now just act as edge mode
-				#    if mode == "EDIT_MESH" and e:
-				#        self.set('OBJECT')
-				#    else:
-				#        self.set('EDIT')
-				#        self.mesh(ctx,False,True,False)
+				#	# this is reserved for border mode for now just act as edge mode
+				#	if mode == "EDIT_MESH" and e:
+				#		self.set('OBJECT')
+				#	else:
+				#		self.set('EDIT')
+				#		self.mesh(ctx,False,True,False)
 				elif self.level in {3, 4}: # Mesh mode
 					if mode == "EDIT_MESH" and f:
 						self.set('OBJECT')
@@ -68,12 +68,12 @@ class Object_OT_Subobject_Level(bpy.types.Operator):
 						self.set('EDIT')
 						self.mesh(ctx,False,False,True)
 				#elif self.level == 5: # Reserved for Element mode
-				#    # this is reserved for Element mode for now act as Face mode
-				#    if mode == "EDIT_MESH" and f:
-				#        self.set('OBJECT')
-				#    else:
-				#        self.set('EDIT')
-				#        self.mesh(ctx,False,False,True)
+				#	# this is reserved for Element mode for now act as Face mode
+				#	if mode == "EDIT_MESH" and f:
+				#		self.set('OBJECT')
+				#	else:
+				#		self.set('EDIT')
+				#	self.mesh(ctx,False,False,True)
 				elif self.level == 6:
 					self.set('OBJECT')
 				# this do not have similar in 3D Max

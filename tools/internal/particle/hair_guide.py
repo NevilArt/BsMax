@@ -53,7 +53,7 @@ class Particle_OT_Hair_Guides_From_Curve(PickOperator):
 		for i in range(0, count):
 			percent = i / (count - 1)
 			#TODO_01 this coordinate has to fixed by difrent of two objects cordinate
-			coord = point_on_curve(curve, index, percent)
+			coord, _, _ = point_on_curve(curve, index, percent)
 			hair.hair_keys[i].co = coord
 
 	def picked(self, ctx, source, subsource, target, subtarget):
