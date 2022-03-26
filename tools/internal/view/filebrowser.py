@@ -15,6 +15,7 @@
 
 import bpy
 from bpy.types import Operator
+from bsmax.state import version
 
 
 
@@ -29,10 +30,9 @@ class BsMax_OT_ScaleIcons(Operator):
 
 	def execute(self, ctx):
 		params = ctx.space_data.params
-		ver = bpy.app.version
-		old = ver[0] == 2 and ver[1] < 81
-		small = 'LIST_SHORT' if old else 'LIST_VERTICAL'
-		medium = 'LIST_LONG' if old else 'LIST_HORIZONTAL'
+		is_old = version() < 81
+		small = 'LIST_SHORT' if is_old else 'LIST_VERTICAL'
+		medium = 'LIST_LONG' if is_old else 'LIST_HORIZONTAL'
 		large = 'THUMBNAIL'
 		if self.up:
 			if params.display_type == large:

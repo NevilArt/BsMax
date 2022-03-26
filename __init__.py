@@ -19,12 +19,12 @@ bl_info = {
 	'name': 'BsMax',
 	'description': 'BsMax for Blender 2.80 ~ 3.1',
 	'author': 'Naser Merati (Nevil)',
-	'version': (0, 1, 0, 20220321),
-	'blender': (2, 80, 0),# 2.80 ~ 3.1
+	'version': (0, 1, 0, 20220326),
+	'blender': (2, 80, 0),# 2.80 ~ 3.2
 	'location': 'Almost Everywhere in Blender',
-	'wiki_url': 'https://github.com/NevilArt/BsMax_2_80/wiki',
-	'doc_url': 'https://github.com/NevilArt/BsMax_2_80/wiki',
-	'tracker_url': 'https://github.com/NevilArt/BsMax_2_80/issues',
+	'wiki_url': 'https://github.com/NevilArt/BsMax/wiki',
+	'doc_url': 'https://github.com/NevilArt/BsMax/wiki',
+	'tracker_url': 'https://github.com/NevilArt/BsMax/issues',
 	'category': 'Interface'
 }
 

@@ -16,8 +16,9 @@ import bpy, bmesh, bgl, gpu
 from gpu_extras.batch import batch_for_shader
 from bpy.types import Operator
 from mathutils import Vector
+# from bsmax.state import version
 
-from bsmax.actions import link_to_scene, set_as_active_object, delete_objects
+from bsmax.actions import link_to_scene, set_as_active_object
 from bsmax.state import is_object_mode
 
 from .gride import Gride, Dimantion, Click_Point
@@ -70,8 +71,7 @@ class Primitive_Geometry_Class:
 		if self.data != None and bpy.context.mode == 'OBJECT':
 			verts,edges,faces, = meshdata
 			""" Genarate New Data """
-			# ver = bpy.app.version
-			# if ver[0] == 2 and ver[1] == 80:
+			# if version() == 280:
 			""" old method for V2.80 """
 			orgmesh = bpy.data.meshes[self.data.name]
 			tmpmesh = bpy.data.meshes.new("_NewTempMesh_")
@@ -83,6 +83,7 @@ class Primitive_Geometry_Class:
 			bpy.data.meshes.remove(tmpmesh)
 			for f in self.data.polygons:
 				f.use_smooth = True
+			# This method reset the other primitive data for that reasen is not usefull here
 			# else:
 			# 	""" new method for V2.81 and above """
 			# 	self.data.clear_geometry()

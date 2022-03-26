@@ -171,7 +171,7 @@ class Camera_OT_Lock_To_View_Toggle(Operator):
 class Camera_OT_Lock_Transform(Operator):
 	bl_idname = 'camera.lock_transform'
 	bl_label = 'Lock Camera Transform'
-	bl_description = 'Lock active camera transform'
+	bl_description = 'Lock active cameras transform'
 	bl_options = {'REGISTER', 'UNDO'}
 
 	@classmethod
@@ -182,9 +182,9 @@ class Camera_OT_Lock_Transform(Operator):
 		cam = ctx.scene.camera
 		if cam != None:
 			state = not cam.lock_location[0]
-			cam.lock_location = [state,state,state]
-			cam.lock_rotation = [state,state,state]
-			cam.lock_scale = [state,state,state]
+			cam.lock_location = [state, state, state]
+			cam.lock_rotation = [state, state, state]
+			cam.lock_scale = [state, state, state]
 		return {'FINISHED'}
 
 

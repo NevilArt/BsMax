@@ -16,7 +16,7 @@
 import bpy
 from .commands import * # all "c0000" are from here
 from .q_items import QuadItem
-from bsmax.state import is_active_primitive, get_active_type
+from bsmax.state import is_active_primitive, get_active_type, version
 
 # Indexes
 # [3] [2]
@@ -66,8 +66,7 @@ def get_view3d_transform(ctx):
 	items.append(QuadItem("Driver Editor...",f,t,n,c0170,n))
 	items.append(QuadItem("NLA Editor...",f,t,n,c0169,n))
 	items.append(QuadItem("Text Editor...",f,t,n,c0171,n))
-	version = bpy.app.version
-	if version[0] > 2 or (version[0] == 2 and version[1] >= 93):
+	if version() > 292:
 		items.append(QuadItem("Geometry Node Editor...",f,t,n,c0214,n))
 	items.append(QuadItem(n,f,f,n,n,n))
 	submenu = get_view3d_transform_convert_to_sub(ctx)
@@ -174,7 +173,7 @@ def get_view3d_tool1(ctx):
 			items.append(QuadItem("Hide Unselected",f,IsEditMode,n,c0028,n))
 			items.append(seprator())
 			items.append(QuadItem("Ignore Backfacing",f,t,n,c0029,n))
-			items.append(QuadItem("NURMS Toggle",f,f,n,c0224,n))
+			items.append(QuadItem("NURMS Toggle",f,t,n,c0224,n))
 
 	elif get_active_type(ctx) == 'CURVE':
 		items.append(QuadItem("Extrude",f,t,n,c0134,n))

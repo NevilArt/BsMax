@@ -13,24 +13,24 @@
 #	along with this program.  If not, see <https://www.gnu.org/licenses/>.
 ############################################################################
 
-from .animation import register_animation,unregister_animation
-from .armature import register_armature,unregister_armature
-from .camera import register_camera,unregister_camera
-from .clip_editor import register_clip_editor,unregister_clip_editor
-from .curve import register_curve,unregister_curve
-from .ligth import register_light,unregister_light
-from .material import register_material,unregister_material
-from .mesh import register_mesh,unregister_mesh
-from .object import register_object,unregister_object
-from .particle import register_particle,unregister_particle
-from .render import register_render,unregister_render
-from .select import register_select,unregister_select
-from .text import register_text,unregister_text
-from .transform import register_transform,unregister_transform
-from .uv import register_uv,unregister_uv
-from .view import register_view,unregister_view
-from .rigg import register_rigg,unregister_rigg
-from .menu import register_menu,unregister_menu
+from .animation import register_animation, unregister_animation
+from .armature import register_armature, unregister_armature
+from .camera import register_camera, unregister_camera
+from .clip_editor import register_clip_editor, unregister_clip_editor
+from .curve import register_curve, unregister_curve
+from .ligth import register_light, unregister_light
+from .material import register_material, unregister_material
+from .mesh import register_mesh, unregister_mesh
+from .object import register_object, unregister_object
+from .particle import register_particle, unregister_particle
+from .render import register_render, unregister_render
+from .select import register_select, unregister_select
+from .text import register_text, unregister_text
+from .transform import register_transform, unregister_transform
+from .uv import register_uv, unregister_uv
+from .view import register_view, unregister_view
+from .rigg import register_rigg, unregister_rigg
+from .menu import register_menu, unregister_menu
 from .vse import register_vse, unregister_vse
 
 def register_internal(preferences):

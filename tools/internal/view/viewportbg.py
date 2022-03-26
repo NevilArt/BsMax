@@ -16,9 +16,12 @@
 import bpy
 from bpy.types import Menu,Operator
 from bpy.props import IntProperty
+from bsmax.state import version
 
 # Original code from Ozzkar Sep 2013
 # Edit by Nevil July 2019
+
+
 
 class View3D_OT_Background(Operator):
 	bl_idname = "view3d.background"
@@ -70,9 +73,7 @@ class View3D_OT_Background(Operator):
 			grad.high_gradient[1] = 0.294
 			grad.high_gradient[2] = 0.294
 
-		
-		ver = bpy.app.version
-		if ver[0] == 2 and ver[1] <= 82:
+		if version() < 283:
 			grad.show_grad = show_grad
 		else:
 			grad_type = 'LINEAR' if show_grad else 'SINGLE_COLOR'
@@ -84,6 +85,8 @@ class View3D_OT_Background(Operator):
 		else:
 			self.index += 1
 		return {'FINISHED'}
+
+
 
 # selection menu
 class BMAX_PickViewportBackground_MT(Menu):
@@ -99,6 +102,8 @@ class BMAX_PickViewportBackground_MT(Menu):
 		ui.operator(vbg, text="Maya Light").index = 3
 		ui.operator(vbg, text="Maya Gradient").index = 4
 		ui.operator(vbg, text="Grey Blue Gradient").index = 5
+
+
 
 def register_viewportbg():
 	bpy.utils.register_class(View3D_OT_Background)

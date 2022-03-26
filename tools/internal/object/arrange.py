@@ -20,6 +20,9 @@ from bpy.props import FloatProperty, EnumProperty
 from bsmax.math import get_distance, point_on_curve, matrix_from_elements, get_bias
 from bsmax.operator import PickOperator
 
+
+#TODO object on same point detection issue nedd to fix
+
 class ObjectData:
 	def __init__(self, obj):
 		self.owner = obj

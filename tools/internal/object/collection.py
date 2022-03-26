@@ -18,21 +18,15 @@ from bpy.types import Operator
 
 
 
-def get_active_collection(ctx):
-	active_layer_name = ctx.view_layer.active_layer_collection.name
-	if active_layer_name == "Master Collection":
-		collection = ctx.scene.collection
-	else:
-		collection = bpy.data.collections[active_layer_name]
-	return collection
-
-def clear_collections(ctx, obj):
+def clear_collections(obj):
 	for collection in obj.users_collection:
 		collection.objects.unlink(obj)
 
 
-
+#TODO move selected collecion to active collection too
+# need to get list of selected collection API
 class Collection_OT_Move_To_Active(Operator):
+	""" Move Selected Objects in Outliner to Active Collection """
 	bl_idname = "collection.move_to_active"
 	bl_label = "Move to active collection"
 	bl_description = "Move selected objects in to active collection"
@@ -43,18 +37,16 @@ class Collection_OT_Move_To_Active(Operator):
 		return True
 
 	def execute(self, ctx):
-		active_collection = get_active_collection(ctx)
-		active_layer = ctx.view_layer.active_layer_collection
 		for obj in ctx.selected_objects:
-			clear_collections(ctx, obj)
-			active_collection.objects.link(obj)
-		ctx.view_layer.active_layer_collection = active_layer
+			clear_collections(obj)
+			ctx.collection.objects.link(obj)
 		return{"FINISHED"}
 
 
 
 #TODO make this Link to selected collections
 class Collection_OT_Link_To_Active(Operator):
+	""" Add (link) Selected Objects in Outliner to Active Collection """
 	bl_idname = "collection.link_to_active"
 	bl_label = "Link to active collection"
 	bl_description = "Link selected objects in to active collection"
@@ -65,17 +57,15 @@ class Collection_OT_Link_To_Active(Operator):
 		return True
 
 	def execute(self, ctx):
-		active_collection = get_active_collection(ctx)
-		active_layer = ctx.view_layer.active_layer_collection
 		for obj in ctx.selected_objects:
-			if not active_collection in obj.users_collection:
-				active_collection.objects.link(obj)
-		ctx.view_layer.active_layer_collection = active_layer
+			if not ctx.collection in obj.users_collection:
+				ctx.collection.objects.link(obj)
 		return{"FINISHED"}
 
 
 
 class Collection_OT_Remove_From_Collection(Operator):
+	""" Remove (Unlink) Selected Objects in Outliner from Active Collection """
 	bl_idname = "collection.remove_from_collection"
 	bl_label = "Remove from collections"
 	bl_description = "Remove objects from selected collection"
@@ -86,12 +76,9 @@ class Collection_OT_Remove_From_Collection(Operator):
 		return True
 
 	def execute(self, ctx):
-		active_collection = get_active_collection(ctx)
-		active_layer = ctx.view_layer.active_layer_collection
 		for obj in ctx.selected_objects:
 			if len(obj.users_collection) > 1:
-				active_collection.objects.unlink(obj)
-		ctx.view_layer.active_layer_collection = active_layer
+				ctx.collection.objects.unlink(obj)
 		return{"FINISHED"}
 
 
@@ -113,6 +100,7 @@ class Outliner_OT_Rename_Selection(Operator):
 		elif count == 1:
 			bpy.ops.outliner.item_rename('INVOKE_DEFAULT')
 		return{"FINISHED"}
+
 
 
 def outliner_header(self, ctx):

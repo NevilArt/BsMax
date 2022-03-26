@@ -36,6 +36,10 @@ class BsMax_OT_View3D_QuadMenu(Operator):
 	#'View3D', 'UVEditor', 'GraphEditor', 'DopeSheetEditor', 'NodeEditor'
 	#ClipEditor, ImageEditor, NLA, NodeEditorPath, Outliner3D
 
+	@classmethod
+	def poll(self, ctx):
+		return ctx.mode != 'EDIT_TEXT'
+
 	def modal(self, ctx, event):
 		global quadmenuref
 

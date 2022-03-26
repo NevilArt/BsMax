@@ -1,3 +1,9 @@
+#0,1,0,20220321
+	'Make Library Override (Multi)' Convert selected object rather than only active object (Object/Relation/..).
+	'Distance Sort' & 'Path Sort' improved and bug fixed (Object/Transform/..).
+	'Distance Sort' & 'Path Sort' renamed to 'Arrange by Distance', 'Arrange on Curve'
+	Quick setup for create pillows 'Create/Mesh/Extera/Pillow' (Basic one will be improved).
+
 #0,1,0,20220313
 	Selction issue in pose mode fixed (3DsMax mode).
 	New operator select Splines by Close/Open (EditCurve/Select/Select Close).

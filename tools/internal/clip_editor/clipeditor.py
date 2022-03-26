@@ -13,10 +13,10 @@
 #	along with this program.  If not, see <https://www.gnu.org/licenses/>.
 ############################################################################
 
-import bpy, mathutils
-from bpy.props import EnumProperty, BoolProperty
+import bpy
 from bpy.types import Operator
-from bsmax.state import has_constraint
+
+
 
 # create a camera from view 
 class Clip_OT_Auto_Frame(Operator):
@@ -33,6 +33,7 @@ class Clip_OT_Auto_Frame(Operator):
 		# bpy.ops.clip.view_all('INVOKE_DEFAULT')
 		self.report({'OPERATOR'},'bpy.ops.clip.autoframe()')
 		return{"FINISHED"}
+
 
 
 classes = [Clip_OT_Auto_Frame]

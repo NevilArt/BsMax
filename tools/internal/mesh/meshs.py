@@ -239,94 +239,126 @@ class Mesh_OT_Remove_Isolated_Geometry(Operator):
 
 
 
+# Simulate 3DsMax Nurms Toggle operator avalible on Quad menu
 class Mesh_OT_NURMS_Toggle(Operator):
+	""" Toggle On/Off the subdivision modifier for selected objects """
 	bl_idname = "mesh.nurms_toggle"
 	bl_label = "Nurms Toggle"
 	bl_options = {'REGISTER', 'UNDO'}
 	
 	@classmethod
 	def poll(self, ctx):
-		return ctx.mode == 'EDIT_MESH'
+		return ctx.mode in {'EDIT_MESH', 'OBJECT'}
 	
-	def execute(self, ctx):
+	def set_subdive(self, obj, state):
 		subdive = None
-		for mod in ctx.object.modifiers:
+
+		# Get object subsurface modifier
+		for mod in obj.modifiers:
 			if mod.type == 'SUBSURF':
 				subdive = mod
 		
+		# Apply if has modifier Add and Apply if not have modifier
 		if subdive:
-			subdive.show_in_editmode = not subdive.show_in_editmode
-
+			subdive.show_in_editmode = state
 		else:
-			ctx.object.modifiers.new(name='Subdivision', type='SUBSURF')
+			subdive = obj.modifiers.new(name='Subdivision', type='SUBSURF')
+			subdive.show_in_editmode = state
+
+	def execute(self, ctx):
+		# Get active object subdivision modifier
+		ative_subdive = None
+		for modifier in ctx.object.modifiers:
+			if modifier.type == 'SUBSURF':
+				ative_subdive = modifier
+		
+		# Get reverse ofo active object subdivision modifier to apply to all
+		state = not ative_subdive.show_in_editmode if ative_subdive else True
+
+		# Set state to all selected mesh objects
+		for obj in ctx.selected_objects:
+			if obj.type == 'MESH':
+				self.set_subdive(obj, state)
 
 		return{"FINISHED"}
 
 
 
+# Blender internal hide/show operator affect all Face/Edge/Vertexes
+# This operator affects only active one and keep the others
 class Mesh_OT_Hide_Plus(Operator):
+	""" Hide/Show the (un)selected Face/Edge/Verts by filter """
 	bl_idname = "mesh.hide_plus"
 	bl_label = "Hide+"
 	bl_options = {'REGISTER', 'UNDO'}
 
 	mode: EnumProperty(name="Hide", default='SELECTED',
-		items=[('SELECTED', "Selected", ""),
-		('UNSELECTED', "Unselected", ""),
-		('UNHIDE', "Unhide", ""),
-		('INVERT', "Invert", "")])
+		items=[('SELECTED', "Selected", "Hide/Show Selected"),
+		('UNSELECTED', "Unselected", "Hide/Show Unselected"),
+		('UNHIDE', "Unhide", "Unhide All"),
+		('INVERT', "Invert", "Invert Hide/Show state")])
 	
 	@classmethod
 	def poll(self, ctx):
 		return ctx.mode == 'EDIT_MESH'
+
+	def hide_selected(self, obj, v, e, f):
+		if v:
+			for vert in obj.data.vertices:
+				vert.hide = vert.select
+		if e:
+			for edge in obj.data.edges:
+				edge.hide = edge.select
+		if f:
+			for poly in obj.data.polygons:
+				poly.hide = poly.select
+	
+	def hide_unselected(self, obj, v, e, f):
+		if v:
+			for vert in obj.data.vertices:
+				vert.hide = not vert.select
+		if e:
+			for edge in obj.data.edges:
+				edge.hide = not edge.select
+		if f:
+			for poly in obj.data.polygons:
+				poly.hide = not poly.select
+	
+	def unhide(self, obj, v, e, f):
+		if v:
+			for vert in obj.data.vertices:
+				vert.hide = False
+		if e:
+			for edge in obj.data.edges:
+				edge.hide = False
+		if f:
+			for poly in obj.data.polygons:
+				poly.hide = False
+
+	def invert(self, obj, v, e, f):
+		if v:
+			for vert in obj.data.vertices:
+				vert.hide = not vert.hide
+		if e:
+			for edge in obj.data.edges:
+				edge.hide = not edge.hide
+		if f:
+			for poly in obj.data.polygons:
+				poly.hide = not poly.hide
 	
 	def execute(self, ctx):
 		v,e,f = ctx.tool_settings.mesh_select_mode
 		bpy.ops.object.mode_set(mode="OBJECT")
-		data = ctx.object.data
-		if self.mode == 'SELECTED':
-			if v:
-				for vert in data.vertices:
-					vert.hide = vert.select
-			if e:
-				for edge in data.edges:
-					edge.hide = edge.select
-			if f:
-				for poly in data.polygons:
-					poly.hide = poly.select
-
-		elif self.mode == 'UNSELECTED':
-			if v:
-				for vert in data.vertices:
-					vert.hide = not vert.select
-			if e:
-				for edge in data.edges:
-					edge.hide = not edge.select
-			if f:
-				for poly in data.polygons:
-					poly.hide = not poly.select
-
-		if self.mode == 'UNHIDE':
-			if v:
-				for vert in data.vertices:
-					vert.hide = False
-			if e:
-				for edge in data.edges:
-					edge.hide = False
-			if f:
-				for poly in data.polygons:
-					poly.hide = False
-
-		if self.mode == 'INVERT':
-			if v:
-				for vert in data.vertices:
-					vert.hide = not vert.hide
-			if e:
-				for edge in data.edges:
-					edge.hide = not edge.hide
-			if f:
-				for poly in data.polygons:
-					poly.hide = not poly.hide
-
+		for obj in ctx.selected_objects:
+			if obj.type == 'MESH':
+				if self.mode == 'SELECTED':
+					self.hide_selected(obj, v, e, f)
+				elif self.mode == 'UNSELECTED':
+					self.hide_unselected(obj, v, e, f)
+				elif self.mode == 'UNHIDE':
+					self.unhide(obj, v, e, f)
+				elif self.mode == 'INVERT':		
+					self.invert(obj, v, e, f)
 		bpy.ops.object.mode_set(mode="EDIT")
 		return{"FINISHED"}
 

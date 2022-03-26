@@ -16,6 +16,7 @@
 import bpy
 from bpy.props import StringProperty, BoolProperty, FloatProperty
 from bpy.types import Operator
+from bsmax.state import version
 
 
 
@@ -31,8 +32,7 @@ class View3D_OT_Transform_Gizmo_Size(Operator):
 		return ctx.area.type == 'VIEW_3D'
 
 	def execute(self, ctx):
-		ver = bpy.app.version
-		if ver[0] == 2 and ver[1] < 81:
+		if version() == 280:
 			ctx.user_preferences.view.gizmo_size += self.step
 		else:
 			ctx.preferences.view.gizmo_size += self.step
@@ -78,6 +78,7 @@ class Transform_Mode:
 transform_mode = Transform_Mode()
 
 
+
 class Object_OT_Auto_Coordinate_Toggle(Operator):
 	bl_idname = "object.auto_coordinate_toggle"
 	bl_label = "Auto Coordinate Toggle"
@@ -102,6 +103,8 @@ class Object_OT_Move(Operator):
 
 	@classmethod
 	def poll(self, ctx):
+		if ctx.mode == 'EDIT_TEXT':
+			return False
 		return ctx.area.type in {'VIEW_3D', 'IMAGE_EDITOR'}
 
 	def execute(self, ctx):
@@ -134,6 +137,8 @@ class Object_OT_Rotate(Operator):
 
 	@classmethod
 	def poll(self, ctx):
+		if ctx.mode == 'EDIT_TEXT':
+			return False
 		return ctx.area.type in {'VIEW_3D', 'IMAGE_EDITOR'}
 	
 	def execute(self, ctx):
@@ -165,6 +170,8 @@ class Object_OT_Scale(Operator):
 
 	@classmethod
 	def poll(self, ctx):
+		if ctx.mode == 'EDIT_TEXT':
+			return False
 		return ctx.area.type in {'VIEW_3D', 'IMAGE_EDITOR'}
 	
 	def execute(self, ctx):

@@ -37,12 +37,10 @@ class Object_OT_Select_random_element(Operator):
 	
 	def execute(self, ctx):
 		obj = ctx.active_object
-		count = len(ctx.data.polygons)
+		count = len(obj.data.polygons)
 		index = 0
 		while index <= count:
-			obj.data.pol
-			ctx.data.polygons[index].select
-		self.report({'OPERATOR'},'bpy.ops.object.select_random_element()')
+			obj.data.polygons[index].select
 		return{"FINISHED"}
 
 def register_random_element():

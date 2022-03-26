@@ -156,24 +156,6 @@ class Anim_OT_Set_Key(Operator):
 
 
 
-# Delete selected objects animation
-class Anim_OT_Delete_Selected_Animation(Operator):
-	bl_idname = 'anim.delete_selected_animation'
-	bl_label = 'Delete Selected Animation'
-	bl_options={'REGISTER', 'UNDO'}
-
-	@classmethod
-	def poll(self, ctx):
-		return ctx.area.type == 'VIEW_3D'
-	
-	def execute(self, ctx):
-		for obj in ctx.selected_objects:
-			obj.animation_data_clear()
-		# self.report({'OPERATOR'},'bpy.ops.anim.delete_selected_animation()')
-		return{'FINISHED'}
-
-
-
 class Anim_OT_Frame_Set(Operator):
 	bl_idname = 'anim.frame_set'
 	bl_label = 'Set Frame'
@@ -423,7 +405,6 @@ class Anim_OP_Selection_Set(Panel):
 
 classes = [ Anim_OT_Set_Key_Filters,
 			Anim_OT_Set_Key,
-			Anim_OT_Delete_Selected_Animation,
 			Anim_OT_Frame_Set,
 			Dopesheet_OT_Zoom_Extended,
 			Anim_OT_Delete_Key,

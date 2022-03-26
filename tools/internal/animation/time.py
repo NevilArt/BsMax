@@ -37,7 +37,7 @@ class Anim_OT_Set_TimeLine_Range(Operator):
 			if self.start:
 				scale = (frame_end - frame_start) / 100
 				scale = 1 if scale < 1 else scale
-				step = (event.mouse_x - self.mouse_x) / 10.0 * scale
+				step = int((event.mouse_x - self.mouse_x) / 10.0 * scale)
 				if self.mode == 'First':
 					scene.frame_start -= step
 					if frame_start == frame_end:

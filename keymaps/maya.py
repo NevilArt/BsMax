@@ -15,6 +15,7 @@
 
 import bpy
 from bsmax.keymaps import KeyMaps
+from bsmax.state import version
 
 # https://www.autodesk.com/shortcuts/maya
 # TODO
@@ -24,8 +25,7 @@ from bsmax.keymaps import KeyMaps
 # [] Undo rido only camera
 
 def add_search(km,space):
-	ver = bpy.app.version
-	if ver[0] == 2 and ver[1] < 90:
+	if version() < 290:
 		km.new(space,'wm.search_menu','X','PRESS',[])
 	else:
 		km.new(space,'wm.search_menu','X','PRESS',[],ctrl=True,shift=True,alt=True)

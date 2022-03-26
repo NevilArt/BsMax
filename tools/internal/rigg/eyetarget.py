@@ -79,7 +79,7 @@ class Rigg_TO_Eye_Target_Creator(bpy.types.Operator):
 		targl.name = "eye_target_L"
 		targr = create_target(ctx, eyer.location, radr, frame)
 		targr.name = "eye_target_R"
-		freeze_transform([targl,targr])
+		freeze_transform([targl, targr])
 		frame.location.y = -radius * 5
 		holderl = create_holder(ctx, eyel.location, radius, targl)
 		holderl.name = "eye_parent_L"

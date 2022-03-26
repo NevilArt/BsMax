@@ -13,10 +13,13 @@
 #	along with this program.  If not, see <https://www.gnu.org/licenses/>.
 ############################################################################
 
-from .selection import register_selection,unregister_selection
+# from .random_elemet import register_random_element, unregister_random_element
+from .selection import register_selection, unregister_selection
 
 def register_select():
+	# register_random_element()
 	register_selection()
 
 def unregister_select():
+	# unregister_random_element()
 	unregister_selection()

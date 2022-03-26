@@ -17,7 +17,9 @@ from bpy.types import Operator, Menu
 from bsmax.math import point_on_curve
 from bsmax.actions import set_origen, link_to_scene
 from bsmax.operator import PickOperator
-from bsmax.state import is_object_mode
+from bsmax.state import is_object_mode, version
+
+
 
 class Particle_OT_Hair_Guides_From_Curve(PickOperator):
 	bl_idname = 'particle.hair_guides_from_curve'
@@ -80,11 +82,17 @@ class Particle_OT_Hair_Guides_From_Curve(PickOperator):
 		bpy.ops.object.mode_set(mode='PARTICLE_EDIT', toggle=False)
 		bpy.ops.wm.tool_set_by_id(name='builtin_brush.Comb')
 		
-		ver = bpy.app.version
-		if ver[0] == 2 and ver[1] <= 90:
-			bpy.ops.particle.brush_edit(stroke=[{'name':'','location':(0,0,0),'mouse':(0,0),'pressure':0,'size':0,'pen_flip':False,'time':0,'is_start':True}])
+		if version() <= 290:
+			bpy.ops.particle.brush_edit(stroke=[{'name':'',
+				'location':(0,0,0),'mouse':(0,0),
+				'pressure':0,'size':0,'pen_flip':False,
+				'time':0,'is_start':True}])
 		else:
-			bpy.ops.particle.brush_edit(stroke=[{'name':'','location':(0,0,0),'mouse':(0,0),'mouse_event':(0,0),'pressure':0,'size':0,'pen_flip':False,'x_tilt':0,'y_tilt':0,'time':0,'is_start':False}])
+			bpy.ops.particle.brush_edit(stroke=[{'name':'',
+				'location':(0,0,0),'mouse':(0,0),
+				'mouse_event':(0,0),'pressure':0,'size':0,
+				'pen_flip':False,'x_tilt':0,'y_tilt':0,
+				'time':0,'is_start':False}])
 		
 		bpy.ops.particle.disconnect_hair()
 		depsgraph = ctx.evaluated_depsgraph_get()
@@ -97,7 +105,8 @@ class Particle_OT_Hair_Guides_From_Curve(PickOperator):
 		""" Commit Brush """
 		bpy.ops.particle.connect_hair()
 		bpy.ops.object.mode_set(mode='OBJECT', toggle=False)
-		self.report({'OPERATOR'},'bpy.ops.particle.hair_guides_from_curve()')
+
+
 
 class Particle_OT_Hair_Guides_To_Curve(Operator):
 	bl_idname = 'particle.hair_guides_to_curve'
@@ -175,7 +184,10 @@ class BsMax_MT_particle_tools(Menu):
 		layout.operator("particle.hair_guides_to_curve",icon="TRACKING")
 
 
-classes = [Particle_OT_Hair_Guides_From_Curve, Particle_OT_Hair_Guides_To_Curve, BsMax_MT_particle_tools]
+
+classes = [Particle_OT_Hair_Guides_From_Curve,
+	Particle_OT_Hair_Guides_To_Curve,
+	BsMax_MT_particle_tools]
 
 def register_hair_guide():
 	for c in classes:

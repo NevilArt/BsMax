@@ -16,6 +16,7 @@
 import bpy
 from bpy.types import Operator
 from bpy.props import BoolProperty
+from bpy.props import EnumProperty, FloatProperty, FloatVectorProperty, BoolProperty
 
 
 
@@ -122,6 +123,60 @@ class Object_OT_Select_Children(Operator):
 
 
 
+#TODO this operator re write the object dimention
+# maybe system undo couse that need to take control of it in report the bug
+class Object_OT_Select_by_Dimensions(Operator):
+	bl_idname = "object.select_by_dimensions"
+	bl_label = "Select by Dimensions"
+	bl_description = ""
+	bl_options = {'REGISTER', 'UNDO'}
+
+	by: EnumProperty(name='By', default='GREATER',
+		items=[('GREATER', 'Greater then', ''),
+			('LESS', 'Less than', ''),
+			('EQUAL', 'Equal to', '')])
+	dimensions: FloatVectorProperty(name='Dimension', subtype='TRANSLATION')
+	tolerans: FloatProperty(name='Tolerance', default=0)
+
+	@classmethod
+	def poll(self, ctx):
+		return ctx.mode == 'OBJECT'
+
+	def draw(self, ctx):
+		layout = self.layout
+		row = layout.row()
+		row.prop(self, 'by', expand=True)
+		col = layout.column(align=True)
+		col.prop(self, 'dimensions')
+		if self.by == 'EQUAL':
+			layout.prop(self, 'tolerans')
+	
+	def execute(self, ctx):
+		if self.by == 'GREATER':
+			for obj in bpy.data.objects:
+				if obj.dimensions.x > self.dimensions.x or \
+					obj.dimensions.y > self.dimensions.y or \
+					obj.dimensions.z > self.dimensions.z:
+					obj.select_set(state=True)
+		elif self.by == 'LESS':
+			for obj in bpy.data.objects:
+				if obj.dimensions.x < self.dimensions.x or \
+					obj.dimensions.y < self.dimensions.y or \
+					obj.dimensions.z < self.dimensions.z:
+					obj.select_set(state=True)
+		elif self.by == 'EQUAL':
+			tol = self.tolerans/2
+			for obj in bpy.data.objects:
+				odim = obj.dimensions.copy()
+				sdim = self.dimensions
+				if sdim.x - tol < odim.x < sdim.x + tol or \
+					sdim.y - tol < odim.y < sdim.y + tol or \
+					sdim.z - tol < odim.z < sdim.z + tol:
+					obj.select_set(state=True)
+		return{'FINISHED'}
+
+
+
 def select_menu(self, ctx):
 	layout = self.layout
 	layout.separator()
@@ -130,7 +185,8 @@ def select_menu(self, ctx):
 
 
 
-classes = [Object_OT_Select_Similar,
+classes = [Object_OT_Select_by_Dimensions,
+	Object_OT_Select_Similar,
 	Object_OT_Select_Children]
 
 def register_selection():

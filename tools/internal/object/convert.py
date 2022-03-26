@@ -19,6 +19,11 @@ from bpy.props import BoolProperty
 
 # TODO Make unique Add realize instance to geometry node before apply
 
+def geometrynode_solve(obj):
+	# find geo node modifiers
+	# find output node
+	# add relize instance note
+	pass	
 
 class Object_OT_Convert_TO(Operator):
 	bl_idname = "object.convert_to"
@@ -76,6 +81,9 @@ class Object_OT_Join_Plus(Operator):
 		target = ctx.active_object
 		
 		""" if active object not selected ignore it and pick first object """
+		if not target:
+			target = ctx.view_layer.objects.active = ctx.selected_objects[0]
+
 		if not target.select_get():
 			target = ctx.view_layer.objects.active = ctx.selected_objects[0]
 

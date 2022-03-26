@@ -23,6 +23,8 @@ from .button import Button
 from .box import Box
 from .titlebar import TitleBar
 
+
+
 class DlgBox(BUI):
 	def __init__(self,owner):
 		super().__init__()
@@ -31,6 +33,8 @@ class DlgBox(BUI):
 		self.size.auto = True
 		self.table.gap.set(2,2)
 		owner._append(self)
+
+
 
 class Dialog(Operator,BUI):
 	def __init__(self):
@@ -127,5 +131,3 @@ class Dialog(Operator,BUI):
 		self.convert_setting()
 		self.open() # reserved function
 		return {'RUNNING_MODAL'}
-
-__all__ = ["Dialog"]

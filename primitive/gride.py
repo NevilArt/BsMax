@@ -95,6 +95,7 @@ def get_click_point_on_face(ctx, face, x, y):
 
 
 
+#TODO Rename Dimantion to Dimension
 class Dimantion:
 	def __init__(self, gride, start, end):
 		self.gride = gride
@@ -153,6 +154,7 @@ class Click_Point:
 		self.normal = None
 
 
+#TODO correct gride directin with piched face longest edge
 class Gride:
 	def __init__(self):
 		# First click location on view 3D

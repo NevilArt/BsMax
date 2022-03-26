@@ -20,7 +20,7 @@ from mathutils import Matrix
 
 def solve_missing_activeobject(ctx, objs):
 	""" Make first selected object as active_object if missing """
-	if ctx.active_object == None:
+	if not ctx.active_object:
 		if len(objs) > 0:
 			ctx.view_layer.objects.active = objs[0]
 
@@ -147,12 +147,27 @@ def set_origen(ctx, obj, location):
 
 
 
-def freeze_transform(objs):
-	""" simulate freeze transform action """
-	""" put actual transform to delta then reset the transform """
-	#TODO if selta has vale had to combine with new value or get from world or parent coordinate
+def freeze_transform(objs, location=True, rotation=True, scale=True):
+	""" Add current transform to deleta transform and reset to 0 in given objects """
 	for obj in objs:
-		obj.delta_location = obj.location
-		obj.location = [0,0,0]
-		obj.delta_rotation_euler = obj.rotation_euler
-		obj.rotation_euler = [0,0,0]
+		if location:
+			obj.delta_location += obj.location
+			obj.location = [0, 0, 0]
+		
+		if rotation:
+			if obj.rotation_mode == 'XYZ':
+				obj.delta_rotation_euler.x += obj.rotation_euler.x
+				obj.delta_rotation_euler.y += obj.rotation_euler.y
+				obj.delta_rotation_euler.z += obj.rotation_euler.z
+				obj.rotation_euler = [0, 0, 0]
+			elif obj.rotation_mode == 'QUATERNION':
+				obj.delta_rotation_quaternion.w = obj.rotation_quaternion.w
+				obj.delta_rotation_quaternion.x = obj.rotation_quaternion.x
+				obj.delta_rotation_quaternion.y = obj.rotation_quaternion.y
+				obj.delta_rotation_quaternion.z = obj.rotation_quaternion.z
+			elif obj.rotation_mode == 'AXIS_ANGLE':
+				pass
+
+		if scale:
+			obj.delta_scale *= obj.scale
+			obj.scale = [1, 1, 1]

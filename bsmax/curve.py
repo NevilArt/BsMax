@@ -17,7 +17,7 @@ from mathutils import Vector
 from copy import deepcopy
 from math import sin, cos, atan2, pi, sqrt
 from itertools import product
-from bsmax.math import (get_3_points_angle_2d,get_lines_intersection,split_segment,point_on_line,
+from bsmax.math import (get_lines_intersection,split_segment,point_on_line,
 	point_on_vector,get_distance,get_3_points_angle_3d,get_segment_length,shift_number)
 
 

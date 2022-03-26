@@ -15,6 +15,7 @@
 
 import bpy
 from bpy.types import Menu
+from bsmax.state import version
 
 class UV_MT_Edit(Menu):
 	bl_idname = "UV_MT_edit"
@@ -34,8 +35,7 @@ class UV_MT_Edit(Menu):
 def uv_edit_menu(self, ctx):
 	self.layout.menu("UV_MT_edit")
 
-ver = bpy.app.version
-mnu = bpy.types.MASK_MT_editor_menus if ver[0] == 2 and ver[1] < 83 else bpy.types.IMAGE_MT_editor_menus
+mnu = bpy.types.MASK_MT_editor_menus if version() < 283 else bpy.types.IMAGE_MT_editor_menus
 
 def register_menu():
 	bpy.utils.register_class(UV_MT_Edit)

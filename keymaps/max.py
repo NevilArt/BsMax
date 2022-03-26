@@ -14,6 +14,7 @@
 ############################################################################
 
 import bpy
+from bsmax.state import version
 from bsmax.keymaps import KeyMaps
 
 
@@ -94,18 +95,16 @@ def add_time(km, space):
 
 
 def add_side_panel(km, space):
-	km.new(space,'wm.context_toggle','LEFT_BRACKET','PRESS',[('data_path','space_data.show_region_toolbar')])
-	km.new(space,'wm.context_toggle','RIGHT_BRACKET','PRESS',[('data_path','space_data.show_region_ui')])
-
+	km.new(space,'wm.side_toolbar_toggle','LEFT_BRACKET','PRESS',[('side','LEFT')])
+	km.new(space,'wm.side_toolbar_toggle','RIGHT_BRACKET','PRESS',[('side','RIGHT')])
 
 
 def add_search(km, space):
-	ver = bpy.app.version
-	if ver[0] == 2 and ver[1] < 90:
+	if version() < 290:
 		km.new(space,'wm.search_menu','X','PRESS',[])
 	else:
 		km.new(space,'wm.search_menu','X','PRESS',[],ctrl=True,shift=True,alt=True)
-		km.new(space,'wm.search_operator','X','PRESS',[])
+		km.new(space,'wm.search_operator_cover','X','PRESS',[])
 
 
 
@@ -593,6 +592,7 @@ def lattice(km, preferences):
 	add_side_panel(km, space)
 	add_subobject(km, space)
 	add_transform_tool(km, space, preferences, smax=False)
+	add_view3d_click_selection(km, space)
 	km.new(space,'view3d.drop_tool','RIGHTMOUSE','PRESS',[])
 	km.new(space,'lattice.select_all','A','PRESS',[('action','SELECT')],ctrl=True)
 	km.new(space,'lattice.select_all','D','PRESS',[('action','DESELECT')],ctrl=True)
@@ -730,8 +730,7 @@ def outliner(km):
 	space = km.space('Outliner','OUTLINER','WINDOW')
 	add_search(km, space)
 	add_subobject(km, space)
-	ver = bpy.app.version
-	if ver[0] == 2 and ver[1] < 81:
+	if version() < 281:
 		km.new(space,'outliner.item_activate','LEFTMOUSE','PRESS',[('extend',True)],ctrl=True)
 		km.new(space,'outliner.select_box','EVT_TWEAK_L','EAST',[('mode','SET')])
 		km.new(space,'outliner.select_box','EVT_TWEAK_L','SOUTH_EAST',[('mode','SET')])
@@ -964,6 +963,7 @@ def sequence_editor(km):
 	add_side_panel(km, space)
 	km.new(space,'wm.multi_item_rename','F2','PRESS',[])
 
+	km.new(space,'anim.auto_key_toggle','N','PRESS',[])
 	km.new(space,'sequencer.zoom_extended','Z','PRESS',[])
 	km.new(space,'sequencer.mute_toggle','H','PRESS',[])
 	km.new(space,'sequencer.shift','UP_ARROW','PRESS',[('direction', 'UP')],alt=True)

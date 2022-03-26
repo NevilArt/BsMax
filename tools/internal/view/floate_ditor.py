@@ -16,6 +16,7 @@
 import bpy
 from bpy.types import Operator, Menu
 from bpy.props import StringProperty, BoolProperty
+from bsmax.state import version
 
 
 class Editor_OT_Open_As_Float_Window(Operator):
@@ -28,8 +29,7 @@ class Editor_OT_Open_As_Float_Window(Operator):
 	multiple: BoolProperty(default=True)
 
 	def execute(self,ctx):
-		version = bpy.app.version
-		if version[0] == 2 and version[1] <= 92:
+		if version() < 293:
 			""" Old Method for Blender 2.92 and older """
 			original_type = ctx.area.type
 
@@ -81,8 +81,7 @@ class Editor_OT_Script_Listener_Open(Operator):
 	bl_options = {'REGISTER', 'INTERNAL'}
 	
 	def execute(self, ctx):
-		version = bpy.app.version
-		if version[0] == 2 and version[1] <= 92:
+		if version() < 293:
 			""" Old Method for Blender 2.92 and older """
 			windows = ctx.window_manager.windows
 			bpy.ops.screen.userpref_show('INVOKE_DEFAULT')
@@ -119,14 +118,13 @@ class BsMax_MT_New_Editor(Menu):
 	bl_idname = 'BSMAX_MT_new_editor'
 	bl_label = 'New Editor'
 	def draw(self, ctx):
-		version = bpy.app.version
 		layout=self.layout
 		layout.operator("editor.float", text='3D Viewport', icon='VIEW3D').ui_type='VIEW_3D'
 		layout.operator("editor.float", text='Image Editor', icon='IMAGE').ui_type='IMAGE_EDITOR'
 		layout.operator("editor.float", text='UV Editor', icon='UV').ui_type='UV'
 		layout.operator("editor.float", text='Compositor', icon='NODE_COMPOSITING').ui_type='CompositorNodeTree'
 		layout.operator("editor.float", text='Texture Node Editor', icon='TEXTURE').ui_type='TextureNodeTree'
-		if (version[0] == 2 and version[1] <= 92) or version[0] > 2:
+		if version() > 291:
 			layout.operator("editor.float", text='Geometry Node Editor', icon='NODETREE').ui_type='GeometryNodeTree'
 		layout.operator("editor.float", text='Shader Node Editor', icon='NODE_MATERIAL').ui_type='ShaderNodeTree'
 		layout.operator("editor.float", text='Video Sequencer', icon='SEQUENCE').ui_type='SEQUENCE_EDITOR'
@@ -145,9 +143,9 @@ class BsMax_MT_New_Editor(Menu):
 		layout.operator('editor.float', text='Outliner', icon='OUTLINER').ui_type='OUTLINER'
 		layout.operator("editor.float", text='Properties', icon='PROPERTIES').ui_type='PROPERTIES'
 		layout.operator("editor.float", text='File Browser', icon='FILE_FOLDER').ui_type='FILES'
-		if version[0] >= 3:
+		if version() > 293:
 			layout.operator("editor.float", text='Asset Manager', icon='ASSET_MANAGER').ui_type='ASSETS'
-		if (version[0] == 2 and version[1] <= 93) or version[0] > 2:
+		if version() > 292:
 			layout.operator("editor.float", text='Sepreadsheet', icon='SPREADSHEET').ui_type='SPREADSHEET'
 		layout.operator("editor.float", text='Prefrences', icon='PREFERENCES').ui_type='PREFERENCES'
 

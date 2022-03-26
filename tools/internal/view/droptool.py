@@ -13,8 +13,51 @@
 #	along with this program.  If not, see <https://www.gnu.org/licenses/>.
 ############################################################################
 
+from email.policy import default
 import bpy
 from bpy.types import Operator
+from bpy.props import EnumProperty
+
+
+
+# This Operator makes free 'X' button in EDIT_TEXT mode
+class WM_OT_Search_Operator_Cover(Operator):
+	""" Call the regular search operator """
+	bl_idname = "wm.search_operator_cover"
+	bl_label = "Search Operator Cover"
+	bl_options = {'REGISTER', 'INTERNAL'}
+
+	@classmethod
+	def poll(self, ctx):
+		return ctx.mode != 'EDIT_TEXT'
+	
+	def execute(self, ctx):
+		bpy.ops.wm.search_operator('INVOKE_DEFAULT')
+		return{"FINISHED"}
+
+
+
+# This Operator makes free '[' ']' buttons in EDIT_TEXT mode
+class WM_OT_Side_Toolbar_Toggle(Operator):
+	""" Call the regular search operator """
+	bl_idname = "wm.side_toolbar_toggle"
+	bl_label = "Side Toolbar Toggle"
+	bl_options = {'REGISTER', 'INTERNAL'}
+
+	side: EnumProperty(name='Side', default='LEFT',
+		items=[('LEFT', 'Left', 'Left toolbar Toggle'),
+			('RIGHT', 'Right', 'Right toolbar Toggle')])
+
+	@classmethod
+	def poll(self, ctx):
+		return ctx.mode != 'EDIT_TEXT'
+	
+	def execute(self, ctx):
+		if self.side == 'LEFT':
+			bpy.ops.wm.context_toggle(data_path='space_data.show_region_toolbar')
+		else:
+			bpy.ops.wm.context_toggle(data_path='space_data.show_region_ui')
+		return{"FINISHED"}
 
 
 
@@ -90,7 +133,10 @@ class View3D_OT_Drop_Tool(Operator):
 
 
 
-classes = [View_OT_Blender_Default_Menue_Call ,View3D_OT_Drop_Tool]
+classes = [WM_OT_Search_Operator_Cover,
+	WM_OT_Side_Toolbar_Toggle,
+	View_OT_Blender_Default_Menue_Call,
+	View3D_OT_Drop_Tool]
 
 def register_droptool(preferences):
 	View3D_OT_Drop_Tool.preferences = preferences

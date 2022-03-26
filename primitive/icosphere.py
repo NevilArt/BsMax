@@ -17,6 +17,7 @@ import bpy, bmesh
 from mathutils import Matrix
 from primitive.primitive import Primitive_Geometry_Class, Draw_Primitive
 from bsmax.actions import delete_objects
+from bsmax.state import version
 
 
 
@@ -24,7 +25,7 @@ class Icosphere(Primitive_Geometry_Class):
 	def init(self):
 		self.classname = "Icosphere"
 		self.finishon = 2
-		self.version = bpy.app.version[0]
+		self.version = version()
 
 	def create(self, ctx):
 		# Create an empty mesh and the object.
@@ -48,7 +49,7 @@ class Icosphere(Primitive_Geometry_Class):
 		pd = self.data.primitivedata
 		orgmesh = bpy.data.meshes[self.data.name]
 		bm = bmesh.new()
-		if self.version >= 3:
+		if self.version >= 300:
 			bmesh.ops.create_icosphere(bm, subdivisions=pd.wsegs,
 							radius=pd.radius1,
 							matrix=Matrix(), calc_uvs=True)

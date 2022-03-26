@@ -370,6 +370,7 @@ classes = [BsMax_MT_VertexCreate,
 def register_menu():
 	for c in classes:
 		bpy.utils.register_class(c)
+	#TODO find a way to put Create menu anfter add menu rather than first of the list
 	bpy.types.VIEW3D_MT_editor_menus.prepend(CreateMenu_CallBack)
 	bpy.types.VIEW3D_MT_object_context_menu.append(objects_context_menu)
 

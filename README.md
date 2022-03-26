@@ -31,16 +31,17 @@ If you found this product useful and want to support this project you can Donate
 
 # Recent Updates and Changes
 
-* 'Make Library Override (Multi)' Convert selected object rather than only active object (Object/Relation/..).
-* 'Distance Sort' & 'Path Sort' improved and bug fixed (Object/Transform/..).
-* 'Distance Sort' & 'Path Sort' renamed to 'Arrange by Distance', 'Arrange on Curve'
-* Quick setup for create pillows 'Create/Mesh/Extera/Pillow' (Basic one will be improved).
+* Change the Addon github Name From 'BsMax_2_80' to 'BsMax'
+* Quadmenu 'Freeze transform/ Transform to zero' works corectly (3DsMax mode).
+* 'WERVX[]' type proplem in Edit Text Mode solved.
+* Some bug by caused 3.x Api update are fixed and Code cleaning.
 * [Update History...](https://github.com/NevilArt/BsMax_2_80/blob/master/HISTORY.TXT)
 
 # In Production 
 
 * Cleanup: All Operator and Tools need to review.
 * Cleanup Step 1: Make all quadmenu Item works.
+* Cleanup Step 2: Decrease operators count and hide unnecessary operator.
 * PieMax: Combanition of 3DsMax Quad menu and Blender Pie Menu.
 
 # License
