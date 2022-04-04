@@ -19,7 +19,7 @@ bl_info = {
 	'name': 'BsMax',
 	'description': 'BsMax for Blender 2.80 ~ 3.1',
 	'author': 'Naser Merati (Nevil)',
-	'version': (0, 1, 0, 20220326),
+	'version': (0, 1, 0, 20220404),
 	'blender': (2, 80, 0),# 2.80 ~ 3.2
 	'location': 'Almost Everywhere in Blender',
 	'wiki_url': 'https://github.com/NevilArt/BsMax/wiki',
@@ -49,7 +49,7 @@ from .tools import register_tools, unregister_tools
 # import templates
 
 addons = bpy.context.preferences.addons
-wiki = 'https://github.com/NevilArt/BsMax_2_80/wiki/'
+wiki = 'https://github.com/NevilArt/BsMax/wiki/'
 
 
 
@@ -74,7 +74,7 @@ def update_preferences(self, ctx, action):
 			self.custom = True
 		else:
 			self.simple = True
-	
+
 	if self.active:
 		""" Quick Selection """
 		if self.quick and action == 'aplication':
@@ -103,7 +103,7 @@ def update_preferences(self, ctx, action):
 					self.navigation_3d = self.navigation
 					self.navigation_2d = self.navigation
 				return
-			
+
 			elif action in {'keymaps', 'transform'}:
 				if self.keymaps != 'Custom':
 					self.viowport = self.keymaps
@@ -116,7 +116,7 @@ def update_preferences(self, ctx, action):
 					self.text_editor = self.keymaps
 					self.file_browser = self.keymaps
 				return
-			
+
 		""" Custom Selection """
 		if action in {'navigation_3d', 'navigation_2d','viowport',
 			'sculpt', 'uv_editor', 'node_editor', 'text_editopr',
@@ -187,7 +187,7 @@ class BsMax_AddonPreferences(bpy.types.AddonPreferences):
 		update= lambda self,ctx: update_preferences(self,ctx,'viowport'),
 		description='Overide keymaps in 3D view')
 
-	sculpt: EnumProperty(name='Sculp/Paint', items=apps, default='Blender',
+	sculpt: EnumProperty(name='Sculp / Paint', items=apps, default='Blender',
 		update= lambda self,ctx: update_preferences(self,ctx,'sculpt'),
 		description='Overide keymaps in sculpt and paint mode')
 
@@ -211,7 +211,7 @@ class BsMax_AddonPreferences(bpy.types.AddonPreferences):
 		items=apps + [('Premiere','Premiere','')],
 		update= lambda self,ctx: update_preferences(self,ctx,'video_sequencer'),
 		description='Overide keymaps in Video sequencer')
-	
+
 	text_editor: EnumProperty(name='Text Editor', items=apps, default='Blender',
 		update= lambda self,ctx: update_preferences(self,ctx,'text_editopr'),
 		description='Overide keymaps in text editor')
@@ -236,14 +236,14 @@ class BsMax_AddonPreferences(bpy.types.AddonPreferences):
 	def refine(self):
 		""" Disactive keymap update """
 		self.active = False
-		
+
 		""" Simple mode navigation """
 		if self.navigation_3d == self.navigation_2d:
 			if self.navigation == 'Custom':
 				self.navigation = self.navigation_3d
 		elif self.navigation != 'Custom':
 			self.navigation = 'Custom'
-		
+
 		""" Simple mode keymap """
 		if self.viowport == self.sculpt and\
 			self.viowport == self.uv_editor and\
@@ -278,7 +278,7 @@ class BsMax_AddonPreferences(bpy.types.AddonPreferences):
 
 	def draw(self, ctx):
 		layout = self.layout
-		
+
 		box = layout.box()
 		row = box.row(align=True)
 		row.prop(self, 'quick', icon='MESH_CIRCLE')
@@ -288,19 +288,21 @@ class BsMax_AddonPreferences(bpy.types.AddonPreferences):
 		if self.quick:
 			row = box.row()
 			col = row.column()
+			col.label(text='Select a packages include Navigation/ Keymap/ Menu')
 			self.row_prop(col, 'aplication', 'applications')
 
 		if self.simple:	
 			row = box.row()
 			col = row.column()
+			col.label(text='Select packages parts separately')
 			self.row_prop(col, 'navigation', 'Navigation')
 			self.row_prop(col, 'keymaps', 'Keymaps-' + self.keymaps)
 			self.row_prop(col, 'floatmenus', 'floatmenus-' + self.floatmenus)
-		
+
 		if self.custom:
 			row = box.row()
 			col = row.column()
-
+			col.label(text='Select packages parts customly')
 			self.row_prop(col, 'navigation_3d', 'navigation_3d-' + self.navigation_3d)
 			self.row_prop(col, 'navigation_2d', 'navigation_2d-' + self.navigation_2d)
 			self.row_prop(col, 'viowport', 'viowport-' + self.viowport)
@@ -313,7 +315,7 @@ class BsMax_AddonPreferences(bpy.types.AddonPreferences):
 			self.row_prop(col, 'video_sequencer', 'video_sequencer-' + self.video_sequencer)
 			self.row_prop(col, 'file_browser', 'file_browser-' + self.file_browser)
 			self.row_prop(col, 'floatmenus', 'floatmenus-' + self.floatmenus)
-		
+
 		box = layout.box()
 		row = box.row()
 		icon = 'DOWNARROW_HLT' if self.options else 'RIGHTARROW'

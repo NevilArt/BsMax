@@ -41,7 +41,7 @@ class Driver_Reconnect:
 						elif target.id.type in {'POINT', 'SUN', 'SPOT'}:
 							if name in bpy.data.lights:
 								target.id = bpy.data.lights[name]
-						#TODO add all other types
+						# add all other types
 						
 				var.targets.update()
 

@@ -19,6 +19,19 @@ from mathutils import Vector, Matrix
 
 
 
+class BoolVector:
+	def __init__(self):
+		self.x = False
+		self.y = False
+		self.z = False
+
+	def set(self, x, y, z):
+		self.x = x
+		self.y = y
+		self.z = z
+
+
+
 class BitArray:
 	def __init__(self):
 		self.string = ""

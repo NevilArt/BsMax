@@ -1,13 +1,13 @@
 
-# BsMax 2.80 ~ 3.1
+# BsMax Blender Addon 2.80 ~ 3.1
 
-BsMax is package of many different tools and UI simulator (much as possible) for [Blender 3D](https://www.blender.org/).
+BsMax is package of Modeling, Rig & Animation, Render tools and UI simulator for [Blender 3D](https://www.blender.org/).
 
-* Animatable Primitive Objects.
-* Collection of many different tools (Modeling, Rigging, Animation, Pipeline).
+* Interactive & Animatable Primitive Mesh & Curve Objects.
+* Modeling, Rigging, Animation, Pipeline tools.
 * Make you comfortable if you are from other software (for now mostly 3DsMax).
-* BsMax do not makes dependency in you project. you can continue your project on other Blender without BsMax.
-* Note: the only future the will not works without BsMax is "Animated Primitives" (Not the static ones).
+* BsMax do not makes dependency in projects. Projects can be continue on other machines without BsMax with no problems.
+* Note: the only future that not works without BsMax is "Animated Primitives" (Not the static ones).
 
 The goal of UI simulator is people that came from other software (like me) feel comfortable or who has to switch frequently between Blender or other software do not be confused.
 
@@ -18,8 +18,9 @@ If not have Github account use 'NevilArt@Gmail.Com' for bug report.
 # Support
 
 If you found this product useful and want to support this project you can Donate in [Gumroad](https://nevilart.gumroad.com/l/BsMax).
+Your Donation helps me to ignore other freelance offers and focus on BsMax and speedup the developing.
 
-# Installation
+# [Download / Installation](https://youtu.be/JolpAmvd3CE)
 
 * Download all the package as zip file.
 * Go to Preferences > Addons > Install.
@@ -29,19 +30,21 @@ If you found this product useful and want to support this project you can Donate
 * It is better to restart the Blender after install.
 * Note: Some times need to reset factory the blender to make addon work fine (happens when addons install to alpha version).
 
+# Stand Alone Operators
+* [backburner.py](https://github.com/NevilArt/BsMax/tree/master/tools/internal/render)
+
 # Recent Updates and Changes
 
-* Change the Addon github Name From 'BsMax_2_80' to 'BsMax'
-* Quadmenu 'Freeze transform/ Transform to zero' works corectly (3DsMax mode).
-* 'WERVX[]' type proplem in Edit Text Mode solved.
-* Some bug by caused 3.x Api update are fixed and Code cleaning.
-* [Update History...](https://github.com/NevilArt/BsMax_2_80/blob/master/HISTORY.TXT)
+* Bugfix and code Cleaning.
+* some arrangement in [BsMax Wiki](https://github.com/NevilArt/BsMax/wiki).
+* [Update History...](https://github.com/NevilArt/BsMax/blob/master/CHANGELOG.md)
 
 # In Production 
 
 * Cleanup: All Operator and Tools need to review.
 * Cleanup Step 1: Make all quadmenu Item works.
 * Cleanup Step 2: Decrease operators count and hide unnecessary operator.
+* Cleanup Step 3: make all tools perfect as possble.
 * PieMax: Combanition of 3DsMax Quad menu and Blender Pie Menu.
 
 # License

@@ -438,7 +438,8 @@ def joystick_connectore_menu(self,ctx):
 
 
 
-classes = [Rigg_TO_Joy_Stick_Creator, Rigg_TO_Joystick_Shapekey_Connector]
+classes = [Rigg_TO_Joy_Stick_Creator,
+	Rigg_TO_Joystick_Shapekey_Connector]
 
 def register_joystic():
 	for c in classes:

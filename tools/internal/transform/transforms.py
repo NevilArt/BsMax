@@ -14,7 +14,7 @@
 ############################################################################
 
 import bpy
-from bpy.props import StringProperty, BoolProperty, FloatProperty
+from bpy.props import StringProperty, BoolProperty, IntProperty
 from bpy.types import Operator
 from bsmax.state import version
 
@@ -25,7 +25,7 @@ class View3D_OT_Transform_Gizmo_Size(Operator):
 	bl_label = "Transform Gizmo Size"
 	bl_options= {'REGISTER', 'INTERNAL'}
 	
-	step: FloatProperty()
+	step: IntProperty()
 
 	@classmethod
 	def poll(self, ctx):
@@ -208,7 +208,8 @@ class View3D_OT_Tweak_Better(Operator):
 
 	def modal(self, ctx, event):
 		if event.type == 'MOUSEMOVE':
-			bpy.ops.transform.transform('INVOKE_DEFAULT',mode=self.tmode)#,release_confirm=self.release)
+			#TODO check the operator
+			bpy.ops.transform.transform('INVOKE_DEFAULT',mode=self.tmode)
 			return {'FINISHED'}
 		return {'RUNNING_MODAL'}
 

@@ -101,9 +101,10 @@ class CurveTool(Operator):
 			return {'RUNNING_MODAL'}
 
 
-
-
+#TODO preview the object name under the cursure befor pick
+#TODO convert to raycast picker rathr than select base operator
 class PickOperator(Operator):
+	""" Call a function with early selected and new selected Objects """
 	source, subsource, active = [], None, None
 	start, center, end = None, Vector((0, 0, 0)), None
 	mode, filters = 'OBJECT' , ['ANY']

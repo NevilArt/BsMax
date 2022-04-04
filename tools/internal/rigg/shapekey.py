@@ -158,7 +158,8 @@ def shapekey_tools(self, ctx):
 		row.operator('mesh.create_multi_target_shapekeys')
 		row.operator('mesh.shapekeys_sort_by_name')
 
-classes = [Mesh_TO_Shapekeys_Sort_by_name, Mesh_TO_Create_Multi_Target_Shapekeys]
+classes = [Mesh_TO_Shapekeys_Sort_by_name,
+	Mesh_TO_Create_Multi_Target_Shapekeys]
 
 def register_shapekey():
 	for c in classes:

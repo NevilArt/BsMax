@@ -18,22 +18,7 @@ from mathutils import Vector, Euler
 from bpy.types import Operator
 
 from bsmax.operator import PickOperator
-from bsmax.math import value_by_percent, matrix_from_elements
-
-# TODO Apply button
-# TODO Align along the path (combine with arrange on curve)
-# TODO Align to vertex or Face + Normal by pic index
-
-
-class BoolVector:
-	def __init__(self):
-		self.x = False
-		self.y = False
-		self.z = False
-	def set(self, x, y, z):
-		self.x = x
-		self.y = y
-		self.z = z
+from bsmax.math import value_by_percent, matrix_from_elements, BoolVector
 
 
 

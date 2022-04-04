@@ -208,7 +208,7 @@ def get_pyramid_panel(self,layout):
 	col.prop(self,"height",text="Height")
 	col = layout.column(align=True)
 	col.prop(self,"wsegs",text="Width Segs")
-	col.prop(self,"dsegs",text="Depth Segs")
+	col.prop(self,"lsegs",text="Depth Segs")
 	col.prop(self,"hsegs",text="Height Segs")
 
 

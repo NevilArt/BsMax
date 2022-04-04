@@ -13,7 +13,6 @@
 #	along with this program.  If not, see <https://www.gnu.org/licenses/>.
 ############################################################################
 
-import bpy
 from .commands import * # all "c0000" are from here
 from .q_items import QuadItem
 from bsmax.state import is_active_primitive, get_active_type, version
@@ -83,9 +82,15 @@ def get_view3d_lighting_sub(ctx):
 	items.append(QuadItem("Material",f,t,n,c0178,n))
 	items.append(QuadItem("Rendered",f,t,n,c0179,n))
 	items.append(seprator())
-	uslr = ctx.space_data.shading.use_scene_lights_render
+
+	if version() > 280:
+		uslr = ctx.space_data.shading.use_scene_lights_render
+		uswr = ctx.space_data.shading.use_scene_world_render
+	else:
+		uslr = ctx.space_data.shading.use_scene_lights
+		uswr = ctx.space_data.shading.use_scene_world
+
 	items.append(QuadItem("Use Scene Light",uslr,t,n,c0192,n))
-	uswr = ctx.space_data.shading.use_scene_world_render
 	items.append(QuadItem("Use World Light",uswr,t,n,c0193,n))
 	items.append(seprator())
 	items.append(QuadItem("Combined (Default)",f,t,n,c0180,n))
@@ -224,14 +229,15 @@ def get_view3d_tool2(ctx):
 	if ctx.mode == 'OBJECT':
 		items.append(QuadItem("Link To",f,t,n,c0173,n))
 		items.append(QuadItem("Unlink Selection",f,t,n,c0174,n))
-		items.append(seprator())
-		dac = ctx.scene.tool_settings.use_transform_skip_children
-		items.append(QuadItem("Don`t Affect Children",dac,t,n,c0175,n))
-		
+		if version() > 280:
+			items.append(seprator())
+			dac = ctx.scene.tool_settings.use_transform_skip_children
+			items.append(QuadItem("Don`t Affect Children",dac,t,n,c0175,n))
+
 	if get_active_type(ctx) == 'MESH':
 		V,E,F = ctx.tool_settings.mesh_select_mode
 		if ctx.mode == "EDIT_MESH" and not is_active_primitive(ctx):
-			#  text, check, enabled,menu,action,setting
+			#  text, check, enabled, menu, action, setting
 			items.append(QuadItem("Create",f,t,n,c0035,n))
 			items.append(seprator())
 			if V:

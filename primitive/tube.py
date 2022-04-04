@@ -172,6 +172,7 @@ def get_tube_mesh(radius1, radius2, height, hsegs, csegs, ssegs, sliceon, sfrom,
 					faces.append((a, b, c, d))
 				else:
 					faces.append((d, c, b, a))
+
 		for i in range(csegs):
 			# TODO refne this part like lower one
 			# combine if possble
@@ -186,6 +187,7 @@ def get_tube_mesh(radius1, radius2, height, hsegs, csegs, ssegs, sliceon, sfrom,
 			c = b + ssegs - 1
 			d = a + ssegs - 1
 			faces.append((d, c, b, a))
+
 		for i in range(csegs):
 			if i == 0:
 				a = c1 + hsegs * ssegs

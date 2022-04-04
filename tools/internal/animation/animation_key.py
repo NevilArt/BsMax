@@ -334,13 +334,6 @@ class Anim_OT_Freeze_on(Operator):
 		""" at each frame return bone to first position and set key """
 		armature = ctx.active_object
 		for bone in ctx.selected_pose_bones:
-			
-			# if armature.parent:
-			# 	# matrix = armature.convert_space(pose_bone=bone, matrix=bone.matrix_basis, from_space='POSE', to_space='WORLD')
-			# 	# bone_matrix = armature.parent.matrix_world @ armature.matrix_parent_inverse @ armature.matrix_basis
-			# 	# bone_matrix = armature.matrix_world @ matrix
-			# 	# TODO this is not return correct value when armature has parent need to replace
-			# else:
 			""" Conver Pose bone space to world space """
 			bone_matrix = armature.convert_space(pose_bone=bone,
 				matrix=bone.matrix, from_space='POSE', to_space='WORLD')

@@ -16,7 +16,6 @@
 import bpy
 from bpy.types import Operator
 from mathutils import Vector
-from bsmax.state import has_constraint
 from bsmax.operator import PickOperator
 
 

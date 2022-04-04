@@ -15,7 +15,8 @@
 
 import bpy
 from bpy.types import Operator
-from tools.internal.curve import chamfer
+
+#TODO Quick mesh boolean setup operator and float menu
 
 
 

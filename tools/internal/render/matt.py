@@ -71,7 +71,8 @@ class Render_OT_Mat_Unset(Operator):
 
 
 
-classes = [Render_OT_Matt_Set, Render_OT_Mat_Unset]
+classes = [Render_OT_Matt_Set,
+	Render_OT_Mat_Unset]
 
 def register_matt():
 	for c in classes:

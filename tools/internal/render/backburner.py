@@ -22,7 +22,7 @@ bl_info = {
 	"name": "BsMax-Backburner",
 	"description": "Backburner for Blender 2.80 ~ 3.1",
 	"author": "Matt Ebb | Blaize | Anthony Hunt | Spirou4D | Nevil",
-	"version": (0, 2, 0, 9),# 2022-02-28
+	"version": (0, 2, 0, 10),# 2022-02-28
 	"blender": (2, 80, 0),# to 3.2
 	"location": "Properties/ Output/ Backbrner",
 	"wiki_url": "https://github.com/NevilArt/BsMax_2_80/wiki",
@@ -449,6 +449,7 @@ def draw_backburner_panel(self, ctx):
 	row.operator('render.submit_to_backburner', icon='RENDER_ANIMATION')
 	row.operator('render.save_backburner_preset', text='', icon='ADD')
 	row.operator('render.load_backburner_preset', text='', icon='RECOVER_LAST')
+	row.operator('wm.url_open', icon='HELP').url= "https://github.com/NevilArt/BsMax/wiki/Render-Tools"
 	layout.separator()
 	
 	row = layout.row()
@@ -494,6 +495,7 @@ def draw_backburner_panel(self, ctx):
 
 
 class Render_OT_Backburner(Operator):
+	""" Submit scene to Backburner as render job. """
 	bl_idname = 'render.backburner'
 	bl_label = 'Backburner'
 	bl_options = {'REGISTER'}

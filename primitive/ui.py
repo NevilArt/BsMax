@@ -18,7 +18,7 @@ from bpy.types import Operator
 
 # Act like Convert to in 3ds Max
 class BsMax_OT_ClearPrimitiveData(Operator):
-	# TODO replace this with a smart conver tool
+	# TODO replace this with a smart convert tool
 	bl_idname="primitive.cleardata"
 	bl_label="Clear Primitive Data"
 	def execute(self, ctx):

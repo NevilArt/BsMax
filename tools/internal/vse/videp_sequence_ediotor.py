@@ -28,6 +28,8 @@ from bpy.props import EnumProperty, IntProperty
 # else:
 # 	print('Out of strip')
 
+
+
 def get_selected_sequences(scene):
 	""" check the sequences return true if detect first selected sequence """
 	return [sequence for sequence in scene.sequence_editor.sequences if sequence.select]
@@ -66,7 +68,7 @@ class Sequencer_OT_Shift(Operator):
 				if sequence.channel == channel:
 					sorted_sequences.append(sequence)
 		return sorted_sequences
-	
+
 	def sort_by_start(self, sequences, invert=False):
 		""" Get list of sequence sort by start Frame
 		* sequences: list of sequence
@@ -90,16 +92,19 @@ class Sequencer_OT_Shift(Operator):
 				start_frame = sequence.frame_start + sequence.frame_offset_start
 				if start_frame == frame:
 					sorted_sequences.append(sequence)
-		
+
 		return sorted_sequences
-	
+
 	def draw(self, ctx):
 		self.layout.prop(self, 'direction')
-		pass
+
+	def use_side_shift(self, sequence):
+		return sequence.type in {'SOUND', 'MOVIE', 'IMAGE', 'COLOR', 
+			'TEXT', 'ADJUSTMENT', 'SCENE'}
 	
 	def execute(self, ctx):
 		sequences = get_selected_sequences(ctx.scene)
-	
+
 		if self.direction == 'UP':
 			sequences = self.sort_by_channel(sequences, invert=True)
 		elif self.direction == 'DOWN':
@@ -108,18 +113,18 @@ class Sequencer_OT_Shift(Operator):
 			sequences = self.sort_by_start(sequences)
 		elif self.direction == 'RIGHT':
 			sequences = self.sort_by_start(sequences, invert=True)
-		
+
 		""" Shift the sequence by given step """
 		for sequence in sequences:
 			if self.direction == 'UP':
 				sequence.channel += self.step
 			elif self.direction == 'DOWN':
 				sequence.channel -= self.step
-			elif self.direction == 'LEFT':
+			elif self.direction == 'LEFT' and self.use_side_shift(sequence):
 				sequence.frame_start -= self.step
-			elif self.direction == 'RIGHT':
+			elif self.direction == 'RIGHT' and self.use_side_shift(sequence):
 				sequence.frame_start += self.step
-		
+
 		return{"FINISHED"}
 
 
@@ -161,7 +166,7 @@ class Sequencer_OT_Zoom_Extended(Operator):
 		return{"FINISHED"}
 
 
-
+#TODO Select all, select before time select after time
 # class Sequencer_OT_SelectRow(Operator):
 # 	bl_idname = "sequencer.select_row"
 # 	bl_label = "Select Row"

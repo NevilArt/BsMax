@@ -42,7 +42,7 @@ class Armature_OT_Bone_Type(Operator):
 		return{"FINISHED"}
 
 
-
+#TODO rename the operator
 # Devide Bone by number dialog 
 class Armature_OT_Bone_Devide(Operator):
 	bl_idname = "armature.bone_devide"
