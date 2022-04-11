@@ -14,12 +14,14 @@
 ############################################################################
 
 import bpy
+
 from bpy.types import PropertyGroup
 from bpy.app.handlers import persistent
 from bpy.props import (StringProperty, IntProperty, FloatProperty,
-	BoolProperty, EnumProperty, PointerProperty)
+					BoolProperty, EnumProperty, PointerProperty)
 
-from primitive.box import Box
+from .adaptive_plane import Adaptive_Plane
+from .box import Box
 from .capsule import Capsule
 from .cylinder import Cylinder, Cone
 #frome .geoSphere import GeoSphere
@@ -49,7 +51,8 @@ from .light import Compass
 
 # Classes
 def get_class(name):
-	if name == "Box": return Box()
+	if name == "Adaptive_Plane": return Adaptive_Plane()
+	elif name == "Box": return Box()
 	elif name == "Capsule": return Capsule()
 	elif name == "Cone": return Cone()
 	elif name == "Cylinder": return Cylinder()
@@ -197,8 +200,10 @@ class PrimitiveData(PropertyGroup):
 
 
 def register_update():
-	if hasattr(bpy.types.Mesh, 'primitivedata') or hasattr(bpy.types.Curve, 'primitivedata'):
+	if hasattr(bpy.types.Mesh, 'primitivedata') or \
+		hasattr(bpy.types.Curve, 'primitivedata'):
 		unregister_update()
+	#TODO replace this ugly solution with chech attribute exist method
 	try:
 		bpy.utils.register_class(PrimitiveData)
 		bpy.utils.register_class(Primitive_Option)
@@ -206,7 +211,10 @@ def register_update():
 		pass
 		""" pass if it is allready exist and do not need to add again """
 
-	bpy.types.Scene.primitive_setting = PointerProperty(type=Primitive_Option, name='Primitive settings')
+	bpy.types.Scene.primitive_setting = PointerProperty(
+											type=Primitive_Option,
+											name='Primitive settings'
+										)
 	bpy.types.Mesh.primitivedata = PointerProperty(type=PrimitiveData)
 	bpy.types.Curve.primitivedata = PointerProperty(type=PrimitiveData)
 	bpy.app.handlers.frame_change_post.append(primitive_frame_update)

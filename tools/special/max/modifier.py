@@ -18,35 +18,47 @@ from bpy.types import Operator
 from bsmax.actions import modifier_add
 from bsmax.state import is_objects_selected
 
+
+
 class Modifier_OT_Add_Bevel(Operator):
 	bl_idname = "modifier.add_bevel"
 	bl_label = "Bevel (Add)"
+
 	@classmethod
 	def poll(self, ctx):
 		return is_objects_selected(ctx)
+
 	def execute(self, ctx):
 		modifier_add(ctx,ctx.selected_objects,'BEVEL')
 		self.report({'OPERATOR'},'bpy.ops.modifier.add_bevel()')
 		return{"FINISHED"}
 
+
+
 class Modifier_OT_Add_Lathe(Operator):
 	bl_idname = "modifier.add_lathe"
 	bl_label = "Lathe (Add)"
 	bl_options = {'REGISTER','UNDO'}
+
 	@classmethod
 	def poll(self, ctx):
 		return is_objects_selected(ctx)
+
 	def execute(self, ctx):
 		modifier_add(ctx,ctx.selected_objects,'SCREW')
 		self.report({'OPERATOR'},'bpy.ops.modifier.add_lathe()')
 		return {'FINISHED'}
 
+
+
 class Object_OT_Reset_Xform(Operator):
 	bl_idname = "object.reset_xform"
 	bl_label = "Reset Xform"
+
 	@classmethod
 	def poll(self, ctx):
 		return is_objects_selected(ctx)
+
 	def execute(self, ctx):
 		for obj in ctx.selected_objects:
 			ctx.view_layer.objects.active = obj
@@ -55,33 +67,45 @@ class Object_OT_Reset_Xform(Operator):
 		self.report({'OPERATOR'},'bpy.ops.object.reset_xform()')
 		return{"FINISHED"}
 
+
+
 class Modifier_OT_Add_Shell(Operator):
 	bl_idname = "modifier.add_shell"
 	bl_label = "Shell (Add)"
+
 	@classmethod
 	def poll(self, ctx):
 		return is_objects_selected(ctx)
+
 	def execute(self, ctx):
 		modifier_add(ctx,ctx.selected_objects,'SOLIDIFY',name="SHELL")
 		self.report({'OPERATOR'},'bpy.ops.modifier.add_shell()')
 		return{"FINISHED"}
 
+
+
 class Modifier_OT_Add_TurboSmooth(Operator):
 	bl_idname = "modifier.add_turbosmooth"
 	bl_label = "TurboSmooth (Add)"
+
 	@classmethod
 	def poll(self, ctx):
 		return is_objects_selected(ctx)
+
 	def execute(self, ctx):
 		modifier_add(ctx,ctx.selected_objects,'SUBSURF',name='Turbosmooth')
 		self.report({'OPERATOR'},'bpy.ops.modifier.add_turbosmooth()')
 		return{"FINISHED"}
 
-classes = [Modifier_OT_Add_Bevel,
+
+
+classes = [
+	Modifier_OT_Add_Bevel,
 	Modifier_OT_Add_Lathe,
 	Object_OT_Reset_Xform,
 	Modifier_OT_Add_Shell,
-	Modifier_OT_Add_TurboSmooth]
+	Modifier_OT_Add_TurboSmooth
+]
 
 def register_modifier():
 	for c in classes:

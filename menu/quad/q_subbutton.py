@@ -78,7 +78,8 @@ class QuadSubMenuButton:
 		arr_offset = self.height * 0.15
 		arr_width = self.height * 0.7
 		arr_color = quadmenuref.border_color
-		arr_v, arr_i = get_arrow(arr_width, arr_x + arr_offset, arr_y + arr_offset, arr_mirror)
+		arr_v, arr_i = get_arrow(arr_width, arr_x + arr_offset,
+								arr_y + arr_offset, arr_mirror)
 		icon = ItemShape(arr_v, arr_i, arr_color)
 		self.controllers.append(icon)
 
@@ -95,11 +96,15 @@ class QuadSubMenuButton:
 
 	def mousehover(self, x, y, clicked):
 		global quadmenuref
-		if ((self.my_x <= x <= self.my_x + self.width) and (self.my_y <= y <= self.my_y + self.height)):
+		if ((self.my_x <= x <= self.my_x + self.width) and \
+			 (self.my_y <= y <= self.my_y + self.height)):
+
 			self.button.color = quadmenuref.hover_color
 			self.submenue = QuadSubMenu(self.my_x, self.my_y, self.items, self)
+
 		else:
 			self.button.color = quadmenuref.bg_color
+
 			if self.submenue != None:
 				if not self.submenue.mousehover(x, y, clicked):
 					self.submenue = None

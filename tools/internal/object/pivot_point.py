@@ -22,14 +22,17 @@ from bsmax.state import version
 objAxis = None
 objTarget = None
 checkParams = ["BsMaxAxisPivotPoint_"]
-rotAxis = None
-locAxis = None
 
 
 
 def ModifyPivotPoint(ctx):
+	global objAxis
+	global objTarget
+	global checkParams
+
 	if ctx.active_object != None:
 		ops = bpy.ops
+
 		if not any(x in ctx.active_object.name for x in checkParams):
 			# Create Povot helper
 			objTarget = ctx.active_object
@@ -115,7 +118,7 @@ class Object_OT_Modify_Pivot(Operator):
 
 	@classmethod
 	def poll(self, ctx):
-		return ctx.active_object != None
+		return ctx.active_object
 
 	def execute(self, ctx):
 		if version() == 280:
@@ -152,7 +155,6 @@ class Object_OT_Pivot_To_First_Point(Operator):
 					delta_origin = obj.data.splines[0].bezier_points[0].co.copy()
 					obj.data.transform(Matrix.Translation(-delta_origin))
 					obj.matrix_world.translation = old_origin
-		self.report({'OPERATOR'},'bpy.ops.object.pivot_to_first_point()')
 		return {"FINISHED"}
 
 
@@ -183,7 +185,6 @@ class Object_OT_Pivot_To_Buttom_Center(Operator):
 	def execute(self,ctx):
 		for obj in ctx.selected_objects:
 			self.pivot_to_buttom_center(ctx, obj)
-		self.report({'OPERATOR'},'bpy.ops.object.pivot_to_buttom_center()')
 		return {"FINISHED"}
 
 
@@ -191,15 +192,59 @@ class Object_OT_Pivot_To_Buttom_Center(Operator):
 class OBJECT_MT_Set_Pivot_Point(Menu):
 	bl_idname = "OBJECT_MT_Set_Pivot_Point"
 	bl_label = "Set Pivot Point"
+
 	def draw(self, ctx):
 		layout = self.layout
-		layout.operator("object.origin_set",text="Object to Pivot").type='GEOMETRY_ORIGIN'
-		layout.operator("object.origin_set",text="Pivot to Object").type='ORIGIN_GEOMETRY'
-		layout.operator("object.origin_set",text="Pivot to 3D Cursor").type='ORIGIN_CURSOR'
-		layout.operator("object.origin_set",text="Pivot to Center").type='ORIGIN_CENTER_OF_VOLUME'
-		layout.operator("object.origin_set",text="Pivot to Geometry").type='ORIGIN_CENTER_OF_MASS'
-		layout.operator("object.pivot_to_buttom_center",text="Pivot to Buttom Center")
-		layout.operator("object.pivot_to_first_point",text="Pivot to First BezierPoint")
+		layout.operator("object.origin_set",
+						text="Object to Pivot").type='GEOMETRY_ORIGIN'
+
+		layout.operator("object.origin_set",
+						text="Pivot to Object").type='ORIGIN_GEOMETRY'
+
+		layout.operator("object.origin_set",
+						text="Pivot to 3D Cursor").type='ORIGIN_CURSOR'
+
+		layout.operator("object.origin_set",
+						text="Pivot to Center").type='ORIGIN_CENTER_OF_VOLUME'
+
+		layout.operator("object.origin_set",
+						text="Pivot to Geometry").type='ORIGIN_CENTER_OF_MASS'
+
+		layout.operator("object.pivot_to_buttom_center",
+						text="Pivot to Buttom Center")
+
+		layout.operator("object.pivot_to_first_point",
+						text="Pivot to First BezierPoint")
+
+		layout.separator()
+
+		layout.operator("view3d.snap_cursor_to_selected",
+						text="Cursur to Selected")
+
+		layout.operator("view3d.snap_cursor_to_center",
+						text="Cursor to World Origin")
+
+		layout.operator("view3d.snap_cursor_to_grid",
+						text="Cursor to Grid")
+
+		layout.operator("view3d.snap_cursor_to_active",
+						text="Cursor to Active")
+
+		layout.separator()
+
+		layout.operator("view3d.snap_selected_to_grid",
+						text="Selection to Gride")
+
+		layout.operator("view3d.snap_selected_to_cursor",
+						text="Selection to Cursor (keep offset)"
+						).use_offset=False
+
+		layout.operator("view3d.snap_selected_to_cursor",
+						text="Selection to Cursor"
+						).use_offset=True
+
+		layout.operator("view3d.snap_selected_to_active",
+						text="Selection to Active")
 
 
 

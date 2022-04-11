@@ -12,73 +12,133 @@
 #	You should have received a copy of the GNU General Public License
 #	along with this program.  If not, see <https://www.gnu.org/licenses/>.
 ############################################################################
+
 import bpy
+
 from bpy.types import Operator, Menu
-from bsmax.math import point_on_curve
-from bsmax.actions import set_origen, link_to_scene
+from bsmax.math import point_on_spline
+from bsmax.actions import link_to_scene, match_transform
 from bsmax.operator import PickOperator
 from bsmax.state import is_object_mode, version
 
 
-
-class Particle_OT_Hair_Guides_From_Curve(PickOperator):
-	bl_idname = 'particle.hair_guides_from_curve'
-	bl_label = 'Hair Guides From Curve'
-	bl_options = {'REGISTER', 'UNDO'}
-	filters = ['CURVE']
-
-	@classmethod
-	def poll(self, ctx):
-		if ctx.area.type == 'VIEW_3D':
-			if ctx.mode == 'OBJECT':
-				if len(ctx.selected_objects) == 1:
-					return ctx.object.type == 'MESH'
-		return False
+class Hair_Guide:
+	def __init__(self):
+		self.name = "ParticleSystem"
+		self.hair_keys = [] # [[Vector(x,y,z), Vector(x,y,z)], [Vector(x,y,z)]]
 	
-	def check_modifier(self, obj):
-		has_particle = False
-		for m in obj.modifiers:
-			has_particle = m.type == 'PARTICLE_SYSTEM'
-			if has_particle:
-				break
-		if has_particle:
-			obj.particle_systems.active.particles.data.settings.type = 'HAIR'
-		else:
-			m = obj.modifiers.new(name='ParticleSettings', type='PARTICLE_SYSTEM')
-			m.particle_system.particles.data.settings.type = 'HAIR'
+	def get_hair_particle(self, ctx):
+		# Get the depsgraph
+		deps_graph = ctx.evaluated_depsgraph_get()
+		# Get evaluated object 
+		evaluated_object = ctx.object.evaluated_get(deps_graph)
+		# Get active particle
+		return evaluated_object.particle_systems.active
 	
-	def get_max_lenght(self, obj):
-		return max([spline.calc_length() for spline in obj.data.splines])
-	
-	def comb_the_hair(self, hair, curve, index):
-		count = len(hair.hair_keys)
-		for i in range(0, count):
-			percent = i / (count - 1)
-			#TODO_01 this coordinate has to fixed by difrent of two objects cordinate
-			coord, _, _ = point_on_curve(curve, index, percent)
-			hair.hair_keys[i].co = coord
-
-	def picked(self, ctx, source, subsource, target, subtarget):
-		obj = source[0]
-		
-		""" Set Curve pivot same as Object """
-		#TODO temprary solution for fix this read the #TODO_01
-		set_origen(ctx, target, obj.location)
-		bpy.ops.object.select_all(action='DESELECT')
-		obj.select_set(state = True)
-		ctx.view_layer.objects.active = obj
-
-		""" Make ready for working on """
-		self.check_modifier(obj)
+	def create_hair_particle(self, ctx):
+		# reset avalible hair particle
 		bpy.ops.particle.edited_clear()
-		
-		""" Collect data """
-		hair = obj.particle_systems.active.particles.data.settings
-		hair.count = len(target.data.splines)
-		hair.hair_length = self.get_max_lenght(target)
-		hair.hair_step = max([len(spline.bezier_points) for spline in target.data.splines])
+		bpy.ops.particle.disconnect_hair()
+		# create new particle sets
+		hair = ctx.object.particle_systems.active.particles.data.settings
+		hair.count = len(self.hair_keys)
+		hair.hair_length = 1
+		# get max hair count
+		max_count = 0
+		for hair in self.hair_keys:
+			count = len(hair)
+			if count > max_count:
+				max_count = count
+		# hair.hair_step = max_count
+	
+	def get_hair_style(self, ctx):
+		""" Read hair style from particle setting """
+		hair_particle = self.get_hair_particle(ctx)
+		self.hair_keys.clear()
+		for particle in hair_particle.particles:
+			self.hair_keys.append([vector.co.copy() for vector in particle.hair_keys])
+		self.name = hair_particle.name	
 
-		""" Make the Brush ready """		
+	def set_hair_style(self, ctx):
+		""" create particle data from hair_keys """
+		active_particle = self.get_hair_particle(ctx)
+		# apply style
+		for particle, key in zip(active_particle.particles, self.hair_keys):
+			for hair_key, key_co in zip(particle.hair_keys, key):
+				hair_key.co = key_co
+		# Update view and UI
+		ctx.scene.frame_set(ctx.scene.frame_current)
+	
+
+	def to_curve(self, ctx):
+		""" Create Conver object from heire style """
+		parent = ctx.object
+		name = parent.name + "_" + self.name
+		newcurve = bpy.data.curves.new(name, type='CURVE')
+		newcurve.dimensions = '3D'
+		curve = bpy.data.curves[newcurve.name]
+		curve.splines.clear()
+		
+		for keys in self.hair_keys:
+			count = len(keys)
+			newspline = curve.splines.new('POLY')
+			newspline.points.add(count-1)
+
+			for i, co in enumerate(keys):
+				newspline.points[i].co = [co.x, co.y, co.z, 1]
+
+		curve = bpy.data.objects.new(name, newcurve)
+		link_to_scene(ctx, curve)
+
+		curve.matrix_world = parent.matrix_world
+		return curve
+
+
+	def from_curve(self, curve):
+		""" Read curve object as hair style date """
+		self.hair_keys.clear()
+		
+		# get max hair count
+		max_count = 0
+		for spline in curve.data.splines:
+			count = len(spline.bezier_points)
+			if count > max_count:
+				max_count = count
+
+		# read points from bezier curve
+		for spline in curve.data.splines:
+			new_hair = []
+			for i in range(max_count):
+				time = i / (max_count - 1)
+				co, _, _ = point_on_spline(spline, time)
+				new_hair.append(co)
+			if len(new_hair) > 1:
+				self.hair_keys.append(new_hair)
+
+		# read points from poly curves
+		for spline in curve.data.splines:
+			new_hair = []
+			for point in spline.points:
+				co = [point.co[0], point.co[1], point.co[2]]
+				new_hair.append(co)
+			if len(new_hair) > 1:
+				self.hair_keys.append(new_hair)
+
+
+	def to_text(self):
+		""" Conver hair style to python code array as text """
+		return ""
+
+
+	def from_text(self, text):
+		""" Convert python array as text to hayle style data """
+		pass
+
+
+	def commit(self):
+		""" in particle brush mode apply a brush with no change 
+			this makes blender save and keep new values.
+		"""
 		bpy.ops.object.mode_set(mode='PARTICLE_EDIT', toggle=False)
 		bpy.ops.wm.tool_set_by_id(name='builtin_brush.Comb')
 		
@@ -90,21 +150,52 @@ class Particle_OT_Hair_Guides_From_Curve(PickOperator):
 		else:
 			bpy.ops.particle.brush_edit(stroke=[{'name':'',
 				'location':(0,0,0),'mouse':(0,0),
-				'mouse_event':(0,0),'pressure':0,'size':0,
-				'pen_flip':False,'x_tilt':0,'y_tilt':0,
+				'mouse_event':(0,0),
+				'pressure':0,'size':0,'pen_flip':False,
+				'x_tilt':0,'y_tilt':0,
 				'time':0,'is_start':False}])
 		
-		bpy.ops.particle.disconnect_hair()
-		depsgraph = ctx.evaluated_depsgraph_get()
-		obj = obj.evaluated_get(depsgraph)
-
-		""" Comb The Hair """
-		for i in range(hair.count):
-			self.comb_the_hair(obj.particle_systems.active.particles[i], target, i)
-		
-		""" Commit Brush """
+		# Commit the Brush
 		bpy.ops.particle.connect_hair()
 		bpy.ops.object.mode_set(mode='OBJECT', toggle=False)
+
+
+
+def poll_check(ctx):
+	""" Return true if Hair particle Avalible and Active """
+	if ctx.area.type == 'VIEW_3D':
+		active_particle = ctx.object.particle_systems.active
+		if active_particle:
+			return active_particle.particles.data.settings.type == 'HAIR'
+	return False
+
+
+
+class Particle_OT_Hair_Guides_From_Curve(PickOperator):
+	""" Conver picked Curve object to Hair particle Brush """
+	bl_idname = 'particle.hair_guides_from_curve'
+	bl_label = 'Hair Guides From Curve'
+	bl_options = {'REGISTER', 'UNDO'}
+	filters = ['CURVE']
+
+	@classmethod
+	def poll(self, ctx):
+		return poll_check(ctx)
+
+	def match_curve_transform(self, ctx, curve):
+		active_object = ctx.object
+		match_transform(ctx, curve, active_object)
+		bpy.ops.object.select_all(action='DESELECT')
+		active_object.select_set(state=True)
+		ctx.view_layer.objects.active = active_object
+	
+	def picked(self, ctx, source, subsource, target, subtarget):
+		self.match_curve_transform(ctx, target)
+		hair_guide = Hair_Guide()
+		hair_guide.from_curve(target)
+		hair_guide.create_hair_particle(ctx)
+		hair_guide.set_hair_style(ctx)
+		hair_guide.commit()
 
 
 
@@ -115,56 +206,33 @@ class Particle_OT_Hair_Guides_To_Curve(Operator):
 
 	@classmethod
 	def poll(self, ctx):
-		if ctx.area.type == 'VIEW_3D':
-			if ctx.mode == 'OBJECT':
-				if len(ctx.selected_objects) == 1:
-					return ctx.object.type == 'MESH'
-		return False
+		return poll_check(ctx)
 
-	def center_of(self, point_a, point_b):
-		return (point_a + point_b) / 2
-	
-	def read_hair_guide(self, ctx, obj):
-		""" collect and return hair guides coordinate points """
-		depsgraph = ctx.evaluated_depsgraph_get()
-		obj = obj.evaluated_get(depsgraph)
-		hairs = obj.particle_systems.active.particles
-		return [[key.co for key in hair.hair_keys] for hair in hairs]
-	
-	def create_curve(self, ctx, guides, parent):
-		if len(guides) > 0:
-			name = parent.name + "_Hair_Guide"
-			newcurve = bpy.data.curves.new(name, type='CURVE')
-			newcurve.dimensions = '3D'
-			curve = bpy.data.curves[newcurve.name]
-			curve.splines.clear()
-			
-			for guide in guides:
-				count = len(guide)
-				newspline = curve.splines.new('BEZIER')
-				newspline.bezier_points.add(count-1)
-				for i in range(count):
-					first, last, co = (i == 0), (i == count-1), guide[i]
-					bez = newspline.bezier_points[i]
-					handle_type = 'VECTOR' if first or last else 'AUTO'
-					bez.co = co
-					bez.handle_left = self.center_of(co, guide[i+1]) if first else co
-					bez.handle_left_type = handle_type
-					bez.handle_right = co if last else self.center_of(co, guide[i-1])
-					bez.handle_right_type = handle_type
-			
-			curve = bpy.data.objects.new(name, newcurve)
-			link_to_scene(ctx, curve)
+	def execute(self, ctx):
+		hair_guide = Hair_Guide()
+		hair_guide.get_hair_style(ctx)
+		hair_guide.to_curve(ctx)
+		return{"FINISHED"}
 
-			curve.location = parent.location
-			curve.rotation_euler = parent.rotation_euler
-			curve.scale = parent.scale
+
+
+class Particle_OT_Hair_Grap_Style(Operator):
+	""" Grab current style of hair particle and apply as brush """
+	bl_idname = 'particle.hair_grap_style'
+	bl_label = 'Hair Grab Style'
+	bl_options = {'REGISTER', 'UNDO'}
 	
-	def execute(self,ctx):
-		obj = ctx.active_object
-		guides = self.read_hair_guide(ctx, obj)
-		self.create_curve(ctx, guides, obj)
-		self.report({'OPERATOR'},'bpy.ops.particle.hair_guides_to_curve()')
+	@classmethod
+	def poll(self, ctx):
+		return poll_check(ctx)
+	
+	def execute(self, ctx):
+		hair_guide = Hair_Guide()
+		hair_guide.get_hair_style(ctx)
+		ctx.object.particle_systems.active.use_hair_dynamics = False
+		ctx.scene.frame_set(ctx.scene.frame_current)
+		hair_guide.set_hair_style(ctx)
+		hair_guide.commit()
 		return{"FINISHED"}
 
 
@@ -180,14 +248,18 @@ class BsMax_MT_particle_tools(Menu):
 
 	def draw(self, ctx):
 		layout=self.layout
-		layout.operator("particle.hair_guides_from_curve",icon="PARTICLEMODE")
-		layout.operator("particle.hair_guides_to_curve",icon="TRACKING")
+		layout.operator("particle.hair_guides_from_curve", icon="PARTICLEMODE")
+		layout.operator("particle.hair_guides_to_curve", icon="TRACKING")
+		layout.operator("particle.hair_grap_style", icon="HAIR")
 
 
 
-classes = [Particle_OT_Hair_Guides_From_Curve,
+classes = [
+	Particle_OT_Hair_Guides_From_Curve,
 	Particle_OT_Hair_Guides_To_Curve,
-	BsMax_MT_particle_tools]
+	Particle_OT_Hair_Grap_Style,
+	BsMax_MT_particle_tools
+	]
 
 def register_hair_guide():
 	for c in classes:

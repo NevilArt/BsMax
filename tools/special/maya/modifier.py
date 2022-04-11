@@ -30,8 +30,7 @@ class Modifier_OT_Add_Revolve(Operator):
 		return is_objects_selected(ctx)
 
 	def execute(self, ctx):
-		modifier_add(ctx,ctx.selected_objects,'SCREW',name='Revolve')
-		self.report({'OPERATOR'},'bpy.ops.modifier.add_revolve()')
+		modifier_add(ctx,ctx.selected_objects, 'SCREW', name='Revolve')
 		return {'FINISHED'}
 
 classes = [Modifier_OT_Add_Revolve]

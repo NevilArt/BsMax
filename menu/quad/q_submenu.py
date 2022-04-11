@@ -18,7 +18,9 @@ from .q_refrence import quadmenuref
 from .q_border import QuadBorderFrame
 from .q_button import QuadButton
 from .q_seprator import QuadSeprator
-from .q_subbutton import * # QuadSubMenuButton
+#TODO this is circular import but works some how
+# do not need to fix for now kabuz quadmenu will be rewrite anyway
+from .q_subbutton import * #QuadSubMenuButton
 
 
 

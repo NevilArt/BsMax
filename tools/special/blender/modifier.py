@@ -18,629 +18,790 @@ from bpy.types import Operator
 from bsmax.actions import modifier_add
 from bsmax.state import is_objects_selected
 
+# this operator use to add modifier to selected objects from search box
+
+
+
 class Modifier_OT_DATA_TRANSFER_Add(Operator):
-	bl_idname = "modifier.datatransformadd"
+	bl_idname = "modifier.add_data_transform"
 	bl_label = "Data Transfer (add)"
 	bl_options = {'REGISTER','UNDO'}
+
 	@classmethod
 	def poll(self, ctx):
 		return is_objects_selected(ctx)
+
 	def execute(self, ctx):
 		modifier_add(ctx,ctx.selected_objects,'DATA_TRANSFER')
-		self.report({'OPERATOR'},'bpy.ops.modifier.datatransformadd()')
 		return {'FINISHED'}
+
+
 
 class Modifier_OT_MESH_CACHE_Add(Operator):
-	bl_idname = "modifier.meshcacheadd"
+	bl_idname = "modifier.add_mesh_cache"
 	bl_label = "Mesh Cache (add)"
 	bl_options = {'REGISTER','UNDO'}
+
 	@classmethod
 	def poll(self, ctx):
 		return is_objects_selected(ctx)
+
 	def execute(self, ctx):
 		modifier_add(ctx,ctx.selected_objects,'MESH_CACHE')
-		self.report({'OPERATOR'},'bpy.ops.modifier.meshcacheadd()')
 		return {'FINISHED'}
+
+
 
 class Modifier_OT_MESH_SEQUENCE_CACHE_Add(Operator):
-	bl_idname = "modifier.meshsequencecacheadd"
+	bl_idname = "modifier.add_mesh_sequence_cache"
 	bl_label = "Mesh Sequence Cache (add)"
 	bl_options = {'REGISTER','UNDO'}
+
 	@classmethod
 	def poll(self, ctx):
 		return is_objects_selected(ctx)
+
 	def execute(self, ctx):
 		modifier_add(ctx,ctx.selected_objects,'MESH_SEQUENCE_CACHE')
-		self.report({'OPERATOR'},'bpy.ops.modifier.meshsequencecacheadd()')
 		return {'FINISHED'}
+
+
 
 class Modifier_OT_NORMAL_EDIT_Add(Operator):
-	bl_idname = "modifier.normaleditadd"
+	bl_idname = "modifier.add_normal_edit"
 	bl_label = "Normal Edit (add)"
 	bl_options = {'REGISTER','UNDO'}
+
 	@classmethod
 	def poll(self, ctx):
 		return is_objects_selected(ctx)
+
 	def execute(self, ctx):
 		modifier_add(ctx,ctx.selected_objects,'NORMAL_EDIT')
-		self.report({'OPERATOR'},'bpy.ops.modifier.normaleditadd()')
 		return {'FINISHED'}
+
+
 
 class Modifier_OT_WEIGHTED_NORMAL_Add(Operator):
-	bl_idname = "modifier.weightednormaladd"
+	bl_idname = "modifier.add_weighted_normal"
 	bl_label = "Weighted Normal (add)"
 	bl_options = {'REGISTER','UNDO'}
+
 	@classmethod
 	def poll(self, ctx):
 		return is_objects_selected(ctx)
+
 	def execute(self, ctx):
 		modifier_add(ctx,ctx.selected_objects,'WEIGHTED_NORMAL')
-		self.report({'OPERATOR'},'bpy.ops.modifier.weightednormaladd()')
 		return {'FINISHED'}
+
+
 
 class Modifier_OT_UV_PROJECT_Add(Operator):
-	bl_idname = "modifier.uvprojectadd"
+	bl_idname = "modifier.add_uv_project"
 	bl_label = "UV Project (add)"
 	bl_options = {'REGISTER','UNDO'}
+
 	@classmethod
 	def poll(self, ctx):
 		return is_objects_selected(ctx)
+
 	def execute(self, ctx):
 		modifier_add(ctx,ctx.selected_objects,'UV_PROJECT')
-		self.report({'OPERATOR'},'bpy.ops.modifier.uvprojectadd()')
 		return {'FINISHED'}
+
+
 
 class Modifier_OT_UV_WARP_Add(Operator):
-	bl_idname = "modifier.uvwarpadd"
+	bl_idname = "modifier.add_uvwarp"
 	bl_label = "UV Warp (add)"
 	bl_options = {'REGISTER','UNDO'}
+
 	@classmethod
 	def poll(self, ctx):
 		return is_objects_selected(ctx)
+
 	def execute(self, ctx):
 		modifier_add(ctx,ctx.selected_objects,'UV_WARP')
-		self.report({'OPERATOR'},'bpy.ops.modifier.uvwarpadd()')
 		return {'FINISHED'}
+
+
 
 class Modifier_OT_VERTEX_WEIGHT_EDIT_Add(Operator):
-	bl_idname = "modifier.vertexweighteditadd"
+	bl_idname = "modifier.add_vertex_weight_edit"
 	bl_label = "Vertex Weight Edit (add)"
 	bl_options = {'REGISTER','UNDO'}
+
 	@classmethod
 	def poll(self, ctx):
 		return is_objects_selected(ctx)
+
 	def execute(self, ctx):
 		modifier_add(ctx,ctx.selected_objects,'VERTEX_WEIGHT_EDIT')
-		self.report({'OPERATOR'},'bpy.ops.modifier.vertexweighteditadd()')
 		return {'FINISHED'}
 
+
+
 class Modifier_OT_VERTEX_WEIGHT_MIX_Add(Operator):
-	bl_idname = "modifier.vertexweightmixadd"
+	bl_idname = "modifier.add_vertex_weight_mix"
 	bl_label = "Vertex Weight Mix (add)"
 	bl_options = {'REGISTER','UNDO'}
+
 	@classmethod
 	def poll(self, ctx):
 		return is_objects_selected(ctx)
+
 	def execute(self, ctx):
 		modifier_add(ctx,ctx.selected_objects,'VERTEX_WEIGHT_MIX')
-		self.report({'OPERATOR'},'bpy.ops.modifier.vertexweightmixadd()')
 		return {'FINISHED'}
 
+
+
 class Modifier_OT_VERTEX_WEIGHT_PROXIMITY_Add(Operator):
-	bl_idname = "modifier.vertexweightproximityadd"
+	bl_idname = "modifier.add_vertex_weight_proximity"
 	bl_label = "Vertex Weight Proximity (add)"
 	bl_options = {'REGISTER','UNDO'}
 	@classmethod
+
 	def poll(self, ctx):
 		return is_objects_selected(ctx)
+
 	def execute(self, ctx):
 		modifier_add(ctx,ctx.selected_objects,'VERTEX_WEIGHT_PROXIMITY')
-		self.report({'OPERATOR'},'bpy.ops.modifier.vertexweightproximityadd()')
 		return {'FINISHED'}
+
+
 
 class Modifier_OT_ARRAY_Add(Operator):
-	bl_idname = "modifier.arrayadd"
+	bl_idname = "modifier.add_array"
 	bl_label = "Array (add)"
 	bl_options = {'REGISTER','UNDO'}
+
 	@classmethod
 	def poll(self, ctx):
 		return is_objects_selected(ctx)
+
 	def execute(self, ctx):
 		modifier_add(ctx,ctx.selected_objects,'ARRAY')
-		self.report({'OPERATOR'},'bpy.ops.modifier.arrayadd()')
 		return {'FINISHED'}
+
+
 
 class Modifier_OT_BEVEL_Add(Operator):
-	bl_idname = "modifier.beveladd"
+	bl_idname = "modifier.add_bevel"
 	bl_label = "Bevel (add)"
 	bl_options = {'REGISTER','UNDO'}
+
 	@classmethod
 	def poll(self, ctx):
 		return is_objects_selected(ctx)
+
 	def execute(self, ctx):
 		modifier_add(ctx,ctx.selected_objects,'BEVEL')
-		self.report({'OPERATOR'},'bpy.ops.modifier.beveladd()')
 		return {'FINISHED'}
+
+
 
 class Modifier_OT_BOOLEAN_Add(Operator):
-	bl_idname = "modifier.booleanadd"
+	bl_idname = "modifier.add_boolean"
 	bl_label = "Boolean (add)"
 	bl_options = {'REGISTER','UNDO'}
+
 	@classmethod
 	def poll(self, ctx):
 		return is_objects_selected(ctx)
+
 	def execute(self, ctx):
 		modifier_add(ctx,ctx.selected_objects,'BOOLEAN')
-		self.report({'OPERATOR'},'bpy.ops.modifier.booleanadd()')
 		return {'FINISHED'}
+
+
 
 class Modifier_OT_BUILD_Add(Operator):
-	bl_idname = "modifier.buildadd"
+	bl_idname = "modifier.add_build"
 	bl_label = "Build (add)"
 	bl_options = {'REGISTER','UNDO'}
+
 	@classmethod
 	def poll(self, ctx):
 		return is_objects_selected(ctx)
+
 	def execute(self, ctx):
 		modifier_add(ctx,ctx.selected_objects,'BUILD')
-		self.report({'OPERATOR'},'bpy.ops.modifier.buildadd()')
 		return {'FINISHED'}
+
+
 
 class Modifier_OT_DECIMATE_Add(Operator):
-	bl_idname = "modifier.decimateadd"
+	bl_idname = "modifier.add_decimate"
 	bl_label = "Decimate (add)"
 	bl_options = {'REGISTER','UNDO'}
+
 	@classmethod
 	def poll(self, ctx):
 		return is_objects_selected(ctx)
+
 	def execute(self, ctx):
 		modifier_add(ctx,ctx.selected_objects,'DECIMATE')
-		self.report({'OPERATOR'},'bpy.ops.modifier.decimateadd()')
 		return {'FINISHED'}
+
+
 
 class Modifier_OT_EDGE_SPLIT_Add(Operator):
-	bl_idname = "modifier.edgesplitadd"
+	bl_idname = "modifier.add_edgesplit"
 	bl_label = "Edge Split (add)"
 	bl_options = {'REGISTER','UNDO'}
+
 	@classmethod
 	def poll(self, ctx):
 		return is_objects_selected(ctx)
+
 	def execute(self, ctx):
 		modifier_add(ctx,ctx.selected_objects,'EDGE_SPLIT')
-		self.report({'OPERATOR'},'bpy.ops.modifier.edgesplitadd()')
 		return {'FINISHED'}
+
+
 
 class Modifier_OT_Mask_Add(Operator):
-	bl_idname = "modifier.maskadd"
+	bl_idname = "modifier.add_mask"
 	bl_label = "Mask (add)"
 	bl_options = {'REGISTER','UNDO'}
+
 	@classmethod
 	def poll(self, ctx):
 		return is_objects_selected(ctx)
+
 	def execute(self, ctx):
 		modifier_add(ctx,ctx.selected_objects,'MASK')
-		self.report({'OPERATOR'},'bpy.ops.modifier.maskadd()')
 		return {'FINISHED'}
+
+
 
 class Modifier_OT_MIRROR_Add(Operator):
-	bl_idname = "modifier.mirroradd"
+	bl_idname = "modifier.add_mirror"
 	bl_label = "Mirror (add)"
 	bl_options = {'REGISTER','UNDO'}
+
 	@classmethod
 	def poll(self, ctx):
 		return is_objects_selected(ctx)
+
 	def execute(self, ctx):
 		modifier_add(ctx,ctx.selected_objects,'MIRROR')
-		self.report({'OPERATOR'},'bpy.ops.modifier.mirroradd()')
 		return {'FINISHED'}
+
+
 
 class Modifier_OT_MULTIRES_Add(Operator):
-	bl_idname = "modifier.multiresadd"
+	bl_idname = "modifier.add_multires"
 	bl_label = "Multires (add)"
 	bl_options = {'REGISTER','UNDO'}
+
 	@classmethod
 	def poll(self, ctx):
 		return is_objects_selected(ctx)
+
 	def execute(self, ctx):
 		modifier_add(ctx,ctx.selected_objects,'MULTIRES')
-		self.report({'OPERATOR'},'bpy.ops.modifier.multiresadd()')
 		return {'FINISHED'}
+
+
 
 class Modifier_OT_REMESH_Add(Operator):
-	bl_idname = "modifier.remeshadd"
+	bl_idname = "modifier.add_remesh"
 	bl_label = "Remesh (add)"
 	bl_options = {'REGISTER','UNDO'}
+
 	@classmethod
 	def poll(self, ctx):
 		return is_objects_selected(ctx)
+
 	def execute(self, ctx):
 		modifier_add(ctx,ctx.selected_objects,'REMESH')
-		self.report({'OPERATOR'},'bpy.ops.modifier.remeshadd()')
 		return {'FINISHED'}
+
+
 
 class Modifier_OT_Screw_Add(Operator):
-	bl_idname = "modifier.screwadd"
+	bl_idname = "modifier.add_screw"
 	bl_label = "Screw (add)"
 	bl_options = {'REGISTER','UNDO'}
+
 	@classmethod
 	def poll(self, ctx):
 		return is_objects_selected(ctx)
+
 	def execute(self, ctx):
 		modifier_add(ctx,ctx.selected_objects,'SCREW')
-		self.report({'OPERATOR'},'bpy.ops.modifier.screwadd()')
 		return {'FINISHED'}
+
+
 
 class Modifier_OT_SKIN_Add(Operator):
-	bl_idname = "modifier.skinadd"
+	bl_idname = "modifier.add_skin"
 	bl_label = "Skin (add)"
 	bl_options = {'REGISTER','UNDO'}
+
 	@classmethod
 	def poll(self, ctx):
 		return is_objects_selected(ctx)
+
 	def execute(self, ctx):
 		modifier_add(ctx,ctx.selected_objects,'SKIN')
-		self.report({'OPERATOR'},'bpy.ops.modifier.skinadd()')
 		return {'FINISHED'}
+
+
 
 class Modifier_OT_SOLIDIFY_Add(Operator):
-	bl_idname = "modifier.solidifyadd"
+	bl_idname = "modifier.add_solidify"
 	bl_label = "Solidify (add)"
 	bl_options = {'REGISTER','UNDO'}
+
 	@classmethod
 	def poll(self, ctx):
 		return is_objects_selected(ctx)
+
 	def execute(self, ctx):
 		modifier_add(ctx,ctx.selected_objects,'SOLIDIFY')
-		self.report({'OPERATOR'},'bpy.ops.modifier.solidifyadd()')
 		return {'FINISHED'}
+
+
 
 class Modifier_OT_SUBSURF_Add(Operator):
-	bl_idname = "modifier.subsurfadd"
+	bl_idname = "modifier.add_subsurf"
 	bl_label = "Subsurf (add)"
 	bl_options = {'REGISTER','UNDO'}
+
 	@classmethod
 	def poll(self, ctx):
 		return is_objects_selected(ctx)
+
 	def execute(self, ctx):
 		modifier_add(ctx,ctx.selected_objects,'SUBSURF')
-		self.report({'OPERATOR'},'bpy.ops.modifier.subsurfadd()')
 		return {'FINISHED'}
+
+
 
 class Modifier_OT_TRIANGULATE_Add(Operator):
-	bl_idname = "modifier.triangulateadd"
+	bl_idname = "modifier.add_triangulate"
 	bl_label = "Triangulate (add)"
 	bl_options = {'REGISTER','UNDO'}
+
 	@classmethod
 	def poll(self, ctx):
 		return is_objects_selected(ctx)
+
 	def execute(self, ctx):
 		modifier_add(ctx,ctx.selected_objects,'TRIANGULATE')
-		self.report({'OPERATOR'},'bpy.ops.modifier.triangulateadd()')
 		return {'FINISHED'}
+
+
 
 class Modifier_OT_WIREFRAME_Add(Operator):
-	bl_idname = "modifier.wireframeadd"
+	bl_idname = "modifier.add_wireframe"
 	bl_label = "Wireframe (add)"
 	bl_options = {'REGISTER','UNDO'}
+
 	@classmethod
 	def poll(self, ctx):
 		return is_objects_selected(ctx)
+
 	def execute(self, ctx):
 		modifier_add(ctx,ctx.selected_objects,'WIREFRAME')
-		self.report({'OPERATOR'},'bpy.ops.modifier.wireframeadd()')
 		return {'FINISHED'}
+
+
 
 class Modifier_OT_ARMATURE_Add(Operator):
-	bl_idname = "modifier.armatureadd"
+	bl_idname = "modifier.add_armature"
 	bl_label = "Armature (add)"
 	bl_options = {'REGISTER','UNDO'}
+
 	@classmethod
 	def poll(self, ctx):
 		return is_objects_selected(ctx)
+
 	def execute(self, ctx):
 		modifier_add(ctx,ctx.selected_objects,'ARMATURE')
-		self.report({'OPERATOR'},'bpy.ops.modifier.armatureadd()')
 		return {'FINISHED'}
+
+
 
 class Modifier_OT_CAST_Add(Operator):
-	bl_idname = "modifier.castadd"
+	bl_idname = "modifier.add_cast"
 	bl_label = "Cast (add)"
 	bl_options = {'REGISTER','UNDO'}
+
 	@classmethod
 	def poll(self, ctx):
 		return is_objects_selected(ctx)
+
 	def execute(self, ctx):
 		modifier_add(ctx,ctx.selected_objects,'CAST')
-		self.report({'OPERATOR'},'bpy.ops.modifier.castadd()')
 		return {'FINISHED'}
+
+
 
 class Modifier_OT_CURVE_Add(Operator):
-	bl_idname = "modifier.curveadd"
+	bl_idname = "modifier.add_curve"
 	bl_label = "Curve (add)"
 	bl_options = {'REGISTER','UNDO'}
+
 	@classmethod
 	def poll(self, ctx):
 		return is_objects_selected(ctx)
+
 	def execute(self, ctx):
 		modifier_add(ctx,ctx.selected_objects,'CURVE')
-		self.report({'OPERATOR'},'bpy.ops.modifier.curveadd()')
 		return {'FINISHED'}
+
+
 
 class Modifier_OT_DISPLACE_Add(Operator):
-	bl_idname = "modifier.displaceadd"
+	bl_idname = "modifier.add_displace"
 	bl_label = "Displace (add)"
 	bl_options = {'REGISTER','UNDO'}
+
 	@classmethod
 	def poll(self, ctx):
 		return is_objects_selected(ctx)
+
 	def execute(self, ctx):
 		modifier_add(ctx,ctx.selected_objects,'DISPLACE')
-		self.report({'OPERATOR'},'bpy.ops.modifier.displaceadd()')
 		return {'FINISHED'}
+
+
 
 class Modifier_OT_HOOK_Add(Operator):
-	bl_idname = "modifier.hookadd"
+	bl_idname = "modifier.add_hook"
 	bl_label = "Hook (add)"
 	bl_options = {'REGISTER','UNDO'}
+
 	@classmethod
 	def poll(self, ctx):
 		return is_objects_selected(ctx)
+
 	def execute(self, ctx):
 		modifier_add(ctx,ctx.selected_objects,'HOOK')
-		self.report({'OPERATOR'},'bpy.ops.modifier.hookadd()')
 		return {'FINISHED'}
+
+
 
 class Modifier_OT_LAPLACIANDEFORM_Add(Operator):
-	bl_idname = "modifier.laplaciandeformadd"
+	bl_idname = "modifier.add_laplaciandeform"
 	bl_label = "Laplacian Deform (add)"
 	bl_options = {'REGISTER','UNDO'}
+
 	@classmethod
 	def poll(self, ctx):
 		return is_objects_selected(ctx)
+
 	def execute(self, ctx):
 		modifier_add(ctx,ctx.selected_objects,'LAPLACIANDEFORM')
-		self.report({'OPERATOR'},'bpy.ops.modifier.laplaciandeformadd()')
 		return {'FINISHED'}
+
+
 
 class Modifier_OT_LATTICE_Add(Operator):
-	bl_idname = "modifier.latticeadd"
+	bl_idname = "modifier.add_lattice"
 	bl_label = "Lattice (add)"
 	bl_options = {'REGISTER','UNDO'}
+
 	@classmethod
 	def poll(self, ctx):
 		return is_objects_selected(ctx)
+
 	def execute(self, ctx):
 		modifier_add(ctx,ctx.selected_objects,'LATTICE')
-		self.report({'OPERATOR'},'bpy.ops.modifier.latticeadd()')
 		return {'FINISHED'}
+
+
 
 class Modifier_OT_MESH_DEFORM_Add(Operator):
-	bl_idname = "modifier.meshdeformadd"
+	bl_idname = "modifier.add_meshdeform"
 	bl_label = "Mesh Deform (add)"
 	bl_options = {'REGISTER','UNDO'}
+
 	@classmethod
 	def poll(self, ctx):
 		return is_objects_selected(ctx)
+
 	def execute(self, ctx):
 		modifier_add(ctx,ctx.selected_objects,'MESH_DEFORM')
-		self.report({'OPERATOR'},'bpy.ops.modifier.meshdeformadd()')
 		return {'FINISHED'}
+
+
 
 class Modifier_OT_SHRINKWRAP_Add(Operator):
-	bl_idname = "modifier.shrinkwarpadd"
+	bl_idname = "modifier.add_shrinkwarp"
 	bl_label = "Shrink Warp (add)"
 	bl_options = {'REGISTER','UNDO'}
+
 	@classmethod
 	def poll(self, ctx):
 		return is_objects_selected(ctx)
+
 	def execute(self, ctx):
 		modifier_add(ctx,ctx.selected_objects,'SHRINKWRAP')
-		self.report({'OPERATOR'},'bpy.ops.modifier.shrinkwarpadd()')
 		return {'FINISHED'}
+
+
 
 class Modifier_OT_SIMPLE_DEFORM_Add(Operator):
-	bl_idname = "modifier.simpledeformadd"
+	bl_idname = "modifier.add_simpledeform"
 	bl_label = "Simple Deform (add)"
 	bl_options = {'REGISTER','UNDO'}
+
 	@classmethod
 	def poll(self, ctx):
 		return is_objects_selected(ctx)
+
 	def execute(self, ctx):
 		modifier_add(ctx,ctx.selected_objects,'SIMPLE_DEFORM')
-		self.report({'OPERATOR'},'bpy.ops.modifier.simpledeformadd()')
 		return {'FINISHED'}
+
+
 
 class Modifier_OT_SMOOTH_Add(Operator):
-	bl_idname = "modifier.smoothadd"
+	bl_idname = "modifier.add_smooth"
 	bl_label = "Smooth (add)"
 	bl_options = {'REGISTER','UNDO'}
+
 	@classmethod
 	def poll(self, ctx):
 		return is_objects_selected(ctx)
+
 	def execute(self, ctx):
 		modifier_add(ctx,ctx.selected_objects,'SMOOTH')
-		self.report({'OPERATOR'},'bpy.ops.modifier.smoothadd()')
 		return {'FINISHED'}
+
+
 
 class Modifier_OT_CORRECTIVE_SMOOTH_Add(Operator):
-	bl_idname = "modifier.correctivesmoothadd"
+	bl_idname = "modifier.add_correctivesmooth"
 	bl_label = "Corrective Smooth (add)"
 	bl_options = {'REGISTER','UNDO'}
+
 	@classmethod
 	def poll(self, ctx):
 		return is_objects_selected(ctx)
+
 	def execute(self, ctx):
 		modifier_add(ctx,ctx.selected_objects,'CORRECTIVE_SMOOTH')
-		self.report({'OPERATOR'},'bpy.ops.modifier.correctivesmoothadd()')
 		return {'FINISHED'}
+
+
 
 class Modifier_OT_LAPLACIANSMOOTH_Add(Operator):
-	bl_idname = "modifier.laplaciansmoothadd"
+	bl_idname = "modifier.add_laplaciansmooth"
 	bl_label = "Laplacian Smooth (add)"
 	bl_options = {'REGISTER','UNDO'}
+
 	@classmethod
 	def poll(self, ctx):
 		return is_objects_selected(ctx)
+
 	def execute(self, ctx):
 		modifier_add(ctx,ctx.selected_objects,'LAPLACIANSMOOTH')
-		self.report({'OPERATOR'},'bpy.ops.modifier.laplaciansmoothadd()')
 		return {'FINISHED'}
+
+
 
 class Modifier_OT_SURFACE_DEFORM_Add(Operator):
-	bl_idname = "modifier.surfacedeformadd"
+	bl_idname = "modifier.add_surfacedeform"
 	bl_label = "Surface Deform (add)"
 	bl_options = {'REGISTER','UNDO'}
+
 	@classmethod
 	def poll(self, ctx):
 		return is_objects_selected(ctx)
+
 	def execute(self, ctx):
 		modifier_add(ctx,ctx.selected_objects,'SURFACE_DEFORM')
-		self.report({'OPERATOR'},'bpy.ops.modifier.surfacedeformadd()')
 		return {'FINISHED'}
+
+
 
 class Modifier_OT_WARP_Add(Operator):
-	bl_idname = "modifier.warpadd"
+	bl_idname = "modifier.add_warp"
 	bl_label = "Warp (add)"
 	bl_options = {'REGISTER','UNDO'}
+
 	@classmethod
 	def poll(self, ctx):
 		return is_objects_selected(ctx)
+
 	def execute(self, ctx):
 		modifier_add(ctx,ctx.selected_objects,'WARP')
-		self.report({'OPERATOR'},'bpy.ops.modifier.warpadd()')
 		return {'FINISHED'}
+
+
 
 class Modifier_OT_WAVE_Add(Operator):
-	bl_idname = "modifier.waveadd"
+	bl_idname = "modifier.add_wave"
 	bl_label = "Wave (add)"
 	bl_options = {'REGISTER','UNDO'}
+
 	@classmethod
 	def poll(self, ctx):
 		return is_objects_selected(ctx)
+
 	def execute(self, ctx):
 		modifier_add(ctx,ctx.selected_objects,'WAVE')
-		self.report({'OPERATOR'},'bpy.ops.modifier.waveadd()')
 		return {'FINISHED'}
+
+
 
 class Modifier_OT_CLOTH_Add(Operator):
-	bl_idname = "modifier.clothadd"
+	bl_idname = "modifier.add_cloth"
 	bl_label = "Cloth (add)"
 	bl_options = {'REGISTER','UNDO'}
+
 	@classmethod
 	def poll(self, ctx):
 		return is_objects_selected(ctx)
+
 	def execute(self, ctx):
 		modifier_add(ctx,ctx.selected_objects,'CLOTH')
-		self.report({'OPERATOR'},'bpy.ops.modifier.clothadd()')
 		return {'FINISHED'}
+
+
 
 class Modifier_OT_COLLISION_Add(Operator):
-	bl_idname = "modifier.collisionadd"
+	bl_idname = "modifier.add_collision"
 	bl_label = "Collision (add)"
 	bl_options = {'REGISTER','UNDO'}
+
 	@classmethod
 	def poll(self, ctx):
 		return is_objects_selected(ctx)
+
 	def execute(self, ctx):
 		modifier_add(ctx,ctx.selected_objects,'COLLISION')
-		self.report({'OPERATOR'},'bpy.ops.modifier.collisionadd()')
 		return {'FINISHED'}
+
+
 
 class Modifier_OT_DYNAMIC_PAINT_Add(Operator):
-	bl_idname = "modifier.dynamicpaintadd"
+	bl_idname = "modifier.add_dynamicpaint"
 	bl_label = "Dynamic Paint (add)"
 	bl_options = {'REGISTER','UNDO'}
+
 	@classmethod
 	def poll(self, ctx):
 		return is_objects_selected(ctx)
+
 	def execute(self, ctx):
 		modifier_add(ctx,ctx.selected_objects,'DYNAMIC_PAINT')
-		self.report({'OPERATOR'},'bpy.ops.modifier.dynamicpaintadd()')
+		self.report({'OPERATOR'},'bpy.ops.modifier.add_dynamicpaintadd()')
 		return {'FINISHED'}
+
+
 
 class Modifier_OT_EXPLODE_Add(Operator):
-	bl_idname = "modifier.explodeadd"
+	bl_idname = "modifier.add_explode"
 	bl_label = "Explode (add)"
 	bl_options = {'REGISTER','UNDO'}
+
 	@classmethod
 	def poll(self, ctx):
 		return is_objects_selected(ctx)
+
 	def execute(self, ctx):
 		modifier_add(ctx,ctx.selected_objects,'EXPLODE')
-		self.report({'OPERATOR'},'bpy.ops.modifier.explodeadd()')
 		return {'FINISHED'}
+
+
 
 class Modifier_OT_FLUID_SIMULATION_Add(Operator):
-	bl_idname = "modifier.fluidsimulationadd"
+	bl_idname = "modifier.add_fluidsimulation"
 	bl_label = "Fluid Simulation (add)"
 	bl_options = {'REGISTER','UNDO'}
+
 	@classmethod
 	def poll(self, ctx):
 		return is_objects_selected(ctx)
+
 	def execute(self, ctx):
 		modifier_add(ctx,ctx.selected_objects,'FLUID_SIMULATION')
-		self.report({'OPERATOR'},'bpy.ops.modifier.fluidsimulationadd()')
 		return {'FINISHED'}
+
+
 
 class Modifier_OT_OCEAN_Add(Operator):
-	bl_idname = "modifier.oceanadd"
+	bl_idname = "modifier.add_ocean"
 	bl_label = "Ocean (add)"
 	bl_options = {'REGISTER','UNDO'}
+
 	@classmethod
 	def poll(self, ctx):
 		return is_objects_selected(ctx)
+
 	def execute(self, ctx):
 		modifier_add(ctx,ctx.selected_objects,'OCEAN')
-		self.report({'OPERATOR'},'bpy.ops.modifier.oceanadd()')
 		return {'FINISHED'}
+
+
 
 class Modifier_OT_PARTICLE_INSTANCE_Add(Operator):
-	bl_idname = "modifier.particleinstanceadd"
+	bl_idname = "modifier.add_particleinstance"
 	bl_label = "Particle Instance (add)"
 	bl_options = {'REGISTER','UNDO'}
+
 	@classmethod
 	def poll(self, ctx):
 		return is_objects_selected(ctx)
+
 	def execute(self, ctx):
 		modifier_add(ctx,ctx.selected_objects,'PARTICLE_INSTANCE')
-		self.report({'OPERATOR'},'bpy.ops.modifier.particleinstanceadd()')
 		return {'FINISHED'}
+
+
 
 class Modifier_OT_PARTICLE_SYSTEM_Add(Operator):
-	bl_idname = "modifier.particlesystemeadd"
+	bl_idname = "modifier.add_particlesysteme"
 	bl_label = "Particle System (add)"
 	bl_options = {'REGISTER','UNDO'}
+
 	@classmethod
 	def poll(self, ctx):
 		return is_objects_selected(ctx)
+
 	def execute(self, ctx):
 		modifier_add(ctx,ctx.selected_objects,'PARTICLE_SYSTEM')
-		self.report({'OPERATOR'},'bpy.ops.modifier.particlesystemeadd()')
 		return {'FINISHED'}
+
+
 
 class Modifier_OT_SMOKE_Add(Operator):
-	bl_idname = "modifier.smokeadd"
+	bl_idname = "modifier.add_smoke"
 	bl_label = "Smoke (add)"
 	bl_options = {'REGISTER','UNDO'}
+
 	@classmethod
 	def poll(self, ctx):
 		return is_objects_selected(ctx)
+
 	def execute(self, ctx):
 		modifier_add(ctx,ctx.selected_objects,'SMOKE')
-		self.report({'OPERATOR'},'bpy.ops.modifier.smokeadd()')
 		return {'FINISHED'}
 
+
+
 class Modifier_OT_SOFT_BODY_Add(Operator):
-	bl_idname = "modifier.softbodyadd"
+	bl_idname = "modifier.add_softbody"
 	bl_label = "Soft Body (add)"
 	bl_options = {'REGISTER','UNDO'}
+
 	@classmethod
 	def poll(self, ctx):
 		return is_objects_selected(ctx)
+
 	def execute(self, ctx):
 		modifier_add(ctx,ctx.selected_objects,'SOFT_BODY')
-		self.report({'OPERATOR'},'bpy.ops.modifier.softbodyadd()')
 		return {'FINISHED'}
+
+
 
 classes = [
 		Modifier_OT_DATA_TRANSFER_Add,
@@ -694,7 +855,8 @@ classes = [
 		Modifier_OT_PARTICLE_INSTANCE_Add,
 		Modifier_OT_PARTICLE_SYSTEM_Add,
 		Modifier_OT_SMOKE_Add,
-		Modifier_OT_SOFT_BODY_Add]
+		Modifier_OT_SOFT_BODY_Add
+]
 		
 def register_modifier():
 	for c in classes:

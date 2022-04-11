@@ -44,7 +44,12 @@ class Mesh_TO_Shapekeys_Sort_by_name(Operator):
 
 
 class Mesh_TO_Create_Multi_Target_Shapekeys(Operator):
-	"""Name Sequence Targets like this\ntarget_10\ntarget_25\ntarget_75\nThe digit are percentage of the each target complet on"""
+	"""	Name Sequence Targets like this\n
+		target_10\n
+		target_25\n
+		target_75\n
+		The digit are percentage of the each target complet on
+	"""
 	bl_idname = "mesh.create_multi_target_shapekeys"
 	bl_label = "Create Multi Target Shapekeys"
 	bl_options = {'REGISTER', 'UNDO', 'INTERNAL'}
@@ -67,12 +72,15 @@ class Mesh_TO_Create_Multi_Target_Shapekeys(Operator):
 		return None
 	
 	def remove_shapekey_by_name(self, obj, shapekey_name):
-		obj.active_shape_key_index = obj.data.shape_keys.key_blocks.keys().index(shapekey_name)
+		key_blocks = obj.data.shape_keys.key_blocks
+		obj.active_shape_key_index = key_blocks.keys().index(shapekey_name)
 		bpy.ops.object.shape_key_remove()
 
 	def execute(self,ctx):
 		""" Collect names whit underline """
-		shapekeys = [n.name for n in ctx.object.data.shape_keys.key_blocks if n.name != 'Basis' and n.name.rfind('_') != -1]
+		shapekeys = [n.name for n in ctx.object.data.shape_keys.key_blocks
+											if n.name != 'Basis' and \
+												n.name.rfind('_') != -1]
 	
 		""" Filter names with integer end """
 		multi_shapekeys = []
@@ -104,7 +112,9 @@ class Mesh_TO_Create_Multi_Target_Shapekeys(Operator):
 	
 		""" setup drivers """
 		shell =  ctx.object
-		names = [n.name for n in shell.data.shape_keys.key_blocks if n.name != 'Basis']
+		names = [n.name for n in shell.data.shape_keys.key_blocks
+											if n.name != 'Basis']
+
 		for group in groups:
 			""" Create empty shapekey for driving """
 			if not group.name in names:

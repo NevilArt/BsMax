@@ -17,6 +17,7 @@ from .ui import register_ui, unregister_ui
 from .panel import register_panel, unregister_panel
 from .update import register_update, unregister_update
 # # Meshes
+# from .adaptive_plane import register_adaptive_plane, unregister_adaptive_plane
 from .box import register_box, unregister_box
 from .capsule import register_capsule, unregister_capsule
 from .cylinder import register_cylinder, unregister_cylinder
@@ -65,6 +66,7 @@ def register_primitives():
 	register_update()
 	register_ui()
 	register_panel()
+	# register_adaptive_plane()
 	register_arc()
 	register_box()
 	register_bone()
@@ -109,6 +111,7 @@ def unregister_primitives():
 	unregister_update()
 	unregister_ui()
 	unregister_panel()
+	# unregister_adaptive_plane()
 	unregister_arc()
 	unregister_box()
 	unregister_bone()

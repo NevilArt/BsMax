@@ -14,6 +14,9 @@
 ############################################################################
 import bpy, gpu, bgl
 from gpu_extras.batch import batch_for_shader
+from bsmax.mouse import get_view_orientation
+
+
 
 class View3D_Gride:
 	def __init__(self):
@@ -74,7 +77,9 @@ class View3D_Gride:
 			bpy.types.SpaceView3D.draw_handler_remove(self.draw_handler,'WINDOW')
 			self.draw_handler = None
 			self.enabled =  False
-	
+
+
+
 class View3D_OT_Show_Hide_Gride(bpy.types.Operator):
 	bl_idname = "view3d.show_hide_gride"
 	bl_label = "Show Hide Gride"
@@ -89,6 +94,7 @@ class View3D_OT_Show_Hide_Gride(bpy.types.Operator):
 	def blender_gride(self, ctx, state):
 		overlay = ctx.space_data.overlay
 		overlay.show_floor = state
+		overlay.show_ortho_grid = state
 		overlay.show_axis_x = state
 		overlay.show_axis_y = state
 		overlay.show_axis_z = False
@@ -100,21 +106,32 @@ class View3D_OT_Show_Hide_Gride(bpy.types.Operator):
 			self.view_gride.unregister()
 
 	def execute(self, ctx):
-		bg,mg = ctx.space_data.overlay.show_floor, self.view_gride.enabled
-		if bg and not mg:
-			self.blender_gride(ctx, False)
-			self.max_gride(ctx, True)
+		bg = ctx.space_data.overlay.show_floor
+		mg = self.view_gride.enabled
 
-		elif not bg and mg:
-			self.blender_gride(ctx, False)
-			self.max_gride(ctx, False)
+		view_orientation, _ = get_view_orientation(ctx)
+		if view_orientation == 'USER':
+			# Prespactive/Camera
+			if bg and not mg:
+				self.blender_gride(ctx, False)
+				self.max_gride(ctx, True)
 
+			elif not bg and mg:
+				self.blender_gride(ctx, False)
+				self.max_gride(ctx, False)
+
+			else:
+				self.blender_gride(ctx, True)
+				self.max_gride(ctx, False)
+		
 		else:
-			self.blender_gride(ctx, True)
+			# Flat views
 			self.max_gride(ctx, False)
+			self.blender_gride(ctx, not bg)
 
-		# self.report({'OPERATOR'},'bpy.ops.view3d.show_hide_gride()')
 		return{"FINISHED"}
+
+
 
 def register_gride():
 	bpy.utils.register_class(View3D_OT_Show_Hide_Gride)

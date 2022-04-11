@@ -184,10 +184,9 @@ class BsMax_OT_View3D_QuadMenu(Operator):
 class Quad_Menu_Data:
 	preferences = None
 	def get_scale(self):
-		if self.preferences == None:
-			return 1
-		else:
+		if self.preferences:
 			return self.preferences.menu_scale
+		return 1			
 
 
 

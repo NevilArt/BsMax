@@ -12,15 +12,19 @@
 #	You should have received a copy of the GNU General Public License
 #	along with this program.  If not, see <https://www.gnu.org/licenses/>.
 ############################################################################
-from keymaps.cinema4d import text
-import bpy, os, shutil
+import bpy
+import os
+import shutil
+
 from pathlib import Path
 from bpy.types import Operator
 
-# swich between hair caches not working as aspected				 	 #
-# this is a temprary solution till problem solvein blender itself	#
-# all cache files rename as index 0 and same name in Combined folder #
-# this helps to load all of files only by frame nombrt automaticaly  #
+# Swich between hair caches not working as aspected				 	 #
+# This is a temprary solution till problem solvein blender itself	 #
+# All cache files rename as index 0 and same name in Combined folder #
+# This helps to load all of files only by frame nombrt automaticaly  #
+
+
 
 class Particle_OT_Hair_Cache_Combine(Operator):
 	""" Combine all of multi caches to single cache sequence """
@@ -58,7 +62,8 @@ class Particle_OT_Hair_Cache_Combine(Operator):
 		
 		""" Create pathes """
 		cache_name = point_cache.name
-		cache_path = self.get_full_cache_path(point_cache.filepath, cache_name)
+		cache_path = self.get_full_cache_path(point_cache.filepath,
+											cache_name)
 		# combined_path = cache_path + 'Combined\\'
 		combined_path = cache_path + cache_name + '\\'
 
@@ -90,7 +95,6 @@ class Particle_OT_Hair_Cache_Combine(Operator):
 
 
 
-
 def hair_cache_panle(self, ctx):
 	if ctx.object.particle_systems.active.point_cache.use_external:
 		layout = self.layout
@@ -102,17 +106,13 @@ def hair_cache_panle(self, ctx):
 
 
 
-classes = [Particle_OT_Hair_Cache_Combine]
-
 def register_hair_cache():
-	for c in classes:
-		bpy.utils.register_class(c)
+	bpy.utils.register_class(Particle_OT_Hair_Cache_Combine)
 	bpy.types.PARTICLE_PT_cache.append(hair_cache_panle)
 
 def unregister_hair_cache():
 	bpy.types.PARTICLE_PT_cache.remove(hair_cache_panle)
-	for c in classes:
-		bpy.utils.unregister_class(c)
+	bpy.utils.unregister_class(Particle_OT_Hair_Cache_Combine)
 
 if __name__ == "__main__":
 	register_hair_cache()

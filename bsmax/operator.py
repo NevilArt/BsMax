@@ -169,7 +169,9 @@ class PickOperator(Operator):
 					
 					if 'AUTO' in self.filters and len(self.source) > 0:
 						#TODO need to smarter method
-						if self.source[0].type == picked_object.type and self.source[0] != picked_object:
+						if self.source[0].type == picked_object.type and \
+							self.source[0] != picked_object:
+
 							allowed = True
 				
 					if allowed:

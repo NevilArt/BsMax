@@ -18,9 +18,20 @@ import bpy
 def lattice_menu(self, ctx):
 	layout = self.layout
 	layout.separator()
-	layout.operator("modifier.lattice_2x2x2_set",text='Lattice 2x2x2 (Set)',icon="OUTLINER_OB_LATTICE")
-	layout.operator("modifier.lattice_3x3x3_set",text='Lattice 3x3x3 (Set)',icon="OUTLINER_OB_LATTICE")
-	layout.operator("modifier.lattice_4x4x4_set",text='Lattice 4x4x4 (Set)',icon="OUTLINER_OB_LATTICE")
+	layout.operator("modifier.lattice_2x2x2_set",
+					text='Lattice 2x2x2 (Set)',
+					icon="OUTLINER_OB_LATTICE"
+				)
+
+	layout.operator("modifier.lattice_3x3x3_set",
+					text='Lattice 3x3x3 (Set)',
+					icon="OUTLINER_OB_LATTICE"
+				)
+
+	layout.operator("modifier.lattice_4x4x4_set",
+					text='Lattice 4x4x4 (Set)',
+					icon="OUTLINER_OB_LATTICE"
+				)
 
 def register_menu():
 	bpy.types.BSMAX_MT_lattice_create_menu.append(lattice_menu)

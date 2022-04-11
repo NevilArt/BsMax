@@ -14,6 +14,7 @@
 ############################################################################
 
 import bpy
+
 from bpy.types import Operator
 from bpy.props import IntProperty, EnumProperty
 from mathutils import Vector
@@ -62,11 +63,21 @@ def create_joystic(ctx, rectangle, mode):
 	set_origen(ctx, rectangle, location)
 
 	""" fix orient """
-	bpy.ops.transform.rotate(value=-1.5708, orient_axis='X', orient_type='LOCAL',
-	orient_matrix=((1, 0, 0), (0, 1, 0), (0, 0, 1)), orient_matrix_type='LOCAL',
-	constraint_axis=(True, False, False), mirror=True, use_proportional_edit=False,
-	proportional_edit_falloff='SMOOTH', proportional_size=1, use_proportional_connected=False,
-	use_proportional_projected=False, release_confirm=True)
+	bpy.ops.transform.rotate(
+			value=-1.5708,
+			orient_axis='X',
+			orient_type='LOCAL',
+			orient_matrix=((1, 0, 0), (0, 1, 0), (0, 0, 1)),
+			orient_matrix_type='LOCAL',
+			constraint_axis=(True, False, False),
+			mirror=True,
+			use_proportional_edit=False,
+			proportional_edit_falloff='SMOOTH',
+			proportional_size=1,
+			use_proportional_connected=False,
+			use_proportional_projected=False,
+			release_confirm=True
+		)
 
 	""" convert the frame to mesh """
 	bpy.ops.object.mode_set(mode='OBJECT', toggle=False)
@@ -144,6 +155,7 @@ def create_joystic(ctx, rectangle, mode):
 
 
 
+#TODO convert to defined class rather than class itself
 class JoyStickCreator:
 	mode = 0
 	direction = 0
@@ -236,7 +248,9 @@ class Rigg_TO_Joy_Stick_Creator(Operator):
 
 
 class Rigg_TO_Joystick_Shapekey_Connector(Operator):
-	""" Select Armature contain Joystick and Mesh contain Shape keys and run this operator  """
+	""" Select Armature contain Joystick and Mesh contain
+		Shape keys and run this operator
+	"""
 	bl_idname = 'rigg.joystick_shapekey_connector'
 	bl_label = 'Joystick Connecotr'
 	bl_description = 'Connect Joystick to Shapekey'
@@ -255,7 +269,8 @@ class Rigg_TO_Joystick_Shapekey_Connector(Operator):
 		return False
 	
 	def coolect_joys(self, ctx):
-		armatuar = ctx.active_object if ctx.active_object.type == 'ARMATURE' else None
+		active_obj = ctx.active_object
+		armatuar = active_obj if active_obj.type == 'ARMATURE' else None
 		if armatuar != None:
 			joys = []
 			# TODO need to more secure method to detect joystics but for now it is ok
@@ -285,7 +300,8 @@ class Rigg_TO_Joystick_Shapekey_Connector(Operator):
 				shell = obj
 		items = [('None', '', '')]
 		if shell != None:
-			names = [n.name for n in shell.data.shape_keys.key_blocks if n.name != 'Basis']
+			names = [n.name for n in shell.data.shape_keys.key_blocks
+												if n.name != 'Basis']
 			items += [(n, n, '') for n in names]
 		return items
 
@@ -379,7 +395,6 @@ class Rigg_TO_Joystick_Shapekey_Connector(Operator):
 				self.set_driver(armatuar, joy, 1, shell, self.upleft)
 			
 			bpy.ops.object.mode_set(mode='OBJECT', toggle=False)
-		# self.report({'OPERATOR'},'bpy.ops.rigg.joystick_shapekey_connector()')
 		return {'FINISHED'}
 
 	def draw(self, ctx):
@@ -433,8 +448,12 @@ class Rigg_TO_Joystick_Shapekey_Connector(Operator):
 
 
 
-def joystick_connectore_menu(self,ctx):
-	self.layout.operator('rigg.joystick_shapekey_connector')
+def joystick_connectore_menu(self, ctx):
+	layout = self.layout
+	layout.separator()
+	layout.operator('rigg.joystick_shapekey_connector')
+	#TODO temprary location for this operator
+	# layout.operator('modifier.copy_selected')
 
 
 

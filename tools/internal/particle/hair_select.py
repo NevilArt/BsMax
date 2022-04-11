@@ -16,6 +16,8 @@ import bpy
 from bpy.types import Operator
 from bpy.props import BoolProperty, FloatProperty
 
+
+
 class Particle_OT_Hair_Select(Operator):
 	bl_idname = 'particle.hair_select'
 	bl_label = 'Hair Select (L.R.)'

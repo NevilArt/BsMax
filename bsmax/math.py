@@ -96,15 +96,8 @@ def point_rotation_on_segment(a, b, c, d, time):
 	return Vector((x, y, z))
 
 
-
-def point_on_curve(curve, index, time):
-	""" Arguments(Curve Object, Spline index, time) return: Location, Rotation, Scale """
-	# Safty Check
-	if not curve.data.splines:
-		return Vector((0, 0, 0)), Vector((0, 0, 0)), Vector((1, 1, 1))
-
-	spline = curve.data.splines[index]
-
+def point_on_spline(spline, time):
+	""" arguments(Spline, time) return: Location, Rotation, Scale """
 	# Safty Check
 	if len(spline.bezier_points) < 2:
 		return Vector((0, 0, 0)), Vector((0, 0, 0)), Vector((1, 1, 1))
@@ -173,7 +166,18 @@ def point_on_curve(curve, index, time):
 
 
 
+def point_on_curve(curve, index, time):
+	""" Arguments(Curve Object, Spline index, time) return: Location, Rotation, Scale """
+	# Safty Check
+	if not curve.data.splines:
+		return Vector((0, 0, 0)), Vector((0, 0, 0)), Vector((1, 1, 1))
+
+	return point_on_spline(curve.data.splines[index])
+
+
+
 def split_segment(p1, p2, p3, p4, t):
+	""" Split Cubic bezier on given time """
 	# start.co start.out end.in end.co
 	p12 = (p2 - p1) * t + p1
 	p23 = (p3 - p2) * t + p2
@@ -182,11 +186,12 @@ def split_segment(p1, p2, p3, p4, t):
 	p234 = (p34 - p23) * t + p23
 	p1234 = (p234 - p123) * t + p123
 	# start.co start.out center.in center.co center.out end.in end.co
-	return [p1,p12,p123,p1234,p234,p34,p4]
+	return [p1, p12, p123, p1234, p234, p34, p4]
 
 
 
 def get_distance(a, b):
+	""" Get 2 point Vector3 and return distance as float """
 	x,y,z = a.x - b.x, a.y - b.y, a.z - b.z
 	return sqrt(x**2 + y**2 + z**2)
 
@@ -196,8 +201,14 @@ def value_by_percent(orig, targ, percent):
 	return (targ - orig) * percent + orig
 
 
+def scale_vector_to_float(scale):
+	""" return avrage of 3 scale element as float """
+	return ((scale.x + scale.y + scale.z) / 3)
+
+
 
 def get_2_pont_size(pmin, pmax):
+	""" Get min max point return Bounding box dimansions """
 	w = pmax[0] - pmin[0]
 	l = pmax[1] - pmin[1]
 	h = pmax[2] - pmin[2]
@@ -297,7 +308,6 @@ def get_axis_constraint(oring, current):
 	elif side == delta_z:
 		current.x, current.y = oring.x, oring.y
 	return current
-
 
 
 

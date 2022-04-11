@@ -15,7 +15,11 @@
 
 import bpy
 from bpy.types import Operator
-from bsmax.actions import set_create_target, set_as_active_object, delete_objects
+from bsmax.actions import (
+		set_create_target,
+		set_as_active_object,
+		delete_objects
+	)
 from bsmax.state import has_constraint
 
 

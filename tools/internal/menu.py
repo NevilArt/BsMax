@@ -15,7 +15,8 @@
 
 import bpy
 from bsmax.state import is_object_mode
-from tools.internal.animation.menu import BsMax_MT_Animation_Tools
+
+
 
 class BsMax_MT_View3D_tools(bpy.types.Menu):
 	bl_idname = 'BSMAX_MT_view3dtools'

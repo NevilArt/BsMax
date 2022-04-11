@@ -24,7 +24,7 @@ class Mesh_OT_Attach(PickOperator):
 	bl_idname = 'mesh.attach'
 	bl_label = 'Attach'
 	
-	filters = ['MESH', 'CURVE']
+	filters = ['MESH', 'CURVE', 'FONT']
 
 	@classmethod
 	def poll(self, ctx):
@@ -89,7 +89,8 @@ class Mesh_OT_Attach_List(Operator):
 		return{'FINISHED'}
 
 
-
+# TODO rename new created object
+# TODO keep operator option
 class Mesh_OT_Detach(Operator):
 	bl_idname = 'mesh.detach'
 	bl_label = 'Detach'
@@ -123,7 +124,7 @@ class Mesh_OT_Detach(Operator):
 		return{'FINISHED'}
 
 	def invoke(self, ctx, event):
-		if ctx.active_object != None:
+		if ctx.active_object:
 			self.name = ctx.active_object.name
 		return ctx.window_manager.invoke_props_dialog(self, width=200)
 

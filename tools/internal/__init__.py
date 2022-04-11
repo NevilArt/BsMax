@@ -33,6 +33,8 @@ from .rigg import register_rigg, unregister_rigg
 from .menu import register_menu, unregister_menu
 from .vse import register_vse, unregister_vse
 
+
+
 def register_internal(preferences):
 	register_animation()
 	register_armature()

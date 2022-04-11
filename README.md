@@ -20,7 +20,7 @@ If not have Github account use 'NevilArt@Gmail.Com' for bug report.
 If you found this product useful and want to support this project you can Donate in [Gumroad](https://nevilart.gumroad.com/l/BsMax).
 Your Donation helps me to ignore other freelance offers and focus on BsMax and speedup the developing.
 
-# [Download / Installation](https://youtu.be/JolpAmvd3CE)
+# Download / Installation
 
 * Download all the package as zip file.
 * Go to Preferences > Addons > Install.
@@ -29,15 +29,20 @@ Your Donation helps me to ignore other freelance offers and focus on BsMax and s
 * Press the "Save Preferences Setting" button.
 * It is better to restart the Blender after install.
 * Note: Some times need to reset factory the blender to make addon work fine (happens when addons install to alpha version).
+* [Video Tutorial](https://youtu.be/JolpAmvd3CE).
 
 # Stand Alone Operators
+* This files can be inistaled sepratly as Add-on.
 * [backburner.py](https://github.com/NevilArt/BsMax/tree/master/tools/internal/render)
 
 # Recent Updates and Changes
 
-* Bugfix and code Cleaning.
-* some arrangement in [BsMax Wiki](https://github.com/NevilArt/BsMax/wiki).
-* [Update History...](https://github.com/NevilArt/BsMax/blob/master/CHANGELOG.md)
+* 'Hair from Curve' suport Poly curve too (Tools/Particle/..).
+* 'Hair Guides To Curve' create Poly curve rather than Beziear curve (Faster and Accurate)
+* ['Grap style'](https://www.youtube.com/watch?v=A2Dr8MO_aq4) operator Freeze hair dynamic style as hair brush (Tools/Particle/..).
+* 'G' Hide/Show gride works on flat views too (3DsMax mode).
+* Mesh Attach operator can pick Font object too.
+* [Change log ...](https://github.com/NevilArt/BsMax/blob/master/CHANGELOG.md)
 
 # In Production 
 
