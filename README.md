@@ -37,11 +37,15 @@ Your Donation helps me to ignore other freelance offers and focus on BsMax and s
 
 # Recent Updates and Changes
 
-* 'Hair from Curve' suport Poly curve too (Tools/Particle/..).
-* 'Hair Guides To Curve' create Poly curve rather than Beziear curve (Faster and Accurate)
-* ['Grap style'](https://www.youtube.com/watch?v=A2Dr8MO_aq4) operator Freeze hair dynamic style as hair brush (Tools/Particle/..).
-* 'G' Hide/Show gride works on flat views too (3DsMax mode).
-* Mesh Attach operator can pick Font object too.
+* UV Tools collected on 'UV Tools' panel to faster acces (Not final).
+* New UV split operator that work in sync mode too.
+* 'Ctrl / Shift' Selection issue for Blender 3.x fixed.
+* 'Ctrl + RMB' or 'Shift + RMB' Select more 'Alt + RMB' Deselect (3DsMax Mode).
+* Collection hide bye Number in view3D disabled in 3DsMax mode.
+* 'Ctrl + Left/Right' jump to Previes/Next Marker (3DsMax and Blender Adaptive).
+* '[' & ']' Left/Right Panel toggle works in all areas (3DsMax mode).
+* 'N' Auto key Toggle works in all areas (3DsMax mode).
+* Some minor bugs fixed.
 * [Change log ...](https://github.com/NevilArt/BsMax/blob/master/CHANGELOG.md)
 
 # In Production 

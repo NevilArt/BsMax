@@ -51,7 +51,7 @@ class Material_OT_Import(Operator):
 
 	@classmethod
 	def poll(self, ctx):
-		if ctx.space_data.type == "NODE_EDITOR":
+		if ctx.space_data.type == "NODE_EDITOR" and ctx.mode == 'OBJECT':
 			return ctx.space_data.shader_type == 'OBJECT'
 		return False
 

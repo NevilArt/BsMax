@@ -13,7 +13,6 @@
 #	along with this program.  If not,see <https://www.gnu.org/licenses/>.
 ############################################################################
 
-from email.policy import default
 import bpy
 from bpy.props import (StringProperty, FloatProperty, IntProperty,
 	BoolProperty, EnumProperty)

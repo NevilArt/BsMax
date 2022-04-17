@@ -13,9 +13,9 @@
 #	along with this program.  If not, see <https://www.gnu.org/licenses/>.
 ############################################################################
 
-from .blender import register_blender,unregister_blender
-from .max import register_max,unregister_max
-from .maya import register_maya,unregister_maya
+from .blender import register_blender, unregister_blender
+from .max import register_max, unregister_max
+from .maya import register_maya, unregister_maya
 
 class RegisterData:
 	def __init__(self):
@@ -42,7 +42,7 @@ def get_active_apps(preferences):
 	return apps
 
 def register_special(preferences):
-	Unregister_special()
+	unregister_special()
 	
 	if not reg.pack_max:
 		register_max()
@@ -56,7 +56,7 @@ def register_special(preferences):
 		register_maya()
 		reg.pack_maya = True
 
-def Unregister_special():
+def unregister_special():
 	if reg.pack_blender:
 		unregister_blender()
 	

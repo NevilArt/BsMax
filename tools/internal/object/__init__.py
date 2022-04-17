@@ -25,7 +25,7 @@ from .freeze import register_freeze, unregister_freeze
 from .instancer import register_instancer, unregister_instancer
 from .lattice import register_lattice, unregister_lattice
 from .link_to import register_link_to, unregister_link_to
-from .modifier import register_modifier, unregister_modifier
+# from .modifier import register_modifier, unregister_modifier
 from .object_properties import register_object_properties, unregister_object_properties
 from .pivot_point import register_pivot_point, unregister_pivot_point
 from .subobject_level import register_subobject_level, unregister_subobject_level
@@ -44,7 +44,7 @@ def register_object(preferences):
 	register_instancer()
 	register_lattice(preferences)
 	register_link_to()
-	register_modifier()
+	# register_modifier()
 	register_object_properties()
 	register_pivot_point()
 	register_subobject_level()
@@ -62,7 +62,7 @@ def unregister_object():
 	unregister_instancer()
 	unregister_lattice()
 	unregister_link_to()
-	unregister_modifier()
+	# unregister_modifier()
 	unregister_object_properties()
 	unregister_pivot_point()
 	unregister_subobject_level()

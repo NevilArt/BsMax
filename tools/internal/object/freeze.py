@@ -48,9 +48,12 @@ class Object_OT_Freeze(Operator):
 	bl_options = {'REGISTER', 'UNDO'}
 
 	mode: EnumProperty(default='selection',
-		items=[('selection','Freeze Selection',''),
-			('unselected','Freeze Unselected',''),
-			('clear','Unfreezee All','')])
+						items=[
+							('selection', 'Freeze Selection', ''),
+							('unselected', 'Freeze Unselected', ''),
+							('clear', 'Unfreezee All', '')
+						]
+			)
 
 	def execute(self, ctx):
 		if self.mode == 'selection':
@@ -68,6 +71,10 @@ class Object_OT_Freeze(Operator):
 			for obj in bpy.data.objects:
 				obj.hide_select = False
 				obj.display_type = 'TEXTURED'
+			
+			# TODO open a dialog and ask for unreaze layers
+			for collection in bpy.data.collections:
+				collection.hide_select = False
 
 		return{"FINISHED"}
 
@@ -81,9 +88,13 @@ class Object_OT_Hide(Operator):
 	bl_options = {'REGISTER', 'UNDO'}
 
 	mode: EnumProperty(default='selection',
-		items=[('selection','Hide Selection',''),
-			('unselected','Hide Unselected',''),
-			('clear','Unhide All','')])
+					items=[
+						('selection', 'Hide Selection', ''),
+						('unselected', 'Hide Unselected', ''),
+						('clear', 'Unhide All', '')
+					]
+			)
+
 	collection: BoolProperty(default=False)
 
 	def execute(self, ctx):

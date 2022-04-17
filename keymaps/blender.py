@@ -32,7 +32,11 @@ def window(km):
 	pass
 
 def screen(km):
-	pass
+	space = km.space('Screen', 'EMPTY', 'WINDOW')
+	km.new(space, 'screen.marker_jump', 'RIGHT_ARROW', 'PRESS',
+			[("next", True)], ctrl=True)
+	km.new(space, 'screen.marker_jump', 'LEFT_ARROW', 'PRESS',
+			[("next", False)], ctrl=True)
 
 def view2d(km):
 	pass

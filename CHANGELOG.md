@@ -1,3 +1,10 @@
+# 0, 1, 0, 20220410
+* 'Hair from Curve' suport Poly curve too (Tools/Particle/..).
+* 'Hair Guides To Curve' create Poly curve rather than Beziear curve (Faster and Accurate)
+* ['Grap style'](https://www.youtube.com/watch?v=A2Dr8MO_aq4) operator Freeze hair dynamic style as hair brush (Tools/Particle/..).
+* 'G' Hide/Show gride works on flat views too (3DsMax mode).
+* Mesh Attach operator can pick Font object too.
+
 # 0, 1, 0, 20220404
 * Bugfix and code Cleaning.
 * some arrangement in [BsMax Wiki](https://github.com/NevilArt/BsMax/wiki).

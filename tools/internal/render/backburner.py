@@ -446,10 +446,10 @@ def draw_backburner_panel(self, ctx):
 
 	layout = self.layout
 	row = layout.row()
+	row.operator('wm.url_open', icon='HELP').url= "https://github.com/NevilArt/BsMax/wiki/Render-Tools"
 	row.operator('render.submit_to_backburner', icon='RENDER_ANIMATION')
 	row.operator('render.save_backburner_preset', text='', icon='ADD')
 	row.operator('render.load_backburner_preset', text='', icon='RECOVER_LAST')
-	row.operator('wm.url_open', icon='HELP').url= "https://github.com/NevilArt/BsMax/wiki/Render-Tools"
 	layout.separator()
 	
 	row = layout.row()

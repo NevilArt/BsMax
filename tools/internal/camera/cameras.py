@@ -224,9 +224,11 @@ class Camera_OT_Show_Safe_Area(Operator):
 		return ctx.area.type == 'VIEW_3D'
 
 	def execute(self, ctx):
-		cam = ctx.scene.camera
-		if cam != None:
-			cam.data.show_safe_areas = not cam.data.show_safe_areas
+		camera = ctx.scene.camera
+		if camera:
+			camera.data.show_safe_areas = not camera.data.show_safe_areas
+			camera.data.show_passepartout = True
+			camera.data.passepartout_alpha = 1
 		return {'FINISHED'}
 
 

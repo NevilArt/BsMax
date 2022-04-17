@@ -28,24 +28,31 @@ class KeyMap:
 		self.modal = modal
 		self.properties = []
 		self._key = None
+		self.keymaps = bpy.context.window_manager.keyconfigs.default.keymaps
+
 
 	@property
 	def key(self):
-		if self._key == None:
-			keymaps = bpy.context.window_manager.keyconfigs.default.keymaps
-			if self.space in keymaps:
-				keymap_items = keymaps[self.space].keymap_items
-				for k in keymap_items:
-					if self.idname == k.idname:
-						if self.type == k.type and self.value == k.value and \
-							self.any == k.any and self.alt == k.alt and \
-							self.ctrl == k.ctrl and self.shift == k.shift:
-							
-							self._key = k
-							break
-		return self._key
+		if self._key:
+			return self._key
+
+		if self.space in self.keymaps:
+			keymap_items = self.keymaps[self.space].keymap_items
+
+			for k in keymap_items:
+				if self.idname == k.idname:
+					if self.type == k.type and self.value == k.value and \
+						self.any == k.any and self.alt == k.alt and \
+						self.ctrl == k.ctrl and self.shift == k.shift:
+						
+						self._key = k
+						break
+
 	
-	def compare(self, space, idname, type, value, alt, ctrl, shift, any, properties):
+	def compare(self, space, idname, type, value,
+				alt, ctrl, shift,
+				any, properties):
+
 		if self.space != space:
 			return False
 		if self.idname != idname:
@@ -62,45 +69,66 @@ class KeyMap:
 			return False
 		if self.shift != shift:
 			return False
+
 		prop_copmp = []
 		for p in properties:
 			for sp in self.properties:
 				if p[0] == sp[0] and p[1] == sp[1]:
 					prop_copmp += [p]
 					break
+
 		if len(prop_copmp) != len(prop_copmp):
 			return False
+
 		return True
+
+
 
 class KeyMaps:
 	def __init__(self):
 		self.newkeys = []
 		self.keymaps = []
 		self.mutekeys = []
+		self.kcfg = bpy.context.window_manager.keyconfigs.addon
 
 	def space(self, name, space_type, region_type, modal=False):
-		kcfg = bpy.context.window_manager.keyconfigs.addon
-		return kcfg.keymaps.new(name=name, space_type=space_type, region_type=region_type)
+		return self.kcfg.keymaps.new(name=name,
+									space_type=space_type,
+									region_type=region_type)
 
-	def new(self, space, idname, type, value, properties,
-			alt=False, ctrl=False, shift=False, any=False, modal=False):
-		""" check is info uniqu """
+	def new(self, space, idname,
+			type, value, properties,
+			alt=False, ctrl=False, shift=False,
+			any=False, modal=False):
+
+		""" check is info unique """
 		isnew = True
 		for key in self.newkeys:
-			if key.compare(space, idname, type, value, alt, ctrl, shift, any, properties):
+			if key.compare(space, idname, type, value,
+						alt, ctrl, shift,
+						any, properties):
+
 				isnew = False
 				break
 		""" create newkey if it is uniqu """
 		if isnew:
-			newkey = KeyMap(space, idname, type, value, alt, ctrl, shift, any, modal)
+			newkey = KeyMap(space, idname, type, value,
+							alt, ctrl, shift,
+							any, modal)
+
 			newkey.properties = properties
 			self.newkeys.append(newkey)
 	
-	def mute(self, space, idname, inputtype, value, alt=False, ctrl=False, shift=False, any=False, modal=False):
-		newkey = KeyMap(space, idname, inputtype, value, alt=alt, ctrl=ctrl, shift=shift, any=any, modal=modal)
+	def mute(self, space, idname, inputtype, value,
+			alt=False, ctrl=False, shift=False,
+			any=False, modal=False):
+
+		newkey = KeyMap(space, idname, inputtype, value,
+						alt=alt, ctrl=ctrl, shift=shift,
+						any=any, modal=modal)
 		self.mutekeys.append(newkey)
 	
-	def set_mute(self,state,delay):
+	def set_mute(self, state, delay):
 		for mutekey in self.mutekeys:
 			if mutekey.key != None:
 				mutekey.key.active = not state
@@ -110,14 +138,17 @@ class KeyMaps:
 		self.unregister()
 		for k in self.newkeys:
 			if k.modal:
+				#TODO check for how to change modal key maps too
 				######################################################################
-				keymapitem = k.space.keymap_items.new_modal(k.idname, k.type, k.value,
-					alt=k.alt, ctrl=k.ctrl, shift=k.shift, any=k.any)
+				keymapitem = k.space.keymap_items.new_modal(k.idname, k.type,
+													k.value, alt=k.alt, ctrl=k.ctrl,
+													shift=k.shift, any=k.any)
 				######################################################################
 			else:
 				keymapitem = k.space.keymap_items.new(k.idname, k.type, k.value,
-					alt=k.alt, ctrl=k.ctrl, shift=k.shift, any=k.any)
-			
+													alt=k.alt, ctrl=k.ctrl,
+													shift=k.shift, any=k.any)
+
 			for key,val in k.properties:
 				if hasattr(keymapitem.properties, key):
 					setattr(keymapitem.properties, key, val)

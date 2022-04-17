@@ -16,60 +16,96 @@
 import bpy
 from bpy.types import Operator
 from bpy.props import BoolProperty
-from bsmax.actions import set_as_active_object
+
+
 
 class UV_OT_Turn(Operator):
+	""" Rotate Selected UV by given degere """
 	bl_idname = "uv.turn"
 	bl_label = "Turn"
-	bl_options = {'REGISTER', 'UNDO'}
+	bl_options = {'REGISTER', 'UNDO', 'INTERNAL'}
 	
 	ccw: BoolProperty(name="CCW")
 
 	@classmethod
 	def poll(self, ctx):
-		return True
+		return ctx.mode == 'EDIT_MESH'
 
 	def execute(self, ctx):
 		value = 1.5708 if self.ccw else -1.5708
-		bpy.ops.transform.rotate(value=value,orient_axis='Z',orient_type='VIEW',
-						orient_matrix=((-1,-0,-0),(-0,-1,-0),(-0,-0,-1)),
-						orient_matrix_type='VIEW',mirror=True,
-						use_proportional_edit=False,proportional_edit_falloff='SMOOTH',
-						proportional_size=1,use_proportional_connected=False,
-						use_proportional_projected=False)
-		self.report({'OPERATOR'},'bpy.ops.uv.turn()')
+		bpy.ops.transform.rotate(value=value,
+								orient_axis='Z',
+								orient_type='VIEW',
+								orient_matrix=((1, 0, 0), ( 0, 1, 0), ( 0, 0, 1)),
+								orient_matrix_type='VIEW'
+				)
 		return{"FINISHED"}
 
-# not done yet
-class UV_OT_Plane_Projection(Operator):
-	bl_idname = "uv.plane_projection"
-	bl_label = "Plane Projection"
-	bl_options = {'REGISTER', 'UNDO'}
-	
-	quick: BoolProperty(name="Quick",default=True)
 
+
+class UV_OT_Split_To_Island(Operator):
+	""" Split Selected to Island with seam border """
+	bl_idname = "uv.split_to_island"
+	bl_label = "Split to Island"
+	bl_options = {'REGISTER', 'UNDO', 'INTERNAL'}
+	
 	@classmethod
 	def poll(self, ctx):
-		return False # ctx.mode == 'EDIT'
+		return ctx.mode == 'EDIT_MESH'
 
 	def execute(self, ctx):
-		# working on not complete yet
-		obj = ctx.active_object
-		mod = obj.modifiers.new(name="BoxUVProjector", type='UV_PROJECT')
-		bpy.ops.object.empty_add(type='ARROWS', align='WORLD', location=(0, 0, 0), scale=(1, 1, 1))
-		gizmo = ctx.active_object
-		# mod.object = gizmo
-		bpy.context.object.object = bpy.data.objects["Empty"]
-		bpy.ops.object.mode_set(mode='OBJECT')
-		bpy.ops.object.modifier_apply(apply_as='DATA', modifier="BoxUVProjector")
-		bpy.ops.object.delete({"selected_objects":[gizmo]})
-		set_as_active_object(ctx,obj)
-		bpy.ops.object.mode_set(mode='EDIT')
+		# store sync mode
+		use_uv_select_sync = ctx.scene.tool_settings.use_uv_select_sync
+		if use_uv_select_sync:
+			# disable sync mode and reselect 
+			ctx.scene.tool_settings.use_uv_select_sync = False
+			bpy.ops.uv.select_all(action='SELECT')
 
-		self.report({'OPERATOR'},'bpy.ops.uv.plane_projection()')
+		bpy.ops.uv.select_split()
+
+		# scale down to seprate from rest to let next operator works
+		bpy.ops.transform.resize(value=(0.5, 0.5, 0.5),
+								orient_type='GLOBAL',
+								orient_matrix=((1, 0, 0), (0, 1, 0), (0, 0, 1)),
+								orient_matrix_type='GLOBAL'
+							)
+		# conver edges to seam
+		bpy.ops.uv.seams_from_islands()
+
+		# reset scale to original size
+		bpy.ops.transform.resize(value=(2, 2, 2),
+						orient_type='GLOBAL',
+						orient_matrix=((1, 0, 0), (0, 1, 0), (0, 0, 1)),
+						orient_matrix_type='GLOBAL'
+					)
+
+		# reset sync mode
+		ctx.scene.tool_settings.use_uv_select_sync = use_uv_select_sync
 		return{"FINISHED"}
 
-classes = [UV_OT_Turn,UV_OT_Plane_Projection]
+
+
+
+class UV_OT_Rectangulate_Active_Face(Operator):
+	""" Make active face perfect rectangle """
+	bl_idname = "uv.rectangulate_active_face"
+	bl_label = "Rectangulate Active Face"
+	bl_options = {'REGISTER', 'UNDO'}
+	
+	@classmethod
+	def poll(self, ctx):
+		return ctx.scene.tool_settings.uv_select_mode == 'FACE'
+
+
+	def execute(self, ctx):
+		uv = ctx.object.data.uv_layers.active
+		#TODO --- 
+		return{"FINISHED"}
+
+
+
+
+classes = [UV_OT_Turn, UV_OT_Split_To_Island]
 
 def register_edit():
 	for c in classes:
@@ -78,3 +114,6 @@ def register_edit():
 def unregister_edit():
 	for c in classes:
 		bpy.utils.unregister_class(c)
+
+if __name__ == '__main__':
+	register_edit()

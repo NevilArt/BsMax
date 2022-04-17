@@ -13,13 +13,13 @@
 #	along with this program.  If not, see <https://www.gnu.org/licenses/>.
 ############################################################################
 
-from .edit import register_edit,unregister_edit
-from .menu import register_menu,unregister_menu
+from .edit import register_edit, unregister_edit
+from .panel import register_panel, unregister_panel
 
 def register_uv():
 	register_edit()
-	register_menu()
+	register_panel()
 
 def unregister_uv():
-	unregister_menu()
 	unregister_edit()
+	unregister_panel()
