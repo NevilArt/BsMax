@@ -16,8 +16,9 @@
 import bpy
 from mathutils import Vector, Matrix
 from bpy.types import Menu, Operator
+from bpy.app import version
+
 from bsmax.actions import set_origen
-from bsmax.state import version
 
 objAxis = None
 objTarget = None
@@ -121,7 +122,7 @@ class Object_OT_Modify_Pivot(Operator):
 		return ctx.active_object
 
 	def execute(self, ctx):
-		if version() == 280:
+		if version < (2, 81, 0):
 			ModifyPivotPoint(ctx)
 		else:
 			state = ctx.scene.tool_settings.use_transform_data_origin

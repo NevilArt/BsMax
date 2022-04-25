@@ -37,15 +37,11 @@ Your Donation helps me to ignore other freelance offers and focus on BsMax and s
 
 # Recent Updates and Changes
 
-* UV Tools collected on 'UV Tools' panel to faster acces (Not final).
-* New UV split operator that work in sync mode too.
-* 'Ctrl / Shift' Selection issue for Blender 3.x fixed.
-* 'Ctrl + RMB' or 'Shift + RMB' Select more 'Alt + RMB' Deselect (3DsMax Mode).
-* Collection hide bye Number in view3D disabled in 3DsMax mode.
-* 'Ctrl + Left/Right' jump to Previes/Next Marker (3DsMax and Blender Adaptive).
-* '[' & ']' Left/Right Panel toggle works in all areas (3DsMax mode).
-* 'N' Auto key Toggle works in all areas (3DsMax mode).
-* Some minor bugs fixed.
+* 'C' Camera search works on DopeSheet, timeline, CurveEditor and LNA too (3DsMax mode).
+* 'camera.search' operator removed 'camera.select' do the same job ('C' in max mode).
+* UV Tools panel a little bit arranged and get better but not final yet.
+* Changes on previous update causes problem on older blenders (2.8x) that issue fixed.
+* Some other minor Bugfix and Cleanup.
 * [Change log ...](https://github.com/NevilArt/BsMax/blob/master/CHANGELOG.md)
 
 # In Production 

@@ -20,7 +20,7 @@ bl_info = {
 	'name': 'BsMax',
 	'description': 'BsMax for Blender 2.80 ~ 3.1',
 	'author': 'Naser Merati (Nevil)',
-	'version': (0, 1, 0, 20220417),
+	'version': (0, 1, 0, 20220425),
 	'blender': (2, 80, 0),# 2.80 ~ 3.2
 	'location': 'Almost Everywhere in Blender',
 	'wiki_url': 'https://github.com/NevilArt/BsMax/wiki',
@@ -178,100 +178,100 @@ class BsMax_AddonPreferences(bpy.types.AddonPreferences):
 	""" Quick select mode """
 	aplication: EnumProperty(
 		name='Aplication', items=apps+custom, default='Blender',
-		update= lambda self,ctx: update_preferences(self,ctx,'aplication'),
+		update= lambda self,ctx: update_preferences(self, ctx, 'aplication'),
 		description='select a package'
 	)
 
 	""" Simple select mode """
 	navigation: EnumProperty(
 		name='Navigation', items=apps+custom, default='Blender',
-		update= lambda self,ctx: update_preferences(self,ctx,'navigation'),
+		update= lambda self,ctx: update_preferences(self, ctx, 'navigation'),
 		description='select overide navigation mode'
 	)
 
 	toolpack: EnumProperty(
 		name='Tools Pack', items=apps, default='Blender',
-		update= lambda self,ctx: update_preferences(self,ctx,'toolpack'),
+		update= lambda self,ctx: update_preferences(self, ctx, 'toolpack'),
 		description='Extera Overide Tools'
 	)
 
 	floatmenus: EnumProperty(
 		name='Float Menu', items=menus, default='Blender',
-		update= lambda self,ctx: update_preferences(self,ctx,'floatmenus'),
+		update= lambda self,ctx: update_preferences(self, ctx, 'floatmenus'),
 		description='Float menus type'
 	)
 
 	keymaps: EnumProperty(
 		name='Keymap', items=apps+custom, default='Blender',
-		update= lambda self,ctx: update_preferences(self,ctx,'keymaps'),
+		update= lambda self,ctx: update_preferences(self, ctx, 'keymaps'),
 		description='Overide Full Keymap'
 	)
 	
 	""" Custom select mode """
 	navigation_3d: EnumProperty(
 		name='Navigation 3D', items=apps, default='Blender',
-		update= lambda self,ctx: update_preferences(self,ctx,'navigation_3d'),
+		update= lambda self,ctx: update_preferences(self, ctx, 'navigation_3d'),
 		description='Overide navigation on 3D View'
 	)
 
 	navigation_2d: EnumProperty(
 		name='Navigation 2D', items=apps, default='Blender',
-		update= lambda self,ctx: update_preferences(self,ctx,'navigation_2d'),
+		update= lambda self,ctx: update_preferences(self, ctx, 'navigation_2d'),
 		description='Overide navigation in 2D Views'
 	)
 
 	viowport: EnumProperty(
 		name='View 3D', items=apps, default='Blender',
-		update= lambda self,ctx: update_preferences(self,ctx,'viowport'),
+		update= lambda self,ctx: update_preferences(self, ctx, 'viowport'),
 		description='Overide keymaps in 3D view'
 	)
 
 	sculpt: EnumProperty(
 		name='Sculp / Paint', items=apps, default='Blender',
-		update= lambda self,ctx: update_preferences(self,ctx,'sculpt'),
+		update= lambda self,ctx: update_preferences(self, ctx, 'sculpt'),
 		description='Overide keymaps in sculpt and paint mode'
 	)
 
 	uv_editor: EnumProperty(
 		name='UV Editor', items=apps, default='Blender',
-		update= lambda self,ctx: update_preferences(self,ctx,'uv_editor'),
+		update= lambda self,ctx: update_preferences(self, ctx, 'uv_editor'),
 		description='Overide keymaps in UV editor'
 	)
 
 	node_editor: EnumProperty(
 		name='Node Editor', items=apps, default='Blender',
-		update= lambda self,ctx: update_preferences(self,ctx,'node_editor'),
+		update= lambda self,ctx: update_preferences(self, ctx, 'node_editor'),
 		description='Overide keymaps in Node editors'
 	)
 
 	graph_editor: EnumProperty(
 		name='Graph Editor', items=apps, default='Blender',
-		update= lambda self,ctx: update_preferences(self,ctx,'graph_editor'),
+		update= lambda self,ctx: update_preferences(self, ctx, 'graph_editor'),
 		description='Overide keymaps in Time ediotrs'
 	)
 
 	clip_editor: EnumProperty(
 		name='Clip Editor', items=apps, default='Blender',
-		update= lambda self,ctx: update_preferences(self,ctx,'clip_editor'),
+		update= lambda self,ctx: update_preferences(self, ctx, 'clip_editor'),
 		description='Overide keymaps in Clip editor'
 	)
 	
 	video_sequencer: EnumProperty(
 		name='Video Sequencer', default='Blender',
 		items=apps + [('Premiere','Premiere','')],
-		update= lambda self,ctx: update_preferences(self,ctx,'video_sequencer'),
+		update= lambda self,ctx: update_preferences(self, ctx, 'video_sequencer'),
 		description='Overide keymaps in Video sequencer'
 	)
 
 	text_editor: EnumProperty(
 		name='Text Editor', items=apps, default='Blender',
-		update= lambda self,ctx: update_preferences(self,ctx,'text_editopr'),
+		update= lambda self,ctx: update_preferences(self, ctx, 'text_editopr'),
 		description='Overide keymaps in text editor'
 	)
 
 	file_browser: EnumProperty(
 		name='File Browser', items=apps, default='Blender',
-		update= lambda self,ctx: update_preferences(self,ctx,'file_browser'),
+		update= lambda self,ctx: update_preferences(self, ctx, 'file_browser'),
 		description='Overide keymaps in File Browser'
 	)
 
@@ -280,7 +280,7 @@ class BsMax_AddonPreferences(bpy.types.AddonPreferences):
 
 	view_undo: BoolProperty(
 		name='View Undo',default=False,
-		update= lambda self, ctx: update_preferences(self,ctx,'view_undo'),
+		update= lambda self, ctx: update_preferences(self, ctx, 'view_undo'),
 		description='undo the only view angle'
 	)
 
@@ -290,8 +290,13 @@ class BsMax_AddonPreferences(bpy.types.AddonPreferences):
 
 	blender_transform_type: BoolProperty(
 		name='Blender Transform Type', default=False,
-		update= lambda self,ctx: update_preferences(self,ctx,'transform'),
+		update= lambda self,ctx: update_preferences(self, ctx, 'transform'),
 		description='Make "W E R" work as "G R S", Need to restart to See effect'
+	)
+
+	nevil_stuff: BoolProperty(
+		name='Nevil Stuff', default=False,
+		description='tools I use in my own pipeline may not usefull for you'
 	)
 
 	def refine(self):
@@ -415,6 +420,7 @@ class BsMax_AddonPreferences(bpy.types.AddonPreferences):
 			row.prop(self, 'menu_scale')
 			row = box.row()
 			row.prop(self, 'blender_transform_type')
+			row.prop(self, 'nevil_stuff')
 
 		if self.menu_scale < 1:
 			self.menu_scale = 1

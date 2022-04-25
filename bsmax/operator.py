@@ -34,7 +34,7 @@ class CurveTool(Operator):
 	def poll(self, ctx):
 		if ctx.area.type == 'VIEW_3D':
 			if len(ctx.scene.objects) > 0:
-				if ctx.object != None:
+				if ctx.object:
 					return ctx.mode == 'EDIT_CURVE'
 		return False
 
@@ -74,21 +74,25 @@ class CurveTool(Operator):
 				self.start_x = event.mouse_x
 				self.start_y = event.mouse_y
 				self.get_data(ctx)
+
 		if event.type == 'MOUSEMOVE':
 			if self.start:
-				self.value_x = (event.mouse_x-self.start_x)/200
-				self.value_y = (event.mouse_y-self.start_y)/200
+				self.value_x = (event.mouse_x - self.start_x) / 200
+				self.value_y = (event.mouse_y - self.start_y) / 200
 				self.apply()
 			if self.start and event.value =='RELEASE':
 				self.finish = True
+
 		#TODO mouse weel changes self.value_w
 		if self.finish:
 			if self.value_x + self.value_y == 0:
 				self.abort()
 			return {'CANCELLED'}
+
 		if event.type in {'RIGHTMOUSE', 'ESC'}:
 			self.abort()
 			return {'CANCELLED'}
+
 		return {'RUNNING_MODAL'}
 
 	def invoke(self, ctx, event):
@@ -118,7 +122,7 @@ class PickOperator(Operator):
 
 	def modal(self, ctx, event):
 		ctx.area.tag_redraw()
-		if not event.type in {'LEFTMOUSE','RIGHTMOUSE', 'MOUSEMOVE', 'ESC'}:
+		if not event.type in {'LEFTMOUSE', 'RIGHTMOUSE', 'MOUSEMOVE', 'ESC'}:
 			return {'PASS_THROUGH'}
 		
 		elif event.type == 'MOUSEMOVE':
@@ -261,7 +265,9 @@ class PickOperator(Operator):
 		self.set_mode(ctx, self.modal)
 
 	def finish(self, ctx, event, target):
-		subtarget = self.get_bone(ctx, event, target) if target.type == 'ARMATURE' else None
+		subtarget = self.get_bone(ctx, event, target) \
+					if target.type == 'ARMATURE' else None
+
 		self.restore_mode(ctx)
 		self.picked(ctx, self.source, self.subsource, target, subtarget)
 	

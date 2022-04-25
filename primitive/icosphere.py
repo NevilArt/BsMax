@@ -13,11 +13,14 @@
 #	along with this program.  If not,see <https://www.gnu.org/licenses/>.
 ############################################################################
 
-import bpy, bmesh
+import bpy
+import bmesh
+
+from bpy.app import version
 from mathutils import Matrix
+
 from primitive.primitive import Primitive_Geometry_Class, Draw_Primitive
 from bsmax.actions import delete_objects
-from bsmax.state import version
 
 
 
@@ -25,7 +28,7 @@ class Icosphere(Primitive_Geometry_Class):
 	def init(self):
 		self.classname = "Icosphere"
 		self.finishon = 2
-		self.version = version()
+		self.is_old = version < (3, 0, 0)
 
 	def create(self, ctx):
 		# Create an empty mesh and the object.
@@ -49,14 +52,18 @@ class Icosphere(Primitive_Geometry_Class):
 		pd = self.data.primitivedata
 		orgmesh = bpy.data.meshes[self.data.name]
 		bm = bmesh.new()
-		if self.version >= 300:
-			bmesh.ops.create_icosphere(bm, subdivisions=pd.wsegs,
-							radius=pd.radius1,
-							matrix=Matrix(), calc_uvs=True)
-		else:
+
+		if self.is_old:
+			# older then blender 3.0.0
 			bmesh.ops.create_icosphere(bm, subdivisions=pd.wsegs,
 							diameter=pd.radius1,
 							matrix=Matrix(), calc_uvs=True)
+		else:
+			# blender 3.0.0 and later
+			bmesh.ops.create_icosphere(bm, subdivisions=pd.wsegs,
+							radius=pd.radius1,
+							matrix=Matrix(), calc_uvs=True)
+
 		bm.to_mesh(orgmesh.id_data)
 		bm.free()
 

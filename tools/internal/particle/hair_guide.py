@@ -14,12 +14,13 @@
 ############################################################################
 
 import bpy
-
+from bpy.app import version
 from bpy.types import Operator, Menu
+
 from bsmax.math import point_on_spline
 from bsmax.actions import link_to_scene, match_transform
 from bsmax.operator import PickOperator
-from bsmax.state import is_object_mode, version
+from bsmax.state import is_object_mode
 
 
 class Hair_Guide:
@@ -142,18 +143,18 @@ class Hair_Guide:
 		bpy.ops.object.mode_set(mode='PARTICLE_EDIT', toggle=False)
 		bpy.ops.wm.tool_set_by_id(name='builtin_brush.Comb')
 		
-		if version() <= 290:
+		if version <= (2, 90, 0):
 			bpy.ops.particle.brush_edit(stroke=[{'name':'',
-				'location':(0,0,0),'mouse':(0,0),
-				'pressure':0,'size':0,'pen_flip':False,
-				'time':0,'is_start':True}])
+				'location':(0, 0, 0), 'mouse':(0, 0),
+				'pressure':0, 'size':0, 'pen_flip':False,
+				'time':0, 'is_start':True}])
 		else:
 			bpy.ops.particle.brush_edit(stroke=[{'name':'',
-				'location':(0,0,0),'mouse':(0,0),
-				'mouse_event':(0,0),
-				'pressure':0,'size':0,'pen_flip':False,
-				'x_tilt':0,'y_tilt':0,
-				'time':0,'is_start':False}])
+				'location':(0, 0, 0), 'mouse':(0, 0),
+				'mouse_event':(0, 0),
+				'pressure':0, 'size':0, 'pen_flip':False,
+				'x_tilt':0, 'y_tilt':0,
+				'time':0, 'is_start':False}])
 		
 		# Commit the Brush
 		bpy.ops.particle.connect_hair()

@@ -12,26 +12,6 @@
 #	You should have received a copy of the GNU General Public License
 #	along with this program.  If not, see <https://www.gnu.org/licenses/>.
 ############################################################################
-import bpy
-
-
-blender_version = None
-def version():
-	""" Return Version as Integer e.g 2.83 as 283 """
-	global blender_version
-	# return same value if already calculated
-	if blender_version:
-		return blender_version
-
-	# this value not changns and one time calculate is enough
-	v = bpy.app.version
-	if v[1] < 10:
-		blender_version = v[0]*100 + v[1]*10
-	blender_version = v[0]*100 + v[1]
-
-	return blender_version
-
-
 
 def is_active_object(ctx, types):
 	""" Return True if active object is same as given object type """

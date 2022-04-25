@@ -13,7 +13,7 @@
 #	along with this program.  If not, see <https://www.gnu.org/licenses/>.
 ############################################################################
 
-from .blenderdefault import register_blenderdefault,unregister_blenderdefault
+from .blenderdefault import register_blenderdefault, unregister_blenderdefault
 
 def register_blender():
 	register_blenderdefault()

@@ -15,7 +15,6 @@
 
 import bpy
 from bpy.types import Menu
-from keymaps.max import text
 
 # Piemenu Order by Index
 #			4

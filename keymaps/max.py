@@ -14,8 +14,8 @@
 ############################################################################
 
 import bpy
+from bpy.app import version
 
-from bsmax.state import version
 from bsmax.keymaps import KeyMaps
 
 
@@ -106,7 +106,7 @@ def add_side_panel(km, space):
 
 
 def add_search(km, space):
-	if version() < 290:
+	if version < (2, 90, 0):
 		km.new(space,'wm.search_menu','X','PRESS',[])
 	else:
 		km.new(space,'wm.search_menu','X','PRESS',[],ctrl=True,shift=True,alt=True)
@@ -232,7 +232,6 @@ def view2d(km):
 def view2d_navigation(km, preferences):
 	space = km.space('View2D','EMPTY','WINDOW')
 	km.new(space,'view2d.zoom','MIDDLEMOUSE','PRESS',[],ctrl=True,alt=True)
-	pass
 
 
 
@@ -440,21 +439,31 @@ def transform(km):
 
 def object_mode(km, preferences):
 	# Disable all hide collection operators
-	km.mute('Object Mode','object.hide_collection','ONE','PRESS')
-	km.mute('Object Mode','object.hide_collection','TWO','PRESS')
-	km.mute('Object Mode','object.hide_collection','THREE','PRESS')
-	km.mute('Object Mode','object.hide_collection','FOUR','PRESS')
-	km.mute('Object Mode','object.hide_collection','FIVE','PRESS')
-	km.mute('Object Mode','object.hide_collection','SIX','PRESS')
-	km.mute('Object Mode','object.hide_collection','SEVEN','PRESS')
-	km.mute('Object Mode','object.hide_collection','EIGHT','PRESS')
-	km.mute('Object Mode','object.hide_collection','NINE','PRESS')
-	km.mute('Object Mode','object.hide_collection','ZERO','PRESS')
+	km.mute('Object Mode', 'object.hide_collection', 'ONE', 'PRESS',
+			alt=True, ctrl=True, shift=True, any=True)
+	km.mute('Object Mode', 'object.hide_collection', 'TWO', 'PRESS',
+			alt=True, ctrl=True, shift=True, any=True)
+	km.mute('Object Mode', 'object.hide_collection', 'THREE', 'PRESS',
+			alt=True, ctrl=True, shift=True, any=True)
+	km.mute('Object Mode', 'object.hide_collection', 'FOUR', 'PRESS',
+			alt=True, ctrl=True, shift=True, any=True)
+	km.mute('Object Mode', 'object.hide_collection', 'FIVE', 'PRESS',
+			alt=True, ctrl=True, shift=True, any=True)
+	km.mute('Object Mode', 'object.hide_collection', 'SIX', 'PRESS',
+			alt=True, ctrl=True, shift=True, any=True)
+	km.mute('Object Mode', 'object.hide_collection', 'SEVEN', 'PRESS',
+			alt=True, ctrl=True, shift=True, any=True)
+	km.mute('Object Mode', 'object.hide_collection', 'EIGHT', 'PRESS',
+			alt=True, ctrl=True, shift=True, any=True)
+	km.mute('Object Mode', 'object.hide_collection', 'NINE', 'PRESS',
+			alt=True, ctrl=True, shift=True, any=True)
+	km.mute('Object Mode', 'object.hide_collection', 'ZERO', 'PRESS',
+			alt=True, ctrl=True, shift=True, any=True)
 
-	space = km.space('Object Non-modal','EMPTY','WINDOW')
-	km.new(space,'bsmax.mode_set','TAB','PRESS',[])
+	space = km.space('Object Non-modal', 'EMPTY', 'WINDOW')
+	km.new(space, 'bsmax.mode_set', 'TAB', 'PRESS', [])
 
-	space = km.space('Object Mode','EMPTY','WINDOW')
+	space = km.space('Object Mode', 'EMPTY', 'WINDOW')
 	add_search(km, space)
 	add_side_panel(km, space)
 	add_view3d_tweak_selection(km, space)
@@ -466,36 +475,52 @@ def object_mode(km, preferences):
 	add_show_types(km, space)
 	add_transform_tool(km, space, preferences, smax=False)
 	
-	km.new(space,'object.auto_coordinate_toggle','W','PRESS',[],ctrl=True )
-	km.new(space,'view3d.drop_tool','RIGHTMOUSE','PRESS',[])
-	km.new(space,'view3d.select','LEFTMOUSE','RELEASE',[('enumerate',True)],shift=True)
-	km.new(space,'object.select_all','A','PRESS',[('action','SELECT')],ctrl=True )
-	km.new(space,'object.select_all','D','PRESS',[('action','DESELECT')],ctrl=True )
-	km.new(space,'object.select_all','I','PRESS',[('action','INVERT')],ctrl=True )
-	km.new(space,'object.select_hierarchy','PAGE_UP','PRESS',[('direction','PARENT'),('extend',False)])
-	km.new(space,'object.select_hierarchy','PAGE_UP','PRESS',[('direction','PARENT'),('extend',True)],ctrl=True)
-	km.new(space,'object.select_hierarchy','PAGE_DOWN','PRESS',[('direction','CHILD'),('extend',False)])
-	km.new(space,'object.select_hierarchy','PAGE_DOWN','PRESS',[('direction','CHILD'),('extend',True)],ctrl=True)
-	km.new(space,'object.select_similar','Q','PRESS',[],ctrl=True)
+	km.new(space, 'object.auto_coordinate_toggle', 'W', 'PRESS', [], ctrl=True)
+	km.new(space, 'view3d.drop_tool', 'RIGHTMOUSE', 'PRESS', [])
+	km.new(space, 'view3d.select', 'LEFTMOUSE', 'RELEASE',
+			[('enumerate', True)], shift=True)
+	km.new(space, 'object.select_all', 'A', 'PRESS',
+			[('action', 'SELECT')], ctrl=True)
+	km.new(space, 'object.select_all', 'D', 'PRESS',
+			[('action', 'DESELECT')], ctrl=True)
+	km.new(space, 'object.select_all', 'I', 'PRESS',
+			[('action', 'INVERT')], ctrl=True)
+	km.new(space, 'object.select_hierarchy', 'PAGE_UP', 'PRESS',
+			[('direction', 'PARENT'), ('extend', False)])
+	km.new(space, 'object.select_hierarchy', 'PAGE_UP', 'PRESS',
+			[('direction', 'PARENT'), ('extend', True)], ctrl=True)
+	km.new(space, 'object.select_hierarchy', 'PAGE_DOWN', 'PRESS',
+			[('direction', 'CHILD'), ('extend', False)])
+	km.new(space, 'object.select_hierarchy', 'PAGE_DOWN', 'PRESS',
+			[('direction', 'CHILD'), ('extend', True)], ctrl=True)
+	km.new(space, 'object.select_similar', 'Q', 'PRESS', [], ctrl=True)
 
-	km.new(space,'object.hide','H','PRESS',[('mode','selection')],alt=True)
-	km.new(space,'object.hide','I','PRESS',[('mode','unselected')],alt=True)
-	km.new(space,'object.hide','U','PRESS',[('mode','clear')],alt=True)
+	km.new(space, 'object.hide', 'H', 'PRESS',
+			[('mode', 'selection')], alt=True)
+	km.new(space, 'object.hide', 'I', 'PRESS',
+			[('mode', 'unselected')], alt=True)
+	km.new(space, 'object.hide', 'U', 'PRESS', [('mode', 'clear')], alt=True)
 
-	km.new(space,'object.modify_pivotpoint','INSERT','PRESS',[])
-	km.new(space,'wm.call_menu','INSERT','PRESS',[('name','OBJECT_MT_Set_Pivot_Point')],ctrl=True)
+	km.new(space, 'object.modify_pivotpoint', 'INSERT', 'PRESS', [])
+	km.new(space, 'wm.call_menu', 'INSERT', 'PRESS',
+			[('name', 'OBJECT_MT_Set_Pivot_Point')], ctrl=True)
 
-	km.new(space,'object.align_selected_to_target','A','PRESS',[],alt=True)
-	km.new(space,'object.transform_type_in','F12','PRESS',[])
-	km.new(space,'view3d.lighting_toggle','L','PRESS',[],ctrl=True)
-	km.new(space,'camera.select','C','PRESS',[])
-	km.new(space,'modifier.edit_multi','TAB','PRESS',[],ctrl=True)
-	km.new(space,'object.viewoport_display','X','PRESS',[],alt=True)
-	km.new(space,'object.join_plus','J','PRESS',[],ctrl=True)
-	km.new(space,'object.select_children','LEFTMOUSE','DOUBLE_CLICK',[('full',True)])
-	km.new(space,'object.select_children','LEFTMOUSE','DOUBLE_CLICK',[('full',True),('extend',True)],ctrl=True)
-	km.new(space,'object.delete_plus','DEL','PRESS',[])
-	km.new(space,'wm.call_menu','M','PRESS',[('name','VIEW3D_MT_object_collection')],shift=True)
+	km.new(space, 'object.align_selected_to_target', 'A', 'PRESS', [], alt=True)
+	km.new(space, 'object.transform_type_in', 'F12', 'PRESS', [])
+	km.new(space, 'view3d.lighting_toggle', 'L', 'PRESS', [], ctrl=True)
+	km.new(space, 'camera.select', 'C', 'PRESS', [])
+	km.new(space, 'modifier.edit_multi', 'TAB', 'PRESS', [], ctrl=True)
+	km.new(space, 'object.viewoport_display', 'X', 'PRESS', [], alt=True)
+	km.new(space, 'object.join_plus','J', 'PRESS', [], ctrl=True)
+	km.new(space, 'object.select_children', 'LEFTMOUSE', 'DOUBLE_CLICK',
+			[('full', True)])
+	km.new(space, 'object.select_children', 'LEFTMOUSE', 'DOUBLE_CLICK',
+			[('full', True), ('extend', True)], ctrl=True)
+	km.new(space, 'object.delete_plus', 'DEL', 'PRESS', [])
+	km.new(space, 'wm.call_menu', 'M', 'PRESS',
+			[('name', 'VIEW3D_MT_object_collection')], shift=True)
+	km.new(space, 'wm.call_menu', 'A', 'PRESS',
+			[('name', 'VIEW3D_MT_object_apply')], alt=True, ctrl=True)
 
 
 
@@ -803,7 +828,7 @@ def outliner(km):
 	space = km.space('Outliner','OUTLINER','WINDOW')
 	add_search(km, space)
 	add_subobject(km, space)
-	if version() < 281:
+	if version < (2, 81, 0):
 		km.new(space,'outliner.item_activate','LEFTMOUSE','PRESS',[('extend',True)],ctrl=True)
 		km.new(space,'outliner.select_box','EVT_TWEAK_L','EAST',[('mode','SET')])
 		km.new(space,'outliner.select_box','EVT_TWEAK_L','SOUTH_EAST',[('mode','SET')])
@@ -1187,12 +1212,13 @@ def sequence_editor(km):
 
 
 def spreadsheet(km):
-	km.mute('Spreadsheet Generic', 'wm.context_toggle', 'N', 'PRESS')
-	km.mute('Spreadsheet Generic', 'wm.context_toggle', 'T', 'PRESS')
+	if version > (3, 0, 0):
+		km.mute('Spreadsheet Generic', 'wm.context_toggle', 'N', 'PRESS')
+		km.mute('Spreadsheet Generic', 'wm.context_toggle', 'T', 'PRESS')
 
-	space = km.space('Spreadsheet Generic', 'SPREADSHEET', 'WINDOW')
-	add_side_panel(km, space)
-	km.new(space, 'anim.auto_key_toggle', 'N', 'PRESS', [])
+		space = km.space('Spreadsheet Generic', 'SPREADSHEET', 'WINDOW')
+		add_side_panel(km, space)
+		km.new(space, 'anim.auto_key_toggle', 'N', 'PRESS', [])
 
 
 

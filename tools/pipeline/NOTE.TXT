@@ -1,0 +1,4 @@
+All stuff in 'Pipeline' folder are depend my personal pipeline.
+This tools may not usefull for the others and disable by default.
+Tools only can be activate from preference.
+And will not slow blender load time as it is disable.

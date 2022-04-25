@@ -71,7 +71,7 @@ class Primitive_Geometry_Class:
 		if self.data != None and bpy.context.mode == 'OBJECT':
 			verts,edges,faces, = meshdata
 			""" Genarate New Data """
-			# if version() == 280:
+			# if version < (2, 81, 0):
 			""" old method for V2.80 """
 			orgmesh = bpy.data.meshes[self.data.name]
 			tmpmesh = bpy.data.meshes.new("_NewTempMesh_")

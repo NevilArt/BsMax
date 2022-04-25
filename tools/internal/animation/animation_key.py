@@ -14,6 +14,7 @@
 ############################################################################
 
 import bpy
+
 from bpy.types import Operator, Panel
 from bpy.props import BoolProperty, EnumProperty, IntProperty
 
@@ -38,6 +39,7 @@ key_data = KeyData()
 class Anim_State:
 	def __init__(self):
 		self.lock_on_panel = False
+
 anim_state = Anim_State()
 
 
@@ -304,6 +306,7 @@ class Anim_OT_Freeze_on(Operator):
 			self.repeat = 1
 	
 	def check(self, ctx):
+		global anim_state
 		anim_state.lock_on_panel = self.panel
 	
 	def insert_key_for_current_state(self, chanel, frame):
@@ -384,6 +387,7 @@ class Anim_OP_Selection_Set(Panel):
 
 	@classmethod
 	def poll(self, ctx):
+		global anim_state
 		return anim_state.lock_on_panel
 	
 	def draw(self, ctx):

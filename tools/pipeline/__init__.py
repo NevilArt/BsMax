@@ -13,10 +13,11 @@
 #	along with this program.  If not, see <https://www.gnu.org/licenses/>.
 ############################################################################
 
-from .quadmenu import register_quadmenu, unregister_quadmenu
+from .make_ready_render import register_make_ready_render, unregister_make_ready_render
 
-def register_quad(preferences):
-	register_quadmenu(preferences)
+def register_pipeline(preferences):
+	if preferences.nevil_stuff:
+		register_make_ready_render()
 
-def unregister_quad():
-	unregister_quadmenu()
+def unregister_pipeline():
+	unregister_make_ready_render()

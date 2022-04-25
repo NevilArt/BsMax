@@ -14,8 +14,32 @@
 ############################################################################
 
 import bpy
+import bmesh
+
 from bpy.types import Operator
-from bpy.props import BoolProperty
+from bpy.props import BoolProperty, EnumProperty
+
+# this operator works smoother then the original one in panel 
+class UV_OT_Mirror_Cover(Operator):
+	""" Mirror the selected UV """
+	bl_idname = "uv.mirror_cover"
+	bl_label = "Mirror (Cover)"
+	bl_options = {'REGISTER', 'UNDO', 'INTERNAL'}
+	
+	axis: EnumProperty(name="Axis",  default='X', 
+				items=[('X', 'X', ''), ('Y', 'Y', '')]
+			)
+
+	@classmethod
+	def poll(self, ctx):
+		return ctx.mode == 'EDIT_MESH'
+
+	def execute(self, ctx):
+		if self.axis == 'X':
+			bpy.ops.transform.mirror(constraint_axis=(True, False, False))
+		if self.axis == 'Y':
+			bpy.ops.transform.mirror(constraint_axis=(False, True, False))
+		return{"FINISHED"}
 
 
 
@@ -98,14 +122,29 @@ class UV_OT_Rectangulate_Active_Face(Operator):
 
 
 	def execute(self, ctx):
-		uv = ctx.object.data.uv_layers.active
-		#TODO --- 
+		# uv = ctx.object.data.uv_layers.active
+
+		# bm = bmesh.from_edit_mesh(ctx.object.data)
+		# uv_layer = bm.verts.layers.uv.verify()
+
+		# for face in bm.faces:
+		# 	print(face.index)
+
+		# 	for loop in face.loops:
+		# 		uv = loop[uv_layer]
+		# 		print(uv.co, uv.select, loop.vert.index)
+		# 		#TODO --- 
 		return{"FINISHED"}
 
 
 
 
-classes = [UV_OT_Turn, UV_OT_Split_To_Island]
+classes = [
+		UV_OT_Mirror_Cover,
+		UV_OT_Turn,
+		UV_OT_Split_To_Island,
+		UV_OT_Rectangulate_Active_Face
+	]
 
 def register_edit():
 	for c in classes:

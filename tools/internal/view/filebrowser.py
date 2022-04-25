@@ -15,14 +15,14 @@
 
 import bpy
 from bpy.types import Operator
-from bsmax.state import version
+from bpy.app import version
 
 
 
 class BsMax_OT_ScaleIcons(Operator):
 	bl_idname = "filebrowser.scaleicons"
 	bl_label = "Scale Icons"
-	up: bpy.props.BoolProperty(name="scaleup",default=True)
+	up: bpy.props.BoolProperty(name="scaleup", default=True)
 	
 	@classmethod
 	def poll(self, ctx):
@@ -30,7 +30,7 @@ class BsMax_OT_ScaleIcons(Operator):
 
 	def execute(self, ctx):
 		params = ctx.space_data.params
-		is_old = version() < 81
+		is_old = version < (2, 81, 0)
 		small = 'LIST_SHORT' if is_old else 'LIST_VERTICAL'
 		medium = 'LIST_LONG' if is_old else 'LIST_HORIZONTAL'
 		large = 'THUMBNAIL'

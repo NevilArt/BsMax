@@ -16,21 +16,23 @@
 # import bpy#, mathutils
 from mathutils import Vector, geometry
 from math import pi
-from bpy_extras.view3d_utils import region_2d_to_location_3d, region_2d_to_vector_3d, region_2d_to_origin_3d
+from bpy_extras.view3d_utils import (region_2d_to_location_3d,
+									region_2d_to_vector_3d,
+									region_2d_to_origin_3d)
 
 
 
 def get_view_orientation(ctx):
 	r = lambda x: round(x, 2)
 	
-	orientation_dict = {(0,0,0):'TOP', (r(pi),0,0):'BOTTOM',
-				(r(-pi/2),0,0):'FRONT', (r(pi/2),0,r(-pi)):'BACK',
-				(r(-pi/2),r(pi/2),0):'LEFT', (r(-pi/2),r(-pi/2),0):'RIGHT'}
+	orientation_dict = {(0, 0, 0):'TOP', (r(pi), 0, 0):'BOTTOM',
+				(r(-pi/2), 0, 0):'FRONT', (r(pi/2), 0, r(-pi)):'BACK',
+				(r(-pi/2), r(pi/2), 0):'LEFT', (r(-pi/2), r(-pi/2), 0):'RIGHT'}
 	
 	r3d = ctx.area.spaces.active.region_3d
 	view_rot = r3d.view_matrix.to_euler()
 	
-	view_orientation = orientation_dict.get(tuple(map(r, view_rot)),'USER')
+	view_orientation = orientation_dict.get(tuple(map(r, view_rot)), 'USER')
 	view_type = r3d.view_perspective
 	
 	return view_orientation, view_type
@@ -39,26 +41,26 @@ def get_view_orientation(ctx):
 
 def get_triface_from_orient(gride, click_point):
 	orient = click_point.view_orient
-	x, y, z, = gride.location if gride else Vector((0.0, 0.0, 0.0))
+	x, y, z, = gride.location if gride else Vector((0, 0, 0))
 	
 	if orient in {'FRONT','BACK'}:
-		return ((0,y,0),(1,y,0),(0,y,1))
+		return ((0, y, 0), (1, y, 0), (0, y, 1))
 	
 	elif orient in {'LEFT','RIGHT'}:
-		return ((x,0,0),(x,1,0),(x,0,1))
+		return ((x, 0, 0), (x, 1, 0), (x, 0, 1))
 	
 	else:
-		return ((0,0,z),(0,1,z),(1,0,z))
+		return ((0, 0, z), (0, 1, z), (1, 0, z))
 
 
 
 def switch_axis_by_orient(orient, point):
 	x, y, z = point
 	# Top bottom are same as Prespective then can be ignored
-	if orient in ['FRONT','BACK']:
+	if orient in ['FRONT', 'BACK']:
 		return Vector((x, z, y))
 	
-	elif orient in ['LEFT','RIGHT']:
+	elif orient in ['LEFT', 'RIGHT']:
 		return Vector((y, z, x))
 	
 	else:
@@ -153,5 +155,7 @@ def get_click_point_on_face(ctx, face, x, y):
 		ray_start = view_matrix.to_translation()
 		ray_depth = view_matrix @ Vector((0, 0, -1000000))
 		ray_end = region_2d_to_location_3d(region, region_data, (x, y), ray_depth)
-		return geometry.intersect_ray_tri(face[0], face[1], face[2], ray_end, ray_start, False)
+		return geometry.intersect_ray_tri(face[0], face[1], face[2],
+											ray_end, ray_start, False)
+
 	return region_2d_to_location_3d(region, region_data, (x, y), (0, 0, 0))

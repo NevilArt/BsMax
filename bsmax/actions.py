@@ -104,6 +104,7 @@ def set_create_target(obj, target, distance=(0.0, 0.0, -2.0), align=True):
 	""" Add a lookat constraint with basic setting """
 	""" Create an empty object as target if target is None """
 	constraint = obj.constraints.new('TRACK_TO')
+
 	if target == None:
 		target = bpy.data.objects.new('empty', None)
 		target.empty_display_type = 'CUBE'
@@ -111,13 +112,16 @@ def set_create_target(obj, target, distance=(0.0, 0.0, -2.0), align=True):
 		collection = obj.users_collection[0]
 		collection.objects.link(target)
 		target.name = obj.name + '_target'
+
 	if align:
 		target.location = obj.location
 		target.rotation_euler = obj.rotation_euler
 		target.matrix_basis @= Matrix.Translation(distance)
+
 	constraint.target = target
 	constraint.track_axis = 'TRACK_NEGATIVE_Z'
 	constraint.up_axis = 'UP_Y'
+
 	return target
 
 
@@ -222,12 +226,15 @@ def freeze_transform(objs, location=True, rotation=True, scale=True):
 				obj.delta_rotation_euler.y += obj.rotation_euler.y
 				obj.delta_rotation_euler.z += obj.rotation_euler.z
 				obj.rotation_euler = [0, 0, 0]
+
 			elif obj.rotation_mode == 'QUATERNION':
 				obj.delta_rotation_quaternion.w = obj.rotation_quaternion.w
 				obj.delta_rotation_quaternion.x = obj.rotation_quaternion.x
 				obj.delta_rotation_quaternion.y = obj.rotation_quaternion.y
 				obj.delta_rotation_quaternion.z = obj.rotation_quaternion.z
+
 			elif obj.rotation_mode == 'AXIS_ANGLE':
+				#TODO
 				pass
 
 		if scale:

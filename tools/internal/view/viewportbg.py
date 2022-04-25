@@ -14,9 +14,9 @@
 ############################################################################
 
 import bpy
+from bpy.app import version
 from bpy.types import Menu,Operator
 from bpy.props import IntProperty
-from bsmax.state import version
 
 # Original code from Ozzkar Sep 2013
 # Edit by Nevil July 2019
@@ -73,7 +73,7 @@ class View3D_OT_Background(Operator):
 			grad.high_gradient[1] = 0.294
 			grad.high_gradient[2] = 0.294
 
-		if version() < 283:
+		if version < (2, 83, 0):
 			grad.show_grad = show_grad
 		else:
 			grad_type = 'LINEAR' if show_grad else 'SINGLE_COLOR'

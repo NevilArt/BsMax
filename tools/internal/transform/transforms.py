@@ -14,9 +14,9 @@
 ############################################################################
 
 import bpy
+from bpy.app import version
 from bpy.props import StringProperty, BoolProperty, IntProperty
 from bpy.types import Operator
-from bsmax.state import version
 
 
 
@@ -32,7 +32,7 @@ class View3D_OT_Transform_Gizmo_Size(Operator):
 		return ctx.area.type == 'VIEW_3D'
 
 	def execute(self, ctx):
-		if version() == 280:
+		if version < (2, 81, 0):
 			ctx.user_preferences.view.gizmo_size += self.step
 		else:
 			ctx.preferences.view.gizmo_size += self.step

@@ -56,7 +56,7 @@ class BitArray:
 			elif len(n) == 2:
 				n1,n2 = int(n[0]),int(n[1])
 				if n2 > n1:
-					for i in range(n1,n2+1):
+					for i in range(n1, n2+1):
 						self.ints.append(i)
 		self.ints.sort()
 	
@@ -66,16 +66,16 @@ class BitArray:
 
 
 def point_on_line(a, b, t):
-	return a+(b-a)*t
+	return a + (b - a)*t
 
 
 
 def point_on_vector(a, b, c, d, t):
-	C1 = d-3*c+3*b-a
-	C2 = 3*c-6*b+3*a
-	C3 = 3*b-3*a
+	C1 = d - 3*c + 3*b - a
+	C2 = 3*c - 6*b + 3*a
+	C3 = 3*b - 3*a
 	C4 = a
-	return C1*t**3+C2*t*t+C3*t+C4
+	return C1*t**3 + C2*t*t + C3*t + C4
 
 
 
@@ -136,7 +136,7 @@ def point_on_spline(spline, time):
 		b = segs[i].handle_right
 		c = segs[i+1].handle_left
 		d = segs[i+1].co
-		l = get_segment_length(a,b,c,d,100)
+		l = get_segment_length(a, b, c, d, 100)
 		lengths.append(l)
 		total_length += l
 
@@ -160,7 +160,7 @@ def point_on_spline(spline, time):
 	# Calculate Point Rotation on Secmetn/Splie/Curve
 	rotaion = point_rotation_on_segment(a, b, c, d, time)
 	
-	scale = Vector((1,1,1))
+	scale = Vector((1, 1, 1))
 	
 	return location, rotaion, scale
 
@@ -172,7 +172,13 @@ def point_on_curve(curve, index, time):
 	if not curve.data.splines:
 		return Vector((0, 0, 0)), Vector((0, 0, 0)), Vector((1, 1, 1))
 
-	return point_on_spline(curve.data.splines[index])
+	return point_on_spline(curve.data.splines[index], time)
+
+
+
+def get_bezier_tangent(a, b, c, d, t):
+	s = 1-t
+	return s*s*(b-a) + 2*s*t*(c-b) + t*t*(d-c)
 
 
 
@@ -240,12 +246,12 @@ def get_segment_length(a, b, c, d, steps):
 
 
 def get_2_points_angel_2d(p1, p2):
-	return atan2(p2.x-p1.x, p1.y-p2.y)
+	return atan2(p2.x - p1.x, p1.y - p2.y)
 
 
 
 def get_3_points_angle_2d(a, b, c):
-	return atan2(c.y-b.y, c.x-b.x) - atan2(a.y-b.y, a.x-b.x)
+	return atan2(c.y - b.y, c.x - b.x) - atan2(a.y - b.y, a.x - b.x)
 
 
 
@@ -265,14 +271,18 @@ def get_3_points_angle_3d(a, b, c):
 
 
 
-def get_lines_intersection(p1,p2,p3,p4):
-	delta = ((p1.x-p2.x)*(p3.y-p4.y)-(p1.y-p2.y)*(p3.x-p4.x))
+def get_lines_intersection(p1, p2, p3, p4):
+	delta = ((p1.x - p2.x)*(p3.y - p4.y) - (p1.y - p2.y)*(p3.x - p4.x))
 	if delta == 0:
 		return None
 	else:
-		x=((p1.x*p2.y-p1.y*p2.x)*(p3.x-p4.x)-(p1.x-p2.x)*(p3.x*p4.y-p3.y*p4.x))/delta
-		y=((p1.x*p2.y-p1.y*p2.x)*(p3.y-p4.y)-(p1.y-p2.y)*(p3.x*p4.y-p3.y*p4.x))/delta
-	return Vector((x,y,0))
+		x = ((p1.x*p2.y - p1.y*p2.x)*(p3.x - p4.x) -
+			(p1.x - p2.x)*(p3.x*p4.y - p3.y*p4.x)) / delta
+
+		y = ((p1.x*p2.y - p1.y*p2.x)*(p3.y - p4.y) - 
+			(p1.y - p2.y)*(p3.x*p4.y - p3.y*p4.x)) / delta
+
+	return Vector((x, y, 0))
 
 
 

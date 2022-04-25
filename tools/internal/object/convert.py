@@ -62,6 +62,7 @@ class Object_OT_Convert_TO(Operator):
 
 
 class Object_OT_Join_Plus(Operator):
+	""" Join selected objects to active object if are in same type """
 	bl_idname = "object.join_plus"
 	bl_label = "Join (Plus)"
 	# bl_description = ""
@@ -76,6 +77,10 @@ class Object_OT_Join_Plus(Operator):
 	def draw(self,ctx):
 		layout = self.layout
 		layout.prop(self, 'convert')
+		if self.convert:
+			layout.label(text="Apply Modifiers and make objects Unique befor joine")
+		else:
+			layout.label(text="Don`t make any change and just call Join Operator")
 
 	def execute(self, ctx):
 		target = ctx.active_object

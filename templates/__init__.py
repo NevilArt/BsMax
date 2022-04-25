@@ -17,9 +17,13 @@ import bpy
 from os import path
 from glob import glob
 
+
+
 tmpdir = path.dirname(__file__)
 tmplst = [path.splitext(path.basename(f))[0] for f in glob(tmpdir+"/*.py")]
 tmplst.remove('__init__')
+
+
 
 class BUI_OT_Template(bpy.types.Operator):
 	bl_idname = "bui.template"
@@ -35,17 +39,23 @@ class BUI_OT_Template(bpy.types.Operator):
 			bpy.ops.text.paste()
 		return{"FINISHED"}
 
+
+
 class BUI_MT_Samples(bpy.types.Menu):
 	bl_idname = "BUI_MT_samplesmenu"
 	bl_label = "BUI"
-	def draw(self,ctx):
+	def draw(self, ctx):
 		for name in tmplst:
-			self.layout.operator("bui.template",text=name.capitalize()).name=name
+			self.layout.operator("bui.template", text=name.capitalize()).name=name
 
-def Menu_CallBack(self,ctx):
+
+
+def Menu_CallBack(self, ctx):
 	self.layout.menu("BUI_MT_samplesmenu")
 
-classes = [BUI_MT_Samples,BUI_OT_Template]
+
+
+classes = [BUI_MT_Samples, BUI_OT_Template]
 
 def register():
 	for c in classes:

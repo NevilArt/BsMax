@@ -14,7 +14,10 @@
 #	along with this program.  If not, see <https://www.gnu.org/licenses/>.
 ############################################################################
 
-import bpy, bgl, gpu
+import bpy
+import bgl
+import gpu
+
 from gpu_extras.batch import batch_for_shader
 from bpy_extras.view3d_utils import location_3d_to_region_2d
 
@@ -44,22 +47,26 @@ def register_line(ctx,self,mode,color):
 	""" self.start self.end """
 	space = ctx.area.spaces.active
 	if mode == '2d':
-		return space.draw_handler_add(draw_line,tuple([self,'2D_UNIFORM_COLOR',color]),'WINDOW','POST_PIXEL')
+		return space.draw_handler_add(draw_line,
+									tuple([self, '2D_UNIFORM_COLOR', color]),
+									'WINDOW', 'POST_PIXEL')
 	if mode == '3d':
-		return space.draw_handler_add(draw_line,tuple([self,'3D_UNIFORM_COLOR',color]),'WINDOW','POST_VIEW')
+		return space.draw_handler_add(draw_line,
+									tuple([self, '3D_UNIFORM_COLOR', color]),
+									'WINDOW', 'POST_VIEW')
 
 
 
 def unregister_line(handle):
-	if handle != None:
-		bpy.types.SpaceView3D.draw_handler_remove(handle,'WINDOW')
+	if handle:
+		bpy.types.SpaceView3D.draw_handler_remove(handle, 'WINDOW')
 
 
 
 class Rubber_Band:
 	def __init__(self):
-		self.start = (0,0,0)
-		self.end = (0,0,0)
+		self.start = (0, 0, 0)
+		self.end = (0, 0, 0)
 		self.segment = 10
 		self.size = 2
 		self.draw_handler = None
@@ -101,9 +108,11 @@ class Rubber_Band:
 			bgl.glDisable(bgl.GL_BLEND)
 	
 	def register(self):
-		self.draw_handler = bpy.types.SpaceView3D.draw_handler_add(self.draw_rubber, (), 'WINDOW', 'POST_PIXEL')
+		SpaceView3D = bpy.types.SpaceView3D
+		self.draw_handler = SpaceView3D.draw_handler_add(self.draw_rubber, (),
+														'WINDOW', 'POST_PIXEL')
 	
 	def unregister(self):
-		if self.draw_handler != None:
-			bpy.types.SpaceView3D.draw_handler_remove(self.draw_handler,'WINDOW')
+		if self.draw_handler:
+			bpy.types.SpaceView3D.draw_handler_remove(self.draw_handler, 'WINDOW')
 		self.draw_handler = None

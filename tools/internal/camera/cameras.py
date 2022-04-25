@@ -13,9 +13,52 @@
 #	along with this program.  If not, see <https://www.gnu.org/licenses/>.
 ############################################################################
 import bpy
+
 from bpy.props import EnumProperty, BoolProperty
 from bpy.types import Operator
 from bsmax.state import has_constraint
+
+
+def get_view3d(ctx):
+	if ctx.area.spaces.active.type == 'VIEW_3D':
+		return ctx.area.spaces.active
+
+	areas = [area for area in ctx.screen.areas if area.type == 'VIEW_3D']
+	spaces = [space for area in areas
+					for space in area.spaces
+						if space.type == 'VIEW_3D']
+	#TODO try to find biggest view 3d
+	if spaces:
+		return spaces[0]
+	return None
+
+
+
+def get_cameras(ctx):
+	if ctx.active_object:
+		if ctx.active_object.type == 'CAMERA':
+			if ctx.active_object.select_get():
+				return [ctx.active_object]
+			else:
+				return [obj for obj in bpy.data.objects if obj.type == 'CAMERA']
+		else:
+			return [obj for obj in bpy.data.objects if obj.type == 'CAMERA']
+	else:
+		if ctx.selected_objects:
+			return [obj for obj in ctx.selected_objects if obj.type == 'CAMERA']
+		else:
+			return [obj for obj in bpy.data.objects if obj.type == 'CAMERA']
+
+
+
+def set_camera(ctx, camera, view3d):
+	ctx.scene.camera = camera
+	view3d.region_3d.view_perspective = 'CAMERA'
+	if ctx.area.spaces.active.type == 'VIEW_3D':
+		#TODO find command rather than operator
+		bpy.ops.view3d.view_center_camera('INVOKE_DEFAULT')	
+
+
 
 # create a camera from view 
 class Camera_OT_Create_From_View(Operator):
@@ -73,83 +116,40 @@ class Camera_OT_Set_Active(Operator):
 
 
 
-class Camera_OT_Search(Operator):
-	bl_idname = 'camera.search'
-	bl_label = 'Serch Camera'
-	bl_property = 'cameras'
+class Camera_OT_Select(Operator):
+	""" List camera and make active picked one """
+	bl_idname = 'camera.select'
+	bl_label = 'Select Camera'
+	bl_property = 'search'
+	bl_description = ''
 
 	@classmethod
 	def poll(self, ctx):
-		return ctx.area.type == 'VIEW_3D'
-
+		return ctx.area.type in {'VIEW_3D', 'DOPESHEET_EDITOR',
+								'GRAPH_EDITOR', 'NLA_EDITOR'}
+	
 	def scene_cameras(self, ctx):
-		CamNameList = []
-		for cam in bpy.data.objects:
-			if cam.type == 'CAMERA':
-				CamNameList.append((cam.name, cam.name, ''))
-		return CamNameList
+		return [(cam.name, cam.name, '') for cam in bpy.data.objects
+											if cam.type == 'CAMERA']
 
-	cameras: EnumProperty(items = scene_cameras)
-
+	search: EnumProperty(name='Select Camera', items=scene_cameras)
+	
+	
 	def execute(self, ctx):
-		selected_camera = bpy.data.objects[self.cameras]
-		ctx.scene.camera = selected_camera
-		area = next(area for area in ctx.screen.areas if area.type == 'VIEW_3D')
-		area.spaces[0].region_3d.view_perspective = 'CAMERA'
-		return {'FINISHED'}
+		camera = bpy.data.objects[self.search]
+		set_camera(ctx, camera, get_view3d(ctx))		
+		return{'FINISHED'}
 	
 	def invoke(self, ctx, event):
-		wm = ctx.window_manager
-		wm.invoke_search_popup(self)
-		return {'FINISHED'}
+		cameras = get_cameras(ctx)
 
-
-
-class Camera_OT_Select(Operator):
-	bl_idname = 'camera.select'
-	bl_label = 'Select Camera'
-	bl_description = 'Select Active Camera'
-
-	@classmethod
-	def poll(self,ctx):
-		return ctx.area.type == 'VIEW_3D'
-
-	def set_cam(self,ctx,cameras):
 		if len(cameras) == 1:
-			ctx.scene.camera = cameras[0]
-			return True
-		elif len(cameras) > 1:
-			bpy.ops.camera.search('INVOKE_DEFAULT')
-			return True
-		return False
+			set_camera(ctx, cameras[0], get_view3d(ctx))
+			return{'FINISHED'}
 
-	def execute(self,ctx):
-		cam_detected = False
-		if ctx.active_object:
-			if ctx.active_object.type == 'CAMERA':
-				if ctx.active_object.select_get():
-					ctx.scene.camera = ctx.active_object
-				else:
-					cameras = [obj for obj in bpy.data.objects if obj.type == 'CAMERA']
-					cam_detected = self.set_cam(ctx,cameras)
-			else:
-				cameras = [obj for obj in bpy.data.objects if obj.type == 'CAMERA']
-				cam_detected = self.set_cam(ctx,cameras)
-		else:
-			if ctx.selected_objects:
-				cameras = [obj for obj in ctx.selected_objects if obj.type == 'CAMERA']
-				cam_detected = self.set_cam(ctx,cameras)
-			else:
-				cameras = [obj for obj in bpy.data.objects if obj.type == 'CAMERA']
-				cam_detected = self.set_cam(ctx,cameras)
-		
-		if ctx.scene.camera:
-			ctx.area.spaces[0].region_3d.view_perspective = 'CAMERA'
-			cam_detected = True
-
-		if cam_detected:
-			bpy.ops.view3d.view_center_camera('INVOKE_DEFAULT')
-		return{'FINISHED'}
+		if len(cameras) > 1:
+			ctx.window_manager.invoke_search_popup(self)
+		return{'RUNNING_MODAL'}
 
 
 
@@ -193,6 +193,7 @@ class Camera_OT_Select_Active_Camera(Operator):
 	bl_idname = 'camera.select_active_camera'
 	bl_label = 'Select Active Camera/Target'
 	bl_description = 'Select Acitve Camera/Target'
+
 	selcam: BoolProperty(name='Select Camera')
 	seltrg: BoolProperty(name='Select Target')
 
@@ -210,6 +211,7 @@ class Camera_OT_Select_Active_Camera(Operator):
 				if has_constraint(cam, 'TRACK_TO'):
 					targ = cam.constraints["Track To"].target
 					targ.select_set(state=True)
+
 		return {'FINISHED'}
 
 
@@ -230,6 +232,7 @@ class Camera_OT_Show_Safe_Area(Operator):
 			camera.data.show_passepartout = True
 			camera.data.passepartout_alpha = 1
 		return {'FINISHED'}
+
 
 
 class Camera_OT_Lock_Toggle(Operator):
@@ -257,13 +260,12 @@ def camera_menu(self, ctx):
 	layout = self.layout
 	layout.separator()
 	layout.operator('camera.create_from_view')
-	layout.operator('camera.search')
+	layout.operator('camera.select')
 
 
 
 classes = [Camera_OT_Set_Active,
 			Camera_OT_Create_From_View,
-			Camera_OT_Search,
 			Camera_OT_Select,
 			Camera_OT_Lock_To_View_Toggle,
 			Camera_OT_Lock_Transform,

@@ -36,18 +36,13 @@ class UV_OP_Property_Panel(Panel):
 		row = box.row()
 		row.operator('uv.pin', text='', icon='PINNED').clear=False
 		row.operator('uv.pin', text='', icon='UNPINNED').clear=True
-		row.operator('uv.mark_seam', text=' Mark Seam', icon='MESH_PLANE').clear=False
-		row.operator('uv.mark_seam', text=' Clear Seam', icon='SELECT_SET').clear=True
-		row.operator('uv.seams_from_islands', text=' Seam From Island', icon='MOD_BOOLEAN')
 
 		# Mirror
 		box = layout.box()
 		box.operator('mesh.faces_mirror_uv')
 		row = box.row(align=True)
-		row.operator('transform.mirror', text='X',
-					 icon='MOD_MIRROR').constraint_axis=(True, False, False)
-		row.operator('transform.mirror', text='Y',
-					 icon='MOD_MIRROR').constraint_axis=(False, True, False)
+		row.operator('uv.mirror_cover', text='X', icon='MOD_MIRROR').axis='X'
+		row.operator('uv.mirror_cover', text='Y', icon='MOD_MIRROR').axis='Y'
 		row.operator('uv.turn',text='-90',icon='LOOP_BACK').ccw = False
 		row.operator('uv.turn',text='+90',icon='LOOP_FORWARDS').ccw = True
 
@@ -77,20 +72,24 @@ class UV_OP_Property_Panel(Panel):
 		# Merge / Split
 		box = layout.box()
 		box.label(text='Merge / Split')
-		row = box.row()
+		row = box.row(align=True)
 		row.operator('uv.weld', text=' Weld', icon='FULLSCREEN_EXIT')
 		row.operator('uv.snap_selected', text=' To Cursor',
 					icon='ORIENTATION_CURSOR').target='CURSOR'
 		row.operator('uv.remove_doubles', text=' Merge',
 					icon='DRIVER_DISTANCE')
-		row = box.row()
+		row = box.row(align=True)
 		row.operator('uv.split_to_island', text='Split')
 		row.operator('uv.stitch', text='Stitch')
 
 		# UNwarap
 		box = layout.box()
 		box.label(text='Unwrap')
-		row = box.row()
+		row = box.row(align=True)
+		row.operator('uv.mark_seam', text=' Mark Seam', icon='MESH_PLANE').clear=False
+		row.operator('uv.mark_seam', text=' Clear Seam', icon='SELECT_SET').clear=True
+		row.operator('uv.seams_from_islands', text=' Seam From Island', icon='MOD_BOOLEAN')
+		row = box.row(align=True)
 		row.operator('uv.unwrap', text=' Unwarp', icon='MATCLOTH')
 		row.operator('uv.cube_project', text=' Cube Projection',
 					icon='MESH_CUBE')
@@ -98,11 +97,27 @@ class UV_OP_Property_Panel(Panel):
 					icon='MESH_CYLINDER')
 		row.operator('uv.sphere_project', text=' Sphere Projection',
 					icon='MESH_UVSPHERE')
-		row = box.row()
-		row.operator('uv.smart_project')
-		row.operator('uv.lightmap_pack')
+		row = box.row(align=True)
+		row.operator('uv.smart_project', text=' Smart Project', icon='MONKEY')
+		row.operator('uv.lightmap_pack', text=' Ligtmap Pack', icon='MOD_MULTIRES')
 		row.operator('uv.follow_active_quads', text=' Fallow Active Quad',
 					icon='VIEW_PERSPECTIVE')
+		
+		# Align
+		box = layout.box()
+		box.label(text='Align')
+		row = box.row(align=True)
+		row.operator('uv.align', text=' Straighten').axis='ALIGN_S'
+		row.operator('uv.align', text='X Straighten').axis='ALIGN_T'
+		row.operator('uv.align', text='Y Straighten').axis='ALIGN_U'
+		row = box.row(align=True)
+		row.operator('uv.align', text='Flatten',
+					icon='NODE_CORNER').axis='ALIGN_AUTO'
+		row.operator('uv.align', text='X',
+					icon='NODE_SIDE').axis='ALIGN_X'
+		row.operator('uv.align', text='Y',
+					icon='NODE_TOP').axis='ALIGN_Y'
+		row = box.row(align=True)
 		
 		# Pack
 		box = layout.box()
@@ -112,17 +127,8 @@ class UV_OP_Property_Panel(Panel):
 		row.operator('uv.average_islands_scale', icon='OBJECT_HIDDEN')
 		row = box.row()
 		row.operator('uv.minimize_stretch')
-		
-		box = layout.box()
-		box.label(text='Align')
-		row = box.row()
-		row.operator('uv.align', text=' Straighten').axis='ALIGN_S'
-		row.operator('uv.align', text='X Straighten').axis='ALIGN_T'
-		row.operator('uv.align', text='Y Straighten').axis='ALIGN_U'
-		row = box.row()
-		row.operator('uv.align', text='Auto Flatten').axis='ALIGN_AUTO'
-		row = box.row()
-		row.operator('uv.reset')
+
+		layout.operator('uv.reset')
 
 
 

@@ -14,7 +14,8 @@
 ############################################################################
 from bpy.utils import register_class, unregister_class
 from bpy.types import Menu
-from bsmax.state import version
+
+
 
 class VIEW3D_MT_PIE_Transform(Menu):
 	bl_idname = "BSMAX_MT_transform_pi"
@@ -43,7 +44,7 @@ class VIEW3D_MT_PIE_Transform(Menu):
 		# layout.operator("", text="Driver Editor...")
 		# layout.operator("", text="NLA Editor...")
 		# layout.operator("", text="Text Editor...")
-		# if version() > 292:
+		# if version > (2, 92, 0):
 		# 	layout.operator("", text="Move")
 		# 	layout.operator("", text="Geometry Node Editor...")
 		# layout.operator("", text="Conver to")
