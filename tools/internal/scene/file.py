@@ -13,13 +13,13 @@
 #	along with this program.  If not, see <https://www.gnu.org/licenses/>.
 ############################################################################
 
-import bpy
+import bpy, os, sys
 from bpy.types import Operator
 from bpy.app import version
 
 
 
-class BsMax_OT_ScaleIcons(Operator):
+class File_OT_Scale_Icons(Operator):
 	bl_idname = "filebrowser.scaleicons"
 	bl_label = "Scale Icons"
 	up: bpy.props.BoolProperty(name="scaleup", default=True)
@@ -52,15 +52,78 @@ class BsMax_OT_ScaleIcons(Operator):
 
 
 
-classes = [BsMax_OT_ScaleIcons]
+class File_OT_Version(Operator):
+	bl_idname = "file.version"
+	bl_label = "Version"
 
-def register_filebrowser():
+	@classmethod
+	def poll(self, ctx):
+		return ctx.blend_data.filepath
+
+	def draw(self, ctx):
+		self.layout.label(text="File: " + self.date_version)
+		self.layout.label(text="App: " + self.date_version)
+
+	def execute(self, ctx):
+		return{"FINISHED"}
+	
+	def invoke(self, ctx, event):
+		self.date_version = str(bpy.data.version)
+		self.blender_version = str(bpy.app.version)
+		return ctx.window_manager.invoke_props_dialog(self, width=120)
+
+
+
+class File_OT_Save_Check(Operator):
+	bl_idname = "file.save_check"
+	bl_label = "Save Check"
+
+	def compar_versions(self, file_ver, app_ver):
+		return file_ver[0] == app_ver[0] and file_ver[1] == app_ver[1]
+
+	def draw(self, ctx):
+		self.layout.label(text="File Version is " + self.date_version)
+		self.layout.label(text="Blender Version is " + self.date_version)
+		self.layout.label(text="Are you sure wana overwrite it?")
+
+	def execute(self, ctx):
+		bpy.ops.wm.save_mainfile()
+		return{"FINISHED"}
+	
+	def invoke(self, ctx, event):
+		if ctx.blend_data.filepath:
+
+			if self.compar_versions(bpy.data.version, bpy.app.version):
+				bpy.ops.wm.save_mainfile()
+				return{"FINISHED"}
+
+			self.date_version = str(bpy.data.version)
+			self.blender_version = str(bpy.app.version)
+			return ctx.window_manager.invoke_props_dialog(self)
+
+		bpy.ops.wm.save_as_mainfile('INVOKE_DEFAULT')
+		return{"FINISHED"}
+
+
+
+def version_menu(self, ctx):
+	layout = self.layout
+	layout.separator()
+	layout.operator("file.version", text='File Version', icon='BLENDER')
+
+
+
+classes = [File_OT_Scale_Icons, File_OT_Version, File_OT_Save_Check]
+
+def register_file():
 	for c in classes:
 		bpy.utils.register_class(c)
+	bpy.types.TOPBAR_MT_edit.append(version_menu)
 
-def unregister_filebrowser():
+def unregister_file():
+	bpy.types.TOPBAR_MT_edit.remove(version_menu)
 	for c in classes:
 		bpy.utils.unregister_class(c)
 
 if __name__ == "__main__":
-	register_filebrowser()
+	register_file()

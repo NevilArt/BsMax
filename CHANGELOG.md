@@ -1,3 +1,10 @@
+# 0, 1, 0, 20220425
+* 'C' Camera search works on DopeSheet, timeline, CurveEditor and LNA too (3DsMax mode).
+* 'camera.search' operator removed 'camera.select' do the same job ('C' in max mode).
+* UV Tools panel a little bit arranged and get better but not final yet.
+* Changes on previous update causes problem on older blenders (2.8x) that issue fixed.
+* Some other minor Bugfix and Cleanup.
+
 # 0, 1, 0, 20220417
 * UV Tools collected on 'UV Tools' panel to faster acces (Not final).
 * New UV split operator that work in sync mode too.

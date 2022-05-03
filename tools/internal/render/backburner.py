@@ -31,8 +31,14 @@ bl_info = {
 	"category": "Render"
 }
 
-import bpy, os, subprocess, random, platform
-from bpy.props import PointerProperty, StringProperty, BoolProperty, IntProperty, EnumProperty
+import bpy
+import os
+import subprocess
+import random
+import platform
+
+from bpy.props import (PointerProperty, StringProperty,
+						BoolProperty, IntProperty, EnumProperty)
 from bpy.types import Panel, Operator, PropertyGroup
 
 
@@ -131,19 +137,26 @@ class Backburner_Settings(PropertyGroup):
 	timeout: IntProperty(name='Timeout', description='Timeout per task',
 		default=120, min=1, max=1000, soft_min=1, soft_max=64)
 
-	priority: IntProperty(name='Priority', description='Priority of this job (0 is Critical)',
+	priority: IntProperty(name='Priority',
+		description='Priority of this job (0 is Critical)',
 		min=0, max=99, soft_min=0, soft_max=99, default=50)
 
 	suspended: BoolProperty (name='Suspended', default=True,
 		description='Submit Job as Suspended')
 
-	override_frame_range: EnumProperty(name='Frames', description='Override Render frames Range', 
-		default='ACTIVE', items=[('ACTIVE','Active Time',''),('RANGE','Range',''),('FRAMES','Specific Frames','')])
+	override_frame_range: EnumProperty(name='Frames',
+		description='Override Render frames Range', 
+		default='ACTIVE',
+		items=[('ACTIVE', 'Active Time', ''),
+				('RANGE', 'Range', ''),
+				('FRAMES', 'Specific Frames', '')])
 
-	frame_start: IntProperty(name='Start Frame', description='Start frame of animation sequence to render', 
+	frame_start: IntProperty(name='Start Frame',
+		description='Start frame of animation sequence to render', 
 		min=1, max=50000, default=1, update=check_start_frame)
 
-	frame_end: IntProperty(name='End Frame', description='End frame of animation sequence to render',
+	frame_end: IntProperty(name='End Frame',
+		description='End frame of animation sequence to render',
 		min=1, max=50000, default=250, update=check_end_frame)
 	
 	frames_bitarray: StringProperty(name='Frames', maxlen=400, default='1,3,5-7',
@@ -158,7 +171,8 @@ class Backburner_Settings(PropertyGroup):
 	group: StringProperty(name='Groups', maxlen=400, default='',
 		description='Name of Render Group')
 
-	path_backburner: StringProperty(name='Backburner Path', description='Path to Backburner cmdjob.exe', 
+	path_backburner: StringProperty(name='Backburner Path',
+		description='Path to Backburner cmdjob.exe', 
 		maxlen=400, subtype='FILE_PATH', default=backburner_path())
 
 	use_custom_path: BoolProperty (name='Use Custom Blender', default=False)
@@ -446,7 +460,9 @@ def draw_backburner_panel(self, ctx):
 
 	layout = self.layout
 	row = layout.row()
-	row.operator('wm.url_open', icon='HELP').url= "https://github.com/NevilArt/BsMax/wiki/Render-Tools"
+	row.operator('wm.url_open',
+				icon='HELP').url= "https://github.com/NevilArt/BsMax/wiki/Render-Tools"
+
 	row.operator('render.submit_to_backburner', icon='RENDER_ANIMATION')
 	row.operator('render.save_backburner_preset', text='', icon='ADD')
 	row.operator('render.load_backburner_preset', text='', icon='RECOVER_LAST')
@@ -500,13 +516,13 @@ class Render_OT_Backburner(Operator):
 	bl_label = 'Backburner'
 	bl_options = {'REGISTER'}
 
-	def draw(self,ctx):
+	def draw(self, ctx):
 		draw_backburner_panel(self, ctx)
 	
-	def execute(self,ctx):
+	def execute(self, ctx):
 		return{'FINISHED'}
 	
-	def invoke(self,ctx,event):
+	def invoke(self, ctx, event):
 		return ctx.window_manager.invoke_props_dialog(self, width=500)
 
 
@@ -540,7 +556,8 @@ classes = [Backburner_Settings,
 def register_backburner():
 	for c in classes:
 		bpy.utils.register_class(c)
-	bpy.types.Scene.backburner = PointerProperty(type=Backburner_Settings, name='Backburner Submission')
+	bpy.types.Scene.backburner = PointerProperty(type=Backburner_Settings,
+												name='Backburner Submission')
 	bpy.types.TOPBAR_MT_render.prepend(backburner_menu)
 
 def unregister_backburner():

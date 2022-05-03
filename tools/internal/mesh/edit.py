@@ -15,6 +15,7 @@
 
 import bpy
 from bpy.types import Operator
+from bpy.props import EnumProperty
 
 #TODO Quick mesh boolean setup operator and float menu
 
@@ -64,7 +65,34 @@ class Mesh_OT_Drag(Operator):
 
 
 
-classes = [Mesh_OT_Chamfer, Mesh_OT_Drag]
+class Mesh_OT_Smart_Select(Operator):
+	bl_idname = "mesh.smart_select"
+	bl_label = "Smart Select"
+	bl_options = {'REGISTER', 'UNDO'}
+
+	@classmethod
+	def poll(self, ctx):
+		return ctx.mode == "EDIT_MESH"
+
+	mode: EnumProperty(name='Mode', default='SET',
+		items =[('SET', 'Set', ''), ('ADD', 'Add', ''), ('SUB', 'Sub', '')])
+	
+	def execute(self, ctx):
+		_, edge, _ = ctx.tool_settings.mesh_select_mode
+		if edge:
+			bpy.ops.mesh.smart_select_loop()
+		
+		else:
+			if self.mode == 'SUB':
+				bpy.ops.mesh.select_linked_pick(deselect=True)
+			else:
+				bpy.ops.mesh.select_linked_pick(deselect=False)
+
+		return{"FINISHED"}
+
+
+
+classes = [Mesh_OT_Chamfer, Mesh_OT_Smart_Select, Mesh_OT_Drag]
 
 def register_edit():
 	for c in classes:

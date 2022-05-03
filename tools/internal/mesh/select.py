@@ -14,8 +14,9 @@
 ############################################################################
 
 import bpy
+
 from bpy.types import Operator
-from bpy.props import EnumProperty,BoolProperty
+from bpy.props import EnumProperty, BoolProperty
 
 
 
@@ -41,6 +42,7 @@ class Mesh_OT_Select_Element_Toggle(Operator):
 		return ctx.mode in {'EDIT_MESH','EDIT_CURVE', 'PARTICLE'}
 	
 	def execute(self, ctx):
+		global msm
 		msm.active = not msm.active
 		return{"FINISHED"}
 
@@ -53,6 +55,7 @@ def view3d_select(mode,x,y):
 		bpy.ops.view3d.select(deselect=True, location=(x, y))
 
 def mesh_select(mode):
+	global msm
 	delimit = set()
 	if msm.normal:
 		delimit.add('NORMAL')
@@ -122,6 +125,7 @@ class Mesh_OT_Select_Element_Setting(Operator):
 			box.prop(self,"uv")
 
 	def commit(self):
+		global msm
 		msm.active = self.active
 		msm.normal = self.normal
 		msm.material = self.material
@@ -137,7 +141,8 @@ class Mesh_OT_Select_Element_Setting(Operator):
 		self.commit()
 		return None
 
-	def invoke(self,ctx,event):
+	def invoke(self, ctx, event):
+		global msm
 		self.active = msm.active
 		self.normal = msm.normal
 		self.material = msm.material
@@ -163,12 +168,13 @@ class Mesh_OT_Select_Max(Operator):
 		return ctx.mode == "EDIT_MESH"
 
 	def execute(self, ctx):
+		global msm
 		if msm.active:
 			mesh_select(self.mode)
 		else:
 			view3d_select(self.mode, self.x, self.y)
 		bpy.ops.ed.undo_push()
-		self.report({'OPERATOR'},'bpy.ops.mesh.select_max()')
+		# self.report({'OPERATOR'},'bpy.ops.mesh.select_max()')
 		return{"FINISHED"}
 	
 	def invoke(self, ctx, event):
@@ -192,12 +198,13 @@ class Curve_OT_Select_Max(Operator):
 		return ctx.mode == "EDIT_CURVE"
 
 	def execute(self, ctx):
+		global msm
 		if msm.active:
 			curve_select(self.mode)
 		else:
 			view3d_select(self.mode, self.x, self.y)
 		bpy.ops.ed.undo_push()
-		self.report({'OPERATOR'},'bpy.ops.curve.select_max()')
+		# self.report({'OPERATOR'},'bpy.ops.curve.select_max()')
 		return{"FINISHED"}
 	
 	def invoke(self, ctx, event):
@@ -221,12 +228,13 @@ class Particle_OT_Select_Max(Operator):
 		return ctx.mode == "EDIT_CURVE"
 
 	def execute(self, ctx):
+		global msm
 		if msm.active:
 			particle_select(self.mode)
 		else:
 			view3d_select(self.mode, self.x, self.y)
 		bpy.ops.ed.undo_push()
-		self.report({'OPERATOR'},'bpy.ops.curve.select_max()')
+		# self.report({'OPERATOR'},'bpy.ops.curve.select_max()')
 		return{"FINISHED"}
 	
 	def invoke(self, ctx, event):

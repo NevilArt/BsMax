@@ -37,11 +37,12 @@ Your Donation helps me to ignore other freelance offers and focus on BsMax and s
 
 # Recent Updates and Changes
 
-* 'C' Camera search works on DopeSheet, timeline, CurveEditor and LNA too (3DsMax mode).
-* 'camera.search' operator removed 'camera.select' do the same job ('C' in max mode).
-* UV Tools panel a little bit arranged and get better but not final yet.
-* Changes on previous update causes problem on older blenders (2.8x) that issue fixed.
-* Some other minor Bugfix and Cleanup.
+* 'Parallax Ice' Node groupe for easy and fast Ice effect in EEVEE.
+* 'Sprite 2D' Node groupe for display or animate sprite sheet.
+* Detach operator in quadmenu keeps last setting for next oparation (3DsMax mode).
+* Version operator show the Current blend file version (Menu/Edit/File Version).
+* 'Shift + E' Extrude edit curve (3DsMax mode).
+* 'Ctrl + Insert' as copy 'Shfit + Insert' as paste on most parts (3DsMax mode).
 * [Change log ...](https://github.com/NevilArt/BsMax/blob/master/CHANGELOG.md)
 
 # In Production 

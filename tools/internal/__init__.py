@@ -24,14 +24,16 @@ from .mesh import register_mesh, unregister_mesh
 from .object import register_object, unregister_object
 from .particle import register_particle, unregister_particle
 from .render import register_render, unregister_render
+from .rigg import register_rigg, unregister_rigg
+from .scene import register_scene, unregister_scene
 from .select import register_select, unregister_select
 from .text import register_text, unregister_text
 from .transform import register_transform, unregister_transform
 from .uv import register_uv, unregister_uv
 from .view import register_view, unregister_view
-from .rigg import register_rigg, unregister_rigg
-from .menu import register_menu, unregister_menu
 from .vse import register_vse, unregister_vse
+
+from .menu import register_menu, unregister_menu
 
 
 
@@ -48,13 +50,14 @@ def register_internal(preferences):
 	register_particle()
 	register_render()
 	register_select()
+	register_scene()
 	register_text()
 	register_transform(preferences)
 	register_uv()
 	register_view(preferences)
 	register_rigg()
-	register_menu()
 	register_vse()
+	register_menu()
 
 def unregister_internal():
 	unregister_animation()
@@ -68,11 +71,12 @@ def unregister_internal():
 	unregister_object()
 	unregister_particle()
 	unregister_render()
+	unregister_scene()
 	unregister_select()
 	unregister_text()
 	unregister_transform()
 	unregister_uv()
 	unregister_view()
 	unregister_rigg()
-	unregister_menu()
 	unregister_vse()
+	unregister_menu()

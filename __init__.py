@@ -20,8 +20,8 @@ bl_info = {
 	'name': 'BsMax',
 	'description': 'BsMax for Blender 2.80 ~ 3.1',
 	'author': 'Naser Merati (Nevil)',
-	'version': (0, 1, 0, 20220425),
-	'blender': (2, 80, 0),# 2.80 ~ 3.2
+	'version': (0, 1, 0, 20220503),
+	'blender': (2, 80, 0),# 2.80 ~ 3.1
 	'location': 'Almost Everywhere in Blender',
 	'wiki_url': 'https://github.com/NevilArt/BsMax/wiki',
 	'doc_url': 'https://github.com/NevilArt/BsMax/wiki',

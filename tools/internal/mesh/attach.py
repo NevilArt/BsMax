@@ -14,6 +14,7 @@
 ############################################################################
 
 import bpy
+
 from bpy.props import StringProperty, BoolProperty
 from bpy.types import Operator
 from bsmax.operator import PickOperator
@@ -89,15 +90,23 @@ class Mesh_OT_Attach_List(Operator):
 		return{'FINISHED'}
 
 
-# TODO rename new created object
-# TODO keep operator option
+
+# Store Detach operator setting and restore on next time
+class Mesh_Detach_Data:
+	def __init__(self):
+		self.element = True
+		self.clone = False
+
+mdd = Mesh_Detach_Data()
+
 class Mesh_OT_Detach(Operator):
+	""" Create new Object/Element form selection """
 	bl_idname = 'mesh.detach'
 	bl_label = 'Detach'
 
-	element: BoolProperty(default=True, description='linked mesh on this object')
+	element: BoolProperty(description='linked mesh on this object')
 	name: StringProperty(name='Name', description='Name of New Object')
-	clone: BoolProperty(default=False, description='keep original one and make a fresh copy')
+	clone: BoolProperty(description='keep original one and make a fresh copy')
 
 	@classmethod
 	def poll(self, ctx):
@@ -113,17 +122,33 @@ class Mesh_OT_Detach(Operator):
 		row.prop(self, 'clone', text='Detach as clone')
 
 	def execute(self, ctx):
+		global mdd
+		mdd.element = self.element
+		mdd.clone = self.clone
+
 		if self.clone:
-			bpy.ops.mesh.duplicate_move('INVOKE_DEFAULT')
+			bpy.ops.mesh.duplicate()
 		
 		if self.element:
 			bpy.ops.mesh.split('INVOKE_DEFAULT')
 		else:
+			# get mesh objects list befor detach
+			list_before = [ob for ob in bpy.data.objects if ob.type == 'MESH']
 			bpy.ops.mesh.separate(type='SELECTED')
+			# get objects list after detach
+			list_after = [ob for ob in bpy.data.objects if ob.type == 'MESH']
+			# remove befor list from after list 
+			for i in list_before:
+				list_after.remove(i)
+			# rename new created object
+			list_after[0].name = self.name
 		
 		return{'FINISHED'}
 
 	def invoke(self, ctx, event):
+		global mdd
+		self.element = mdd.element
+		self.clone = mdd.clone
 		if ctx.active_object:
 			self.name = ctx.active_object.name
 		return ctx.window_manager.invoke_props_dialog(self, width=200)

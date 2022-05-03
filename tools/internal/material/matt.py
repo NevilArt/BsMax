@@ -14,6 +14,7 @@
 ############################################################################
 
 import bpy
+
 from os import path
 from bpy.types import Operator, Menu
 from bpy.props import StringProperty
@@ -87,11 +88,26 @@ class BsMax_MT_material_presets(Menu):
 
 	def draw(self, ctx):
 		layout=self.layout
-		layout.operator("material.import_node_groupe", text="Blure").name = 'Blure V01'
-		layout.operator("material.import_node_groupe", text="Falloff").name = 'Falloff V01'
-		layout.operator("material.import_node_groupe", text="Parallax Box").name = 'Parallax Box X4 V01'
-		layout.operator("material.import_node_groupe", text="Parallax Layer").name = 'Parallax Layer X4 V01'
-		layout.operator("material.import_node_groupe", text="Untile").name = 'Untile V01'
+		layout.operator("material.import_node_groupe",
+						text="Blure").name = 'Blure'
+
+		layout.operator("material.import_node_groupe",
+						text="Falloff").name = 'Falloff'
+
+		layout.operator("material.import_node_groupe",
+						text="Parallax Box").name = 'Parallax Box X4'
+
+		layout.operator("material.import_node_groupe",
+						text="Parallax Layer").name = 'Parallax Layer X4'
+
+		layout.operator("material.import_node_groupe",
+						text="Parallax Ice").name = 'Parallax Ice'
+
+		layout.operator("material.import_node_groupe",
+						text="Sprite 2D").name = 'Sprite 2D'
+
+		layout.operator("material.import_node_groupe",
+						text="Untile").name = 'Untile'
 
 
 
