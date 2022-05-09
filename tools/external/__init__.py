@@ -13,8 +13,13 @@
 #	along with this program.  If not, see <https://www.gnu.org/licenses/>.
 ############################################################################
 import bpy
-from .maxivz_tools.mvztools import MESH_OT_SmartSelectLoop, MESH_OT_SmartSelectRing
+
+from .maxivz_tools.mvztools import (MESH_OT_SmartSelectLoop,
+									MESH_OT_SmartSelectRing)
+
 from .spiderwebs import register_spider_web, unregister_spider_web
+
+
 
 classes = [MESH_OT_SmartSelectLoop, MESH_OT_SmartSelectRing]
 

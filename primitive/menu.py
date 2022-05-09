@@ -68,8 +68,8 @@ class BsMax_MT_MeshCreate(Menu):
 
 	def draw(self, ctx):
 		layout=self.layout
-		layout.operator("create.adaptive_plane",
-						text="Adaptive Plane", icon="MOD_BEVEL")
+		# layout.operator("create.adaptive_plane",
+		# 				text="Adaptive Plane", icon="MOD_BEVEL")
 
 		layout.operator("create.plane",
 						text="Plane", icon="MESH_PLANE")

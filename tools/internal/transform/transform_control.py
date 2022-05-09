@@ -14,8 +14,10 @@
 ############################################################################
 
 import bpy
-from bpy.types import Operator
+
+from bpy.types import Operator, Menu
 from bpy.props import BoolProperty
+
 from bsmax.actions import freeze_transform
 
 
@@ -70,8 +72,113 @@ class Object_OT_Transform_To_Zero(Operator):
 
 
 
+class Object_OT_Transform_Copy(Operator):
+	""" Copy Transform to buffer """
+	bl_idname = "object.transform_copy"
+	bl_label = "Copy Transform"
+	bl_options = {'REGISTER'}
 
-classes = [Object_OT_Freeze_Transform, Object_OT_Transform_To_Zero]
+	@classmethod
+	def poll(self, ctx):
+		return ctx.mode == 'OBJECT' and ctx.active_object
+
+	def execute(self, ctx):
+		string = 'BSMAXTRANSFORMCLIPBOARD\n'
+		for matrix in ctx.object.matrix_world:
+			for m in matrix:
+				string += str(m) + '\n'
+		ctx.window_manager.clipboard = string
+		return{"FINISHED"}
+
+
+
+class Object_OT_Transform_Paste(Operator):
+	""" Paste transform from buffer """
+	bl_idname = "object.transform_paste"
+	bl_label = "Paste Transform"
+	bl_options = {'REGISTER', 'UNDO'}
+
+	@classmethod
+	def poll(self, ctx):
+		return ctx.mode == 'OBJECT' and ctx.active_object
+
+	def matrix_from_clipboard(self, ctx):
+		string = ctx.window_manager.clipboard
+		lines = string.splitlines()
+		if len(lines) == 17:
+			if not lines[0] == 'BSMAXTRANSFORMCLIPBOARD':
+				return None
+			matrix = ctx.object.matrix_world.copy()
+
+			m = []
+			for line in lines[1:]:
+				m.append(float(line))
+
+			matrix[0][0] = m[0]
+			matrix[0][1] = m[1]
+			matrix[0][2] = m[2]
+			matrix[0][3] = m[3]
+
+			matrix[1][0] = m[4]
+			matrix[1][1] = m[5]
+			matrix[1][2] = m[6]
+			matrix[1][3] = m[7]
+
+			matrix[2][0] = m[8]
+			matrix[2][1] = m[9]
+			matrix[2][2] = m[10]
+			matrix[2][3] = m[11]
+
+			matrix[3][0] = m[12]
+			matrix[3][1] = m[13]
+			matrix[3][2] = m[14]
+			matrix[3][3] = m[15]
+
+			return matrix
+
+		return None
+	
+	def execute(self, ctx):
+		matrix_world = self.matrix_from_clipboard(ctx)
+
+		if matrix_world:
+			ctx.object.matrix_world = matrix_world
+
+		return{"FINISHED"}
+
+
+
+#TODO for now is ok but nedd to moveto better place if add more items
+class Object_MT_Object_Copy(Menu):
+	bl_idname = "OBJECT_MT_object_copy"
+	bl_label = "Copy"
+
+	def draw(self, ctx):
+		layout=self.layout
+		layout.operator("view3d.copybuffer", text="Object")
+		layout.operator("object.transform_copy", text="Transform")
+
+
+
+class Object_MT_Object_Paste(Menu):
+	bl_idname = "OBJECT_MT_object_paste"
+	bl_label = "Paste"
+
+	def draw(self, ctx):
+		layout=self.layout
+		layout.operator("view3d.pastebuffer", text="Object")
+		layout.operator("object.transform_paste", text="Transform")
+
+
+
+classes = [
+			Object_OT_Freeze_Transform,
+			Object_OT_Transform_To_Zero, 
+			Object_OT_Transform_Copy,
+			Object_OT_Transform_Paste,
+			Object_MT_Object_Copy,
+			Object_MT_Object_Paste
+		]
 
 def register_transform_control():
 	for c in classes:

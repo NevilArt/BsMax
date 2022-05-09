@@ -13,9 +13,11 @@
 #	along with this program.  If not, see <https://www.gnu.org/licenses/>.
 ############################################################################
 
-# from tools.internal.object.object_properties import enabled
-import bpy, bmesh, time
+import bpy
+import bmesh
+import time
 import numpy as np
+
 from mathutils import Vector, Matrix, geometry
 from math import pi, inf
 from random import random, randint, shuffle, sample, seed
@@ -27,7 +29,7 @@ bl_info = {
 	"author": "Create by Maxime Herpin / Update by Nevil",
 	"version": (1, 0, 1), # 2021-09-02
 	"blender": (2, 80, 0), # 2.8 ~ 3.x
-	"location": "View 3d > Toolbar > Create panel > Spider Webs",
+	"location": "View 3d / Create / Mesh / Mesh extera / Spider Web",
 	"description": "Adds a new spider web object",
 	"warning": "",
 	"wiki_url": "",
@@ -97,11 +99,16 @@ class Render_OT_Add_Spider_Web(Operator):
 
 	def execute(self, ctx):
 		seed(self.SeedProp)
-		Webs(size=self.size, webs_number=self.number,
-			gravity_strength=self.gravity, draw_3d=self.draw_3d,
-			draw_2d=self.draw_2d, texture_size=self.texture_size,
-			draw_curve=self.draw_curve, density=self.density,
-			detect_floor=self.detect_floor, randomness=self.randomness)
+		Webs(size=self.size,
+			webs_number=self.number,
+			gravity_strength=self.gravity,
+			draw_3d=self.draw_3d,
+			draw_2d=self.draw_2d,
+			texture_size=self.texture_size,
+			draw_curve=self.draw_curve,
+			density=self.density,
+			detect_floor=self.detect_floor,
+			randomness=self.randomness)
 
 		return {'FINISHED'}
 
@@ -987,14 +994,22 @@ def get_plane_from_points(points):
 	itermax = 500
 	iter = 0
 	vec = Vector((1, 1, 1))
-	# vec2 = (vec * mat) / (vec * mat).length # 2.79
-	vec2 = (vec @ mat) / (vec @ mat).length # 2.80
+
+	length = (vec @ mat).length
+	if length == 0:
+		length = 0.0000001
+	# vec2 = (vec @ mat) / (vec @ mat).length
+	vec2 = (vec @ mat) / length
 
 	while vec != vec2 and iter < itermax:
 		iter += 1
 		vec = vec2
-		# vec2 = (vec * mat) / (vec * mat).length # 2.79
-		vec2 = (vec @ mat) / (vec @ mat).length # 2.80
+		length = (vec @ mat).length
+		if length == 0:
+			length = 0.0000001
+		# vec2 = (vec @ mat) / (vec @ mat).length
+		vec2 = (vec @ mat) / length
+
 	normal = vec2
 
 	return com, normal

@@ -17,7 +17,6 @@ import bpy
 from bpy.app import version
 
 from bsmax.keymaps import KeyMaps
-#TODO 'LEFTMOUSE', "value": 'CLICK_DRAG'
 
 
 
@@ -38,8 +37,10 @@ def add_subobject(km, space):
 def add_switch_view(km, space):
 	km.new(space, 'view3d.perespective', 'P', 'PRESS',
 			[('mode', 'Perspective')])
+
 	km.new(space, 'view3d.perespective', 'U', 'PRESS',
 			[('mode', 'Orthographic')])
+
 	km.new(space, 'view3d.view_axis', 'F', 'PRESS', [('type', 'FRONT')])
 	km.new(space, 'view3d.view_axis', 'L', 'PRESS', [('type', 'LEFT')])
 	km.new(space, 'view3d.view_axis', 'T', 'PRESS', [('type', 'TOP')])
@@ -50,92 +51,118 @@ def add_switch_view(km, space):
 def add_view3d_click_selection(km, space):
 	km.new(space, 'view3d.select', 'LEFTMOUSE', 'CLICK',
 			[('deselect_all', True)])
+
 	km.new(space, 'view3d.select', 'LEFTMOUSE', 'CLICK',
 			[('toggle', True)], ctrl=True)
+
 	km.new(space, 'view3d.select', 'LEFTMOUSE', 'CLICK',
 			[('deselect', True)], alt=True)
 
 
 
 def add_view3d_tweak_selection(km, space):
-	km.new(space,'view3d.select_box','EVT_TWEAK_L','ANY',[('mode','SET')])
-	km.new(space,'view3d.select_box','EVT_TWEAK_L','ANY',[('mode','ADD')],ctrl=True )
-	km.new(space,'view3d.select_box','EVT_TWEAK_L','ANY',[('mode','SUB')],alt=True )
+	if version < (3, 2, 0):
+		km.new(space, 'view3d.select_box', 'EVT_TWEAK_L', 'ANY',
+				[('mode', 'SET')])
+
+		km.new(space, 'view3d.select_box', 'EVT_TWEAK_L', 'ANY',
+				[('mode', 'ADD')], ctrl=True )
+
+		km.new(space, 'view3d.select_box', 'EVT_TWEAK_L', 'ANY',
+				[('mode', 'SUB')], alt=True )
+
+	else:
+		km.new(space, 'view3d.select_box', 'LEFTMOUSE', 'CLICK_DRAG',
+				[('mode', 'SET')])
+
+		km.new(space, 'view3d.select_box', 'LEFTMOUSE', 'CLICK_DRAG',
+				[('mode', 'ADD')], ctrl=True )
+
+		km.new(space, 'view3d.select_box', 'LEFTMOUSE', 'CLICK_DRAG',
+				[('mode', 'SUB')], alt=True )
 
 
 
 def add_transform_tool(km, space, preferences, smax=False):
 	if preferences.blender_transform_type:
-		km.new(space,'transform.translate','W','PRESS',[])
-		km.new(space,'transform.rotate','E','PRESS',[])
-		km.new(space,'transform.resize','R','PRESS',[])
+		km.new(space, 'transform.translate', 'W', 'PRESS', [])
+		km.new(space, 'transform.rotate', 'E', 'PRESS', [])
+		km.new(space, 'transform.resize', 'R', 'PRESS', [])
 	else:
 		if smax:
-			km.new(space,'object.move','W','PRESS',[('smax',True)])
-			km.new(space,'object.rotate','E','PRESS',[('smax',True)])
-			km.new(space,'object.scale','R','PRESS',[('cage',False)])
-			km.new(space,'object.scale','E','PRESS',[('cage',True)],ctrl=True)
+			km.new(space, 'object.move', 'W', 'PRESS', [('smax', True)])
+			km.new(space, 'object.rotate', 'E', 'PRESS', [('smax', True)])
+			km.new(space, 'object.scale', 'R', 'PRESS', [('cage', False)])
+			km.new(space, 'object.scale', 'E', 'PRESS',
+					[('cage', True)], ctrl=True)
 		else:
-			km.new(space,'object.move','W','PRESS',[])
-			km.new(space,'object.rotate','E','PRESS',[])
-			km.new(space,'object.scale','R','PRESS',[])
+			km.new(space, 'object.move', 'W', 'PRESS', [])
+			km.new(space, 'object.rotate', 'E', 'PRESS', [])
+			km.new(space, 'object.scale', 'R', 'PRESS', [])
 
 
 
 def add_snap(km, space):
-	km.new(space,'object.snap_toggle','S','PRESS',[])
-	km.new(space,'object.angel_snap','A','PRESS',[])
+	km.new(space, 'object.snap_toggle', 'S', 'PRESS', [])
+	km.new(space, 'object.angel_snap', 'A', 'PRESS', [])
 
 
 
 def add_time(km, space):
-	km.new(space,'anim.frame_set','HOME','PRESS',[('frame','First')])
-	km.new(space,'anim.frame_set','END','PRESS',[('frame','Last')])
-	km.new(space,'anim.frame_set','PERIOD','PRESS',[('frame','Next')])
-	km.new(space,'anim.frame_set','COMMA','PRESS',[('frame','Previous')])
-	km.new(space,'anim.set_key','K','PRESS',[])
-	km.new(space,'anim.set_key_filters','K','PRESS',[],ctrl=True,shift=True)
-	km.new(space,'anim.keyframe_insert_menu','K','PRESS',[],ctrl=True)
-	km.new(space,'anim.keyframe_delete_v3d','K','PRESS',[],alt=True)
-	km.new(space,'anim.auto_key_toggle','N','PRESS',[])
+	km.new(space, 'anim.frame_set', 'HOME', 'PRESS', [('frame', 'First')])
+	km.new(space, 'anim.frame_set', 'END', 'PRESS', [('frame', 'Last')])
+	km.new(space, 'anim.frame_set', 'PERIOD', 'PRESS', [('frame', 'Next')])
+	km.new(space, 'anim.frame_set', 'COMMA', 'PRESS', [('frame', 'Previous')])
+	km.new(space, 'anim.set_key', 'K', 'PRESS', [])
+	km.new(space, 'anim.set_key_filters', 'K', 'PRESS',
+			[], ctrl=True, shift=True)
+
+	km.new(space, 'anim.keyframe_insert_menu', 'K', 'PRESS', [], ctrl=True)
+	km.new(space, 'anim.keyframe_delete_v3d', 'K', 'PRESS', [], alt=True)
+	km.new(space, 'anim.auto_key_toggle', 'N', 'PRESS', [])
 
 
 
 def add_side_panel(km, space):
-	km.new(space,'wm.side_toolbar_toggle','LEFT_BRACKET','PRESS',[('side','LEFT')])
-	km.new(space,'wm.side_toolbar_toggle','RIGHT_BRACKET','PRESS',[('side','RIGHT')])
+	km.new(space, 'wm.side_toolbar_toggle', 'LEFT_BRACKET', 'PRESS',
+			[('side', 'LEFT')])
+
+	km.new(space, 'wm.side_toolbar_toggle', 'RIGHT_BRACKET', 'PRESS',
+			[('side', 'RIGHT')])
 
 
 def add_search(km, space):
 	if version < (2, 90, 0):
-		km.new(space,'wm.search_menu','X','PRESS',[])
+		km.new(space, 'wm.search_menu', 'X', 'PRESS', [])
 	else:
-		km.new(space,'wm.search_menu','X','PRESS',[],ctrl=True,shift=True,alt=True)
-		km.new(space,'wm.search_operator_cover','X','PRESS',[])
+		km.new(space, 'wm.search_menu', 'X', 'PRESS',
+				[], ctrl=True, shift=True, alt=True)
+
+		km.new(space, 'wm.search_operator_cover', 'X', 'PRESS', [])
 
 
 
 def add_show_types(km, space):
-	km.new(space,'view3d.show_geometry_toggle','G','PRESS',[],shift=True)
-	km.new(space,'view3d.show_helper_toggle','H','PRESS',[],shift=True)
-	km.new(space,'view3d.show_shape_toggle','S','PRESS',[],shift=True)
-	km.new(space,'view3d.show_light_toggle','L','PRESS',[],shift=True)
-	km.new(space,'view3d.show_bone_toggle','B','PRESS',[],shift=True)
-	km.new(space,'view3d.show_camera_toggle','C','PRESS',[],shift=True)
+	km.new(space, 'view3d.show_geometry_toggle', 'G', 'PRESS', [], shift=True)
+	km.new(space, 'view3d.show_helper_toggle', 'H', 'PRESS', [], shift=True)
+	km.new(space, 'view3d.show_shape_toggle', 'S', 'PRESS', [], shift=True)
+	km.new(space, 'view3d.show_light_toggle', 'L', 'PRESS', [], shift=True)
+	km.new(space, 'view3d.show_bone_toggle', 'B', 'PRESS', [], shift=True)
+	km.new(space, 'view3d.show_camera_toggle', 'C', 'PRESS', [], shift=True)
 
 
 
 def add_float_editors(km, space):
-	km.new(space,'editor.float', 'M', 'PRESS', 
+	km.new(space, 'editor.float', 'M', 'PRESS', 
 			[
-				('ui_type','ShaderNodeTree'),
-				('shader_type','OBJECT'),
+				('ui_type', 'ShaderNodeTree'),
+				('shader_type', 'OBJECT'),
 				('multiple',False)
 			]
 		)
 
-	# km.new(space,'wm.call_menu_pie','RIGHTMOUSE','PRESS',
-	# 		[('name','BSMAX_MT_material_collection')])
+	# km.new(space, 'wm.call_menu_pie', 'RIGHTMOUSE', 'PRESS',
+	# 		[('name', 'BSMAX_MT_material_collection')])
 	km.new(space, 'editor.float', 'EIGHT', 'PRESS',
 			[('ui_type', 'ShaderNodeTree'),
 			('shader_type', 'WORLD'), ('multiple', False)]
@@ -154,7 +181,7 @@ def add_float_menu(km, space, preferences):
 			[('menu', 'viewport'), ('space', 'View3D')])
 
 		""" This not needed drop tool can call this """
-		# km.new(space,"bsmax.view3dquadmenue","RIGHTMOUSE","PRESS",[('menu','default'),('space','View3D')])
+		# km.new(space,"bsmax.view3dquadmenue","RIGHTMOUSE","PRESS", [('menu', 'default'),('space', 'View3D')])
 
 		""" Ignore Alt + RMB in Maya navigation enabled """
 		if preferences.navigation_3d != 'Maya':
@@ -191,15 +218,15 @@ def add_float_menu(km, space, preferences):
 
 
 def window(km):
-	km.mute('Window','wm.quit_blender','Q','PRESS',ctrl=True)
-	space = km.space('Window','EMPTY','WINDOW')
+	km.mute('Window', 'wm.quit_blender', 'Q', 'PRESS', ctrl=True)
+	space = km.space('Window', 'EMPTY', 'WINDOW')
 	add_search(km, space)
 
 
 
 def user_interface(km):
-	space = km.space('User Interface','EMPTY','WINDOW')
-	km.new(space,'anim.keyframe_insert_button','K','PRESS',[('all', True)])
+	space = km.space('User Interface', 'EMPTY', 'WINDOW')
+	km.new(space, 'anim.keyframe_insert_button', 'K', 'PRESS', [('all', True)])
 
 
 
@@ -209,30 +236,33 @@ def screen(km):
 	# km.new(space, 'render.quick_render', 'F9', 'PRESS', [])
 	km.new(space, 'render.render', 'Q', 'PRESS',
 		[('use_viewport', True), ('animation', True)], shift=True)
+
 	km.new(space, 'screen.repeat_last', 'SEMI_COLON', 'PRESS', [])
 	km.new(space, 'screen.screen_full_area', 'X', 'PRESS', [], ctrl=True)
 	km.new(space, 'screen.screen_full_area', 'X', 'PRESS',
-		[('use_hide_panels', True)], alt=True, ctrl=True)
+			[('use_hide_panels', True)], alt=True, ctrl=True)
+
 	km.new(space, 'editor.script_listener', 'F11', 'PRESS', [])
 	km.new(space, 'ed.redo', 'Y', 'PRESS', [], ctrl=True)
 	km.new(space, 'screen.animation_play', 'SLASH', 'PRESS', [])
 
 	km.new(space, 'screen.marker_jump', 'RIGHT_ARROW', 'PRESS',
 			[("next", True)], ctrl=True)
+
 	km.new(space, 'screen.marker_jump', 'LEFT_ARROW', 'PRESS',
 			[("next", False)], ctrl=True)
 
 
 
 def view2d(km):
-	# space = km.space('View2D','EMPTY','WINDOW')
+	# space = km.space('View2D', 'EMPTY', 'WINDOW')
 	pass
 
 
 
 def view2d_navigation(km, preferences):
 	space = km.space('View2D', 'EMPTY', 'WINDOW')
-	km.new(space,'view2d.zoom', 'MIDDLEMOUSE', 'PRESS',
+	km.new(space, 'view2d.zoom', 'MIDDLEMOUSE', 'PRESS',
 			[], ctrl=True, alt=True)
 
 
@@ -240,15 +270,29 @@ def view2d_navigation(km, preferences):
 def view3d(km, preferences):
 	km.mute('3D View', 'view3d.view_center_pick', 'MIDDLEMOUSE', 'CLICK',
 			alt=True)
-	km.mute('3D View', 'view3d.view_axis', 'EVT_TWEAK_M', 'NORTH', alt=True)
-	km.mute('3D View', 'view3d.view_axis', 'EVT_TWEAK_M', 'SOUTH', alt=True)
-	km.mute('3D View', 'view3d.view_axis', 'EVT_TWEAK_M', 'EAST', alt=True)
-	km.mute('3D View', 'view3d.view_axis', 'EVT_TWEAK_M', 'WEST', alt=True)
+	if version < (3, 2, 0):
+		km.mute('3D View', 'view3d.view_axis', 'EVT_TWEAK_M', 'NORTH', alt=True)
+		km.mute('3D View', 'view3d.view_axis', 'EVT_TWEAK_M', 'SOUTH', alt=True)
+		km.mute('3D View', 'view3d.view_axis', 'EVT_TWEAK_M', 'EAST', alt=True)
+		km.mute('3D View', 'view3d.view_axis', 'EVT_TWEAK_M', 'WEST', alt=True)
+	else:
+		km.mute('3D View', 'view3d.view_axis', 'MIDDLEMOUSE', 'CLICK_DRAG',
+				alt=True, direction='NORTH')
+
+		km.mute('3D View', 'view3d.view_axis', 'MIDDLEMOUSE', 'CLICK_DRAG',
+				alt=True, direction='SOUTH')
+
+		km.mute('3D View', 'view3d.view_axis', 'MIDDLEMOUSE', 'CLICK_DRAG',
+				alt=True, direction='EAST')
+
+		km.mute('3D View', 'view3d.view_axis', 'MIDDLEMOUSE', 'CLICK_DRAG',
+				alt=True, direction='WEST')
+
 	km.mute('3D View', 'view3d.move', 'MIDDLEMOUSE', 'PRESS', shift=True)
 	km.mute('3D View', 'view3d.localview_remove_from', 'M', 'PRESS', ctrl=True)
 	km.mute('3D View', 'wm.call_menu_pie', 'Z', 'PRESS')
 	
-	space = km.space('3D View', 'VIEW_3D','WINDOW')
+	space = km.space('3D View', 'VIEW_3D', 'WINDOW')
 
 	add_search(km, space)
 	add_snap(km, space)
@@ -263,28 +307,53 @@ def view3d(km, preferences):
 		km.new(space, 'view3d.movecover', 'MIDDLEMOUSE', 'PRESS', [])
 		km.new(space, 'view3d.rotatecover', 'MIDDLEMOUSE', 'PRESS',
 				[], alt=True)
+
 		km.new(space, 'view3d.zoomcover', 'MIDDLEMOUSE', 'PRESS',
 				[], ctrl=True, alt=True)
+
 		km.new(space, 'view3d.zoomincover', 'WHEELINMOUSE', 'PRESS', [])
 		km.new(space, 'view3d.zoomoutcover', 'WHEELOUTMOUSE', 'PRESS', [])
+
 	else:
 		km.new(space, 'view3d.move', 'MIDDLEMOUSE', 'PRESS', [])
 		km.new(space, 'view3d.rotate', 'MIDDLEMOUSE', 'PRESS', [], alt=True)
-		km.new(space, 'view3d.zoom','MIDDLEMOUSE', 'PRESS',
+		km.new(space, 'view3d.zoom', 'MIDDLEMOUSE', 'PRESS',
 				[], ctrl=True, alt=True)
+
 		km.new(space, 'view3d.zoom', 'WHEELINMOUSE', 'PRESS', [('delta', 1)])
 		km.new(space, 'view3d.zoom', 'WHEELOUTMOUSE', 'PRESS', [('delta', -1)])
 	
 	km.new(space, 'view3d.drop_tool', 'RIGHTMOUSE', 'PRESS', [])
 
-	km.new(space, 'view3d.view_axis', 'EVT_TWEAK_M', 'NORTH',
-			[('type', 'TOP'), ('relative', True)], shift=True)
-	km.new(space, 'view3d.view_axis', 'EVT_TWEAK_M', 'SOUTH',
-			[('type', 'BOTTOM'), ('relative', True)], shift=True)
-	km.new(space, 'view3d.view_axis', 'EVT_TWEAK_M', 'EAST',
-			[('type', 'RIGHT'), ('relative', True)], shift=True)
-	km.new(space, 'view3d.view_axis', 'EVT_TWEAK_M', 'WEST',
-			[('type', 'LEFT'), ('relative', True)], shift=True)
+	if version < (3, 2, 0):
+		km.new(space, 'view3d.view_axis', 'EVT_TWEAK_M', 'NORTH',
+				[('type', 'TOP'), ('relative', True)], shift=True)
+
+		km.new(space, 'view3d.view_axis', 'EVT_TWEAK_M', 'SOUTH',
+				[('type', 'BOTTOM'), ('relative', True)], shift=True)
+
+		km.new(space, 'view3d.view_axis', 'EVT_TWEAK_M', 'EAST',
+				[('type', 'RIGHT'), ('relative', True)], shift=True)
+
+		km.new(space, 'view3d.view_axis', 'EVT_TWEAK_M', 'WEST',
+				[('type', 'LEFT'), ('relative', True)], shift=True)
+
+	else:
+		km.new(space, 'view3d.view_axis', 'MIDDLEMOUSE', 'CLICK_DRAG',
+				[('type', 'TOP'), ('relative', True)],
+				shift=True, direction='NORTH')
+
+		km.new(space, 'view3d.view_axis', 'MIDDLEMOUSE', 'CLICK_DRAG',
+				[('type', 'BOTTOM'), ('relative', True)],
+				shift=True, direction='SOUTH')
+
+		km.new(space, 'view3d.view_axis', 'MIDDLEMOUSE', 'CLICK_DRAG',
+				[('type', 'RIGHT'), ('relative', True)],
+				shift=True, direction='EAST')
+
+		km.new(space, 'view3d.view_axis', 'MIDDLEMOUSE', 'CLICK_DRAG',
+				[('type', 'LEFT'), ('relative', True)],
+				shift=True, direction='WEST')
 
 	# km.new(space, 'screen.header', 'SIX', 'PRESS', [], alt=True)
 	km.new(space, 'screen.region_quadview', 'W', 'PRESS', [], alt=True)
@@ -330,136 +399,182 @@ def view3d(km, preferences):
 	# km.new(space, 'view3d.copybuffer', 'INSERT', 'PRESS', [], ctrl=True)
 	km.new(space, 'view3d.pastebuffer', 'INSERT', 'PRESS', [], shift=True)
 
-	# this operator not woring well yet
+	# This operator not woring becaus data version update after file reopen
 	# km.new(space, 'file.save_check', 'S', 'PRESS', [], ctrl=True)
 
 
 
 def view3d_navigation(km, preferences):
-	space = km.space('3D View','VIEW_3D','WINDOW')
+	space = km.space('3D View', 'VIEW_3D', 'WINDOW')
 	if preferences.view_undo:
-		km.new(space,'view3d.movecover','MIDDLEMOUSE','PRESS',[])
-		km.new(space,'view3d.rotatecover','MIDDLEMOUSE','PRESS',[],alt=True)
-		km.new(space,'view3d.zoomcover','MIDDLEMOUSE','PRESS',[],ctrl=True,alt=True)
+		km.new(space, 'view3d.movecover', 'MIDDLEMOUSE', 'PRESS', [])
+		km.new(space, 'view3d.rotatecover', 'MIDDLEMOUSE', 'PRESS', [], alt=True)
+		km.new(space, 'view3d.zoomcover', 'MIDDLEMOUSE', 'PRESS', [], ctrl=True, alt=True)
 	else:
-		km.new(space,'view3d.move','MIDDLEMOUSE','PRESS',[])
-		km.new(space,'view3d.rotate','MIDDLEMOUSE','PRESS',[],alt=True)
-		km.new(space,'view3d.zoom','MIDDLEMOUSE','PRESS',[],ctrl=True,alt=True)
+		km.new(space, 'view3d.move', 'MIDDLEMOUSE', 'PRESS', [])
+		km.new(space, 'view3d.rotate', 'MIDDLEMOUSE', 'PRESS', [], alt=True)
+		km.new(space, 'view3d.zoom', 'MIDDLEMOUSE', 'PRESS', [], ctrl=True, alt=True)
 
 
 
 def view3d_generic(km):
-	km.mute('3D View Generic','wm.context_toggle','T','PRESS')
-	km.mute('3D View Generic','wm.context_toggle','N','PRESS')
+	km.mute('3D View Generic', 'wm.context_toggle', 'T', 'PRESS')
+	km.mute('3D View Generic', 'wm.context_toggle', 'N', 'PRESS')
 
-	space = km.space('3D View Generic','VIEW_3D','WINDOW')
-	km.new(space,'view3d.properties','LEFT_BRACKET','PRESS',[])
-	km.new(space,'view3d.toolshelf','RIGHT_BRACKET','PRESS',[])
-	km.new(space,'wm.call_menu','V','PRESS',[('name','VIEW3D_MT_preview')],shift=True)
-	km.new(space,'wm.call_menu','T','PRESS',[('name','TOPBAR_MT_file_external_data')],shift=True)
+	space = km.space('3D View Generic', 'VIEW_3D', 'WINDOW')
+	km.new(space, 'view3d.properties', 'LEFT_BRACKET', 'PRESS', [])
+	km.new(space, 'view3d.toolshelf', 'RIGHT_BRACKET', 'PRESS', [])
+	km.new(space, 'wm.call_menu', 'V', 'PRESS',
+			[('name', 'VIEW3D_MT_preview')], shift=True)
+
+	km.new(space, 'wm.call_menu', 'T', 'PRESS',
+			[('name', 'TOPBAR_MT_file_external_data')], shift=True)
 
 
 
 def view3d_tweak(km):
-	# space = km.space('3D View Tool: Tweak','VIEW_3D','WINDOW')
+	# space = km.space('3D View Tool: Tweak', 'VIEW_3D', 'WINDOW')
 	pass
 
 
 
 def view3d_select(km):
-	# km.mute('3D View','view3d.select','LEFTMOUSE','CLICK')
-	# km.mute('3D View','view3d.select','LEFTMOUSE','CLICK',alt=True)
-	km.mute('3D View','view3d.select','LEFTMOUSE','CLICK',ctrl=True)
-	# km.mute('3D View','view3d.select','LEFTMOUSE','CLICK',shift=True)
+	# km.mute('3D View', 'view3d.select', 'LEFTMOUSE', 'CLICK')
+	# km.mute('3D View', 'view3d.select', 'LEFTMOUSE', 'CLICK', alt=True)
+	km.mute('3D View', 'view3d.select', 'LEFTMOUSE', 'CLICK', ctrl=True)
+	# km.mute('3D View', 'view3d.select', 'LEFTMOUSE', 'CLICK', shift=True)
 
-	space = km.space('3D View Tool: Select','VIEW_3D','WINDOW')
+	space = km.space('3D View Tool: Select', 'VIEW_3D', 'WINDOW')
 	add_view3d_tweak_selection(km, space)
-	km.new(space,'view3d.tweak_better','EVT_TWEAK_L','ANY',[])
+	if version < (3, 2, 0):
+		km.new(space, 'view3d.tweak_better', 'EVT_TWEAK_L', 'ANY', [])
+	else:
+		km.new(space, 'view3d.tweak_better', 'LEFTMOUSE', 'CLICK_DRAG', [])
 
 
 
 def view3d_transform(km):
-	# km.mute('3D View Tool: Transform','view3d.select_box','EVT_TWEAK_L','ANY',ctrl=True)
-	space = km.space('3D View Tool: Transform','VIEW_3D','WINDOW')
+	# km.mute('3D View Tool: Transform', 'view3d.select_box', 'EVT_TWEAK_L', 'ANY', ctrl=True)
+	space = km.space('3D View Tool: Transform', 'VIEW_3D', 'WINDOW')
 	add_view3d_tweak_selection(km, space)
-	# km.new(space,'view3d.select_box','EVT_TWEAK_L','ANY',[('mode','SET')])
+	# km.new(space, 'view3d.select_box', 'EVT_TWEAK_L', 'ANY', [('mode', 'SET')])
 
 
 
 def view3d_move(km):
-	# km.mute('3D View Tool: Move','view3d.select_box','EVT_TWEAK_L','ANY',ctrl=True)
-	space = km.space('3D View Tool: Move','VIEW_3D','WINDOW')
+	# km.mute('3D View Tool: Move', 'view3d.select_box', 'EVT_TWEAK_L', 'ANY', ctrl=True)
+	space = km.space('3D View Tool: Move', 'VIEW_3D', 'WINDOW')
 	add_view3d_tweak_selection(km, space)
-	# km.new(space,'view3d.select_box','EVT_TWEAK_L','ANY',[('mode','SET')])
+	# km.new(space, 'view3d.select_box', 'EVT_TWEAK_L', 'ANY', [('mode', 'SET')])
 
 
 
 def view3d_rotate(km):
-	# km.mute('3D View Tool: Rotate','view3d.select_box','EVT_TWEAK_L','ANY',ctrl=True)
-	space = km.space('3D View Tool: Rotate','VIEW_3D','WINDOW')
+	# km.mute('3D View Tool: Rotate', 'view3d.select_box', 'EVT_TWEAK_L', 'ANY', ctrl=True)
+	space = km.space('3D View Tool: Rotate', 'VIEW_3D', 'WINDOW')
 	add_view3d_tweak_selection(km, space)
-	# km.new(space,'view3d.select_box','EVT_TWEAK_L','ANY',[('mode','SET')])
+	# km.new(space, 'view3d.select_box', 'EVT_TWEAK_L', 'ANY', [('mode', 'SET')])
 
 
 
 def view3d_scale(km):
-	# km.mute('3D View Tool: Scale','view3d.select_box','EVT_TWEAK_L','ANY',ctrl=True)
-	space = km.space('3D View Tool: Scale','VIEW_3D','WINDOW')
+	# km.mute('3D View Tool: Scale', 'view3d.select_box', 'EVT_TWEAK_L', 'ANY', ctrl=True)
+	space = km.space('3D View Tool: Scale', 'VIEW_3D', 'WINDOW')
 	add_view3d_tweak_selection(km, space)
-	# km.new(space,'view3d.select_box','EVT_TWEAK_L','ANY',[('mode','SET')])
+	# km.new(space, 'view3d.select_box', 'EVT_TWEAK_L', 'ANY', [('mode', 'SET')])
 
 
 
 def view3d_select_box(km):
 	v3t = '3D View Tool: Select Box'
-	km.mute(v3t,'view3d.select_box','EVT_TWEAK_L','ANY',ctrl=True)
+	space = km.space(v3t, 'VIEW_3D', 'WINDOW')
 
-	space = km.space(v3t,'VIEW_3D','WINDOW')
-	km.new(space,'view3d.select_box','EVT_TWEAK_L','ANY',[('mode','ADD')],ctrl=True)
+	if version < (3, 2, 0):
+		km.mute(v3t, 'view3d.select_box', 'EVT_TWEAK_L', 'ANY', ctrl=True)
+		km.new(space, 'view3d.select_box', 'EVT_TWEAK_L', 'ANY',
+				[('mode', 'ADD')], ctrl=True)
+	else:
+		km.mute(v3t, 'view3d.select_box', 'LEFTMOUSE', 'CLICK_DRAG', ctrl=True)
+		km.new(space, 'view3d.select_box', 'LEFTMOUSE', 'CLICK_DRAG',
+				[('mode', 'ADD')], ctrl=True)
 
 
 
 def view3d_select_box_fallback(km):
 	v3t = '3D View Tool: Select Box (fallback)'
-	km.mute(v3t,'view3d.select_box','EVT_TWEAK_L','ANY',ctrl=True)
+	if version < (3, 2, 0):
+		km.mute(v3t, 'view3d.select_box', 'EVT_TWEAK_L', 'ANY', ctrl=True)
+	else:
+		km.mute(v3t, 'view3d.select_box', 'LEFTMOUSE', 'CLICK_DRAG', ctrl=True)
 
 
 
 def view3d_select_circle(km):
 	v3t = '3D View Tool: Select Circle'
-	km.mute(v3t,'view3d.select_circle','LEFTMOUSE','PRESS',ctrl=True)
-	space = km.space(v3t,'VIEW_3D','WINDOW')
-	km.new(space,'view3d.select_circle','EVT_TWEAK_L','ANY',[('mode','ADD')],ctrl=True)
-	km.new(space,'view3d.select_circle','EVT_TWEAK_L','ANY',[('mode','SUB')],alt=True)
+	km.mute(v3t, 'view3d.select_circle', 'LEFTMOUSE', 'PRESS', ctrl=True)
+	space = km.space(v3t, 'VIEW_3D', 'WINDOW')
+	if version < (3, 2, 0):
+		km.new(space, 'view3d.select_circle', 'EVT_TWEAK_L', 'ANY',
+				[('mode', 'ADD')], ctrl=True)
+
+		km.new(space, 'view3d.select_circle', 'EVT_TWEAK_L', 'ANY',
+				[('mode', 'SUB')], alt=True)
+	else:
+		km.new(space, 'view3d.select_circle', 'LEFTMOUSE', 'CLICK_DRAG',
+				[('mode', 'ADD')], ctrl=True)
+
+		km.new(space, 'view3d.select_circle', 'LEFTMOUSE', 'CLICK_DRAG',
+				[('mode', 'SUB')], alt=True)
 
 
 
 def view3d_select_circle_fallback(km):
 	v3t = '3D View Tool: Select Circle (fallback)'
-	km.mute(v3t,'view3d.select_circle','EVT_TWEAK_L','ANY',ctrl=True)
+	if version < (3, 2, 0):
+		km.mute(v3t, 'view3d.select_circle', 'EVT_TWEAK_L', 'ANY', ctrl=True)
+	else:
+		km.mute(v3t, 'view3d.select_circle', 'LEFTMOUSE', 'CLICK_DRAG',
+				ctrl=True)
 
 
 
 def view3d_select_lasso(km):
 	v3t = '3D View Tool: Select Lasso'
-	km.mute(v3t,'view3d.select_lasso','EVT_TWEAK_L','ANY',ctrl=True)
-	space = km.space(v3t,'VIEW_3D','WINDOW')
-	km.new(space,'view3d.select_lasso','EVT_TWEAK_L','ANY',[('mode','ADD')],ctrl=True)
-	km.new(space,'view3d.select_lasso','EVT_TWEAK_L','ANY',[('mode','SUB')],alt=True)
+	space = km.space(v3t, 'VIEW_3D', 'WINDOW')
+	if version < (3, 2, 0):
+		km.mute(v3t, 'view3d.select_lasso', 'EVT_TWEAK_L', 'ANY', ctrl=True)
+		km.new(space, 'view3d.select_lasso', 'EVT_TWEAK_L', 'ANY',
+				[('mode', 'ADD')], ctrl=True)
+
+		km.new(space, 'view3d.select_lasso', 'EVT_TWEAK_L', 'ANY',
+				[('mode', 'SUB')], alt=True)
+	else:
+		km.mute(v3t, 'view3d.select_lasso', 'LEFTMOUSE', 'CLICK_DRAG',
+				ctrl=True)
+
+		km.new(space, 'view3d.select_lasso', 'LEFTMOUSE', 'CLICK_DRAG',
+				[('mode', 'ADD')], ctrl=True)
+
+		km.new(space, 'view3d.select_lasso', 'LEFTMOUSE', 'CLICK_DRAG',
+				[('mode', 'SUB')], alt=True)
 
 
 
 def view3d_select_lasso_fallback(km):
 	v3t = '3D View Tool: Select Lasso (fallback)'
-	# km.mute(v3t,'view3d.select_lasso','EVT_TWEAK_L','ANY')
-	# km.mute(v3t,'view3d.select_lasso','EVT_TWEAK_L','ANY',shift=True)
-	km.mute(v3t,'view3d.select_lasso','EVT_TWEAK_L','ANY',ctrl=True)
-	# space = km.space(v3t,'VIEW_3D','WINDOW')
+	# space = km.space(v3t, 'VIEW_3D', 'WINDOW')
+	if version < (3, 2, 0):
+		# km.mute(v3t, 'view3d.select_lasso', 'EVT_TWEAK_L', 'ANY')
+		# km.mute(v3t, 'view3d.select_lasso', 'EVT_TWEAK_L', 'ANY', shift=True)
+		km.mute(v3t, 'view3d.select_lasso', 'EVT_TWEAK_L', 'ANY', ctrl=True)
+	else:
+		km.mute(v3t, 'view3d.select_lasso', 'LEFTMOUSE', 'CLICK_DRAG',
+				ctrl=True)
 
 
 
 def transform(km):
-	# space = km.space('Transform Modal Map','EMPTY','WINDOW',modal=True)
+	# space = km.space('Transform Modal Map', 'EMPTY', 'WINDOW',modal=True)
 	pass
 
 
@@ -557,7 +672,7 @@ def object_mode(km, preferences):
 	km.new(space, 'camera.select', 'C', 'PRESS', [])
 	km.new(space, 'modifier.edit_multi', 'TAB', 'PRESS', [], ctrl=True)
 	km.new(space, 'object.viewoport_display', 'X', 'PRESS', [], alt=True)
-	km.new(space, 'object.join_plus','J', 'PRESS', [], ctrl=True)
+	km.new(space, 'object.join_plus', 'J', 'PRESS', [], ctrl=True)
 	km.new(space, 'object.select_children', 'LEFTMOUSE', 'DOUBLE_CLICK',
 			[('full', True)])
 
@@ -570,6 +685,15 @@ def object_mode(km, preferences):
 
 	km.new(space, 'wm.call_menu', 'A', 'PRESS',
 			[('name', 'VIEW3D_MT_object_apply')], alt=True, ctrl=True)
+	
+	km.new(space, 'anim.auto_key_toggle', 'N', 'PRESS', [])
+	km.new(space, 'view3d.view_axis', 'T', 'PRESS', [('type', 'TOP')])
+
+	km.new(space, 'wm.call_menu', 'C', 'PRESS',
+			[('name', 'OBJECT_MT_object_copy')], ctrl=True)
+	
+	km.new(space, 'wm.call_menu', 'V', 'PRESS',
+			[('name', 'OBJECT_MT_object_paste')], ctrl=True)
 
 
 
@@ -588,7 +712,7 @@ def mesh(km, preferences):
 	add_subobject(km, space)
 	add_transform_tool(km, space, preferences, smax=False)
 
-	km.new(space, 'mesh.select_element_toggle','FIVE','PRESS',[('mode','SET')])
+	km.new(space, 'mesh.select_element_toggle', 'FIVE', 'PRESS', [('mode', 'SET')])
 	km.new(space, 'mesh.select_element_setting', 'FIVE', 'PRESS',
 			[('mode', 'SET')], ctrl=True)
 
@@ -652,16 +776,16 @@ def mesh(km, preferences):
 			[('type', 'CENTER')], alt=True, ctrl=True)
 
 	km.new(space, 'mesh.edge_face_add', 'P', 'PRESS', [], alt=True)
-	# km.new(space,'mesh.smart_create','P','PRESS',[],alt=True)
-	#km.new(space,'Bevel','B','PRESS',[],ctrl=True,shift=True)
-	#km.new(space,'spline extrud ','E','PRESS',[],alt=True)
-	km.new(space,'wm.context_toggle', 'I', 'PRESS',
+	# km.new(space, 'mesh.smart_create', 'P', 'PRESS', [], alt=True)
+	#km.new(space, 'Bevel', 'B', 'PRESS', [], ctrl=True, shift=True)
+	#km.new(space, 'spline extrud ', 'E', 'PRESS', [], alt=True)
+	km.new(space, 'wm.context_toggle', 'I', 'PRESS',
 			[('data_path', 'space_data.shading.show_xray')],
 			shift=True, ctrl=True)
 
-	#km.new(space,'smooth','M','PRESS',[],ctrl=True)
-	#km.new(space,'wm.tool_set_by_name','Q','PRESS',[('name','Bisect')],shift=True,ctrl=True)
-	#km.new(space,'mesh.remove_doubles','W','PRESS',[],shift=True,ctrl=True)
+	#km.new(space, 'smooth', 'M', 'PRESS', [], ctrl=True)
+	#km.new(space, 'wm.tool_set_by_name', 'Q', 'PRESS', [('name', 'Bisect')], shift=True, ctrl=True)
+	#km.new(space, 'mesh.remove_doubles', 'W', 'PRESS', [], shift=True, ctrl=True)
 
 	km.new(space, 'view3d.localview', 'Q', 'PRESS', [], alt=True)
 	km.new(space, 'mesh.target_weld', 'W', 'PRESS', [], shift=True, ctrl=True)
@@ -684,10 +808,10 @@ def mesh(km, preferences):
 	km.new(space, 'anim.set_key', 'K', 'PRESS', [])
 	km.new(space, 'anim.set_key_filters', 'K', 'PRESS', [], ctrl=True, shift=True)
 	km.new(space, 'anim.keyframe_insert_menu', 'K', 'PRESS', [], ctrl=True)
-	km.new(space, 'anim.keyframe_delete_v3d', 'K', 'PRESS', [] ,alt=True)
+	km.new(space, 'anim.keyframe_delete_v3d', 'K', 'PRESS', [] , alt=True)
 
 	# TEST #
-	# km.new(space,'mesh.drag', 'EVT_TWEAK_L', 'ANY', [])
+	# km.new(space, 'mesh.drag', 'EVT_TWEAK_L', 'ANY', [])
 
 
 
@@ -742,7 +866,7 @@ def curve(km, preferences):
 	km.new(space, 'anim.auto_key_toggle', 'N', 'PRESS', [])
 	km.new(space, 'camera.select', 'C', 'PRESS', [])
 	km.new(space, 'view3d.localview', 'Q', 'PRESS', [], alt=True)
-	# km.new(space, 'wm.tool_set_by_id', 'E', 'PRESS', [('name','builtin.rotate')])
+	# km.new(space, 'wm.tool_set_by_id', 'E', 'PRESS', [('name', 'builtin.rotate')])
 	km.new(space, 'curve.chamfer', 'C', 'PRESS',
 			[('fillet', True), ('typein', False)], ctrl=True, shift=True)
 	
@@ -757,77 +881,78 @@ def curve(km, preferences):
 
 
 def armature(km, preferences):
-	space = km.space('Armature','EMPTY','WINDOW')
+	space = km.space('Armature', 'EMPTY', 'WINDOW')
 	add_search(km, space)
 	add_side_panel(km, space)
 	add_subobject(km, space)
 	add_switch_view(km, space)
+	add_show_types(km, space)
 	add_view3d_click_selection(km, space)
 	add_float_menu(km, space, preferences)
 	add_transform_tool(km, space, preferences, smax=False)
 
-	km.new(space,'view3d.drop_tool','RIGHTMOUSE','PRESS',[])
-	km.new(space,'armature.select_all','A','PRESS',[('action','SELECT')],ctrl=True)
-	km.new(space,'armature.select_all','D','PRESS',[('action','DESELECT')],ctrl=True)
-	km.new(space,'armature.select_all','I','PRESS',[('action','INVERT')],ctrl=True)
-	km.new(space,'armature.select_more','PAGE_UP','PRESS',[],ctrl=True,shift=True)
-	km.new(space,'armature.select_less','PAGE_DOWN','PRESS',[],ctrl=True,shift=True)
-	km.new(space,'armature.select_hierarchy','PAGE_UP','PRESS',[('direction','PARENT'),('extend',False)])
-	km.new(space,'armature.select_hierarchy','PAGE_UP','PRESS',[('direction','PARENT'),('extend',True)],ctrl=True)
-	km.new(space,'armature.select_hierarchy','PAGE_DOWN','PRESS',[('direction','CHILD'),('extend',False)])
-	km.new(space,'armature.select_hierarchy','PAGE_DOWN','PRESS',[('direction','CHILD'),('extend',True)],ctrl=True)
-	km.new(space,'armature.select_similar','Q','PRESS',[],ctrl=True)
+	km.new(space, 'view3d.drop_tool', 'RIGHTMOUSE', 'PRESS', [])
+	km.new(space, 'armature.select_all', 'A', 'PRESS', [('action', 'SELECT')], ctrl=True)
+	km.new(space, 'armature.select_all', 'D', 'PRESS', [('action', 'DESELECT')], ctrl=True)
+	km.new(space, 'armature.select_all', 'I', 'PRESS', [('action', 'INVERT')], ctrl=True)
+	km.new(space, 'armature.select_more', 'PAGE_UP', 'PRESS', [], ctrl=True, shift=True)
+	km.new(space, 'armature.select_less', 'PAGE_DOWN', 'PRESS', [], ctrl=True, shift=True)
+	km.new(space, 'armature.select_hierarchy', 'PAGE_UP', 'PRESS', [('direction', 'PARENT'),('extend',False)])
+	km.new(space, 'armature.select_hierarchy', 'PAGE_UP', 'PRESS', [('direction', 'PARENT'),('extend',True)], ctrl=True)
+	km.new(space, 'armature.select_hierarchy', 'PAGE_DOWN', 'PRESS', [('direction', 'CHILD'),('extend',False)])
+	km.new(space, 'armature.select_hierarchy', 'PAGE_DOWN', 'PRESS', [('direction', 'CHILD'),('extend',True)], ctrl=True)
+	km.new(space, 'armature.select_similar', 'Q', 'PRESS', [], ctrl=True)
 	# Hide/Unhide #
-	km.new(space,'armature.hide','H','PRESS',[],alt=True)
-	km.new(space,'armature.hide','I','PRESS',[('unselected',True)],alt=True)
-	km.new(space,'armature.reveal','U','PRESS',[],alt=True)
+	km.new(space, 'armature.hide', 'H', 'PRESS', [], alt=True)
+	km.new(space, 'armature.hide', 'I', 'PRESS', [('unselected',True)], alt=True)
+	km.new(space, 'armature.reveal', 'U', 'PRESS', [], alt=True)
 	# View #
-	km.new(space,'screen.screen_full_area','X','PRESS',[],ctrl=True)
-	km.new(space,'wm.multi_item_rename','F2','PRESS',[])
+	km.new(space, 'screen.screen_full_area', 'X', 'PRESS', [], ctrl=True)
+	km.new(space, 'wm.multi_item_rename', 'F2', 'PRESS', [])
 	# Tools #
-	km.new(space,'anim.auto_key_toggle','N','PRESS',[])
-	km.new(space,'camera.select','C','PRESS',[])
-	km.new(space,'view3d.localview','Q','PRESS',[],alt=True)
-	# km.new(space,'wm.tool_set_by_id','E','PRESS',[('name','builtin.rotate')])
+	km.new(space, 'anim.auto_key_toggle', 'N', 'PRESS', [])
+	km.new(space, 'camera.select', 'C', 'PRESS', [])
+	km.new(space, 'view3d.localview', 'Q', 'PRESS', [], alt=True)
+	# km.new(space, 'wm.tool_set_by_id', 'E', 'PRESS', [('name', 'builtin.rotate')])
 
 
 
 def metaball(km, preferences):
-	space = km.space('Metaball','EMPTY','WINDOW')
+	space = km.space('Metaball', 'EMPTY', 'WINDOW')
 	add_search(km, space)
 	add_side_panel(km, space)
 	add_subobject(km, space)
 	add_transform_tool(km, space, preferences, smax=False)
-	km.new(space,'view3d.drop_tool','RIGHTMOUSE','PRESS',[])
-	km.new(space,'mball.select_all','A','PRESS',[('action','SELECT')],ctrl=True)
-	km.new(space,'mball.select_all','D','PRESS',[('action','DESELECT')],ctrl=True)
-	km.new(space,'mball.select_all','I','PRESS',[('action','INVERT')],ctrl=True)
-	km.new(space,'mball.select_similar','Q','PRESS',[],ctrl=True)
-	km.new(space,'screen.screen_full_area','X','PRESS',[],ctrl=True)
-	km.new(space,'anim.auto_key_toggle','N','PRESS',[])
-	km.new(space,'camera.select','C','PRESS',[])
-	km.new(space,'view3d.localview','Q','PRESS',[],alt=True)
+	km.new(space, 'view3d.drop_tool', 'RIGHTMOUSE', 'PRESS', [])
+	km.new(space, 'mball.select_all', 'A', 'PRESS', [('action', 'SELECT')], ctrl=True)
+	km.new(space, 'mball.select_all', 'D', 'PRESS', [('action', 'DESELECT')], ctrl=True)
+	km.new(space, 'mball.select_all', 'I', 'PRESS', [('action', 'INVERT')], ctrl=True)
+	km.new(space, 'mball.select_similar', 'Q', 'PRESS', [], ctrl=True)
+	km.new(space, 'screen.screen_full_area', 'X', 'PRESS', [], ctrl=True)
+	km.new(space, 'anim.auto_key_toggle', 'N', 'PRESS', [])
+	km.new(space, 'camera.select', 'C', 'PRESS', [])
+	km.new(space, 'view3d.localview', 'Q', 'PRESS', [], alt=True)
 
 
 
 def lattice(km, preferences):
-	space = km.space('Lattice','EMPTY','WINDOW')
+	space = km.space('Lattice', 'EMPTY', 'WINDOW')
 	add_search(km, space)
 	add_side_panel(km, space)
 	add_subobject(km, space)
 	add_transform_tool(km, space, preferences, smax=False)
 	add_view3d_click_selection(km, space)
-	km.new(space,'view3d.drop_tool','RIGHTMOUSE','PRESS',[])
-	km.new(space,'lattice.select_all','A','PRESS',[('action','SELECT')],ctrl=True)
-	km.new(space,'lattice.select_all','D','PRESS',[('action','DESELECT')],ctrl=True)
-	km.new(space,'lattice.select_all','I','PRESS',[('action','INVERT')],ctrl=True)
-	km.new(space,'lattice.select_more','PAGE_UP','PRESS',[],ctrl=True)
-	km.new(space,'lattice.select_less','PAGE_DOWN','PRESS',[],ctrl=True)
-	km.new(space,'lattice.select_similar','Q','PRESS',[],ctrl=True)
-	km.new(space,'screen.screen_full_area','X','PRESS',[],ctrl=True)
-	km.new(space,'anim.auto_key_toggle','N','PRESS',[])
-	km.new(space,'camera.select','C','PRESS',[])
-	km.new(space,'view3d.localview','Q','PRESS',[],alt=True)
+	km.new(space, 'view3d.drop_tool', 'RIGHTMOUSE', 'PRESS', [])
+	km.new(space, 'lattice.select_all', 'A', 'PRESS', [('action', 'SELECT')], ctrl=True)
+	km.new(space, 'lattice.select_all', 'D', 'PRESS', [('action', 'DESELECT')], ctrl=True)
+	km.new(space, 'lattice.select_all', 'I', 'PRESS', [('action', 'INVERT')], ctrl=True)
+	km.new(space, 'lattice.select_more', 'PAGE_UP', 'PRESS', [], ctrl=True)
+	km.new(space, 'lattice.select_less', 'PAGE_DOWN', 'PRESS', [], ctrl=True)
+	km.new(space, 'lattice.select_similar', 'Q', 'PRESS', [], ctrl=True)
+	km.new(space, 'screen.screen_full_area', 'X', 'PRESS', [], ctrl=True)
+	km.new(space, 'anim.auto_key_toggle', 'N', 'PRESS', [])
+	km.new(space, 'camera.select', 'C', 'PRESS', [])
+	km.new(space, 'view3d.localview', 'Q', 'PRESS', [], alt=True)
 
 
 
@@ -904,113 +1029,151 @@ def font(km):
 
 
 def vertex_paint(km):
-	space = km.space('Vertex Paint','EMPTY','WINDOW')
+	space = km.space('Vertex Paint', 'EMPTY', 'WINDOW')
 	add_switch_view(km, space)
 	add_show_types(km, space)
-	km.new(space,'camera.select','C','PRESS',[])
-	km.new(space,'view3d.localview','Q','PRESS',[],alt=True)
+	km.new(space, 'camera.select', 'C', 'PRESS', [])
+	km.new(space, 'view3d.localview', 'Q', 'PRESS', [], alt=True)
 
 
 
 def weight_paint(km):
-	space = km.space('Weight Paint','EMPTY','WINDOW')
+	space = km.space('Weight Paint', 'EMPTY', 'WINDOW')
 	add_switch_view(km, space)
 	add_show_types(km, space)
 	add_view3d_click_selection(km, space)
 	add_view3d_tweak_selection(km, space)
 	
-	km.new(space,'camera.select','C','PRESS',[])
-	km.new(space,'view3d.localview','Q','PRESS',[],alt=True)
-	km.new(space,'wm.context_toggle','ONE','PRESS',[('data_path','weight_paint_object.data.use_paint_mask_vertex')])
-	km.new(space,'wm.context_toggle','TWO','PRESS',[('data_path','weight_paint_object.data.use_paint_mask')])
-	km.new(space,'paint.vert_select_all','A','PRESS',[('action','SELECT')],ctrl=True)
-	km.new(space,'paint.vert_select_all','D','PRESS',[('action','DESELECT')],ctrl=True)
-	km.new(space,'paint.vert_select_all','I','PRESS',[('action','INVERT')],ctrl=True)
+	km.new(space, 'camera.select', 'C', 'PRESS', [])
+	km.new(space, 'view3d.localview', 'Q', 'PRESS', [], alt=True)
+	km.new(space, 'wm.context_toggle', 'ONE', 'PRESS',
+			[('data_path', 'weight_paint_object.data.use_paint_mask_vertex')])
+
+	km.new(space, 'wm.context_toggle', 'TWO', 'PRESS',
+			[('data_path', 'weight_paint_object.data.use_paint_mask')])
+
+	km.new(space, 'paint.vert_select_all', 'A', 'PRESS',
+			[('action', 'SELECT')], ctrl=True)
+
+	km.new(space, 'paint.vert_select_all', 'D', 'PRESS',
+			[('action', 'DESELECT')], ctrl=True)
+
+	km.new(space, 'paint.vert_select_all', 'I', 'PRESS',
+			[('action', 'INVERT')], ctrl=True)
 
 
 
 def image_paint(km):
-	space = km.space('Image Paint','EMPTY','WINDOW')
+	space = km.space('Image Paint', 'EMPTY', 'WINDOW')
 	add_side_panel(km, space)
-	km.new(space,'camera.select','C','PRESS',[])
-	km.new(space,'view3d.localview','Q','PRESS',[],alt=True)
+	km.new(space, 'camera.select', 'C', 'PRESS', [])
+	km.new(space, 'view3d.localview', 'Q', 'PRESS', [], alt=True)
 
 
 
 def sculpt(km, preferences):
-	km.mute('Sculpt','wm.radial_control','F','PRESS')
+	km.mute('Sculpt', 'wm.radial_control', 'F', 'PRESS')
 
-	space = km.space('Sculpt','EMPTY','WINDOW')
+	space = km.space('Sculpt', 'EMPTY', 'WINDOW')
 	add_switch_view(km, space)
 	add_show_types(km, space)
 	add_transform_tool(km, space, preferences)
 
-	km.new(space,'camera.select','C','PRESS',[])
-	km.new(space,'view3d.localview','Q','PRESS',[],alt=True)
-	# km.new(space,'object.move','W','PRESS',[])
-	# km.new(space,'object.rotate','E','PRESS',[])
-	# km.new(space,'object.scale','R','PRESS',[])
+	km.new(space, 'camera.select', 'C', 'PRESS', [])
+	km.new(space, 'view3d.localview', 'Q', 'PRESS', [], alt=True)
+	# km.new(space, 'object.move', 'W', 'PRESS', [])
+	# km.new(space, 'object.rotate', 'E', 'PRESS', [])
+	# km.new(space, 'object.scale', 'R', 'PRESS', [])
 
 
 
 def particle(km):
-	space = km.space('Particle','EMPTY','WINDOW')
+	space = km.space('Particle', 'EMPTY', 'WINDOW')
 	add_switch_view(km, space)
-	km.new(space,'camera.select','C','PRESS',[])
-	km.new(space,'mesh.select_element_toggle','FIVE','PRESS',[('mode','SET')])
-	km.new(space,'particle.select_max','LEFTMOUSE','CLICK',[('mode','SET')])
-	km.new(space,'particle.select_max','LEFTMOUSE','CLICK',[('mode','ADD')],ctrl=True)
-	km.new(space,'particle.select_max','LEFTMOUSE','CLICK',[('mode','SUB')],alt=True)
-	km.new(space,'particle.select_all','A','PRESS',[('action','SELECT')],ctrl=True)
-	km.new(space,'particle.select_all','D','PRESS',[('action','DESELECT')],ctrl=True)
-	km.new(space,'particle.select_all','I','PRESS',[('action','INVERT')],ctrl=True)
-	km.new(space,'particle.select_more','PAGE_UP','PRESS',[],ctrl=True)
-	km.new(space,'particle.select_less','PAGE_DOWN','PRESS',[],ctrl=True)
+	km.new(space, 'camera.select', 'C', 'PRESS', [])
+	km.new(space, 'mesh.select_element_toggle', 'FIVE', 'PRESS',
+			[('mode', 'SET')])
+
+	km.new(space, 'particle.select_max', 'LEFTMOUSE', 'CLICK',
+			[('mode', 'SET')])
+
+	km.new(space, 'particle.select_max', 'LEFTMOUSE', 'CLICK',
+			[('mode', 'ADD')], ctrl=True)
+
+	km.new(space, 'particle.select_max', 'LEFTMOUSE', 'CLICK',
+			[('mode', 'SUB')], alt=True)
+
+	km.new(space, 'particle.select_all', 'A', 'PRESS',
+			[('action', 'SELECT')], ctrl=True)
+
+	km.new(space, 'particle.select_all', 'D', 'PRESS',
+			[('action', 'DESELECT')], ctrl=True)
+
+	km.new(space, 'particle.select_all', 'I', 'PRESS',
+			[('action', 'INVERT')], ctrl=True)
+
+	km.new(space, 'particle.select_more', 'PAGE_UP', 'PRESS', [], ctrl=True)
+
+	km.new(space, 'particle.select_less', 'PAGE_DOWN', 'PRESS', [], ctrl=True)
 
 
 
 def outliner(km):
-	# km.mute('Outliner','outliner.item_rename','F2','PRESS')
+	# km.mute('Outliner', 'outliner.item_rename', 'F2', 'PRESS')
 	
-	space = km.space('Outliner','OUTLINER','WINDOW')
+	space = km.space('Outliner', 'OUTLINER', 'WINDOW')
 	add_search(km, space)
 	add_subobject(km, space)
 	if version < (2, 81, 0):
 		km.new(space, 'outliner.item_activate', 'LEFTMOUSE', 'PRESS',
 				[('extend', True)], ctrl=True)
+
 		km.new(space, 'outliner.select_box', 'EVT_TWEAK_L', 'EAST',
 				[('mode', 'SET')])
-		km.new(space, 'outliner.select_box','EVT_TWEAK_L','SOUTH_EAST',
-				[('mode','SET')])
-		km.new(space, 'outliner.select_box','EVT_TWEAK_L','NORTH_EAST',
-				[('mode','SET')])
-		km.new(space, 'outliner.select_box','EVT_TWEAK_L','EAST',
-				[('mode','ADD')],ctrl=True )
-		km.new(space, 'outliner.select_box','EVT_TWEAK_L','SOUTH_EAST',
-				[('mode','ADD')],ctrl=True )
-		km.new(space, 'outliner.select_box','EVT_TWEAK_L','NORTH_EAST',
-				[('mode','ADD')],ctrl=True)
-		km.new(space, 'outliner.select_box','EVT_TWEAK_L','EAST',
-				[('mode','SUB')],alt=True)
-		km.new(space, 'outliner.select_box','EVT_TWEAK_L','SOUTH_EAST',
-				[('mode','SUB')],alt=True)
-		km.new(space, 'outliner.select_box','EVT_TWEAK_L','NORTH_EAST',
-				[('mode','SUB')],alt=True)
-		km.new(space, 'outliner.select_all','A','PRESS',
-				[('action','SELECT')],ctrl=True)
-		km.new(space, 'outliner.select_all','D','PRESS',
-				[('action','DESELECT')],ctrl=True)
-		km.new(space, 'outliner.select_all','I','PRESS',
-				[('action','INVERT')],ctrl=True)
-		km.new(space, 'outliner.collection_objects_select',
-				'LEFTMOUSE','DOUBLE_CLICK',[])
 
-		km.new(space, 'outliner.item_rename','F2','PRESS',[])
-		km.new(space, 'outliner.collection_new','N','PRESS',[],ctrl=True)
-		km.new(space, 'object.delete','DEL','PRESS',
-			[('confirm',False)],ctrl=True)
-		km.new(space, 'outliner.hide','H','PRESS',[],alt=True)
-		km.new(space, 'outliner.unhide_all','U','PRESS',[],alt=True)
+		km.new(space, 'outliner.select_box', 'EVT_TWEAK_L', 'SOUTH_EAST',
+				[('mode', 'SET')])
+
+		km.new(space, 'outliner.select_box', 'EVT_TWEAK_L', 'NORTH_EAST',
+				[('mode', 'SET')])
+
+		km.new(space, 'outliner.select_box', 'EVT_TWEAK_L', 'EAST',
+				[('mode', 'ADD')], ctrl=True )
+
+		km.new(space, 'outliner.select_box', 'EVT_TWEAK_L', 'SOUTH_EAST',
+				[('mode', 'ADD')], ctrl=True )
+
+		km.new(space, 'outliner.select_box', 'EVT_TWEAK_L', 'NORTH_EAST',
+				[('mode', 'ADD')], ctrl=True)
+
+		km.new(space, 'outliner.select_box', 'EVT_TWEAK_L', 'EAST',
+				[('mode', 'SUB')], alt=True)
+
+		km.new(space, 'outliner.select_box', 'EVT_TWEAK_L', 'SOUTH_EAST',
+				[('mode', 'SUB')], alt=True)
+
+		km.new(space, 'outliner.select_box', 'EVT_TWEAK_L', 'NORTH_EAST',
+				[('mode', 'SUB')], alt=True)
+
+		km.new(space, 'outliner.select_all', 'A', 'PRESS',
+				[('action', 'SELECT')], ctrl=True)
+
+		km.new(space, 'outliner.select_all', 'D', 'PRESS',
+				[('action', 'DESELECT')], ctrl=True)
+
+		km.new(space, 'outliner.select_all', 'I', 'PRESS',
+				[('action', 'INVERT')], ctrl=True)
+
+		km.new(space, 'outliner.collection_objects_select',
+				'LEFTMOUSE', 'DOUBLE_CLICK', [])
+
+		km.new(space, 'outliner.item_rename', 'F2', 'PRESS', [])
+		km.new(space, 'outliner.collection_new', 'N', 'PRESS', [], ctrl=True)
+		km.new(space, 'object.delete', 'DEL', 'PRESS',
+			[('confirm',False)], ctrl=True)
+
+		km.new(space, 'outliner.hide', 'H', 'PRESS', [], alt=True)
+		km.new(space, 'outliner.unhide_all', 'U', 'PRESS', [], alt=True)
 
 	km.new(space,	'outliner.show_active', 'Z', 'PRESS', [])
 	km.new(space,	'anim.keyframe_insert', 'K', 'PRESS', [])
@@ -1023,9 +1186,15 @@ def outliner(km):
 
 def node_editor(km):
 	net = "Node Tool: Select Box"
-	km.mute(net, 'node.select_box', 'EVT_TWEAK_L', 'ANY', ctrl=True)
-	km.mute(net, 'node.select_lasso', 'EVT_TWEAK_L', 'ANY', ctrl=True)
-	km.mute(net, 'node.select_circle', 'EVT_TWEAK_L', 'ANY', ctrl=True)
+	if version < (3, 2, 0):
+		km.mute(net, 'node.select_box', 'EVT_TWEAK_L', 'ANY', ctrl=True)
+		km.mute(net, 'node.select_lasso', 'EVT_TWEAK_L', 'ANY', ctrl=True)
+		km.mute(net, 'node.select_circle', 'EVT_TWEAK_L', 'ANY', ctrl=True)
+	else:
+		km.mute(net, 'node.select_box', 'LEFTMOUSE', 'CLICK_DRAG', ctrl=True)
+		km.mute(net, 'node.select_lasso', 'LEFTMOUSE', 'CLICK_DRAG', ctrl=True)
+		km.mute(net, 'node.select_circle', 'LEFTMOUSE', 'CLICK_DRAG',
+				ctrl=True)
 
 	km.mute('Node Editor', 'node.select', 'LEFTMOUSE', 'PRESS', ctrl=True)
 	km.mute('Node Editor', 'node.select', 'LEFTMOUSE', 'PRESS', alt=True)
@@ -1054,44 +1223,96 @@ def node_editor(km):
 	km.new(space, 'node.zoom_extended', 'Z', 'PRESS', [])
 	km.new(space, 'wm.call_menu', 'RIGHTMOUSE', 'PRESS',
 			[('name', 'NODE_MT_add')])
-	# km.new(space, 'node.duplicate_move', 'EVT_TWEAK_L', 'ANY',
-	# 		[('keep_inputs', True)], shift=True)
-	km.new(space, 'node.duplicate_move_keep_inputs', 'EVT_TWEAK_L', 'ANY',
-			[], shift=True)
+	
 	km.new(space, 'node.hide_socket_toggle', 'H', 'PRESS', [])
 	km.new(space, 'node.hide_toggle', 'H', 'PRESS', [], ctrl=True)
 	km.new(space, 'node.links_cut', 'MIDDLEMOUSE', 'PRESS', [], alt=True)
-	km.new(space, 'node.link', 'EVT_TWEAK_L', 'ANY',
-			[('detach', True)], alt=True)
 	km.new(space, 'node.select_linked_from', 'T', 'PRESS', [], ctrl=True)
 	km.new(space, 'material.assign_to_selection', 'A', 'PRESS', [])
 	km.new(space, 'node.clipboard_copy', 'INSERT', 'PRESS', [], ctrl=True)
 	km.new(space, 'node.clipboard_paste', 'INSERT', 'PRESS', [], shift=True)
 
+	if version < (3, 2, 0):
+		# km.new(space, 'node.duplicate_move', 'EVT_TWEAK_L', 'ANY',
+		# 		[('keep_inputs', True)], shift=True)
+		km.new(space, 'node.duplicate_move_keep_inputs', 'EVT_TWEAK_L', 'ANY',
+				[], shift=True)
+
+		km.new(space, 'node.link', 'EVT_TWEAK_L', 'ANY',
+			[('detach', True)], alt=True)
+
+	else:
+		km.new(space, 'node.duplicate_move_keep_inputs',
+				'LEFTMOUSE', 'CLICK_DRAG', 	[], shift=True)
+
+		km.new(space, 'node.link', 'LEFTMOUSE', 'CLICK_DRAG',
+			[('detach', True)], alt=True)
+
 
 
 def node_editor_fallback(km):
 	#TODO add tweak mode too
-	km.mute('Node Tool: Select Box (fallback)',
-			'node.select_box','EVT_TWEAK_L','ANY',ctrl=True)
+	if version < (3, 2, 0):
+		km.mute('Node Tool: Select Box (fallback)',
+				'node.select_box', 'EVT_TWEAK_L', 'ANY', ctrl=True)
 
-	km.mute('Node Tool: Select Lasso (fallback)',
-			'node.select_lasso','EVT_TWEAK_L','ANY',ctrl=True)
+		km.mute('Node Tool: Select Lasso (fallback)',
+				'node.select_lasso', 'EVT_TWEAK_L', 'ANY', ctrl=True)
 
-	km.mute('Node Tool: Select Circle (fallback)',
-			'node.select_circle','EVT_TWEAK_L','ANY',ctrl=True)
+		km.mute('Node Tool: Select Circle (fallback)',
+				'node.select_circle', 'EVT_TWEAK_L', 'ANY', ctrl=True)
 
-	space = km.space('Node Tool: Select Box','NODE_EDITOR','WINDOW')
-	km.new(space,'node.select_box','EVT_TWEAK_L','ANY',[('mode','ADD')],ctrl=True )
-	km.new(space,'node.select_box','EVT_TWEAK_L','ANY',[('mode','SUB')],alt=True )
+		space = km.space('Node Tool: Select Box', 'NODE_EDITOR', 'WINDOW')
+		km.new(space, 'node.select_box', 'EVT_TWEAK_L', 'ANY',
+				[('mode', 'ADD')], ctrl=True )
 
-	space = km.space('Node Tool: Select Lasso','NODE_EDITOR','WINDOW')
-	km.new(space,'node.select_lasso','EVT_TWEAK_L','ANY',[('mode','ADD')],ctrl=True )
-	km.new(space,'node.select_lasso','EVT_TWEAK_L','ANY',[('mode','SUB')],alt=True )
+		km.new(space, 'node.select_box', 'EVT_TWEAK_L', 'ANY',
+				[('mode', 'SUB')], alt=True )
 
-	space = km.space('Node Tool: Select Circle','NODE_EDITOR','WINDOW')
-	km.new(space,'node.select_circle','EVT_TWEAK_L','ANY',[('mode','ADD')],ctrl=True )
-	km.new(space,'node.select_circle','EVT_TWEAK_L','ANY',[('mode','SUB')],alt=True )
+		space = km.space('Node Tool: Select Lasso', 'NODE_EDITOR', 'WINDOW')
+		km.new(space, 'node.select_lasso', 'EVT_TWEAK_L', 'ANY',
+				[('mode', 'ADD')], ctrl=True )
+
+		km.new(space, 'node.select_lasso', 'EVT_TWEAK_L', 'ANY',
+				[('mode', 'SUB')], alt=True )
+
+		space = km.space('Node Tool: Select Circle', 'NODE_EDITOR', 'WINDOW')
+		km.new(space, 'node.select_circle', 'EVT_TWEAK_L', 'ANY',
+				[('mode', 'ADD')], ctrl=True )
+
+		km.new(space, 'node.select_circle', 'EVT_TWEAK_L', 'ANY',
+				[('mode', 'SUB')], alt=True )
+
+	else:
+		km.mute('Node Tool: Select Box (fallback)',
+				'node.select_box', 'LEFTMOUSE', 'CLICK_DRAG', ctrl=True)
+
+		km.mute('Node Tool: Select Lasso (fallback)',
+				'node.select_lasso', 'LEFTMOUSE', 'CLICK_DRAG', ctrl=True)
+
+		km.mute('Node Tool: Select Circle (fallback)',
+				'node.select_circle', 'LEFTMOUSE', 'CLICK_DRAG', ctrl=True)
+
+		space = km.space('Node Tool: Select Box', 'NODE_EDITOR', 'WINDOW')
+		km.new(space, 'node.select_box', 'LEFTMOUSE', 'CLICK_DRAG',
+				[('mode', 'ADD')], ctrl=True )
+
+		km.new(space, 'node.select_box', 'LEFTMOUSE', 'CLICK_DRAG',
+				[('mode', 'SUB')], alt=True )
+
+		space = km.space('Node Tool: Select Lasso', 'NODE_EDITOR', 'WINDOW')
+		km.new(space, 'node.select_lasso', 'LEFTMOUSE', 'CLICK_DRAG',
+				[('mode', 'ADD')], ctrl=True )
+
+		km.new(space, 'node.select_lasso', 'LEFTMOUSE', 'CLICK_DRAG',
+				[('mode', 'SUB')], alt=True )
+
+		space = km.space('Node Tool: Select Circle', 'NODE_EDITOR', 'WINDOW')
+		km.new(space, 'node.select_circle', 'LEFTMOUSE', 'CLICK_DRAG',
+				[('mode', 'ADD')], ctrl=True )
+
+		km.new(space, 'node.select_circle', 'LEFTMOUSE', 'CLICK_DRAG',
+				[('mode', 'SUB')], alt=True )
 
 
 
@@ -1106,7 +1327,7 @@ def text(km):
 	""" script editor """
 	space = km.space('Text', 'TEXT_EDITOR', 'WINDOW')
 	km.new(space, 'text.run_script', 'E', 'PRESS', [], ctrl=True)
-	km.new(space, 'text.run_script', 'F5', 'PRESS',[]) # From MVS
+	km.new(space, 'text.run_script', 'F5', 'PRESS', []) # From MVS
 	km.new(space, 'text.autocomplete', 'RET', 'PRESS', [], ctrl=True)
 	km.new(space, 'text.autocomplete', 'SPACE', 'PRESS', [], ctrl=True)
 	km.new(space, 'text.new', 'N', 'PRESS', [], ctrl=True)
@@ -1121,17 +1342,17 @@ def text(km):
 
 
 def console(km):
-	space = km.space('Console','CONSOLE','WINDOW')
-	km.new(space,'text.new','N','PRESS',[],ctrl=True)
-	km.new(space,'text.open','O','PRESS',[],ctrl=True)
-	km.new(space,'text.save','S','PRESS',[],ctrl=True)
-	km.new(space,'console.autocomplete','RET','PRESS',[],ctrl=True)
-	km.new(space,'console.autocomplete','SPACE','PRESS',[],ctrl=True)
-	km.new(space,'console.paste','INSERT','PRESS',[],shift=True)
-	km.new(space,'console.copy','INSERT','PRESS',[],ctrl=True)
-	km.new(space,'console.cut','DEL','PRESS',[],shift=True)
-	km.new(space,'console.cut','X','PRESS',[],ctrl=True)
-	km.new(space,'console.clear','D','PRESS',[],ctrl=True)
+	space = km.space('Console', 'CONSOLE', 'WINDOW')
+	km.new(space, 'text.new', 'N', 'PRESS', [], ctrl=True)
+	km.new(space, 'text.open', 'O', 'PRESS', [], ctrl=True)
+	km.new(space, 'text.save', 'S', 'PRESS', [], ctrl=True)
+	km.new(space, 'console.autocomplete', 'RET', 'PRESS', [], ctrl=True)
+	km.new(space, 'console.autocomplete', 'SPACE', 'PRESS', [], ctrl=True)
+	km.new(space, 'console.paste', 'INSERT', 'PRESS', [], shift=True)
+	km.new(space, 'console.copy', 'INSERT', 'PRESS', [], ctrl=True)
+	km.new(space, 'console.cut', 'DEL', 'PRESS', [], shift=True)
+	km.new(space, 'console.cut', 'X', 'PRESS', [], ctrl=True)
+	km.new(space, 'console.clear', 'D', 'PRESS', [], ctrl=True)
 
 
 
@@ -1141,20 +1362,35 @@ def info(km):
 	km.new(space, 'text.new', 'N', 'PRESS', [], ctrl=True)
 	km.new(space, 'text.open', 'O', 'PRESS', [], ctrl=True)
 	km.new(space, 'text.save', 'S', 'PRESS', [], ctrl=True)
-	km.new(space, 'info.select_box', 'EVT_TWEAK_L', 'ANY', [('mode', 'SET')])
-	km.new(space, 'info.select_box', 'EVT_TWEAK_L', 'ANY',
-			[('mode', 'ADD')], ctrl=True)
-
-	km.new(space, 'info.select_box', 'EVT_TWEAK_L', 'ANY',
-			[('mode', 'SUB')], alt=True)
 
 	km.new(space, 'info.select_all_toggle', 'A', 'PRESS', [], ctrl=True)
-	km.new(space, 'info.clear', 'D', 'PRESS', [('scrollback', True)], ctrl=True)
+	km.new(space, 'info.clear', 'D', 'PRESS',
+			[('scrollback', True)], ctrl=True)
+
 	km.new(space, 'info.report_copy', 'INSERT', 'PRESS', [], ctrl=True)
+
+	if version < (3, 2, 0):
+		km.new(space, 'info.select_box', 'EVT_TWEAK_L', 'ANY',
+				[('mode', 'SET')])
+
+		km.new(space, 'info.select_box', 'EVT_TWEAK_L', 'ANY',
+				[('mode', 'ADD')], ctrl=True)
+
+		km.new(space, 'info.select_box', 'EVT_TWEAK_L', 'ANY',
+				[('mode', 'SUB')], alt=True)
+	else:
+		km.new(space, 'info.select_box', 'LEFTMOUSE', 'CLICK_DRAG',
+				[('mode', 'SET')])
+
+		km.new(space, 'info.select_box', 'LEFTMOUSE', 'CLICK_DRAG',
+				[('mode', 'ADD')], ctrl=True)
+
+		km.new(space, 'info.select_box', 'LEFTMOUSE', 'CLICK_DRAG',
+				[('mode', 'SUB')], alt=True)
 
 
 # def frames(km):
-# 	space = km.space('Frames','EMPTY','WINDOW')
+# 	space = km.space('Frames', 'EMPTY', 'WINDOW')
 
 
 
@@ -1165,11 +1401,19 @@ def graph_editor(km):
 	add_side_panel(km, space)
 	add_time(km, space)
 
-	km.new(space, 'graph.select_box', 'EVT_TWEAK_L', 'ANY',
-			[('mode', 'ADD'), ('tweak', True)], ctrl=True)
 
-	km.new(space, 'graph.select_box', 'EVT_TWEAK_L', 'ANY',
-			[('mode', 'SUB'), ('tweak', True)], alt=True)
+	if version < (3, 2, 0):
+		km.new(space, 'graph.select_box', 'EVT_TWEAK_L', 'ANY',
+				[('mode', 'ADD'), ('tweak', True)], ctrl=True)
+
+		km.new(space, 'graph.select_box', 'EVT_TWEAK_L', 'ANY',
+				[('mode', 'SUB'), ('tweak', True)], alt=True)
+	else:
+		km.new(space, 'graph.select_box', 'LEFTMOUSE', 'CLICK_DRAG',
+				[('mode', 'ADD'), ('tweak', True)], ctrl=True)
+
+		km.new(space, 'graph.select_box', 'LEFTMOUSE', 'CLICK_DRAG',
+				[('mode', 'SUB'), ('tweak', True)], alt=True)
 
 	km.new(space, 'graph.select_all', 'A', 'PRESS',
 			[('action', 'SELECT')], ctrl=True)
@@ -1209,12 +1453,6 @@ def dopesheet_editor(km):
 
 	km.new(space, 'anim.delete_key', 'DEL', 'PRESS', [])
 
-	km.new(space, 'action.select_box', 'EVT_TWEAK_L', 'ANY',
-			[('mode', 'ADD')], ctrl=True )
-
-	km.new(space, 'action.select_box', 'EVT_TWEAK_L', 'ANY',
-			[('mode', 'SUB')], alt=True )
-
 	km.new(space, 'action.select_all', 'A', 'PRESS',
 			[('action', 'SELECT')], ctrl=True)
 
@@ -1231,25 +1469,55 @@ def dopesheet_editor(km):
 	km.new(space, 'action.copy', 'INSERT', 'PRESS', [], ctrl=True)
 	km.new(space, 'action.paste', 'INSERT', 'PRESS', [], shift=True)
 
+	if version < (3, 2, 0):
+		km.new(space, 'action.select_box', 'EVT_TWEAK_L', 'ANY',
+				[('mode', 'ADD')], ctrl=True )
+
+		km.new(space, 'action.select_box', 'EVT_TWEAK_L', 'ANY',
+				[('mode', 'SUB')], alt=True )
+
+	else:
+		km.new(space, 'action.select_box', 'LEFTMOUSE', 'CLICK_DRAG',
+				[('mode', 'ADD')], ctrl=True )
+
+		km.new(space, 'action.select_box', 'LEFTMOUSE', 'CLICK_DRAG',
+				[('mode', 'SUB')], alt=True )
+
 
 
 def nla_editor(km):
-	km.mute('NLA Editor', 'nla.select_box', 'EVT_TWEAK_L', 'ANY', ctrl=True)
 
 	space = km.space('NLA Editor', 'NLA_EDITOR', 'WINDOW')
 	add_search(km, space)
 	add_side_panel(km, space)
 	add_time(km, space)
 
-	km.new(space, 'nla.select_box','EVT_TWEAK_L','ANY',[("mode", 'ADD')], ctrl=True)
-	km.new(space, 'nla.select_box','EVT_TWEAK_L','ANY',[("mode", 'SUB')], alt=True)
 	km.new(space, 'nla.view_selected', 'Z', 'PRESS', [])
 	km.new(space, 'camera.select', 'C', 'PRESS', [])
+
+	if version < (3, 2, 0):
+		km.mute('NLA Editor', 'nla.select_box', 'EVT_TWEAK_L', 'ANY',
+				ctrl=True)
+
+		km.new(space, 'nla.select_box', 'EVT_TWEAK_L', 'ANY',
+				[("mode", 'ADD')], ctrl=True)
+
+		km.new(space, 'nla.select_box', 'EVT_TWEAK_L', 'ANY',
+				[("mode", 'SUB')], alt=True)
+
+	else:
+		km.mute('NLA Editor', 'nla.select_box', 'LEFTMOUSE', 'CLICK_DRAG',
+				ctrl=True)
+
+		km.new(space, 'nla.select_box', 'LEFTMOUSE', 'CLICK_DRAG',
+				[("mode", 'ADD')], ctrl=True)
+
+		km.new(space, 'nla.select_box', 'LEFTMOUSE', 'CLICK_DRAG',
+				[("mode", 'SUB')], alt=True)
 
 
 
 def clip_editor(km):
-	km.mute('Clip Editor', 'transform.translate', 'EVT_TWEAK_L', 'ANY')
 	km.mute('Clip Editor', 'clip.add_marker_slide', 'LEFTMOUSE', 'PRESS',
 			ctrl=True)
 	km.mute('Clip', 'wm.context_toggle', 'N', 'PRESS')
@@ -1266,43 +1534,66 @@ def clip_editor(km):
 	# km.new(space, 'clip.select', 'LEFTMOUSE', 'PRESS',
 	# 		[('extend', True)], alt=True)
 
-	km.new(space, 'clip.select_box', 'EVT_TWEAK_L', 'ANY',
-			[('mode', 'SET')])
-
-	km.new(space, 'clip.select_box', 'EVT_TWEAK_L', 'ANY',
-			[('mode', 'ADD')], ctrl=True)
-
-	km.new(space, 'clip.select_box', 'EVT_TWEAK_L', 'ANY',
-			[('mode', 'SUB')], alt=True)
-
-	km.new(space, 'clip.select_all', 'A','PRESS',
+	km.new(space, 'clip.select_all', 'A', 'PRESS',
 			[('action', 'SELECT')], ctrl=True)
 
-	km.new(space, 'clip.select_all', 'D','PRESS',
+	km.new(space, 'clip.select_all', 'D', 'PRESS',
 			[('action', 'DESELECT')], ctrl=True)
 
-	# km.new(space,'clip.select_all','I','PRESS',[('action','INVERT')],ctrl=True)
-	# km.new(space,'clip.delete_marker','DEL','PRESS',[]) TODO replace by instan delete operator
+	# km.new(space, 'clip.select_all', 'I', 'PRESS', [('action', 'INVERT')], ctrl=True)
+	# km.new(space, 'clip.delete_marker', 'DEL', 'PRESS', []) TODO replace by instan delete operator
 	# TODO replace by automatic one
-	# km.new(space,'clip.view_all','Z','PRESS',[('fit_view', True)])
-	# km.new(space,'clip.view_selected','Z','PRESS',[])
+	# km.new(space, 'clip.view_all', 'Z', 'PRESS', [('fit_view', True)])
+	# km.new(space, 'clip.view_selected', 'Z', 'PRESS', [])
 	km.new(space, 'clip.autoframe', 'Z', 'PRESS', [])
 	km.new(space, 'clip.copy_tracks', 'INSERT', 'PRESS', [], ctrl=True)
 	km.new(space, 'clip.paste_tracks', 'INSERT', 'PRESS', [], shift=True)
 
+	if version < (3, 2, 0):
+		km.mute('Clip Editor', 'transform.translate', 'EVT_TWEAK_L', 'ANY')
+		km.new(space, 'clip.select_box', 'EVT_TWEAK_L', 'ANY',
+			[('mode', 'SET')])
+
+		km.new(space, 'clip.select_box', 'EVT_TWEAK_L', 'ANY',
+				[('mode', 'ADD')], ctrl=True)
+
+		km.new(space, 'clip.select_box', 'EVT_TWEAK_L', 'ANY',
+				[('mode', 'SUB')], alt=True)
+
+	else:
+		km.mute('Clip Editor', 'transform.translate', 'LEFTMOUSE', 'CLICK_DRAG')
+		km.new(space, 'clip.select_box', 'LEFTMOUSE', 'CLICK_DRAG',
+			[('mode', 'SET')])
+
+		km.new(space, 'clip.select_box', 'LEFTMOUSE', 'CLICK_DRAG',
+				[('mode', 'ADD')], ctrl=True)
+
+		km.new(space, 'clip.select_box', 'LEFTMOUSE', 'CLICK_DRAG',
+				[('mode', 'SUB')], alt=True)
+
 
 
 def image_editor(km):
-	km.mute("Image Generic", 'wm.context_toggle','N', 'PRESS')
+	km.mute("Image Generic", 'wm.context_toggle', 'N', 'PRESS')
 
-	km.mute("Image Editor Tool: Uv, Select Box (fallback)",
-			'uv.select_box','EVT_TWEAK_L', 'ANY', ctrl=True)
+	if version < (3, 2, 0):
+		km.mute("Image Editor Tool: Uv, Select Box (fallback)",
+				'uv.select_box', 'EVT_TWEAK_L', 'ANY', ctrl=True)
 
-	km.mute("Image Editor Tool: Uv, Select Circle (fallback)",
-			'uv.select_circle','EVT_TWEAK_L', 'ANY', ctrl=True)
+		km.mute("Image Editor Tool: Uv, Select Circle (fallback)",
+				'uv.select_circle', 'EVT_TWEAK_L', 'ANY', ctrl=True)
 
-	km.mute("Image Editor Tool: Uv, Select Lasso (fallback)",
-			'uv.select_lasso','EVT_TWEAK_L', 'ANY', ctrl=True)
+		km.mute("Image Editor Tool: Uv, Select Lasso (fallback)",
+				'uv.select_lasso', 'EVT_TWEAK_L', 'ANY', ctrl=True)
+	else:
+		km.mute("Image Editor Tool: Uv, Select Box (fallback)",
+				'uv.select_box', 'LEFTMOUSE', 'CLICK_DRAG', ctrl=True)
+
+		km.mute("Image Editor Tool: Uv, Select Circle (fallback)",
+				'uv.select_circle', 'LEFTMOUSE', 'CLICK_DRAG', ctrl=True)
+
+		km.mute("Image Editor Tool: Uv, Select Lasso (fallback)",
+				'uv.select_lasso', 'LEFTMOUSE', 'CLICK_DRAG', ctrl=True)
 
 	space = km.space('Image Generic', 'IMAGE_EDITOR', 'WINDOW')
 
@@ -1332,17 +1623,9 @@ def uv_editor(km, preferences):
 	km.new(space, 'uv.shortest_path_pick', 'LEFTMOUSE', 'PRESS',
 			[('extend', True)], ctrl=True, shift=True)
 
-	km.new(space, 'uv.select_loop', 'LEFTMOUSE', 'DOUBLE_CLICK',[])
+	km.new(space, 'uv.select_loop', 'LEFTMOUSE', 'DOUBLE_CLICK', [])
 	km.new(space, 'uv.select_loop', 'LEFTMOUSE', 'DOUBLE_CLICK',
 			[('extend', True)], ctrl=True)
-
-	km.new(space, 'uv.select', 'EVT_TWEAK_L', 'ANY', [('extend', True)])
-	km.new(space, 'uv.select_box', 'EVT_TWEAK_L', 'ANY', [('mode', 'SET')])
-	km.new(space, 'uv.select_box', 'EVT_TWEAK_L', 'ANY',
-			[('mode', 'ADD')], ctrl=True)
-
-	km.new(space, 'uv.select_box', 'EVT_TWEAK_L', 'ANY',
-			[('mode', 'SUB')], alt=True)
 
 	km.new(space, 'uv.select_more', 'PAGE_UP', 'PRESS', [], ctrl=True)
 	km.new(space, 'uv.select_less', 'PAGE_DOWN', 'PRESS', [], ctrl=True)
@@ -1365,34 +1648,78 @@ def uv_editor(km, preferences):
 	km.new(space, 'uv.select_split', 'B', 'PRESS', [], ctrl=True)
 	km.new(space, 'uv.weld', 'W', 'PRESS', [], ctrl=True)
 
+	if version < (3, 2, 0):
+		km.new(space, 'uv.select', 'EVT_TWEAK_L', 'ANY', [('extend', True)])
+		km.new(space, 'uv.select_box', 'EVT_TWEAK_L', 'ANY', [('mode', 'SET')])
+		km.new(space, 'uv.select_box', 'EVT_TWEAK_L', 'ANY',
+				[('mode', 'ADD')], ctrl=True)
+
+		km.new(space, 'uv.select_box', 'EVT_TWEAK_L', 'ANY',
+				[('mode', 'SUB')], alt=True)
+
+	else:
+		km.new(space, 'uv.select', 'LEFTMOUSE', 'CLICK_DRAG',
+				[('extend', True)])
+
+		km.new(space, 'uv.select_box', 'LEFTMOUSE', 'CLICK_DRAG',
+				[('mode', 'SET')])
+
+		km.new(space, 'uv.select_box', 'LEFTMOUSE', 'CLICK_DRAG',
+				[('mode', 'ADD')], ctrl=True)
+
+		km.new(space, 'uv.select_box', 'LEFTMOUSE', 'CLICK_DRAG',
+				[('mode', 'SUB')], alt=True)
+
 	space = km.space('Image Editor Tool: Uv, Select Box',
 					'IMAGE_EDITOR', 'WINDOW')
-	km.new(space, 'uv.select_box', 'EVT_TWEAK_L', 'ANY',
-			[('mode', 'ADD')], ctrl=True)
-	
+	if version < (3, 2, 0):
+		km.new(space, 'uv.select_box', 'EVT_TWEAK_L', 'ANY',
+				[('mode', 'ADD')], ctrl=True)
+	else:
+		km.new(space, 'uv.select_box', 'LEFTMOUSE', 'ANY',
+				[('mode', 'ADD')], ctrl=True)
+		
 	space = km.space('Image Editor Tool: Uv, Select Circle',
-					'IMAGE_EDITOR','WINDOW')
-
-	km.new(space, 'uv.select_circle', 'EVT_TWEAK_L', 'ANY',
-			[('mode', 'ADD')], ctrl=True)
-	
-	space = km.space('Image Editor Tool: Uv, Select Lasso',
 					'IMAGE_EDITOR', 'WINDOW')
-
-	km.new(space, 'uv.select_lasso', 'EVT_TWEAK_L', 'ANY',
-			[('mode', 'ADD')], ctrl=True)
+	if version < (3, 2, 0):
+		km.new(space, 'uv.select_circle', 'EVT_TWEAK_L', 'ANY',
+				[('mode', 'ADD')], ctrl=True)
+	else:
+		km.new(space, 'uv.select_circle', 'LEFTMOUSE', 'CLICK_DRAG',
+				[('mode', 'ADD')], ctrl=True)
+		
+		
+	space = km.space('Image Editor Tool: Uv, Select Lasso',
+						'IMAGE_EDITOR', 'WINDOW')
+	if version < (3, 2, 0):
+		km.new(space, 'uv.select_lasso', 'EVT_TWEAK_L', 'ANY',
+				[('mode', 'ADD')], ctrl=True)
+	else:
+		km.new(space, 'uv.select_lasso', 'LEFTMOUSE', 'CLICK_DRAG',
+				[('mode', 'ADD')], ctrl=True)
 
 
 
 def sequence_editor(km):
-	km.mute('Sequencer', 'transform.translate', 'EVT_TWEAK_L', 'ANY')
-	km.mute('SequencerCommon', 'wm.context_toggle', 'N', 'PRESS')
+	if version < (3, 2, 0):
+		km.mute('Sequencer', 'transform.translate', 'EVT_TWEAK_L', 'ANY')
+		km.mute('SequencerCommon', 'wm.context_toggle', 'N', 'PRESS')
 
-	# km.mute('Sequencer Tool: Tweak (fallback)',
-	# 		'sequencer.select', 'EVT_TWEAK_L', 'ANY', ctrl=True)
+		# km.mute('Sequencer Tool: Tweak (fallback)',
+		# 		'sequencer.select', 'EVT_TWEAK_L', 'ANY', ctrl=True)
 
-	km.mute('Sequencer Tool: Select Box (fallback)',
-			'sequencer.select_box', 'EVT_TWEAK_L', 'ANY', ctrl=True)
+		km.mute('Sequencer Tool: Select Box (fallback)',
+				'sequencer.select_box', 'EVT_TWEAK_L', 'ANY', ctrl=True)
+	else:
+		km.mute('Sequencer', 'transform.translate', 'LEFTMOUSE', 'CLICK_DRAG')
+		km.mute('SequencerCommon', 'wm.context_toggle', 'N', 'PRESS')
+
+		# km.mute('Sequencer Tool: Tweak (fallback)',
+		# 		'sequencer.select', 'LEFTMOUSE', 'CLICK_DRAG', ctrl=True)
+
+		km.mute('Sequencer Tool: Select Box (fallback)',
+				'sequencer.select_box', 'LEFTMOUSE', 'CLICK_DRAG', ctrl=True)
+
 
 	space = km.space('Sequencer', 'SEQUENCE_EDITOR', 'WINDOW')
 	add_search(km, space)
@@ -1404,22 +1731,34 @@ def sequence_editor(km):
 	km.new(space, 'sequencer.mute_toggle', 'H', 'PRESS', [])
 	km.new(space, 'sequencer.shift', 'UP_ARROW', 'PRESS',
 			[('direction', 'UP')], alt=True)
+
 	km.new(space, 'sequencer.shift', 'DOWN_ARROW', 'PRESS',
 			[('direction', 'DOWN')], alt=True)
+
 	km.new(space, 'sequencer.shift', 'RIGHT_ARROW', 'PRESS',
 			[('direction', 'RIGHT')], alt=True)
+
 	km.new(space, 'sequencer.shift', 'LEFT_ARROW', 'PRESS',
 			[('direction', 'LEFT')], alt=True)
  
 	km.new(space, 'sequencer.select_all', 'A', 'PRESS',
 			[('action', 'SELECT')], ctrl=True)
+
 	km.new(space, 'sequencer.select_all', 'D', 'PRESS',
 			[('action', 'DESELECT')], ctrl=True)
 
-	km.new(space, 'sequencer.select_box', 'EVT_TWEAK_L', 'ANY',
-			[(('mode', 'ADD'))], ctrl=True)
-	km.new(space, 'sequencer.select_box', 'EVT_TWEAK_L', 'ANY',
-			[(('mode', 'SUB'))], alt=True)
+	if version < (3, 2, 0):
+		km.new(space, 'sequencer.select_box', 'EVT_TWEAK_L', 'ANY',
+				[(('mode', 'ADD'))], ctrl=True)
+
+		km.new(space, 'sequencer.select_box', 'EVT_TWEAK_L', 'ANY',
+				[(('mode', 'SUB'))], alt=True)
+	else:
+		km.new(space, 'sequencer.select_box', 'LEFTMOUSE', 'CLICK_DRAG',
+				[(('mode', 'ADD'))], ctrl=True)
+
+		km.new(space, 'sequencer.select_box', 'LEFTMOUSE', 'CLICK_DRAG',
+				[(('mode', 'SUB'))], alt=True)
 	
  
 	km.new(space, 'anim.frame_set', 'HOME', 'PRESS', [('frame', 'First')])
@@ -1429,10 +1768,18 @@ def sequence_editor(km):
 
 	space = km.space('Sequencer Tool: Select Box', 'SEQUENCE_EDITOR', 'WINDOW')
 
-	km.new(space, 'sequencer.select_box', 'EVT_TWEAK_L', 'ANY',
-			[('mode', 'ADD')], ctrl=True)
-	km.new(space, 'sequencer.select_box', 'EVT_TWEAK_L', 'ANY',
-			[('mode', 'SUB')], alt=True)
+	if version < (3, 2, 0):
+		km.new(space, 'sequencer.select_box', 'EVT_TWEAK_L', 'ANY',
+				[('mode', 'ADD')], ctrl=True)
+
+		km.new(space, 'sequencer.select_box', 'EVT_TWEAK_L', 'ANY',
+				[('mode', 'SUB')], alt=True)
+	else:
+		km.new(space, 'sequencer.select_box', 'LEFTMOUSE', 'CLICK_DRAG',
+				[('mode', 'ADD')], ctrl=True)
+
+		km.new(space, 'sequencer.select_box', 'LEFTMOUSE', 'CLICK_DRAG',
+				[('mode', 'SUB')], alt=True)
 	
 	km.new(space, 'sequencer.copy', 'INSERT', 'PRESS', [], ctrl=True)
 	km.new(space, 'sequencer.paste', 'INSERT', 'PRESS', [], shift=True)
@@ -1480,8 +1827,8 @@ def file_browser(km):
 
 
 def modals(km):
-	# space = km.space('Knife Tool Modal Map','EMPTY','WINDOW',modal=True)
-	# km.new(space,'CONFIRM','RIGHTMOUSE','PRESS',[],any=True,modal=True)
+	# space = km.space('Knife Tool Modal Map', 'EMPTY', 'WINDOW',modal=True)
+	# km.new(space, 'CONFIRM', 'RIGHTMOUSE', 'PRESS', [], any=True,modal=True)
 	pass
 
 

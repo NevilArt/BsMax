@@ -18,10 +18,10 @@
 
 bl_info = {
 	'name': 'BsMax',
-	'description': 'BsMax for Blender 2.80 ~ 3.1',
+	'description': 'BsMax for Blender 2.80 ~ 3.2',
 	'author': 'Naser Merati (Nevil)',
-	'version': (0, 1, 0, 20220503),
-	'blender': (2, 80, 0),# 2.80 ~ 3.1
+	'version': (0, 1, 0, 20220509),
+	'blender': (2, 80, 0),# 2.80 ~ 3.2
 	'location': 'Almost Everywhere in Blender',
 	'wiki_url': 'https://github.com/NevilArt/BsMax/wiki',
 	'doc_url': 'https://github.com/NevilArt/BsMax/wiki',
@@ -295,8 +295,8 @@ class BsMax_AddonPreferences(bpy.types.AddonPreferences):
 	)
 
 	nevil_stuff: BoolProperty(
-		name='Nevil Stuff', default=False,
-		description='tools I use in my own pipeline may not usefull for you'
+		name='Developer Exteras', default=False,
+		description='This tools may not usefull for theres, just keep it off'
 	)
 
 	def refine(self):
@@ -307,6 +307,7 @@ class BsMax_AddonPreferences(bpy.types.AddonPreferences):
 		if self.navigation_3d == self.navigation_2d:
 			if self.navigation == 'Custom':
 				self.navigation = self.navigation_3d
+
 		elif self.navigation != 'Custom':
 			self.navigation = 'Custom'
 

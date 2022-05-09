@@ -14,7 +14,10 @@
 ############################################################################
 
 import bpy
+
 from bpy.types import Operator
+
+
 
 # Act like Convert to in 3ds Max
 class BsMax_OT_ClearPrimitiveData(Operator):
@@ -25,6 +28,7 @@ class BsMax_OT_ClearPrimitiveData(Operator):
 		for obj in ctx.selected_objects:
 			obj.data.primitivedata.classname = ""
 		return {"FINISHED"}
+
 
 def BsMax_MT_PrimitiveDataCleanerMenu(self, context):
 	self.layout.separator()

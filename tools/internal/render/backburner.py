@@ -123,7 +123,7 @@ def filter_frames_bitarray(self, ctx):
 
 
 
-class Backburner_Settings(PropertyGroup):
+class Backburner_Property(PropertyGroup):
 	job_name: StringProperty(name='Job Name', maxlen=256, default='New Job',
 		description='Name of the job to be shown in Backburner')
 	
@@ -545,7 +545,7 @@ def backburner_menu(self, ctx):
 
 
 
-classes = [Backburner_Settings,
+classes = [Backburner_Property,
 	Render_OT_Backburner,
 	Render_OT_Save_BackBurner,
 	Render_OT_Load_BackBurner,
@@ -556,12 +556,15 @@ classes = [Backburner_Settings,
 def register_backburner():
 	for c in classes:
 		bpy.utils.register_class(c)
-	bpy.types.Scene.backburner = PointerProperty(type=Backburner_Settings,
+	bpy.types.Scene.backburner = PointerProperty(type=Backburner_Property,
 												name='Backburner Submission')
+
 	bpy.types.TOPBAR_MT_render.prepend(backburner_menu)
 
 def unregister_backburner():
 	bpy.types.TOPBAR_MT_render.remove(backburner_menu)
+	del bpy.types.Scene.backburne
+
 	for c in classes:
 		bpy.utils.unregister_class(c)
 

@@ -13,7 +13,7 @@
 #	along with this program.  If not, see <https://www.gnu.org/licenses/>.
 ############################################################################
 
-import bpy, os, sys
+import bpy
 from bpy.types import Operator
 from bpy.app import version
 
@@ -62,14 +62,14 @@ class File_OT_Version(Operator):
 
 	def draw(self, ctx):
 		self.layout.label(text="File: " + self.date_version)
-		self.layout.label(text="App: " + self.date_version)
+		self.layout.label(text="App: " + self.app_version)
 
 	def execute(self, ctx):
 		return{"FINISHED"}
 	
 	def invoke(self, ctx, event):
 		self.date_version = str(bpy.data.version)
-		self.blender_version = str(bpy.app.version)
+		self.app_version = str(bpy.app.version)
 		return ctx.window_manager.invoke_props_dialog(self, width=120)
 
 
@@ -79,11 +79,12 @@ class File_OT_Save_Check(Operator):
 	bl_label = "Save Check"
 
 	def compar_versions(self, file_ver, app_ver):
+		print(file_ver[0], app_ver[0], file_ver[1], app_ver[1])
 		return file_ver[0] == app_ver[0] and file_ver[1] == app_ver[1]
 
 	def draw(self, ctx):
 		self.layout.label(text="File Version is " + self.date_version)
-		self.layout.label(text="Blender Version is " + self.date_version)
+		self.layout.label(text="Blender Version is " + self.app_version)
 		self.layout.label(text="Are you sure wana overwrite it?")
 
 	def execute(self, ctx):
@@ -91,16 +92,19 @@ class File_OT_Save_Check(Operator):
 		return{"FINISHED"}
 	
 	def invoke(self, ctx, event):
+		# check if file already saved
 		if ctx.blend_data.filepath:
-
+			# save normaly if file and blender version are same
 			if self.compar_versions(bpy.data.version, bpy.app.version):
 				bpy.ops.wm.save_mainfile()
 				return{"FINISHED"}
 
+			# open dialog if versions not same
 			self.date_version = str(bpy.data.version)
-			self.blender_version = str(bpy.app.version)
+			self.app_version = str(bpy.app.version)
 			return ctx.window_manager.invoke_props_dialog(self)
 
+		# just saved unsaved files
 		bpy.ops.wm.save_as_mainfile('INVOKE_DEFAULT')
 		return{"FINISHED"}
 

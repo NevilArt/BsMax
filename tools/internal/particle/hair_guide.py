@@ -251,7 +251,9 @@ class BsMax_MT_particle_tools(Menu):
 		layout=self.layout
 		layout.operator("particle.hair_guides_from_curve", icon="PARTICLEMODE")
 		layout.operator("particle.hair_guides_to_curve", icon="TRACKING")
-		layout.operator("particle.hair_grap_style", icon="HAIR")
+
+		hair_icon = 'HAIR' if version < (3, 2, 0) else 'CURVES'
+		layout.operator("particle.hair_grap_style", icon=hair_icon)
 
 
 

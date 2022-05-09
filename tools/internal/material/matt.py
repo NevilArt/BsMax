@@ -89,25 +89,31 @@ class BsMax_MT_material_presets(Menu):
 	def draw(self, ctx):
 		layout=self.layout
 		layout.operator("material.import_node_groupe",
-						text="Blure").name = 'Blure'
+						text="Blure").name='Blure'
 
 		layout.operator("material.import_node_groupe",
-						text="Falloff").name = 'Falloff'
+						text="Falloff").name='Falloff'
 
 		layout.operator("material.import_node_groupe",
-						text="Parallax Box").name = 'Parallax Box X4'
+						text="Parallax Box").name='Parallax Box X4'
 
 		layout.operator("material.import_node_groupe",
-						text="Parallax Layer").name = 'Parallax Layer X4'
+						text="Parallax Layer").name='Parallax Layer X4'
 
 		layout.operator("material.import_node_groupe",
-						text="Parallax Ice").name = 'Parallax Ice'
+						text="Parallax Ice").name='Parallax Ice'
 
 		layout.operator("material.import_node_groupe",
-						text="Sprite 2D").name = 'Sprite 2D'
+						text="Sprite Sheet").name='Sprite Sheet'
 
 		layout.operator("material.import_node_groupe",
-						text="Untile").name = 'Untile'
+						text="Sprite Play Loop").name='Sprite Play Loop'
+
+		layout.operator("material.import_node_groupe",
+						text="Sprite Play Range").name='Sprite Play Range'
+
+		layout.operator("material.import_node_groupe",
+						text="Untile").name='Untile'
 
 
 

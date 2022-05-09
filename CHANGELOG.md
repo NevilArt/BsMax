@@ -1,3 +1,11 @@
+# 0, 1, 0, 20220503
+* 'Parallax Ice' Node groupe for easy and fast Ice effect in EEVEE.
+* 'Sprite 2D' Node groupe for display or animate sprite sheet.
+* Detach operator in quadmenu keeps last setting for next oparation (3DsMax mode).
+* Version operator show the Current blend file version (Menu/Edit/File Version).
+* 'Shift + E' Extrude edit curve (3DsMax mode).
+* 'Ctrl + Insert' as copy 'Shfit + Insert' as paste on most parts (3DsMax mode).
+
 # 0, 1, 0, 20220425
 * 'C' Camera search works on DopeSheet, timeline, CurveEditor and LNA too (3DsMax mode).
 * 'camera.search' operator removed 'camera.select' do the same job ('C' in max mode).

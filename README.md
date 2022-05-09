@@ -1,5 +1,5 @@
 
-# BsMax Blender Addon 2.80 ~ 3.1
+# BsMax Blender Addon 2.80 ~ 3.2
 
 BsMax is package of Modeling, Rig & Animation, Render tools and UI simulator for [Blender 3D](https://www.blender.org/).
 
@@ -31,18 +31,19 @@ Your Donation helps me to ignore other freelance offers and focus on BsMax and s
 * Note: Some times need to reset factory the blender to make addon work fine (happens when addons install to alpha version).
 * [Video Tutorial](https://youtu.be/JolpAmvd3CE).
 
-# Stand Alone Operators
+# Stand Alone Tools
 * This files can be inistaled sepratly as Add-on.
-* [backburner.py](https://github.com/NevilArt/BsMax/tree/master/tools/internal/render)
+* Click on the link and 'Ctrl + S' to download the file.
+* [backburner.py](https://raw.github.com/NevilArt/BsMax/master/tools/internal/render/backburner.py)
+
 
 # Recent Updates and Changes
 
-* 'Parallax Ice' Node groupe for easy and fast Ice effect in EEVEE.
-* 'Sprite 2D' Node groupe for display or animate sprite sheet.
-* Detach operator in quadmenu keeps last setting for next oparation (3DsMax mode).
-* Version operator show the Current blend file version (Menu/Edit/File Version).
-* 'Shift + E' Extrude edit curve (3DsMax mode).
-* 'Ctrl + Insert' as copy 'Shfit + Insert' as paste on most parts (3DsMax mode).
+* Keymaps updated to be compatable with 'Blender 3.2' too.
+* 'Sprite play loop/ragge' node groupse added to shader node groups presets.
+* 'Freez On' operator can be lock to right panel (Optinal).
+* 'Copy/Paste Transform' to other Blender('Ctrl+C/V' 3DsMax & Blender Adaptive).
+* Some Bugfixed, Cleanup and small issues fixed.
 * [Change log ...](https://github.com/NevilArt/BsMax/blob/master/CHANGELOG.md)
 
 # In Production 

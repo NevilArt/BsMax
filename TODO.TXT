@@ -19,11 +19,8 @@ Note: Tasks in [] can't apply for now because of python API limitation, I am loo
 	Mimic the Slice modifire quick setup
 	Global transform offset tool for selected objects in selected range
 	Armature
-		Smartkey mode (new key type same as previes key type)
 		Selection tools for rigg (create button, add/remove new item, rest pose, isolate and ...)
-		Fill key (Set key any where any controller has a key)
 		Curve key keys between first and last key
-		Time range marker
 		Select Keyed/Nonkeyed controllers
 	Better Isolate system (Alt+Q)
 	More stuff for Character lister (Skin on/off, Subdivision level fo mesh, ...)
@@ -46,26 +43,18 @@ Note: Tasks in [] can't apply for now because of python API limitation, I am loo
 
 # Update
 	Enable snap for drawing primitives
-	Zoom extended no select mesh/curve
-	Zoom extended on limit gride area
 	Helix with bezier segments with less count of knots (Bezier points)
 	PickOperator had works on other modes to (Subtarget to object or another subtarget)
-	Primitives save last created parameters value
 	Crearte primitive weel for segment count
-	If an object created uncheck hide that type of object in view port
-	Show/Hide Gride has to works on flat views too.
 	Put transform type in in right tool panel on/off with f12
 	transform type in sub object and pivot helper 
-	alight too adapt for edit pivot mode
+	***alight too adapt for edit pivot mode
 
 # Quad menu
 	Seam and UV tools
 	layer stuff ctrl+rmc quad menu
 	put transform pivot poins in alt+rc quadmenu
 	weld tool setting dialog
-
-# Addon
-	bl_description for all operators
 
 # Primitives
 	Torus Knot
