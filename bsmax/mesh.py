@@ -13,38 +13,14 @@
 #	along with this program.  If not, see <https://www.gnu.org/licenses/>.
 ############################################################################
 
-def tab(string, count=1):
-	""" Breke given string to lines
-		add tab to first of any line
-		combine and return
-	"""
-	return string
 
-def block(name, body, keys=[]):
-	"""
+
+def get_selected_verts(mesh):
+	""" get list of selected vertecis
+
 		args:
-			name:
-			body:
-			keys: array
+			mesh: object.data
 		return:
-			string
+			array of selected vertecis
 	"""
-
-	if type(body) == str:
-		return '<' + name + '>' + body + '</' + name + '>\n'
-	
-	if type(body) == list:
-		if body:
-			s = '<' + name + '>'
-	
-			for b in body:
-				s += tab(b) + '\n'
-	
-			s += '</' + name + '>\n'
-	
-			return s
-		
-		else:
-			return '<' + name + '/>\n'
-	
-	return ''
+	return [vert for vert in mesh.vertices if vert.select]

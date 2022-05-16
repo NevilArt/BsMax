@@ -88,12 +88,20 @@ class BsMax_MT_material_presets(Menu):
 
 	def draw(self, ctx):
 		layout=self.layout
+		# Effects
 		layout.operator("material.import_node_groupe",
 						text="Blure").name='Blure'
 
 		layout.operator("material.import_node_groupe",
 						text="Falloff").name='Falloff'
 
+		# Map
+		layout.separator()
+		layout.operator("material.import_node_groupe",
+						text="Ocean Caustic").name='Ocean Caustic'
+
+		# Parallax (coordinate)
+		layout.separator()
 		layout.operator("material.import_node_groupe",
 						text="Parallax Box").name='Parallax Box X4'
 
@@ -103,6 +111,8 @@ class BsMax_MT_material_presets(Menu):
 		layout.operator("material.import_node_groupe",
 						text="Parallax Ice").name='Parallax Ice'
 
+		# Sprite Sheet (Coordinate)
+		layout.separator()
 		layout.operator("material.import_node_groupe",
 						text="Sprite Sheet").name='Sprite Sheet'
 
@@ -112,6 +122,8 @@ class BsMax_MT_material_presets(Menu):
 		layout.operator("material.import_node_groupe",
 						text="Sprite Play Range").name='Sprite Play Range'
 
+		# Coordinate
+		layout.separator()
 		layout.operator("material.import_node_groupe",
 						text="Untile").name='Untile'
 

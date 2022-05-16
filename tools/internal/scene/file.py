@@ -122,10 +122,10 @@ classes = [File_OT_Scale_Icons, File_OT_Version, File_OT_Save_Check]
 def register_file():
 	for c in classes:
 		bpy.utils.register_class(c)
-	bpy.types.TOPBAR_MT_edit.append(version_menu)
+	bpy.types.TOPBAR_MT_file.append(version_menu)
 
 def unregister_file():
-	bpy.types.TOPBAR_MT_edit.remove(version_menu)
+	bpy.types.TOPBAR_MT_file.remove(version_menu)
 	for c in classes:
 		bpy.utils.unregister_class(c)
 

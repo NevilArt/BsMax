@@ -39,7 +39,6 @@ Note: Tasks in [] can't apply for now because of python API limitation, I am loo
 	Undo
 		Chamfer Curve
 	joystick connecto: check for mesh and armature condition is ok for opration or not
-	Convert to for curve objects apply modifiers do not work
 
 # Update
 	Enable snap for drawing primitives

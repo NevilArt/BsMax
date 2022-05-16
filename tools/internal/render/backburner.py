@@ -563,7 +563,7 @@ def register_backburner():
 
 def unregister_backburner():
 	bpy.types.TOPBAR_MT_render.remove(backburner_menu)
-	del bpy.types.Scene.backburne
+	del bpy.types.Scene.backburner
 
 	for c in classes:
 		bpy.utils.unregister_class(c)

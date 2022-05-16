@@ -214,7 +214,18 @@ def match_transform(ctx, obj, target):
 
 
 def freeze_transform(objs, location=True, rotation=True, scale=True):
-	""" Add current transform to deleta transform and reset to 0 in given objects """
+	""" Add current transform to deleta transform and
+		reset to 0 in given objects
+
+		args:
+			objs: array of objects
+			location: boolean defoult True
+			rotation: boolean defoult True
+			scale: boolean defoult True
+		retuen:
+			None
+	"""
+	
 	for obj in objs:
 		if location:
 			obj.delta_location += obj.location
@@ -240,3 +251,68 @@ def freeze_transform(objs, location=True, rotation=True, scale=True):
 		if scale:
 			obj.delta_scale *= obj.scale
 			obj.scale = [1, 1, 1]
+
+
+
+def insert_key_to_current_state(chanel, frame, location, rotation, scale):
+	# Set key for Location and Scale always is same
+	if location:
+		chanel.keyframe_insert(data_path='location', frame=frame)
+
+	if scale:
+		chanel.keyframe_insert(data_path='scale', frame=frame)
+
+	# Sey key by rotation mode
+	if rotation:
+		if chanel.rotation_mode == 'QUATERNION':
+			chanel.keyframe_insert(data_path='rotation_quaternion', frame=frame)
+
+		elif chanel.rotation_mode == 'AXIS_ANGLE':
+			chanel.keyframe_insert(data_path='rotation_axis_angle', frame=frame)
+
+		else:
+			chanel.keyframe_insert(data_path='rotation_euler', frame=frame)
+
+
+
+def copy_array_to_clipboard(key, array):
+	""" Convert given array to string lines and copy to clipboard
+
+		args:
+			key: string value detector for check on paste
+			array: only 1D array with basic variables allowed
+		retuen:
+			No return
+	"""
+	string = key + "\n"
+
+	for var in array:
+		variable_type = str(type(var))
+		variable_type = variable_type.split("'")[1]
+
+		string += variable_type + "(" + str(var) + ")\n"
+
+	bpy.context.window_manager.clipboard = string
+
+
+
+def paste_array_from_clipboard(key):
+	""" Read array from clipboard
+
+		args:
+			key: string value detector for check, given on copy
+		return:
+			array of casted variables
+	"""
+	# read clipboard
+	string = bpy.context.window_manager.clipboard
+	# split by lines
+	lines = string.splitlines()
+	# check key and ignore wrongs
+	if lines:
+		if lines[0] != key:
+			return None
+	else:
+		return None
+	# cast all line to variable and return the array
+	return [eval(line) for line in lines[1:]]

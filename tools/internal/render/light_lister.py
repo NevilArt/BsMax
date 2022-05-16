@@ -12,9 +12,13 @@
 #	You should have received a copy of the GNU General Public License
 #	along with this program.  If not, see <https://www.gnu.org/licenses/>.
 ############################################################################
+
 import bpy
+
 from bpy.types import Operator
 from bsmax.actions import set_as_active_object
+
+
 
 class Render_OT_Light_Lister(Operator):
 	bl_idname = 'render.light_lister'
@@ -255,12 +259,19 @@ class Render_OT_Light_Lister(Operator):
 
 							if link.from_node.type == 'BSDF_PRINCIPLED':
 								""" Ignore if emission color is Black """
-								default_value = link.from_node.inputs['Emission'].default_value
-								if default_value[0] == 0.0 and default_value[1] == 0.0 and \
-									default_value[2] == 0.0 and default_value[3] == 1.0:
+								inputs = link.from_node.inputs
+								emission_color = inputs['Emission'].default_value
+								emission_value = inputs['Emission Strength'].default_value
+
+								if emission_color[0] == 0 and \
+									emission_color[1] == 0 and \
+									emission_color[2] == 0 or \
+									emission_value == 0:
+									
 									break
 
 								bsdf_principled.append((material, link.from_node))
+
 							break
 
 		return emission + bsdf_principled
@@ -365,6 +376,7 @@ def render_menu(self, ctx):
 	layout.separator()
 	layout.operator('render.light_lister',
 		text='Light Lister', icon='LIGHT_SUN')
+
 	layout.operator('render.camera_lister',
 		text='Camera Lister', icon='CAMERA_DATA')
 
@@ -385,5 +397,4 @@ def unregister_light_lister():
 		bpy.utils.unregister_class(c)
 
 if __name__ == '__main__':
-	[bpy.utils.register_class(c) for c in classes]
-	# register_light_lister()
+	register_light_lister()

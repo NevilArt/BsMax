@@ -18,6 +18,8 @@ import bpy
 from bpy.types import Operator, Panel, PropertyGroup
 from bpy.props import BoolProperty, EnumProperty, IntProperty, PointerProperty
 
+from bsmax.actions import insert_key_to_current_state
+
 
 class KeyData:
 	def __init__(self):
@@ -33,14 +35,6 @@ class KeyData:
 		self.whole_character_selected = False
 
 key_data = KeyData()
-
-
-
-class Anim_State:
-	def __init__(self):
-		self.lock_on_panel = False
-
-anim_state = Anim_State()
 
 
 
@@ -241,29 +235,39 @@ def update_freeze_on(self, ctx):
 	self.next_step = self.next_push - self.push + 1
 	self.repeat = (self.end - self.push) / self.next_step
 
+
+
+def update_freeze_on_option(self, ctx):
+	""" Reset extera infor if hide """
+	if not self.more:
+		self.next_step = 1
+		self.repeat = 1
+
+
+
 class Freeze_on_Property(PropertyGroup):
 	""" Data method """
-	frames: IntProperty(name='Fix', min=0, default=1,
+	frames: IntProperty(name='Fix', min=1, default=1,
 		description='Number of frames object has to fixed')
 	
-	next_step: IntProperty(name='Cycle', min=0, default=1,
+	next_step: IntProperty(name='Cycle', min=1, default=1,
 		description='Length of walk/run cycle')
 	
 	repeat: IntProperty(name='Repeat', min=1, default=1,
 		description='Repeat same action for next steps')
 	
 	""" Key chanels """
-	key_location: BoolProperty(name='Key Location', default= True,
+	key_location: BoolProperty(name='Key Location', default=True,
 		description='Set Key for Location')
 	
-	key_rotation: BoolProperty(name='Key Rotation', default= True,
+	key_rotation: BoolProperty(name='Key Rotation', default=True,
 		description='Set key for Rotation')
 	
-	key_scale: BoolProperty(name='Key Scale', default= False,
+	key_scale: BoolProperty(name='Key Scale', default=False,
 		description='Set key for Scale')
 	
 	""" Calculator """
-	calculator: BoolProperty(name='Calculator', default= False)
+	calculator: BoolProperty(name='Calculator', default=False)
 	
 	push: IntProperty(name='Frame that first time foot touch the floor',
 		min=0, default=1, update=update_freeze_on)
@@ -278,8 +282,11 @@ class Freeze_on_Property(PropertyGroup):
 		min=0, default=1, update=update_freeze_on)
 
 	""" Simple """
-	more: BoolProperty(name='More Option', default= False)
-	panel: BoolProperty(name='On Panel', default= False)
+	more: BoolProperty(name='More Option', default=False,
+						update=update_freeze_on_option)
+	panel: BoolProperty(name='On Panel', default=False)
+
+
 
 def draw_freeze_on_panel(self, ctx):
 	layout = self.layout
@@ -315,12 +322,53 @@ def draw_freeze_on_panel(self, ctx):
 			box.prop(freeze_on, 'relase', icon='TEMP')
 			box.prop(freeze_on, 'next_push', icon='TEMP')
 			box.prop(freeze_on, 'end', icon='TEMP')
-	else:
-		freeze_on.next_step = 1
-		freeze_on.repeat = 1
+	# else:
+	# 	freeze_on.next_step = 1
+	# 	freeze_on.repeat = 1
 
 
-def appy_freeze_on(ctx):
+
+def fix_object_in_location(ctx, frame_current):
+	# get info from scene
+	freeze_on = ctx.scene.freeze_on
+
+	# at each frame return object to first position and set key
+	for obj in ctx.selected_objects:
+		worldlocation = obj.matrix_world
+		for frame in range(frame_current, frame_current + freeze_on.frames):
+			obj.matrix_world = worldlocation
+			insert_key_to_current_state(obj, frame,
+										freeze_on.key_location,
+										freeze_on.key_rotation,
+										freeze_on.key_scale)
+
+
+
+def fix_bone_in_location(ctx, frame_current):
+	# get info from scene
+	freeze_on = ctx.scene.freeze_on
+
+	# at each frame return bone to first position and set key
+	armature = ctx.active_object
+	for bone in ctx.selected_pose_bones:
+		# Conver Pose bone space to world space
+		bone_matrix = armature.convert_space(pose_bone=bone,
+			matrix=bone.matrix, from_space='POSE', to_space='WORLD')
+
+		for frame in range(frame_current, frame_current + freeze_on.frames):
+			ctx.scene.frame_current = frame
+			ctx.view_layer.update()
+			# Convert World to pose bone space
+			bone.matrix = armature.convert_space(pose_bone=bone,
+				matrix=bone_matrix, from_space='WORLD', to_space='POSE')
+			insert_key_to_current_state(bone, frame,
+										freeze_on.key_location,
+										freeze_on.key_rotation,
+										freeze_on.key_scale)
+
+
+
+def apply_freeze_on(ctx):
 	pass
 
 
@@ -335,86 +383,30 @@ class Anim_OT_Freeze_on(Operator):
 
 	def draw(self, ctx):
 		draw_freeze_on_panel(self, ctx)	
-	
-	def check(self, ctx):
-		global anim_state
-		anim_state.lock_on_panel = self.panel
-	
-	def insert_key_for_current_state(self,ctx,  chanel, frame):
-		# get info from scene
-		freeze_on = ctx.scene.freeze_on
-
-		# Set key for Location and Scale always is same
-		if freeze_on.key_location:
-			chanel.keyframe_insert(data_path='location', frame=frame)
-
-		if freeze_on.key_scale:
-			chanel.keyframe_insert(data_path='scale', frame=frame)
-
-		# Sey key by rotation mode
-		if freeze_on.key_rotation:
-			if chanel.rotation_mode == 'QUATERNION':
-				chanel.keyframe_insert(data_path='rotation_quaternion', frame=frame)
-
-			elif chanel.rotation_mode == 'AXIS_ANGLE':
-				chanel.keyframe_insert(data_path='rotation_axis_angle', frame=frame)
-
-			else:
-				chanel.keyframe_insert(data_path='rotation_euler', frame=frame)
-
-	def fix_object_in_location(self, ctx, frame_current):
-		# get info from scene
-		freeze_on = ctx.scene.freeze_on
-
-		# at each frame return object to first position and set key
-		for obj in ctx.selected_objects:
-			worldlocation = obj.matrix_world
-			for frame in range(frame_current, frame_current + freeze_on.frames):
-				obj.matrix_world = worldlocation
-				self.insert_key_for_current_state(ctx, obj, frame)
 		
-	def fix_bone_in_location(self, ctx, frame_current):
-		# get info from scene
-		fop = ctx.scene.freeze_on
-
-		# at each frame return bone to first position and set key
-		armature = ctx.active_object
-		for bone in ctx.selected_pose_bones:
-			# Conver Pose bone space to world space
-			bone_matrix = armature.convert_space(pose_bone=bone,
-				matrix=bone.matrix, from_space='POSE', to_space='WORLD')
-
-			for frame in range(frame_current, frame_current + fop.frames):
-				ctx.scene.frame_current = frame
-				ctx.view_layer.update()
-				# Convert World to pose bone space
-				bone.matrix = armature.convert_space(pose_bone=bone,
-					matrix=bone_matrix, from_space='WORLD', to_space='POSE')
-				self.insert_key_for_current_state(bone, frame)
-
 	def execute(self, ctx):
 		# get info from scene
-		fop = ctx.scene.freeze_on
+		freeze_on = ctx.scene.freeze_on
 		
 		# Store current time
 		start_time = ctx.scene.frame_current
 		
 		# start frame already asked from user if calculator is on
-		if fop.calculator:
-			ctx.scene.frame_current = fop.push
+		if freeze_on.calculator:
+			ctx.scene.frame_current = freeze_on.push
 			ctx.view_layer.update()
 
 		# Repeat for each foot step
-		for _ in range(fop.repeat):
+		for _ in range(freeze_on.repeat):
 		
 			if ctx.mode == 'OBJECT':
-				self.fix_object_in_location(ctx, ctx.scene.frame_current)
+				fix_object_in_location(ctx, ctx.scene.frame_current)
 
 			if ctx.mode == "POSE":
-				self.fix_bone_in_location(ctx, ctx.scene.frame_current)
+				fix_bone_in_location(ctx, ctx.scene.frame_current)
 
 			# jump to frame the next foot step begon most be equal of cycle length
-			ctx.scene.frame_current += fop.next_step - fop.frames
+			ctx.scene.frame_current += freeze_on.next_step - freeze_on.frames
 			ctx.view_layer.update()
 		
 		# restore to begining time
@@ -423,24 +415,6 @@ class Anim_OT_Freeze_on(Operator):
 	
 	def invoke(self, ctx, event):
 		return ctx.window_manager.invoke_props_dialog(self)
-
-
-
-class Anim_OP_Selection_Set(Panel):
-	bl_space_type = 'VIEW_3D'
-	bl_region_type = 'UI'
-	bl_label = 'Freeze on'
-	bl_idname = 'VIEW3D_PT_anim_Lock_on'
-	bl_category = 'Tool'
-
-	@classmethod
-	def poll(self, ctx):
-		global anim_state
-		return anim_state.lock_on_panel
-	
-	def draw(self, ctx):
-		layout = self.layout
-		layout.label(text='TEST')
 
 
 
@@ -473,7 +447,6 @@ classes = [ Freeze_on_Property,
 			Anim_OT_Delete_Key,
 			Anim_OT_Freeze_on,
 			Anim_OP_Freeze_on,
-			Anim_OP_Selection_Set,
 			Dopesheet_OT_Zoom_Extended
 		]
 

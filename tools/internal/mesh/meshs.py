@@ -353,12 +353,16 @@ class Mesh_OT_Hide_Plus(Operator):
 			if obj.type == 'MESH':
 				if self.mode == 'SELECTED':
 					self.hide_selected(obj, v, e, f)
+
 				elif self.mode == 'UNSELECTED':
 					self.hide_unselected(obj, v, e, f)
+
 				elif self.mode == 'UNHIDE':
 					self.unhide(obj, v, e, f)
+
 				elif self.mode == 'INVERT':		
 					self.invert(obj, v, e, f)
+
 		bpy.ops.object.mode_set(mode="EDIT")
 		return{"FINISHED"}
 

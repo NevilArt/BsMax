@@ -160,6 +160,8 @@ def mesh(km):
 
 	if blender_state.select_mouse == 'LEFT':
 		km.new(space, "view3d.drop_tool", "RIGHTMOUSE", "PRESS", [])
+	km.new(space, 'mesh.copy', 'C', 'PRESS', [], ctrl=True)
+	km.new(space, 'mesh.paste', 'V', 'PRESS', [], ctrl=True)
 
 
 

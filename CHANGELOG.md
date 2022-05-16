@@ -1,3 +1,10 @@
+# 0, 1, 0, 20220509
+* Keymaps updated to be compatable with 'Blender 3.2' too.
+* 'Sprite play loop/ragge' node groupse added to shader node groups presets.
+* 'Freez On' operator can be lock to right panel (Optinal).
+* 'Copy/Paste Transform' to other Blender('Ctrl+C/V' 3DsMax & Blender Adaptive).
+* Some Bugfixed, Cleanup and small issues fixed.
+
 # 0, 1, 0, 20220503
 * 'Parallax Ice' Node groupe for easy and fast Ice effect in EEVEE.
 * 'Sprite 2D' Node groupe for display or animate sprite sheet.

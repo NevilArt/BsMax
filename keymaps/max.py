@@ -695,6 +695,8 @@ def object_mode(km, preferences):
 	km.new(space, 'wm.call_menu', 'V', 'PRESS',
 			[('name', 'OBJECT_MT_object_paste')], ctrl=True)
 
+	km.new(space, 'object.lock_selection_toggle', 'SPACE', 'PRESS', [], alt=True)
+
 
 
 def mesh(km, preferences):
@@ -808,7 +810,9 @@ def mesh(km, preferences):
 	km.new(space, 'anim.set_key', 'K', 'PRESS', [])
 	km.new(space, 'anim.set_key_filters', 'K', 'PRESS', [], ctrl=True, shift=True)
 	km.new(space, 'anim.keyframe_insert_menu', 'K', 'PRESS', [], ctrl=True)
-	km.new(space, 'anim.keyframe_delete_v3d', 'K', 'PRESS', [] , alt=True)
+	km.new(space, 'anim.keyframe_delete_v3d', 'K', 'PRESS', [], alt=True)
+	km.new(space, 'mesh.copy', 'C', 'PRESS', [], ctrl=True)
+	km.new(space, 'mesh.paste', 'V', 'PRESS', [], ctrl=True)
 
 	# TEST #
 	# km.new(space, 'mesh.drag', 'EVT_TWEAK_L', 'ANY', [])

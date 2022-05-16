@@ -18,12 +18,19 @@ import bpy
 from bpy.types import Operator, Menu
 from bpy.props import BoolProperty
 
-from bsmax.actions import freeze_transform
+from bsmax.bsmatrix import matrix_to_array, array_to_matrix
+from bsmax.actions import (
+						freeze_transform,
+						copy_array_to_clipboard,
+						paste_array_from_clipboard
+					)
 
 
 
 class Object_OT_Freeze_Transform(Operator):
-	""" Copy selected objects transform to Delta transform and reset transform values """
+	""" Copy selected objects transform to Delta transform and
+		reset transform values
+	"""
 	bl_idname = "object.freeze_transform"
 	bl_label = "Freeze Transform"
 	bl_options = {'REGISTER', 'UNDO', 'INTERNAL'}
@@ -83,11 +90,8 @@ class Object_OT_Transform_Copy(Operator):
 		return ctx.mode == 'OBJECT' and ctx.active_object
 
 	def execute(self, ctx):
-		string = 'BSMAXTRANSFORMCLIPBOARD\n'
-		for matrix in ctx.object.matrix_world:
-			for m in matrix:
-				string += str(m) + '\n'
-		ctx.window_manager.clipboard = string
+		copy_array_to_clipboard('BSMAXTRANSFORMCLIPBOARD',
+								matrix_to_array(ctx.object.matrix_world))
 		return{"FINISHED"}
 
 
@@ -101,54 +105,20 @@ class Object_OT_Transform_Paste(Operator):
 	@classmethod
 	def poll(self, ctx):
 		return ctx.mode == 'OBJECT' and ctx.active_object
-
-	def matrix_from_clipboard(self, ctx):
-		string = ctx.window_manager.clipboard
-		lines = string.splitlines()
-		if len(lines) == 17:
-			if not lines[0] == 'BSMAXTRANSFORMCLIPBOARD':
-				return None
-			matrix = ctx.object.matrix_world.copy()
-
-			m = []
-			for line in lines[1:]:
-				m.append(float(line))
-
-			matrix[0][0] = m[0]
-			matrix[0][1] = m[1]
-			matrix[0][2] = m[2]
-			matrix[0][3] = m[3]
-
-			matrix[1][0] = m[4]
-			matrix[1][1] = m[5]
-			matrix[1][2] = m[6]
-			matrix[1][3] = m[7]
-
-			matrix[2][0] = m[8]
-			matrix[2][1] = m[9]
-			matrix[2][2] = m[10]
-			matrix[2][3] = m[11]
-
-			matrix[3][0] = m[12]
-			matrix[3][1] = m[13]
-			matrix[3][2] = m[14]
-			matrix[3][3] = m[15]
-
-			return matrix
-
-		return None
-	
+		
 	def execute(self, ctx):
-		matrix_world = self.matrix_from_clipboard(ctx)
+		array = paste_array_from_clipboard('BSMAXTRANSFORMCLIPBOARD')
+		if array:
+			matrix_world = array_to_matrix(array)
 
-		if matrix_world:
-			ctx.object.matrix_world = matrix_world
+			if matrix_world:
+				ctx.object.matrix_world = matrix_world
 
 		return{"FINISHED"}
 
 
 
-#TODO for now is ok but nedd to moveto better place if add more items
+#TODO for now is ok but need to move to better place if add more items
 class Object_MT_Object_Copy(Menu):
 	bl_idname = "OBJECT_MT_object_copy"
 	bl_label = "Copy"

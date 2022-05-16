@@ -32,18 +32,20 @@ Your Donation helps me to ignore other freelance offers and focus on BsMax and s
 * [Video Tutorial](https://youtu.be/JolpAmvd3CE).
 
 # Stand Alone Tools
-* This files can be inistaled sepratly as Add-on.
+* This file can be inistaled sepratly as Add-on.
 * Click on the link and 'Ctrl + S' to download the file.
 * [backburner.py](https://raw.github.com/NevilArt/BsMax/master/tools/internal/render/backburner.py)
 
 
 # Recent Updates and Changes
 
-* Keymaps updated to be compatable with 'Blender 3.2' too.
-* 'Sprite play loop/ragge' node groupse added to shader node groups presets.
-* 'Freez On' operator can be lock to right panel (Optinal).
-* 'Copy/Paste Transform' to other Blender('Ctrl+C/V' 3DsMax & Blender Adaptive).
-* Some Bugfixed, Cleanup and small issues fixed.
+* Ocean Caustic added to map presets "Shader editor/Tools/Append Node Trees".
+* 'Alt + Space' Selection Lock Toggle (3DsMax mode).
+* 'Light lister' ignore material with emission strength 0.
+* 'Ctrl + C/V' in EDIT_MESH mode Copy/Paste single vertex location (Mirror Optinal).
+* File Version Operator moved from edit menu to file menu.
+* Sprite sheet node groupe order changed to Up to Down, Left to Right.
+* some issue from previes update has been fiexed.
 * [Change log ...](https://github.com/NevilArt/BsMax/blob/master/CHANGELOG.md)
 
 # In Production 

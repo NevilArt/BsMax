@@ -14,6 +14,7 @@
 ############################################################################
 
 import bpy
+
 from bpy.types import Operator
 from bpy.props import IntProperty, EnumProperty, BoolProperty
 from bsmax.state import is_active_object
@@ -48,6 +49,7 @@ class Armature_OT_Bone_Devide(Operator):
 	bl_idname = "armature.bone_devide"
 	bl_label = "Bone Devide"
 	bl_options = {'REGISTER', 'UNDO'}
+
 	devides: IntProperty(name="Devides",default=1)
 	typein: BoolProperty(name="Type In:",default=False)
 	
@@ -59,7 +61,7 @@ class Armature_OT_Bone_Devide(Operator):
 		bpy.ops.armature.subdivide(number_cuts=self.devides)
 		d = 'devides='+ str(self.devides)
 		t = 'typein=' + str(self.typein)
-		self.report({'OPERATOR'},'bpy.ops.armature.bone_devide('+ d +','+ t +')')
+		# self.report({'OPERATOR'},'bpy.ops.armature.bone_devide('+ d +','+ t +')')
 		return {'FINISHED'}
 
 	def modal(self, ctx, event):
