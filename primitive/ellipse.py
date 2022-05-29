@@ -77,15 +77,15 @@ class Create_OT_Ellipse(Draw_Primitive):
 		self.subclass.owner.location = self.gride.location
 		self.subclass.owner.rotation_euler = self.gride.rotation
 
-	def update(self, ctx, clickcount, dimantion):
+	def update(self, ctx, clickcount, dimension):
 		if clickcount == 1:
 			if self.ctrl:
-				self.params.width = dimantion.width
-				self.params.length = dimantion.length
+				self.params.width = dimension.width
+				self.params.length = dimension.length
 			else:
-				self.params.width = dimantion.width/2
-				self.params.length = dimantion.length/2
-				self.subclass.owner.location = dimantion.center
+				self.params.width = dimension.width/2
+				self.params.length = dimension.length/2
+				self.subclass.owner.location = dimension.center
 
 
 

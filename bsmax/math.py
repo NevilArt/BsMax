@@ -13,9 +13,8 @@
 #	along with this program.  If not, see <https://www.gnu.org/licenses/>.
 ############################################################################
 
-import numpy
-from math import sin, cos, sqrt, acos, atan2
-from mathutils import Vector, Matrix
+from math import sqrt, acos, atan2
+from mathutils import Vector
 
 
 
@@ -94,6 +93,7 @@ def point_rotation_on_segment(a, b, c, d, time):
 	y = atan2(lz, lx)
 	z = atan2(ly, lx)
 	return Vector((x, y, z))
+
 
 
 def point_on_spline(spline, time):
@@ -353,122 +353,3 @@ def get_index_str(count, index):
 
 def dot(v1, v2):
 	return v1.x*v2.x + v1.y*v2.y + v1.z*v2.z
-
-
-
-def matrix_from_elements(location, euler_rotation, scale):
-	""" Return Transform Matrix from argoments """
-	roll, pitch, yaw = euler_rotation
-
-	Rz_yaw = numpy.array([
-		[cos(yaw), -sin(yaw), 0],
-		[sin(yaw), cos(yaw), 0],
-		[0, 0, 1]])
-	
-	Ry_pitch = numpy.array([
-		[cos(pitch), 0, sin(pitch)],
-		[0, 1, 0],
-		[-sin(pitch), 0, cos(pitch)]])
-
-	Rx_roll = numpy.array([
-		[1, 0, 0],
-		[0, cos(roll), -sin(roll)],
-		[0, sin(roll), cos(roll)]])
-
-	m = numpy.dot(Rz_yaw, numpy.dot(Ry_pitch, Rx_roll))
-
-	# Convert Arry to Matrix and apply location and scale
-	lx, ly, lz = location
-	sx, sy, sz = scale
-
-	matrix = Matrix((
-		(m[0][0]*sx, m[0][1]*sy, m[0][2]*sz, lx),
-		(m[1][0]*sx, m[1][1]*sy, m[1][2]*sz, ly),
-		(m[2][0]*sx, m[2][1]*sy, m[2][2]*sz, lz),
-		(0, 0, 0, 1)))
-
-	return matrix
-
-
-
-def transform_points_to_matrix(points, matrix):
-	m = matrix
-	rxv = Vector((m[0][0], m[0][1], m[0][2]))
-	ryv = Vector((m[1][0], m[1][1], m[1][2]))
-	rzv = Vector((m[2][0], m[2][1], m[2][2]))
-	tv  = Vector((m[0][3], m[1][3], m[2][3]))
-	new_points = []
-	for pv in points:
-		x = dot(pv, rxv) + tv.x
-		y = dot(pv, ryv) + tv.y
-		z = dot(pv, rzv) + tv.z
-		new_points.append(Vector((x, y, z)))
-	return new_points
-
-
-
-def transform_point_to_matrix(point, matrix):
-	m = matrix
-	rxv = Vector((m[0][0], m[0][1], m[0][2]))
-	ryv = Vector((m[1][0], m[1][1], m[1][2]))
-	rzv = Vector((m[2][0], m[2][1], m[2][2]))
-	tv  = Vector((m[0][3], m[1][3], m[2][3]))
-	x = dot(point, rxv) + tv.x
-	y = dot(point, ryv) + tv.y
-	z = dot(point, rzv) + tv.z
-	return Vector((x, y, z))
-
-
-
-def to_local_matrix(point, matrix):
-	# Untranslating
-	p = point - matrix.translation
-
-	euler = matrix.to_euler()
-	# UnYawing
-	s, c = sin(-euler.z), cos(-euler.z)
-	p = Vector((p.x*c - p.y*s, p.y*c + p.x*s, p.z))
-
-	# Unpinching
-	s, c = sin(-euler.x), cos(-euler.x)
-	p = Vector((p.x, p.y*c - p.z*s, p.z*c + p.y*s))
-
-	# Unrolling
-	s, c = sin(-euler.y), cos(-euler.y)
-	p = Vector((p.x*c + p.z*s, p.y, p.z*c - p.x*s))
-
-	scale = matrix.to_scale()
-	# UnScaling and return
-	s = Vector((1/scale.x, 1/scale.y, 1/scale.z))
-	return Vector((p.x*s.x, p.y*s.y, p.z*s.z))
-
-
-def inverse_transform_matrix(matrix):
-	m = matrix
-	n = Matrix((
-		(1, 0, 0, -m[0][3]),
-		(0, 1, 0, -m[1][3]),
-		(0, 0, 1, -m[2][3]),
-		(0, 0, 0, 1)))
-
-	m00, m01, m02, _ = m[0]
-	m10, m11, m12, _ = m[1]
-	m20, m21, m22, _ = m[2]
-	
-	a1 = m00*m11*m22 + m01*m12*m20 + m02*m10*m21
-	a2 = m20*m11*m02 + m21*m12*m00 + m22*m10*m01
-	a = 1/(a1-a2)
-
-	n[0][0] =  (m11*m22 - m12*m21) * a
-	n[1][0] = -(m10*m22 - m12*m20) * a
-	n[2][0] =  (m10*m21 - m11*m20) * a
-
-	n[0][1] = -(m01*m22 - m02*m21) * a
-	n[1][1] =  (m00*m22 - m02*m20) * a
-	n[2][1] = -(m00*m21 - m01*m20) * a
-
-	n[0][2] =  (m01*m22 - m02*m21) * a
-	n[1][2] = -(m00*m12 - m02*m10) * a
-	n[2][2] =  (m00*m11 - m01*m10) * a
-
-	return n

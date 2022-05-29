@@ -249,16 +249,16 @@ class Create_OT_Box(Draw_Primitive):
 		self.subclass.owner.location = self.gride.location
 		self.subclass.owner.rotation_euler = self.gride.rotation
 
-	def update(self, ctx, clickcount, dimantion):
+	def update(self, ctx, clickcount, dimension):
 		if clickcount == 1:
 			if self.ctrl:
-				self.params.width = dimantion.radius
-				self.params.length = dimantion.radius
-				self.params.height = dimantion.radius
+				self.params.width = dimension.radius
+				self.params.length = dimension.radius
+				self.params.height = dimension.radius
 			else:
-				self.params.width = dimantion.width
-				self.params.length = dimantion.length
-				self.subclass.owner.location = dimantion.center
+				self.params.width = dimension.width
+				self.params.length = dimension.length
+				self.subclass.owner.location = dimension.center
 		
 		elif clickcount == 2:
 			width_length = self.params.width + self.params.length
@@ -267,7 +267,7 @@ class Create_OT_Box(Draw_Primitive):
 				self.jump_to_end()
 				return
 
-			self.params.height = dimantion.height
+			self.params.height = dimension.height
 
 
 

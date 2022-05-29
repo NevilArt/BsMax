@@ -79,12 +79,12 @@ class Create_OT_Vertex(Draw_Primitive):
 		self.subclass.create(ctx)
 		self.params = self.subclass.owner.data.primitivedata
 
-	def update(self, ctx, clickcount, dimantion):
+	def update(self, ctx, clickcount, dimension):
 		if self.drag:
-			self.subclass.verts[-1] = dimantion.end
+			self.subclass.verts[-1] = dimension.end
 		else:
 			if clickcount != self.lastclick:
-				self.subclass.verts.append(dimantion.end)
+				self.subclass.verts.append(dimension.end)
 				self.lastclick = clickcount
 		self.subclass.update()
 

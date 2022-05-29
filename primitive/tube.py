@@ -241,24 +241,24 @@ class Create_OT_Tube(Draw_Primitive):
 		self.subclass.owner.location = self.gride.location
 		self.subclass.owner.rotation_euler = self.gride.rotation
 
-	def update(self, ctx, clickcount, dimantion):
+	def update(self, ctx, clickcount, dimension):
 		if clickcount == 1:
 			if self.ctrl:
-				self.params.radius1 = dimantion.radius
-				self.params.radius2 = dimantion.radius * 0.6
-				self.params.height = dimantion.radius*2
+				self.params.radius1 = dimension.radius
+				self.params.radius2 = dimension.radius * 0.6
+				self.params.height = dimension.radius*2
 			else:
-				self.params.radius1 = dimantion.radius
+				self.params.radius1 = dimension.radius
 				self.params.radius2 = self.params.radius1 * 0.9
 		
 		elif clickcount == 2:
 			if self.use_single_draw:
 				self.jump_to_end()
 				return
-			self.params.radius2 = dimantion.distance
+			self.params.radius2 = dimension.distance
 		
 		elif clickcount == 3:
-			self.params.height = dimantion.height
+			self.params.height = dimension.height
 
 
 

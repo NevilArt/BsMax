@@ -15,9 +15,9 @@
 ############################################################################
 
 import bpy
-import bgl
 import gpu
 
+from bgl import glEnable, GL_BLEND, glDisable, glLineWidth
 from gpu_extras.batch import batch_for_shader
 from bpy_extras.view3d_utils import location_3d_to_region_2d
 
@@ -30,19 +30,19 @@ def get_screen_pos(ctx,coord):
 
 
 
-def draw_line(self,mode,color):
-	bgl.glEnable(bgl.GL_BLEND)
+def draw_line(self, mode, color):
+	glEnable(GL_BLEND)
 	coords = [self.start, self.end]
 	shader = gpu.shader.from_builtin(mode)
 	batch = batch_for_shader(shader, 'LINE_STRIP', {'pos': coords})
 	shader.bind()
 	shader.uniform_float('color', color)
 	batch.draw(shader)
-	bgl.glDisable(bgl.GL_BLEND)
+	glDisable(GL_BLEND)
 
 
 
-def register_line(ctx,self,mode,color):
+def register_line(ctx, self, mode, color):
 	""" owner most have to 'start' and 'end' point values """
 	""" self.start self.end """
 	space = ctx.area.spaces.active
@@ -93,8 +93,8 @@ class Rubber_Band:
 		# 	self.colors.append(self.color_b)
 	
 	def draw_rubber(self):
-		bgl.glEnable(bgl.GL_BLEND)
-		bgl.glLineWidth(self.size)
+		glEnable(GL_BLEND)
+		glLineWidth(self.size)
 
 		if len(self.vertices) == 2:
 			coords = [self.vertices[0], self.vertices[1]]
@@ -105,7 +105,7 @@ class Rubber_Band:
 			self.shader.uniform_float("color", self.color_a)
 			
 			batch.draw(self.shader)
-			bgl.glDisable(bgl.GL_BLEND)
+			glDisable(GL_BLEND)
 	
 	def register(self):
 		SpaceView3D = bpy.types.SpaceView3D

@@ -17,9 +17,17 @@ import bpy
 from mathutils import Matrix
 
 
-
+#TODO remove after 2.83 LTS ended
 def solve_missing_activeobject(ctx, objs):
-	""" Make first selected object as active_object if missing """
+	""" if active object not avalibel
+		set first object in list as active_object
+
+		args:
+			ctx: bpy.context
+			objs: array of objects
+		retrun:
+			None
+	"""
 	if not ctx.active_object:
 		if len(objs) > 0:
 			ctx.view_layer.objects.active = objs[0]
@@ -27,6 +35,16 @@ def solve_missing_activeobject(ctx, objs):
 
 
 def lock_transform(obj, move, rotate, scale):
+	""" Lock unlock given object transform
+
+		args:
+			obj: array of objects
+			move: boolean
+			rotate: boolean
+			scale: boolean
+		return:
+			None
+	"""
 	for i in range(3):
 		obj.lock_location[i] = move
 		obj.lock_rotation[i] = rotate
@@ -34,56 +52,45 @@ def lock_transform(obj, move, rotate, scale):
 
 
 
-def set_transform(obj, coordinate, location, rotation, dimantion):
-	if coordinate == 'locaL':
-		pass
-	elif coordinate in {'world', 'global'}:
-		pass
-	elif coordinate == 'parent':
-		pass
-	obj.location = location
-	obj.rotation_euler = rotation
-	obj.dimensions = dimantion
+def modifier_add(objs, modifier, name=''):
+	""" Add modifier to multible object at same time
 
-
-
-def duplicate_linked(ctx, obj):
-	# not a god method has to fix
-	bpy.ops.object.select_all(action='DESELECT')
-	obj.select_set(state = True)
-	bpy.ops.object.duplicate(linked=True, mode='TRANSLATION')
-	return ctx.view_layer.objects.active
-
-
-
-def duplicate_copy(ctx, obj):
-	# not a god method has to fix
-	bpy.ops.object.select_all(action='DESELECT')
-	obj.select_set(state = True)
-	bpy.ops.object.duplicate(linked=False, mode='TRANSLATION')
-	return ctx.view_layer.objects.active
-
-
-
-def modifier_add(ctx, objs, modifier, name=''):
+		args:
+			objs: arry of objects
+			modifier: string modifier type
+			name: string name of modifier default same as type
+		return:
+			None
+	"""
 	for obj in objs:
-		the_name = modifier if name == '' else name
+		the_name = modifier if name else name
 		obj.modifiers.new(name=the_name, type=modifier)
 
 
 
-def link_to_scene(ctx, obj):
+def link_to_scene(ctx, objs):
+	""" Link given obj(s) to scene and active collection
+
+		args:
+			ctx: bpy.context
+			objs: array or object
+		return:
+			none
+	"""
 	activelayername = ctx.view_layer.active_layer_collection.name
+	
 	if activelayername in {'Master Collection', 'Scene Collection'}:
 		collection = ctx.scene.collection
 	else:
 		collection = bpy.data.collections[activelayername]
-	# apply if collection was not same
-	# for now 
-	try:
-		collection.objects.link(obj)
-	except:
-		pass
+
+	if isinstance(objs, list):
+		for obj in objs:
+			if not collection in obj.users_collection:
+				collection.objects.link(obj)
+	else:
+		if not collection in objs.users_collection:
+			collection.objects.link(objs)	
 
 
 

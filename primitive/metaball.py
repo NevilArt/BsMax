@@ -76,55 +76,55 @@ class Create_OT_Metaball(Draw_Primitive):
 		owner.data.elements[0].size_y = 0
 		owner.data.elements[0].size_z = 0
 
-	def update(self, ctx, clickcount, dimantion):
+	def update(self, ctx, clickcount, dimension):
 		data = self.subclass.owner.data
 		if self.metaball_type == 'BALL':
 			if clickcount == 1:
-				data.elements[0].radius = dimantion.radius
+				data.elements[0].radius = dimension.radius
 
 		elif self.metaball_type == 'CAPSULE':
 			if clickcount == 1:
-				data.elements[0].radius = dimantion.radius
+				data.elements[0].radius = dimension.radius
 				data.elements[0].size_x = 0
 			elif clickcount == 2:
-				radius = dimantion.distance - data.elements[0].radius
+				radius = dimension.distance - data.elements[0].radius
 				data.elements[0].size_x = radius
 
 		elif self.metaball_type == 'PLANE':
 			if clickcount == 1:
-				self.radius = dimantion.radius / 10
+				self.radius = dimension.radius / 10
 				data.elements[0].radius = self.radius
-				data.elements[0].size_x = dimantion.width / 2
-				data.elements[0].size_y = dimantion.length / 2
-				self.subclass.owner.location = dimantion.center
+				data.elements[0].size_x = dimension.width / 2
+				data.elements[0].size_y = dimension.length / 2
+				self.subclass.owner.location = dimension.center
 			elif clickcount == 2:
-				data.elements[0].radius = self.radius #+ dimantion.height_np
+				data.elements[0].radius = self.radius #+ dimension.height_np
 
 		elif self.metaball_type == 'ELLIPSOID':
 			if clickcount == 1:
 				data.elements[0].radius = 2
-				data.elements[0].size_x = dimantion.width
-				data.elements[0].size_y = dimantion.length
-				self.radius = dimantion.radius / 2
+				data.elements[0].size_x = dimension.width
+				data.elements[0].size_y = dimension.length
+				self.radius = dimension.radius / 2
 				data.elements[0].size_z = self.radius
 			elif clickcount == 2:
-				data.elements[0].size_z = self.radius #+ dimantion.height_np
+				data.elements[0].size_z = self.radius #+ dimension.height_np
 
 		elif self.metaball_type == 'CUBE':
 			if clickcount == 1:
 				data.elements[0].radius = 1
-				data.elements[0].size_x = dimantion.width / 2
-				data.elements[0].size_y = dimantion.length / 2
+				data.elements[0].size_x = dimension.width / 2
+				data.elements[0].size_y = dimension.length / 2
 				data.elements[0].size_z = 0.1
-				self.location = self.subclass.owner.location = dimantion.center
+				self.location = self.subclass.owner.location = dimension.center
 
 			elif clickcount == 2:
-				height = dimantion.height / 2
+				height = dimension.height / 2
 				data.elements[0].size_z = height
 				self.subclass.owner.location = self.location #+ offset
 
 			elif clickcount == 3:
-				data.elements[0].radius = 0.01 + dimantion.radius
+				data.elements[0].radius = 0.01 + dimension.radius
 		#TODO adapt resolation by size
 		#self.subclass.data.resolution = 1.33
 

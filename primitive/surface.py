@@ -59,7 +59,7 @@ class Create_OT_Surface(Draw_Primitive):
 	def create(self, ctx):
 		self.subclass.create(ctx)
 			
-	def update(self, ctx, clickcount, dimantion):
+	def update(self, ctx, clickcount, dimension):
 		pass
 
 	def finish(self):

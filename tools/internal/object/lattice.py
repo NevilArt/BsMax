@@ -14,57 +14,72 @@
 ############################################################################
 
 import bpy
+
 from mathutils import Vector
 from bpy.types import Operator
 from bpy.props import IntProperty
+
 from bsmax.actions import solve_missing_activeobject, lock_transform
 from bsmax.state import is_objects_selected
 
 
 
-def get_volum_dimantion(objs, selection):
+def get_volum_dimension(objs, selection):
+
+	if len(objs) == 1 and not selection:
+		obj = objs[0]
+		pmin = Vector(obj.bound_box[0])
+		pmax = Vector(obj.bound_box[6])
+		pcenter = obj.matrix_world @ ((pmin + pmax) / 2)
+		return pmin, pcenter, pmax
+
 	vcos = []
 	for obj in objs:
-		matrix = obj.matrix_world if len(objs) == 1 else obj.matrix_local
+		matrix = obj.matrix_world
+
 		if obj.type == 'MESH':
 			if selection:
 				vcos += [matrix @ v.co for v in obj.data.vertices if v.select]
 			else:
 				vcos += [matrix @ v.co for v in obj.data.vertices]
+
 		elif obj.type == 'LATTICE':
 			vcos += [matrix @ v.co_deform for v in obj.data.points]
+
 		elif obj.type == 'SURFACE':
 			for spline in obj.data.splines:
 				vcos += [matrix @ v.co for v in spline.points]
+
+		#TODO selection mode for CURVE object and Points too
 		elif obj.type in {'FONT', 'CURVE'}:
 			for spline in obj.data.splines:
 				vcos += [matrix @ v.co for v in spline.bezier_points]
 					
 	findmin = lambda l: min(l)
-	findCenter = lambda l: ( max(l) + min(l) ) / 2
 	findmax = lambda l: max(l)
 
-	x,y,z = [[v[i] for v in vcos] for i in range(3)]
+	x, y, z = [[v[i] for v in vcos] for i in range(3)]
 
-	pmin = [findmin(axis) for axis in [x,y,z]]
-	pcenter = [findCenter(axis) for axis in [x,y,z]]
-	pmax = [findmax(axis) for axis in [x,y,z]]
+	pmin = Vector([findmin(axis) for axis in [x, y, z]])
+	pmax = Vector([findmax(axis) for axis in [x, y, z]])
+	pcenter = (pmin + pmax) / 2
 	return pmin, pcenter, pmax
 
 
 
 def get_size(pmin, pmax):
-	w = pmax[0] - pmin[0]
-	l = pmax[1] - pmin[1]
-	h = pmax[2] - pmin[2]
+	w, l, h = pmax - pmin
+	# w = pmax.x - pmin.x
+	# l = pmax.y - pmin.y
+	# h = pmax.z - pmin.z
 	return Vector((w, l, h))
 
 
 
-def set_transform(obj, location, rotation, dimantion):
+def set_transform(obj, location, rotation, dimension):
 	obj.location = location
 	obj.rotation_euler = rotation
-	obj.dimensions = dimantion
+	obj.dimensions = dimension
 
 
 
@@ -107,29 +122,38 @@ class Lattice_OT_Set_On_Selection(Operator):
 
 	@classmethod
 	def poll(self, ctx):
-		return len(ctx.selected_objects) > 0
+		return ctx.selected_objects
 
 	def execute(self, ctx):
+		# Filter objects type
 		support = ['MESH', 'CURVE', 'LATTICE', 'SURFACE']
 		targets = [obj for obj in ctx.selected_objects if obj.type in support]
 
-		if len(targets) > 0:
-			target = targets[0]
-			solve_missing_activeobject(ctx, targets) # to able to get mode
-			mode = ctx.mode # store mode befor set to object mode
-			lt = create_lattice(ctx, self.res_u, self.res_v, self.res_w)
-			selection = "EDIT" in mode
-			pmin,pcen,pmax = get_volum_dimantion(targets, selection)
-			rotation = target.rotation_euler if len(targets) == 1 else [0, 0, 0]
-			set_transform(lt, pcen, rotation, get_size(pmin, pmax))
+		if not targets:
+			return{"FINISHED"}
 
-			for target in targets:
-				set_modifier(target, lt, selection)
+		target = targets[0]
+		#TODO remove after 2.83 LTS ended
+		solve_missing_activeobject(ctx, targets) # to able to get mode
 
-			if len(targets) == 1:
-				lt.parent = target
-				lt.matrix_parent_inverse = target.matrix_world.inverted()
-				lock_transform(lt, True, True, True)
+		mode = ctx.mode # store mode befor set to object mode
+		lt = create_lattice(ctx, self.res_u, self.res_v, self.res_w)
+		selection = "EDIT" in mode
+
+		pmin, pcen, pmax = get_volum_dimension(targets, selection)
+
+		rotation = target.rotation_euler if len(targets) == 1 else [0, 0, 0]
+		size = pmax - pmin
+		# set_transform(lt, pcen, rotation, get_size(pmin, pmax))
+		set_transform(lt, pcen, rotation, size)
+
+		for target in targets:
+			set_modifier(target, lt, selection)
+
+		if len(targets) == 1:
+			lt.parent = target
+			lt.matrix_parent_inverse = target.matrix_world.inverted()
+			lock_transform(lt, True, True, True)
 
 		return{"FINISHED"}
 
@@ -220,7 +244,7 @@ class Modifier_OT_FFD_4x4x4_Set(Operator):
 
 
 
-class lattice_data:
+class Lattice_Data:
 	preferences = None
 
 	def is_3dmax(self):
@@ -228,14 +252,14 @@ class lattice_data:
 			return self.preferences.viowport == '3DsMax'
 		return False
 
-ld = lattice_data()
+lattice_data = Lattice_Data()
 
 
 
 def lattice_menu(self, ctx):
 	layout = self.layout
 	layout.separator()
-	the_name = 'FFD' if ld.is_3dmax() else 'Lattice'
+	the_name = 'FFD' if lattice_data.is_3dmax() else 'Lattice'
 	layout.operator("modifier.lattice_2x2x2_set",
 		text=(the_name+' 2x2x2 (Set)'), icon="OUTLINER_OB_LATTICE")
 	layout.operator("modifier.lattice_3x3x3_set",
@@ -254,7 +278,8 @@ classes = [Lattice_OT_Set_On_Selection,
 	Modifier_OT_FFD_4x4x4_Set]
 
 def register_lattice(preferences):
-	ld.preferences = preferences
+	global lattice_data
+	lattice_data.preferences = preferences
 	for c in classes:
 		bpy.utils.register_class(c)
 	bpy.types.BSMAX_MT_lattice_create_menu.append(lattice_menu)
@@ -263,3 +288,6 @@ def unregister_lattice():
 	bpy.types.BSMAX_MT_lattice_create_menu.remove(lattice_menu)
 	for c in classes:
 		bpy.utils.unregister_class(c)
+
+if __name__ == "__main__":
+	register_lattice(None)

@@ -12,6 +12,8 @@
 #	You should have received a copy of the GNU General Public License
 #	along with this program.  If not, see <https://www.gnu.org/licenses/>.
 ############################################################################
+from math import pi
+from mathutils import Vector
 
 def is_active_object(ctx, types):
 	""" Return True if active object is same as given object type """
@@ -70,3 +72,43 @@ def get_obj_class(obj):
 	if obj.type in ['MESH', 'CURVE']:
 		return obj.data.primitivedata.classname
 	return ""
+
+
+
+def get_view_orientation(ctx):
+	""" return = (str, str) (view_orientation, view_type) """
+	r = lambda x: round(x, 2)
+
+	orientation_dict = {
+		(0, 0, 0):'TOP',
+		(r(pi), 0, 0):'BOTTOM',
+		(r(-pi/2), 0, 0):'FRONT',
+		(r(pi/2), 0, r(-pi)):'BACK',
+		(r(-pi/2), r(pi/2), 0):'LEFT',
+		(r(-pi/2), r(-pi/2), 0):'RIGHT'}
+	
+	r3d = ctx.area.spaces.active.region_3d
+	view_rot = r3d.view_matrix.to_euler()
+	
+	view_orientation = orientation_dict.get(tuple(map(r, view_rot)), 'USER')
+	view_type = r3d.view_perspective
+	
+	return view_orientation, view_type
+
+
+
+#TODO need to clear name and info
+def get_rotation_of_view_orient(view_orient):
+		if view_orient == 'TOP':
+			return Vector((0, 0, 0))
+		if view_orient == 'BOTTOM':
+			return Vector((pi, 0, 0))
+		if view_orient == 'FRONT':
+			return Vector((pi/2, 0, 0))
+		if view_orient == 'BACK':
+			return Vector((-pi/2, pi, 0))
+		if view_orient == 'LEFT':
+			return Vector((pi/2, 0, -pi/2))
+		if view_orient == 'RIGHT':
+			return Vector((pi/2, 0, pi/2))
+		return Vector((0, 0, 0))

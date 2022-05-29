@@ -198,9 +198,9 @@ class ARMATURE_OT_Selection_Set_Transfer(Operator):
 
 
 
-class ARMATURE_OT_Selection_Set_Dimantion_Resize(Operator):
-	bl_idname = 'pose.selection_set_dimantion_resize'
-	bl_label = 'Selection set Dimantion Resize'
+class ARMATURE_OT_Selection_Set_Dimension_Resize(Operator):
+	bl_idname = 'pose.selection_set_dimension_resize'
+	bl_label = 'Selection set Dimension Resize'
 	# bl_description = ''
 	bl_options = {'REGISTER', 'UNDO', 'INTERNAL'}
 	action: StringProperty()
@@ -340,7 +340,7 @@ class Armature_OP_Selection_Set(Panel):
 			row.operator(ptss, text='', icon='COPYDOWN').action = 'COPY'
 			row.operator(ptss, text='', icon='PASTEDOWN').action = 'PASTE'
 
-			# pssdr = 'pose.selection_set_dimantion_resize'
+			# pssdr = 'pose.selection_set_dimension_resize'
 			# row_cr = box.row()
 			# box_c = row_cr.box()
 			# row_c = box_c.row()
@@ -399,7 +399,7 @@ classes = [
 	Armature_OP_Selection_Set,
 	ARMATURE_OT_Selection_Set,
 	ARMATURE_OT_Selection_Set_Transfer,
-	ARMATURE_OT_Selection_Set_Dimantion_Resize]
+	ARMATURE_OT_Selection_Set_Dimension_Resize]
 
 def register_selection_set():
 	for c in classes:

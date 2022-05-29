@@ -14,10 +14,13 @@
 ############################################################################
 
 import bpy
+
 from mathutils import Vector
 from bpy.types import Operator
 from bpy.props import FloatProperty, EnumProperty
-from bsmax.math import get_distance, point_on_curve, matrix_from_elements, get_bias
+
+from bsmax.math import get_distance, point_on_curve, get_bias
+from bsmax.bsmatrix import matrix_from_elements
 from bsmax.operator import PickOperator
 
 

@@ -369,7 +369,7 @@ class Object_OT_Properties(bpy.types.Operator):
 			row.prop(self,"parent")
 			row.prop(self,'num_children')
 			row =box.row(align=True)
-			row.label(text="Dimantion")
+			row.label(text="Dimension")
 			row.prop(self,"dim_x")
 			row.prop(self,"dim_y")
 			row.prop(self,"dim_z")

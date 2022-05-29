@@ -1,3 +1,12 @@
+# 0, 1, 0, 20220516
+* Ocean Caustic added to map presets "Shader editor/Tools/Append Node Trees".
+* 'Alt + Space' Selection Lock Toggle (3DsMax mode).
+* 'Light lister' ignore material with emission strength 0.
+* 'Ctrl + C/V' in EDIT_MESH mode Copy/Paste single vertex location (Mirror Optinal).
+* File Version Operator moved from edit menu to file menu.
+* Sprite sheet node groupe order changed to Up to Down, Left to Right.
+* some issue from previes update has been fiexed.
+
 # 0, 1, 0, 20220509
 * Keymaps updated to be compatable with 'Blender 3.2' too.
 * 'Sprite play loop/ragge' node groupse added to shader node groups presets.

@@ -13,90 +13,19 @@
 #	along with this program.  If not,see <https://www.gnu.org/licenses/>.
 ############################################################################
 
-import numpy
-from mathutils import Vector, geometry, Matrix, Euler
-from math import pi, sin, cos, sqrt
+from mathutils import Vector, Matrix, Euler
+from math import pi, sqrt
 from bpy_extras.view3d_utils import region_2d_to_location_3d
 
-from bsmax.math import matrix_from_elements, to_local_matrix, transform_points_to_matrix
+from bsmax.state import get_view_orientation
 from bsmax.mouse import ray_cast, get_click_point_on_face
+from bsmax.bsmatrix import (matrix_from_elements,
+							transform_point_to_matrix,
+							points_to_local_matrix)
 
 
 
-def get_view_orientation(ctx):
-	""" return = (str, str) (view_orientation, view_type) """
-	r = lambda x: round(x, 2)
-
-	orientation_dict = {
-		(0, 0, 0):'TOP',
-		(r(pi), 0, 0):'BOTTOM',
-		(r(-pi/2), 0, 0):'FRONT',
-		(r(pi/2), 0, r(-pi)):'BACK',
-		(r(-pi/2), r(pi/2), 0):'LEFT',
-		(r(-pi/2), r(-pi/2), 0):'RIGHT'}
-	
-	r3d = ctx.area.spaces.active.region_3d
-	view_rot = r3d.view_matrix.to_euler()
-	
-	view_orientation = orientation_dict.get(tuple(map(r, view_rot)), 'USER')
-	view_type = r3d.view_perspective
-	
-	return view_orientation, view_type
-
-
-
-def get_rotation_of_view_orient(view_orient):
-		if view_orient == 'TOP':
-			return Vector((0, 0, 0))
-		if view_orient == 'BOTTOM':
-			return Vector((pi, 0, 0))
-		if view_orient == 'FRONT':
-			return Vector((pi/2, 0, 0))
-		if view_orient == 'BACK':
-			return Vector((-pi/2, pi, 0))
-		if view_orient == 'LEFT':
-			return Vector((pi/2, 0, -pi/2))
-		if view_orient == 'RIGHT':
-			return Vector((pi/2, 0, pi/2))
-		return Vector((0, 0, 0))
-
-
-
-def transfer_points_to(points ,location, direction):
-	xa, ya, za = direction
-	rx = numpy.matrix([[1, 0, 0], [0, cos(xa),-sin(xa)], [0, sin(xa), cos(xa)]])
-	ry = numpy.matrix([[cos(ya), 0, sin(ya)], [0, 1, 0], [-sin(ya), 0, cos(ya)]])
-	rz = numpy.matrix([[cos(za), -sin(za), 0], [sin(za), cos(za) ,0], [0, 0, 1]])
-	tr = rx * ry * rz
-
-	for i in range(len(points)):
-		px, py, pz = points[i]
-		points[i].x = px*tr.item(0) + py*tr.item(1) + pz*tr.item(2) + location.x
-		points[i].y = px*tr.item(3) + py*tr.item(4) + pz*tr.item(5) + location.y
-		points[i].z = px*tr.item(6) + py*tr.item(7) + pz*tr.item(2) + location.z
-
-	return points
-	
-
-
-def get_click_point_on_face(ctx, face, x, y):
-	region = ctx.region
-	region_data = ctx.space_data.region_3d
-	_, view_type = get_view_orientation(ctx)
-	if view_type in {'PERSP', 'CAMERA'}:
-		region = ctx.region
-		region_data = ctx.space_data.region_3d
-		view_matrix = region_data.view_matrix.inverted()
-		ray_start = view_matrix.to_translation()
-		ray_depth = view_matrix @ Vector((0, 0, -1000000)) #TODO from view
-		ray_end = region_2d_to_location_3d(region, region_data, (x, y), ray_depth)
-		return geometry.intersect_ray_tri(face[0], face[1], face[2], ray_end, ray_start, False)
-	return region_2d_to_location_3d(region, region_data, (x, y), (0, 0, 0))
-
-
-
-#TODO Rename Dimantion to Dimension
-class Dimantion:
+class Dimension:
 	def __init__(self, gride, start, end):
 		self.gride = gride
 		self.start = start
@@ -127,10 +56,10 @@ class Dimantion:
 		self.distance = sqrt(x**2 + y**2 + z**2)
 		
 		# convert to local matrix
-		sx, sy, sz = to_local_matrix(self.start, self.gride.gride_matrix)
-		ex, ey, ez = to_local_matrix(self.end, self.gride.gride_matrix)
+		sx, sy, _ = points_to_local_matrix(self.start, self.gride.gride_matrix)
+		ex, ey, ez = points_to_local_matrix(self.end, self.gride.gride_matrix)
 
-		# get dimantion from matrix
+		# get dimension from matrix
 		self.width = abs(ex-sx)
 		self.length = abs(ey-sy)
 		self.height = self.radius
@@ -174,9 +103,13 @@ class Gride:
 		self.floor_matrix = None
 	
 	def get_defualt_face(self):
-		return (Vector((-self.size, -self.size, 0)), Vector((self.size, -self.size, 0)),
-			Vector((self.size, self.size, 0)), Vector((-self.size, self.size, 0)))
-	
+		return (
+				Vector((-self.size, -self.size, 0)),
+				Vector((self.size, -self.size, 0)),
+				Vector((self.size, self.size, 0)),
+				Vector((-self.size, self.size, 0))
+		)
+
 	def reset(self):
 		self.location = Vector((0, 0, 0))
 		self.rotation = Vector((0, 0, 0))
@@ -188,8 +121,8 @@ class Gride:
 		# calculate matrix and meshes
 		self.gride_matrix = matrix_from_elements(self.location, self.rotation, Vector((1,1,1)))
 		self.floor_matrix = matrix_from_elements(Vector((0,0,0)), self.floor_rotation, Vector((1,1,1)))
-		self.gride_face = transform_points_to_matrix(self.get_defualt_face(), self.gride_matrix)
-		self.floor_face = transform_points_to_matrix(self.get_defualt_face(), self.floor_matrix)
+		self.gride_face = transform_point_to_matrix(self.get_defualt_face(), self.gride_matrix)
+		self.floor_face = transform_point_to_matrix(self.get_defualt_face(), self.floor_matrix)
 
 	def get_normal_direction(self, normal):
 		if normal:

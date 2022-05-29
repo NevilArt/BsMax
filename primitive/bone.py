@@ -68,23 +68,23 @@ class Create_OT_Bone(Draw_Primitive):
 		for bone in edit_bones:
 			edit_bones.remove(bone)
 
-	def update(self, ctx, clickcount, dimantion):
+	def update(self, ctx, clickcount, dimension):
 		bpy.ops.object.mode_set(mode='EDIT', toggle=False)
 		edit_bones = self.subclass.data.edit_bones
 
 		if self.shift:
 			if len(edit_bones) > 0:
-				dimantion.end = get_axis_constraint(edit_bones[-1].head, dimantion.end)
+				dimension.end = get_axis_constraint(edit_bones[-1].head, dimension.end)
 
 		if len(edit_bones) > 0:
-			edit_bones[-1].tail = dimantion.end
+			edit_bones[-1].tail = dimension.end
 		if clickcount != self.lastclick:
 			newbone = edit_bones.new('Bone')
 			if len(edit_bones) == 1:
 				newbone.head = self.startpoint
 			else:
 				newbone.head = edit_bones[-2].tail
-			newbone.tail = dimantion.end
+			newbone.tail = dimension.end
 			self.lastclick = clickcount
 
 	def event(self, event, value):

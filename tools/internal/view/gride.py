@@ -12,80 +12,24 @@
 #	You should have received a copy of the GNU General Public License
 #	along with this program.  If not, see <https://www.gnu.org/licenses/>.
 ############################################################################
-import bpy, gpu, bgl
-from gpu_extras.batch import batch_for_shader
+
+import bpy
+
 from bsmax.mouse import get_view_orientation
+from bsmax.gride import Local_Gride
 
 
 
-class View3D_Gride:
-	def __init__(self):
-		self.count = 10
-		self.size = 0.1
-		self.draw_handler = None
-		self.vertices = []
-		self.colors = []
-		self.color_x = (0.0, 0.2, 0.0, 1.0)
-		self.color_y = (0.2, 0.0, 0.0, 1.0)
-		self.color_g = (0.5, 0.5, 0.5, 0.5)
-		self.shader = gpu.shader.from_builtin('3D_SMOOTH_COLOR') # 3D_UNIFORM_COLOR
-		self.enabled = False
-		self.create()
-		self.batch = batch_for_shader(self.shader, 'LINES', {"pos": self.vertices, "color": self.colors})
-	
-	def create(self):
-		e = self.count*self.size
-		s = -e
-		for x in range(-self.count,self.count+1):
-			px = x*self.size
-			self.vertices.append((px,s,0))
-			self.vertices.append((px,e,0))
-			if px == 0 :
-				self.colors.append(self.color_x)
-				self.colors.append(self.color_x)
-			else:
-				self.colors.append(self.color_g)
-				self.colors.append(self.color_g)
-		
-		for y in range(-self.count,self.count+1):
-			py = y*self.size
-			self.vertices.append((s,py,0))
-			self.vertices.append((e,py,0))
-			if py == 0:
-				self.colors.append(self.color_y)
-				self.colors.append(self.color_y)
-			else:
-				self.colors.append(self.color_g)
-				self.colors.append(self.color_g)
-	
-	def draw(self):
-		bgl.glEnable(bgl.GL_BLEND)
-		bgl.glLineWidth(1)
-		self.shader.bind()
-		gpu.state.depth_test_set('LESS_EQUAL')
-		gpu.state.depth_mask_set(True)
-		self.batch.draw(self.shader)
-		gpu.state.depth_mask_set(False)
-		# bgl.glDisable(bgl.GL_BLEND)
-	
-	def register(self):
-		self.draw_handler = bpy.types.SpaceView3D.draw_handler_add(self.draw, (), 'WINDOW', 'POST_VIEW')
-		self.enabled =  True
-
-	def unregister(self):
-		if self.draw_handler != None:
-			bpy.types.SpaceView3D.draw_handler_remove(self.draw_handler,'WINDOW')
-			self.draw_handler = None
-			self.enabled =  False
+local_gride = Local_Gride()
+local_gride.set(2, 20, None)
+local_gride.cross_on = True
+local_gride.genarate_gride_lines()
 
 
 
 class View3D_OT_Show_Hide_Gride(bpy.types.Operator):
 	bl_idname = "view3d.show_hide_gride"
 	bl_label = "Show Hide Gride"
-
-	view_gride = View3D_Gride()
-	state = 0
 
 	@classmethod
 	def poll(self, ctx):
@@ -100,14 +44,15 @@ class View3D_OT_Show_Hide_Gride(bpy.types.Operator):
 		overlay.show_axis_z = False
 	
 	def max_gride(self, ctx, stata):
+		global local_gride
 		if stata:
-			self.view_gride.register()
+			local_gride.register(ctx)
 		else:
-			self.view_gride.unregister()
+			local_gride.unregister()
 
 	def execute(self, ctx):
 		bg = ctx.space_data.overlay.show_floor
-		mg = self.view_gride.enabled
+		mg = local_gride.handler != None
 
 		view_orientation, _ = get_view_orientation(ctx)
 		if view_orientation == 'USER':

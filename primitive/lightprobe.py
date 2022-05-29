@@ -45,19 +45,19 @@ class Create_OT_Light_Probe_Grid(Draw_Primitive):
 		self.subclass.owner.scale = (0,0,0)
 		self.subclass.owner.rotation_euler = self.gride.rotation
 
-	def update(self, ctx, clickcount, dimantion):
+	def update(self, ctx, clickcount, dimension):
 		if clickcount == 1:
-			self.width = dimantion.width / 2
-			self.length = dimantion.length / 2
-			self.location = self.subclass.owner.location = dimantion.center
+			self.width = dimension.width / 2
+			self.length = dimension.length / 2
+			self.location = self.subclass.owner.location = dimension.center
 
 		if clickcount == 2:
-			self.height = dimantion.height / 2
+			self.height = dimension.height / 2
 			self.subclass.owner.location = self.location #+ offset
 
 		if clickcount == 3:
 			scale = 1 / max(self.width, self.length, self.height)
-			self.distance = dimantion.height * scale
+			self.distance = dimension.height * scale
 
 		if clickcount > 0:
 			self.subclass.owner.scale = (self.width, self.length, self.height)
@@ -81,13 +81,13 @@ class Create_OT_Light_Probe_Planer(Draw_Primitive):
 		self.subclass.owner.scale = (0,0,0)
 		self.subclass.owner.rotation_euler = self.gride.rotation
 
-	def update(self, ctx, clickcount, dimantion):
+	def update(self, ctx, clickcount, dimension):
 		if clickcount == 1:
-			self.width = dimantion.width
-			self.length = dimantion.length
+			self.width = dimension.width
+			self.length = dimension.length
 
 		if clickcount == 2:
-			self.distance = dimantion.height
+			self.distance = dimension.height
 
 		if clickcount > 0:
 			self.subclass.owner.scale = (self.width, self.length, 1)
@@ -106,9 +106,9 @@ class Create_OT_Light_Probe_Cubemap(Draw_Primitive):
 		self.subclass.owner.scale = (0,0,0)
 		self.subclass.owner.rotation_euler = self.gride.rotation
 
-	def update(self, ctx, clickcount, dimantion):
+	def update(self, ctx, clickcount, dimension):
 		if clickcount == 1:
-			self.subclass.owner.data.influence_distance = dimantion.radius
+			self.subclass.owner.data.influence_distance = dimension.radius
 			self.subclass.owner.scale = (1,1,1)
 
 

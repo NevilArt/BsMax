@@ -18,7 +18,8 @@ from mathutils import Vector, Euler
 from bpy.types import Operator
 
 from bsmax.operator import PickOperator
-from bsmax.math import value_by_percent, matrix_from_elements, BoolVector
+from bsmax.math import value_by_percent, BoolVector
+from bsmax.bsmatrix import matrix_from_elements
 
 # TODO Apply button
 # TODO Align along the path (combine with arrange on curve)

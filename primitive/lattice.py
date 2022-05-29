@@ -18,7 +18,6 @@ from bpy.types import Operator
 from mathutils import Vector
 from bpy.props import IntProperty, FloatProperty
 from primitive.primitive import Draw_Primitive, Primitive_Public_Class
-from bsmax.math import transform_point_to_matrix
 from bsmax.actions import delete_objects
 
 
@@ -55,15 +54,15 @@ class Create_OT_Lattice(Draw_Primitive):
 		self.subclass.owner.data.points_v = self.resolution
 		self.subclass.owner.data.points_w = self.resolution
 
-	def update(self, ctx, clickcount, dimantion):
+	def update(self, ctx, clickcount, dimension):
 		if clickcount == 1:
-			self.width = dimantion.width
-			self.length = dimantion.length
-			self.location = self.subclass.owner.location = dimantion.center
+			self.width = dimension.width
+			self.length = dimension.length
+			self.location = self.subclass.owner.location = dimension.center
 			self.owner_matrix = self.subclass.owner.matrix_world.copy()
 
 		if clickcount == 2:
-			self.height = dimantion.height
+			self.height = dimension.height
 			# offset = Vector((self.width/2, self.length/2, self.height/2))
 			# offset = Vector((0, 0, self.height/2))
 			# location = transform_point_to_matrix(offset, self.gride.gride_matrix)

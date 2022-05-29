@@ -143,12 +143,23 @@ def add_search(km, space):
 
 
 def add_show_types(km, space):
-	km.new(space, 'view3d.show_geometry_toggle', 'G', 'PRESS', [], shift=True)
-	km.new(space, 'view3d.show_helper_toggle', 'H', 'PRESS', [], shift=True)
-	km.new(space, 'view3d.show_shape_toggle', 'S', 'PRESS', [], shift=True)
-	km.new(space, 'view3d.show_light_toggle', 'L', 'PRESS', [], shift=True)
-	km.new(space, 'view3d.show_bone_toggle', 'B', 'PRESS', [], shift=True)
-	km.new(space, 'view3d.show_camera_toggle', 'C', 'PRESS', [], shift=True)
+	km.new(space, 'view3d.show_types_toggle', 'G', 'PRESS',
+			[('mode', 'GEOMETRY')], shift=True)
+
+	km.new(space, 'view3d.show_types_toggle', 'H', 'PRESS',
+			[('mode', 'EMPTY')], shift=True)
+
+	km.new(space, 'view3d.show_types_toggle', 'S', 'PRESS',
+			[('mode', 'CURVE')], shift=True)
+
+	km.new(space, 'view3d.show_types_toggle', 'L', 'PRESS',
+			[('mode', 'LIGHT')], shift=True)
+
+	km.new(space, 'view3d.show_types_toggle', 'B', 'PRESS',
+			[('mode', 'ARMATURE')], shift=True)
+
+	km.new(space, 'view3d.show_types_toggle', 'C', 'PRESS',
+			[('mode', 'CAMERA')], shift=True)
 
 
 
@@ -696,6 +707,7 @@ def object_mode(km, preferences):
 			[('name', 'OBJECT_MT_object_paste')], ctrl=True)
 
 	km.new(space, 'object.lock_selection_toggle', 'SPACE', 'PRESS', [], alt=True)
+	km.new(space, 'view3d.show_statistics', 'SEVEN', 'PRESS', [])
 
 
 
@@ -918,6 +930,8 @@ def armature(km, preferences):
 	km.new(space, 'camera.select', 'C', 'PRESS', [])
 	km.new(space, 'view3d.localview', 'Q', 'PRESS', [], alt=True)
 	# km.new(space, 'wm.tool_set_by_id', 'E', 'PRESS', [('name', 'builtin.rotate')])
+	km.new(space, 'wm.call_menu', 'INSERT', 'PRESS',
+			[('name', 'VIEW3D_MT_snap')], ctrl=True)
 
 
 
@@ -1022,6 +1036,9 @@ def pos(km, preferences):
 	km.new(space, 'pose.reveal', 'U', 'PRESS', [], alt=True)
 	km.new(space, 'pose.copy', 'INSERT', 'PRESS', [], ctrl=True)
 	km.new(space, 'pose.paste', 'INSERT', 'PRESS', [], shift=True)
+
+	km.new(space, 'wm.call_menu', 'INSERT', 'PRESS',
+			[('name', 'VIEW3D_MT_snap')], ctrl=True)
 
 
 

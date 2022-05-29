@@ -52,11 +52,11 @@ class Create_OT_GreacePencil(Draw_Primitive):
 		owner.rotation_euler = self.gride.rotation
 		owner.rotation_euler.x -= 1.5708
 
-	def update(self, ctx, clickcount, dimantion):
+	def update(self, ctx, clickcount, dimension):
 		if clickcount == 1:
 			owner = self.subclass.owner
-			owner.location = dimantion.center
-			r = dimantion.radius/2
+			owner.location = dimension.center
+			r = dimension.radius/2
 			owner.scale = (r,r,r)
 
 

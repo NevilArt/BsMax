@@ -128,7 +128,7 @@ class Create_OT_Line(Draw_Primitive):
 		newknot = knot(location, location, location, "VECTOR")
 		self.subclass.knots.append(newknot)
 
-	def update(self, ctx, clickcount, dimantion):
+	def update(self, ctx, clickcount, dimension):
 		global close_line
 		dim = self.point_current.location.copy()
 		

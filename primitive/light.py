@@ -88,9 +88,9 @@ class Create_OT_PointLight(Draw_Primitive):
 		self.subclass.owner.location = self.gride.location
 		self.subclass.owner.rotation_euler = self.gride.rotation
 
-	def update(self, ctx, clickcount, dimantion):
+	def update(self, ctx, clickcount, dimension):
 		if self.drag:
-			self.subclass.owner.location = dimantion.end
+			self.subclass.owner.location = dimension.end
 
 
 
@@ -106,13 +106,13 @@ class Create_OT_SpotLight(Draw_Primitive):
 		self.subclass.owner.location = self.gride.location
 		self.subclass.owner.rotation_euler = self.gride.rotation
 
-	def update(self, ctx, clickcount, dimantion):
+	def update(self, ctx, clickcount, dimension):
 		if clickcount == 1:
 			if self.drag and self.subclass.target == None:
 				self.subclass.target = set_create_target(self.subclass.owner, None)
 
 			if self.subclass.target != None:
-				self.subclass.target.location = dimantion.end
+				self.subclass.target.location = dimension.end
 
 
 
@@ -138,13 +138,13 @@ class Create_OT_SunLight(Draw_Primitive):
 		self.params = self.subclass.owner.data.primitivedata
 		set_create_target(self.light.owner, self.subclass.owner, distance=(0,0,0))
 	
-	def update(self, ctx, clickcount, dimantion):
+	def update(self, ctx, clickcount, dimension):
 		if clickcount == 1:
-			self.params.radius1 = dimantion.radius
+			self.params.radius1 = dimension.radius
 			self.subclass.update()
 
 		if clickcount == 2:
-			self.distance = dimantion.height
+			self.distance = dimension.height
 			self.light.owner.location.z = self.distance
 			if self.params.radius1 == 0:
 				self.step = 4
@@ -153,8 +153,8 @@ class Create_OT_SunLight(Draw_Primitive):
 			if self.distance > 0:
 				# TODO create a better way to caculate angle
 				# store angle in prim data
-				dx = dimantion.width
-				dy = dimantion.length
+				dx = dimension.width
+				dy = dimension.length
 				delta = dx if abs(dx) > abs(dy) else dy
 				delta = delta if delta < self.distance else self.distance
 				delta = delta if delta > -self.distance else -self.distance
@@ -184,10 +184,10 @@ class Create_OT_AreaLight(Draw_Primitive):
 		self.subclass.owner.rotation_euler = self.gride.rotation
 		self.subclass.finishon = 2 if self.free else 3
 
-	def update(self, ctx, clickcount, dimantion):
+	def update(self, ctx, clickcount, dimension):
 		if clickcount == 1:
-			width = dimantion.width
-			length = dimantion.length
+			width = dimension.width
+			length = dimension.length
 			self.subclass.owner.data.size = max(width, length)
 			if max(width, length) > 0:
 				aspect = min(width, length) / max(width, length)
@@ -195,12 +195,12 @@ class Create_OT_AreaLight(Draw_Primitive):
 					self.subclass.owner.scale = (1, aspect, 1)
 				else:
 					self.subclass.owner.scale = (aspect, 1, 1)
-			self.subclass.owner.location = dimantion.center
+			self.subclass.owner.location = dimension.center
 
 		if clickcount == 2 and not self.free:
 			if self.subclass.target == None:
 				self.subclass.target = set_create_target(self.subclass.owner, None)
-			self.subclass.target.location = dimantion.end
+			self.subclass.target.location = dimension.end
 
 
 

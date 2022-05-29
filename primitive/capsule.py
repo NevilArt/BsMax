@@ -167,19 +167,19 @@ class Create_OT_Capsule(Draw_Primitive):
 		self.subclass.owner.location = self.gride.location
 		self.subclass.owner.rotation_euler = self.gride.rotation
 
-	def update(self, ctx, clickcount, dimantion):
+	def update(self, ctx, clickcount, dimension):
 		if clickcount == 1:
 			if self.ctrl:
-				self.params.radius1 = dimantion.radius
-				self.params.height = dimantion.radius
+				self.params.radius1 = dimension.radius
+				self.params.height = dimension.radius
 			else:
-				self.params.radius1 = dimantion.radius
+				self.params.radius1 = dimension.radius
 
 		elif clickcount == 2:
 			if self.use_single_draw:
 				self.jump_to_end()
 				return
-			self.params.height = dimantion.height
+			self.params.height = dimension.height
 
 
 

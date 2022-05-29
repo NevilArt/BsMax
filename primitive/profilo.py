@@ -14,13 +14,14 @@
 ############################################################################
 
 import bpy
+
 from mathutils import Vector
 from bpy.types import Operator
 from bpy.props import IntProperty
-from math import radians
+
 from primitive.primitive import Primitive_Curve_Class, Draw_Primitive
 from bsmax.actions import delete_objects
-from bsmax.math import matrix_from_elements, transform_points_to_matrix
+# from bsmax.bsmatrix import matrix_from_elements, transform_point_to_matrix
 
 
 
@@ -292,7 +293,7 @@ def Elipse(length, width, outline, thickness):
 
 
 
-def get_volum_dimantion(pcos):
+def get_volum_dimension(pcos):
 	findmin = lambda l: min(l)
 	# findCenter = lambda l: ( max(l) + min(l) ) / 2
 	findmax = lambda l: max(l)
@@ -335,7 +336,7 @@ def get_profilo_shape(Mode, length, width, thickness,
 		for knot in shape:
 			for i in (0,1,3):
 				pcos.append(knot[i])
-	pmin, pmax = get_volum_dimantion(pcos)
+	pmin, pmax = get_volum_dimension(pcos)
 	ox, oy = offset_x, offset_y
 	if pivotaligne in (1, 4, 7):
 		ox += pmax.x
@@ -412,12 +413,12 @@ class Create_OT_Profilo(Draw_Primitive):
 		self.subclass.owner.location = self.gride.location
 		self.subclass.owner.rotation_euler = self.gride.rotation
 
-	def update(self, ctx, clickcount, dimantion):
+	def update(self, ctx, clickcount, dimension):
 		if clickcount == 1:
-			width = self.params.width = dimantion.width
-			length = self.params.length = dimantion.length
+			width = self.params.width = dimension.width
+			length = self.params.length = dimension.length
 			self.params.thickness = min(width, length) / 5
-			self.subclass.owner.location = dimantion.center
+			self.subclass.owner.location = dimension.center
 
 
 

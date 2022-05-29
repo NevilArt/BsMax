@@ -40,9 +40,9 @@ class Create_OT_Speaker(Draw_Primitive):
 		self.subclass.owner = ctx.active_object
 		self.subclass.owner.rotation_euler = self.gride.rotation
 
-	def update(self, ctx, clickcount, dimantion):
+	def update(self, ctx, clickcount, dimension):
 		if self.drag:
-			self.subclass.owner.location = dimantion.end
+			self.subclass.owner.location = dimension.end
 
 
 

@@ -75,15 +75,15 @@ class Create_OT_Plane(Draw_Primitive):
 		self.subclass.owner.location = self.gride.location
 		self.subclass.owner.rotation_euler = self.gride.rotation
 
-	def update(self, ctx, clickcount, dimantion):
+	def update(self, ctx, clickcount, dimension):
 		if clickcount == 1:
 			if self.ctrl:
-				self.params.width = dimantion.radius
-				self.params.length = dimantion.radius
+				self.params.width = dimension.radius
+				self.params.length = dimension.radius
 			else:
-				self.params.width = dimantion.width
-				self.params.length = dimantion.length
-				self.subclass.owner.location = dimantion.center
+				self.params.width = dimension.width
+				self.params.length = dimension.length
+				self.subclass.owner.location = dimension.center
 		if clickcount > 0:
 			self.subclass.update()
 

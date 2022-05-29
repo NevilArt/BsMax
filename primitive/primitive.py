@@ -12,16 +12,23 @@
 #	You should have received a copy of the GNU General Public License
 #	along with this program.  If not,see <https://www.gnu.org/licenses/>.
 ############################################################################
-import bpy, bmesh, bgl, gpu
+
+import bpy
+import bmesh
+import bgl
+import gpu
+
 from gpu_extras.batch import batch_for_shader
 from bpy.types import Operator
 from mathutils import Vector
-# from bsmax.state import version
 
 from bsmax.actions import link_to_scene, set_as_active_object
 from bsmax.state import is_object_mode
 
-from .gride import Gride, Dimantion, Click_Point
+from .gride import Gride, Dimension, Click_Point
+from bsmax.gride import Local_Gride
+
+
 
 class Primitive_Public_Class:
 	def __init__(self):
@@ -71,8 +78,6 @@ class Primitive_Geometry_Class:
 		if self.data != None and bpy.context.mode == 'OBJECT':
 			verts,edges,faces, = meshdata
 			""" Genarate New Data """
-			# if version < (2, 81, 0):
-			""" old method for V2.80 """
 			orgmesh = bpy.data.meshes[self.data.name]
 			tmpmesh = bpy.data.meshes.new("_NewTempMesh_")
 			tmpmesh.from_pydata(verts, edges, faces)
@@ -83,13 +88,6 @@ class Primitive_Geometry_Class:
 			bpy.data.meshes.remove(tmpmesh)
 			for f in self.data.polygons:
 				f.use_smooth = True
-			# This method reset the other primitive data for that reasen is not usefull here
-			# else:
-			# 	""" new method for V2.81 and above """
-			# 	self.data.clear_geometry()
-			# 	self.data.from_pydata(verts, edges, faces)
-			# 	""" Note this method is faster but clear the keyframes too """
-			# 	""" I had to skip this part till I find a solution for this """
 	
 	def update(self):
 		pass
@@ -226,32 +224,46 @@ def fix_type_visablity(subclass, ctx):
 
 	if owner_type == '':
 		return
+
 	elif owner_type == 'MESH':
 		ctx.space_data.show_object_viewport_mesh = True
+
 	elif owner_type == 'CURVE':
 		ctx.space_data.show_object_viewport_curve = True
+
 	elif owner_type == 'SURFACE':
 		ctx.space_data.show_object_viewport_surf = True
+
 	elif owner_type == 'META':
 		ctx.space_data.show_object_viewport_meta = True
+
 	elif owner_type == 'FONT':
 		ctx.space_data.show_object_viewport_font = True
+
 	elif owner_type == 'VOLUME':
 		ctx.space_data.show_object_viewport_volume = True
+
 	elif owner_type == 'GPENCIL':
 		ctx.space_data.show_object_viewport_grease_pencil = True
+
 	elif owner_type == 'ARMATURE':
 		ctx.space_data.show_object_viewport_armature = True
+
 	elif owner_type == 'LATTICE':
 		ctx.space_data.show_object_viewport_lattice = True
+
 	elif owner_type == 'EMPTY':
 		ctx.space_data.show_object_viewport_empty = True
+
 	elif owner_type == 'LIGHT':
 		ctx.space_data.show_object_viewport_light = True
+
 	elif owner_type == 'LIGHT_PROBE':
 		ctx.space_data.show_object_viewport_light_probe = True
+
 	elif owner_type == 'CAMERA':
 		ctx.space_data.show_object_viewport_camera = True
+
 	elif owner_type == 'SPEAKER':
 		ctx.space_data.show_object_viewport_speaker = True
 
@@ -279,6 +291,7 @@ class Draw_Primitive(Operator):
 	shift, ctrl, alt = False, False, False
 	""" click point info """
 	gride = Gride()
+	local_gride = Local_Gride()
 	""" 3D coordinate and info of click points """
 	point_start, point_current = Click_Point(), Click_Point()
 	""" flag that choos click point type use gride or not """
@@ -325,7 +338,7 @@ class Draw_Primitive(Operator):
 	def first_click(self, ctx, x, y):
 		""" Get first click and initial basic setups """
 		self.step = 1
-		self.mouse_start = Vector((x,y,0))
+		self.mouse_start = Vector((x, y, 0))
 		self.use_surface = ctx.scene.primitive_setting.draw_mode == 'SURFACE'
 
 		""" Create local Gride """
@@ -348,7 +361,7 @@ class Draw_Primitive(Operator):
 		if event.value =='RELEASE':
 			self.state = self.drag = False
 			self.step += 1
-			self.curent = Vector((x,y,0))
+			self.curent = Vector((x, y, 0))
 			self.point_start.location = self.point_current.location.copy()
 	
 	def reset(self):
@@ -431,8 +444,8 @@ class Draw_Primitive(Operator):
 				else:
 					self.point_current.location = self.gride.get_click_point_gride(ctx, x, y)
 				
-				dimantion = Dimantion(self.gride, self.point_start.location, self.point_current.location)
-				self.update(ctx, self.step, dimantion)
+				dimension = Dimension(self.gride, self.point_start.location, self.point_current.location)
+				self.update(ctx, self.step, dimension)
 
 				""" Updat Data object """
 				self.subclass.update()

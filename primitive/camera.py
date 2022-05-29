@@ -45,7 +45,7 @@ class Create_OT_Camera(Draw_Primitive):
 		self.subclass.owner.rotation_euler = self.gride.rotation
 		self.subclass.owner.rotation_euler.x += pi/2
 
-	def update(self, ctx, clickcount, dimantion):
+	def update(self, ctx, clickcount, dimension):
 		if clickcount == 1:
 			if self.drag and self.subclass.target == None:
 				bpy.ops.object.select_all(action = 'DESELECT')
@@ -54,10 +54,10 @@ class Create_OT_Camera(Draw_Primitive):
 				bpy.ops.camera.create_target()
 				self.subclass.target = self.subclass.owner.constraints["Track To"].target
 
-			self.subclass.target.location = dimantion.end
+			self.subclass.target.location = dimension.end
 
 			# size = get_distance(self.subclass.owner.location,self.subclass.target.location)/3
-			size = dimantion.height/3
+			size = dimension.height/3
 			self.subclass.owner.data.display_size = size
 			self.subclass.target.empty_display_size = size / 10
 

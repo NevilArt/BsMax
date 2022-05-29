@@ -14,6 +14,7 @@
 ############################################################################
 
 import bpy
+
 from bpy.app import version
 from bpy.props import StringProperty, BoolProperty, IntProperty
 from bpy.types import Operator
@@ -41,11 +42,18 @@ class View3D_OT_Transform_Gizmo_Size(Operator):
 
 
 def get_tool(ctx):
+	if not ctx.area.spaces.active:
+		return ""
+
 	space_type = ctx.area.spaces.active.type
 	if space_type == "VIEW_3D":
-		return ctx.workspace.tools.from_space_view3d_mode(ctx.mode,create=False).idname
+		tools = ctx.workspace.tools 
+		return tools.from_space_view3d_mode(ctx.mode, create=False).idname
+
 	elif space_type == "IMAGE_EDITOR":
-		return ctx.workspace.tools.from_space_image_mode("UV",create=False).idname
+		tools = ctx.workspace.tools
+		return tools.from_space_image_mode("UV", create=False).idname
+
 	else:
 		return ""
 
@@ -68,7 +76,12 @@ def coordinate_toggle(ctx):
 
 
 def is_transform_avalible(ctx):
-	return not ctx.mode in {'PAINT_TEXTURE', 'PAINT_WEIGHT', 'PAINT_VERTEX', 'PARTICLE'}
+	return not ctx.mode in {
+							'PAINT_TEXTURE',
+							'PAINT_WEIGHT',
+							'PAINT_VERTEX',
+							'PARTICLE'
+							}
 
 
 
@@ -89,6 +102,7 @@ class Object_OT_Auto_Coordinate_Toggle(Operator):
 		return ctx.area.type == 'VIEW_3D'
 	
 	def execute(self, ctx):
+		global transform_mode
 		transform_mode.auto_switch = not transform_mode.auto_switch
 		return{"FINISHED"}
 
@@ -113,10 +127,11 @@ class Object_OT_Move(Operator):
 			tool = get_tool(ctx)
 			
 			if tool == 'builtin.select':
-				set_gizmo(ctx,True,False,False)
+				set_gizmo(ctx, True, False, False)
 			
 			else:
 				""" Cordinate tooggle work only if actived """
+				global transform_mode
 				if transform_mode.auto_switch:
 					if tool == 'builtin.move':
 						coordinate_toggle(ctx)
@@ -146,10 +161,11 @@ class Object_OT_Rotate(Operator):
 			
 			tool = get_tool(ctx)
 			if tool == 'builtin.select':
-				set_gizmo(ctx,False,True,False)
+				set_gizmo(ctx, False, True, False)
 			
 			else:
 				""" Cordinate tooggle work only if actived """
+				global transform_mode
 				if transform_mode.auto_switch:
 					if tool == 'builtin.rotate':
 						coordinate_toggle(ctx)
@@ -183,6 +199,7 @@ class Object_OT_Scale(Operator):
 			
 			else:
 				""" Cordinate tooggle work only if actived """
+				global transform_mode
 				if transform_mode.auto_switch:
 					if self.cage:
 						if tool == 'builtin.scale':
@@ -209,25 +226,30 @@ class View3D_OT_Tweak_Better(Operator):
 	def modal(self, ctx, event):
 		if event.type == 'MOUSEMOVE':
 			#TODO check the operator
-			bpy.ops.transform.transform('INVOKE_DEFAULT',mode=self.tmode)
+			bpy.ops.transform.transform('INVOKE_DEFAULT', mode=self.tmode)
 			return {'FINISHED'}
 		return {'RUNNING_MODAL'}
 
-	def execute(self,ctx):
-		self.report({'OPERATOR'},'bpy.ops.view3d.tweak_better()')
+	def execute(self, ctx):
+		# self.report({'OPERATOR'},'bpy.ops.view3d.tweak_better()')
 		return{"FINISHED"}
 
 	def invoke(self, ctx, event):
 		if ctx.object:
 			if ctx.space_data.show_gizmo_object_translate == True:
 				self.tmode = 'TRANSLATION'
+
 			elif ctx.space_data.show_gizmo_object_rotate == True:
 				self.tmode = 'ROTATION'
+
 			elif ctx.space_data.show_gizmo_object_scale == True:
 				self.tmode = 'RESIZE'
+
 			else: self.tmode = 'TRANSLATION'
+
 			ctx.window_manager.modal_handler_add(self)
 			return {'RUNNING_MODAL'}
+
 		else:
 			self.report({'WARNING'}, "No active object, could not finish")
 			return {'CANCELLED'}

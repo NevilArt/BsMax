@@ -54,9 +54,9 @@ class Create_OT_Text(Draw_Primitive):
 		owner.location = self.gride.location
 		owner.rotation_euler = self.gride.rotation
 	
-	def update(self, ctx, clickcount, dimantion):
+	def update(self, ctx, clickcount, dimension):
 		if clickcount == 1:
-			self.subclass.owner.data.size = dimantion.radius
+			self.subclass.owner.data.size = dimension.radius
 
 
 

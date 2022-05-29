@@ -50,9 +50,9 @@ class Create_OT_Effector(Draw_Primitive):
 		self.subclass.owner = ctx.active_object
 		self.subclass.owner.rotation_euler = self.gride.rotation
 
-	def update(self, ctx, clickcount, dimantion):
+	def update(self, ctx, clickcount, dimension):
 		if clickcount == 1:
-			self.subclass.owner.empty_display_size = dimantion.radius
+			self.subclass.owner.empty_display_size = dimension.radius
 
 
 

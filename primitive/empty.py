@@ -53,9 +53,9 @@ class Create_OT_Empty(Draw_Primitive):
 		if self.empty_type == "IMAGE":
 			self.subclass.owner.empty_image_depth = self.depth
 
-	def update(self, ctx, clickcount, dimantion):
+	def update(self, ctx, clickcount, dimension):
 		if clickcount == 1:
-			self.subclass.owner.empty_display_size = dimantion.radius
+			self.subclass.owner.empty_display_size = dimension.radius
 
 
 

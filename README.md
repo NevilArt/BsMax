@@ -39,13 +39,10 @@ Your Donation helps me to ignore other freelance offers and focus on BsMax and s
 
 # Recent Updates and Changes
 
-* Ocean Caustic added to map presets "Shader editor/Tools/Append Node Trees".
-* 'Alt + Space' Selection Lock Toggle (3DsMax mode).
-* 'Light lister' ignore material with emission strength 0.
-* 'Ctrl + C/V' in EDIT_MESH mode Copy/Paste single vertex location (Mirror Optinal).
-* File Version Operator moved from edit menu to file menu.
-* Sprite sheet node groupe order changed to Up to Down, Left to Right.
-* some issue from previes update has been fiexed.
+* 'Lattice / FFD' set operator miss calculation fixed and performed.
+* New 'Transform class' And 'Grid Display', not implement in all other tools yet.
+* 'Ctrl + Inser' set Pivot menu add to pose & bone edit mode too (3DsMax mode).
+* 'Random Object color' unlike the other random display, manualy editable and change every time (Object> show/hide > Random object color).
 * [Change log ...](https://github.com/NevilArt/BsMax/blob/master/CHANGELOG.md)
 
 # In Production 

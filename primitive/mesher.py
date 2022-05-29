@@ -89,10 +89,10 @@ class Create_OT_Mesher(Draw_Primitive):
 		self.subclass.owner.location = self.gride.location
 		self.subclass.owner.rotation_euler = self.gride.rotation
 
-	def update(self, ctx, clickcount, dimantion):
+	def update(self, ctx, clickcount, dimension):
 		if clickcount == 1:
-			self.params.radius1 = dimantion.radius / 2
-			self.subclass.owner.location = dimantion.center
+			self.params.radius1 = dimension.radius / 2
+			self.subclass.owner.location = dimension.center
 		if clickcount > 0:
 			self.subclass.update(ctx)
 

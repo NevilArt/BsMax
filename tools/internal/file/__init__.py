@@ -13,38 +13,13 @@
 #	along with this program.  If not, see <https://www.gnu.org/licenses/>.
 ############################################################################
 
-def tab(string, count=1):
-	""" Breke given string to lines
-		add tab to first of any line
-		combine and return
-	"""
-	return string
+from .sprite_json_import import (
+								register_sprite_json_importer,
+								unregister_sprite_json_importer
+							)
 
-def block(name, body, keys=[]):
-	"""
-		args:
-			name:
-			body:
-			keys: array
-		return:
-			string
-	"""
+def register_file():
+	register_sprite_json_importer()
 
-	if type(body) == str:
-		return '<' + name + '>' + body + '</' + name + '>\n'
-	
-	if type(body) == list:
-		if body:
-			s = '<' + name + '>'
-	
-			for b in body:
-				s += tab(b) + '\n'
-	
-			s += '</' + name + '>\n'
-	
-			return s
-		
-		else:
-			return '<' + name + '/>\n'
-	
-	return ''
+def unregister_file():
+	unregister_sprite_json_importer()

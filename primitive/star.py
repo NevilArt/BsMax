@@ -79,20 +79,20 @@ class Create_OT_Star(Draw_Primitive):
 		self.subclass.owner.location = self.gride.location
 		self.subclass.owner.rotation_euler = self.gride.rotation
 
-	def update(self, ctx, clickcount, dimantion):
+	def update(self, ctx, clickcount, dimension):
 		if clickcount == 1:
 			if self.ctrl:
-				self.params.radius1 = dimantion.radius
+				self.params.radius1 = dimension.radius
 				self.params.radius2 = self.params.radius1 / 2
 			else:
-				self.params.radius1 = dimantion.radius
+				self.params.radius1 = dimension.radius
 				self.params.radius2 = self.params.radius1 / 2
 
 		elif clickcount == 2:
 			if self.use_single_draw:
 				self.jump_to_end()
 				return
-			self.params.radius2 = dimantion.distance
+			self.params.radius2 = dimension.distance
 
 
 

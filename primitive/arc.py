@@ -18,7 +18,7 @@ from mathutils import Vector
 from primitive.primitive import Primitive_Curve_Class, Draw_Primitive
 from math import hypot, atan2, sqrt, sin, cos, pi, degrees, radians
 from bsmax.actions import delete_objects
-from bsmax.math import to_local_matrix, inverse_transform_matrix
+from bsmax.bsmatrix import points_to_local_matrix, matrix_inverse
 
 
 def circle_from_three_points(p1, p2, p3):
@@ -135,7 +135,7 @@ class Arc(Primitive_Curve_Class):
 			
 			shapes = get_arc_shape(pd.radius1, pd.sfrom, pd.sto, pd.sliceon)
 
-			location = to_local_matrix(center, self.matrix)
+			location = points_to_local_matrix(center, self.matrix)
 			self.owner.location = location
 
 		else:
@@ -166,23 +166,23 @@ class Create_OT_Arc(Draw_Primitive):
 	def create(self, ctx):
 		self.subclass.create(ctx)
 		self.params = self.subclass.owner.data.primitivedata
-		self.subclass.matrix = inverse_transform_matrix(self.gride.gride_matrix)
+		self.subclass.matrix = matrix_inverse(self.gride.gride_matrix)
 		self.subclass.drawing = True
 
-	def update(self, ctx, clickcount, dimantion):
+	def update(self, ctx, clickcount, dimension):
 		if clickcount == 1:
 			if self.ctrl:
 				self.subclass.drawing = False
-				self.params.radius1 = dimantion.radius
+				self.params.radius1 = dimension.radius
 				self.params.sfrom = 0
 				self.params.sto = 270
 				self.params.sliceon = True
 				self.subclass.owner.location = self.gride.location
 				self.subclass.owner.rotation_euler = self.gride.rotation
 			else:
-				self.subclass.start = dimantion.start
-				self.subclass.end = dimantion.end
-				self.subclass.point2 = dimantion.local
+				self.subclass.start = dimension.start
+				self.subclass.end = dimension.end
+				self.subclass.point2 = dimension.local
 				self.subclass.drawing = True
 
 		elif clickcount == 2:
@@ -190,7 +190,7 @@ class Create_OT_Arc(Draw_Primitive):
 				self.jump_to_end()
 				return
 
-			self.subclass.point3 = dimantion.local
+			self.subclass.point3 = dimension.local
 			self.subclass.owner.rotation_euler = self.gride.rotation
 
 		if clickcount > 0 and not self.use_single_draw:

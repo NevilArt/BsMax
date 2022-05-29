@@ -18,6 +18,7 @@ from .armature import register_armature, unregister_armature
 from .camera import register_camera, unregister_camera
 from .clip_editor import register_clip_editor, unregister_clip_editor
 from .curve import register_curve, unregister_curve
+from .file import register_file, unregister_file
 from .ligth import register_light, unregister_light
 from .material import register_material, unregister_material
 from .mesh import register_mesh, unregister_mesh
@@ -43,6 +44,7 @@ def register_internal(preferences):
 	register_camera()
 	register_clip_editor()
 	register_curve()
+	register_file()
 	register_light()
 	register_material()
 	register_mesh()
@@ -65,6 +67,7 @@ def unregister_internal():
 	unregister_camera()
 	unregister_clip_editor()
 	unregister_curve()
+	unregister_file()
 	unregister_light()
 	unregister_material()
 	unregister_mesh()
