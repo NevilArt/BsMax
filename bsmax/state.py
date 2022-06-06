@@ -36,14 +36,15 @@ def is_active_primitive(ctx):
 def is_objects_selected(ctx):
 	""" Return True if ther was any selected objects """
 	if ctx.area.type == 'VIEW_3D':
-		return len(ctx.selected_objects) > 0
+		return ctx.selected_objects
 
 
 
+# TODO on version drop extera replace this with ctx.mode == 'OBJECT'
 def is_object_mode(ctx):
 	""" in all possible condition return True if is not Edit mode """
 	if ctx.area.type == 'VIEW_3D':
-		if len(ctx.scene.objects) > 0:
+		if ctx.scene.objects:
 			if ctx.object:
 				return ctx.object.mode == 'OBJECT'
 			return True
@@ -112,3 +113,28 @@ def get_rotation_of_view_orient(view_orient):
 		if view_orient == 'RIGHT':
 			return Vector((pi/2, 0, pi/2))
 		return Vector((0, 0, 0))
+
+
+
+def get_dimensions_avrage(obj, x, y, z):
+	""" get object and return avrage of wanted side
+
+		args:
+			obj: Object
+			x: Boolean count x side
+			y: Boolean count y side
+			z: Boolean count z side
+		return:
+			float avrage of vanted sides
+	"""
+	value, count = 0, 0
+	if x:
+		value += obj.dimensions.x
+		count += 1
+	if y:
+		value += obj.dimensions.y
+		count += 1
+	if z:
+		value += obj.dimensions.z
+		count += 1
+	return value/count

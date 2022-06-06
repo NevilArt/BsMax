@@ -1,22 +1,24 @@
 ############################################################################
 #	This program is free software: you can redistribute it and/or modify
 #	it under the terms of the GNU General Public License as published by
-#	the Free Software Foundation,either version 3 of the License,or
+#	the Free Software Foundation, either version 3 of the License, or
 #	(at your option) any later version.
 #
-#	This program is distributed in the hope that it will be useful,
+#	This program is distributed in the hope that it will be useful, 
 #	but WITHOUT ANY WARRANTY; without even the implied warranty of
 #	MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 #	GNU General Public License for more details.
 #
 #	You should have received a copy of the GNU General Public License
-#	along with this program.  If not,see <https://www.gnu.org/licenses/>.
+#	along with this program.  If not, see <https://www.gnu.org/licenses/>.
 ############################################################################
 
 import bpy
 from bpy.app import version
 
 from bsmax.keymaps import KeyMaps
+
+
 
 # https://www.autodesk.com/shortcuts/maya
 # TODO
@@ -25,55 +27,86 @@ from bsmax.keymaps import KeyMaps
 # Timeline
 # [] Undo rido only camera
 
-def add_search(km,space):
-	if version < (2, 90, 0):
-		km.new(space,'wm.search_menu','X','PRESS',[])
+
+
+def add_search(km, space):
+	if version < (2,  90,  0):
+		km.new(space, 'wm.search_menu', 'X', 'PRESS', [])
 	else:
-		km.new(space,'wm.search_menu','X','PRESS',[],ctrl=True,shift=True,alt=True)
-		km.new(space,'wm.search_operator','X','PRESS',[])
+		km.new(space, 'wm.search_menu', 'X', 'PRESS',
+				[], ctrl=True, shift=True, alt=True)
 
-def add_undo(km,space):
-	km.new(space,"ed.undo","Z","PRESS",[])
-	km.new(space,"ed.undo","Z","PRESS",[],ctrl=True)
-	km.new(space,"ed.redo","Z","PRESS",[],shift=True)
+		km.new(space, 'wm.search_operator', 'X', 'PRESS', [])
 
-#--------------------------------------------------------------------------------------#
+
+
+def add_undo(km, space):
+	km.new(space, "ed.undo", "Z", "PRESS", [])
+	km.new(space, "ed.undo", "Z", "PRESS", [], ctrl=True)
+	km.new(space, "ed.redo", "Z", "PRESS", [], shift=True)
+
+
 
 def window(km):
-	space = km.space('Window','EMPTY','WINDOW')
-	add_search(km,space)
+	space = km.space('Window', 'EMPTY', 'WINDOW')
+	add_search(km, space)
+
+
 
 def user_interface(km):
-	space = km.space('User Interface','EMPTY','WINDOW')
-	km.new(space,'anim.keyframe_insert_button','S','PRESS',[('all', True)])
+	space = km.space('User Interface', 'EMPTY', 'WINDOW')
+	km.new(space, 'anim.keyframe_insert_button', 'S', 'PRESS', [('all',  True)])
+
+
 
 def screen(km):
-	space = km.space('Screen','EMPTY','WINDOW')
-	add_undo(km,space)
-	km.new(space,"screen.repeat_last","G","PRESS",[])
-	# km.new(space,"render.render","F9","PRESS",[('use_viewport',True)])
-	# km.new(space,"render.render","Q","PRESS",[('use_viewport',True),('animation',True)],shift=True)
+	space = km.space('Screen', 'EMPTY', 'WINDOW')
+	add_undo(km, space)
+	km.new(space, "screen.repeat_last", "G", "PRESS", [])
+	# km.new(space, "render.render", "F9", "PRESS", [('use_viewport', True)])
+	# km.new(space, "render.render", "Q", "PRESS", [('use_viewport', True), ('animation', True)], shift=True)
+
+
 
 def view2d(km):
 	pass
 
-def view2d_navigation(km,preferences):
+
+
+def view2d_navigation(km, preferences):
 	pass
 
-def view3d(km):
-	space = km.space( '3D View','VIEW_3D','WINDOW')
-	add_search(km,space)
-	add_undo(km,space)
 
-	km.new(space,"view3d.select","LEFTMOUSE","CLICK",[])
-	km.new(space,"view3d.select","LEFTMOUSE","CLICK",[('extend',True)],ctrl=True)
-	km.new(space,"view3d.select","LEFTMOUSE","CLICK",[('deselect',True)],alt=True)
-	km.new(space,"wm.tool_set_by_id","Q","PRESS",[('name',"builtin.select_box"),('cycle',True)])
-	km.new(space,"wm.tool_set_by_id","W","PRESS",[('name',"builtin.move")])
-	km.new(space,"wm.tool_set_by_id","E","PRESS",[('name',"builtin.rotate")])
-	km.new(space,"wm.tool_set_by_id","R","PRESS",[('name',"builtin.scale"),('cycle',True)])
-	km.new(space,"view3d.view_selected","F","PRESS",[('use_all_regions',False)])
-	km.new(space,"view3d.view_all","A","PRESS",[('use_all_regions',False),('center',False)])
+
+def view3d(km):
+	space = km.space( '3D View', 'VIEW_3D', 'WINDOW')
+	add_search(km, space)
+	add_undo(km, space)
+
+	km.new(space, "view3d.select", "LEFTMOUSE", "CLICK", [])
+	km.new(space, "view3d.select", "LEFTMOUSE", "CLICK",
+			[('extend', True)], ctrl=True)
+
+	km.new(space, "view3d.select", "LEFTMOUSE", "CLICK",
+			[('deselect', True)], alt=True)
+
+	km.new(space, "wm.tool_set_by_id", "Q", "PRESS",
+			[('name', "builtin.select_box"), ('cycle', True)])
+
+	km.new(space, "wm.tool_set_by_id", "W", "PRESS",
+			[('name', "builtin.move")])
+
+	km.new(space, "wm.tool_set_by_id", "E", "PRESS",
+			[('name', "builtin.rotate")])
+
+	km.new(space, "wm.tool_set_by_id", "R", "PRESS",
+			[('name', "builtin.scale"), ('cycle', True)])
+
+	km.new(space, "view3d.view_selected", "F", "PRESS",
+			[('use_all_regions', False)])
+
+	km.new(space, "view3d.view_all", "A", "PRESS",
+			[('use_all_regions', False), ('center', False)])
 
 	# Display Settings ------------------------------------------
 	# 0 	Default quality display setting
@@ -85,117 +118,185 @@ def view3d(km):
 	# 6 	Shaded and Textured display
 	# 7 	Use All Lights
 
-def view3d_navigation(km,preferences):
-	space = km.space('3D View','VIEW_3D','WINDOW')
+
+
+def view3d_navigation(km, preferences):
+	space = km.space('3D View', 'VIEW_3D', 'WINDOW')
 	if preferences.view_undo:
-		km.new(space,"view3d.movecover","MIDDLEMOUSE","PRESS",[],alt=True)
-		km.new(space,"view3d.rotatecover","LEFTMOUSE","PRESS",[],alt=True)
-		km.new(space,"view3d.zoomcover","RIGHTMOUSE","PRESS",[],alt=True)
+		km.new(space, "view3d.movecover", "MIDDLEMOUSE", "PRESS", [], alt=True)
+		km.new(space, "view3d.rotatecover", "LEFTMOUSE", "PRESS", [], alt=True)
+		km.new(space, "view3d.zoomcover", "RIGHTMOUSE", "PRESS", [], alt=True)
 	else:
-		km.new(space,"view3d.move","MIDDLEMOUSE","PRESS",[],alt=True)
-		km.new(space,"view3d.rotate","LEFTMOUSE","PRESS",[],alt=True)
-		km.new(space,"view3d.zoom","RIGHTMOUSE","PRESS",[],alt=True)
+		km.new(space, "view3d.move", "MIDDLEMOUSE", "PRESS", [], alt=True)
+		km.new(space, "view3d.rotate", "LEFTMOUSE", "PRESS", [], alt=True)
+		km.new(space, "view3d.zoom", "RIGHTMOUSE", "PRESS", [], alt=True)
+
+
 
 def view3d_generic(km):
 	pass
 
+
+
 def view3d_select(km):
 	pass
+
+
 
 def view3d_transform(km):
 	pass
 
+
+
 def view3d_move(km):
 	pass
+
+
 
 def view3d_rotate(km):
 	pass
 
+
+
 def view3d_scale(km):
 	pass
+
+
 
 def view3d_select_box(km):
 	pass
 
+
+
 def view3d_select_circle(km):
 	pass
+
+
 
 def view3d_select_lasso(km):
 	pass
 
+
+
 def transform(km):
 	pass
 
-def object_mode(km):
-	space = km.space( 'Object Non-modal','EMPTY','WINDOW')
-	km.new(space,"bsmax.mode_set",'TAB',"PRESS",[])
 
-	space = km.space( 'Object Mode','EMPTY','WINDOW')
-	add_search(km,space)
-	add_undo(km,space)
-	km.new(space,"object.hide_view_set","H","PRESS",[],ctrl=True)
-	km.new(space,"object.hide_view_set","H","PRESS",[('unselected',True)],alt=True)
-	km.new(space,"object.hide_view_clear","H","PRESS",[],ctrl=True,shift=True)
-	km.new(space,"object.hide_view_clear","S","PRESS",[])
-	# km.new(space,"anim.keyframe_insert_menu","W","PRESS",[('type','Location')],shift=True)
-	# km.new(space,"anim.keyframe_insert_menu","E","PRESS",[('type','Rotation')],shift=True)
-	# km.new(space,"anim.keyframe_insert_menu","R","PRESS",[('type','Scaling')],shift=True)
-	km.new(space,"object.modify_pivotpoint","INSERT","PRESS",[])
-	km.new(space,"wm.call_menu","INSERT","PRESS",[('name',"BSMAX_MT_SetPivotPoint")],ctrl=True)
+
+def object_mode(km):
+	space = km.space( 'Object Non-modal', 'EMPTY', 'WINDOW')
+	km.new(space, "bsmax.mode_set", 'TAB', "PRESS", [])
+
+	space = km.space( 'Object Mode', 'EMPTY', 'WINDOW')
+	add_search(km, space)
+	add_undo(km, space)
+	km.new(space, "object.hide_view_set", "H", "PRESS", [], ctrl=True)
+	km.new(space, "object.hide_view_set", "H", "PRESS",
+			[('unselected', True)], alt=True)
+
+	km.new(space, "object.hide_view_clear", "H", "PRESS",
+			[], ctrl=True, shift=True)
+
+	km.new(space, "object.hide_view_clear", "S", "PRESS", [])
+	# km.new(space, "anim.keyframe_insert_menu", "W", "PRESS", [('type', 'Location')], shift=True)
+	# km.new(space, "anim.keyframe_insert_menu", "E", "PRESS", [('type', 'Rotation')], shift=True)
+	# km.new(space, "anim.keyframe_insert_menu", "R", "PRESS", [('type', 'Scaling')], shift=True)
+	km.new(space, "object.modify_pivotpoint", "INSERT", "PRESS", [])
+	km.new(space, "wm.call_menu", "INSERT", "PRESS",
+			[('name', "BSMAX_MT_SetPivotPoint")], ctrl=True)
+
+
 
 def mesh(km):
-	space = km.space('Mesh','EMPTY','WINDOW')
-	add_search(km,space)
-	add_undo(km,space)
+	space = km.space('Mesh', 'EMPTY', 'WINDOW')
+	add_search(km, space)
+	add_undo(km, space)
+
+
 
 def curve(km):
-	space = km.space('Curve','EMPTY','WINDOW')
-	add_search(km,space)
-	add_undo(km,space)
+	space = km.space('Curve', 'EMPTY', 'WINDOW')
+	add_search(km, space)
+	add_undo(km, space)
+
+
 
 def armature(km):
-	space = km.space('Armature','EMPTY','WINDOW')
-	add_search(km,space)
-	add_undo(km,space)
+	space = km.space('Armature', 'EMPTY', 'WINDOW')
+	add_search(km, space)
+	add_undo(km, space)
+
+
 
 def metaball(km):
-	space = km.space('Metaball','EMPTY','WINDOW')
-	add_search(km,space)
-	add_undo(km,space)
+	space = km.space('Metaball', 'EMPTY', 'WINDOW')
+	add_search(km, space)
+	add_undo(km, space)
+
+
 
 def lattice(km):
-	space = km.space('Lattice','EMPTY','WINDOW')
-	add_search(km,space)
-	add_undo(km,space)
+	space = km.space('Lattice', 'EMPTY', 'WINDOW')
+	add_search(km, space)
+	add_undo(km, space)
+
+
 
 def grease_pencil(km):
 	pass
 
+
+
 def pos(km):
-	# space = km.space('Pose','EMPTY','WINDOW')
+	# space = km.space('Pose', 'EMPTY', 'WINDOW')
 	pass
+
+
+
+def font(km):
+	space = km.space('Font', 'EMPTY', 'WINDOW')
+
+
 
 def vertex_paint(km):
 	pass
 
+
+
 def weight_paint(km):
 	pass
+
+
 
 def image_paint(km):
 	pass
 
+
+
 def sculpt(km):
 	pass
 
+
+
+def particle(km):
+	space = km.space('Particle', 'EMPTY', 'WINDOW')
+
+
+
+def outliner(km):
+	space = km.space('Outliner', 'OUTLINER', 'WINDOW')
+
+
+
 def node_editor(km):
-	pass
+	space = km.space('Node Editor', 'NODE_EDITOR', 'WINDOW')
+	km.new(space, 'node.group_edit', 'UP_ARROW', 'PRESS', [])
 	# Node Editor ------------------------
-	# Up Arrow 	Back to Parent
 	# Enter 	Dive Into Compound
 	# > 	Graph Downstream
 	# Ctrl + . 	Graph Remove Downstream
 	# Ctrl + L 	Graph Remove Selected
-	# Ctrl + ,	Graph Remove Upsream
+	# Ctrl + , 	Graph Remove Upsream
 	# ? 	Graph Up Downstream
 	# < 	Graph Upstream
 	# X 	Grid Toggle Snap
@@ -217,10 +318,12 @@ def node_editor(km):
 	# C 	Toggle Synced Selection
 	# = 	Toggle Zoom In
 	# - 	Toggle Zoom Out
-	# ,	Up Stream
+	# , 	Up Stream
+
+
 
 def graph_editor(km):
-	# space = km.space("Dopesheet","DOPESHEET_EDITOR,'WINDOW'")
+	# space = km.space("Dopesheet", "DOPESHEET_EDITOR, 'WINDOW'")
 	# Graph Editor ------------------------
 	# 1 	Absolute View
 	# A 	Frame All
@@ -235,27 +338,41 @@ def graph_editor(km):
 	# J 	Unlock Channel
 	pass
 
+
+
 def dopesheet_editor(km):
 	pass
+
+
 
 def nla_editor(km):
 	pass
 
+
+
 def uv_editor(km):
 	pass
-			
+
+
+
 def sequence_editor(km):
 	pass
+
+
 
 def text(km):
 	pass
 
+
+
 def file_browser(km):
 	pass
 
+
+
 km_navigation_3d = KeyMaps()
 km_navigation_2d = KeyMaps()
-km_viowport = KeyMaps()
+km_viewport = KeyMaps()
 km_sculpt = KeyMaps()
 km_uv_editor = KeyMaps()
 km_node_editor = KeyMaps()
@@ -265,53 +382,58 @@ km_clip_editor = KeyMaps()
 km_video_sequencer = KeyMaps()
 km_file_browser = KeyMaps()
 
+
+
 def register_maya(preferences):
 	if bpy.context.window_manager.keyconfigs.addon:
 		if preferences.navigation_3d == "Maya":
-			view3d_navigation(km_navigation_3d,preferences)
+			view3d_navigation(km_navigation_3d, preferences)
 			km_navigation_3d.register()
 			bpy.context.preferences.inputs.view_zoom_axis = 'HORIZONTAL'
 		else:
 			km_navigation_3d.unregister()
 
 		if preferences.navigation_2d == "Maya":
-			view2d_navigation(km_navigation_2d,preferences)
+			view2d_navigation(km_navigation_2d, preferences)
 			km_navigation_2d.register()
 		else:
 			km_navigation_2d.unregister()
 
 		if preferences.viowport == "Maya":
-			window(km_viowport)
-			user_interface(km_viowport)
-			screen(km_viowport)
-			view3d(km_viowport)
-			view2d(km_viowport)
-			view3d_generic(km_viowport)
-			view3d_select(km_viowport)
-			view3d_transform(km_viowport)
-			view3d_move(km_viowport)
-			view3d_rotate(km_viowport)
-			view3d_scale(km_viowport)
-			view3d_select_box(km_viowport)
-			view3d_select_circle(km_viowport)
-			view3d_select_lasso(km_viowport)
-			transform(km_viowport)
-			object_mode(km_viowport)
-			mesh(km_viowport)
-			curve(km_viowport)
-			armature(km_viowport)
-			metaball(km_viowport)
-			lattice(km_viowport)
-			grease_pencil(km_viowport)
-			pos(km_viowport)
-			km_viowport.register()
+			window(km_viewport)
+			user_interface(km_viewport)
+			screen(km_viewport)
+			view3d(km_viewport)
+			view2d(km_viewport)
+			view3d_generic(km_viewport)
+			view3d_select(km_viewport)
+			view3d_transform(km_viewport)
+			view3d_move(km_viewport)
+			view3d_rotate(km_viewport)
+			view3d_scale(km_viewport)
+			view3d_select_box(km_viewport)
+			view3d_select_circle(km_viewport)
+			view3d_select_lasso(km_viewport)
+			transform(km_viewport)
+			object_mode(km_viewport)
+			mesh(km_viewport)
+			curve(km_viewport)
+			armature(km_viewport)
+			metaball(km_viewport)
+			lattice(km_viewport)
+			grease_pencil(km_viewport)
+			pos(km_viewport)
+			font(km_viewport)
+			outliner(km_viewport)
+			km_viewport.register()
 		else:
-			km_viowport.unregister()
+			km_viewport.unregister()
 
 		if preferences.sculpt == "Maya":
 			vertex_paint(km_sculpt)
 			weight_paint(km_sculpt)
 			image_paint(km_sculpt)
+			particle(km_sculpt)
 			sculpt(km_sculpt)
 			km_sculpt.register()
 		else:
@@ -364,7 +486,7 @@ def register_maya(preferences):
 def unregister_maya():
 	km_navigation_3d.unregister()
 	km_navigation_2d.unregister()
-	km_viowport.unregister()
+	km_viewport.unregister()
 	km_sculpt.unregister()
 	km_uv_editor.unregister()
 	km_node_editor.unregister()
@@ -391,7 +513,7 @@ Shift + S 	With left mouse button for Keyframe marking menu
 
 
 
-Displaying Objects (Show,Hide)----------------------------
+Displaying Objects (Show, Hide)----------------------------
 Ctrl + H 	Hide > Hide Selection
 Alt + H 	Hide > Hide Unselected Objects
 Shift + l 	Isolate Select > View Selected (in the panel menus)
@@ -468,8 +590,8 @@ Up 	Walk up current
 Playback Control ----------------------------------------
 Alt+Shift + V 	Go to Min Frame
 . 	Go to Next key
-,	Go to Previous key
-Alt + ,	Move backward one frame in time
+, 	Go to Previous key
+Alt + , 	Move backward one frame in time
 Alt + . 	Move forward one frame in time
 Alt + V 	Turn Playback on or off
 K + Middle mouse button 	Virtual Time Slider mode (press and hold and scrub timeline)
@@ -502,8 +624,8 @@ Alt + F9 	Vertex Face
 
 
 Snapping Operations ----------------------------------------
-Shift + J 	Move,Rotate,Scale Tool relative snapping (press and release)
-J 	Move,Rotate,Scale Tool snapping (press and release)
+Shift + J 	Move, Rotate, Scale Tool relative snapping (press and release)
+J 	Move, Rotate, Scale Tool snapping (press and release)
 C 	Snap to curves (press and release)
 X 	Snap to grids (press and release)
 V 	Snap to points (press and release)
@@ -513,21 +635,21 @@ Tool Operations --------------------------------
 Return 	Complete current tool
 - 	Decrease manipulator size
 Insert 	Enter tool Edit mode
-=,+ 	Increase manipulator size
-W 	Move Tool,or with left mouse button for Move Tool marking menu
-J 	Move,Rotate,Scale Tool Snapping (press and release)
-E 	Rotate Tool,or with left mouse button for Rotate Tool marking menu
-R 	Scale Tool,or with left mouse button for Scale Tool marking menu
-Shift + Q 	Select Tool,or with left mouse button for Component marking menu
-Alt + Q 	Select Tool,or with left mouse button for Polygon marking menu
-Q 	Select Tool,or with left mouse button for Selection Mask marking menu
-Y 	Selects the last used tool that is not one of Select,Move,Rotate,or Scale
+=, + 	Increase manipulator size
+W 	Move Tool, or with left mouse button for Move Tool marking menu
+J 	Move, Rotate, Scale Tool Snapping (press and release)
+E 	Rotate Tool, or with left mouse button for Rotate Tool marking menu
+R 	Scale Tool, or with left mouse button for Scale Tool marking menu
+Shift + Q 	Select Tool, or with left mouse button for Component marking menu
+Alt + Q 	Select Tool, or with left mouse button for Polygon marking menu
+Q 	Select Tool, or with left mouse button for Selection Mask marking menu
+Y 	Selects the last used tool that is not one of Select, Move, Rotate, or Scale
 T 	Show manipulator tool
 Ctrl + T 	Show universal manipulator tool
 Insert 	Switches between move pivot and move object (Move Tool)
 D 	With left mouse button move pivot (Move Tool)
 
-Tumble,Track or Dolly ---------------------------------
+Tumble, Track or Dolly ---------------------------------
 Alt + Right mouse button 	Dolly Tool (press and release)
 Alt + Middle mouse button 	Track Tool (press and release)
 Alt + Left mouse button 	Tumble Tool (press and release)
@@ -535,7 +657,7 @@ Alt + Left mouse button 	Tumble Tool (press and release)
 Window and View Operations ------------------------
 Space 	(When tapped) Switch between the active window in multi-pane display and single pane display
 Alt + Ctrl + Middle mouse button 	Fast pan in the Outliner
-A 	Frame All in active panel,or with left mouse button for History Operations marking menu
+A 	Frame All in active panel, or with left mouse button for History Operations marking menu
 Shift + A 	Frame All in all views
 F 	Frame Selected in active panel
 Shift + F 	Frame Selected in all views
@@ -543,7 +665,7 @@ F1 	Maya Help
 Alt + Middle mouse button 	Pan in the Attribute Editor
 Alt + Middle mouse button 	Pan in the Outliner
 ] 	Redo view change
-Alt + B 	Switch between a gradient,black,dark gray,or light gray background color
+Alt + B 	Switch between a gradient, black, dark gray, or light gray background color
 Ctrl + Space 	Switch between the standard view and full-screen view of the current panels
 Ctrl + A 	Switches between Attribute Editor or Channel Box–displays the Attribute Editor if neither is shown
 [ 	Undo view change
@@ -562,7 +684,7 @@ Hypershade ------------------------
 Ctrl + . 	Graph Remove Downstream
 Ctrl + L 	Graph Remove Selected
 Ctrl + / 	Graph Remove Unselected
-Ctrl + ,	Graph Remove Upstream
+Ctrl + , 	Graph Remove Upstream
 ? 	Graph Up Downstream
 < 	Graph Upstream
 1 	Hypdershade Hide Attributes
@@ -574,7 +696,7 @@ P 	Pin Selected
 # 	Remove Material Soloing
 / 	Select Connected
 . 	Select Down Stream
-,	Select Up Stream
+, 	Select Up Stream
 3 	Show All Attrs
 2 	Show Connected Attrs
 4 	Show Custom Attrs

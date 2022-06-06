@@ -151,7 +151,7 @@ def set_origen(ctx, obj, location):
 	scene.cursor.location = location
 	bpy.ops.object.select_all(action='DESELECT')
 	ctx.view_layer.objects.active = obj
-	obj.select_set(state = True)
+	obj.select_set(state=True)
 	bpy.ops.object.origin_set(type='ORIGIN_CURSOR', center='MEDIAN')
 	scene.cursor.location = saved_location
 	scene.cursor.rotation_euler = saved_rotation
@@ -246,10 +246,10 @@ def freeze_transform(objs, location=True, rotation=True, scale=True):
 				obj.rotation_euler = [0, 0, 0]
 
 			elif obj.rotation_mode == 'QUATERNION':
-				obj.delta_rotation_quaternion.w = obj.rotation_quaternion.w
-				obj.delta_rotation_quaternion.x = obj.rotation_quaternion.x
-				obj.delta_rotation_quaternion.y = obj.rotation_quaternion.y
-				obj.delta_rotation_quaternion.z = obj.rotation_quaternion.z
+				obj.delta_rotation_quaternion.w += obj.rotation_quaternion.w
+				obj.delta_rotation_quaternion.x += obj.rotation_quaternion.x
+				obj.delta_rotation_quaternion.y += obj.rotation_quaternion.y
+				obj.delta_rotation_quaternion.z += obj.rotation_quaternion.z
 
 			elif obj.rotation_mode == 'AXIS_ANGLE':
 				#TODO

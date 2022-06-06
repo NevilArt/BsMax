@@ -14,10 +14,11 @@
 ############################################################################
 
 import bpy
+
 from bpy.types import Operator
 from mathutils import Vector
-from bsmax.operator import PickOperator
 
+from bsmax.operator import PickOperator
 
 
 def insert_key_for_current_state(chanel, frame):
@@ -116,7 +117,7 @@ class Anim_OT_Link_Constraint(PickOperator):
 	@classmethod
 	def poll(self, ctx):
 		if ctx.area.type == 'VIEW_3D':
-			return len(ctx.selected_objects) > 0
+			return ctx.selected_objects
 		return False
 	
 	def set_link(self, obj, parent, subtarget, frame):
@@ -184,7 +185,8 @@ class Anim_OT_Link_Constraint(PickOperator):
 			else:
 				set_object_free(self, obj, frame)
 				self.set_link(obj, target, subtarget, frame)
-		self.report({'OPERATOR'},'bpy.ops.anim.link_constraint()')
+		# self.report({'OPERATOR'},'bpy.ops.anim.link_constraint()')
+
 
 
 class Anim_OT_Link_To_World(Operator):
@@ -195,7 +197,7 @@ class Anim_OT_Link_To_World(Operator):
 	@classmethod
 	def poll(self, ctx):
 		if ctx.area.type == 'VIEW_3D':
-			return len(ctx.selected_objects) > 0
+			return ctx.selected_objects
 		return False
 	
 	def execute(self, ctx):
@@ -210,7 +212,7 @@ class Anim_OT_Link_To_World(Operator):
 			else:
 				set_object_free(self, obj, frame)
 		
-		self.report({'OPERATOR'},'bpy.ops.anim.link_to_world()')
+		# self.report({'OPERATOR'},'bpy.ops.anim.link_to_world()')
 		return{'FINISHED'}
 
 
@@ -226,7 +228,7 @@ class Anim_OT_Path_Constraint(PickOperator):
 	@classmethod
 	def poll(self, ctx):
 		if ctx.area.type == 'VIEW_3D':
-			return len(ctx.selected_objects) > 0
+			return ctx.selected_objects
 		return False
 	
 	def get_first_pint_position(self, curve):
@@ -257,7 +259,7 @@ class Anim_OT_Path_Constraint(PickOperator):
 		for obj in source:
 			if obj != target:
 				self.set_path_constraint(ctx, obj, target)
-		self.report({'OPERATOR'},'bpy.ops.anim.path_constraint()')
+		# self.report({'OPERATOR'},'bpy.ops.anim.path_constraint()')
 
 
 
@@ -269,7 +271,7 @@ class Anim_OT_Lookat_Constraint(PickOperator):
 	@classmethod
 	def poll(self, ctx):
 		if ctx.area.type == 'VIEW_3D':
-			return len(ctx.selected_objects) > 0
+			return ctx.selected_objects
 		return False
 
 	def set_lookat(self, obj, target, subtarget):
@@ -284,7 +286,7 @@ class Anim_OT_Lookat_Constraint(PickOperator):
 	def picked(self, ctx, source, subsource, target, subtarget):
 		for obj in source:
 			self.set_lookat(obj, target, subtarget)
-		self.report({'OPERATOR'},'bpy.ops.anim.lookat_constraint()')
+		# self.report({'OPERATOR'},'bpy.ops.anim.lookat_constraint()')
 
 
 
@@ -296,7 +298,7 @@ class Anim_OT_Location_Constraint(PickOperator):
 	@classmethod
 	def poll(self, ctx):
 		if ctx.area.type == 'VIEW_3D':
-			return len(ctx.selected_objects) > 0
+			return ctx.selected_objects
 		return False
 
 	def set_location(self, obj, target, subtarget):
@@ -308,7 +310,7 @@ class Anim_OT_Location_Constraint(PickOperator):
 	def picked(self, ctx, source, subsource, target, subtarget):
 		for obj in source:
 			self.set_location(obj, target, subtarget)
-		self.report({'OPERATOR'},'bpy.ops.anim.location_constraint()')
+		# self.report({'OPERATOR'},'bpy.ops.anim.location_constraint()')
 
 
 
@@ -320,7 +322,7 @@ class Anim_OT_Orientation_Constraint(PickOperator):
 	@classmethod
 	def poll(self, ctx):
 		if ctx.area.type == 'VIEW_3D':
-			return len(ctx.selected_objects) > 0
+			return ctx.selected_objects
 		return False
 
 	def set_orient(self, obj, target, subtarget):
@@ -332,16 +334,19 @@ class Anim_OT_Orientation_Constraint(PickOperator):
 	def picked(self, ctx, source, subsource, target, subtarget):
 		for obj in source:
 			self.set_orient(obj, target, subtarget)
-		self.report({'OPERATOR'},'bpy.ops.anim.orientation_constraint()')
+		# self.report({'OPERATOR'},'bpy.ops.anim.orientation_constraint()')
 
 
 
-classes = [	Anim_OT_Link_Constraint,
+classes = [
+			Anim_OT_Link_Constraint,
 			Anim_OT_Link_To_World,
 			Anim_OT_Path_Constraint,
 			Anim_OT_Lookat_Constraint,
 			Anim_OT_Location_Constraint,
-			Anim_OT_Orientation_Constraint]
+			Anim_OT_Orientation_Constraint
+		]
+
 
 def register_parent():
 	for c in classes:

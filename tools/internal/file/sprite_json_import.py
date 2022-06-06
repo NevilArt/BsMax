@@ -228,7 +228,18 @@ class File_TO_Sprite_JSON_Import(Operator, ImportHelper):
 	filter_glob: StringProperty(default="*.json", options={'HIDDEN'})
 
 	# update: BoolProperty(name="update")
+	
 	scale: FloatProperty(name='Scale', min=0, default=0.01)
+	
+	format: EnumProperty(
+		name="Json Source File",
+		items=(
+			('COA', "COA-Tools", ""),
+			('SPINE', "Spine", ""),
+		),
+		default='COA',
+	)
+
 	unit: EnumProperty(
 		name="Source Unit",
 		items=(
@@ -250,8 +261,9 @@ class File_TO_Sprite_JSON_Import(Operator, ImportHelper):
 	def draw(self, ctx):
 		layout = self.layout
 		layout.prop(self, 'scale', text="Scale")
+		layout.prop(self, 'format', text="Json Source File")
 		layout.prop(self, 'unit', text="Source Unit")
-		layout.prop(self, 'shading', text="Source Unit")
+		layout.prop(self, 'shading', text="Shading Mode")
 
 	def execute(self, ctx):
 		name, nodes, path = read_json_file(self.filepath)
@@ -283,10 +295,10 @@ def menu_func_import(self, ctx):
 
 def register_sprite_json_importer():
 	bpy.utils.register_class(File_TO_Sprite_JSON_Import)
-	# bpy.types.TOPBAR_MT_file_import.append(menu_func_import)
+	bpy.types.TOPBAR_MT_file_import.append(menu_func_import)
 
 def unregister_sprite_json_importer():
-	# bpy.types.TOPBAR_MT_file_import.remove(menu_func_import)
+	bpy.types.TOPBAR_MT_file_import.remove(menu_func_import)
 	bpy.utils.unregister_class(File_TO_Sprite_JSON_Import)
 
 if __name__ == "__main__":

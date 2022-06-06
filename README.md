@@ -39,19 +39,11 @@ Your Donation helps me to ignore other freelance offers and focus on BsMax and s
 
 # Recent Updates and Changes
 
-* 'Lattice / FFD' set operator miss calculation fixed and performed.
-* New 'Transform class' And 'Grid Display', not implement in all other tools yet.
-* 'Ctrl + Inser' set Pivot menu add to pose & bone edit mode too (3DsMax mode).
-* 'Random Object color' unlike the other random display, manualy editable and change every time (Object> show/hide > Random object color).
+* Draw object Gride preview added (For now just a prototype).
+* 'Create Bone' Bone roll rotation fixed and now works correctly in IK mode.
+* 'Select Flipped UVs' [UV editor> select> Select Filipped UVs].
+* 'Create Upnode' add parented empty object (object> parent> create upnode).
 * [Change log ...](https://github.com/NevilArt/BsMax/blob/master/CHANGELOG.md)
-
-# In Production 
-
-* Cleanup: All Operator and Tools need to review.
-* Cleanup Step 1: Make all quadmenu Item works.
-* Cleanup Step 2: Decrease operators count and hide unnecessary operator.
-* Cleanup Step 3: make all tools perfect as possble.
-* PieMax: Combanition of 3DsMax Quad menu and Blender Pie Menu.
 
 # License
 

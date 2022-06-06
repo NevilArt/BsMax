@@ -14,6 +14,9 @@
 ############################################################################
 
 import bpy
+
+from math import atan2
+
 from primitive.primitive import Primitive_Geometry_Class, Draw_Primitive
 from bsmax.actions import delete_objects
 from bsmax.math import get_axis_constraint
@@ -24,7 +27,7 @@ class Armature(Primitive_Geometry_Class):
 	def init(self):
 		self.classname = "Armature"
 		self.finishon = 0 # infinit
-		self.bones = []
+		# self.bones = []
 
 	def create(self, ctx):
 		bpy.ops.object.armature_add(enter_editmode=False, location=(0, 0, 0))
@@ -34,19 +37,38 @@ class Armature(Primitive_Geometry_Class):
 	def abort(self):
 		bpy.ops.object.mode_set(mode='EDIT', toggle=False)
 		edit_bones = self.data.edit_bones
+
+		# remove none confirmed bone
 		if len(edit_bones) > 0:
 			edit_bones.remove(edit_bones[-1])
+
 		for i in range(len(edit_bones) - 1):
-			# TODO find a better way to replace with this ugly code
+			# TODO need to a clear method
 			bpy.ops.armature.select_all(action='DESELECT')
 			edit_bones.active = edit_bones[i]
 			edit_bones[i + 1].select = True
 			bpy.ops.armature.parent_set(type='CONNECTED')
 			
 		bpy.ops.object.mode_set(mode='OBJECT', toggle=False)
+
+		# remove armature if no bone created
 		if len(self.data.bones) == 0:
 			delete_objects([self.owner])
+
 		self.reset()
+
+
+
+def get_roll(bone):
+	""" Get edit bone and return corrective roll angle
+		args:
+			bone: edit bone
+		return:
+			float roll angle
+	"""
+	a = bone.head.x - bone.tail.x
+	b = bone.head.z - bone.tail.z
+	return atan2(a, b)
 
 
 
@@ -61,10 +83,14 @@ class Create_OT_Bone(Draw_Primitive):
 	def create(self, ctx):
 		self.used_keys += ['LEFT_SHIFT', 'RIGHT_SHIFT', 'BACK_SPACE']
 		self.request_key = ['BACK_SPACE']
+
 		self.subclass.create(ctx)
 		self.startpoint = self.gride.location
+
 		bpy.ops.object.mode_set(mode='EDIT', toggle=False)
 		edit_bones = self.subclass.data.edit_bones 
+
+		# remove original bone
 		for bone in edit_bones:
 			edit_bones.remove(bone)
 
@@ -77,11 +103,16 @@ class Create_OT_Bone(Draw_Primitive):
 				dimension.end = get_axis_constraint(edit_bones[-1].head, dimension.end)
 
 		if len(edit_bones) > 0:
-			edit_bones[-1].tail = dimension.end
+			last_bone = edit_bones[-1]
+			last_bone.tail = dimension.end
+			last_bone.roll = get_roll(last_bone)
+
 		if clickcount != self.lastclick:
 			newbone = edit_bones.new('Bone')
+
 			if len(edit_bones) == 1:
 				newbone.head = self.startpoint
+
 			else:
 				newbone.head = edit_bones[-2].tail
 			newbone.tail = dimension.end
@@ -92,6 +123,7 @@ class Create_OT_Bone(Draw_Primitive):
 			if value == 'RELEASE':
 				bpy.ops.object.mode_set(mode='EDIT', toggle=False)
 				edit_bones = self.subclass.data.edit_bones
+
 				if len(edit_bones) > 1:
 					edit_bones.remove(edit_bones[-1])
 

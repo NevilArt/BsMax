@@ -1,3 +1,9 @@
+# 0, 1, 0, 20220529
+* 'Lattice / FFD' set operator miss calculation fixed and performed.
+* New 'Transform class' And 'Grid Display', not implement in all other tools yet.
+* 'Ctrl + Inser' set Pivot menu add to pose & bone edit mode too (3DsMax mode).
+* 'Random Object color' unlike the other random display, manualy editable and change every time (Object> show/hide > Random object color).
+
 # 0, 1, 0, 20220516
 * Ocean Caustic added to map presets "Shader editor/Tools/Append Node Trees".
 * 'Alt + Space' Selection Lock Toggle (3DsMax mode).

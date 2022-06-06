@@ -14,10 +14,13 @@
 ############################################################################
 
 import bpy
-import bmesh
+
+from mathutils import Vector
 
 from bpy.types import Operator
 from bpy.props import BoolProperty, EnumProperty
+
+
 
 # this operator works smoother then the original one in panel 
 class UV_OT_Mirror_Cover(Operator):
@@ -138,19 +141,88 @@ class UV_OT_Rectangulate_Active_Face(Operator):
 
 
 
+""" Original Author 'Simon Lusenc' """
+class UV_OT_Select_Flipped_UVs(Operator):
+	"""Select polygons with flipped UV mapping."""
 
-classes = [
+	# Algorithm stands on the thesis that order of polygon loop is defining direction of face normal
+	# and that same loop order is used in uv data.
+	# With this knowladge we can easily say that cross product:
+	# (v2.uv-v1.uv)x(v3.uv-v2.uv) gives us uv normal direction of part of the polygon. Further
+	# this normal has to be used in dot product with up vector (0,0,1) and result smaller than zero
+	# means uv normal is pointed in opposite direction than it should be (partial polygon v1,v2,v3 is flipped).
+
+	bl_idname = "uv.select_flipped"
+	bl_label = "Select Flipped UVs"
+
+	@classmethod
+	def poll(self, ctx):
+		return ctx.mode == 'EDIT_MESH'
+
+	def execute(self, ctx):
+		obj = ctx.object
+		
+		bpy.ops.mesh.select_all(action="DESELECT")
+		bpy.ops.object.mode_set(mode="OBJECT")
+		
+		for poly in obj.data.polygons:
+			
+			# calculate uv differences between current and next face vertex for
+			# whole polygon	  
+			diffs = []
+			for l_i in poly.loop_indices:
+				
+				next_l = l_i+1 if l_i < poly.loop_start + poly.loop_total - 1 \
+															else poly.loop_start
+				
+				next_v_uv = obj.data.uv_layers.active.data[next_l].uv
+				v_uv = obj.data.uv_layers.active.data[l_i].uv
+				
+				diffs.append((next_v_uv - v_uv).to_3d())	
+
+			# go trough all uv differences and calculate cross product between
+			# currentand next cross product gives us normal of the triangle.
+			# That normal then is used in dot product with up vector (0,0,1).
+			# If result is negative we have found flipped part of polygon.
+			for i, _ in enumerate(diffs):
+				
+				if i == len(diffs)-1:
+					break
+				
+				# as soon as we find partial flipped polygon we select it and finish search
+				if diffs[i].cross(diffs[i+1]) @ Vector((0,0,1)) <= 0:
+					poly.select = True
+					break
+
+		bpy.ops.object.mode_set(mode="EDIT")
+		
+		return {'FINISHED'}
+
+
+
+def uv_select_menu(self, ctx):
+	self.layout.operator("uv.select_flipped")
+
+
+
+classes = (
 		UV_OT_Mirror_Cover,
 		UV_OT_Turn,
+		UV_OT_Select_Flipped_UVs,
 		UV_OT_Split_To_Island,
 		UV_OT_Rectangulate_Active_Face
-	]
+	)
+
 
 def register_edit():
 	for c in classes:
 		bpy.utils.register_class(c)
+	
+	bpy.types.IMAGE_MT_select.append(uv_select_menu)
 
 def unregister_edit():
+	bpy.types.IMAGE_MT_select.remove(uv_select_menu)
+
 	for c in classes:
 		bpy.utils.unregister_class(c)
 

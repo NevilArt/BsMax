@@ -14,9 +14,15 @@
 ############################################################################
 
 import bpy
-from mathutils import Vector, Matrix
+
+from mathutils import Matrix
 from bpy.types import Operator
+
 from bsmax.operator import PickOperator
+from bsmax.actions import link_to, freeze_transform
+from bsmax.state import get_dimensions_avrage
+
+
 
 class Object_OT_Link_to(PickOperator):
 	""" This Class mimics the 3DsMax 'link to' operator """
@@ -27,7 +33,7 @@ class Object_OT_Link_to(PickOperator):
 	@classmethod
 	def poll(self, ctx):
 		if ctx.area.type == 'VIEW_3D':
-			return len(ctx.selected_objects) > 0
+			return ctx.selected_objects
 		return False
 
 	def link_to_bone(self, obj, armature, bone):
@@ -76,18 +82,23 @@ class Object_OT_Link_to(PickOperator):
 		""" Bone -> Bone """
 		if subsource and subtarget:
 			bpy.ops.object.mode_set(mode='EDIT', toggle=False)
+			edit_bones = target.data.edit_bones
 			for bone in subsource:
 				""" Target and source[0] are same here """
-				target.data.edit_bones[bone.name].parent = target.data.edit_bones[subtarget.name]
+				edit_bones[bone.name].parent = edit_bones[subtarget.name]
 				# TODO have to keep transform
 			# self.set_mode(self.mode)
-		
-		self.report({'OPERATOR'},'bpy.ops.object.link_to()')
+
+
 
 class Object_OT_Unlink(Operator):
 	bl_idname = "object.unlink"
 	bl_label = "Unlink"
 	bl_options = {'REGISTER', 'UNDO'}
+
+	@classmethod
+	def poll(self, ctx):
+		return ctx.area.type == 'VIEW_3D'
 	
 	def execute(self, ctx):
 		for obj in ctx.selected_objects:
@@ -96,22 +107,76 @@ class Object_OT_Unlink(Operator):
 			obj.matrix_world = matrix_world
 		return{"FINISHED"}
 
+
+
+class Object_OT_Create_up_node(Operator):
+	bl_idname = 'object.create_upnode'
+	bl_label = 'Create Upnode'
+	bl_options = {'REGISTER', 'UNDO'}
+
+	@classmethod
+	def poll(self, ctx):
+		if ctx.area.type == 'VIEW_3D':
+			return ctx.selected_objects
+		return False
+	
+	def execute(self, ctx):
+		""" get current state info """
+		objs = ctx.selected_objects.copy()
+		bpy.ops.object.select_all(action='DESELECT')
+		emptys = []
+		frame = ctx.scene.frame_current
+		ctx.scene.frame_current = 0
+		for obj in objs:
+			bpy.ops.object.empty_add(type='PLAIN_AXES')
+			empty = ctx.active_object
+			emptys.append(empty)
+			size = get_dimensions_avrage(obj, True, True, False)
+			empty.empty_display_size = size
+			empty.name = obj.name + "_root_node"
+
+			empty.matrix_world = obj.matrix_world
+			freeze_transform([obj])
+
+			if obj.parent:
+				link_to(empty, obj.parent)
+				link_to(obj, empty)
+			else:
+				link_to(obj, empty)
+
+		# select only new created nodes
+		bpy.ops.object.select_all(action='DESELECT')
+		for empty in emptys:
+			empty.select_set(state=True)
+
+		ctx.scene.frame_current = frame
+
+		return{'FINISHED'}
+
+
+
 def linkto_menu(self, ctx):
 	layout = self.layout
 	layout.separator()
-	layout.operator("object.link_to",icon="LINKED")
+	layout.operator("object.link_to")
+	layout.operator('object.create_upnode')
 
-classes = [Object_OT_Link_to, Object_OT_Unlink]
+classes = [Object_OT_Link_to, Object_OT_Unlink, Object_OT_Create_up_node]
+
 
 def register_link_to():
 	for c in classes:
 		bpy.utils.register_class(c)
+
 	bpy.types.VIEW3D_MT_object_parent.append(linkto_menu)
+
 
 def unregister_link_to():
 	bpy.types.VIEW3D_MT_object_parent.remove(linkto_menu)
+
 	for c in classes:
 		bpy.utils.unregister_class(c)
+
 
 if __name__ == "__main__":
 	register_link_to()

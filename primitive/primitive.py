@@ -344,6 +344,14 @@ class Draw_Primitive(Operator):
 		""" Create local Gride """
 		self.gride.get_coordinate(ctx, x, y)
 
+		##########################
+		# just a prototype #
+		self.local_gride.matrix = self.gride.gride_matrix
+		self.local_gride.set(2, 15, None)
+		self.local_gride.genarate_gride_lines()
+		self.local_gride.register(ctx)
+		##########################
+
 		""" Get First Click Point """
 		self.point_current.location = self.gride.location.copy()
 		self.point_start.location = self.point_current.location.copy()
@@ -370,6 +378,7 @@ class Draw_Primitive(Operator):
 		self.point_start.reset()
 		self.point_current.reset()
 		self.step = 0
+		self.local_gride.unregister()
 	
 	def jump_to_end(self):
 		self.use_single_draw = False
@@ -384,7 +393,7 @@ class Draw_Primitive(Operator):
 		else:
 			self.subclass.abort()
 		self.reset()
-		""" Now you can lout MORTAL COMBAT Ha Ha Ha """
+		self.local_gride.unregister()
 	
 	def check_event(self, key, action):
 		pass
@@ -441,6 +450,10 @@ class Draw_Primitive(Operator):
 					self.point_current.location = self.gride.get_click_point_gride(ctx, x, y)
 				elif self.use_surface:
 					self.point_current.location = self.gride.get_click_point_surface(ctx, x, y)
+					################
+					self.local_gride.matrix = self.gride.gride_matrix
+					self.local_gride.genarate_gride_lines()
+					################
 				else:
 					self.point_current.location = self.gride.get_click_point_gride(ctx, x, y)
 				
