@@ -70,8 +70,9 @@ def get_active_type(ctx):
 
 def get_obj_class(obj):
 	""" return primitive object type """
-	if obj.type in ['MESH', 'CURVE']:
-		return obj.data.primitivedata.classname
+	if obj:
+		if obj.type in ['MESH', 'CURVE']:
+			return obj.data.primitivedata.classname
 	return ""
 
 

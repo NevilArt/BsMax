@@ -587,10 +587,14 @@ class Sequencer_OT_Make_Ready_Render(Operator):
 
 
 def register_make_ready_render():
-	bpy.utils.register_class(Sequencer_OT_Make_Ready_Render)
+	try:
+		bpy.utils.register_class(Sequencer_OT_Make_Ready_Render)
+	except:
+		pass
 
 def unregister_make_ready_render():
-	bpy.utils.unregister_class(Sequencer_OT_Make_Ready_Render)
+	if hasattr(bpy.types, Sequencer_OT_Make_Ready_Render.bl_idname):
+		bpy.utils.unregister_class(Sequencer_OT_Make_Ready_Render)
 
 if __name__ == '__main__':
 	register_make_ready_render()

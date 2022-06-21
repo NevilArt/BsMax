@@ -1,3 +1,9 @@
+# 0, 1, 0, 20220606
+* Draw object Gride preview added (For now just a prototype).
+* 'Create Bone' Bone roll rotation fixed and now works correctly in IK mode.
+* 'Select Flipped UVs' [UV editor> select> Select Filipped UVs].
+* 'Create Upnode' add parented empty object (object> parent> create upnode).
+
 # 0, 1, 0, 20220529
 * 'Lattice / FFD' set operator miss calculation fixed and performed.
 * New 'Transform class' And 'Grid Display', not implement in all other tools yet.

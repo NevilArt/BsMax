@@ -879,5 +879,5 @@ def register_modifier():
 
 def unregister_modifier():
 	for c in classes:
-		# if hasattr(bpy.types, eval("bpy.ops." + c.bl_idname + ".idname()")):
-		bpy.utils.unregister_class(c)
+		if hasattr(bpy.types, c.bl_idname):
+			bpy.utils.unregister_class(c)

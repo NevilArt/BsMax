@@ -27,7 +27,7 @@ class BsMax_MT_rigg_tools(bpy.types.Menu):
 
 	def draw(self, ctx):
 		layout=self.layout
-		layout.operator("rigg.joy_stick_creator",icon="EVENT_O")
+		layout.operator("rigg.joystick_creator",icon="EVENT_O")
 		layout.operator("rigg.joystick_shapekey_connector",icon="LINK_BLEND")
 		# layout.operator("rigg.eye_target_creator",icon="HIDE_OFF")
 

@@ -18,12 +18,14 @@ from .attach import register_attach, unregister_attach
 from .joystick import register_joystic, unregister_joystic
 from .menu import register_menu, unregister_menu
 from .shapekey import register_shapekey, unregister_shapekey
+from .wire_parameter import register_wire_parameter, unregister_wire_parameter
 
 def register_rigg():
 	register_attach()
 	# register_eyetarget()
 	register_joystic()
 	register_shapekey()
+	register_wire_parameter()
 	register_menu()
 
 def unregister_rigg():
@@ -31,4 +33,5 @@ def unregister_rigg():
 	# unregister_eyetarget()
 	unregister_joystic()
 	unregister_shapekey()
+	unregister_wire_parameter()
 	unregister_menu()

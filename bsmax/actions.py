@@ -95,6 +95,14 @@ def link_to_scene(ctx, objs):
 
 
 def set_as_active_object(ctx, obj):
+	""" Deselect all objects and set given object as active
+
+		args:
+			ctx: bpy.context
+			obj: object
+		return:
+			None
+	"""
 	if obj:
 		bpy.ops.object.select_all(action = 'DESELECT')
 		obj.select_set(state = True)
@@ -146,8 +154,8 @@ def get_object_target(obj):
 
 def set_origen(ctx, obj, location):
 	scene = ctx.scene
-	saved_location = scene.cursor.location
-	saved_rotation = scene.cursor.rotation_euler
+	saved_location = scene.cursor.location.copy()
+	saved_rotation = scene.cursor.rotation_euler.copy()
 	scene.cursor.location = location
 	bpy.ops.object.select_all(action='DESELECT')
 	ctx.view_layer.objects.active = obj
@@ -323,3 +331,42 @@ def paste_array_from_clipboard(key):
 		return None
 	# cast all line to variable and return the array
 	return [eval(line) for line in lines[1:]]
+
+
+
+def catche_collection(ctx, name):
+	""" Find and return collection by name, create new one if not exist.
+
+		args:
+			ctx: bpy.context
+			name: string collection name
+		rettun:
+			collection
+	"""
+	if name in bpy.data.collections:
+		return bpy.data.collections[name]
+
+	collection = bpy.data.collections.new(name)
+	ctx.scene.collection.children.link(collection)
+	return collection
+
+
+
+def move_to_collection(obj, collection):
+	""" Clear all collection and link to given one
+
+		args:
+			obj: Object or list
+			collection: collection
+		return:
+			None
+	"""
+	if isinstance(obj, list):
+		for o in obj:
+			for c in o.users_collection:
+				c.objects.unlink(o)
+			collection.objects.link(o)
+	else:
+		for c in obj.users_collection:
+			c.objects.unlink(obj)
+		collection.objects.link(obj)

@@ -281,11 +281,13 @@ def view2d_navigation(km, preferences):
 def view3d(km, preferences):
 	km.mute('3D View', 'view3d.view_center_pick', 'MIDDLEMOUSE', 'CLICK',
 			alt=True)
+
 	if version < (3, 2, 0):
 		km.mute('3D View', 'view3d.view_axis', 'EVT_TWEAK_M', 'NORTH', alt=True)
 		km.mute('3D View', 'view3d.view_axis', 'EVT_TWEAK_M', 'SOUTH', alt=True)
 		km.mute('3D View', 'view3d.view_axis', 'EVT_TWEAK_M', 'EAST', alt=True)
 		km.mute('3D View', 'view3d.view_axis', 'EVT_TWEAK_M', 'WEST', alt=True)
+
 	else:
 		km.mute('3D View', 'view3d.view_axis', 'MIDDLEMOUSE', 'CLICK_DRAG',
 				alt=True, direction='NORTH')
@@ -298,6 +300,8 @@ def view3d(km, preferences):
 
 		km.mute('3D View', 'view3d.view_axis', 'MIDDLEMOUSE', 'CLICK_DRAG',
 				alt=True, direction='WEST')
+
+		km.mute('3D View', 'view3d.select', 'LEFTMOUSE', 'CLICK', ctrl=True) #<<
 
 	km.mute('3D View', 'view3d.move', 'MIDDLEMOUSE', 'PRESS', shift=True)
 	km.mute('3D View', 'view3d.localview_remove_from', 'M', 'PRESS', ctrl=True)
@@ -932,6 +936,10 @@ def armature(km, preferences):
 	# km.new(space, 'wm.tool_set_by_id', 'E', 'PRESS', [('name', 'builtin.rotate')])
 	km.new(space, 'wm.call_menu', 'INSERT', 'PRESS',
 			[('name', 'VIEW3D_MT_snap')], ctrl=True)
+	
+	km.new(space, 'armature.shortest_path_pick', 'LEFTMOUSE', 'PRESS',
+			[], ctrl=True) #<<
+	
 
 
 

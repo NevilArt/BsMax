@@ -39,10 +39,10 @@ Your Donation helps me to ignore other freelance offers and focus on BsMax and s
 
 # Recent Updates and Changes
 
-* Draw object Gride preview added (For now just a prototype).
-* 'Create Bone' Bone roll rotation fixed and now works correctly in IK mode.
-* 'Select Flipped UVs' [UV editor> select> Select Filipped UVs].
-* 'Create Upnode' add parented empty object (object> parent> create upnode).
+* Joystick Creator store 'Display Meshes' in a collection rather than delete them.
+* Joystick Creator share display mesh if there are same rather than new for each.
+* New 'Circular Joystick' added. Create a Circle and call operator.
+* Some minor bugs fixed.
 * [Change log ...](https://github.com/NevilArt/BsMax/blob/master/CHANGELOG.md)
 
 # License

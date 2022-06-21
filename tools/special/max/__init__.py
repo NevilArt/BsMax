@@ -13,7 +13,7 @@
 #	along with this program.  If not, see <https://www.gnu.org/licenses/>.
 ############################################################################
 
-from .menu import register_menu,unregister_menu
+# from .menu import register_menu,unregister_menu
 from .modifier import register_modifier,unregister_modifier
 
 def register_max():
