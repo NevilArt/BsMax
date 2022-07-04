@@ -13,8 +13,6 @@
 #	along with this program.  If not, see <https://www.gnu.org/licenses/>.
 ############################################################################
 
-from bpy.app import version
-
 from .commands import * # all "c0000" are from here
 from .q_items import QuadItem
 from bsmax.state import is_active_primitive, get_active_type
@@ -68,8 +66,7 @@ def get_view3d_transform(ctx):
 	items.append(QuadItem("Driver Editor...", f, t, n, c0170, n))
 	items.append(QuadItem("NLA Editor...", f, t, n, c0169, n))
 	items.append(QuadItem("Text Editor...", f, t, n, c0171, n))
-	if version > (2,  92,  0):
-		items.append(QuadItem("Geometry Node Editor...", f, t, n, c0214, n))
+	items.append(QuadItem("Geometry Node Editor...", f, t, n, c0214, n))
 	items.append(QuadItem(n, f, f, n, n, n))
 	submenu = get_view3d_transform_convert_to_sub(ctx)
 	items.append(QuadItem("Conver to", f, f, submenu, n, n))
@@ -86,12 +83,8 @@ def get_view3d_lighting_sub(ctx):
 	items.append(QuadItem("Rendered", f, t, n, c0179, n))
 	items.append(seprator())
 
-	if version > (2,  80,  0):
-		uslr = ctx.space_data.shading.use_scene_lights_render
-		uswr = ctx.space_data.shading.use_scene_world_render
-	else:
-		uslr = ctx.space_data.shading.use_scene_lights
-		uswr = ctx.space_data.shading.use_scene_world
+	uslr = ctx.space_data.shading.use_scene_lights_render
+	uswr = ctx.space_data.shading.use_scene_world_render
 
 	items.append(QuadItem("Use Scene Light", uslr, t, n, c0192, n))
 	items.append(QuadItem("Use World Light", uswr, t, n, c0193, n))
@@ -232,10 +225,9 @@ def get_view3d_tool2(ctx):
 	if ctx.mode == 'OBJECT':
 		items.append(QuadItem("Link To", f, t, n, c0173, n))
 		items.append(QuadItem("Unlink Selection", f, t, n, c0174, n))
-		if version > (2,  80,  0):
-			items.append(seprator())
-			dac = ctx.scene.tool_settings.use_transform_skip_children
-			items.append(QuadItem("Don`t Affect Children", dac, t, n, c0175, n))
+		items.append(seprator())
+		dac = ctx.scene.tool_settings.use_transform_skip_children
+		items.append(QuadItem("Don`t Affect Children", dac, t, n, c0175, n))
 
 	if get_active_type(ctx) == 'MESH':
 		V, E, F = ctx.tool_settings.mesh_select_mode

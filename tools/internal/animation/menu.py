@@ -14,7 +14,8 @@
 ############################################################################
 
 import bpy
-from bsmax.state import is_object_mode
+
+
 
 class BsMax_MT_Animation_Tools(bpy.types.Menu):
 	bl_idname = 'BSMAX_MT_animationtools'
@@ -23,7 +24,7 @@ class BsMax_MT_Animation_Tools(bpy.types.Menu):
 
 	@classmethod
 	def poll(self, ctx):
-		return is_object_mode(ctx)
+		return ctx.mode == 'OBJECT'
 
 	def draw(self, ctx):
 		layout=self.layout

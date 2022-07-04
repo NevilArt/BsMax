@@ -98,8 +98,9 @@ class Object_OT_Select_Children(Operator):
 	bl_description = ""
 	bl_options = {'REGISTER', 'UNDO'}
 	
-	full: BoolProperty()
-	extend: BoolProperty()
+	full: BoolProperty(name="Select all subtrees")
+	extend: BoolProperty(name="Select Extended")
+	active_only: BoolProperty(name="Only active object subtrees", default=True)
 
 	@classmethod
 	def poll(self, ctx):
@@ -118,7 +119,10 @@ class Object_OT_Select_Children(Operator):
 		return children
 	
 	def execute(self, ctx):
-		selected = ctx.selected_objects
+		bpy.ops.view3d.select(extend=True)
+		selected = [ctx.active_object] if self.active_only \
+		 								else ctx.selected_objects
+
 		nsc = len(selected) # New Selected Count
 
 		if self.full == True:

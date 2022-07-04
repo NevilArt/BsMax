@@ -14,7 +14,6 @@
 ############################################################################
 
 import bpy
-from bpy.app import version
 
 from bsmax.keymaps import KeyMaps
 
@@ -30,13 +29,10 @@ from bsmax.keymaps import KeyMaps
 
 
 def add_search(km, space):
-	if version < (2,  90,  0):
-		km.new(space, 'wm.search_menu', 'X', 'PRESS', [])
-	else:
-		km.new(space, 'wm.search_menu', 'X', 'PRESS',
-				[], ctrl=True, shift=True, alt=True)
+	km.new(space, 'wm.search_menu', 'X', 'PRESS',
+			[], ctrl=True, shift=True, alt=True)
 
-		km.new(space, 'wm.search_operator', 'X', 'PRESS', [])
+	km.new(space, 'wm.search_operator', 'X', 'PRESS', [])
 
 
 

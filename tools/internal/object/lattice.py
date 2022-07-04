@@ -19,7 +19,7 @@ from mathutils import Vector
 from bpy.types import Operator
 from bpy.props import IntProperty
 
-from bsmax.actions import solve_missing_activeobject, lock_transform
+from bsmax.actions import lock_transform
 from bsmax.state import is_objects_selected
 
 
@@ -133,8 +133,6 @@ class Lattice_OT_Set_On_Selection(Operator):
 			return{"FINISHED"}
 
 		target = targets[0]
-		#TODO remove after 2.83 LTS ended
-		solve_missing_activeobject(ctx, targets) # to able to get mode
 
 		mode = ctx.mode # store mode befor set to object mode
 		lt = create_lattice(ctx, self.res_u, self.res_v, self.res_w)

@@ -2,15 +2,27 @@
 
 
 ### Keymaps/Menu
-- [ ] Loop ring short key in UV Editor.
+- [x] Loop/ring short key in UV Editor.
 - [ ] Brush Size control hot keys (for max mode).
 - [ ] 'F9' If no active camera in scene create temprary one.
 - [ ] 3DsMax Adapted key map for animators.
-- [ ] Ctrl + shfir + P link to Blender adaptive mode.
-- [ ] Ctrl + Double click Select children select only active object children.
+- [x] Ctrl + shfit + P link to Blender adaptive mode.
+- [x] Ctrl + Double click Select children select only active object children.
 - [ ] 'Shift + LM click' Armature pick short path.
 - [ ] Weight paint alt drag deselect (disable gradient tool).
+- [ ] Weight paint Selection keys.
+  - [x] Ctrl + A,D,I.
+  - [ ] Ctrl/Alt + Drag.
 - [ ] M, ctrl + M Collection.
+- [ ] 'Ctrl + L' select linked in Weight paint vertex mode.
+- [ ] Update Maya short keys too.
+- [ ] Alternative to 'Shift + G' select grouped in 3dsmax mode.
+- [ ] VSE hold shift select between action and new selected.
+- [ ] 'Ctrl + S' image editor save as image if not saved befor. 
+- [ ] 'Shift + X' set from SRG to WER in 3dsmax mode.
+- [ ] 'Shift + Q' open select similar menu.
+- [ ] 'Set ffd' menu in Edit Mode.
+- [ ] 'LMB Double click' Face and vertex mode select linked.
 
 
 ### Tools
@@ -36,17 +48,30 @@
 - [ ] Spline vertex Hoke to object by drag and pick.
 - [ ] semi instance selector.
 - [ ] Make unique keep group instanses.
+- [ ] Create Curve from motion path.
+- [ ] Bone to IK by picking.
+- [ ] Convert to armature.
+- [ ] Auto instancer.
+- [ ] Scene Modifier lister and manager.
+- [ ] Material lister.
+- [ ] Seprate group of instanced object keep instance in grupe.
+- [ ] Shapekeys sort by name.
 	
 
 ### Issue
-- [ ] Edge mode delete face most desolve edges too
-- [ ] Bone to Bone link_to need to fix transform
-- [ ] Press 'S' while navigation toggle Snap rather than the scale in max mode
+- [ ] Edge mode delete face most desolve edges too.
+- [ ] Bone to Bone link_to need to fix transform.
+- [ ] Press 'S' while navigation toggle Snap rather than the scale in max mode.
 - [ ]	Mirro operator not working.
-- [ ]	Undo
-	- [ ] Chamfer Curve
+- [ ]	Undo.
+	- [ ] Chamfer Curve.
   - [ ] Convert to ...
 - [ ] Sub object check for library overide.
+- [ ] Check Timeline color ot startup.
+- [ ] UV editor tweak select issue.
+- [ ] Draw line tool some time makes extera vertecs on Close.
+- [ ] Parent constraint to rigged character issue.
+- [ ] Parent constraint to parented parent issue.
 
 
 ### Update
@@ -54,27 +79,40 @@
 - [ ] Put transform type in right tool panel on/off with f12.
 - [ ] Transform type in sub object and pivot helper.
 - [ ] Alight too adapt for edit pivot mode.
+- [ ] Light lister UI has to change.
+- [ ] Camera lister UI has to change.
+- [ ] Align object set key for new changes if auto key is on.
+- [ ] Join plus asnd attach convert text object befor  join.
+- [ ] Label for joystic creator.
+- [ ] Apply multiusers.
 
-### Quadmenu
-- [ ] UV Editor
-  - [ ] If UV editor is open add UV stuff too.
-  - [ ] Seam and UV tools.
-- [ ] Collection stuff ctrl+rmc quad menu.
-- [ ] Put transform pivot poins in alt+rc quadmenu.
-- [ ] Weld tool setting dialog.
+### Menu
+- [ ] Quadmenu.
+  - [ ] UV Editor.
+    - [ ] If UV editor is open add UV stuff too.
+    - [ ] Seam and UV tools.
+  - [ ] Mark/Clear seam if edge mode.
+  - [ ] Collection stuff ctrl+rmc quad menu.
+  - [ ] Put transform pivot poins in alt+rc quadmenu.
+  - [ ] Weld tool setting dialog.
+- [ ] Armature edit mode Show/Hide menu.
+- [ ] Copy/paste vertex coodinate in Vertex menu.
 
 ### Primitives
-- [ ] Draw
+- [ ] Draw.
   - Draw on local gride.
     - [x] Draw on surface.
     - [x] Draw on view.
     - [ ] Fix height issue.
+    - [ ] Fix Draw under floor issue.
   - [ ] Snapping.
-  - [ ] Crearte primitive weel for segment count
-- [ ] New Primitives
+  - [ ] Crearte primitive weel for segment count.
+- [ ] New Primitives.
   - [ ] Torus Knot.
   - [ ] quad sphere.
   - [ ] Helix with bezier segments with less count of knots (Bezier points).
+- [ ] Float edit menu for Empty objects.
+- [ ] Draw area light with rectangular option.
 
 ### BUI
 - [ ] New Editable Quadmenu with short key support.
@@ -84,19 +122,16 @@
 - [ ] Wire parameter (Easy Dirver creator).
   - [x] Prototype design.
   - [ ] Create UI.
+    - [x] Transform.
+    - [ ] Shapekey.
 
 - [ ] Sprite sheet Import Export.
-  - [ ] Importer
+  - [ ] Importer.
     - [x] COA-Tools Jason import planes.
     - [ ] Spine jason import.
-      - [ ] Image Plane
-      - [ ] Bones
-      - [ ] Animation
-  - [ ] Exporter
+      - [ ] Image Plane.
+      - [ ] Bones.
+      - [ ] Animation.
+  - [ ] Exporter.
     - [ ] Cutout rigg to Unity.
     - [ ] Cutout rigg to Spine.
-
-## Done
-
-- [x] New Circilar Joystic.
-- [x] Joystic Creator keep display meshes.

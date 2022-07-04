@@ -40,19 +40,6 @@ def is_objects_selected(ctx):
 
 
 
-# TODO on version drop extera replace this with ctx.mode == 'OBJECT'
-def is_object_mode(ctx):
-	""" in all possible condition return True if is not Edit mode """
-	if ctx.area.type == 'VIEW_3D':
-		if ctx.scene.objects:
-			if ctx.object:
-				return ctx.object.mode == 'OBJECT'
-			return True
-		return True
-	return False
-
-
-
 def has_constraint(obj, constrainttype):
 	""" Find that given object has asked constraint or not """
 	for c in obj.constraints:

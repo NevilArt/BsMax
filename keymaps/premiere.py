@@ -13,7 +13,6 @@
 #	along with this program.  If not, see <https://www.gnu.org/licenses/>.
 ############################################################################
 import bpy
-from bpy.app import version
 
 from bsmax.keymaps import KeyMaps
 
@@ -44,14 +43,10 @@ def add_side_panel(km, space):
 
 
 def add_search(km, space):
-	if version < (2, 90, 0):
-		km.new(space, 'wm.search_menu', 'X', 'PRESS', [])
+	km.new(space, 'wm.search_menu', 'X', 'PRESS',
+			[], ctrl=True, shift=True, alt=True)
 
-	else:
-		km.new(space, 'wm.search_menu', 'X', 'PRESS',
-				[], ctrl=True, shift=True, alt=True)
-
-		km.new(space, 'wm.search_operator', 'X', 'PRESS', [])
+	km.new(space, 'wm.search_operator', 'X', 'PRESS', [])
 
 
 

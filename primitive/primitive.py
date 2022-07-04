@@ -23,8 +23,6 @@ from bpy.types import Operator
 from mathutils import Vector
 
 from bsmax.actions import link_to_scene, set_as_active_object
-from bsmax.state import is_object_mode
-
 from .gride import Gride, Dimension, Click_Point
 from bsmax.gride import Local_Gride
 
@@ -307,7 +305,7 @@ class Draw_Primitive(Operator):
 	
 	@classmethod
 	def poll(self, ctx):
-		return is_object_mode(ctx)
+		return ctx.mode == 'OBJECT'
 	
 	def acceptable(self):
 		""" Check mouse movment make sure do not create tiny invisible object"""

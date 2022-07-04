@@ -1,3 +1,9 @@
+# 0, 1, 0, 20220621
+* Joystick Creator store 'Display Meshes' in a collection rather than delete them.
+* Joystick Creator share display mesh if there are same rather than new for each.
+* New 'Circular Joystick' added. Create a Circle and call operator.
+* Some minor bugs fixed.
+
 # 0, 1, 0, 20220606
 * Draw object Gride preview added (For now just a prototype).
 * 'Create Bone' Bone roll rotation fixed and now works correctly in IK mode.

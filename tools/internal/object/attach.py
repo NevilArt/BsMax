@@ -17,6 +17,20 @@ from bpy.types import Operator
 from bsmax.operator import PickOperator
 
 
+# Error: Python: Traceback (most recent call last):
+#   File "C:\Users\nevil\AppData\Roaming\Blender Foundation\Blender\3.2\scripts\addons\BsMax\bsmax\operator.py", line 183, in modal
+#     self.finish(ctx, event, picked_object)
+#   File "C:\Users\nevil\AppData\Roaming\Blender Foundation\Blender\3.2\scripts\addons\BsMax\bsmax\operator.py", line 272, in finish
+#     self.picked(ctx, self.source, self.subsource, target, subtarget)
+#   File "C:\Users\nevil\AppData\Roaming\Blender Foundation\Blender\3.2\scripts\addons\BsMax\tools\internal\object\attach.py", line 54, in picked
+#     self.convert(ctx, target)
+#   File "C:\Users\nevil\AppData\Roaming\Blender Foundation\Blender\3.2\scripts\addons\BsMax\tools\internal\object\attach.py", line 50, in convert
+#     bpy.ops.object.modifier_apply(modifier=modifier.name)
+#   File "C:\Program Files\Blender Foundation\Blender 3.2\3.2\scripts\modules\bpy\ops.py", line 115, in __call__
+#     ret = _op_call(self.idname_py(), None, kw)
+# RuntimeError: Error: Transform curve to mesh in order to apply constructive modifiers
+
+
 
 class Object_OT_Attach(PickOperator):
 	""" Pick an object to join with the Active object """

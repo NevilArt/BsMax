@@ -152,6 +152,8 @@ def object_mode(km):
 	
 	km.new(space, 'wm.call_menu', 'V', 'PRESS',
 			[('name', 'OBJECT_MT_object_paste')], ctrl=True)
+	
+	km.new(space, 'object.link_to', 'P', 'PRESS', [], shift=True, ctrl=True)
 
 
 

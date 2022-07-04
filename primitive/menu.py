@@ -15,7 +15,6 @@
 
 import bpy
 from bpy.types import Menu
-from bsmax.state import is_object_mode
 
 
 
@@ -404,7 +403,7 @@ class BsMax_MT_Create(Menu):
 
 	@classmethod
 	def poll(self, ctx):
-		return is_object_mode(ctx)
+		return ctx.mode == 'OBJECT'
 
 	def draw(self, ctx):
 		layout = self.layout

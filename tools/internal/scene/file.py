@@ -15,7 +15,6 @@
 
 import bpy
 from bpy.types import Operator
-from bpy.app import version
 
 
 
@@ -30,9 +29,8 @@ class File_OT_Scale_Icons(Operator):
 
 	def execute(self, ctx):
 		params = ctx.space_data.params
-		is_old = version < (2, 81, 0)
-		small = 'LIST_SHORT' if is_old else 'LIST_VERTICAL'
-		medium = 'LIST_LONG' if is_old else 'LIST_HORIZONTAL'
+		small = 'LIST_VERTICAL'
+		medium = 'LIST_HORIZONTAL'
 		large = 'THUMBNAIL'
 		if self.up:
 			if params.display_type == large:

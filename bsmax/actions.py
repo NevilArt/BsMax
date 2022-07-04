@@ -17,23 +17,6 @@ import bpy
 from mathutils import Matrix
 
 
-#TODO remove after 2.83 LTS ended
-def solve_missing_activeobject(ctx, objs):
-	""" if active object not avalibel
-		set first object in list as active_object
-
-		args:
-			ctx: bpy.context
-			objs: array of objects
-		retrun:
-			None
-	"""
-	if not ctx.active_object:
-		if len(objs) > 0:
-			ctx.view_layer.objects.active = objs[0]
-
-
-
 def lock_transform(obj, move, rotate, scale):
 	""" Lock unlock given object transform
 

@@ -30,47 +30,35 @@ class Editor_OT_Open_As_Float_Window(Operator):
 	multiple: BoolProperty(default=True)
 
 	def execute(self,ctx):
-		if version < (2, 93, 0):
-			""" Old Method for Blender 2.92 and older """
-			original_type = ctx.area.type
-
-			ctx.area.ui_type = self.ui_type
-			if self.shader_type != '':
-				ctx.space_data.shader_type = self.shader_type
-
-			bpy.ops.screen.area_dupli('INVOKE_DEFAULT')
-			ctx.area.type = original_type
+		""" New Method for Blender 2.93 and Newer """
+		windows = ctx.window_manager.windows
 		
-		else:
-			""" New Method for Blender 2.93 and Newer """
-			windows = ctx.window_manager.windows
-			
-			""" Pass if exist and single mode"""
-			if not self.multiple:
-				for window in windows:
-					for area in window.screen.areas:
-						if area.ui_type == self.ui_type:
-							if self.shader_type != '':
-								for space in area.spaces:
-									if hasattr(space, 'shader_type'):
-										try:
-											if space.shader_type == self.shader_type:
-												return{'FINISHED'}
-										except:
-											pass
-							else:
-								return{'FINISHED'}
+		""" Pass if exist and single mode"""
+		if not self.multiple:
+			for window in windows:
+				for area in window.screen.areas:
+					if area.ui_type == self.ui_type:
+						if self.shader_type != '':
+							for space in area.spaces:
+								if hasattr(space, 'shader_type'):
+									try:
+										if space.shader_type == self.shader_type:
+											return{'FINISHED'}
+									except:
+										pass
+						else:
+							return{'FINISHED'}
 
-			""" Create New Window """
-			bpy.ops.wm.window_new()
-			area = windows[-1].screen.areas[0]
-			area.ui_type = self.ui_type
-			if self.shader_type != '':
-				#TODO check has attribute
-				try:
-					ctx.space_data.shader_type = self.shader_type
-				except:
-					pass
+		""" Create New Window """
+		bpy.ops.wm.window_new()
+		area = windows[-1].screen.areas[0]
+		area.ui_type = self.ui_type
+		if self.shader_type != '':
+			#TODO check has attribute
+			try:
+				ctx.space_data.shader_type = self.shader_type
+			except:
+				pass
 
 		return{'FINISHED'}
 
@@ -82,34 +70,23 @@ class Editor_OT_Script_Listener_Open(Operator):
 	bl_options = {'REGISTER', 'INTERNAL'}
 	
 	def execute(self, ctx):
-		if version < (2, 93, 0):
-			""" Old Method for Blender 2.92 and older """
-			windows = ctx.window_manager.windows
-			bpy.ops.screen.userpref_show('INVOKE_DEFAULT')
-			area = windows[-1].screen.areas[0]
-			area.type = 'CONSOLE'
-			bpy.ops.screen.area_split(direction='HORIZONTAL', factor=0.5)
-			area = windows[-1].screen.areas[0]
-			area.type = 'INFO'
+		""" New Method for Blender 2.93 and Newer """
+		windows = ctx.window_manager.windows
 		
-		else:
-			""" New Method for Blender 2.93 and Newer """
-			windows = ctx.window_manager.windows
-			
-			""" Pass if exist """
-			for window in windows:
-				if len(window.screen.areas) == 2:
-					areas = window.screen.areas
-					if areas[0].ui_type == 'INFO' and areas[1].ui_type == 'CONSOLE':
-						return{'FINISHED'}
+		""" Pass if exist """
+		for window in windows:
+			if len(window.screen.areas) == 2:
+				areas = window.screen.areas
+				if areas[0].ui_type == 'INFO' and areas[1].ui_type == 'CONSOLE':
+					return{'FINISHED'}
 
-			""" Create New Window """
-			bpy.ops.wm.window_new()
-			area = windows[-1].screen.areas[0]
-			area.ui_type = 'CONSOLE'
-			bpy.ops.screen.area_split(direction='HORIZONTAL', factor=0.5)
-			area = windows[-1].screen.areas[0]
-			area.type = 'INFO'
+		""" Create New Window """
+		bpy.ops.wm.window_new()
+		area = windows[-1].screen.areas[0]
+		area.ui_type = 'CONSOLE'
+		bpy.ops.screen.area_split(direction='HORIZONTAL', factor=0.5)
+		area = windows[-1].screen.areas[0]
+		area.type = 'INFO'
 		
 		return{'FINISHED'}
 
@@ -120,35 +97,81 @@ class BsMax_MT_New_Editor(Menu):
 	bl_label = 'New Editor'
 	def draw(self, ctx):
 		layout=self.layout
-		layout.operator("editor.float", text='3D Viewport', icon='VIEW3D').ui_type='VIEW_3D'
-		layout.operator("editor.float", text='Image Editor', icon='IMAGE').ui_type='IMAGE_EDITOR'
-		layout.operator("editor.float", text='UV Editor', icon='UV').ui_type='UV'
-		layout.operator("editor.float", text='Compositor', icon='NODE_COMPOSITING').ui_type='CompositorNodeTree'
-		layout.operator("editor.float", text='Texture Node Editor', icon='TEXTURE').ui_type='TextureNodeTree'
-		if version > (2, 91, 0):
-			layout.operator("editor.float", text='Geometry Node Editor', icon='NODETREE').ui_type='GeometryNodeTree'
-		layout.operator("editor.float", text='Shader Node Editor', icon='NODE_MATERIAL').ui_type='ShaderNodeTree'
-		layout.operator("editor.float", text='Video Sequencer', icon='SEQUENCE').ui_type='SEQUENCE_EDITOR'
-		layout.operator("editor.float", text='Movie Clip Editor', icon='TRACKER').ui_type='CLIP_EDITOR'
+		layout.operator("editor.float", text='3D Viewport',
+						icon='VIEW3D').ui_type='VIEW_3D'
+
+		layout.operator("editor.float", text='Image Editor',
+						icon='IMAGE').ui_type='IMAGE_EDITOR'
+
+		layout.operator("editor.float", text='UV Editor',
+						icon='UV').ui_type='UV'
+
+		layout.operator("editor.float", text='Compositor',
+						icon='NODE_COMPOSITING').ui_type='CompositorNodeTree'
+
+		layout.operator("editor.float", text='Texture Node Editor',
+						icon='TEXTURE').ui_type='TextureNodeTree'
+
+		layout.operator("editor.float", text='Geometry Node Editor',
+						icon='NODETREE').ui_type='GeometryNodeTree'
+
+		layout.operator("editor.float", text='Shader Node Editor',
+						icon='NODE_MATERIAL').ui_type='ShaderNodeTree'
+
+		layout.operator("editor.float", text='Video Sequencer',
+						icon='SEQUENCE').ui_type='SEQUENCE_EDITOR'
+
+		layout.operator("editor.float", text='Movie Clip Editor',
+						icon='TRACKER').ui_type='CLIP_EDITOR'
+
 		layout.separator()
-		layout.operator('editor.float', text='Dope Sheet', icon='ACTION').ui_type='DOPESHEET'
-		layout.operator("editor.float", text='Time Line', icon='TIME').ui_type='TIMELINE'
-		layout.operator("editor.float", text='Graph Editor', icon='GRAPH').ui_type='FCURVES'
-		layout.operator("editor.float", text='Drivers', icon='DRIVER').ui_type='DRIVERS'
-		layout.operator("editor.float", text='Nonlinear Animation', icon='NLA').ui_type='NLA_EDITOR'
+
+		layout.operator('editor.float', text='Dope Sheet',
+						icon='ACTION').ui_type='DOPESHEET'
+
+		layout.operator("editor.float", text='Time Line',
+						icon='TIME').ui_type='TIMELINE'
+
+		layout.operator("editor.float", text='Graph Editor',
+						icon='GRAPH').ui_type='FCURVES'
+
+		layout.operator("editor.float", text='Drivers',
+						icon='DRIVER').ui_type='DRIVERS'
+
+		layout.operator("editor.float", text='Nonlinear Animation',
+						icon='NLA').ui_type='NLA_EDITOR'
+
 		layout.separator()
-		layout.operator('editor.float', text='Text Editor', icon='TEXT').ui_type='TEXT_EDITOR'
-		layout.operator("editor.float", text='Python Console', icon='CONSOLE').ui_type='CONSOLE'
-		layout.operator("editor.float", text='Info', icon='INFO').ui_type='INFO'
+
+		layout.operator('editor.float', text='Text Editor',
+						icon='TEXT').ui_type='TEXT_EDITOR'
+
+		layout.operator("editor.float", text='Python Console',
+						icon='CONSOLE').ui_type='CONSOLE'
+
+		layout.operator("editor.float", text='Info',
+						icon='INFO').ui_type='INFO'
+
 		layout.separator()
-		layout.operator('editor.float', text='Outliner', icon='OUTLINER').ui_type='OUTLINER'
-		layout.operator("editor.float", text='Properties', icon='PROPERTIES').ui_type='PROPERTIES'
-		layout.operator("editor.float", text='File Browser', icon='FILE_FOLDER').ui_type='FILES'
+
+		layout.operator('editor.float', text='Outliner',
+						icon='OUTLINER').ui_type='OUTLINER'
+
+		layout.operator("editor.float", text='Properties',
+						icon='PROPERTIES').ui_type='PROPERTIES'
+		
+		layout.operator("editor.float", text='File Browser',
+						icon='FILE_FOLDER').ui_type='FILES'
+
 		if version > (2, 93, 0):
-			layout.operator("editor.float", text='Asset Manager', icon='ASSET_MANAGER').ui_type='ASSETS'
-		if version > (2, 92, 0):
-			layout.operator("editor.float", text='Sepreadsheet', icon='SPREADSHEET').ui_type='SPREADSHEET'
-		layout.operator("editor.float", text='Prefrences', icon='PREFERENCES').ui_type='PREFERENCES'
+			layout.operator("editor.float", text='Asset Manager',
+							icon='ASSET_MANAGER').ui_type='ASSETS'
+
+		layout.operator("editor.float", text='Sepreadsheet',
+						icon='SPREADSHEET').ui_type='SPREADSHEET'
+
+		layout.operator("editor.float", text='Prefrences',
+						icon='PREFERENCES').ui_type='PREFERENCES'
 
 def float_editor_menu(self, ctx):
 	layout = self.layout

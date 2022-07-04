@@ -132,13 +132,10 @@ def add_side_panel(km, space):
 
 
 def add_search(km, space):
-	if version < (2, 90, 0):
-		km.new(space, 'wm.search_menu', 'X', 'PRESS', [])
-	else:
-		km.new(space, 'wm.search_menu', 'X', 'PRESS',
-				[], ctrl=True, shift=True, alt=True)
+	km.new(space, 'wm.search_menu', 'X', 'PRESS',
+			[], ctrl=True, shift=True, alt=True)
 
-		km.new(space, 'wm.search_operator_cover', 'X', 'PRESS', [])
+	km.new(space, 'wm.search_operator_cover', 'X', 'PRESS', [])
 
 
 
@@ -192,7 +189,8 @@ def add_float_menu(km, space, preferences):
 			[('menu', 'viewport'), ('space', 'View3D')])
 
 		""" This not needed drop tool can call this """
-		# km.new(space,"bsmax.view3dquadmenue","RIGHTMOUSE","PRESS", [('menu', 'default'),('space', 'View3D')])
+		# km.new(space,"bsmax.view3dquadmenue","RIGHTMOUSE","PRESS",
+		# 		[('menu', 'default'),('space', 'View3D')])
 
 		""" Ignore Alt + RMB in Maya navigation enabled """
 		if preferences.navigation_3d != 'Maya':
@@ -712,6 +710,7 @@ def object_mode(km, preferences):
 
 	km.new(space, 'object.lock_selection_toggle', 'SPACE', 'PRESS', [], alt=True)
 	km.new(space, 'view3d.show_statistics', 'SEVEN', 'PRESS', [])
+	km.new(space, 'object.link_to', 'P', 'PRESS', [], shift=True, ctrl=True)
 
 
 
@@ -1090,6 +1089,33 @@ def weight_paint(km):
 	km.new(space, 'paint.vert_select_all', 'I', 'PRESS',
 			[('action', 'INVERT')], ctrl=True)
 
+	# Face mode
+	space = km.space('Paint Face Mask (Weight, Vertex, Texture)',	
+					'EMPTY', 'WINDOW')
+
+	km.new(space, 'paint.face_select_all', 'A', 'PRESS',
+			[('action', 'SELECT')], ctrl=True)
+
+	km.new(space, 'paint.face_select_all', 'D', 'PRESS',
+			[('action', 'DESELECT')], ctrl=True)
+
+	km.new(space, 'paint.face_select_all', 'I', 'PRESS',
+			[('action', 'INVERT')], ctrl=True)
+
+	# Vertex mode
+	space = km.space('Paint Vertex Selection (Weight, Vertex)',
+					'EMPTY', 'WINDOW')
+	
+	km.new(space, 'paint.vert_select_all', 'A', 'PRESS',
+			[('action', 'SELECT')], ctrl=True)
+
+	km.new(space, 'paint.vert_select_all', 'D', 'PRESS',
+			[('action', 'DESELECT')], ctrl=True)
+
+	km.new(space, 'paint.vert_select_all', 'I', 'PRESS',
+			[('action', 'INVERT')], ctrl=True)
+
+
 
 
 def image_paint(km):
@@ -1153,56 +1179,6 @@ def outliner(km):
 	space = km.space('Outliner', 'OUTLINER', 'WINDOW')
 	add_search(km, space)
 	add_subobject(km, space)
-	if version < (2, 81, 0):
-		km.new(space, 'outliner.item_activate', 'LEFTMOUSE', 'PRESS',
-				[('extend', True)], ctrl=True)
-
-		km.new(space, 'outliner.select_box', 'EVT_TWEAK_L', 'EAST',
-				[('mode', 'SET')])
-
-		km.new(space, 'outliner.select_box', 'EVT_TWEAK_L', 'SOUTH_EAST',
-				[('mode', 'SET')])
-
-		km.new(space, 'outliner.select_box', 'EVT_TWEAK_L', 'NORTH_EAST',
-				[('mode', 'SET')])
-
-		km.new(space, 'outliner.select_box', 'EVT_TWEAK_L', 'EAST',
-				[('mode', 'ADD')], ctrl=True )
-
-		km.new(space, 'outliner.select_box', 'EVT_TWEAK_L', 'SOUTH_EAST',
-				[('mode', 'ADD')], ctrl=True )
-
-		km.new(space, 'outliner.select_box', 'EVT_TWEAK_L', 'NORTH_EAST',
-				[('mode', 'ADD')], ctrl=True)
-
-		km.new(space, 'outliner.select_box', 'EVT_TWEAK_L', 'EAST',
-				[('mode', 'SUB')], alt=True)
-
-		km.new(space, 'outliner.select_box', 'EVT_TWEAK_L', 'SOUTH_EAST',
-				[('mode', 'SUB')], alt=True)
-
-		km.new(space, 'outliner.select_box', 'EVT_TWEAK_L', 'NORTH_EAST',
-				[('mode', 'SUB')], alt=True)
-
-		km.new(space, 'outliner.select_all', 'A', 'PRESS',
-				[('action', 'SELECT')], ctrl=True)
-
-		km.new(space, 'outliner.select_all', 'D', 'PRESS',
-				[('action', 'DESELECT')], ctrl=True)
-
-		km.new(space, 'outliner.select_all', 'I', 'PRESS',
-				[('action', 'INVERT')], ctrl=True)
-
-		km.new(space, 'outliner.collection_objects_select',
-				'LEFTMOUSE', 'DOUBLE_CLICK', [])
-
-		km.new(space, 'outliner.item_rename', 'F2', 'PRESS', [])
-		km.new(space, 'outliner.collection_new', 'N', 'PRESS', [], ctrl=True)
-		km.new(space, 'object.delete', 'DEL', 'PRESS',
-			[('confirm',False)], ctrl=True)
-
-		km.new(space, 'outliner.hide', 'H', 'PRESS', [], alt=True)
-		km.new(space, 'outliner.unhide_all', 'U', 'PRESS', [], alt=True)
 
 	km.new(space,	'outliner.show_active', 'Z', 'PRESS', [])
 	km.new(space,	'anim.keyframe_insert', 'K', 'PRESS', [])
@@ -1631,6 +1607,7 @@ def image_editor(km):
 
 
 def uv_editor(km, preferences):
+	km.mute('UV Editor', 'uv.select_lasso', 'LEFTMOUSE', 'PRESS', ctrl=True)
 	
 	space = km.space('UV Editor', 'EMPTY', 'WINDOW')
 	add_snap(km, space)
@@ -1668,8 +1645,12 @@ def uv_editor(km, preferences):
 			[('action', 'INVERT')], ctrl=True)
 
 	# Note: multi loop command not working on uv yet
-	# km.new(space, 'bsmax.uvloopselect', 'L', 'PRESS', [], alt=True)
-	# km.new(space, 'bsmax.uvringselect', 'R', 'PRESS', [], alt=True)
+	km.new(space, 'uv.select_loop', 'L', 'PRESS',
+			[('extend', True)], alt=True)
+
+	km.new(space, 'uv.select_edge_ring', 'R', 'PRESS',
+			[('extend', True)], alt=True)
+
 	# Hide/Unhide #
 	km.new(space, 'uv.hide', 'H', 'PRESS', [], alt=True)
 	km.new(space, 'uv.hide', 'I', 'PRESS', [('unselected', True)], alt=True)

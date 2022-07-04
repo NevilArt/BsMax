@@ -148,8 +148,8 @@ class Camera_OT_Create_DOF_Target(Operator):
 		cam = ctx.object
 		size = cam.data.display_size
 		target = self.cretae_target_object(cam)
-		target.location = cam.location
-		target.empty_display_size = size
+		target.location = cam.matrix_world.to_translation()
+		target.empty_display_size = size*2 
 		target.name = cam.name + "_FOV_target"
 		cam.data.dof.use_dof = True
 		cam.data.dof.focus_object = target
