@@ -14,9 +14,14 @@
 ############################################################################
 
 import bpy
+
 from bpy.types import Panel, Operator, PropertyGroup
-from bpy.props import PointerProperty, StringProperty, EnumProperty, BoolProperty
+from bpy.props import (PointerProperty, StringProperty,
+						EnumProperty, BoolProperty)
 from bpy.app.handlers import persistent
+from bpy.app import version
+
+
 from os import path, mkdir, access, W_OK
 from glob import glob
 
@@ -64,9 +69,15 @@ def get_manual_part(ctx, engin_name):
 		script += bcs + 'use_freestyle = ' + str(render.use_freestyle) + '\n'
 		script += bcs + 'line_thickness_mode = "' + render.line_thickness_mode + '"\n'
 		script += bcs + 'line_thickness = ' + str(render.line_thickness) + '\n'
-		script += bcs + 'use_save_buffers = ' + str(render.use_save_buffers) + '\n'
 		script += bcs + 'use_persistent_data = ' + str(render.use_persistent_data) + '\n'
 		script += bcs + 'use_motion_blur = ' + str(render.use_motion_blur) + '\n'
+
+		if version >= (3, 0, 0):
+			pass
+			# script += bcs + 'use_save_buffers = ' + str(render.use_save_buffers) + '\n'
+			# TODO find new alternative
+		else:
+			script += bcs + 'use_save_buffers = ' + str(render.use_save_buffers) + '\n'
 	
 	if engin_name == 'eevee':
 		eevee = ctx.scene.eevee
@@ -111,7 +122,57 @@ def get_manual_part(ctx, engin_name):
 		script += bcs + '.debug_use_spatial_splits = ' + str(cycles.debug_use_spatial_splits) + '\n'
 		script += bcs + '.debug_bvh_time_steps = ' + str(cycles.debug_bvh_time_steps) + '\n'
 		script += bcs + '_curves.subdivisions = ' + str(ctx.scene.cycles_curves.subdivisions) + '\n'
+	
+	if engin_name == 'cycles_x':
+		scene = ctx.scene
+		cycles = scene.cycles
+		world = scene.world
+		view_settings = scene.view_settings
+		display_settings = scene.display_settings
+		sequencer_colorspace_settings = scene.sequencer_colorspace_settings
+		grease_pencil_settings = scene.grease_pencil_settings
+		
+		bcs = 'bpy.context.scene.cycles'
+		bcw = 'bpy.context.scene.world'
+		bcv = 'bpy.context.scene.view_settings'
+		bcd = 'bpy.context.scene.display_settings'
+		bcq = 'bpy.context.scene.sequencer_colorspace_settings'
+		bcg = 'bpy.context.scene.grease_pencil_settings'
 
+		script += bcs + '.use_preview_adaptive_sampling = ' + \
+					 str(cycles.use_preview_adaptive_sampling) + '\n'
+		script += bcs + '.use_camera_cull = ' + str(cycles.use_camera_cull) + '\n'
+		script += bcs + '.use_distance_cull = ' + str(cycles.use_distance_cull) + '\n'
+		script += bcs + '.debug_use_spatial_splits = ' + str(cycles.debug_use_spatial_splits) + '\n'
+		script += bcs + '.debug_bvh_time_steps = ' + str(cycles.debug_bvh_time_steps) + '\n'
+		script += bcs + '.film_transparent_glass = ' + str(cycles.film_transparent_glass) + '\n'
+		script += bcs + '_curves.shape = "' + scene.cycles_curves.shape + '"\n'
+		script += bcs + '_curves.subdivisions = ' + str(scene.cycles_curves.subdivisions) + '\n'
+
+		script += bcw + '.light_settings.ao_factor = ' + \
+				str(world.light_settings.ao_factor) + '\n'
+
+		script += bcw + '.light_settings.distance = ' + \
+				str(world.light_settings.distance) + '\n'
+
+		script += bcv + '.view_transform = "' + \
+				str(view_settings.view_transform) + '"\n'
+
+		script += bcv + '.look = "' + str(view_settings.look) + '"\n'
+		script += bcv + '.exposure = ' + str(view_settings.exposure) + '\n'
+		script += bcv + '.gamma = ' + str(view_settings.gamma) + '\n'
+
+		script += bcv + '.use_curve_mapping = ' + \
+				str(view_settings.use_curve_mapping) + '\n'
+
+		script += bcd + '.display_device = "' + \
+				str(display_settings.display_device) + '"\n'
+
+		script += bcq + '.name = "' + str(sequencer_colorspace_settings.name) + '"\n'
+
+		script += bcg + '.antialias_threshold = ' + \
+				 str(grease_pencil_settings.antialias_threshold) + '\n'
+	
 	return script
 
 
@@ -157,15 +218,23 @@ def create_preset_script(ctx):
 	script += 'import bpy \n'
 	script += get_script(ctx.scene.render, 'render')
 	script += get_manual_part(ctx, 'render')
+
 	if ctx.scene.render.engine == 'BLENDER_EEVEE':
 		script += get_script(ctx.scene.eevee, 'eevee')
 		script += get_manual_part(ctx, 'eevee')
+
 	elif ctx.scene.render.engine == 'CYCLES':
-		script += get_script(ctx.scene.cycles, 'cycles')
-		script += get_manual_part(ctx, 'cycles')
+		if version >= (3, 0, 0):
+			script += get_script(ctx.scene.cycles, 'cycles')
+			script += get_manual_part(ctx, 'cycles_x')
+		else:	
+			script += get_script(ctx.scene.cycles, 'cycles')
+			script += get_manual_part(ctx, 'cycles')
+
 	elif ctx.scene.render.engine == 'BLENDER_WORKBENCH':
 		script += get_script(ctx.scene, 'scene')
 		script += get_manual_part(ctx, 'scene')
+
 	#TODO other render engined has to add here
 	return script
 

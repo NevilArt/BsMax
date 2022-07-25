@@ -1,3 +1,10 @@
+# 0, 1, 1, 20220704
+* All stuff for Older Blender than the 2.93 removed.
+* 'Ctrl + RMB Double click' add selected only the picked objects children (3DsMax).
+* 'Ctrl + Shift + P' Link to. (3DsMax, Blender Adaptive).
+* Selection Keys fixed for Weight Paint mode (3DsMax).
+* Camera FOV target create location on rigged cameras fixed.
+
 # 0, 1, 0, 20220621
 * Joystick Creator store 'Display Meshes' in a collection rather than delete them.
 * Joystick Creator share display mesh if there are same rather than new for each.

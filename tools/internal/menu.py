@@ -20,11 +20,11 @@ import bpy
 class BsMax_MT_View3D_tools(bpy.types.Menu):
 	bl_idname = 'BSMAX_MT_view3dtools'
 	bl_label = 'Tools'
-	bl_context = 'objectmode'
+	# bl_context = 'objectmode'
 
-	@classmethod
-	def poll(self,ctx):
-		return ctx.mode == 'OBJECT'
+	# @classmethod
+	# def poll(self,ctx):
+	# 	return ctx.mode == 'OBJECT'
 
 	def draw(self,ctx):
 		layout=self.layout
@@ -35,10 +35,11 @@ class BsMax_MT_View3D_tools(bpy.types.Menu):
 
 
 def tools_menu(self, ctx):
-	if ctx.mode == 'OBJECT':
-		self.layout.menu('BSMAX_MT_view3dtools')
-	elif ctx.mode == 'POSE':
-		self.layout.menu('BSMAX_MT_animationtools')
+	# if ctx.mode == 'OBJECT':
+	# 	self.layout.menu('BSMAX_MT_view3dtools')
+	# elif ctx.mode == 'POSE':
+	# 	self.layout.menu('BSMAX_MT_animationtools')
+	self.layout.menu('BSMAX_MT_view3dtools')
 
 def register_menu():
 	bpy.utils.register_class(BsMax_MT_View3D_tools)

@@ -40,11 +40,9 @@ Your Donation helps me to ignore other freelance offers and focus on BsMax and s
 * [Download Older Version (2.80-2.92)](https://github.com/NevilArt/BsMax_2_80)
 
 ## Recent Updates and Changes
-* All stuff for Older Blender than the 2.93 removed.
-* 'Ctrl + RMB Double click' add selected only the picked objects children (3DsMax).
-* 'Ctrl + Shift + P' Link to. (3DsMax, Blender Adaptive).
-* Selection Keys fixed for Weight Paint mode (3DsMax).
-* Camera FOV target create location on rigged cameras fixed.
+* 'View3D> Tools' menu issue in blender 3.x fixed.
+* 'Bendy Bone Controller' creator tools added 'View3d> Tools> Rigg> Add BBone Control'.
+* Render preset save load works for cycle x too (Render properties> Preset).
 * [Change log ...](https://github.com/NevilArt/BsMax/blob/master/CHANGELOG.md)
 
 ## License

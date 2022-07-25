@@ -20,11 +20,11 @@ import bpy
 class BsMax_MT_Animation_Tools(bpy.types.Menu):
 	bl_idname = 'BSMAX_MT_animationtools'
 	bl_label = 'Animation'
-	bl_context = 'objectmode'
+	# bl_context = 'objectmode'
 
-	@classmethod
-	def poll(self, ctx):
-		return ctx.mode == 'OBJECT'
+	# @classmethod
+	# def poll(self, ctx):
+	# 	return ctx.mode == 'OBJECT'
 
 	def draw(self, ctx):
 		layout=self.layout

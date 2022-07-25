@@ -23,6 +23,7 @@
 - [ ] 'Shift + Q' open select similar menu.
 - [ ] 'Set ffd' menu in Edit Mode.
 - [ ] 'LMB Double click' Face and vertex mode select linked.
+- [ ] Knife tool RMB commit (3DsMax mode).
 
 
 ### Tools

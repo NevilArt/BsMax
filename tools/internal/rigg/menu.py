@@ -16,18 +16,18 @@
 import bpy
 
 class BsMax_MT_rigg_tools(bpy.types.Menu):
-	bl_idname = "BSMAX_MT_riggtools"
 	bl_label = "Rigg"
-	bl_context = "objectmode"
+	bl_idname = "BSMAX_MT_riggtools"
 
-	@classmethod
-	def poll(self, ctx):
-		return ctx.mode == 'OBJECT'
+	# @classmethod
+	# def poll(self, ctx):
+	# 	return ctx.mode in {'OBJECT', 'POSE', 'EDIT_ARMATURE'}
 
 	def draw(self, ctx):
 		layout=self.layout
 		layout.operator("rigg.joystick_creator",icon="EVENT_O")
 		layout.operator("rigg.joystick_shapekey_connector",icon="LINK_BLEND")
+		layout.operator("bone.add_bbone_controller", icon='IPO_EASE_IN_OUT')
 		# layout.operator("rigg.eye_target_creator",icon="HIDE_OFF")
 
 def rigg_menu(self, ctx):
