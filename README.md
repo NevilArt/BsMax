@@ -1,5 +1,5 @@
 
-# BsMax Blender Addon 2.93 ~ 3.2
+# BsMax Blender Addon 2.93LTS ~ 3.3Beta
 
 BsMax is package of Modeling, Rig & Animation, Render tools and UI simulator for [Blender 3D](https://www.blender.org/).
 
@@ -40,9 +40,10 @@ Your Donation helps me to ignore other freelance offers and focus on BsMax and s
 * [Download Older Version (2.80-2.92)](https://github.com/NevilArt/BsMax_2_80)
 
 ## Recent Updates and Changes
-* 'View3D> Tools' menu issue in blender 3.x fixed.
-* 'Bendy Bone Controller' creator tools added 'View3d> Tools> Rigg> Add BBone Control'.
-* Render preset save load works for cycle x too (Render properties> Preset).
+* 'Snapshot' operator added (View3D> object> Snapshot).
+* 'Shapekey sort' Reorder shapekeys by name.
+* Freeze/Unfreeze operator on quadmenu works on bone edit and pose mode too.
+* Select More/Less 'Ctrl + PUp/PDown' repeat the action on hod key (3DsMax Mode).
 * [Change log ...](https://github.com/NevilArt/BsMax/blob/master/CHANGELOG.md)
 
 ## License

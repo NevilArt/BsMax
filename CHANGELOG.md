@@ -1,3 +1,8 @@
+# 0, 1, 1, 20220725
+* 'View3D> Tools' menu issue in blender 3.x fixed.
+* 'Bendy Bone Controller' creator tools added 'View3d> Tools> Rigg> Add BBone Control'.
+* Render preset save load works for cycle x too (Render properties> Preset).
+
 # 0, 1, 1, 20220704
 * All stuff for Older Blender than the 2.93 removed.
 * 'Ctrl + RMB Double click' add selected only the picked objects children (3DsMax).

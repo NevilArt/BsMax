@@ -118,22 +118,34 @@ def get_view3d_display(ctx):
 		items.append(QuadItem("Hide Selection", f, t, n, c0204, n))
 		items.append(QuadItem("Hide Unselected", f, t, n, c0205, n))
 		items.append(QuadItem("Unhide All", f, t, n, c0206, n))
+	
 	elif mode == 'EDIT_MESH':
 		items.append(QuadItem("Hide Selection", f, t, n, c0231, n))
 		items.append(QuadItem("Hide Unselected", f, t, n, c0232, n))
 		items.append(QuadItem("Unhide All", f, t, n, c0233, n))
+	
 	elif mode == 'EDIT_CURVE':
 		items.append(QuadItem("Hide Selection", f, t, n, c0234, n))
 		items.append(QuadItem("Hide Unselected", f, t, n, c0235, n))
 		items.append(QuadItem("Unhide All", f, t, n, c0236, n))
+	
 	else:
 		items.append(QuadItem("Hide Selection", f, t, n, c0012, n))
 		items.append(QuadItem("Hide Unselected", f, t, n, c0013, n))
 		items.append(QuadItem("Unhide All", f, t, n, c0014, n))
 		# items.append(QuadItem("Unhide by Name", f, f, n, "", n))
 	items.append(seprator())
-	items.append(QuadItem("Freeze Selection", f, t, n, c0015, n))
-	items.append(QuadItem("Unfreeze All", f, t, n, c0016, n))
+
+	if mode == 'OBJECT':
+		items.append(QuadItem("Freeze Selection", f, t, n, c0015, n))
+		items.append(QuadItem("Freeze Unselected", f, t, n, c0240, n))
+		items.append(QuadItem("Unfreeze All", f, t, n, c0016, n))
+
+	if mode in {'EDIT_ARMATURE',  'POSE'}:
+		items.append(QuadItem("Freeze Selection", f, t, n, c0237, n))
+		items.append(QuadItem("Freeze Unselected", f, t, n, c0238, n))
+		items.append(QuadItem("Unfreeze All", f, t, n, c0239, n))
+
 	items.append(seprator())
 	items.append(QuadItem("Isolate Toggle", f, t, n, c0017, n))
 	items.append(seprator())

@@ -21,8 +21,8 @@ from bpy.app import version
 
 class KeyMap:
 	def __init__(self, space, idname, type, value,
-				alt, ctrl, shift, any, modal,
-				direction):
+				alt, ctrl, shift, any,
+				repeat , modal, direction):
 		self.space = space
 		self.idname = idname
 		self.type = type
@@ -31,8 +31,9 @@ class KeyMap:
 		self.alt = alt
 		self.ctrl = ctrl
 		self.shift = shift
-		self.direction = direction
+		self.repeat = repeat
 		self.modal = modal
+		self.direction = direction
 		self.properties = []
 		self._key = None
 		self.keymaps = bpy.context.window_manager.keyconfigs.default.keymaps
@@ -119,7 +120,8 @@ class KeyMaps:
 	def new(self, space, idname,
 			type, value, properties,
 			alt=False, ctrl=False, shift=False,
-			any=False, modal=False, direction=''):
+			any=False, modal=False, repeat=False,
+			direction=''):
 
 		""" check is info unique """
 		isnew = True
@@ -134,7 +136,7 @@ class KeyMaps:
 		if isnew:
 			newkey = KeyMap(space, idname, type, value,
 							alt, ctrl, shift, any,
-							modal, direction)
+							repeat, modal, direction)
 
 			newkey.properties = properties
 			self.newkeys.append(newkey)
@@ -145,7 +147,7 @@ class KeyMaps:
 
 		newkey = KeyMap(space, idname, inputtype, value,
 						alt=alt, ctrl=ctrl, shift=shift, any=any,
-						modal=modal, direction=direction)
+						repeat=False, modal=modal, direction=direction)
 
 		self.mutekeys.append(newkey)
 	
@@ -176,7 +178,8 @@ class KeyMaps:
 													alt=k.alt,
 													ctrl=k.ctrl,
 													shift=k.shift,
-													any=k.any)
+													any=k.any,
+													repeat=k.repeat)
 
 			for key, val in k.properties:
 				if hasattr(keymapitem.properties, key):

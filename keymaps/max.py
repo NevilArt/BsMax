@@ -739,9 +739,6 @@ def mesh(km, preferences):
 
 	km.new(space, 'mesh.select_max', 'LEFTMOUSE', 'CLICK',
 			[('mode', 'SUB')], alt=True)
-	# km.new(space, 'view3d.select_box', 'EVT_TWEAK_L', 'ANY', [('mode', 'SET')])
-	# km.new(space, 'view3d.select_box', 'EVT_TWEAK_L', 'ANY', [('mode', 'ADD')], ctrl=True)
-	# km.new(space, 'view3d.select_box', 'EVT_TWEAK_L', 'ANY', [('mode', 'SUB')], alt=True)
  
 	km.new(space, 'view3d.drop_tool', 'RIGHTMOUSE', 'PRESS', [])
 	km.new(space, 'mesh.select_all', 'A', 'PRESS',
@@ -756,8 +753,12 @@ def mesh(km, preferences):
 	km.new(space, 'mesh.shortest_path_pick', 'LEFTMOUSE', 'PRESS',
 			[], shift=True)
 
-	km.new(space, 'mesh.select_more', 'PAGE_UP', 'PRESS', [], ctrl=True)
-	km.new(space, 'mesh.select_less', 'PAGE_DOWN', 'PRESS', [], ctrl=True)
+	km.new(space, 'mesh.select_more', 'PAGE_UP', 'PRESS',
+			[], ctrl=True, repeat=True)
+
+	km.new(space, 'mesh.select_less', 'PAGE_DOWN', 'PRESS',
+			[], ctrl=True, repeat=True)
+
 	# km.new(space, 'mesh.smart_select_loop', 'LEFTMOUSE', 'DOUBLE_CLICK', [])
 	km.new(space, 'mesh.smart_select', 'LEFTMOUSE', 'DOUBLE_CLICK',
 			[('mode', 'SET')])
@@ -867,8 +868,12 @@ def curve(km, preferences):
 	km.new(space, 'curve.select_all', 'I', 'PRESS',
 			[('action', 'INVERT')], ctrl=True)
 
-	km.new(space, 'curve.select_more', 'PAGE_UP', 'PRESS', [], ctrl=True)
-	km.new(space, 'curve.select_less', 'PAGE_DOWN', 'PRESS', [], ctrl=True)
+	km.new(space, 'curve.select_more', 'PAGE_UP', 'PRESS',
+			[], ctrl=True, repeat=True)
+
+	km.new(space, 'curve.select_less', 'PAGE_DOWN', 'PRESS',
+			[], ctrl=True, repeat=True)
+
 	km.new(space, 'curve.select_similar', 'Q', 'PRESS', [], ctrl=True)
 	km.new(space, 'screen.screen_full_area', 'X', 'PRESS', [], ctrl=True)
 
@@ -911,19 +916,39 @@ def armature(km, preferences):
 	add_transform_tool(km, space, preferences, smax=False)
 
 	km.new(space, 'view3d.drop_tool', 'RIGHTMOUSE', 'PRESS', [])
-	km.new(space, 'armature.select_all', 'A', 'PRESS', [('action', 'SELECT')], ctrl=True)
-	km.new(space, 'armature.select_all', 'D', 'PRESS', [('action', 'DESELECT')], ctrl=True)
-	km.new(space, 'armature.select_all', 'I', 'PRESS', [('action', 'INVERT')], ctrl=True)
-	km.new(space, 'armature.select_more', 'PAGE_UP', 'PRESS', [], ctrl=True, shift=True)
-	km.new(space, 'armature.select_less', 'PAGE_DOWN', 'PRESS', [], ctrl=True, shift=True)
-	km.new(space, 'armature.select_hierarchy', 'PAGE_UP', 'PRESS', [('direction', 'PARENT'),('extend',False)])
-	km.new(space, 'armature.select_hierarchy', 'PAGE_UP', 'PRESS', [('direction', 'PARENT'),('extend',True)], ctrl=True)
-	km.new(space, 'armature.select_hierarchy', 'PAGE_DOWN', 'PRESS', [('direction', 'CHILD'),('extend',False)])
-	km.new(space, 'armature.select_hierarchy', 'PAGE_DOWN', 'PRESS', [('direction', 'CHILD'),('extend',True)], ctrl=True)
+	km.new(space, 'armature.select_all', 'A', 'PRESS',
+			[('action', 'SELECT')], ctrl=True)
+
+	km.new(space, 'armature.select_all', 'D', 'PRESS',
+			[('action', 'DESELECT')], ctrl=True)
+
+	km.new(space, 'armature.select_all', 'I', 'PRESS',
+			[('action', 'INVERT')], ctrl=True)
+
+	km.new(space, 'armature.select_more', 'PAGE_UP', 'PRESS',
+			[], ctrl=True, shift=True, repeat=True)
+
+	km.new(space, 'armature.select_less', 'PAGE_DOWN', 'PRESS',
+			[], ctrl=True, shift=True, repeat=True)
+
+	km.new(space, 'armature.select_hierarchy', 'PAGE_UP', 'PRESS',
+			[('direction', 'PARENT'),('extend',False)])
+
+	km.new(space, 'armature.select_hierarchy', 'PAGE_UP', 'PRESS',
+			[('direction', 'PARENT'),('extend',True)], ctrl=True)
+
+	km.new(space, 'armature.select_hierarchy', 'PAGE_DOWN', 'PRESS',
+			[('direction', 'CHILD'),('extend',False)])
+
+	km.new(space, 'armature.select_hierarchy', 'PAGE_DOWN', 'PRESS',
+			[('direction', 'CHILD'),('extend',True)], ctrl=True)
+
 	km.new(space, 'armature.select_similar', 'Q', 'PRESS', [], ctrl=True)
 	# Hide/Unhide #
 	km.new(space, 'armature.hide', 'H', 'PRESS', [], alt=True)
-	km.new(space, 'armature.hide', 'I', 'PRESS', [('unselected',True)], alt=True)
+	km.new(space, 'armature.hide', 'I', 'PRESS',
+			[('unselected',True)], alt=True)
+
 	km.new(space, 'armature.reveal', 'U', 'PRESS', [], alt=True)
 	# View #
 	km.new(space, 'screen.screen_full_area', 'X', 'PRESS', [], ctrl=True)
@@ -949,9 +974,15 @@ def metaball(km, preferences):
 	add_subobject(km, space)
 	add_transform_tool(km, space, preferences, smax=False)
 	km.new(space, 'view3d.drop_tool', 'RIGHTMOUSE', 'PRESS', [])
-	km.new(space, 'mball.select_all', 'A', 'PRESS', [('action', 'SELECT')], ctrl=True)
-	km.new(space, 'mball.select_all', 'D', 'PRESS', [('action', 'DESELECT')], ctrl=True)
-	km.new(space, 'mball.select_all', 'I', 'PRESS', [('action', 'INVERT')], ctrl=True)
+	km.new(space, 'mball.select_all', 'A', 'PRESS',
+		[('action', 'SELECT')], ctrl=True)
+
+	km.new(space, 'mball.select_all', 'D', 'PRESS',
+		[('action', 'DESELECT')], ctrl=True)
+
+	km.new(space, 'mball.select_all', 'I', 'PRESS',
+		[('action', 'INVERT')], ctrl=True)
+
 	km.new(space, 'mball.select_similar', 'Q', 'PRESS', [], ctrl=True)
 	km.new(space, 'screen.screen_full_area', 'X', 'PRESS', [], ctrl=True)
 	km.new(space, 'anim.auto_key_toggle', 'N', 'PRESS', [])
@@ -967,12 +998,23 @@ def lattice(km, preferences):
 	add_subobject(km, space)
 	add_transform_tool(km, space, preferences, smax=False)
 	add_view3d_click_selection(km, space)
+
 	km.new(space, 'view3d.drop_tool', 'RIGHTMOUSE', 'PRESS', [])
-	km.new(space, 'lattice.select_all', 'A', 'PRESS', [('action', 'SELECT')], ctrl=True)
-	km.new(space, 'lattice.select_all', 'D', 'PRESS', [('action', 'DESELECT')], ctrl=True)
-	km.new(space, 'lattice.select_all', 'I', 'PRESS', [('action', 'INVERT')], ctrl=True)
-	km.new(space, 'lattice.select_more', 'PAGE_UP', 'PRESS', [], ctrl=True)
-	km.new(space, 'lattice.select_less', 'PAGE_DOWN', 'PRESS', [], ctrl=True)
+	km.new(space, 'lattice.select_all', 'A', 'PRESS',
+			[('action', 'SELECT')], ctrl=True)
+
+	km.new(space, 'lattice.select_all', 'D', 'PRESS',
+			[('action', 'DESELECT')], ctrl=True)
+
+	km.new(space, 'lattice.select_all', 'I', 'PRESS',
+			[('action', 'INVERT')], ctrl=True)
+	
+	km.new(space, 'lattice.select_more', 'PAGE_UP', 'PRESS',
+			[], ctrl=True, repeat=True)
+
+	km.new(space, 'lattice.select_less', 'PAGE_DOWN', 'PRESS',
+			[], ctrl=True, repeat=True)
+
 	km.new(space, 'lattice.select_similar', 'Q', 'PRESS', [], ctrl=True)
 	km.new(space, 'screen.screen_full_area', 'X', 'PRESS', [], ctrl=True)
 	km.new(space, 'anim.auto_key_toggle', 'N', 'PRESS', [])
@@ -1015,10 +1057,10 @@ def pos(km, preferences):
 			[('action', 'INVERT')], ctrl=True)
 
 	km.new(space, 'pose.select_more', 'PAGE_UP', 'PRESS',
-			[], ctrl=True, shift=True)
+			[], ctrl=True, shift=True, repeat=True)
 
 	km.new(space, 'pose.select_less', 'PAGE_DOWN', 'PRESS',
-			[], ctrl=True, shift=True)
+			[], ctrl=True, shift=True, repeat=True)
 
 	km.new(space, 'pose.select_hierarchy_plus', 'PAGE_UP', 'PRESS',
 			[('direction', 'PARENT'), ('extend', False)])
@@ -1167,9 +1209,11 @@ def particle(km):
 	km.new(space, 'particle.select_all', 'I', 'PRESS',
 			[('action', 'INVERT')], ctrl=True)
 
-	km.new(space, 'particle.select_more', 'PAGE_UP', 'PRESS', [], ctrl=True)
+	km.new(space, 'particle.select_more', 'PAGE_UP', 'PRESS',
+			[], ctrl=True, repeat=True)
 
-	km.new(space, 'particle.select_less', 'PAGE_DOWN', 'PRESS', [], ctrl=True)
+	km.new(space, 'particle.select_less', 'PAGE_DOWN', 'PRESS',
+			[], ctrl=True, repeat=True)
 
 
 
@@ -1429,8 +1473,12 @@ def graph_editor(km):
 	km.new(space, 'graph.select_all', 'I', 'PRESS',
 			[('action', 'INVERT')], ctrl=True)
 
-	km.new(space, 'graph.select_more', 'PAGE_UP', 'PRESS', [], ctrl=True)
-	km.new(space, 'graph.select_less', 'PAGE_DOWN', 'PRESS', [], ctrl=True)
+	km.new(space, 'graph.select_more', 'PAGE_UP', 'PRESS',
+			[], ctrl=True, repeat=True)
+
+	km.new(space, 'graph.select_less', 'PAGE_DOWN', 'PRESS',
+			[], ctrl=True, repeat=True)
+
 	km.new(space, 'graph.view_selected', 'Z', 'PRESS', [])
 	# km.new(space, 'graph.view_all', '??', 'PRESS', [])
 	km.new(space, 'anim.delete_key', 'DEL', 'PRESS', [])
@@ -1467,8 +1515,12 @@ def dopesheet_editor(km):
 	km.new(space, 'action.select_all', 'I', 'PRESS',
 			[('action', 'INVERT')], ctrl=True)
 
-	km.new(space, 'action.select_more', 'PAGE_UP', 'PRESS', [], ctrl=True)
-	km.new(space, 'action.select_less', 'PAGE_DOWN', 'PRESS', [], ctrl=True)
+	km.new(space, 'action.select_more', 'PAGE_UP', 'PRESS',
+			[], ctrl=True, repeat=True)
+
+	km.new(space, 'action.select_less', 'PAGE_DOWN', 'PRESS',
+			[], ctrl=True, repeat=True)
+
 	km.new(space, 'action.zoom_extended', 'Z', 'PRESS', [])
 	km.new(space, 'camera.select', 'C', 'PRESS', [])
 	km.new(space, 'action.copy', 'INSERT', 'PRESS', [], ctrl=True)
@@ -1633,8 +1685,12 @@ def uv_editor(km, preferences):
 	km.new(space, 'uv.select_loop', 'LEFTMOUSE', 'DOUBLE_CLICK',
 			[('extend', True)], ctrl=True)
 
-	km.new(space, 'uv.select_more', 'PAGE_UP', 'PRESS', [], ctrl=True)
-	km.new(space, 'uv.select_less', 'PAGE_DOWN', 'PRESS', [], ctrl=True)
+	km.new(space, 'uv.select_more', 'PAGE_UP', 'PRESS',
+			[], ctrl=True, repeat=True)
+
+	km.new(space, 'uv.select_less', 'PAGE_DOWN', 'PRESS',
+			[], ctrl=True, repeat=True)
+
 	km.new(space, 'uv.select_all', 'A', 'PRESS',
 			[('action', 'SELECT')], ctrl=True)
 

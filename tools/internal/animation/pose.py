@@ -26,7 +26,10 @@ class Pose_OT_Select_Hierarchy_Plus(Operator):
 	
 	full: BoolProperty(default=False)
 	extend: BoolProperty(default=False)
-	direction: EnumProperty(name='Direction', items=[('PARENT','Parent',''),('CHILDREN','Children','')], default='CHILDREN')
+	direction: EnumProperty(
+				name='Direction',  default='CHILDREN',
+				items=[('PARENT','Parent',''),('CHILDREN','Children','')]
+			)
 
 	@classmethod
 	def poll(self, ctx):

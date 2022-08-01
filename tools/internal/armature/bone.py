@@ -37,9 +37,7 @@ class Armature_OT_Bone_Type(Operator):
 		return is_active_object(ctx, 'ARMATURE')
 	
 	def execute(self, ctx):
-		if ctx.active_object != None:
-			ctx.object.data.display_type = self.mode
-		self.report({'OPERATOR'},'bpy.ops.armature.bone_type(mode="'+ self.mode +'")')
+		ctx.object.data.display_type = self.mode
 		return{"FINISHED"}
 
 
@@ -52,6 +50,10 @@ class Armature_OT_Bone_Devide(Operator):
 
 	devides: IntProperty(name="Devides",default=1)
 	typein: BoolProperty(name="Type In:",default=False)
+
+	@classmethod
+	def poll(self, ctx):
+		return ctx.mode == 'EDIT_ARMATURE'
 	
 	def draw(self, ctx):
 		layout = self.layout
@@ -59,9 +61,6 @@ class Armature_OT_Bone_Devide(Operator):
 	
 	def execute(self, ctx):
 		bpy.ops.armature.subdivide(number_cuts=self.devides)
-		d = 'devides='+ str(self.devides)
-		t = 'typein=' + str(self.typein)
-		# self.report({'OPERATOR'},'bpy.ops.armature.bone_devide('+ d +','+ t +')')
 		return {'FINISHED'}
 
 	def modal(self, ctx, event):
@@ -78,7 +77,53 @@ class Armature_OT_Bone_Devide(Operator):
 
 
 
-classes = [Armature_OT_Bone_Type, Armature_OT_Bone_Devide]
+class Armature_OT_Freeze(Operator):
+	""" Freeze / Unfreeze Bones """
+	bl_idname = "bone.freeze"
+	bl_label = "Freeze / Unfreeze"
+	bl_description = "Freeze / Unfreeze Bones"
+	bl_options = {'REGISTER', 'UNDO'}
+
+	mode: EnumProperty(default='selection',
+						items=[
+							('selection', 'Freeze Selection', ''),
+							('unselected', 'Freeze Unselected', ''),
+							('clear', 'Unfreezee All', '')
+						]
+			)
+	
+	@classmethod
+	def poll(self, ctx):
+		return ctx.mode in {'POSE', 'EDIT_ARMATURE'}
+
+	def execute(self, ctx):
+		original_mode = ctx.mode
+		bpy.ops.object.mode_set(mode='OBJECT', toggle=False)
+
+		if self.mode == 'selection':
+			for bone in ctx.object.data.bones:
+				if bone.select:
+					bone.hide_select = True
+
+		elif self.mode == 'unselected':
+			for bone in ctx.object.data.bones:
+				if not bone.select:
+					bone.hide_select = True
+
+		elif self.mode == 'clear':
+			for bone in ctx.object.data.bones:
+				bone.hide_select = False
+		
+		if original_mode == 'POSE':
+			bpy.ops.object.mode_set(mode='POSE', toggle=False)
+		else:
+			bpy.ops.object.mode_set(mode='EDIT', toggle=False)
+
+		return{"FINISHED"}
+
+
+
+classes = (Armature_OT_Bone_Type, Armature_OT_Bone_Devide, Armature_OT_Freeze)
 
 def register_bone():
 	for c in classes:
@@ -87,3 +132,6 @@ def register_bone():
 def unregister_bone():
 	for c in classes:
 		bpy.utils.unregister_class(c)
+
+if __name__ == "__main__":
+	register_bone()

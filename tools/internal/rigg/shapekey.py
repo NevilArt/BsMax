@@ -13,7 +13,8 @@
 #	along with this program.  If not, see <https://www.gnu.org/licenses/>.
 ############################################################################
 import bpy
-from bpy.types import Operator, Panel
+from bpy.types import Operator
+
 # a-----------v----------b----------v------c
 # p = (v-a)/(b-a) if v < b else (c-v)/(c-b)
 
@@ -21,34 +22,59 @@ class MultiShapeKey:
 	def __init__(self, name, value):
 		self.name = name
 		self.values = [value]
+
 	def append(self, value):
 		if not value in self.values:
 			self.values.append(value)
+
 	def sort(self):
 		self.values.sort()
 
 
 
 class Mesh_TO_Shapekeys_Sort_by_name(Operator):
+	""" Sort shape key by name order """
 	bl_idname = "mesh.shapekeys_sort_by_name"
 	bl_label = "Sort By Name"
 	bl_options = {'REGISTER', 'UNDO', 'INTERNAL'}
 	
 	@classmethod
 	def poll(self, ctx):
-		return False
-	
-	def execute(self,ctx):
+		return ctx.object.data.shape_keys
+		
+	def execute(self, ctx):
+		shape_keys = ctx.object.data.shape_keys.key_blocks
+		sorted_names = [key.name for key in shape_keys if key.name != 'Basis']
+		sorted_names.sort()
+
+		for index, name in enumerate(sorted_names):
+			# check is mach with sorted
+			if name == shape_keys[index].name:
+				continue
+			
+			# find current place
+			current_index = 0
+			for i in range(index+1, len(shape_keys)):
+				if name == shape_keys[i].name:
+					current_index = i
+					break
+			
+			# move each shape key to correct position
+			step_count = current_index - index -1
+			ctx.object.active_shape_key_index = current_index
+			for i in range(step_count):
+				bpy.ops.object.shape_key_move(type="UP")		
+
 		return{"FINISHED"}
 
 
 
 class Mesh_TO_Create_Multi_Target_Shapekeys(Operator):
-	"""	Name Sequence Targets like this\n
-		target_10\n
-		target_25\n
-		target_75\n
-		The digit are percentage of the each target complet on
+	"""Name Sequence Targets like this\n
+	target_10\n
+	target_25\n
+	target_75\n
+	The digit are percentage of the each target complet on
 	"""
 	bl_idname = "mesh.create_multi_target_shapekeys"
 	bl_label = "Create Multi Target Shapekeys"
@@ -56,7 +82,7 @@ class Mesh_TO_Create_Multi_Target_Shapekeys(Operator):
 	
 	@classmethod
 	def poll(self, ctx):
-		return ctx.object.data.shape_keys != None
+		return ctx.object.data.shape_keys
 
 	def has_integer_sufix(self, string):
 		""" get underline position """
@@ -65,10 +91,12 @@ class Mesh_TO_Create_Multi_Target_Shapekeys(Operator):
 		integer = string[index+1:]
 		name = string[:index]
 		""" check if sufix integer and in range 0~100 """
+
 		if integer.isdigit():
 			val = int(integer)
 			if 0 <= val <= 100:
 				return name, val
+
 		return None
 	
 	def remove_shapekey_by_name(self, obj, shapekey_name):
@@ -145,20 +173,25 @@ class Mesh_TO_Create_Multi_Target_Shapekeys(Operator):
 			
 				if a == '0':
 					script = 'v / ' + l1
+
 				else:
 					script = '(v - ' + a + ') / ' + l1
 				script += ' if ' + a + ' < v <= ' + b + ' else '
+
 				if c:
 					c = str(c)
 					script += '(' + c +' - v) / ' + l2
 					script += ' if ' + b +' < v <= ' + c + ' else '
 					script += '0'
+
 				else:
 					script += '0'
 				
 				""" apply script to driver """
 				driver.driver.expression = script
 		return{"FINISHED"}
+
+
 
 def shapekey_tools(self, ctx):
 	if ctx.object.data.shape_keys != None:
@@ -168,8 +201,10 @@ def shapekey_tools(self, ctx):
 		row.operator('mesh.create_multi_target_shapekeys')
 		row.operator('mesh.shapekeys_sort_by_name')
 
-classes = [Mesh_TO_Shapekeys_Sort_by_name,
-	Mesh_TO_Create_Multi_Target_Shapekeys]
+
+
+classes = (Mesh_TO_Shapekeys_Sort_by_name,
+		Mesh_TO_Create_Multi_Target_Shapekeys)
 
 def register_shapekey():
 	for c in classes:

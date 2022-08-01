@@ -353,3 +353,40 @@ def move_to_collection(obj, collection):
 		for c in obj.users_collection:
 			c.objects.unlink(obj)
 		collection.objects.link(obj)
+
+
+def convert_to_solid_mesh(obj):
+	"""Convert mesh object to a soled freezed collapsed object
+
+		args:
+			obj: mesh object
+		return: None
+	"""
+	# make unique
+	obj.data = obj.data.copy()
+
+	# collaps shapekeys
+	if hasattr(obj.data, "shape_keys"):
+		obj.shape_key_add(name='CombinedKeys', from_mix=True)
+		if obj.data.shape_keys:
+			for shapeKey in obj.data.shape_keys.key_blocks:
+				obj.shape_key_remove(shapeKey)
+
+	# apply modifiers
+	obj.to_mesh()
+
+	# store transform
+	matrix_world = obj.matrix_world.copy()
+
+	# delete animation
+	obj.animation_data_clear()
+
+	# delete constraints
+	for constraint in obj.constraints:
+		obj.constraints.remove(constraint)
+
+	# unparent
+	obj.parent = None
+
+	# restor transform
+	obj.matrix_world = matrix_world

@@ -16,7 +16,7 @@
 import bpy
 from bsmax.keymaps import KeyMaps
 
-
+#TODO sub selection keys for mesh
 
 class Blender_State():
 	def __init__(self):

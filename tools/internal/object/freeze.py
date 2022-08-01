@@ -54,6 +54,10 @@ class Object_OT_Freeze(Operator):
 							('clear', 'Unfreezee All', '')
 						]
 			)
+	
+	@classmethod
+	def poll(self, ctx):
+		return ctx.mode == 'OBJECT'
 
 	def execute(self, ctx):
 		if self.mode == 'selection':
@@ -71,7 +75,7 @@ class Object_OT_Freeze(Operator):
 			for obj in bpy.data.objects:
 				obj.hide_select = False
 				obj.display_type = 'TEXTURED'
-			
+
 			# TODO open a dialog and ask for unreaze layers
 			for collection in bpy.data.collections:
 				collection.hide_select = False
@@ -126,7 +130,7 @@ class Object_OT_Hide(Operator):
 
 
 
-classes = [Object_OT_Freeze, Object_OT_Hide, Object_TO_Select_By_Name]
+classes = (Object_OT_Freeze, Object_OT_Hide, Object_TO_Select_By_Name)
 
 def register_freeze():
 	for c in classes:

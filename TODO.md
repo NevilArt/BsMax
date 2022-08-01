@@ -56,7 +56,12 @@
 - [ ] Scene Modifier lister and manager.
 - [ ] Material lister.
 - [ ] Seprate group of instanced object keep instance in grupe.
-- [ ] Shapekeys sort by name.
+- [x] Shapekeys sort by name.
+- [ ] Copy/Paste material, action, modifier.
+- [ ] turn normal off for objects wit subdiv modidfier.
+- [ ] light group editor.
+- [x] unfreaze Bone edit/ armature mode.
+- [x] Snapshot.
 	
 
 ### Issue
@@ -73,6 +78,10 @@
 - [ ] Draw line tool some time makes extera vertecs on Close.
 - [ ] Parent constraint to rigged character issue.
 - [ ] Parent constraint to parented parent issue.
+- [ ] Convert to for curve objects apply modifiers not works.
+- [ ] subdive operator on quad menu undo issue.
+- [ ] 'LMB double click' select element not works yet.
+- [ ] align objects refresh issue (refactor).
 
 
 ### Update
@@ -86,6 +95,12 @@
 - [ ] Join plus asnd attach convert text object befor  join.
 - [ ] Label for joystic creator.
 - [ ] Apply multiusers.
+- [ ] Delete operator unparent children first.
+- [ ] Keymap system has to optain repate option too.
+- [x] Select more/less need to repeat mode active.
+- [ ] fix all active viewlayer lines.
+- [ ] smart loop/ring update or remove.
+
 
 ### Menu
 - [ ] Quadmenu.
@@ -98,6 +113,7 @@
   - [ ] Weld tool setting dialog.
 - [ ] Armature edit mode Show/Hide menu.
 - [ ] Copy/paste vertex coodinate in Vertex menu.
+
 
 ### Primitives
 - [ ] Draw.
@@ -115,11 +131,12 @@
 - [ ] Float edit menu for Empty objects.
 - [ ] Draw area light with rectangular option.
 
+
 ### BUI
 - [ ] New Editable Quadmenu with short key support.
 
-## In Progress
 
+## In Progress
 - [ ] Wire parameter (Easy Dirver creator).
   - [x] Prototype design.
   - [ ] Create UI.
