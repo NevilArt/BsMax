@@ -155,6 +155,8 @@ def object_mode(km):
 	
 	km.new(space, 'object.link_to', 'P', 'PRESS', [], shift=True, ctrl=True)
 
+	km.new(space, 'object.delete_plus', 'DEL', 'PRESS', [])
+
 
 
 def mesh(km):

@@ -64,12 +64,32 @@ class BitArray:
 
 
 
-def point_on_line(a, b, t):
-	return a + (b - a)*t
+def point_on_line(start, end, time):
+	""" Get point coordinate on line by time
+
+		args:
+			start: Point2 or Point3
+			end: Point2 or Point3
+			time: float 0 to 1.0
+		return:
+			Same as start argument
+	"""
+	return start + (end - start) * time
 
 
 
-def point_on_vector(a, b, c, d, t):
+def point_on_cubic_bezier_curve(a, b, c, d, t):
+	""" get point coordinate on cubic bezier curve
+
+		args:
+			a: Vector3 start point
+			b: Vector3 start point out handle
+			c: Vector3 end point in handle
+			d: Vector3 end pont
+			t: Float 0 ~ 1 time
+		return:
+			Vector3
+	"""
 	C1 = d - 3*c + 3*b - a
 	C2 = 3*c - 6*b + 3*a
 	C3 = 3*b - 3*a
@@ -86,8 +106,8 @@ def point_rotation_on_segment(a, b, c, d, time):
 		t1, t2 = 0, 0.001
 	if t2 > 1:
 		t1, t2 = 0.999, 1
-	p1 = point_on_vector(a, b, c, d, t1)
-	p2 = point_on_vector(a, b, c, d, t2)
+	p1 = point_on_cubic_bezier_curve(a, b, c, d, t1)
+	p2 = point_on_cubic_bezier_curve(a, b, c, d, t2)
 	lx, ly, lz = p2 - p1
 	x = atan2(lz, ly)
 	y = atan2(lz, lx)
@@ -97,7 +117,15 @@ def point_rotation_on_segment(a, b, c, d, time):
 
 
 def point_on_spline(spline, time):
-	""" arguments(Spline, time) return: Location, Rotation, Scale """
+	""" 
+		args:
+			Spline
+			time
+
+		return:
+			Location, Rotation, Scale
+			#TODO convert to transform
+	"""
 	# Safty Check
 	if len(spline.bezier_points) < 2:
 		return Vector((0, 0, 0)), Vector((0, 0, 0)), Vector((1, 1, 1))
@@ -155,7 +183,7 @@ def point_on_spline(spline, time):
 	c = segs[index+1].handle_left
 	d = segs[index+1].co
 	t = length / lengths[index]
-	location = point_on_vector(a, b, c, d, t)
+	location = point_on_cubic_bezier_curve(a, b, c, d, t)
 	
 	# Calculate Point Rotation on Secmetn/Splie/Curve
 	rotaion = point_rotation_on_segment(a, b, c, d, time)
@@ -197,8 +225,15 @@ def split_segment(p1, p2, p3, p4, t):
 
 
 def get_distance(a, b):
-	""" Get 2 point Vector3 and return distance as float """
-	x,y,z = a.x - b.x, a.y - b.y, a.z - b.z
+	""" Get distance of 2 point3 (Vector3)
+	
+		args:
+			a: point3
+			b: point3
+		return:
+			float
+	"""
+	x, y, z = a.x - b.x, a.y - b.y, a.z - b.z
 	return sqrt(x**2 + y**2 + z**2)
 
 
@@ -235,7 +270,7 @@ def get_segment_length(a, b, c, d, steps):
 	s = 1 / steps
 	for i in range(1, steps + 1):
 		t = i * s
-		p = point_on_vector(a, b, c, d, t)
+		p = point_on_cubic_bezier_curve(a, b, c, d, t)
 		points.append(p)
 	lenght = 0
 	for i in range(len(points) - 1):
@@ -272,6 +307,18 @@ def get_3_points_angle_3d(a, b, c):
 
 
 def get_lines_intersection(p1, p2, p3, p4):
+	""" Get 2 line intersection point
+		Note: for now 2D lines only Z count as 0
+
+		args:
+			p1: Vector3 Line A Start point
+			p2: Vector3 Line A End point
+			p3: Vector3 Line B Start point
+			p4: Vector3 Line B End point
+		return:
+			Vector3
+	"""
+	#TODO Count Z too
 	delta = ((p1.x - p2.x)*(p3.y - p4.y) - (p1.y - p2.y)*(p3.x - p4.x))
 	if delta == 0:
 		return None
@@ -284,25 +331,6 @@ def get_lines_intersection(p1, p2, p3, p4):
 
 	return Vector((x, y, 0))
 
-
-
-#############################################
-# def get_2_line_intersection(line1, line2):
-# 	def line1(x1,y1,x2,y2,x3,y3,x4,y4):
-# 		nx=(x1*y2-y1*x2)*(x3-x4)-(x1-x2)*(x3*y4-y3*x4),
-# 		ny=(x1*y2-y1*x2)*(y3-y4)-(y1-y2)*(x3*y4-y3*x4),
-# 		d=(x1-x2)*(y3-y4)-(y1-y2)*(x3-x4);
-# 		if d==0:
-# 			return False
-# 		return point(nx/d, ny/d)
-# 	def line2(p1, p2, p3, p4):
-# 		x1 = p1.x, y1 = p1.y,
-# 		x2 = p2.x, y2 = p2.y,
-# 		x3 = p3.x, y3 = p3.y,
-# 		x4 = p4.x, y4 = p4.y;
-# 		return line1(x1,y1,x2,y2,x3,y3,x4,y4)
-# 	return line2(line1.p1, line1.p2, line2.p1, line2.p2)
-###############################################
 
 
 def get_axis_constraint(oring, current):
@@ -353,3 +381,115 @@ def get_index_str(count, index):
 
 def dot(v1, v2):
 	return v1.x*v2.x + v1.y*v2.y + v1.z*v2.z
+
+
+
+def bounding_box_colide_with(box_a, box_b, ignore_z=False):
+	""" check dose 2 boundig box has intersect
+
+		args:
+			box_a: BoundingBox class
+			box_b: BoundingBox class
+			ignore_z: boolean ignore z if true
+
+		return:
+			boolean
+	"""
+	xin, yin, zin = False, False, False
+
+	if 	box_b.start.x < box_a.start.x < box_b.end.x or\
+		box_b.start.x < box_a.end.x < box_b.end.x or\
+		box_a.start.x < box_b.start.x < box_a.end.x or\
+		box_a.start.x < box_b.end.x < box_a.end.x:
+
+		xin = True
+
+	if 	box_b.start.y < box_a.start.y < box_b.end.y or\
+		box_b.start.y < box_a.end.y < box_b.end.y or\
+		box_a.start.y < box_b.start.y < box_a.end.y or\
+		box_a.start.y < box_b.end.y < box_a.end.y:
+
+		yin = True
+	
+	if ignore_z:
+		return (xin and yin)
+
+	if 	box_b.start.z < box_a.start.z < box_b.end.z or\
+		box_b.start.z < box_a.end.z < box_b.end.z or\
+		box_a.start.z < box_b.start.z < box_a.end.z or\
+		box_a.start.z < box_b.end.z < box_a.end.z:
+
+		zin = True
+	
+	if ignore_z:
+		return (xin and yin and zin)
+
+
+
+def get_cubic_bezier_curve_length(a, b, c, d, steps=100):
+	""" calculate cubic bezier curve length
+
+		args:
+			a: Vector3 start point
+			b: Vector3 start point out handle
+			c: Vector3 end point in handle
+			d: Vector3 end pont
+			steps: int number of devide heigher number solwer but better result
+		return:
+			float
+	"""
+	points = [a]
+	s = 1 / steps
+
+	for i in range(1, steps + 1):
+		t = i * s
+		p = point_on_cubic_bezier_curve(a, b, c, d, t)
+		points.append(p)
+	lenght = 0
+
+	for i in range(len(points) - 1):
+		lenght += get_distance(points[i], points[i - 1])
+
+	return lenght
+
+
+
+def get_point_on_spline(spline, time, devide_steps=100):
+	lengths, total_length = [], 0
+	if time <= 0:
+		return spline.bezier_points[0].co.copy()
+	
+	if time >= 1:
+		return spline.bezier_points[-1].co.copy()
+	
+	segs = [point for point in spline.bezier_points]
+	
+	if spline.use_cyclic_u:
+		segs.append(spline.bezier_points[0])
+	
+	# collect the segment length
+	for i in range(len(segs) - 1):
+		a = segs[i].co
+		b = segs[i].handle_right
+		c = segs[i+1].handle_left
+		d = segs[i+1].co
+		l = get_segment_length(a, b, c, d, devide_steps)
+		lengths.append(l)
+		total_length += l
+
+	length = total_length * time
+	
+	for i in range(len(lengths)):
+		if length >= lengths[i]:
+			length -= lengths[i]
+		else:
+			index = i
+			break
+	
+	a = segs[index].co
+	b = segs[index].handle_right
+	c = segs[index+1].handle_left
+	d = segs[index+1].co
+	t = length / lengths[index]	
+
+	return point_on_cubic_bezier_curve(a, b, c, d, t)

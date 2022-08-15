@@ -21,7 +21,7 @@ from bpy.props import (StringProperty, BoolProperty,
 					FloatProperty, IntProperty, EnumProperty)
 from bpy.types import Operator
 
-from bsmax.actions import convert_to_solid_mesh
+from bsmax.actions import convert_to_solid_mesh, clear_relations
 
 
 # TODO
@@ -291,6 +291,7 @@ class Object_OT_Snap_shot(Operator):
 		if self.copy_type == 'MESH':
 			for obj in selection:
 				convert_to_solid_mesh(obj)
+				clear_relations(obj)
 		else:
 			for obj in selection:
 				clear_relations(obj)

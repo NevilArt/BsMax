@@ -1,3 +1,9 @@
+# 0, 1, 1, 20220801
+* 'Snapshot' operator added (View3D> object> Snapshot).
+* 'Shapekey sort' Reorder shapekeys by name.
+* Freeze/Unfreeze operator on quadmenu works on bone edit and pose mode too.
+* Select More/Less 'Ctrl + PUp/PDown' repeat the action on hod key (3DsMax Mode).
+
 # 0, 1, 1, 20220725
 * 'View3D> Tools' menu issue in blender 3.x fixed.
 * 'Bendy Bone Controller' creator tools added 'View3d> Tools> Rigg> Add BBone Control'.

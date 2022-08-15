@@ -21,6 +21,26 @@ from bpy.props import (EnumProperty, FloatProperty, FloatVectorProperty,
 
 
 
+class Object_OT_Select_All(Operator):
+	""" Select all Objects + Pose Bones """
+	bl_idname = "object.select_all_plus"
+	bl_label = "Select All (+Bones)"
+	bl_options = {'REGISTER', 'UNDO'}
+	
+	@classmethod
+	def poll(self, ctx):
+		return ctx.area.type == 'VIEW_3D'
+	
+	def execute(self, ctx):
+		bpy.ops.object.select_all(action='SELECT')
+		for obj in ctx.selected_objects:
+			if obj.type == "ARMATURE":
+				for bone in obj.data.bones:
+					bone.select = True
+		return{"FINISHED"}
+
+
+
 class Object_OT_Select_Similar(Operator):
 	""" Select similar object to the currently selected object """
 	bl_idname = "object.select_similar"
@@ -316,7 +336,15 @@ class Object_OT_Lock_Selection_Toggle(Operator):
 
 
 
-def select_menu(self, ctx):
+
+def prepend_select_menu(self, ctx):
+	layout = self.layout
+	layout.separator()
+	layout.operator("object.select_all_plus", text="All + Bones")
+
+
+
+def append_select_menu(self, ctx):
 	layout = self.layout
 	layout.separator()
 	layout.operator("object.select_similar")
@@ -325,24 +353,31 @@ def select_menu(self, ctx):
 
 
 
-classes = [
-		Selection_lock_Property,
-		Object_OT_Select_by_Dimensions,
-		Object_OT_Select_Similar,
-		Object_OT_Select_Children,
-		Object_OT_Lock_Selection_Toggle
-	]
+classes = (
+	Object_OT_Select_All,
+	Selection_lock_Property,
+	Object_OT_Select_by_Dimensions,
+	Object_OT_Select_Similar,
+	Object_OT_Select_Children,
+	Object_OT_Lock_Selection_Toggle
+)
+
+
 
 def register_selection():
 	for c in classes:
 		bpy.utils.register_class(c)
 
-	bpy.types.VIEW3D_MT_select_object.append(select_menu)
+	bpy.types.VIEW3D_MT_select_object.prepend(prepend_select_menu)
+	bpy.types.VIEW3D_MT_select_object.append(append_select_menu)
+	
 	bpy.types.Scene.selection_lock = PointerProperty(type=Selection_lock_Property)
 
 
 def unregister_selection():
-	bpy.types.VIEW3D_MT_select_object.remove(select_menu)
+	bpy.types.VIEW3D_MT_select_object.remove(prepend_select_menu)
+	bpy.types.VIEW3D_MT_select_object.remove(append_select_menu)
+	
 	del bpy.types.Scene.selection_lock
 
 	for c in classes:

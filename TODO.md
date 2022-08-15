@@ -1,7 +1,7 @@
 # BsMax TODO List
 
 
-### Keymaps/Menu
+### Keymaps
 - [x] Loop/ring short key in UV Editor.
 - [ ] Brush Size control hot keys (for max mode).
 - [ ] 'F9' If no active camera in scene create temprary one.
@@ -26,11 +26,25 @@
 - [ ] Knife tool RMB commit (3DsMax mode).
 
 
+### Menu/UI
+- [ ] Quadmenu.
+  - [ ] UV Editor.
+    - [ ] If UV editor is open add UV stuff too.
+    - [ ] Seam and UV tools.
+  - [ ] Mark/Clear seam if edge mode.
+  - [ ] Collection stuff ctrl+rmc quad menu.
+  - [ ] Put transform pivot poins in alt+rc quadmenu.
+  - [ ] Weld tool setting dialog.
+- [ ] Armature edit mode Show/Hide menu.
+- [ ] Copy/paste vertex coodinate in Vertex menu.
+- [ ] Tools menu for difrent modes.
+
+
 ### Tools
 - [ ] UV editor Target Weld.
 - [ ] File view PageUp/ PageDown.
 - [ ] Make rectangular UV.
-- [ ] Instancer / Make Unique a grupe of objects.
+- [x] Instancer / Make Unique a grupe of objects.
 - [ ] Weld tool setting dialog.
 - [ ] Topology symmetry tool.
 - [ ] 3DsMax Navigation (change navigation mode without release the Alt key).
@@ -95,24 +109,13 @@
 - [ ] Join plus asnd attach convert text object befor  join.
 - [ ] Label for joystic creator.
 - [ ] Apply multiusers.
-- [ ] Delete operator unparent children first.
-- [ ] Keymap system has to optain repate option too.
+- [x] Delete operator unparent children first.
+- [x] Keymap system has to optain repate option too.
 - [x] Select more/less need to repeat mode active.
-- [ ] fix all active viewlayer lines.
+- [x] fix all active viewlayer lines.
 - [ ] smart loop/ring update or remove.
-
-
-### Menu
-- [ ] Quadmenu.
-  - [ ] UV Editor.
-    - [ ] If UV editor is open add UV stuff too.
-    - [ ] Seam and UV tools.
-  - [ ] Mark/Clear seam if edge mode.
-  - [ ] Collection stuff ctrl+rmc quad menu.
-  - [ ] Put transform pivot poins in alt+rc quadmenu.
-  - [ ] Weld tool setting dialog.
-- [ ] Armature edit mode Show/Hide menu.
-- [ ] Copy/paste vertex coodinate in Vertex menu.
+- [x] Select all in object mode select pose bones too.
+- [ ] Conver to and join plus do not works on some cases.
 
 
 ### Primitives

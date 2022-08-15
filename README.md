@@ -40,10 +40,10 @@ Your Donation helps me to ignore other freelance offers and focus on BsMax and s
 * [Download Older Version (2.80-2.92)](https://github.com/NevilArt/BsMax_2_80)
 
 ## Recent Updates and Changes
-* 'Snapshot' operator added (View3D> object> Snapshot).
-* 'Shapekey sort' Reorder shapekeys by name.
-* Freeze/Unfreeze operator on quadmenu works on bone edit and pose mode too.
-* Select More/Less 'Ctrl + PUp/PDown' repeat the action on hod key (3DsMax Mode).
+* 'Make Unique' seprate groupe of linked/instance objects keep linked with each other (View3d> Object> relation> Make unique).
+* New 'Delete' Operator keeps Children world transform when parent delete (3DsMax and Blender adaptive mode 'Delete')
+* New 'Select All' operator that select all pose bones as same time (Select> All + Bones).
+* Clean up the curve tools code (make ready for future updates).
 * [Change log ...](https://github.com/NevilArt/BsMax/blob/master/CHANGELOG.md)
 
 ## License

@@ -13,7 +13,9 @@
 #	along with this program.  If not, see <https://www.gnu.org/licenses/>.
 ############################################################################
 import bpy
+
 from bpy.types import Operator
+
 from bsmax.operator import PickOperator
 
 
@@ -43,9 +45,7 @@ class Object_OT_Attach(PickOperator):
 	@classmethod
 	def poll(self, ctx):
 		if ctx.area.type == 'VIEW_3D':
-			if len(ctx.scene.objects) > 0:
-				if ctx.object:
-					return ctx.mode == 'OBJECT'
+			return ctx.mode == 'OBJECT'
 		return False
 	
 	def pre_setup(self, ctx, event):
@@ -83,7 +83,6 @@ class Object_OT_Attach(PickOperator):
 		bpy.ops.object.join()
 		bpy.ops.ed.undo_push()
 		bpy.ops.object.attach('INVOKE_DEFAULT')
-		self.report({'OPERATOR'},'bpy.ops.object.attach()')
 
 
 
@@ -103,11 +102,12 @@ class Object_TO_Delete_Plus(Operator):
 				matrix_world = child.matrix_world.copy()
 				child.parent = None
 				child.matrix_world = matrix_world
-		bpy.ops.object.delete({'selected_objects': ctx.selected_objects})
+		bpy.ops.object.delete(confirm=False)
 		return{'FINISHED'}
 
 
-classes = [Object_OT_Attach, Object_TO_Delete_Plus]
+
+classes = (Object_OT_Attach, Object_TO_Delete_Plus)
 
 def register_attach():
 	for c in classes:

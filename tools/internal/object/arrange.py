@@ -234,9 +234,11 @@ def object_sort_menu(self, ctx):
 
 
 
-classes = [Object_OT_Arrange_by_Distance,
+classes = (
+	Object_OT_Arrange_by_Distance,
 	Object_OT_Arrange_On_Path,
-	Object_OT_Arrange_Path_picker]
+	Object_OT_Arrange_Path_picker
+)
 
 def register_arrange():
 	for c in classes:

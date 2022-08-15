@@ -14,8 +14,11 @@
 ############################################################################
 
 import bpy
+
 from bpy.types import Operator
 from bpy.props import BoolProperty
+
+from bsmax.actions import convert_to_solid_mesh, clear_relations
 
 # TODO Make unique Add realize instance to geometry node before apply
 
@@ -116,6 +119,7 @@ class Object_OT_Join_Plus(Operator):
 				""" collaps modifiers """
 				for modifier in obj.modifiers:
 					bpy.ops.object.modifier_apply(modifier=modifier.name)
+				#TODO obj.to_mesh()
 				
 				obj.select_set(False)
 

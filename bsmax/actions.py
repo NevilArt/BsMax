@@ -355,6 +355,33 @@ def move_to_collection(obj, collection):
 		collection.objects.link(obj)
 
 
+
+def clear_relations(obj):
+	""" Clear objecrts all relations and make it free
+
+			args:
+				obj = Object
+			return:
+				None
+	"""
+	# store transform
+	matrix_world = obj.matrix_world.copy()
+
+	# delete animation
+	obj.animation_data_clear()
+
+	# delete constraints
+	for constraint in obj.constraints:
+		obj.constraints.remove(constraint)
+
+	# unparent
+	obj.parent = None
+
+	# restor transform
+	obj.matrix_world = matrix_world
+
+
+
 def convert_to_solid_mesh(obj):
 	"""Convert mesh object to a soled freezed collapsed object
 
@@ -372,21 +399,5 @@ def convert_to_solid_mesh(obj):
 			for shapeKey in obj.data.shape_keys.key_blocks:
 				obj.shape_key_remove(shapeKey)
 
-	# apply modifiers
+	# apply modifiers and shapekeys
 	obj.to_mesh()
-
-	# store transform
-	matrix_world = obj.matrix_world.copy()
-
-	# delete animation
-	obj.animation_data_clear()
-
-	# delete constraints
-	for constraint in obj.constraints:
-		obj.constraints.remove(constraint)
-
-	# unparent
-	obj.parent = None
-
-	# restor transform
-	obj.matrix_world = matrix_world
