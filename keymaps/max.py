@@ -829,6 +829,7 @@ def mesh(km, preferences):
 	km.new(space, 'anim.keyframe_delete_v3d', 'K', 'PRESS', [], alt=True)
 	km.new(space, 'mesh.copy', 'C', 'PRESS', [], ctrl=True)
 	km.new(space, 'mesh.paste', 'V', 'PRESS', [], ctrl=True)
+	km.new(space, 'mesh.detach', 'D', 'PRESS', [], ctrl=True, shift=True)
 
 	# TEST #
 	# km.new(space, 'mesh.drag', 'EVT_TWEAK_L', 'ANY', [])

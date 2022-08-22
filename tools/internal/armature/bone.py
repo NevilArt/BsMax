@@ -123,13 +123,76 @@ class Armature_OT_Freeze(Operator):
 
 
 
-classes = (Armature_OT_Bone_Type, Armature_OT_Bone_Devide, Armature_OT_Freeze)
+class Armature_OT_Select_Keyed_Bone(Operator):
+	bl_idname = "armature.select_keyed_bones"
+	bl_label = "Select Keyed Bones"
+	bl_options = {'REGISTER', 'UNDO'}
+
+	invert: BoolProperty()
+	deselect: BoolProperty()
+	current_frame: BoolProperty()
+
+	@classmethod
+	def poll(self, ctx):
+		return ctx.mode == 'POSE'
+	
+	def draw(self, ctx):
+		layout = self.layout
+		layout.prop(self,"invert",text="Invert")
+		layout.prop(self,"deselect",text="Deselect")
+	
+	def select(self, armature):
+		action = armature.animation_data.action
+		keyed_bones = []
+
+		for fcurve in action.fcurves:
+			pose_bone_path = fcurve.data_path.rpartition('.')[0]
+			pose_bone = armature.path_resolve(pose_bone_path)
+			if not pose_bone in keyed_bones:
+				keyed_bones.append(pose_bone)
+
+		state = not self.deselect
+
+		for bone in armature.pose.bones:
+			if self.invert:
+				if not bone in keyed_bones:
+					bone.bone.select = state
+			else:
+				if bone in keyed_bones:
+					bone.bone.select = state
+	
+	def execute(self, ctx):
+
+		for armature in ctx.objects_in_mode:
+			if armature.animation_data:
+				self.select(armature)		
+		#TODO Current frame
+		return {'FINISHED'}
+
+
+
+def select_keyed_menu(self, ctx):
+	layout = self.layout
+	layout.separator()
+	layout.operator('armature.select_keyed_bones')
+
+
+classes = (
+		Armature_OT_Bone_Type,
+		Armature_OT_Bone_Devide,
+		Armature_OT_Freeze,
+		Armature_OT_Select_Keyed_Bone
+)
 
 def register_bone():
 	for c in classes:
 		bpy.utils.register_class(c)
+	
+	bpy.types.VIEW3D_MT_select_pose.append(select_keyed_menu)
 
 def unregister_bone():
+	bpy.types.VIEW3D_MT_select_pose.remove(select_keyed_menu)
+
 	for c in classes:
 		bpy.utils.unregister_class(c)
 

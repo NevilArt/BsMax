@@ -37,7 +37,8 @@
   - [ ] Weld tool setting dialog.
 - [ ] Armature edit mode Show/Hide menu.
 - [ ] Copy/paste vertex coodinate in Vertex menu.
-- [ ] Tools menu for difrent modes.
+- [ ] Tools menu for difrent modes. ****
+- [x] lattice in mesh edit mode.
 
 
 ### Tools
@@ -69,7 +70,7 @@
 - [ ] Auto instancer.
 - [ ] Scene Modifier lister and manager.
 - [ ] Material lister.
-- [ ] Seprate group of instanced object keep instance in grupe.
+- [x] Seprate group of instanced object keep instance in grupe.
 - [x] Shapekeys sort by name.
 - [ ] Copy/Paste material, action, modifier.
 - [ ] turn normal off for objects wit subdiv modidfier.

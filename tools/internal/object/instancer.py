@@ -54,6 +54,7 @@ class Object_TO_Instancer_Select(Operator):
 
 
 class Object_TO_Make_Unique(Operator):
+	""" Unlink selected objects data, keep in group relation """
 	bl_idname = 'object.make_unique'
 	bl_label = 'Make Unique'
 	bl_options = {'REGISTER', 'UNDO'}

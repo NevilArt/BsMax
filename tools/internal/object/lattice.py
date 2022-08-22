@@ -69,9 +69,6 @@ def get_volum_dimension(objs, selection):
 
 def get_size(pmin, pmax):
 	w, l, h = pmax - pmin
-	# w = pmax.x - pmin.x
-	# l = pmax.y - pmin.y
-	# h = pmax.z - pmin.z
 	return Vector((w, l, h))
 
 
@@ -142,7 +139,6 @@ class Lattice_OT_Set_On_Selection(Operator):
 
 		rotation = target.rotation_euler if len(targets) == 1 else [0, 0, 0]
 		size = pmax - pmin
-		# set_transform(lt, pcen, rotation, get_size(pmin, pmax))
 		set_transform(lt, pcen, rotation, size)
 
 		for target in targets:
@@ -278,12 +274,17 @@ classes = [Lattice_OT_Set_On_Selection,
 def register_lattice(preferences):
 	global lattice_data
 	lattice_data.preferences = preferences
+
 	for c in classes:
 		bpy.utils.register_class(c)
+
 	bpy.types.BSMAX_MT_lattice_create_menu.append(lattice_menu)
+	bpy.types.VIEW3D_MT_mesh_add.append(lattice_menu)
 
 def unregister_lattice():
 	bpy.types.BSMAX_MT_lattice_create_menu.remove(lattice_menu)
+	bpy.types.VIEW3D_MT_mesh_add.remove(lattice_menu)
+
 	for c in classes:
 		bpy.utils.unregister_class(c)
 

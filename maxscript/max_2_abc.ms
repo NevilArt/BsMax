@@ -10,11 +10,27 @@ function clear_scene =
 			/* Turn off turbo smoothes */
 			if classof m == TurboSmooth do
 				m.enabled = False
+
 			/* Turn on morphers */
 			if classof m == Morpher do
 				m.enabled = True
+
+			if classof m == FFD_Binding do	
+				m.enabled = True
 		)
 	)
+)
+
+
+
+function make_poly objs =
+(
+	/*
+	* make sure given object returns poly mesh object
+	*/
+	for obj in objs do
+		if ClassOf obj != PolyMeshObject do
+			addModifier obj (Turn_to_Poly())
 )
 
 
@@ -62,7 +78,8 @@ function get_char_name_from_layer layer_name =
 function get_abc_filename character_name =
 (
 	/* analayze max file name */
-	name_parts = filterString maxfilename "_"
+	file_name = getFilenameFile maxfilename
+	name_parts = filterString file_name "_"
 	filename = ""
 
 	if name_parts.count < 3 do
@@ -101,10 +118,15 @@ function get_abc_exporter =
 clear_scene()
 for layer in get_character_layers() do (
 	select_layer_objects layer
+	make_poly selection
 	file_name = get_abc_filename (get_char_name_from_layer layer.name)
 	full_filename = get_abc_path() + file_name
-	makeDir (get_abc_path()) all:True\
+	makeDir (get_abc_path()) all:True
 	exportFile full_filename #noPrompt selectedOnly:True using:(get_abc_exporter())
 )
 
-
+register = "macroScript scene2ABC "
+register += "tooltip:\"TO ABC\" "
+register += "category:\"Scene Tools\" "
+register += "(filein \"" + getSourceFileName() +"\")"
+execute(register)

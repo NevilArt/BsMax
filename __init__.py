@@ -18,9 +18,9 @@
 
 bl_info = {
 	'name': 'BsMax',
-	'description': 'Package of many tools + other CG apps UI simulator',
+	'description': 'Package of many tools + other CG apps UI mimic',
 	'author': 'Naser Merati (Nevil)',
-	'version': (0, 1, 1, 20220815),
+	'version': (0, 1, 1, 20220822),
 	'blender': (2, 93, 0),# 2.93LTS ~ 3.3Beta
 	'location': 'Almost Everywhere in Blender',
 	'wiki_url': 'https://github.com/NevilArt/BsMax/wiki',

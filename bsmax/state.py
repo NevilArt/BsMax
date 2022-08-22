@@ -126,3 +126,18 @@ def get_dimensions_avrage(obj, x, y, z):
 		value += obj.dimensions.z
 		count += 1
 	return value/count
+
+
+def has_key_in_frame(obj, frame: int):
+	""" Check Object has keyframe on given frame
+
+		args:
+			obj: bpy.data.Object
+			frame: int
+		return:
+			bool
+	"""
+	if obj and obj.animation_data and obj.animation_data.action:
+		for fcurves in obj.animation_data.action.fcurves:
+			return frame in (point.co.x for point in fcurves.keyframe_points)
+	return False

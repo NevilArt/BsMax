@@ -1,7 +1,7 @@
 
 # BsMax Blender Addon 2.93LTS ~ 3.3Beta
 
-BsMax is package of Modeling, Rig & Animation, Render tools and UI simulator for [Blender 3D](https://www.blender.org/).
+BsMax is package of Modeling, Rig & Animation, Render tools and UI mimic for [Blender 3D](https://www.blender.org/).
 
 * Interactive & Animatable Primitive Mesh & Curve Objects.
 * Modeling, Rigging, Animation, Pipeline tools.
@@ -16,12 +16,9 @@ Your Reports and Ideas will help me alot and don't forget the sharing. let more 
 If not have Github account use 'NevilArt@Gmail.Com' for bug report.
 
 ## Support
-
 If you found this product useful and want to support this project you can Donate in [Gumroad](https://nevilart.gumroad.com/l/BsMax).
-Your Donation helps me to ignore other freelance offers and focus on BsMax and speedup the developing.
 
 ## Download / Installation
-
 * Download all the package as zip file.
 * Go to Preferences > Addons > Install.
 * Select the .zip file you downloaded.
@@ -40,12 +37,10 @@ Your Donation helps me to ignore other freelance offers and focus on BsMax and s
 * [Download Older Version (2.80-2.92)](https://github.com/NevilArt/BsMax_2_80)
 
 ## Recent Updates and Changes
-* 'Make Unique' seprate groupe of linked/instance objects keep linked with each other (View3d> Object> relation> Make unique).
-* New 'Delete' Operator keeps Children world transform when parent delete (3DsMax and Blender adaptive mode 'Delete')
-* New 'Select All' operator that select all pose bones as same time (Select> All + Bones).
-* Clean up the curve tools code (make ready for future updates).
+* 'Select Keyed Bones' (Pose Mode: Select> Select Keyed Bones).
+* Set lattice in mesh edit mode added to 'Edit mode: View3d> Add' menu too.
+* 'Ctrl + shift + D' Detach in Mesh Edit mode (3DsMax mode).
 * [Change log ...](https://github.com/NevilArt/BsMax/blob/master/CHANGELOG.md)
 
 ## License
-
 This project is licensed under the GPL (GENERAL PUBLIC LICENSE) license. See [LICENSE](https://www.gnu.org/licenses/gpl-3.0.en.html) for more information.

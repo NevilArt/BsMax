@@ -15,9 +15,11 @@
 
 import bpy
 
+from bpy.types import Menu
 
 
-class BsMax_MT_View3D_tools(bpy.types.Menu):
+
+class BsMax_MT_View3D_tools(Menu):
 	bl_idname = 'BSMAX_MT_view3dtools'
 	bl_label = 'Tools'
 	# bl_context = 'objectmode'
@@ -43,11 +45,14 @@ def tools_menu(self, ctx):
 
 def register_menu():
 	bpy.utils.register_class(BsMax_MT_View3D_tools)
+
 	bpy.types.VIEW3D_MT_editor_menus.append(tools_menu)
 
 def unregister_menu():
-	bpy.utils.unregister_class(BsMax_MT_View3D_tools)
 	bpy.types.VIEW3D_MT_editor_menus.remove(tools_menu)
+
+	bpy.utils.unregister_class(BsMax_MT_View3D_tools)
+	
 
 if __name__ == '__main__':
 	register_menu()

@@ -1,3 +1,9 @@
+# 0, 1, 1, 20220815
+* 'Make Unique' seprate groupe of linked/instance objects keep linked with each other (View3d> Object> relation> Make unique).
+* New 'Delete' Operator keeps Children world transform when parent delete (3DsMax and Blender adaptive mode 'Delete')
+* New 'Select All' operator that select all pose bones as same time (Select> All + Bones).
+* Clean up the curve tools code (make ready for future updates).
+
 # 0, 1, 1, 20220801
 * 'Snapshot' operator added (View3D> object> Snapshot).
 * 'Shapekey sort' Reorder shapekeys by name.
