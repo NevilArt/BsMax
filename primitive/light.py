@@ -153,8 +153,8 @@ class Create_OT_SunLight(Draw_Primitive):
 			if self.distance > 0:
 				# TODO create a better way to caculate angle
 				# store angle in prim data
-				dx = dimension.width
-				dy = dimension.length
+				dx = abs(dimension.width)
+				dy = abs(dimension.length)
 				delta = dx if abs(dx) > abs(dy) else dy
 				delta = delta if delta < self.distance else self.distance
 				delta = delta if delta > -self.distance else -self.distance
@@ -186,8 +186,8 @@ class Create_OT_AreaLight(Draw_Primitive):
 
 	def update(self, ctx, clickcount, dimension):
 		if clickcount == 1:
-			width = dimension.width
-			length = dimension.length
+			width = abs(dimension.width)
+			length = abs(dimension.length)
 			self.subclass.owner.data.size = max(width, length)
 			if max(width, length) > 0:
 				aspect = min(width, length) / max(width, length)

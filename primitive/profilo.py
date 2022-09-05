@@ -415,8 +415,8 @@ class Create_OT_Profilo(Draw_Primitive):
 
 	def update(self, ctx, clickcount, dimension):
 		if clickcount == 1:
-			width = self.params.width = dimension.width
-			length = self.params.length = dimension.length
+			width = self.params.width = abs(dimension.width)
+			length = self.params.length = abs(dimension.length)
 			self.params.thickness = min(width, length) / 5
 			self.subclass.owner.location = dimension.center
 

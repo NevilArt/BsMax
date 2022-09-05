@@ -340,7 +340,7 @@ class Create_OT_Cone(Draw_Primitive):
 
 
 
-classes = [Create_OT_Cylinder, Create_OT_Cone]
+classes = (Create_OT_Cylinder, Create_OT_Cone)
 
 def register_cylinder():
 	for c in classes:

@@ -1,3 +1,8 @@
+# 0, 1, 1, 20220822
+* 'Select Keyed Bones' (Pose Mode: Select> Select Keyed Bones).
+* Set lattice in mesh edit mode added to 'Edit mode: View3d> Add' menu too.
+* 'Ctrl + shift + D' Detach in Mesh Edit mode (3DsMax mode).
+
 # 0, 1, 1, 20220815
 * 'Make Unique' seprate groupe of linked/instance objects keep linked with each other (View3d> Object> relation> Make unique).
 * New 'Delete' Operator keeps Children world transform when parent delete (3DsMax and Blender adaptive mode 'Delete')

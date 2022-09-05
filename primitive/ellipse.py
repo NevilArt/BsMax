@@ -80,11 +80,11 @@ class Create_OT_Ellipse(Draw_Primitive):
 	def update(self, ctx, clickcount, dimension):
 		if clickcount == 1:
 			if self.ctrl:
-				self.params.width = dimension.width
-				self.params.length = dimension.length
+				self.params.width = abs(dimension.width)
+				self.params.length = abs(dimension.length)
 			else:
-				self.params.width = dimension.width/2
-				self.params.length = dimension.length/2
+				self.params.width = abs(dimension.width)/2
+				self.params.length = abs(dimension.length)/2
 				self.subclass.owner.location = dimension.center
 
 

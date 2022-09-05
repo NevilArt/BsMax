@@ -41,6 +41,7 @@
 - [x] lattice in mesh edit mode.
 
 
+
 ### Tools
 - [ ] UV editor Target Weld.
 - [ ] File view PageUp/ PageDown.
@@ -124,7 +125,7 @@
   - Draw on local gride.
     - [x] Draw on surface.
     - [x] Draw on view.
-    - [ ] Fix height issue.
+    - [x] Fix height issue.
     - [ ] Fix Draw under floor issue.
   - [ ] Snapping.
   - [ ] Crearte primitive weel for segment count.
@@ -140,7 +141,7 @@
 - [ ] New Editable Quadmenu with short key support.
 
 
-## In Progress
+## Futures In Progress
 - [ ] Wire parameter (Easy Dirver creator).
   - [x] Prototype design.
   - [ ] Create UI.
@@ -157,3 +158,19 @@
   - [ ] Exporter.
     - [ ] Cutout rigg to Unity.
     - [ ] Cutout rigg to Spine.
+
+- [ ] Walker
+  -[x] Collect needed curve calculation data.
+  -[x] Collect needed surface calculation data.
+  -[x] Collect needed matrix calculation data.
+  -[ ] Analyze walk cycle action.
+    -[ ] Auto.
+    -[ ] Ask user.
+  -[ ] Analyze rigg.
+    -[ ] Auto.
+    -[ ] Ask user.
+  -[ ] Interface.
+  -[ ] Keying system.
+  -[ ] NLA.
+
+- [ ] VSE to XML

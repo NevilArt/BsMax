@@ -195,8 +195,8 @@ class Create_OT_OilTank(Draw_Primitive):
 		if clickcount == 1:
 			if self.ctrl:
 				self.params.radius1 = dimension.radius
-				self.params.height = dimension.radius*3
-				self.params.thickness = dimension.radius/2
+				self.params.height = dimension.radius * 3
+				self.params.thickness = dimension.radius / 2
 			else:
 				self.params.radius1 = dimension.radius
 		

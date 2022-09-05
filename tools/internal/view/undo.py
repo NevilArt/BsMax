@@ -21,6 +21,7 @@ from bpy.props import BoolProperty
 
 # TODO undo redo in multi viewprts not works correctly
 
+
 class ViewCash:
 	area = None
 	direction = []
@@ -28,16 +29,22 @@ class ViewCash:
 	index = 0
 	changed = False
 
+
+
 class VP:
 	view = []
 	record = True
 	count = 100
+
+
 
 def get_index(ctx):
 	for i, v in enumerate(VP.view):
 		if v.area == ctx.area:
 			return i
 	return None
+
+
 
 class BsMax_OT_ViewUndoRedo(Operator):
 	bl_idname = "view.undoredo"
@@ -67,6 +74,8 @@ class BsMax_OT_ViewUndoRedo(Operator):
 				VP.record = False
 		return{"FINISHED"}
 
+
+
 def is_changed(a, b):
 	for i in range(4):
 		for j in range(4):
@@ -74,12 +83,16 @@ def is_changed(a, b):
 				return True
 	return False
 
+
+
 def is_mouse_over(ctx, event):
 	x, y = event.mouse_region_x, event.mouse_region_y
 	ex, ey = ctx.area.width, ctx.area.height
 	if 0 <= x <= ex and 0 <= y <= ey:
 		return True
 	return False
+
+
 
 def record_navigation(ctx, event):
 	index = get_index(ctx)
@@ -96,13 +109,18 @@ def record_navigation(ctx, event):
 		state = is_changed(current, VP.view[index].last)
 		if state:
 			extera = (len(VP.view[index].direction) - 1) - VP.view[index].index
-			for i in range(extera): # ignore the i
+
+			for _ in range(extera):
 				VP.view[index].direction.pop()
 			VP.view[index].direction.append(current.copy())
+
 			if len(VP.view[index].direction) > VP.count:
 				VP.view[index].direction.pop(0)
 			VP.view[index].index = len(VP.view[index].direction) - 1
+
 		VP.view[index].last = current.copy()
+
+
 
 class View3D_OT_MoveCover(Operator):
 	bl_idname = "view3d.movecover"
@@ -122,6 +140,8 @@ class View3D_OT_MoveCover(Operator):
 		ctx.window_manager.modal_handler_add(self)
 		return {'RUNNING_MODAL'}
 
+
+
 class View3D_OT_RotateCover(Operator):
 	bl_idname = "view3d.rotatecover"
 	bl_label = "Rotate View (Cover)"
@@ -139,6 +159,8 @@ class View3D_OT_RotateCover(Operator):
 		self.x, self.y = event.mouse_region_x, event.mouse_region_y
 		ctx.window_manager.modal_handler_add(self)
 		return {'RUNNING_MODAL'}
+
+
 
 class View3D_OT_ZoomCover(Operator):
 	bl_idname = "view3d.zoomcover"
@@ -158,6 +180,8 @@ class View3D_OT_ZoomCover(Operator):
 		ctx.window_manager.modal_handler_add(self)
 		return {'RUNNING_MODAL'}
 
+
+
 class View3D_OT_ZoomInCover(Operator):
 	bl_idname = "view3d.zoomincover"
 	bl_label = "Zoom In View (Cover)"
@@ -171,6 +195,8 @@ class View3D_OT_ZoomInCover(Operator):
 	def invoke(self, ctx, event):
 		ctx.window_manager.modal_handler_add(self)
 		return {'RUNNING_MODAL'}
+
+
 
 class View3D_OT_ZoomOutCover(Operator):
 	bl_idname = "view3d.zoomoutcover"
@@ -186,6 +212,8 @@ class View3D_OT_ZoomOutCover(Operator):
 		ctx.window_manager.modal_handler_add(self)
 		return {'RUNNING_MODAL'}
 
+
+
 class View3D_OT_DollyCover(Operator):
 	bl_idname = "view3d.dollycover"
 	bl_label = "Dolly View (Cover)"
@@ -200,19 +228,27 @@ class View3D_OT_DollyCover(Operator):
 		ctx.window_manager.modal_handler_add(self)
 		return {'RUNNING_MODAL'}
 
+
+
 def view_undorido_menu(self, ctx):
 	layout = self.layout
 	layout.operator("view.undoredo", text="View Undo").redo=False
 	layout.operator("view.undoredo", text="View Redo").redo=True
 	layout.separator()
 
-classes = [BsMax_OT_ViewUndoRedo,
+
+
+classes = (
+		BsMax_OT_ViewUndoRedo,
 		View3D_OT_MoveCover,
 		View3D_OT_RotateCover,
 		View3D_OT_ZoomCover,
 		View3D_OT_ZoomInCover,
 		View3D_OT_ZoomOutCover,
-		View3D_OT_DollyCover]
+		View3D_OT_DollyCover
+)
+
+
 
 def register_undo(preferences):
 	for c in classes:

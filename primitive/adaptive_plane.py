@@ -107,8 +107,8 @@ class Create_OT_Adaptive_Plane(Draw_Primitive):
 				self.params.width = dimension.radius
 				self.params.length = dimension.radius
 			else:
-				self.params.width = dimension.width
-				self.params.length = dimension.length
+				self.params.width = abs(dimension.width)
+				self.params.length = abs(dimension.length)
 				self.subclass.owner.location = dimension.center
 		if clickcount > 0:
 			self.subclass.update()

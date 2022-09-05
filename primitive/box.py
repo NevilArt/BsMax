@@ -256,10 +256,10 @@ class Create_OT_Box(Draw_Primitive):
 				self.params.length = dimension.radius
 				self.params.height = dimension.radius
 			else:
-				self.params.width = dimension.width
-				self.params.length = dimension.length
+				self.params.width = abs(dimension.width)
+				self.params.length = abs(dimension.length)
 				self.subclass.owner.location = dimension.center
-		
+
 		elif clickcount == 2:
 			width_length = self.params.width + self.params.length
 

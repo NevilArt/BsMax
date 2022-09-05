@@ -148,6 +148,7 @@ def get_click_point_on_face(ctx, face, x, y):
 	region = ctx.region
 	region_data = ctx.space_data.region_3d
 	_, view_type = get_view_orientation(ctx)
+	
 	if view_type in {'PERSP', 'CAMERA'}:
 		region = ctx.region
 		region_data = ctx.space_data.region_3d
@@ -155,7 +156,23 @@ def get_click_point_on_face(ctx, face, x, y):
 		ray_start = view_matrix.to_translation()
 		ray_depth = view_matrix @ Vector((0, 0, -1000000))
 		ray_end = region_2d_to_location_3d(region, region_data, (x, y), ray_depth)
-		return geometry.intersect_ray_tri(face[0], face[1], face[2],
+	
+		click_point = geometry.intersect_ray_tri(face[0], face[1], face[2],
 											ray_end, ray_start, False)
+		if click_point:
+			return click_point
+		
+		#TODO
+		# z = ctx.area.spaces.active.region_3d.view_matrix.to_translation().z
+		# print(ctx.area.spaces.active.region_3d.view_matrix.to_translation())
+		# print(">Z>", z)
+		# face[0].z, face[1].z, face[2].z = z, z, z
+
+		# print(">>>",face[0], face[1], face[2])
+
+		# click_point = geometry.intersect_ray_tri(face[0], face[1], face[2],
+		# 									ray_end, ray_start, False)
+		# print(">>CP>>",click_point)
+		return Vector((0, 0, 0))
 
 	return region_2d_to_location_3d(region, region_data, (x, y), (0, 0, 0))

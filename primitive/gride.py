@@ -60,8 +60,10 @@ class Dimension:
 		ex, ey, ez = points_to_local_matrix(self.end, self.gride.gride_matrix)
 
 		# get dimension from matrix
-		self.width = abs(ex-sx)
-		self.length = abs(ey-sy)
+		# self.width = abs(ex-sx)
+		# self.length = abs(ey-sy)
+		self.width = ex-sx
+		self.length = ey-sy
 		self.height = self.radius
 
 		self.local = Vector((ex, ey, ez))
@@ -83,7 +85,7 @@ class Click_Point:
 		self.normal = None
 
 
-#TODO correct gride directin with piched face longest edge
+#TODO correct gride directin with piced face longest edge
 class Gride:
 	def __init__(self):
 		# First click location on view 3D
@@ -183,8 +185,8 @@ class Gride:
 		elif draw_mode == 'SURFACE':
 			if view_orient == 'USER':
 				self.location = get_click_point_on_face(ctx, self.floor_face, x, y)
-				self.rotation = Vector((0,0,0))
-				self.floor_rotation = Vector((0,0,0))
+				self.rotation = Vector((0, 0, 0))
+				self.floor_rotation = Vector((0, 0, 0))
 			else:
 				location, rotation = self.get_coordinate_view(ctx, x, y)
 				self.location = location
@@ -199,8 +201,8 @@ class Gride:
 			else:
 				if view_orient == 'USER':
 					self.location = get_click_point_on_face(ctx, self.floor_face, x, y)
-					self.rotation = Vector((0,0,0))
-					self.floor_rotation = Vector((0,0,0))
+					self.rotation = Vector((0, 0, 0))
+					self.floor_rotation = Vector((0, 0, 0))
 				else:
 					location, rotation = self.get_coordinate_view(ctx, x, y)
 					self.location = location
@@ -210,8 +212,8 @@ class Gride:
 		else: # draw_mode == 'FLOOR':
 			if view_orient == 'USER':
 				self.location = get_click_point_on_face(ctx, self.floor_face, x, y)
-				self.rotation = Vector((0,0,0))
-				self.floor_rotation = Vector((0,0,0))
+				self.rotation = Vector((0, 0, 0))
+				self.floor_rotation = Vector((0, 0, 0))
 			else:
 				location, rotation = self.get_coordinate_view(ctx, x, y)
 				self.location = location

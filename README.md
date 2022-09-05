@@ -1,5 +1,5 @@
 
-# BsMax Blender Addon 2.93LTS ~ 3.3Beta
+# BsMax Blender Addon 2.93LTS ~ 3.3LTS
 
 BsMax is package of Modeling, Rig & Animation, Render tools and UI mimic for [Blender 3D](https://www.blender.org/).
 
@@ -37,10 +37,10 @@ If you found this product useful and want to support this project you can Donate
 * [Download Older Version (2.80-2.92)](https://github.com/NevilArt/BsMax_2_80)
 
 ## Recent Updates and Changes
-* 'Select Keyed Bones' (Pose Mode: Select> Select Keyed Bones).
-* Set lattice in mesh edit mode added to 'Edit mode: View3d> Add' menu too.
-* 'Ctrl + shift + D' Detach in Mesh Edit mode (3DsMax mode).
+* Draw Lattice, Light prop ... height Z correction issue fix.
+* Draw primitive below the grid issue fixed for now but better solution will replace soon.
 * [Change log ...](https://github.com/NevilArt/BsMax/blob/master/CHANGELOG.md)
+* Note: Dont worry about slow down the updates. I`m currently on an animation project that takes all of my time. I will back and BsMax will be continue with big futures.
 
 ## License
 This project is licensed under the GPL (GENERAL PUBLIC LICENSE) license. See [LICENSE](https://www.gnu.org/licenses/gpl-3.0.en.html) for more information.

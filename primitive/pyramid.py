@@ -188,8 +188,8 @@ class Create_OT_Pyramid(Draw_Primitive):
 				self.params.length = dimension.radius
 				self.params.height = dimension.radius*0.6
 			else:
-				self.params.width = dimension.width
-				self.params.length = dimension.length
+				self.params.width = abs(dimension.width)
+				self.params.length = abs(dimension.length)
 				self.subclass.owner.location = dimension.center
 		
 		elif clickcount == 2:

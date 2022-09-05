@@ -14,7 +14,9 @@
 ############################################################################
 
 import bpy
+
 from mathutils import Vector
+
 from bpy.props import EnumProperty
 from primitive.primitive import Draw_Primitive
 from bsmax.actions import delete_objects
@@ -94,8 +96,8 @@ class Create_OT_Metaball(Draw_Primitive):
 			if clickcount == 1:
 				self.radius = dimension.radius / 10
 				data.elements[0].radius = self.radius
-				data.elements[0].size_x = dimension.width / 2
-				data.elements[0].size_y = dimension.length / 2
+				data.elements[0].size_x = abs(dimension.width) / 2
+				data.elements[0].size_y = abs(dimension.length) / 2
 				self.subclass.owner.location = dimension.center
 			elif clickcount == 2:
 				data.elements[0].radius = self.radius #+ dimension.height_np
@@ -103,8 +105,8 @@ class Create_OT_Metaball(Draw_Primitive):
 		elif self.metaball_type == 'ELLIPSOID':
 			if clickcount == 1:
 				data.elements[0].radius = 2
-				data.elements[0].size_x = dimension.width
-				data.elements[0].size_y = dimension.length
+				data.elements[0].size_x = abs(dimension.width)
+				data.elements[0].size_y = abs(dimension.length)
 				self.radius = dimension.radius / 2
 				data.elements[0].size_z = self.radius
 			elif clickcount == 2:
@@ -113,8 +115,8 @@ class Create_OT_Metaball(Draw_Primitive):
 		elif self.metaball_type == 'CUBE':
 			if clickcount == 1:
 				data.elements[0].radius = 1
-				data.elements[0].size_x = dimension.width / 2
-				data.elements[0].size_y = dimension.length / 2
+				data.elements[0].size_x = abs(dimension.width) / 2
+				data.elements[0].size_y = abs(dimension.length) / 2
 				data.elements[0].size_z = 0.1
 				self.location = self.subclass.owner.location = dimension.center
 

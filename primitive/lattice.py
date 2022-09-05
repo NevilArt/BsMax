@@ -14,11 +14,15 @@
 ############################################################################
 
 import bpy
+
 from bpy.types import Operator
 from mathutils import Vector
+
 from bpy.props import IntProperty, FloatProperty
+
 from primitive.primitive import Draw_Primitive, Primitive_Public_Class
 from bsmax.actions import delete_objects
+from bsmax.bsmatrix import transform_point_to_matrix
 
 
 
@@ -63,12 +67,13 @@ class Create_OT_Lattice(Draw_Primitive):
 
 		if clickcount == 2:
 			self.height = dimension.height
-			# offset = Vector((self.width/2, self.length/2, self.height/2))
-			# offset = Vector((0, 0, self.height/2))
-			# location = transform_point_to_matrix(offset, self.gride.gride_matrix)
-			# self.subclass.owner.location = location
 
-		self.subclass.owner.scale = (self.width, self.length, self.height)
+			# height correction
+			offset = Vector((self.width/2, self.length/2, self.height/2))
+			location = transform_point_to_matrix(offset, self.gride.gride_matrix)
+			self.subclass.owner.location = location
+
+		self.subclass.owner.scale = (abs(self.width), abs(self.length), self.height)
 	
 	def finish(self):
 		self.width, self.length, self.height = 0, 0, 0

@@ -14,9 +14,12 @@
 ############################################################################
 
 import bpy
+
 from mathutils import Vector
+
 from primitive.primitive import Draw_Primitive, Primitive_Public_Class
 from bsmax.actions import delete_objects
+from bsmax.bsmatrix import transform_point_to_matrix
 
 
 
@@ -35,14 +38,14 @@ class Create_OT_Light_Probe_Grid(Draw_Primitive):
 	bl_idname="create.light_probe_grid"
 	bl_label="Irradiance Volume"
 	subclass = LightProbe()
-	width,length,height,distance = 0,0,0,0
-	location = Vector((0,0,0))
+	width, length, height, distance = 0, 0, 0, 0
+	location = Vector((0, 0, 0))
 
 	def create(self, ctx):
 		self.subclass.finishon = 4
 		bpy.ops.object.lightprobe_add(type='GRID', location=self.gride.location)
 		self.subclass.owner = ctx.active_object
-		self.subclass.owner.scale = (0,0,0)
+		self.subclass.owner.scale = (0, 0, 0)
 		self.subclass.owner.rotation_euler = self.gride.rotation
 
 	def update(self, ctx, clickcount, dimension):
@@ -53,18 +56,23 @@ class Create_OT_Light_Probe_Grid(Draw_Primitive):
 
 		if clickcount == 2:
 			self.height = dimension.height / 2
-			self.subclass.owner.location = self.location #+ offset
+
+			# height correction
+			offset = Vector((self.width, self.length, self.height))
+			location = transform_point_to_matrix(offset, self.gride.gride_matrix)
+			self.subclass.owner.location = location
 
 		if clickcount == 3:
-			scale = 1 / max(self.width, self.length, self.height)
+			scale = 1 / max(abs(self.width), abs(self.length), self.height)
 			self.distance = dimension.height * scale
 
 		if clickcount > 0:
-			self.subclass.owner.scale = (self.width, self.length, self.height)
+			self.subclass.owner.scale = (abs(self.width), abs(self.length),
+										self.height)
 			self.subclass.owner.data.influence_distance = self.distance
 
 	def finish(self):
-		self.width, self.length, self.height, self.distance = 0,0,0,0
+		self.width, self.length, self.height, self.distance = 0, 0, 0, 0
 
 
 
@@ -72,19 +80,19 @@ class Create_OT_Light_Probe_Planer(Draw_Primitive):
 	bl_idname="create.light_probe_planer"
 	bl_label="Reflection Plane"
 	subclass = LightProbe()
-	width, length, distance = 0,0,0
+	width, length, distance = 0, 0, 0
 
 	def create(self, ctx):
 		self.subclass.finishon = 3
 		bpy.ops.object.lightprobe_add(type='PLANAR', location=self.gride.location)
 		self.subclass.owner = ctx.active_object
-		self.subclass.owner.scale = (0,0,0)
+		self.subclass.owner.scale = (0, 0, 0)
 		self.subclass.owner.rotation_euler = self.gride.rotation
 
 	def update(self, ctx, clickcount, dimension):
 		if clickcount == 1:
-			self.width = dimension.width
-			self.length = dimension.length
+			self.width = abs(dimension.width)
+			self.length = abs(dimension.length)
 
 		if clickcount == 2:
 			self.distance = dimension.height
@@ -103,19 +111,21 @@ class Create_OT_Light_Probe_Cubemap(Draw_Primitive):
 	def create(self, ctx):
 		bpy.ops.object.lightprobe_add(type='CUBEMAP', location=self.gride.location)
 		self.subclass.owner = ctx.active_object
-		self.subclass.owner.scale = (0,0,0)
+		self.subclass.owner.scale = (0, 0, 0)
 		self.subclass.owner.rotation_euler = self.gride.rotation
 
 	def update(self, ctx, clickcount, dimension):
 		if clickcount == 1:
 			self.subclass.owner.data.influence_distance = dimension.radius
-			self.subclass.owner.scale = (1,1,1)
+			self.subclass.owner.scale = (1, 1, 1)
 
 
 
-classes = [Create_OT_Light_Probe_Grid,
-			Create_OT_Light_Probe_Planer,
-			Create_OT_Light_Probe_Cubemap]
+classes = (
+		Create_OT_Light_Probe_Grid,
+		Create_OT_Light_Probe_Planer,
+		Create_OT_Light_Probe_Cubemap
+)
 
 def register_lightprobe():
 	for c in classes:
