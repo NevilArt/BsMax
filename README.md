@@ -37,8 +37,8 @@ If you found this product useful and want to support this project you can Donate
 * [Download Older Version (2.80-2.92)](https://github.com/NevilArt/BsMax_2_80)
 
 ## Recent Updates and Changes
-* Draw Lattice, Light prop ... height Z correction issue fix.
-* Draw primitive below the grid issue fixed for now but better solution will replace soon.
+* Fillet/Chamfer mouse release issue fixed for now (this tool need to rewrite completely).
+* Curve tools get_segment issue fixed (Teapot, Refine, divide and many other tools fixed).
 * [Change log ...](https://github.com/NevilArt/BsMax/blob/master/CHANGELOG.md)
 * Note: Dont worry about slow down the updates. I`m currently on an animation project that takes all of my time. I will back and BsMax will be continue with big futures.
 

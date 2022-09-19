@@ -66,7 +66,7 @@ class CurveTool(Operator):
 	def modal(self, ctx, event):
 		if self.singleaction:
 			self.apply()
-			return {'CANCELLED'}
+			return{'FINISHED'}
 
 		if event.type == 'LEFTMOUSE':
 			if not self.start:
@@ -80,14 +80,16 @@ class CurveTool(Operator):
 				self.value_x = (event.mouse_x - self.start_x) / 200
 				self.value_y = (event.mouse_y - self.start_y) / 200
 				self.apply()
-			if self.start and event.value =='RELEASE':
-				self.finish = True
+
+		if self.start and event.value =='RELEASE':
+			self.finish = True
 
 		#TODO mouse weel changes self.value_w
 		if self.finish:
 			if self.value_x + self.value_y == 0:
 				self.abort()
-			return {'CANCELLED'}
+			self.apply()
+			return{'FINISHED'}
 
 		if event.type in {'RIGHTMOUSE', 'ESC'}:
 			self.abort()

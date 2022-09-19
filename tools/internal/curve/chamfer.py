@@ -33,6 +33,7 @@ class Curve_OT_Chamfer(CurveTool):
 
 		value = abs(self.value) if self.typein else abs(self.value_y)
 		tention = 0.5 if self.fillet else 0
+
 		for i, sel in curve.selection('point'):
 			curve.splines[i].chamfer(sel, value, tention)
 		

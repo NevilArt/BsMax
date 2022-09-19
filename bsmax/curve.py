@@ -848,7 +848,7 @@ class Bezier_point:
 
 class Segment:
 	def __init__(self, spline, index):
-		start,end = index,spline.get_rigth_index(index)
+		start, end = index, spline.get_next_index(index)
 		self.spline = spline
 		self.index = index
 		self.a = spline.bezier_points[start].co
@@ -951,7 +951,7 @@ class Spline:
 
 	def get_segment_indexes(self, index):
 		""" return start and end point index of segment """
-		return [index, self.get_rigth_index(index)]
+		return [index, self.get_next_index(index)]
 
 	def get_segment(self, index):
 		start, end = self.get_segment_indexes(index)
@@ -1184,7 +1184,7 @@ class Curve:
 			for i, index in enumerate(indexes):
 				newspline.bezier_points.append(spline.bezier_points[index])
 				if i >= count-1:
-					right = spline.get_rigth_index(index)
+					right = spline.get_next_index(index)
 					newspline.bezier_points.append(spline.bezier_points[right])
 			splines.append(deepcopy(newspline))
 		""" replace first part with original and append others """

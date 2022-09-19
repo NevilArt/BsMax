@@ -143,7 +143,7 @@ def get_teapot_mesh(radius,csegs,body,handle,spout,lid):
 
 		""" Create vertexes """
 		path = get_path(line)
-		sides = get_verts_body(path,csegs,radius)
+		sides = get_verts_body(path, csegs, radius)
 		l = len(sides)-1
 		verts.append(sides[0])
 

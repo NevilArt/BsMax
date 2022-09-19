@@ -1,3 +1,7 @@
+# 0, 1, 1, 20220905
+* Draw Lattice, Light prop ... height Z correction issue fix.
+* Draw primitive below the grid issue fixed for now but better solution will replace soon.
+
 # 0, 1, 1, 20220822
 * 'Select Keyed Bones' (Pose Mode: Select> Select Keyed Bones).
 * Set lattice in mesh edit mode added to 'Edit mode: View3d> Add' menu too.
