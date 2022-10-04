@@ -69,7 +69,7 @@ def get_view3d_transform(ctx):
 	items.append(QuadItem("Geometry Node Editor...", f, t, n, c0214, n))
 	items.append(QuadItem(n, f, f, n, n, n))
 	submenu = get_view3d_transform_convert_to_sub(ctx)
-	items.append(QuadItem("Conver to", f, f, submenu, n, n))
+	items.append(QuadItem("Convert to", f, f, submenu, n, n))
 	return "Transform", items, 1
 
 
