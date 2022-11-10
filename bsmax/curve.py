@@ -15,7 +15,6 @@
 import math
 import cmath
 from mathutils import Vector
-from mathutils.geometry import intersect_line_line
 from copy import deepcopy
 from math import sin, cos, atan2, pi
 from itertools import product
@@ -23,7 +22,8 @@ from itertools import product
 from bsmax.math import (get_lines_intersection, split_segment, point_on_line,
 						point_on_cubic_bezier_curve, get_distance, get_3_points_angle_3d,
 						shift_number, bounding_box_colide_with,
-						get_cubic_bezier_curve_length, get_point_on_spline
+						get_cubic_bezier_curve_length, get_point_on_spline,
+						get_bezier_tangent
 					)
 
 
@@ -86,12 +86,6 @@ def get_bezier_roots(dists, tollerance=0.0001):
 		return [] if abs(d) > tollerance else float('inf')
 
 
-#TODO replace with other one in math.py
-def get_bezier_tangent(points, t):
-	s = 1-t
-	return s*s*(points[1]-points[0])+2*s*t*(points[2]-points[1])+t*t*(points[3]-points[2])
-
-
 
 def get_bezier_point1(points, t):
 	s = 1-t
@@ -137,6 +131,7 @@ def xray_spline_intersection(spline, origin):
 						startpoint.handle_right,
 						endPoint.handle_left,
 						endPoint.co)
+			a, b, c, d = points
 			roots = get_bezier_roots((points[0].y - origin.y,
 								 points[1].y - origin.y,
 								 points[2].y - origin.y,
@@ -146,7 +141,7 @@ def xray_spline_intersection(spline, origin):
 			else:
 				for root in roots:
 					append_intersection(index, root,
-										get_bezier_tangent(points, root)[1],
+										get_bezier_tangent(a, b, c, d, root)[1],
 										get_bezier_point1(points, root)[0])
 
 	elif spline.type == 'POLY':
@@ -173,8 +168,12 @@ def xray_spline_intersection(spline, origin):
 	are_intersections_adjacent(0)
 	return intersections
 
+
+
 def is_point_in_spline(point, spline):
 	return spline.use_cyclic_u and len(xray_spline_intersection(spline, point))%2 == 1
+
+
 
 def get_inout_segments(me, targ):
 	inner,outer = [],[]
@@ -715,25 +714,25 @@ def collect_splines_divisions(intersections):
 	divisions = []
 	
 	def spappend(segment, time, co):
-		""" co is a corraction point that com from segment intersection detector """
-		isnewspline = True
+		""" co is a corraction point from segment intersection detector """
+		isNewSpline = True
 		for div in divisions:
 			if segment.spline == div.spline:
-				isnewsegment = True
+				isNewSegment = True
 				for dseg in div.segments:
 					if segment.index == dseg.index:
 						dseg.times.append(time)
 						dseg.cos.append(co)
-						isnewsegment = False
+						isNewSegment = False
 						break
 
-				if isnewsegment:
+				if isNewSegment:
 					""" creat a new SegmentDivisions object """
 					div.segments.append(SegmentDivisions(segment.index, time, co))
-				isnewspline = False
+				isNewSpline = False
 		
 		""" create a new SplineDivisions object """
-		if isnewspline:
+		if isNewSpline:
 			newdiv = SplineDivisions(segment.spline,
 									SegmentDivisions(segment.index, time, co)
 								)

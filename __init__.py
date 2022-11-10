@@ -20,8 +20,8 @@ bl_info = {
 	'name': 'BsMax',
 	'description': 'Package of many tools + other CG apps UI mimic',
 	'author': 'Naser Merati (Nevil)',
-	'version': (0, 1, 1, 20220919),
-	'blender': (2, 93, 0),# 2.93LTS ~ 3.3LTS
+	'version': (0, 1, 1, 20221110),
+	'blender': (2, 93, 0),# 2.93LTS ~ 3.4Beta
 	'location': 'Almost Everywhere in Blender',
 	'wiki_url': 'https://github.com/NevilArt/BsMax/wiki',
 	'doc_url': 'https://github.com/NevilArt/BsMax/wiki',
@@ -127,6 +127,7 @@ def update_preferences(self, ctx, action):
 			'sculpt', 'uv_editor', 'node_editor', 'text_editopr',
 			'graph_editor','clip_editor', 'video_sequencer',
 			'text_editor','file_browser', 'floatmenus', 'view_undo'}:
+			global addons
 			register_keymaps(addons[__name__].preferences)
 
 
@@ -337,6 +338,7 @@ class BsMax_AddonPreferences(bpy.types.AddonPreferences):
 		self.active = True
 
 	def row_prop(self, col, name, page):
+		global wiki
 		row = col.row()
 		row.prop(self,name)
 		srow = row.row()
@@ -481,6 +483,7 @@ class BsMax_OT_Save_Preferences(bpy.types.Operator):
 	bl_label = 'Save BsMax Preferences'
 	bl_options = {'REGISTER', 'INTERNAL'}
 	def execute(self, ctx):
+		global addons
 		save_preferences(addons[__name__].preferences)
 		return{'FINISHED'}
 
@@ -496,6 +499,7 @@ def register_delay(preferences):
 def register():
 	register_class(BsMax_OT_Save_Preferences)
 	register_class(BsMax_AddonPreferences)
+	global addons
 	preferences = addons[__name__].preferences
 	load_preferences(preferences)
 	preferences.active = True
@@ -508,6 +512,7 @@ def register():
 
 
 def unregister():
+	global addons
 	save_preferences(addons[__name__].preferences)
 	unregister_keymaps()
 	unregister_menu()

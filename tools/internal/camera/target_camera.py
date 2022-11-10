@@ -150,7 +150,7 @@ class Camera_OT_Create_DOF_Target(Operator):
 		target = self.cretae_target_object(cam)
 		target.location = cam.matrix_world.to_translation()
 		target.empty_display_size = size*2 
-		target.name = cam.name + "_FOV_target"
+		target.name = cam.name + "_DOF_target"
 		cam.data.dof.use_dof = True
 		cam.data.dof.focus_object = target
 		self.create_driver(cam, target)
@@ -167,7 +167,7 @@ class Camera_OT_Select_DOF_Target(Operator):
 	def poll(self, ctx):
 		if ctx.object:
 			if ctx.object.type == 'CAMERA':
-				return ctx.object.data.dof.focus_object != None
+				return ctx.object.data.dof.focus_object
 		return False
 
 	def execute(self, ctx):

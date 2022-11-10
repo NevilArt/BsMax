@@ -36,7 +36,7 @@ def matrix_to_array(matrix):
 
 
 def array_to_matrix(array, cls=None):
-	""" Conver array to 4x4 matrix
+	""" Convert array to 4x4 matrix
 
 		args:
 			array: 1D array with 16 float number
@@ -352,6 +352,7 @@ def points_to_local_matrix(points, matrix):
 
 		args:
 			point: Vector3 or Array of Vector3
+			matrix: Matrix of destenation transform
 
 		return:
 			same type as given point argoment
@@ -397,9 +398,14 @@ def points_to_local_matrix(points, matrix):
 
 # temprary function
 def transfer_points_to(points ,location, direction):
-	"""
+	""" Temprary function for transfer point3 to new location and rotation
+		
 		args:
+			points: Vector3
+			location: Vectore3
+			direction: Vector3
 		return:
+			Vector3 point in new location
 	"""
 	xa, ya, za = direction
 	rx = numpy.matrix([[1, 0, 0], [0, cos(xa),-sin(xa)], [0, sin(xa), cos(xa)]])
@@ -447,6 +453,12 @@ def transform_point_to_matrix(point, matrix):
 
 
 class BsMatrix:
+	""" All transform function (I know python has all of this but this is about learning)\n
+		[1, 0, 0, 0]\n
+		[0, 1, 0, 0]\n
+		[0, 0, 1, 0]\n
+		[0, 0, 0, 1]
+	"""
 	def __init__(self):
 		self.matrix = [
 			[1, 0, 0, 0],
@@ -456,60 +468,81 @@ class BsMatrix:
 		]
 
 	def from_matrix(self, matrix):
+		"""conver regular matrix to BsMatrix"""
 		matrix_to_bsmatrix(self, matrix)
 
 	def to_matrix(self):
+		"""Get regular matrix of BsMatrix"""
 		return bsmatrix_to_matrix(self)
 
 	def from_array(self, array):
+		"""Conver 4x4 matrix to BsMatrix"""
 		array_to_matrix(array, cls=self)
 	
 	def to_array(self):
+		"""Convert to 4X4 matrix"""
 		return matrix_to_array(self.matrix)
 
 	def from_translation(self, location):
+		"""get translation from vector3"""
 		m = self.matrix
 		m[0][3], m[1][3], m[2][3] = location
 
 	def to_translation(self):
+		"""return traslation as vector3"""
 		m = self.matrix
 		return Vector(m[0][3], m[1][3], m[2][3])
 
 	def from_euler(self, euler):
+		"""get rotation from euler XYZ
+			TODO Add other euler types too
+		"""
 		euler_to_matrix(self, euler.x, euler.y, euler.z)
 	
 	def to_euler(self):
+		"""TODO return rotation as euler"""
 		return []
 
 	def from_quaternion(self, quaternion):
+		"""get rotation from quaternion rotation"""
 		matrix_from_quaternion(self, quaternion)
 
 	def to_quaternion(self):
+		"""return rotation as quaterion"""
 		return matrix_to_quaternion(self)
 
 	def from_axis_angle(self, order):
+		"""TODO get rotation from axis angle"""
 		pass
 
 	def to_axis_angle(self):
+		"""TODO return rotation as axis angle"""
 		return Vector(0, 0, 0)
 
 	def from_scale(self, scale):
+		"""TODO get scale from vector3"""
 		pass
 
 	def to_scale(self):
+		"""return scale as vector3"""
 		return matrix_to_scale(self)
 
 	def inverse(self):
+		"""return invers of the matrix"""
 		return matrix_inverse(self)
 	
 	def point_to_local(self, points):
+		"""put point in a local matrix of the current"""
 		return points_to_local_matrix(points, self.matrix)
 
 	def point_to_world(self, points):
+		"""put point in world matrix"""
 		return points_to_local_matrix(points, self.inverse())
 
 	def from_string(self):
+		"""TODO get BsMatrix from string"""
 		pass
 
 	def to_string(self):
+		"""TODO conver BsMatrix to string"""
 		return ""

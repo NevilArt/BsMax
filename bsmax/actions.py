@@ -60,20 +60,19 @@ def link_to_scene(ctx, objs):
 		return:
 			none
 	"""
-	activelayername = ctx.view_layer.active_layer_collection.name
+	activeLayerName = ctx.view_layer.active_layer_collection.name
 	
-	if activelayername in {'Master Collection', 'Scene Collection'}:
+	if activeLayerName in {'Master Collection', 'Scene Collection'}:
 		collection = ctx.scene.collection
 	else:
-		collection = bpy.data.collections[activelayername]
+		collection = bpy.data.collections[activeLayerName]
 
-	if isinstance(objs, list):
-		for obj in objs:
-			if not collection in obj.users_collection:
-				collection.objects.link(obj)
-	else:
-		if not collection in objs.users_collection:
-			collection.objects.link(objs)	
+	if not isinstance(objs, list):
+		objs = [objs]
+
+	for obj in objs:
+		if not collection in obj.users_collection:
+			collection.objects.link(obj)
 
 
 
@@ -87,23 +86,43 @@ def set_as_active_object(ctx, obj):
 			None
 	"""
 	if obj:
-		bpy.ops.object.select_all(action = 'DESELECT')
-		obj.select_set(state = True)
+		bpy.ops.object.select_all(action='DESELECT')
+		obj.select_set(state=True)
 		ctx.view_layer.objects.active = obj
 
 
 
 def delete_objects(objs):
+	""" Delete given object or object list\n
+		Maybe in some case need to safty check befor delete
+
+		args:
+			objs: Object or Object List
+		return:
+			None
+	"""
 	bpy.ops.object.delete({'selected_objects': objs})
 
 
 
 def set_create_target(obj, target, distance=(0.0, 0.0, -2.0), align=True):
-	""" Add a lookat constraint with basic setting """
-	""" Create an empty object as target if target is None """
+	""" Add a lookat constraint with basic setting\n
+		Create an empty object as target if target is None
+
+		args:
+			obj: Object
+			target: Object or None
+			distance: (float, float, float)
+				new created target object offset from main object
+			align: Boolean.
+				align new created target to parent object
+		
+		return:
+			Object (New created target object)
+	"""
 	constraint = obj.constraints.new('TRACK_TO')
 
-	if target == None:
+	if not target:
 		target = bpy.data.objects.new('empty', None)
 		target.empty_display_type = 'CUBE'
 		target.empty_display_size = 0.25
@@ -124,18 +143,44 @@ def set_create_target(obj, target, distance=(0.0, 0.0, -2.0), align=True):
 
 
 
-def link_to(obj, target):
-	obj.parent = target
-	obj.matrix_parent_inverse = target.matrix_world.inverted()
+def link_to(objs, target):
+	""" Parent obj(s) to given object and keep transform
+
+		args:
+			obj: Object or List
+			target: Object
+		return:
+			None
+	"""
+	if not isinstance(objs, list):
+		objs = [objs]
+
+	for obj in objs:
+		obj.parent = target
+		obj.matrix_parent_inverse = target.matrix_world.inverted()
 
 
 
 def get_object_target(obj):
+	"""TODO get objects lookat target"""
 	return None
 
 
 
 def set_origen(ctx, obj, location):
+	""" Set object origen in new location\n
+		TODO: Transform rather than locaion
+		TODO: free from bpy.ops and remove context
+		TODO: Objs rather than songel object
+
+		args:
+			ctx: bpy.context
+			obj: Object or List
+			location: Vector3
+		
+		return:
+			None
+	"""
 	scene = ctx.scene
 	saved_location = scene.cursor.location.copy()
 	saved_rotation = scene.cursor.rotation_euler.copy()
@@ -150,7 +195,19 @@ def set_origen(ctx, obj, location):
 
 
 def match_transform(ctx, obj, target):
-	""" Kepp obj offset set origen fit on target in world space """
+	""" Keep obj condition, set origen match with target on world space
+		TODO free from bpy.ops and remove ctx
+		TODO can be merg with set_origen function
+		TODO target object could be a transform matrix
+		TODO had to support multi objects too
+
+		args:
+			ctx: bpy.context
+			obj: Object
+			target: Object
+		return:
+			None
+	"""
 	target_location = target.matrix_world.to_translation()
 	target_rotation = target.matrix_world.to_euler()
 	target_scale = target.matrix_world.to_scale()
@@ -223,6 +280,8 @@ def freeze_transform(objs, location=True, rotation=True, scale=True):
 		retuen:
 			None
 	"""
+	if not isinstance(objs, list):
+		objs = [objs]
 	
 	for obj in objs:
 		if location:
@@ -253,6 +312,17 @@ def freeze_transform(objs, location=True, rotation=True, scale=True):
 
 
 def insert_key_to_current_state(chanel, frame, location, rotation, scale):
+	""" Set key to given chanel in specific frame
+
+		args:
+			chanel: data chanel (attribute)
+			frame: integer frame number
+			location: Boolean
+			rotation: Boolean
+			scale: Boolean
+		return:
+			None
+	"""
 	# Set key for Location and Scale always is same
 	if location:
 		chanel.keyframe_insert(data_path='location', frame=frame)
@@ -331,73 +401,81 @@ def catche_collection(ctx, name):
 
 	collection = bpy.data.collections.new(name)
 	ctx.scene.collection.children.link(collection)
+
 	return collection
 
 
 
-def move_to_collection(obj, collection):
+def move_to_collection(objs, collection):
 	""" Clear all collection and link to given one
 
 		args:
-			obj: Object or list
+			objs: Object or list
 			collection: collection
 		return:
 			None
 	"""
-	if isinstance(obj, list):
-		for o in obj:
-			for c in o.users_collection:
-				c.objects.unlink(o)
-			collection.objects.link(o)
-	else:
-		for c in obj.users_collection:
-			c.objects.unlink(obj)
+	if not isinstance(objs, list):
+		objs = [objs]
+
+	for obj in objs:
+		for collection in obj.users_collection:
+			collection.objects.unlink(obj)
 		collection.objects.link(obj)
 
 
 
-def clear_relations(obj):
+def clear_relations(objs):
 	""" Clear objecrts all relations and make it free
 
 			args:
-				obj = Object
+				objs = Object or List
 			return:
 				None
 	"""
-	# store transform
-	matrix_world = obj.matrix_world.copy()
+	if not isinstance(objs, list):
+		objs = [objs]
 
-	# delete animation
-	obj.animation_data_clear()
+	for obj in objs:
+		# store transform
+		matrix_world = obj.matrix_world.copy()
 
-	# delete constraints
-	for constraint in obj.constraints:
-		obj.constraints.remove(constraint)
+		# delete animation
+		obj.animation_data_clear()
 
-	# unparent
-	obj.parent = None
+		# delete constraints
+		for constraint in obj.constraints:
+			obj.constraints.remove(constraint)
 
-	# restor transform
-	obj.matrix_world = matrix_world
+		# unparent
+		obj.parent = None
+
+		# restor transform
+		obj.matrix_world = matrix_world
 
 
 
-def convert_to_solid_mesh(obj):
-	"""Convert mesh object to a soled freezed collapsed object
+def convert_to_solid_mesh(objs):
+	"""Convert mesh object(s) to a soled freezed collapsed object
 
 		args:
-			obj: mesh object
-		return: None
+			obj: mesh object or List
+		return:
+			None
 	"""
-	# make unique
-	obj.data = obj.data.copy()
+	if not isinstance(objs, list):
+		objs = [objs]
+	
+	for obj in objs:
+		# make unique
+		obj.data = obj.data.copy()
 
-	# collaps shapekeys
-	if hasattr(obj.data, "shape_keys"):
-		obj.shape_key_add(name='CombinedKeys', from_mix=True)
-		if obj.data.shape_keys:
-			for shapeKey in obj.data.shape_keys.key_blocks:
-				obj.shape_key_remove(shapeKey)
+		# collaps shapekeys
+		if hasattr(obj.data, "shape_keys"):
+			obj.shape_key_add(name='CombinedKeys', from_mix=True)
+			if obj.data.shape_keys:
+				for shapeKey in obj.data.shape_keys.key_blocks:
+					obj.shape_key_remove(shapeKey)
 
-	# apply modifiers and shapekeys
-	obj.to_mesh()
+		# apply modifiers and shapekeys
+		obj.to_mesh()

@@ -1,3 +1,7 @@
+# 0, 1, 1, 20220919
+* Fillet/Chamfer mouse release issue fixed for now (this tool need to rewrite completely).
+* Curve tools get_segment issue fixed (Teapot, Refine, divide and many other tools fixed).
+
 # 0, 1, 1, 20220905
 * Draw Lattice, Light prop ... height Z correction issue fix.
 * Draw primitive below the grid issue fixed for now but better solution will replace soon.

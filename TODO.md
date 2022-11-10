@@ -24,6 +24,8 @@
 - [ ] 'Set ffd' menu in Edit Mode.
 - [ ] 'LMB Double click' Face and vertex mode select linked.
 - [ ] Knife tool RMB commit (3DsMax mode).
+- [ ] 'S' snapp toggle in UV editor.
+- [ ] Optional Blender mode 'WER' on UV ediotr.
 
 
 ### Menu/UI

@@ -1,5 +1,5 @@
 
-# BsMax Blender Addon 2.93LTS ~ 3.3LTS
+# BsMax Blender Addon 2.93LTS ~ 3.4Beta
 
 BsMax is package of Modeling, Rig & Animation, Render tools and UI mimic for [Blender 3D](https://www.blender.org/).
 
@@ -37,8 +37,8 @@ If you found this product useful and want to support this project you can Donate
 * [Download Older Version (2.80-2.92)](https://github.com/NevilArt/BsMax_2_80)
 
 ## Recent Updates and Changes
-* Fillet/Chamfer mouse release issue fixed for now (this tool need to rewrite completely).
-* Curve tools get_segment issue fixed (Teapot, Refine, divide and many other tools fixed).
+* Some code cleaning and bug fixing.
+* 'Ctrl + Shift + W' UV editor Merg by distance.
 * [Change log ...](https://github.com/NevilArt/BsMax/blob/master/CHANGELOG.md)
 * Note: Dont worry about slow down the updates. I`m currently on an animation project that takes all of my time. I will back and BsMax will be continue with big futures.
 

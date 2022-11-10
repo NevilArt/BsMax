@@ -195,7 +195,15 @@ def point_on_spline(spline, time):
 
 
 def point_on_curve(curve, index, time):
-	""" Arguments(Curve Object, Spline index, time) return: Location, Rotation, Scale """
+	""" get point on curve by time
+		
+		args:
+			Curve: Object
+			Spline: index
+			time: 0-1
+		return:
+			Location, Rotation, Scale
+	"""
 	# Safty Check
 	if not curve.data.splines:
 		return Vector((0, 0, 0)), Vector((0, 0, 0)), Vector((1, 1, 1))

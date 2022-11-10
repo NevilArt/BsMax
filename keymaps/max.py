@@ -1714,6 +1714,7 @@ def uv_editor(km, preferences):
 	km.new(space, 'uv.reveal', 'U', 'PRESS', [], alt=True)
 	km.new(space, 'uv.select_split', 'B', 'PRESS', [], ctrl=True)
 	km.new(space, 'uv.weld', 'W', 'PRESS', [], ctrl=True)
+	km.new(space, 'uv.remove_doubles', 'W', 'PRESS', [], ctrl=True, shift=True)
 
 	if version < (3, 2, 0):
 		km.new(space, 'uv.select', 'EVT_TWEAK_L', 'ANY', [('extend', True)])
