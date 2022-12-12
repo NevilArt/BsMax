@@ -1,3 +1,7 @@
+# 0, 1, 1, 20221110
+* Some code cleaning and bug fixing.
+* 'Ctrl + Shift + W' UV editor Merg by distance.
+
 # 0, 1, 1, 20220919
 * Fillet/Chamfer mouse release issue fixed for now (this tool need to rewrite completely).
 * Curve tools get_segment issue fixed (Teapot, Refine, divide and many other tools fixed).

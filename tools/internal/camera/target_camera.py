@@ -13,18 +13,22 @@
 #	along with this program.  If not, see <https://www.gnu.org/licenses/>.
 ############################################################################
 
+import re
 import bpy
-from bpy.types import Operator
+from bpy.types import (Operator, Panel)
+
 from bsmax.actions import (
 		set_create_target,
 		set_as_active_object,
 		delete_objects
 	)
 from bsmax.state import has_constraint
+from bsmax.mouse import ray_cast
 
 
 
 class Camera_OT_Create_Target(Operator):
+	"""Create a loock at target for camera"""
 	bl_idname = "camera.create_target"
 	bl_label = "Make Target Camera"
 	bl_options = {'REGISTER', 'UNDO', 'INTERNAL'}
@@ -48,6 +52,7 @@ class Camera_OT_Create_Target(Operator):
 
 
 class Camera_OT_Clear_Target(Operator):
+	""" Remove loock at target and keep current transform """
 	bl_idname = "camera.clear_targte"
 	bl_label = "Make Free Camera"
 	bl_options = {'REGISTER', 'UNDO', 'INTERNAL'}
@@ -74,6 +79,7 @@ class Camera_OT_Clear_Target(Operator):
 
 
 class Camera_OT_Select_Target(Operator):
+	""" Select the loockat target """
 	bl_idname = "camera.select_target"
 	bl_label = "Select Target"
 	bl_options = {'REGISTER', 'UNDO', 'INTERNAL'}
@@ -93,6 +99,7 @@ class Camera_OT_Select_Target(Operator):
 
 
 class Camera_OT_Create_DOF_Target(Operator):
+	""" Creat and setup DOF target for easy arrange """
 	bl_idname = "camera.create_dof_target"
 	bl_label = "Create DOF Target"
 	bl_options = {'REGISTER', 'UNDO', 'INTERNAL'}
@@ -107,6 +114,7 @@ class Camera_OT_Create_DOF_Target(Operator):
 	def cretae_target_object(self, parent):
 		target = bpy.data.objects.new('empty', None)
 		target.empty_display_type = 'SPHERE'
+		target.show_axis = True
 		target.empty_display_size = parent.data.display_size
 		collection = parent.users_collection[0]
 		collection.objects.link(target)
@@ -158,7 +166,9 @@ class Camera_OT_Create_DOF_Target(Operator):
 		return {'FINISHED'}
 
 
+
 class Camera_OT_Select_DOF_Target(Operator):
+	""" Select DOF target Object """
 	bl_idname = "camera.select_dof_target"
 	bl_label = "Select DOF Target"
 	bl_options = {'REGISTER', 'UNDO', 'INTERNAL'}
@@ -175,20 +185,97 @@ class Camera_OT_Select_DOF_Target(Operator):
 		set_as_active_object(ctx, target)
 		return {'FINISHED'}
 
+
+
+class Camera_OT_DOF_Depth_Picker(Operator):
+	""" Put DOF target on picked """
+	bl_idname = "camera.dof_depth_picker"
+	bl_label = "Pick DOF depth"
+	bl_options = {'REGISTER', 'UNDO'}
+
+	@classmethod
+	def poll(self, ctx):
+		if ctx.object:
+			if ctx.object.type == 'CAMERA':
+				return ctx.object.data.dof.focus_object
+		return False
+	
+	def modal(self, ctx, event):
+		if ctx.area.type != 'VIEW_3D':
+			return {'PASS_THROUGH'}
+
+		if not event.type in {'LEFTMOUSE', 'RIGHTMOUSE', 'ESC'}:
+			return {'PASS_THROUGH'}
+
+		if event.type == 'LEFTMOUSE':
+
+			if event.value == 'PRESS':
+				ret = ray_cast(ctx, event.mouse_region_x, event.mouse_region_y)				
+				if ret[0]:
+					ctx.object.data.dof.focus_object.location = ret[0]
+
+			if event.value =='RELEASE':
+				return {'FINISHED'}
+
+		elif event.type in {'RIGHTMOUSE','ESC'}:
+			return {'CANCELLED'}
+
+		return {'RUNNING_MODAL'}
+
+	def execute(self, ctx):
+		return {'FINISHED'}
+	
+	def invoke(self, ctx, event):
+		ctx.window_manager.modal_handler_add(self)
+		return {'RUNNING_MODAL'}
+
+
+
+class Camera_PT_Panel(Panel):
+	bl_label = "Target / Tools"
+	bl_idname = "DATA_PT_Camera"
+	bl_space_type = 'PROPERTIES'
+	bl_region_type = 'WINDOW'
+	bl_context = "data"
+	bl_options = {'DEFAULT_CLOSED'}
+
+	@classmethod
+	def poll(cls,ctx):
+		return ctx.object.type == 'CAMERA'
+
+	def draw(self, ctx):
+		layout = self.layout
+		row = layout.row()
+		row.operator('camera.create_target', text='Create Target')
+		row.operator('camera.select_target', text='Select Target')
+		row.operator('camera.clear_targte', text='Clear Target')
+		row = layout.row()
+		row.operator('camera.create_dof_target', text='Create DOF Target')
+		row.operator('camera.select_dof_target', text='Select DOF Target')
+
+
+
 def camera_menu(self, ctx):
 	layout = self.layout
 	layout.separator()
 	layout.operator("camera.create_target")
 	layout.operator("camera.clear_targte")
 	layout.operator("camera.select_target")
+	layout.operator('camera.dof_depth_picker', text='Pick DOF depth')
 
 
 
-classes = [Camera_OT_Create_Target,
+classes = [
+		Camera_PT_Panel,
 		Camera_OT_Clear_Target,
-		Camera_OT_Select_Target,
+		Camera_OT_Create_Target,
 		Camera_OT_Create_DOF_Target,
-		Camera_OT_Select_DOF_Target]
+		Camera_OT_DOF_Depth_Picker,
+		Camera_OT_Select_DOF_Target,
+		Camera_OT_Select_Target
+]
+
+
 
 def register_terget_camera():
 	for c in classes:

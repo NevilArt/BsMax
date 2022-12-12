@@ -13,15 +13,12 @@
 #	along with this program.  If not, see <https://www.gnu.org/licenses/>.
 ############################################################################
 from .cameras import register_cameras, unregister_cameras
-from .panel import register_panel, unregister_panel
 from .target_camera import register_terget_camera, unregister_terget_camera
 
 def register_camera():
 	register_cameras()
-	register_panel()
 	register_terget_camera()
 
 def unregister_camera():
 	unregister_cameras()
-	unregister_panel()
 	unregister_terget_camera()

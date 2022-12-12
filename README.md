@@ -1,5 +1,5 @@
 
-# BsMax Blender Addon 2.93LTS ~ 3.4Beta
+# BsMax Blender Addon 2.93LTS ~ 3.4
 
 BsMax is package of Modeling, Rig & Animation, Render tools and UI mimic for [Blender 3D](https://www.blender.org/).
 
@@ -37,10 +37,10 @@ If you found this product useful and want to support this project you can Donate
 * [Download Older Version (2.80-2.92)](https://github.com/NevilArt/BsMax_2_80)
 
 ## Recent Updates and Changes
-* Some code cleaning and bug fixing.
-* 'Ctrl + Shift + W' UV editor Merg by distance.
+* Camera DOF depth picker, while a camera with DOF target selected got to "View/Cameras/Pick DOF Depth" and then click on any surface to put DOF targen on it.
+* [Multi shape key](https://www.youtube.com/watch?v=De3fiWcQnpA) Driver issue fixed.
 * [Change log ...](https://github.com/NevilArt/BsMax/blob/master/CHANGELOG.md)
-* Note: Dont worry about slow down the updates. I`m currently on an animation project that takes all of my time. I will back and BsMax will be continue with big futures.
+* Note: Hello folks finally I am back but I am so sad because of what happening to my people. Wish victory for Iranian people #WomanLifeFreedome.
 
 ## License
 This project is licensed under the GPL (GENERAL PUBLIC LICENSE) license. See [LICENSE](https://www.gnu.org/licenses/gpl-3.0.en.html) for more information.

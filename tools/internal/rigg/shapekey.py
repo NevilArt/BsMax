@@ -139,7 +139,7 @@ class Mesh_TO_Create_Multi_Target_Shapekeys(Operator):
 			group.sort()
 	
 		""" setup drivers """
-		shell =  ctx.object
+		shell =  ctx.object		
 		names = [n.name for n in shell.data.shape_keys.key_blocks
 											if n.name != 'Basis']
 
@@ -160,8 +160,9 @@ class Mesh_TO_Create_Multi_Target_Shapekeys(Operator):
 				var.name = 'v'
 				var.type = 'SINGLE_PROP'
 				target = var.targets[0]
-				target.id = shell
-				target.data_path = 'data.shape_keys.key_blocks["' + group.name + '"].value'
+				target.id_type = 'KEY'
+				target.id = shell.data.shape_keys
+				target.data_path = 'key_blocks["' + group.name + '"].value'
 
 				""" Create driver script """
 				a = 0 if index == 0 else float(group.values[index-1]) / 100.0
