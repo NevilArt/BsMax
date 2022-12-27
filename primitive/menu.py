@@ -463,6 +463,87 @@ class BsMax_MT_Create(Menu):
 		# OUTLINER_OB_GROUP_INSTANCE
 
 
+def mesh_add_append_menu(self, ctx):
+	layout = self.layout
+	layout.separator()
+	layout.operator_context = "EXEC_DEFAULT"
+	layout.operator("object.create",
+					text="Plane", icon="MESH_PLANE").type='PLANE'
+
+	layout.operator("object.create",
+					text="Box", icon="MESH_CUBE").type='BOX'
+
+	layout.operator("object.create",
+					text="Cone", icon="MESH_CONE").type='CONE'
+
+	layout.operator("object.create",
+					text="Sphere", icon="MESH_UVSPHERE").type='SPHERE'
+
+	layout.operator("object.create",
+					text="IcoSphere", icon="MESH_ICOSPHERE").type='ICOSPHERE'
+
+	layout.operator("object.create",
+					text="Capsule", icon="META_CAPSULE").type='CAPSULE'
+
+	layout.operator("object.create",
+					text="OilTank", icon="META_CAPSULE").type='OILTANK'
+
+	layout.operator("object.create",
+					text="Cylinder", icon="MESH_CYLINDER").type='CYLINDER'
+
+	layout.operator("object.create",
+					text="Tube", icon="MESH_TORUS").type='TUBE'
+
+	layout.operator("object.create",
+					text="Torus", icon="MESH_TORUS").type='TORUS'
+
+	layout.operator("object.create",
+					text="Pyramid", icon="MARKER").type='PYRAMID'
+
+	layout.operator("object.create",
+					text="Teapot", icon="NODE_MATERIAL").type='TEAPOT'
+
+	layout.operator("object.create",
+					text="Monkey", icon="MESH_MONKEY").type='MONKEY'
+
+	# layout.separator()
+	# layout.menu("BSMAX_MT_vertex_create_menu", icon='DOT').type=''
+
+
+
+def curve_add_append_menu(self, ctx):
+	layout = self.layout
+	layout.separator()
+	layout.operator_context = "EXEC_DEFAULT"
+
+	layout.operator("object.create",
+					text="Rectangle", icon="META_PLANE").type='RECTANGLE'
+
+	layout.operator("object.create",
+					text="Circle", icon="MESH_CIRCLE").type='CIRCLE'
+
+	layout.operator("object.create",
+					text="Ellipse", icon="MESH_CAPSULE").type='ELLIPSE'
+
+	layout.operator("object.create",
+					text="Arc", icon="SPHERECURVE").type='ARC'
+
+	layout.operator("object.create",
+					text="Donut", icon="MESH_CIRCLE").type='DONUT'
+
+	layout.operator("object.create",
+					text="Ngon", icon="SEQ_CHROMA_SCOPE").type='NGON'
+
+	layout.operator("object.create",
+					text="Start", icon="SOLO_OFF").type='STAR'
+
+	layout.operator("object.create",
+					text="Helix", icon="FORCE_VORTEX").type='HELIX'
+
+	layout.operator("object.create",
+					text="Profilo", icon="MOD_BOOLEAN").type='PROFILO'
+
+
 
 def objects_context_menu(self, ctx):
 	layout = self.layout
@@ -470,11 +551,15 @@ def objects_context_menu(self, ctx):
 	layout.operator("primitive.cleardata",
 					text="Convert to Ragular Object")
 
+
+
 def CreateMenu_CallBack(self, ctx):
 	if ctx.mode == 'OBJECT':
 		self.layout.menu("BSMAX_MT_create_menu")
 
-classes = [
+
+
+classes = (
 	BsMax_MT_VertexCreate,
 	BsMax_MT_Mesh_Extera,
 	BsMax_MT_MeshCreate,
@@ -493,7 +578,7 @@ classes = [
 	BsMax_MT_SpeakerCreate,
 	BsMax_MT_ForceFieldCreate,
 	BsMax_MT_Create
-]
+)
 
 def register_menu():
 	for c in classes:
@@ -501,9 +586,20 @@ def register_menu():
 	#TODO find a way to put Create menu anfter add menu rather than first of the list
 	bpy.types.VIEW3D_MT_editor_menus.prepend(CreateMenu_CallBack)
 	bpy.types.VIEW3D_MT_object_context_menu.append(objects_context_menu)
+	bpy.types.VIEW3D_MT_mesh_add.append(mesh_add_append_menu)
+	bpy.types.VIEW3D_MT_curve_add.append(curve_add_append_menu)
+
+	
 
 def unregister_menu():
 	bpy.types.VIEW3D_MT_editor_menus.remove(CreateMenu_CallBack)  
 	bpy.types.VIEW3D_MT_object_context_menu.remove(objects_context_menu)
+	bpy.types.VIEW3D_MT_mesh_add.remove(mesh_add_append_menu)
+	bpy.types.VIEW3D_MT_curve_add.remove(curve_add_append_menu)
 	for c in classes:
 		bpy.utils.unregister_class(c)
+
+
+
+if __name__ == '__main__':
+	register_menu()

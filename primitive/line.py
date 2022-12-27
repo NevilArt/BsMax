@@ -13,7 +13,6 @@
 #	along with this program.  If not,see <https://www.gnu.org/licenses/>.
 ############################################################################
 
-import re
 import bpy
 from bpy.types import Operator
 from mathutils import Vector

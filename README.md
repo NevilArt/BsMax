@@ -37,8 +37,8 @@ If you found this product useful and want to support this project you can Donate
 * [Download Older Version (2.80-2.92)](https://github.com/NevilArt/BsMax_2_80)
 
 ## Recent Updates and Changes
-* Camera DOF depth picker, while a camera with DOF target selected got to "View/Cameras/Pick DOF Depth" and then click on any surface to put DOF targen on it.
-* [Multi shape key](https://www.youtube.com/watch?v=De3fiWcQnpA) Driver issue fixed.
+* Pick DOF target depth works for Active Camera rather then Selected one.
+* Parametric Primitive Object could be add from add menu too.
 * [Change log ...](https://github.com/NevilArt/BsMax/blob/master/CHANGELOG.md)
 * Note: Hello folks finally I am back but I am so sad because of what happening to my people. Wish victory for Iranian people #WomanLifeFreedome.
 

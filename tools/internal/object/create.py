@@ -16,11 +16,12 @@
 import bpy
 from bpy.types import Operator
 from bpy.props import EnumProperty
+
 from primitive.box import Box
 from primitive.capsule import Capsule
 from primitive.cylinder import Cylinder, Cone
 from primitive.icosphere import Icosphere
-from primitive.mesher import Mesher
+# from primitive.mesher import Mesher
 from primitive.monkey import Monkey
 from primitive.oiltank import OilTank
 from primitive.plane import Plane
@@ -33,12 +34,117 @@ from primitive.arc import Arc
 from primitive.circle import Circle
 from primitive.donut import Donut
 from primitive.ellipse import Ellipse
-from primitive.extrude import Extrude_Curve, Extrude_Mesh
+# from primitive.extrude import Extrude_Curve, Extrude_Mesh
 from primitive.helix import Helix
 from primitive.ngon import NGon
 from primitive.profilo import Profilo
 from primitive.rectangle import Rectangle
 from primitive.star import Star
+
+
+
+def add_parametric_primitive(type, ctx):
+	primitiveClasses = {'BOX':Box(), 'CAPSULE':Capsule(), 'CYLINDER':Cylinder(),
+			'CONE':Cone(), 'ICOSPHERE':Icosphere(), 'MONKEY':Monkey(),
+			'OILTANK':OilTank(), 'PLANE':Plane(), 'PYRAMID':Pyramid(),
+			'SPHERE':Sphere(), 'TEAPOT':Teapot(), 'TORUS':Torus(),
+			'TUBE':Tube(), 'ARC':Arc(), 'CIRCLE':Circle(), 'DONUT':Donut(),
+			'ELLIPSE':Ellipse(), 'HELIX':Helix(), 'NGON':NGon(),
+			'PROFILO': Profilo(), 'RECTANGLE':Rectangle(), 'STAR':Star()
+	}
+
+	obj = primitiveClasses[type]
+	if  type != 'PROFILO':
+		obj.create(ctx)
+
+	if type == 'BOX':
+		pd = obj.owner.data.primitivedata
+		pd.width, pd.length, pd.height = 1, 1, 1
+
+	elif type == 'CAPSULE':
+		pd = obj.owner.data.primitivedata
+		pd.radius1, pd.height = 1, 1
+
+	elif type == 'CYLINDER':
+		pd = obj.owner.data.primitivedata
+		pd.radius1, pd.height = 1, 1
+
+	elif type == 'CONE':
+		pd = obj.owner.data.primitivedata
+		pd.radius1, pd.radius1, pd.height = 1, 0.5, 1
+
+	elif type == 'ICOSPHERE':
+		obj.owner.data.primitivedata.radius1 = 1
+
+	elif type == 'MONKEY':
+		obj.owner.data.primitivedata.radius1 = 1
+
+	elif type == 'OILTANK':
+		pd = obj.owner.data.primitivedata
+		pd.radius1, pd.height, pd.thickness = 1, 3, 1
+
+	elif type == 'PLANE':
+		pd = obj.owner.data.primitivedata
+		pd.width, pd.length = 1, 1
+
+	elif type == 'PYRAMID':
+		pd = obj.owner.data.primitivedata
+		pd.width, pd.length, pd.height = 1, 1, 1
+
+	elif type == 'SPHERE':
+		obj.owner.data.primitivedata.radius1 = 1
+
+	elif type == 'TEAPOT':
+		pd = obj.owner.data.primitivedata.radius1 = 1
+
+	elif type == 'TORUS':
+		pd = obj.owner.data.primitivedata
+		pd.radius1, pd.radius2 = 1, 0.5
+
+	elif type == 'TUBE':
+		pd = obj.owner.data.primitivedata
+		pd.radius1, pd.radius2 ,pd.height = 1, 0.5, 1
+	
+	elif type == 'ARC':
+		pd = obj.owner.data.primitivedata
+		pd.radius1, pd.sfrom, pd.sto = 1, 0, 270
+		pd.sliceon = True
+	
+	elif type == 'CIRCLE':
+		obj.owner.data.primitivedata.radius1 = 1
+
+	elif type == 'DONUT':
+		pd = obj.owner.data.primitivedata
+		pd.radius1, pd.radius2 = 1, 0.5
+
+	elif type == 'ELLIPSE':
+		pd = obj.owner.data.primitivedata
+		pd.width, pd.length = 1, 0.5
+
+	elif type == 'HELIX':
+		pd = obj.owner.data.primitivedata
+		pd.radius1, pd.radius2, pd.height = 1, 1, 1
+
+	elif type == 'NGON':
+		obj.owner.data.primitivedata.radius1 = 1
+
+	elif type == 'PROFILO':
+		obj.create(ctx, "Angle")
+		pd = obj.owner.data.primitivedata
+		pd.width, pd.length, pd.thickness = 1, 1, 0.2
+
+	elif type == 'RECTANGLE':
+		pd = obj.owner.data.primitivedata
+		pd.width, pd.length = 1, 1
+
+	elif type == 'STAR':
+		pd = obj.owner.data.primitivedata
+		pd.radius1, pd.radius2 = 1, 0.5
+
+	obj.update()
+	ctx.active_object.location = ctx.scene.cursor.location
+
+
 
 class Object_OT_Create(Operator):
 	bl_idname = "object.create"
@@ -64,154 +170,15 @@ class Object_OT_Create(Operator):
 	def draw(self, ctx):
 		self.layout.prop(self,"type",text="Type")
 
-	def execute(self,ctx):
-		if self.type == 'BOX':
-			obj = Box()
-			obj.create(ctx)
-			pd = obj.owner.data.primitivedata
-			pd.width, pd.length, pd.height = 1, 1, 1
-			obj.update()
-		elif self.type == 'CAPSULE':
-			obj = Capsule()
-			obj.create(ctx)
-			pd = obj.owner.data.primitivedata
-			pd.radius1, pd.height = 1, 1
-			obj.update()
-		elif self.type == 'CYLINDER':
-			obj = Cylinder()
-			obj.create(ctx)
-			pd = obj.owner.data.primitivedata
-			pd.radius1, pd.height = 1, 1
-			obj.update()
-		elif self.type == 'CONE':
-			obj = Cone()
-			obj.create(ctx)
-			pd = obj.owner.data.primitivedata
-			pd.radius1, pd.radius1, pd.height = 1, 0.5, 1
-			obj.update()
-		elif self.type == 'ICOSPHERE':
-			obj = Icosphere()
-			obj.create(ctx)
-			pd = obj.owner.data.primitivedata
-			pd.radius1 = 1
-			obj.update()
-		elif self.type == 'MESHER':
-			obj = Mesher()
-			obj.create(ctx)
-			pd = obj.owner.data.primitivedata
-			pd.radius1 = 1
-			obj.update()
-		elif self.type == 'MONKEY':
-			obj = Monkey()
-			obj.create(ctx)
-			pd = obj.owner.data.primitivedata
-			pd.radius1 = 1
-			obj.update()
-		elif self.type == 'OILTANK':
-			obj = OilTank()
-			obj.create(ctx)
-			pd = obj.owner.data.primitivedata
-			pd.radius1, pd.height, pd.thickness = 1, 3, 1
-			obj.update()
-		elif self.type == 'PLANE':
-			obj = Plane()
-			obj.create(ctx)
-			pd = obj.owner.data.primitivedata
-			pd.width, pd.length = 1, 1
-			obj.update()
-		elif self.type == 'PYRAMID':
-			obj = Pyramid()
-			obj.create(ctx)
-			pd = obj.owner.data.primitivedata
-			pd.width, pd.length, pd.height = 1, 1, 1
-			obj.update()
-		elif self.type == 'SPHERE':
-			obj = Sphere()
-			obj.create(ctx)
-			pd = obj.owner.data.primitivedata
-			pd.radius1 = 1
-			obj.update()
-		elif self.type == 'TEAPOT':
-			obj = Teapot()
-			obj.create(ctx)
-			pd = obj.owner.data.primitivedata
-			pd.radius1 = 1
-			obj.update()
-		elif self.type == 'TORUS':
-			obj = Torus()
-			obj.create(ctx)
-			pd = obj.owner.data.primitivedata
-			pd.radius1, pd.radius2 = 1, 0.5
-			obj.update()
-		elif self.type == 'TUBE':
-			obj = Tube()
-			obj.create(ctx)
-			pd = obj.owner.data.primitivedata
-			pd.radius1, pd.radius2 ,pd.height = 1, 0.5, 1
-			obj.update()
-		elif self.type == 'ARC':
-			obj = Arc()
-			obj.create(ctx)
-			pd = obj.owner.data.primitivedata
-			pd.radius1, pd.sfrom, pd.sto = 1, 0, 5
-			obj.update()
-		elif self.type == 'CIRCLE':
-			obj = Circle()
-			obj.create(ctx)
-			pd = obj.owner.data.primitivedata
-			pd.radius1 = 1
-			obj.update()
-		elif self.type == 'DONUT':
-			obj = Donut()
-			obj.create(ctx)
-			pd = obj.owner.data.primitivedata
-			pd.radius1, pd.radius2 = 1, 0.5
-			obj.update()
-		elif self.type == 'ELLIPSE':
-			obj = Ellipse()
-			obj.create(ctx)
-			pd = obj.owner.data.primitivedata
-			pd.width, pd.length = 1, 0.5
-			obj.update()
-		elif self.type == 'HELIX':
-			obj = Helix()
-			obj.create(ctx)
-			pd = obj.owner.data.primitivedata
-			pd.radius1, pd.radius2, pd.height = 1, 1, 1
-			obj.update()
-		elif self.type == 'NGON':
-			obj = NGon()
-			obj.create(ctx)
-			pd = obj.owner.data.primitivedata
-			pd.radius1 = 1
-			obj.update()
-		elif self.type == 'PROFILO':
-			obj = Profilo()
-			obj.create(ctx, "Angle")
-			pd = obj.owner.data.primitivedata
-			pd.width, pd.length, pd.thickness = 1, 1, 0.2
-			obj.update()
-		elif self.type == 'RECTANGLE':
-			obj = Rectangle()
-			obj.create(ctx)
-			pd = obj.owner.data.primitivedata
-			pd.width, pd.length = 1, 1
-			obj.update()
-		elif self.type == 'STAR':
-			obj = Star()
-			obj.create(ctx)
-			pd = obj.owner.data.primitivedata
-			pd.radius1, pd.radius2 = 1, 0.5
-			obj.update()
-		ctx.active_object.location = ctx.scene.cursor.location
-		# bpy.ops.primitive.edit('INVOKE_DEFAULT')
+	def execute(self, ctx):
+		add_parametric_primitive(self.type, ctx)
 		return {'FINISHED'}
 
-	def invoke(self,ctx,event):
+	def invoke(self, ctx, event):
 		wm = ctx.window_manager
 		return wm.invoke_props_dialog(self)
 
-classes = [Object_OT_Create]
+
 
 def register_create():
 	bpy.utils.register_class(Object_OT_Create)

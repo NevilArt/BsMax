@@ -146,7 +146,7 @@ class Lattice_OT_Edit(Operator):
 
 
 
-classes = [Create_OT_Lattice,Lattice_OT_Edit]
+classes = [Create_OT_Lattice, Lattice_OT_Edit]
 
 def register_lattice():
 	for c in classes:

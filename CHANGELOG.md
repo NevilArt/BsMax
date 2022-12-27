@@ -1,3 +1,7 @@
+# 0, 1, 1, 20221212
+* Camera DOF depth picker, while a camera with DOF target selected got to "View/Cameras/Pick DOF Depth" and then click on any surface to put DOF targen on it.
+* [Multi shape key](https://www.youtube.com/watch?v=De3fiWcQnpA) Driver issue fixed.
+
 # 0, 1, 1, 20221110
 * Some code cleaning and bug fixing.
 * 'Ctrl + Shift + W' UV editor Merg by distance.

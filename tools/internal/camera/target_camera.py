@@ -13,7 +13,6 @@
 #	along with this program.  If not, see <https://www.gnu.org/licenses/>.
 ############################################################################
 
-import re
 import bpy
 from bpy.types import (Operator, Panel)
 
@@ -195,9 +194,8 @@ class Camera_OT_DOF_Depth_Picker(Operator):
 
 	@classmethod
 	def poll(self, ctx):
-		if ctx.object:
-			if ctx.object.type == 'CAMERA':
-				return ctx.object.data.dof.focus_object
+		if ctx.scene.camera:
+			return ctx.scene.camera.data.dof.focus_object
 		return False
 	
 	def modal(self, ctx, event):
@@ -212,7 +210,7 @@ class Camera_OT_DOF_Depth_Picker(Operator):
 			if event.value == 'PRESS':
 				ret = ray_cast(ctx, event.mouse_region_x, event.mouse_region_y)				
 				if ret[0]:
-					ctx.object.data.dof.focus_object.location = ret[0]
+					ctx.scene.camera.data.dof.focus_object.location = ret[0]
 
 			if event.value =='RELEASE':
 				return {'FINISHED'}
