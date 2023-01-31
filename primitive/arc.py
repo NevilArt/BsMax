@@ -17,7 +17,6 @@ import bpy
 from mathutils import Vector
 from primitive.primitive import Primitive_Curve_Class, Draw_Primitive
 from math import hypot, atan2, sqrt, sin, cos, pi, degrees, radians
-from bsmax.actions import delete_objects
 from bsmax.bsmatrix import points_to_local_matrix, matrix_inverse
 
 
@@ -153,7 +152,7 @@ class Arc(Primitive_Curve_Class):
 		self.update_curve(shapes)
 
 	def abort(self):
-		delete_objects([self.owner])
+		bpy.ops.object.delete({'selected_objects': [self.owner]})
 
 
 

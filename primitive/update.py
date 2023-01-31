@@ -26,7 +26,6 @@ from .capsule import Capsule
 from .cylinder import Cylinder, Cone
 #frome .geoSphere import GeoSphere
 from .icosphere import Icosphere
-from .mesher import Mesher
 from .monkey import Monkey
 from .oiltank import OilTank
 from .plane import Plane
@@ -57,7 +56,6 @@ def get_class(name):
 	elif name == "Cone": return Cone()
 	elif name == "Cylinder": return Cylinder()
 	elif name == "Icosphere": return Icosphere()
-	elif name == "Mesher": return Mesher()
 	elif name == "Monkey": return Monkey()
 	elif name == "OilTank": return OilTank()
 	elif name == "Plane": return Plane()

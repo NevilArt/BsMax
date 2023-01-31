@@ -21,7 +21,6 @@ from primitive.box import Box
 from primitive.capsule import Capsule
 from primitive.cylinder import Cylinder, Cone
 from primitive.icosphere import Icosphere
-# from primitive.mesher import Mesher
 from primitive.monkey import Monkey
 from primitive.oiltank import OilTank
 from primitive.plane import Plane
@@ -34,7 +33,6 @@ from primitive.arc import Arc
 from primitive.circle import Circle
 from primitive.donut import Donut
 from primitive.ellipse import Ellipse
-# from primitive.extrude import Extrude_Curve, Extrude_Mesh
 from primitive.helix import Helix
 from primitive.ngon import NGon
 from primitive.profilo import Profilo
@@ -153,7 +151,7 @@ class Object_OT_Create(Operator):
 	bl_options = {'REGISTER', 'UNDO'}
 
 	prims = [('BOX','Box',''), ('CAPSULE','Capsule',''), ('CYLINDER','Cylinder',''),
-	('CONE','Cone',''), ('ICOSPHERE','Icosphere',''), ('MESHER','Mesher',''),
+	('CONE','Cone',''), ('ICOSPHERE','Icosphere',''),
 	('MONKEY','Monkey',''), ('OILTANK','OilTank',''), ('PLANE','Plane',''),
 	('PYRAMID','Pyramid',''), ('SPHERE','Sphere',''), ('TEAPOT','Teapot',''),
 	('TORUS','Torus',''), ('TUBE','Tube',''), ('ARC','Arc',''),

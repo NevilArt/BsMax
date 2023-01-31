@@ -20,8 +20,6 @@ from bpy.types import Operator
 from bpy.props import IntProperty
 
 from primitive.primitive import Primitive_Curve_Class, Draw_Primitive
-from bsmax.actions import delete_objects
-# from bsmax.bsmatrix import matrix_from_elements, transform_point_to_matrix
 
 
 
@@ -397,7 +395,7 @@ class Profilo(Primitive_Curve_Class):
 		self.update_curve(shapes)
 
 	def abort(self):
-		delete_objects([self.owner])
+		bpy.ops.object.delete({'selected_objects': [self.owner]})
 
 
 

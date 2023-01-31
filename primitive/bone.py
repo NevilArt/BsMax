@@ -18,7 +18,6 @@ import bpy
 from math import atan2
 
 from primitive.primitive import Primitive_Geometry_Class, Draw_Primitive
-from bsmax.actions import delete_objects
 from bsmax.math import get_axis_constraint
 
 
@@ -53,7 +52,7 @@ class Armature(Primitive_Geometry_Class):
 
 		# remove armature if no bone created
 		if len(self.data.bones) == 0:
-			delete_objects([self.owner])
+			bpy.ops.object.delete({'selected_objects': [self.owner]})
 
 		self.reset()
 

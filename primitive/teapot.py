@@ -20,7 +20,6 @@ from math import sin, cos, pi
 
 from bsmax.curve import Spline, Bezier_point
 from bsmax.math import point_on_cubic_bezier_curve
-from bsmax.actions import delete_objects
 from primitive.primitive import Primitive_Geometry_Class, Draw_Primitive
 
 
@@ -247,7 +246,7 @@ class Teapot(Primitive_Geometry_Class):
 		self.update_mesh(mesh)
 
 	def abort(self):
-		delete_objects([self.owner])
+		bpy.ops.object.delete({'selected_objects': [self.owner]})
 
 
 

@@ -16,11 +16,7 @@
 import bpy
 from bpy.types import (Operator, Panel)
 
-from bsmax.actions import (
-		set_create_target,
-		set_as_active_object,
-		delete_objects
-	)
+from bsmax.actions import set_create_target, set_as_active_object
 from bsmax.state import has_constraint
 from bsmax.mouse import ray_cast
 
@@ -68,7 +64,7 @@ class Camera_OT_Clear_Target(Operator):
 		cam.data.dof.driver_remove('aperture_fstop')
 		transfoem = cam.matrix_world.copy()
 		targ = cam.constraints["Track To"].target
-		delete_objects([targ])
+		bpy.ops.object.delete({'selected_objects': [targ]})
 		TrackToConts = [ c for c in cam.constraints if c.type == 'TRACK_TO' ]
 		for c in TrackToConts:
 			cam.constraints.remove(c)

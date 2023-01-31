@@ -16,7 +16,7 @@
 import bpy
 from bpy.types import Operator
 from bpy.props import EnumProperty
-from bsmax.actions import set_create_target, set_as_active_object, delete_objects
+from bsmax.actions import set_create_target, set_as_active_object
 from bsmax.state import has_constraint
 
 
@@ -59,7 +59,7 @@ class Light_OT_Clear_Target(Operator):
 		obj = ctx.active_object
 		transfoem = obj.matrix_world.copy()
 		targ = obj.constraints['Track To'].target
-		delete_objects([targ])
+		bpy.ops.object.delete({'selected_objects': [targ]})
 		TrackToConts = [ c for c in obj.constraints if c.type == 'TRACK_TO' ]
 		for c in TrackToConts:
 			obj.constraints.remove(c)

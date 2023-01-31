@@ -86,21 +86,29 @@ def get_view_orientation(ctx):
 
 
 
-#TODO need to clear name and info
+#TODO need to clear name
 def get_rotation_of_view_orient(view_orient):
-		if view_orient == 'TOP':
-			return Vector((0, 0, 0))
-		if view_orient == 'BOTTOM':
-			return Vector((pi, 0, 0))
-		if view_orient == 'FRONT':
-			return Vector((pi/2, 0, 0))
-		if view_orient == 'BACK':
-			return Vector((-pi/2, pi, 0))
-		if view_orient == 'LEFT':
-			return Vector((pi/2, 0, -pi/2))
-		if view_orient == 'RIGHT':
-			return Vector((pi/2, 0, pi/2))
+	""" Get view name and return rotation vector
+
+		args:
+			view_orient: string 
+		
+		return:
+			Vector()
+	"""
+	if view_orient == 'TOP':
 		return Vector((0, 0, 0))
+	if view_orient == 'BOTTOM':
+		return Vector((pi, 0, 0))
+	if view_orient == 'FRONT':
+		return Vector((pi/2, 0, 0))
+	if view_orient == 'BACK':
+		return Vector((-pi/2, pi, 0))
+	if view_orient == 'LEFT':
+		return Vector((pi/2, 0, -pi/2))
+	if view_orient == 'RIGHT':
+		return Vector((pi/2, 0, pi/2))
+	return Vector((0, 0, 0))
 
 
 

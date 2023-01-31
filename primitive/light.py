@@ -18,7 +18,7 @@ from bpy.props import BoolProperty
 from math import pi, sin, cos
 from primitive.primitive import (Draw_Primitive,
 	Primitive_Curve_Class, Primitive_Public_Class)
-from bsmax.actions import set_create_target, delete_objects
+from bsmax.actions import set_create_target
 
 
 
@@ -49,7 +49,7 @@ class Light(Primitive_Public_Class):
 		self.owner = newlight
 
 	def abort(self):
-		delete_objects([self.owner, self.target])
+		bpy.ops.object.delete({'selected_objects': [self.owner, self.target]})
 
 
 
@@ -73,7 +73,7 @@ class Compass(Primitive_Curve_Class):
 		self.update_curve(shapes)
 
 	def abort(self):
-		delete_objects([self.owner])
+		bpy.ops.object.delete({'selected_objects': [self.owner]})
 
 
 

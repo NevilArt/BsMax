@@ -16,11 +16,10 @@
 import bpy
 from math import pi, sin, cos, radians
 from primitive.primitive import Primitive_Geometry_Class, Draw_Primitive
-from bsmax.actions import delete_objects
 
 
 
-def get_oiltank_mesh(radius,height,capheight,blend,ssegs,csegs,hsegs,sliceon,sfrom,sto):
+def get_oiltank_mesh(radius, height, capheight, blend, ssegs, csegs, hsegs, sliceon, sfrom, sto):
 	verts,edges,faces = [],[],[]
 	sides,heights = [],[]
 	arcrange,slicestep,r = pi*2,0,radius
@@ -175,7 +174,7 @@ class OilTank(Primitive_Geometry_Class):
 		self.update_mesh(mesh)
 
 	def abort(self):
-		delete_objects([self.owner])
+		bpy.ops.object.delete({'selected_objects': [self.owner]})
 
 
 

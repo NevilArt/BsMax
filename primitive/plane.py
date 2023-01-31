@@ -15,7 +15,6 @@
 
 import bpy
 from primitive.primitive import Primitive_Geometry_Class, Draw_Primitive
-from bsmax.actions import delete_objects
 
 
 
@@ -59,7 +58,7 @@ class Plane(Primitive_Geometry_Class):
 		self.update_mesh(mesh)
 
 	def abort(self):
-		delete_objects([self.owner])
+		bpy.ops.object.delete({'selected_objects': [self.owner]})
 
 
 

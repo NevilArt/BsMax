@@ -18,7 +18,6 @@ from bpy.types import Operator
 from mathutils import Vector
 from bsmax.math import get_axis_constraint
 from primitive.primitive import Primitive_Curve_Class, Draw_Primitive
-from bsmax.actions import delete_objects
 from bpy_extras.view3d_utils import location_3d_to_region_2d
 
 # global variable
@@ -70,7 +69,7 @@ class Line(Primitive_Curve_Class):
 
 	def abort(self):
 		if len(self.knots) < 2:
-			delete_objects([self.owner])
+			bpy.ops.object.delete({'selected_objects': [self.owner]})
 		else:
 			self.lastknot = []
 			self.knots.pop()

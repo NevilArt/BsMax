@@ -22,7 +22,6 @@ from .box import register_box, unregister_box
 from .capsule import register_capsule, unregister_capsule
 from .cylinder import register_cylinder, unregister_cylinder
 from .icosphere import register_icosphere, unregister_icosphere
-from .mesher import register_mesher, unregister_mesher
 from .monkey import register_monkey, unregister_monkey
 from .oiltank import register_oiltank, unregister_oiltank
 from .plane import register_plane, unregister_plane
@@ -87,7 +86,6 @@ def register_primitives():
 	register_lightprobe()
 	register_line()
 	#register_logo()
-	register_mesher()
 	register_menu()
 	register_metaball()
 	register_monkey()
@@ -132,7 +130,6 @@ def unregister_primitives():
 	unregister_lightprobe()
 	unregister_line()
 	#unregister_logo()
-	unregister_mesher()
 	unregister_menu()
 	unregister_metaball()
 	unregister_monkey()

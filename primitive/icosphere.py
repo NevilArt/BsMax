@@ -20,7 +20,6 @@ from bpy.app import version
 from mathutils import Matrix
 
 from primitive.primitive import Primitive_Geometry_Class, Draw_Primitive
-from bsmax.actions import delete_objects
 
 
 
@@ -68,7 +67,7 @@ class Icosphere(Primitive_Geometry_Class):
 		bm.free()
 
 	def abort(self):
-		delete_objects([self.owner])
+		bpy.ops.object.delete({'selected_objects': [self.owner]})
 
 
 

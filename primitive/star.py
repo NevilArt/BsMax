@@ -17,7 +17,6 @@ import bpy
 from math import pi, sin, cos
 from random import random, seed
 from primitive.primitive import Primitive_Curve_Class, Draw_Primitive
-from bsmax.actions import delete_objects
 
 
 
@@ -63,7 +62,7 @@ class Star(Primitive_Curve_Class):
 		self.update_curve(shapes)
 
 	def abort(self):
-		delete_objects([self.owner])
+		bpy.ops.object.delete({'selected_objects': [self.owner]})
 
 
 

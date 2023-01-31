@@ -36,10 +36,10 @@ class BitArray:
 		self.string = ""
 		self.ints = []
 	
-	def set(self, frames):
+	def set(self, numString):
 		""" check the string """
 		self.string = ""
-		for l in frames:
+		for l in numString:
 			if l in '0123456789,-':
 				self.string += l
 
@@ -388,6 +388,15 @@ def get_index_str(count, index):
 
 
 def dot(v1, v2):
+	""" return Dot product of two vectors
+		
+		args:
+			v1: Vector()
+			v2: Vector()
+		
+		return:
+			Float
+	"""
 	return v1.x*v2.x + v1.y*v2.y + v1.z*v2.z
 
 

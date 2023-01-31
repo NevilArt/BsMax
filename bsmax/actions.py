@@ -92,19 +92,6 @@ def set_as_active_object(ctx, obj):
 
 
 
-def delete_objects(objs):
-	""" Delete given object or object list\n
-		Maybe in some case need to safty check befor delete
-
-		args:
-			objs: Object or Object List
-		return:
-			None
-	"""
-	bpy.ops.object.delete({'selected_objects': objs})
-
-
-
 def set_create_target(obj, target, distance=(0.0, 0.0, -2.0), align=True):
 	""" Add a lookat constraint with basic setting\n
 		Create an empty object as target if target is None

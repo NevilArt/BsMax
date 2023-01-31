@@ -19,7 +19,6 @@ from mathutils import Vector
 
 from bpy.props import EnumProperty
 from primitive.primitive import Draw_Primitive
-from bsmax.actions import delete_objects
 
 
 
@@ -39,7 +38,7 @@ class Metaball:
 		pass
 
 	def abort(self):
-		delete_objects([self.owner])
+		bpy.ops.object.delete({'selected_objects': [self.owner]})
 	
 	def finish(self):
 		pass

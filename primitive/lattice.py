@@ -21,7 +21,6 @@ from mathutils import Vector
 from bpy.props import IntProperty, FloatProperty
 
 from primitive.primitive import Draw_Primitive, Primitive_Public_Class
-from bsmax.actions import delete_objects
 from bsmax.bsmatrix import transform_point_to_matrix
 
 
@@ -37,7 +36,7 @@ class Lattice(Primitive_Public_Class):
 		self.owner.rotation_euler = gride.rotation
 
 	def abort(self):
-		delete_objects([self.owner])
+		bpy.ops.object.delete({'selected_objects': [self.owner]})
 
 
 

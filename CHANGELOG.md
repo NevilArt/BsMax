@@ -1,3 +1,7 @@
+# 0, 1, 1, 20221227
+* Pick DOF target depth works for Active Camera rather then Selected one.
+* Parametric Primitive Object could be add from add menu too.
+
 # 0, 1, 1, 20221212
 * Camera DOF depth picker, while a camera with DOF target selected got to "View/Cameras/Pick DOF Depth" and then click on any surface to put DOF targen on it.
 * [Multi shape key](https://www.youtube.com/watch?v=De3fiWcQnpA) Driver issue fixed.

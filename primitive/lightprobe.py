@@ -18,7 +18,6 @@ import bpy
 from mathutils import Vector
 
 from primitive.primitive import Draw_Primitive, Primitive_Public_Class
-from bsmax.actions import delete_objects
 from bsmax.bsmatrix import transform_point_to_matrix
 
 
@@ -30,7 +29,7 @@ class LightProbe(Primitive_Public_Class):
 		self.data = None
 
 	def abort(self):
-		delete_objects([self.owner])
+		bpy.ops.object.delete({'selected_objects': [self.owner]})
 
 
 

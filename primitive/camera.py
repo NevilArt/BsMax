@@ -16,8 +16,6 @@
 import bpy
 from math import pi
 from primitive.primitive import Draw_Primitive, Primitive_Public_Class
-from bsmax.actions import delete_objects
-# from bsmax.math import get_distance
 
 
 class Camera(Primitive_Public_Class):
@@ -27,9 +25,9 @@ class Camera(Primitive_Public_Class):
 		self.target = None
 
 	def abort(self):
-		delete_objects([self.owner])
+		bpy.ops.object.delete({'selected_objects': [self.owner]})
 		if self.target:
-			delete_objects([self.target])
+			bpy.ops.object.delete({'selected_objects': [self.target]})
 
 
 

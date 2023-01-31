@@ -37,10 +37,9 @@ If you found this product useful and want to support this project you can Donate
 * [Download Older Version (2.80-2.92)](https://github.com/NevilArt/BsMax_2_80)
 
 ## Recent Updates and Changes
-* Pick DOF target depth works for Active Camera rather then Selected one.
-* Parametric Primitive Object could be add from add menu too.
+* Some Code cleaning done.
+* Two New primitives (Gear, Torusknot) on the go but not finished yet (Coming soon).
 * [Change log ...](https://github.com/NevilArt/BsMax/blob/master/CHANGELOG.md)
-* Note: Hello folks finally I am back but I am so sad because of what happening to my people. Wish victory for Iranian people #WomanLifeFreedome.
 
 ## License
 This project is licensed under the GPL (GENERAL PUBLIC LICENSE) license. See [LICENSE](https://www.gnu.org/licenses/gpl-3.0.en.html) for more information.

@@ -15,7 +15,6 @@
 
 import bpy
 from primitive.primitive import Primitive_Geometry_Class, Draw_Primitive
-from bsmax.actions import delete_objects
 
 def get_monkey_mesh(radius):
 	verts = [(0.4375,-0.765625,0.1640625),(-0.4375,-0.765625,0.1640625),(0.5,-0.6875,0.09375),
@@ -310,7 +309,7 @@ class Monkey(Primitive_Geometry_Class):
 		self.update_mesh(mesh)
 
 	def abort(self):
-		delete_objects([self.owner])
+		bpy.ops.object.delete({'selected_objects': [self.owner]})
 
 
 

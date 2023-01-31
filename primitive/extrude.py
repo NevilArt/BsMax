@@ -18,7 +18,6 @@ from bpy.types import Operator
 from bpy.props import EnumProperty
 from mathutils import Vector
 from primitive.primitive import Primitive_Curve_Class, Primitive_Geometry_Class
-from bsmax.actions import delete_objects
 from bsmax.curve import Curve, Segment
 
 
@@ -133,7 +132,7 @@ class Extrude_Curve(Primitive_Curve_Class):
 		self.update_curve(shapes)
 
 	def abort(self):
-		delete_objects([self.owner])
+		bpy.ops.object.delete({'selected_objects': [self.owner]})
 
 
 
@@ -162,7 +161,7 @@ class Extrude_Mesh(Primitive_Geometry_Class):
 		self.update_mesh(mesh)
 
 	def abort(self):
-		delete_objects([self.owner])
+		bpy.ops.object.delete({'selected_objects': [self.owner]})
 
 
 

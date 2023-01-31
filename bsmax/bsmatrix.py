@@ -257,7 +257,7 @@ def matrix_from_elements(location, euler_rotation, scale, bsmatrix=None):
 
 		args:
 			location: Vector(3) translation
-			euler_rotation:
+			euler_rotation: radians
 			scale: Vector3 scale
 			bsmatrix: BsMatrix class
 		return:

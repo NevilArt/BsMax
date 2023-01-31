@@ -15,7 +15,6 @@
 
 import bpy
 from primitive.primitive import Primitive_Curve_Class, Draw_Primitive
-from bsmax.actions import delete_objects
 
 
 
@@ -70,7 +69,7 @@ class Rectangle(Primitive_Curve_Class):
 		self.update_curve(shapes)
 
 	def abort(self):
-		delete_objects([self.owner])
+		bpy.ops.object.delete({'selected_objects': [self.owner]})
 
 
 

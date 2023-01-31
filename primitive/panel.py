@@ -228,14 +228,6 @@ def get_monkey_panel(self, layout):
 
 
 
-def get_mesher_panel(self, layout):
-	layout.label(text="Mesher",icon='META_CUBE')
-	col = layout.column(align=True)
-	col.prop(self,"radius1", text="Icon Size")
-	col.prop(self,"target", text="Target")
-
-
-
 def get_rectangle_panel(self, layout):
 	layout.label(text="Rectangle",icon='META_PLANE')
 	col = layout.column(align=True)
@@ -526,9 +518,6 @@ def get_panel(self, layout):
 
 	elif self.classname == "Monkey":
 		get_monkey_panel(self, layout)
-
-	elif self.classname == "Mesher":
-		get_mesher_panel(self, layout)
 
 	elif self.classname == "Rectangle":
 		get_rectangle_panel(self, layout)

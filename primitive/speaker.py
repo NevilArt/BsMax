@@ -15,7 +15,6 @@
 
 import bpy
 from primitive.primitive import Draw_Primitive, Primitive_Public_Class
-from bsmax.actions import delete_objects
 
 
 
@@ -25,7 +24,7 @@ class Speaker(Primitive_Public_Class):
 		self.owner = None
 
 	def abort(self):
-		delete_objects([self.owner])
+		bpy.ops.object.delete({'selected_objects': [self.owner]})
 
 
 

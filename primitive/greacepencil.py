@@ -16,7 +16,6 @@
 import bpy
 from bpy.props import EnumProperty
 from primitive.primitive import Draw_Primitive, Primitive_Public_Class
-from bsmax.actions import delete_objects
 
 
 
@@ -31,7 +30,7 @@ class GreacePencil(Primitive_Public_Class):
 		self.data = self.owner.data
 
 	def abort(self):
-		delete_objects([self.owner])
+		bpy.ops.object.delete({'selected_objects': [self.owner]})
 	
 
 

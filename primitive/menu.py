@@ -116,9 +116,6 @@ class BsMax_MT_MeshCreate(Menu):
 		layout.menu("BSMAX_MT_vertex_create_menu", icon='DOT')
 		layout.separator()
 
-		# layout.operator("create.mesher",
-		# 				text="Mesher", icon="META_CUBE")
-
 		layout.operator("create.extrude",
 						text="Extrude Mesh (Add)", icon="EXPORT").mode='Mesh'
 
