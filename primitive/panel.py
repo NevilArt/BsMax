@@ -14,7 +14,6 @@
 ############################################################################
 
 import bpy
-# from bpy.props import *
 from bpy.types import Panel, Operator
 
 
@@ -208,6 +207,21 @@ def get_torus_panel(self, layout):
 
 
 
+def get_torusknot_panel(self, layout):
+	layout.label(text="TorusKnot",icon='HAND')
+	col = layout.column(align=True)
+	col.prop(self,"radius1", text="Radius A")
+	col.prop(self,"radius2", text="Radius B")
+	col.prop(self,"height", text="height Scale")
+	col = layout.column(align=True)
+	col.prop(self,"turns", text="P Turns")
+	col.prop(self,"twist", text="Q Twist")
+	col = layout.column(align=True)
+	col.prop(self,"lsegs", text="Segments")
+	# col.prop(self,"ssegs", text="Sides")
+
+
+
 def get_pyramid_panel(self, layout):
 	layout.label(text="Pyramid",icon='MARKER')
 	col = layout.column(align=True)
@@ -241,6 +255,7 @@ def get_circle_panel(self, layout):
 	layout.label(text="Circle",icon='MESH_CIRCLE')
 	col = layout.column(align=True)
 	col.prop(self,"radius1", text="Radius")
+	col.prop(self,"ssegs", text="Segments")
 
 
 
@@ -334,7 +349,7 @@ def get_star_panel(self, layout):
 
 
 def get_helix_panel(self, layout):
-	layout.label(text="Helix",icon='FORCE_VORTEX')
+	layout.label(text="Helix",icon='MOD_SCREW')
 	col = layout.column(align=True)
 	col.prop(self,"radius1", text="Radius1")
 	col.prop(self,"radius2", text="Radius2")
@@ -345,7 +360,9 @@ def get_helix_panel(self, layout):
 	col = layout.column(align=True)
 	col.prop(self,"bias_np", text="Bias")
 	col = layout.column(align=True)
-	col.prop(self,"ccw", text="ccw")
+	row = col.row()
+	row.prop(self,"ccw", text="ccw")
+	row.prop(self,"bool1", text="Bezier/Segment")
 
 
 
@@ -513,6 +530,9 @@ def get_panel(self, layout):
 	elif self.classname == "Torus":
 		get_torus_panel(self, layout)
 
+	elif self.classname == "TorusKnot":
+		get_torusknot_panel(self, layout)
+
 	elif self.classname == "Pyramid":
 		get_pyramid_panel(self, layout)
 
@@ -568,13 +588,13 @@ class Primitive_PT_Panel(Panel):
 	bl_context = "data"
 
 	@classmethod
-	def poll(cls,ctx):
-		if ctx.object.type in ['MESH','CURVE']:
+	def poll(cls, ctx):
+		if ctx.object.type in ('MESH', 'CURVE'):
 			if ctx.object.data.primitivedata.classname != "":
 				return True
 		return False
 
-	def draw(this,ctx):
+	def draw(this, ctx):
 		layout = this.layout
 		self = ctx.object.data.primitivedata
 		get_panel(self, layout)
@@ -591,7 +611,7 @@ class Primitive_OT_Edit(Operator):
 	@classmethod
 	def poll(self,ctx):
 		if ctx.active_object != None:
-			if ctx.active_object.type in {'MESH','CURVE'}:
+			if ctx.active_object.type in ('MESH', 'CURVE'):
 				if ctx.active_object.data.primitivedata != "":
 					return True
 		return False
@@ -619,7 +639,7 @@ class BsMax_OT_Set_Object_Mode(Operator):
 
 	def execute(self, ctx):
 		classname = ""
-		if ctx.active_object.type in {'MESH', 'CURVE'}:
+		if ctx.active_object.type in ('MESH', 'CURVE'):
 			classname = ctx.active_object.data.primitivedata.classname
 
 		if classname != "":

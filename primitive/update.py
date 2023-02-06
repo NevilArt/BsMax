@@ -33,6 +33,7 @@ from .pyramid import Pyramid
 from .sphere import Sphere
 from .teapot import Teapot
 from .torus import Torus
+from .torusknot import TorusKnot
 from .tube import Tube
 from .arc import Arc
 from .circle import Circle
@@ -63,6 +64,7 @@ def get_class(name):
 	elif name == "Sphere": return Sphere()
 	elif name == "Teapot": return Teapot()
 	elif name == "Torus": return Torus()
+	elif name == "TorusKnot": return TorusKnot()
 	elif name == "Tube": return Tube()
 	elif name == "Arc": return Arc()
 	elif name == "Circle": return Circle()
@@ -123,6 +125,7 @@ class Primitive_Option(PropertyGroup):
 class PrimitiveData(PropertyGroup):
 	classname: StringProperty()
 	animatable: BoolProperty(update=primitive_update)
+
 	width: FloatProperty(unit='LENGTH', update=primitive_update, min= 0)
 	length: FloatProperty(unit='LENGTH', update=primitive_update, min= 0)
 	height: FloatProperty(unit='LENGTH', update=primitive_update, min= 0)

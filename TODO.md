@@ -129,12 +129,13 @@
     - [x] Draw on view.
     - [x] Fix height issue.
     - [ ] Fix Draw under floor issue.
+    - [ ] Fix Draw on surface alighnmen.
   - [ ] Snapping.
   - [ ] Crearte primitive weel for segment count.
 - [ ] New Primitives.
-  - [ ] Torus Knot.
+  - [x] Torus Knot.
   - [ ] quad sphere.
-  - [ ] Helix with bezier segments with less count of knots (Bezier points).
+  - [x] Helix with bezier segments with less count of knots (Bezier points).
 - [ ] Float edit menu for Empty objects.
 - [ ] Draw area light with rectangular option.
 
@@ -175,4 +176,4 @@
   -[ ] Keying system.
   -[ ] NLA.
 
-- [ ] VSE to XML
+- [ ] VSE to/from XML

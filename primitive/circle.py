@@ -14,24 +14,35 @@
 ############################################################################
 
 import bpy
+
+from math import pi, cos, sin, tan
 from primitive.primitive import Primitive_Curve_Class, Draw_Primitive
 
 
 
-def get_circle_shape(radius):
-	Shapes = []
-	r = radius
-	t = r * 0.551786
-	pc1,pl1,pr1 = (0,-r,0),(-t,-r,0),(t,-r,0)
-	pc2,pl2,pr2 = (r,0,0),(r,-t,0),(r,t,0)
-	pc3,pl3,pr3 = (0,r,0),(t,r,0),(-t,r,0)
-	pc4,pl4,pr4 = (-r,0,0),(-r,t,0),(-r,-t,0)
-	pt1 = (pc1,pl1,'FREE',pr1,'FREE')
-	pt2 = (pc2,pl2,'FREE',pr2,'FREE')
-	pt3 = (pc3,pl3,'FREE',pr3,'FREE')
-	pt4 = (pc4,pl4,'FREE',pr4,'FREE')
-	Shapes.append([pt1,pt2,pt3,pt4])
-	return Shapes
+def get_circle_shape(radius, ssegs):
+	spline = []
+	angle = 2 * pi / ssegs
+	distance = (4/3) * tan(pi/(2*ssegs)) * radius
+
+	for i in range(ssegs):
+		theta = i * angle
+		co = (radius * cos(theta), radius * sin(theta), 0)
+		in_tangent = (
+					co[0] + distance * sin(theta),
+					co[1] - distance * cos(theta),
+					0
+		)
+		
+		out_tangent = (
+					co[0] - distance * sin(theta),
+					co[1] + distance * cos(theta),
+					0
+		)
+
+		spline.append((co, in_tangent, 'FREE', out_tangent, 'FREE'))
+
+	return [spline]
 
 
 
@@ -44,14 +55,15 @@ class Circle(Primitive_Curve_Class):
 		self.close = True
 
 	def create(self, ctx):
-		shapes = get_circle_shape(0)
+		shapes = get_circle_shape(0, 4)
 		self.create_curve(ctx, shapes, self.classname)
 		pd = self.data.primitivedata
 		pd.classname = self.classname
+		pd.ssegs = 4
 
 	def update(self):
 		pd = self.data.primitivedata
-		shapes = get_circle_shape(pd.radius1)
+		shapes = get_circle_shape(pd.radius1, pd.ssegs)
 		self.update_curve(shapes)
 
 	def abort(self):
@@ -83,3 +95,10 @@ def register_circle():
 
 def unregister_circle():
 	bpy.utils.unregister_class(Create_OT_Circle)
+
+if __name__ == "__main__":
+	new_circle = Circle()
+	new_circle.create(bpy.context)
+	new_circle.data.primitivedata.radius1 = 1
+	new_circle.update()
+	bpy.ops.primitive.cleardata()

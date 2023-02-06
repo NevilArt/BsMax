@@ -30,6 +30,7 @@ from .sphere import register_sphere, unregister_sphere
 from .teapot import register_teapot, unregister_teapot
 from .tube import register_tube, unregister_tube
 from .torus import register_torus, unregister_torus
+from .torusknot import register_torusknot, unregister_torusknot
 from .vertex import register_vertex, unregister_vertex
 # # Curves
 from .arc import register_arc, unregister_arc
@@ -102,6 +103,7 @@ def register_primitives():
 	register_text()
 	register_teapot()
 	register_torus()
+	register_torusknot()
 	register_tube()
 	register_vertex()
 	
@@ -146,5 +148,6 @@ def unregister_primitives():
 	unregister_text()
 	unregister_teapot()
 	unregister_torus()
+	unregister_torusknot()
 	unregister_tube()
 	unregister_vertex()

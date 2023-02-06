@@ -14,44 +14,68 @@
 ############################################################################
 
 import bpy
+import numpy as np
+
+from math import pi, sin, cos, floor
+
 from primitive.primitive import Primitive_Curve_Class, Draw_Primitive
 
 
+def get_torusknot_shape(radius1, radius2, height, lsegs, p, q):
+	""" create torusknot splien
+		args:
+			radius1: Torus Radius
+			radius2: Torus Thiknes
+			height: height scale
+			lsegs: length segment count
+			p: Rotation
+			q: Twist
+		return:
+			[spline]
+	"""
+	spline = []
+	theta = np.linspace(0, 2 * pi, lsegs).tolist()
 
-def get_torusknot_shape(radius):
-	Shapes = []
-	r = radius
-	t = r * 0.551786
-	pc1,pl1,pr1 = (0,-r,0),(-t,-r,0),(t,-r,0)
-	pc2,pl2,pr2 = (r,0,0),(r,-t,0),(r,t,0)
-	pc3,pl3,pr3 = (0,r,0),(t,r,0),(-t,r,0)
-	pc4,pl4,pr4 = (-r,0,0),(-r,t,0),(-r,-t,0)
-	pt1 = (pc1,pl1,'FREE',pr1,'FREE')
-	pt2 = (pc2,pl2,'FREE',pr2,'FREE')
-	pt3 = (pc3,pl3,'FREE',pr3,'FREE')
-	pt4 = (pc4,pl4,'FREE',pr4,'FREE')
-	Shapes.append([pt1,pt2,pt3,pt4])
-	return Shapes
+	# Remove last element if spline is close
+	if p == floor(p) and q == floor(q):
+		theta.pop()
+
+	for t in theta:
+		co = (
+			(radius1 + (radius2 * cos(q * t))) * cos(p * t), #x_coord
+			(radius1 + (radius2 * cos(q * t))) * sin(p * t), #y_cord
+			radius2 * sin(q * t) * height #z_coord
+		)
+		# conver to bezier point and add to spline
+		spline.append((co, co, 'FREE', co, 'FREE'))
+
+	return [spline] #return a shape with a single spline
 
 
 
 class TorusKnot(Primitive_Curve_Class):
 	def __init__(self):
-		self.classname = "Circle"
+		self.classname = "TorusKnot"
 		self.finishon = 2
 		self.owner = None
 		self.data = None
 		self.close = True
 
 	def create(self, ctx):
-		shapes = get_torusknot_shape(0)
+		shapes = get_torusknot_shape(0, 0, 0, 32, 2, 3)
 		self.create_curve(ctx, shapes, self.classname)
 		pd = self.data.primitivedata
 		pd.classname = self.classname
+		pd.height, pd.lsegs, pd.turns, pd.twist = 2.2, 64, 2, 3
+		self.data.resolution_u = 1
 
 	def update(self):
 		pd = self.data.primitivedata
-		shapes = get_torusknot_shape(pd.radius1)
+		shapes = get_torusknot_shape(pd.radius1, pd.radius2,
+									pd.height, pd.lsegs,
+									pd.turns, pd.twist
+				)
+		self.close = pd.turns == floor(pd.turns) and pd.twist == floor(pd.twist)
 		self.update_curve(shapes)
 
 	def abort(self):
@@ -75,11 +99,22 @@ class Create_OT_TorusKnot(Draw_Primitive):
 	def update(self, ctx, clickcount, dimension):
 		if clickcount == 1:
 			self.params.radius1 = dimension.radius
+			self.params.radius2 = dimension.radius / 2.32
+			# self.subclass.data.bevel_depth = self.params.radius1 / 3
+
+		elif clickcount == 2:
+			if self.use_single_draw:
+				self.jump_to_end()
+				return
+			self.params.thickness = dimension.radius
 	
 
 
-def register_circle():
+def register_torusknot():
 	bpy.utils.register_class(Create_OT_TorusKnot)
 
-def unregister_circle():
+def unregister_torusknot():
 	bpy.utils.unregister_class(Create_OT_TorusKnot)
+
+if __name__ == "__main__":
+	register_torusknot()

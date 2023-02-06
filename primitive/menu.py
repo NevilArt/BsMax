@@ -139,7 +139,8 @@ class BsMax_MT_CurveCreate(Menu):
 		layout.operator("create.donut", text="Donut", icon="MESH_CIRCLE")
 		layout.operator("create.ngon", text="Ngon", icon="SEQ_CHROMA_SCOPE")
 		layout.operator("create.star", text="Start", icon="SOLO_OFF")
-		layout.operator("create.helix", text="Helix", icon="FORCE_VORTEX")
+		layout.operator("create.torusknot", text="TorusKnot", icon="HAND")
+		layout.operator("create.helix", text="Helix", icon="MOD_SCREW")
 		layout.operator("create.profilo", text="Profilo", icon="MOD_BOOLEAN")
 		layout.separator()
 		layout.operator("create.extrude",
@@ -535,7 +536,10 @@ def curve_add_append_menu(self, ctx):
 					text="Start", icon="SOLO_OFF").type='STAR'
 
 	layout.operator("object.create",
-					text="Helix", icon="FORCE_VORTEX").type='HELIX'
+					text="TorusKnot", icon="HAND").type='TORUSKNOT'
+
+	layout.operator("object.create",
+					text="Helix", icon="MOD_SCREW").type='HELIX'
 
 	layout.operator("object.create",
 					text="Profilo", icon="MOD_BOOLEAN").type='PROFILO'

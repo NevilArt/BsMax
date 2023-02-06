@@ -28,6 +28,7 @@ from primitive.pyramid import Pyramid
 from primitive.sphere import Sphere
 from primitive.teapot import Teapot
 from primitive.torus import Torus
+from primitive.torusknot import TorusKnot
 from primitive.tube import Tube
 from primitive.arc import Arc
 from primitive.circle import Circle
@@ -46,6 +47,7 @@ def add_parametric_primitive(type, ctx):
 			'CONE':Cone(), 'ICOSPHERE':Icosphere(), 'MONKEY':Monkey(),
 			'OILTANK':OilTank(), 'PLANE':Plane(), 'PYRAMID':Pyramid(),
 			'SPHERE':Sphere(), 'TEAPOT':Teapot(), 'TORUS':Torus(),
+			'TORUSKNOT':TorusKnot(),
 			'TUBE':Tube(), 'ARC':Arc(), 'CIRCLE':Circle(), 'DONUT':Donut(),
 			'ELLIPSE':Ellipse(), 'HELIX':Helix(), 'NGON':NGon(),
 			'PROFILO': Profilo(), 'RECTANGLE':Rectangle(), 'STAR':Star()
@@ -98,6 +100,10 @@ def add_parametric_primitive(type, ctx):
 	elif type == 'TORUS':
 		pd = obj.owner.data.primitivedata
 		pd.radius1, pd.radius2 = 1, 0.5
+	
+	elif type == 'TORUSKNOT':
+		pd = obj.owner.data.primitivedata
+		pd.radius1, pd.radius2, pd.height = 1, 0.43, 2.2
 
 	elif type == 'TUBE':
 		pd = obj.owner.data.primitivedata
@@ -154,7 +160,8 @@ class Object_OT_Create(Operator):
 	('CONE','Cone',''), ('ICOSPHERE','Icosphere',''),
 	('MONKEY','Monkey',''), ('OILTANK','OilTank',''), ('PLANE','Plane',''),
 	('PYRAMID','Pyramid',''), ('SPHERE','Sphere',''), ('TEAPOT','Teapot',''),
-	('TORUS','Torus',''), ('TUBE','Tube',''), ('ARC','Arc',''),
+	('TORUS','Torus',''), ('TORUSKNOT','TorusKnot',''), ('TUBE','Tube',''),
+	('ARC','Arc',''),
 	('CIRCLE','Circle',''), ('DONUT','Donut',''), ('ELLIPSE','Ellipse',''),
 	('HELIX','Helix',''), ('NGON','NGon',''), ('PROFILO','Profilo',''),
 	('RECTANGLE','Rectangle',''), ('STAR','Star','')]
@@ -166,7 +173,7 @@ class Object_OT_Create(Operator):
 		return True
 	
 	def draw(self, ctx):
-		self.layout.prop(self,"type",text="Type")
+		self.layout.prop(self,"type", text="Type")
 
 	def execute(self, ctx):
 		add_parametric_primitive(self.type, ctx)
