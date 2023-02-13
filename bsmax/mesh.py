@@ -24,3 +24,17 @@ def get_selected_verts(mesh):
 			array of selected vertecis
 	"""
 	return [vert for vert in mesh.vertices if vert.select]
+
+
+# def create_sphere_mapped_cube(size, segments):
+# 	vertices, faces = create_cube(size, segments)
+
+# 	center = [0, 0, 0]
+# 	vertices = [list(vertex) for vertex in vertices]
+# 	for i, vertex in enumerate(vertices):
+# 		length = math.sqrt(sum([(vertex[j] - center[j])**2 for j in range(3)]))
+# 		if length != 0:
+# 			for j in range(3):
+# 				vertices[i][j] = (vertex[j] - center[j]) / length * size/2 + center[j]
+
+# 	return vertices, faces

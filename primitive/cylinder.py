@@ -21,18 +21,18 @@ from primitive.primitive import Primitive_Geometry_Class, Draw_Primitive
 
 
 def get_cylinder_mesh(radius1, radius2, height, hsegs, csegs, ssegs, sliceon, sfrom, sto):
-	verts,edges,faces = [],[],[]
-	sides,heights = [],[]
-	sfrom,sto = radians(sfrom),radians(sto)
-	arcrange,slicestep,r1,r2 = pi*2, 0, radius1, radius2
+	verts, edges, faces = [], [], []
+	sides, heights = [], []
+	sfrom, sto = radians(sfrom), radians(sto)
+	arcrange, slicestep, r1, r2 = pi*2, 0, radius1, radius2
 	# height
 	if sliceon:
 		arcrange,slicestep = sto - sfrom, 1
 
 	# collect segments x y onece
-	for i in range(ssegs+slicestep):
-		d = ((arcrange/ssegs)*i)+sfrom
-		sides.append([sin(d),cos(d)])
+	for i in range(ssegs + slicestep):
+		d = ((arcrange / ssegs) * i) + sfrom
+		sides.append([sin(d), cos(d)])
 	# collect cap arc height and scale
 	for i in range(1,csegs):
 		heights.append(cos(((pi/2)/csegs)*i))
@@ -223,7 +223,7 @@ class Cylinder(Primitive_Geometry_Class):
 		self.data = None
 
 	def create(self, ctx):
-		mesh = get_cylinder_mesh(0,0,0,1,1,18,False,0,360)
+		mesh = get_cylinder_mesh(0, 0, 0, 1, 1, 18, False, 0, 360)
 		self.create_mesh(ctx, mesh, self.classname)
 		pd = self.data.primitivedata
 		pd.classname = self.classname
@@ -248,7 +248,7 @@ class Cone(Primitive_Geometry_Class):
 		self.finishon = 4
 
 	def create(self, ctx):
-		mesh = get_cylinder_mesh(0,0,0,1,1,18,False,0,360)
+		mesh = get_cylinder_mesh(0, 0, 0, 1, 1, 18, False, 0, 360)
 		self.create_mesh(ctx, mesh, self.classname)
 		pd = self.data.primitivedata
 		pd.classname = self.classname

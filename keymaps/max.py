@@ -1676,6 +1676,8 @@ def uv_editor(km, preferences):
 	# km.new(space, 'uv.select', 'LEFTMOUSE', 'PRESS',
 	# 		[('extend', True)], alt=True)
 
+	km.new(space, 'uv.snap_toggle', 'S', 'PRESS', [])
+
 	km.new(space, 'uv.shortest_path_pick', 'LEFTMOUSE', 'PRESS',
 			[], shift=True)
 

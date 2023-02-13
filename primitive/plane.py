@@ -19,15 +19,17 @@ from primitive.primitive import Primitive_Geometry_Class, Draw_Primitive
 
 
 def get_plane_mesh(width, length, WSegs, LSegs):
-	verts, edges, faces = [], [], []
+	verts, faces = [], []
 	# Create vertexes
 	w = width / WSegs
 	whalf = width / 2.0
 	l = length / LSegs
 	lhalf = length / 2.0
+
 	for i in range(WSegs + 1):
 		for j in range(LSegs + 1):
 			verts.append(((w * i) - whalf, (l * j) - lhalf, 0.0))
+
 	# create faces
 	for i in range(WSegs):
 		for j in range(LSegs):
@@ -37,7 +39,8 @@ def get_plane_mesh(width, length, WSegs, LSegs):
 			c = b + LSegs + 1
 			d = c - 1
 			faces.append((d, c, b, a)) 
-	return verts, edges, faces
+
+	return verts, [], faces
 
 
 

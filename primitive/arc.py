@@ -27,7 +27,7 @@ def circle_from_three_points(p1, p2, p3):
 	x3, y3 = p3.x, p3.y
 	
 	a = x1*(y2-y3)-y1*(x2-x3)+x2*y3-x3*y2
-	a = a if a != 0 else 0.000001 # protect from devide by zero
+	a = 0.000001 if a == 0 else a # protect from devide by zero
 	b = (x1*x1+y1*y1)*(y3-y2)+(x2*x2+y2*y2)*(y1-y3)+(x3*x3+y3*y3)*(y2-y1)
 	c = (x1*x1+y1*y1)*(x2-x3)+(x2*x2+y2*y2)*(x3-x1)+(x3*x3+y3*y3)*(x1-x2)
 	
@@ -110,12 +110,15 @@ class Arc(Primitive_Curve_Class):
 		self.point1 = Vector((0,0,0))
 		self.point2 = Vector((0,0,0))
 		self.point3 = None
+
 		# World space draw line
 		self.start = Vector((0,0,0))
 		self.end = Vector((0,0,0))
+
 		# Control stuff
 		self.drawing = False
 		self.matrix = None
+
 		# second methods
 		self.radius = 0
 

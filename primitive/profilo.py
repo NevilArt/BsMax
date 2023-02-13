@@ -32,12 +32,14 @@ def Flet(point, radius, mirror_x, mirror_y, rivers):
 		tx,ty = rx - (rx * 0.551786), ry - (ry * 0.551786)
 		p1 = [Vector((p[0]+rx,p[1],0)),Vector((p[0]+rx,p[1],0)),Vector((p[0]+tx,p[1],0))]
 		p2 = [Vector((p[0],p[1]+ry,0)),Vector((p[0],p[1]+ty,0)),Vector((p[0],p[1]+ry,0))]
+
 		if rivers:
 			points.append([p2[0],p2[2],'FREE',p2[1],'FREE'])
 			points.append([p1[0],p1[2],'FREE',p1[1],'FREE'])
 		else:
 			points.append([p1[0],p1[1],'FREE',p1[2],'FREE'])
 			points.append([p2[0],p2[1],'FREE',p2[2],'FREE'])
+
 	return points
 
 
@@ -54,21 +56,29 @@ def Rectangle(length, width, cornerradius, rivers):
 	if rivers:
 		for p in Flet(p4, r, -1, 1, False):
 			shape.append(p)
+
 		for p in Flet(p3, r, -1, -1, True):
 			shape.append(p)
+
 		for p in Flet(p2, r, 1, -1, False):
 			shape.append(p)
+
 		for p in Flet(p1, r, 1, 1, True):
 			shape.append(p)
+
 	else:
 		for p in Flet(p1, r, 1, 1, False):
 			shape.append(p)
+
 		for p in Flet(p2, r, 1, -1, True):
 			shape.append(p)
+
 		for p in Flet(p3, r, -1, -1, False):
 			shape.append(p)
+
 		for p in Flet(p4, r, -1, 1, True):
 			shape.append(p)
+
 	return shape
 
 
@@ -83,24 +93,29 @@ def Circle(length, width, revers):
 	points.append([Vector((w,0,0)),Vector((w,tl,0)),Vector((w,-tl,0))])
 	points.append([Vector((0,-l,0)),Vector((tw,-l,0)),Vector((-tw,-l,0))])
 	shape = []
+
 	if revers:
 		# revers order and swap left & Right Tangents
 		for i in range(len(points), 0, -1):
 			p = points[i - 1]
 			shape.append([p[0], p[2], 'FREE', p[1], 'FREE'])
+
 	else:
 		for i in range(len(points)):
 			p = points[i]
 			shape.append([p[0], p[1], 'FREE', p[2], 'FREE'])
+
 	return shape
 
 
 
 def Angle(length, width, thickness, synccorner, cornerradius1, cornerradius2, edgeradius):
 	shape = []
+
 	# L shape
 	w,l,t = width / 2, length / 2, thickness
 	r1,r2,re = cornerradius1, cornerradius2, edgeradius
+
 	# Create the Sharp shape
 	p0 = Vector((-w,l,0))
 	p1 = Vector((-w+t,l,0))
@@ -108,6 +123,7 @@ def Angle(length, width, thickness, synccorner, cornerradius1, cornerradius2, ed
 	p3 = Vector((w,-l+t,0))
 	p4 = Vector((w,-l,0))
 	p5 = Vector((-w,-l,0))
+
 	# synnc corrners
 	if synccorner:
 		w1,w2,r1 = width, width - thickness, cornerradius1
@@ -115,17 +131,23 @@ def Angle(length, width, thickness, synccorner, cornerradius1, cornerradius2, ed
 			r2 = (w2 - (w1 - r1 * 2)) / 2
 		else:
 			r2 = 0
+
 	# Create shape
 	shape.append([p0, p0, 'FREE', p0, 'FREE'])
+
 	for p in Flet(p1, re, -1, -1, False):
 		shape.append(p)
+
 	for p in Flet(p2, r2, 1, 1, True):
 		shape.append(p)
+
 	for p in Flet(p3, re, -1, -1, False):
 		shape.append(p)
 	shape.append([p4, p4, 'FREE', p4, 'FREE'])
+
 	for p in Flet(p5, r1, 1, 1, False):
 		shape.append(p)
+
 	return [shape]
 
 
@@ -139,9 +161,11 @@ def Bar(length, width, cornerradius1):
 
 def Channel(length, width, thickness, synccorner, cornerradius1, cornerradius2):
 	shape = []
+
 	# C shape
 	w,l,t = width / 2, length / 2, thickness
 	r1,r2 = cornerradius1, cornerradius2
+
 	# Create the Sharp shape
 	p0 = Vector((-w,l,0))
 	p1 = Vector((w,l,0))
@@ -151,23 +175,31 @@ def Channel(length, width, thickness, synccorner, cornerradius1, cornerradius2):
 	p5 = Vector((w,-l+t,0))
 	p6 = Vector((w,-l,0))
 	p7 = Vector((-w,-l,0))
+
 	# synnc corrners
 	if synccorner:
 		w1,w2,r1 = width, width - thickness, cornerradius1
 		r2 = (w2-(w1-r1*2))/2 if w2>w1-r1*2 else 0
+
 	# Create shape
 	for p in Flet(p0, r1, 1, -1, True):
 		shape.append(p)
+
 	shape.append([p1, p1, 'FREE', p1, 'FREE'])
 	shape.append([p2, p2, 'FREE', p2, 'FREE'])
+
 	for p in Flet(p3, r2, 1, -1, False):
 		shape.append(p)
+
 	for p in Flet(p4, r2, 1, 1, True):
 		shape.append(p)
+
 	shape.append([p5, p5, 'FREE', p5, 'FREE'])
 	shape.append([p6, p6, 'FREE', p6, 'FREE'])
+
 	for p in Flet(p7, r1, 1, 1, False):
 		shape.append(p)
+
 	return [shape]
 
 
@@ -201,8 +233,10 @@ def Pipe(radius, thickness):
 
 def Tee(length, width, thickness, cornerradius1):
 	shape = []
+
 	# T shape
 	w,l,t,r = width / 2, length / 2, thickness, cornerradius1
+
 	# Create the Sharp shape
 	p0 = Vector((-w,l,0))
 	p1 = Vector((w,l,0))
@@ -212,42 +246,52 @@ def Tee(length, width, thickness, cornerradius1):
 	p5 = Vector((-t/2,-l,0))
 	p6 = Vector((-t/2,l-t,0))
 	p7 = Vector((-w,l-t,0))
+
 	# Create shape
 	shape.append([p0, p0, 'FREE', p0, 'FREE'])
 	shape.append([p1, p1, 'FREE', p1, 'FREE'])
 	shape.append([p2, p2, 'FREE', p2, 'FREE'])
+
 	for p in Flet(p3, r, 1, -1, False):
 		shape.append(p)
 	shape.append([p4, p4, 'FREE', p4, 'FREE'])
 	shape.append([p5, p5, 'FREE', p5, 'FREE'])
+
 	for p in Flet(p6, r, -1, -1, True):
 		shape.append(p)
 	shape.append([p7, p7, 'FREE', p7, 'FREE'])
+
 	return [shape]
 
 
 
 def Tube(length, width, thickness, synccorner, cornerradius1, cornerradius2):
 	shapes = []
+
 	# Outer rectangle
 	R1 = [length, width, cornerradius1]
+
 	# inner corner
 	cr2 = cornerradius2
 	if synccorner:
 		w1,w2,r1 = width, width - thickness, cornerradius1
 		cr2 = (w2-(w1-r1*2))/2 if w2>w1-r1*2 else 0
+
 	# inner rectangle
 	R2 = [length - thickness, width - thickness, cr2]
 	shapes.append(Rectangle(R1[0], R1[1], R1[2], False))
 	shapes.append(Rectangle(R2[0], R2[1], R2[2], True))
+
 	return shapes
 
 
 
 def Width_flange(length, width, thickness, cornerradius1):
 	shape = []
+
 	# H shape
 	w,l,t,r = width / 2, length / 2, thickness, cornerradius1
+
 	# Create the Sharp shape
 	p0 = Vector((-w,l,0))
 	p1 = Vector((w,l,0))
@@ -261,23 +305,31 @@ def Width_flange(length, width, thickness, cornerradius1):
 	p9 = Vector((-t/2,-l+t,0))
 	p10 = Vector((-t/2,l-t,0))
 	p11 = Vector((-w,l-t,0))
+
 	# Create shape
 	shape.append([p0, p0, 'FREE', p0, 'FREE'])
 	shape.append([p1, p1, 'FREE', p1, 'FREE'])
 	shape.append([p2, p2, 'FREE', p2, 'FREE'])
+
 	for p in Flet(p3, r, 1, -1, False):
 		shape.append(p)
+
 	for p in Flet(p4, r, 1, 1, True):
 		shape.append(p)
+
 	shape.append([p5, p5, 'FREE', p5, 'FREE'])
 	shape.append([p6, p6, 'FREE', p6, 'FREE'])
 	shape.append([p7, p7, 'FREE', p7, 'FREE'])
 	shape.append([p8, p8, 'FREE', p8, 'FREE'])
+
 	for p in Flet(p9, r, -1, 1, False):
 		shape.append(p)
+
 	for p in Flet(p10, r, -1, -1, True):
 		shape.append(p)
+
 	shape.append([p11, p11, 'FREE', p11, 'FREE'])
+
 	return [shape]
 
 
@@ -285,8 +337,10 @@ def Width_flange(length, width, thickness, cornerradius1):
 def Elipse(length, width, outline, thickness):
 	shapes = []
 	shapes.append(Circle(length, width, False))
+
 	if outline:
 		shapes.append(Circle(length - thickness, width - thickness, True))
+
 	return shapes
 
 
@@ -311,20 +365,28 @@ def get_profilo_shape(Mode, length, width, thickness,
 	shapes = []
 	if Mode == "Angle":
 		shapes = Angle(length, width, thickness, synccorner, cornerradius1, cornerradius2, edgeradius)
+
 	elif Mode == "Bar":
 		shapes = Bar(length, width, cornerradius1)
+
 	elif Mode == "Channel":
 		shapes = Channel(length, width, thickness, synccorner, cornerradius1, cornerradius2)
+
 	elif Mode == "Cylinder":
 		shapes = Cylinder(radius, slicefrom, sliceto)
+
 	elif Mode == "Pipe":
 		shapes = Pipe(radius, thickness)
+
 	elif Mode == "Tee":
 		shapes = Tee(length, width, thickness, cornerradius1)
+
 	elif Mode == "Tube":
 		shapes = Tube(length, width, thickness, synccorner, cornerradius1, cornerradius2)
+
 	elif Mode == "Width_flange":
 		shapes = Width_flange(length, width, thickness, cornerradius1)
+
 	elif Mode == "Elipse":
 		shapes = Elipse(length, width, outline, thickness)
 
@@ -334,14 +396,19 @@ def get_profilo_shape(Mode, length, width, thickness,
 		for knot in shape:
 			for i in (0,1,3):
 				pcos.append(knot[i])
+
 	pmin, pmax = get_volum_dimension(pcos)
 	ox, oy = offset_x, offset_y
+
 	if pivotaligne in (1, 4, 7):
 		ox += pmax.x
+
 	if pivotaligne in (3, 6, 9):
 		ox += pmin.x
+
 	if pivotaligne in (1, 2, 3):
 		oy += pmin.y
+
 	if pivotaligne in (7, 8, 9):
 		oy += pmax.y
 	
@@ -350,8 +417,10 @@ def get_profilo_shape(Mode, length, width, thickness,
 		for p in shape:
 			if mirror_x:
 				p[0].x,p[1].x,p[3].x = (p[0].x* -1),(p[1].x* -1),(p[3].x* -1)
+
 			if mirror_y:
 				p[0].y,p[1].y,p[3].y = (p[0].y* -1),(p[1].y* -1),(p[3].y* -1)
+
 			# offset
 			p[0].x,p[1].x,p[3].x = (p[0].x+ox),(p[1].x+ox),(p[3].x+ox)
 			p[0].y,p[1].y,p[3].y = (p[0].y+oy),(p[1].y+oy),(p[3].y+oy)
@@ -380,6 +449,7 @@ class Profilo(Primitive_Curve_Class):
 	def create(self, ctx, mode):
 		shapes = get_profilo_shape(mode,0, 0, 0, 0, 0, 0, 0, 0, 0,
 					False, False, 0, 0,	False, False, 0, 5)
+
 		self.create_curve(ctx, shapes, self.classname)
 		pd = self.data.primitivedata
 		pd.classname = self.classname
@@ -387,11 +457,13 @@ class Profilo(Primitive_Curve_Class):
 
 	def update(self):
 		pd = self.data.primitivedata
+
 		shapes = get_profilo_shape(pd.profilo_mode, pd.length, pd.width, pd.thickness,
 					pd.chamfer1, pd.chamfer2, pd.chamfer3,
 					pd.radius1, pd.sfrom, pd.sto, pd.outline, pd.corner,
 					pd.offset_x, pd.offset_y, pd.mirror_x, pd.mirror_y,
 					pd.rotation, pd.pivotaligne)
+
 		self.update_curve(shapes)
 
 	def abort(self):
@@ -427,11 +499,10 @@ class Create_OT_Set_Profilo_Pivot_Aligne(Operator):
 
 	@classmethod
 	def poll(self, ctx):
-		if len(ctx.selected_objects) > 0:
-			if ctx.active_object != None:
-				if ctx.active_object.type == "CURVE":
-					if ctx.active_object.data.primitivedata.classname == "Profilo":
-						return True
+		if ctx.active_object:
+			if ctx.active_object.type == "CURVE":
+				if ctx.active_object.data.primitivedata.classname == "Profilo":
+					return True
 		return False
 
 	def execute(self, ctx):

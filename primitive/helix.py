@@ -95,8 +95,7 @@ def segment_helix(radius1, radius2, height, turns, segment, bias, ccw):
 				height * get_bias(bias, percent)
 		)
 		
-		tangent_type = 'FREE'
-		shape.append((point, point, tangent_type, point, tangent_type))
+		shape.append((point, point, 'FREE', point, 'FREE'))
 
 	return [shape]
 

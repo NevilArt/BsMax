@@ -235,6 +235,15 @@ def get_pyramid_panel(self, layout):
 
 
 
+def get_quadsphere_panel(self, layout):
+	layout.label(text="QuadSphere",icon='SHADING_WIRE')
+	col = layout.column(align=True)
+	col.prop(self,"radius1", text="Radius")
+	col.prop(self,"wsegs", text="Segments")
+	col.prop(self,"bias_np", text="Factor")
+
+
+
 def get_monkey_panel(self, layout):
 	layout.label(text="Monkey",icon='MESH_MONKEY')
 	col = layout.column(align=True)
@@ -535,6 +544,9 @@ def get_panel(self, layout):
 
 	elif self.classname == "Pyramid":
 		get_pyramid_panel(self, layout)
+
+	elif self.classname == "QuadSphere":
+		get_quadsphere_panel(self, layout)
 
 	elif self.classname == "Monkey":
 		get_monkey_panel(self, layout)

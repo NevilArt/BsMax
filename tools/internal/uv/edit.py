@@ -70,6 +70,23 @@ class UV_OT_Turn(Operator):
 
 
 
+class UV_OT_Snap_Toggle(Operator):
+	""" Rotate Selected UV by given degere """
+	bl_idname = "uv.snap_toggle"
+	bl_label = "Snap Toggle"
+	bl_options = {'REGISTER', 'INTERNAL'}
+	
+	@classmethod
+	def poll(self, ctx):
+		return ctx.mode == 'EDIT_MESH'
+
+	def execute(self, ctx):
+		tool_settings = ctx.scene.tool_settings
+		tool_settings.use_snap_uv = not tool_settings.use_snap_uv
+		return{"FINISHED"}
+
+
+
 class UV_OT_Split_To_Island(Operator):
 	""" Split Selected to Island with seam border """
 	bl_idname = "uv.split_to_island"
@@ -209,6 +226,7 @@ classes = (
 		UV_OT_Mirror_Cover,
 		UV_OT_Turn,
 		UV_OT_Select_Flipped_UVs,
+		UV_OT_Snap_Toggle,
 		UV_OT_Split_To_Island,
 		UV_OT_Rectangulate_Active_Face
 	)

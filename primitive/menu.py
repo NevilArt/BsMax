@@ -106,6 +106,9 @@ class BsMax_MT_MeshCreate(Menu):
 		layout.operator("create.pyramid",
 						text="Pyramid", icon="MARKER")
 
+		layout.operator("create.quadsphere",
+						text="QuadSphere", icon="SHADING_WIRE")
+
 		layout.operator("create.teapot",
 						text="Teapot", icon="NODE_MATERIAL")
 
@@ -497,6 +500,9 @@ def mesh_add_append_menu(self, ctx):
 
 	layout.operator("object.create",
 					text="Pyramid", icon="MARKER").type='PYRAMID'
+	
+	layout.operator("object.create",
+					text="QuadSphere", icon="SHADING_WIRE").type='QUADSPHERE'
 
 	layout.operator("object.create",
 					text="Teapot", icon="NODE_MATERIAL").type='TEAPOT'

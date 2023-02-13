@@ -37,9 +37,7 @@ If you found this product useful and want to support this project you can Donate
 * [Download Older Version (2.80-2.92)](https://github.com/NevilArt/BsMax_2_80)
 
 ## Recent Updates and Changes
-* New Torusknot Curve primitive added.
-* Circle Curve primitive now has segment count parameter too.
-* Helix primitive now has Bezier and Segment mode.
+* New QuadSphere premitive added.
 * [Change log ...](https://github.com/NevilArt/BsMax/blob/master/CHANGELOG.md)
 
 ## License

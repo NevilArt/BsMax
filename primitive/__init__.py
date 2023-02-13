@@ -26,6 +26,7 @@ from .monkey import register_monkey, unregister_monkey
 from .oiltank import register_oiltank, unregister_oiltank
 from .plane import register_plane, unregister_plane
 from .pyramid import register_pyramid, unregister_pyramid
+from .quadsphere import register_quadsphere, unregister_quadsphere
 from .sphere import register_sphere, unregister_sphere
 from .teapot import register_teapot, unregister_teapot
 from .tube import register_tube, unregister_tube
@@ -96,6 +97,7 @@ def register_primitives():
 	register_preset()
 	register_profilo()
 	register_pyramid()
+	register_quadsphere()
 	register_rectangle()
 	register_speaker()
 	register_sphere()
@@ -141,6 +143,7 @@ def unregister_primitives():
 	unregister_preset()
 	unregister_profilo()
 	unregister_pyramid()
+	unregister_quadsphere()
 	unregister_rectangle()
 	unregister_speaker()
 	unregister_sphere()

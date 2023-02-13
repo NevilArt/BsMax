@@ -1,3 +1,8 @@
+# 0, 1, 1, 20230206
+* New Torusknot Curve primitive added.
+* Circle Curve primitive now has segment count parameter too.
+* Helix primitive now has Bezier and Segment mode.
+
 # 0, 1, 1, 20221227
 * Pick DOF target depth works for Active Camera rather then Selected one.
 * Parametric Primitive Object could be add from add menu too.

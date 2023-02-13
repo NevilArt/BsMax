@@ -25,6 +25,7 @@ from primitive.monkey import Monkey
 from primitive.oiltank import OilTank
 from primitive.plane import Plane
 from primitive.pyramid import Pyramid
+from primitive.quadsphere import QuadSphere
 from primitive.sphere import Sphere
 from primitive.teapot import Teapot
 from primitive.torus import Torus
@@ -47,7 +48,7 @@ def add_parametric_primitive(type, ctx):
 			'CONE':Cone(), 'ICOSPHERE':Icosphere(), 'MONKEY':Monkey(),
 			'OILTANK':OilTank(), 'PLANE':Plane(), 'PYRAMID':Pyramid(),
 			'SPHERE':Sphere(), 'TEAPOT':Teapot(), 'TORUS':Torus(),
-			'TORUSKNOT':TorusKnot(),
+			'TORUSKNOT':TorusKnot(), 'QUADSPHERE':QuadSphere(),
 			'TUBE':Tube(), 'ARC':Arc(), 'CIRCLE':Circle(), 'DONUT':Donut(),
 			'ELLIPSE':Ellipse(), 'HELIX':Helix(), 'NGON':NGon(),
 			'PROFILO': Profilo(), 'RECTANGLE':Rectangle(), 'STAR':Star()
@@ -90,6 +91,10 @@ def add_parametric_primitive(type, ctx):
 	elif type == 'PYRAMID':
 		pd = obj.owner.data.primitivedata
 		pd.width, pd.length, pd.height = 1, 1, 1
+	
+	elif type == 'QUADSPHERE':
+		pd = obj.owner.data.primitivedata
+		pd.radius1, pd.ssegs, pd.bias_np = 1, 6, 1
 
 	elif type == 'SPHERE':
 		obj.owner.data.primitivedata.radius1 = 1
@@ -159,7 +164,8 @@ class Object_OT_Create(Operator):
 	prims = [('BOX','Box',''), ('CAPSULE','Capsule',''), ('CYLINDER','Cylinder',''),
 	('CONE','Cone',''), ('ICOSPHERE','Icosphere',''),
 	('MONKEY','Monkey',''), ('OILTANK','OilTank',''), ('PLANE','Plane',''),
-	('PYRAMID','Pyramid',''), ('SPHERE','Sphere',''), ('TEAPOT','Teapot',''),
+	('PYRAMID','Pyramid',''), ('QUADSPHERE','QuadSphere',''),
+	('SPHERE','Sphere',''), ('TEAPOT','Teapot',''),
 	('TORUS','Torus',''), ('TORUSKNOT','TorusKnot',''), ('TUBE','Tube',''),
 	('ARC','Arc',''),
 	('CIRCLE','Circle',''), ('DONUT','Donut',''), ('ELLIPSE','Ellipse',''),

@@ -16,7 +16,45 @@
 import bpy
 from primitive.primitive import Primitive_Geometry_Class, Draw_Primitive
 
+# def create_box(width, height, length, width_segments, height_segments, length_segments):
+# 	vertices = []
+# 	faces = []
 
+# 	width_segment_size = width / width_segments
+# 	height_segment_size = height / height_segments
+# 	length_segment_size = length / length_segments
+
+# 	for x in range(width_segments+1):
+# 		for y in range(height_segments+1):
+# 			for z in range(length_segments+1):
+# 				vertex = (x*width_segment_size - width/2, y*height_segment_size - height/2, z*length_segment_size - length/2)
+# 				vertices.append(vertex)
+
+# 	for x in range(width_segments):
+# 		for y in range(height_segments):
+# 			for z in range(length_segments):
+# 				base_index = x + y*(width_segments+1) + z*(width_segments+1)*(height_segments+1)
+# 				vertex_indices = [base_index,
+# 									base_index + 1,
+# 									base_index + (width_segments+1),
+# 									base_index + (width_segments+1) + 1,
+# 									base_index + (width_segments+1)*(height_segments+1),
+# 									base_index + (width_segments+1)*(height_segments+1) + 1,
+# 									base_index + (width_segments+1)*(height_segments+1) + (width_segments+1),
+# 									base_index + (width_segments+1)*(height_segments+1) + (width_segments+1) + 1]
+# 				if x == 0: #Bottom
+# 					faces.append((vertex_indices[0], vertex_indices[2], vertex_indices[6], vertex_indices[4]))
+# 				if x == width_segments  - 1: #TOP
+# 					faces.append((vertex_indices[5], vertex_indices[7], vertex_indices[3], vertex_indices[1]))
+# 				if y == 0: #Front
+# 					faces.append((vertex_indices[4], vertex_indices[5], vertex_indices[1], vertex_indices[0]))
+# 				if y == height_segments - 1: #Back
+# 					faces.append((vertex_indices[2], vertex_indices[3], vertex_indices[7], vertex_indices[6]))
+# 				if z == 0: #left
+# 					faces.append((vertex_indices[0], vertex_indices[1], vertex_indices[3], vertex_indices[2]))
+# 				if z == length_segments - 1: #Right
+# 					faces.append((vertex_indices[6], vertex_indices[7], vertex_indices[5], vertex_indices[4]))
+# 	return vertices, faces
 
 def get_box_mesh(width, length, height, wsegs, lsegs, hsegs):
 	verts, edges, faces = [], [], []

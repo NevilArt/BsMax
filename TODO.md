@@ -17,14 +17,14 @@
 - [ ] 'Ctrl + L' select linked in Weight paint vertex mode.
 - [ ] Update Maya short keys too.
 - [ ] Alternative to 'Shift + G' select grouped in 3dsmax mode.
-- [ ] VSE hold shift select between action and new selected.
+- [ ] VSE hold shift select between clips and new selected.
 - [ ] 'Ctrl + S' image editor save as image if not saved befor. 
 - [ ] 'Shift + X' set from SRG to WER in 3dsmax mode.
 - [ ] 'Shift + Q' open select similar menu.
-- [ ] 'Set ffd' menu in Edit Mode.
+- [x] 'Set ffd' menu in Edit Mode.
 - [ ] 'LMB Double click' Face and vertex mode select linked.
 - [ ] Knife tool RMB commit (3DsMax mode).
-- [ ] 'S' snapp toggle in UV editor.
+- [x] 'S' snapp toggle in UV editor.
 - [ ] Optional Blender mode 'WER' on UV ediotr.
 
 
@@ -37,7 +37,7 @@
   - [ ] Collection stuff ctrl+rmc quad menu.
   - [ ] Put transform pivot poins in alt+rc quadmenu.
   - [ ] Weld tool setting dialog.
-- [ ] Armature edit mode Show/Hide menu.
+- [x] Armature edit mode Show/Hide menu.
 - [ ] Copy/paste vertex coodinate in Vertex menu.
 - [ ] Tools menu for difrent modes. ****
 - [x] lattice in mesh edit mode.
@@ -132,9 +132,9 @@
     - [ ] Fix Draw on surface alighnmen.
   - [ ] Snapping.
   - [ ] Crearte primitive weel for segment count.
-- [ ] New Primitives.
+- [x] New Primitives.
   - [x] Torus Knot.
-  - [ ] quad sphere.
+  - [x] quad sphere.
   - [x] Helix with bezier segments with less count of knots (Bezier points).
 - [ ] Float edit menu for Empty objects.
 - [ ] Draw area light with rectangular option.

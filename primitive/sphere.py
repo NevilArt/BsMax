@@ -18,6 +18,34 @@ from math import pi, sin, cos, radians
 from primitive.primitive import Primitive_Geometry_Class, Draw_Primitive
 
 
+# def create_sphere(radius, segments):
+# 	vertices = []
+# 	faces = []
+
+# 	d_phi = math.pi / segments
+# 	d_theta = 2 * math.pi / segments
+
+# 	for i in range(segments + 1):
+# 		phi = i * d_phi
+# 		for j in range(segments + 1):
+# 			theta = j * d_theta
+# 			x = radius * math.sin(phi) * math.cos(theta)
+# 			y = radius * math.sin(phi) * math.sin(theta)
+# 			z = radius * math.cos(phi)
+# 			vertices.append((x, y, z))
+
+# 	for i in range(segments):
+# 		for j in range(segments):
+# 			base_index = i + j * (segments + 1)
+# 			vertex_indices = [base_index,
+# 								base_index + 1,
+# 								base_index + (segments + 1) + 1,
+# 								base_index + (segments + 1)]
+# 			faces.append(vertex_indices)
+
+# 	return vertices, faces
+
+
 
 def get_sphere_mesh(radius, ssegs, hsegs, hemisphere, chop, sliceon, sfrom, sto, base):
 	verts, edges, faces = [], [], []

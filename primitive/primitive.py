@@ -116,6 +116,7 @@ class Primitive_Curve_Class:
 		newcurve = bpy.data.curves.new(classname, type='CURVE')
 		newcurve.dimensions = '3D'
 		curve_from_shapes(newcurve, shapes, self.close)
+		
 		# Create object and link to collection
 		self.owner = bpy.data.objects.new(classname, newcurve)
 		link_to_scene(ctx, self.owner)
@@ -142,13 +143,16 @@ class Primitive_Curve_Class:
 def curve_from_shapes(curve, shapes, close):
 	""" put BsMax primitive Shape Date in to Blender Curve Data """
 	curve.splines.clear()
+	
 	for shape in shapes:
 		count = len(shape)
 		newspline = curve.splines.new('BEZIER')
 		newspline.bezier_points.add(count - 1)
+	
 		for i in range(count):
 			bez = newspline.bezier_points[i]
 			bez.co, bez.handle_left, bez.handle_left_type, bez.handle_right, bez.handle_right_type = shape[i]
+	
 		newspline.use_cyclic_u = close
 
 
@@ -165,17 +169,21 @@ def GetCursurMesh(size, x, y):
 			(1.0, 0.4), (1.0, 0.6), (0.6, 0.6),
 			(0.6, 1.0), (0.4, 1.0), (0.4, 0.6),
 			(0.0, 0.6), (0.0, 0.4), (0.4, 0.4))
+	
 	verts = []
 	offset_x = x - size / 2
 	offset_y = y - size / 2
+	
 	for i in range(len(shape)):
 		xpos = shape[i][0] * size + offset_x
 		ypos = shape[i][1] * size + offset_y
 		verts.append((xpos, ypos))
+	
 	faces =((0, 1, 11), (1, 2, 11),
 			(2, 3, 5), (3, 4, 5),
 			(5, 6, 7), (7, 8, 5),
 			(8, 9, 11), (11, 9, 10))
+	
 	return verts, faces
 
 
@@ -390,6 +398,7 @@ class Draw_Primitive(Operator):
 			bpy.ops.ed.undo_push()
 		else:
 			self.subclass.abort()
+
 		self.reset()
 		self.local_gride.unregister()
 	
@@ -477,9 +486,12 @@ class Draw_Primitive(Operator):
 		if event.type in self.cancel_keys or self.kill:
 			RemoveCursurOveride(self.draw_handler)
 			self.kill = False
+
 			if self.step > 0:
 				self.subclass.abort()
+
 			self.reset()
+
 			return {'CANCELLED'}
 
 		return {'RUNNING_MODAL'}
