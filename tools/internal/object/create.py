@@ -18,6 +18,7 @@ from bpy.types import Operator
 from bpy.props import EnumProperty
 
 from primitive.box import Box
+from primitive.bolt import Bolt
 from primitive.capsule import Capsule
 from primitive.cylinder import Cylinder, Cone
 from primitive.icosphere import Icosphere
@@ -44,14 +45,32 @@ from primitive.star import Star
 
 
 def add_parametric_primitive(type, ctx):
-	primitiveClasses = {'BOX':Box(), 'CAPSULE':Capsule(), 'CYLINDER':Cylinder(),
-			'CONE':Cone(), 'ICOSPHERE':Icosphere(), 'MONKEY':Monkey(),
-			'OILTANK':OilTank(), 'PLANE':Plane(), 'PYRAMID':Pyramid(),
-			'SPHERE':Sphere(), 'TEAPOT':Teapot(), 'TORUS':Torus(),
-			'TORUSKNOT':TorusKnot(), 'QUADSPHERE':QuadSphere(),
-			'TUBE':Tube(), 'ARC':Arc(), 'CIRCLE':Circle(), 'DONUT':Donut(),
-			'ELLIPSE':Ellipse(), 'HELIX':Helix(), 'NGON':NGon(),
-			'PROFILO': Profilo(), 'RECTANGLE':Rectangle(), 'STAR':Star()
+	primitiveClasses = {
+			'BOX':Box(),
+			'BOLT':Bolt(),
+			'CAPSULE':Capsule(),
+			'CYLINDER':Cylinder(),
+			'CONE':Cone(),
+			'ICOSPHERE':Icosphere(),
+			'MONKEY':Monkey(),
+			'OILTANK':OilTank(),
+			'PLANE':Plane(),
+			'PYRAMID':Pyramid(),
+			'SPHERE':Sphere(),
+			'TEAPOT':Teapot(),
+			'TORUS':Torus(),
+			'TORUSKNOT':TorusKnot(),
+			'QUADSPHERE':QuadSphere(),
+			'TUBE':Tube(),
+			'ARC':Arc(),
+			'CIRCLE':Circle(),
+			'DONUT':Donut(),
+			'ELLIPSE':Ellipse(),
+			'HELIX':Helix(),
+			'NGON':NGon(),
+			'PROFILO': Profilo(),
+			'RECTANGLE':Rectangle(),
+			'STAR':Star()
 	}
 
 	obj = primitiveClasses[type]
@@ -61,6 +80,9 @@ def add_parametric_primitive(type, ctx):
 	if type == 'BOX':
 		pd = obj.owner.data.primitivedata
 		pd.width, pd.length, pd.height = 1, 1, 1
+	
+	# if type == 'BOLT':
+	# 	pd = obj.owner.data.primitivedata
 
 	elif type == 'CAPSULE':
 		pd = obj.owner.data.primitivedata
@@ -161,16 +183,33 @@ class Object_OT_Create(Operator):
 	# bl_description = ""
 	bl_options = {'REGISTER', 'UNDO'}
 
-	prims = [('BOX','Box',''), ('CAPSULE','Capsule',''), ('CYLINDER','Cylinder',''),
-	('CONE','Cone',''), ('ICOSPHERE','Icosphere',''),
-	('MONKEY','Monkey',''), ('OILTANK','OilTank',''), ('PLANE','Plane',''),
-	('PYRAMID','Pyramid',''), ('QUADSPHERE','QuadSphere',''),
-	('SPHERE','Sphere',''), ('TEAPOT','Teapot',''),
-	('TORUS','Torus',''), ('TORUSKNOT','TorusKnot',''), ('TUBE','Tube',''),
-	('ARC','Arc',''),
-	('CIRCLE','Circle',''), ('DONUT','Donut',''), ('ELLIPSE','Ellipse',''),
-	('HELIX','Helix',''), ('NGON','NGon',''), ('PROFILO','Profilo',''),
-	('RECTANGLE','Rectangle',''), ('STAR','Star','')]
+	prims = [
+		('BOX','Box',''),
+		('BOLT','Bolt',''),
+		('CAPSULE','Capsule',''),
+		('CYLINDER','Cylinder',''),
+		('CONE','Cone',''),
+		('ICOSPHERE','Icosphere',''),
+		('MONKEY','Monkey',''),
+		('OILTANK','OilTank',''),
+		('PLANE','Plane',''),
+		('PYRAMID','Pyramid',''),
+		('QUADSPHERE','QuadSphere',''),
+		('SPHERE','Sphere',''),
+		('TEAPOT','Teapot',''),
+		('TORUS','Torus',''),
+		('TORUSKNOT','TorusKnot',''),
+		('TUBE','Tube',''),
+		('ARC','Arc',''),
+		('CIRCLE','Circle',''),
+		('DONUT','Donut',''),
+		('ELLIPSE','Ellipse',''),
+		('HELIX','Helix',''),
+		('NGON','NGon',''),
+		('PROFILO','Profilo',''),
+		('RECTANGLE','Rectangle',''),
+		('STAR','Star','')
+	]
 
 	type: EnumProperty(name='Object Type', items=prims, default='BOX')
 

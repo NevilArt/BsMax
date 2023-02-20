@@ -1,3 +1,6 @@
+# 0, 1, 1, 20230214
+* New QuadSphere premitive added.
+
 # 0, 1, 1, 20230206
 * New Torusknot Curve primitive added.
 * Circle Curve primitive now has segment count parameter too.

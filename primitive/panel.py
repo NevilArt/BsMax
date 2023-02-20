@@ -14,7 +14,9 @@
 ############################################################################
 
 import bpy
+import add_mesh_BoltFactory as bf
 from bpy.types import Panel, Operator
+
 
 
 def get_adaptive_plane_panel(self, layout):
@@ -47,6 +49,89 @@ def get_box_panel(self, layout):
 	col.prop(self, "wsegs", text="WSegs")
 	col.prop(self, "lsegs", text="LSegs")
 	col.prop(self, "hsegs", text="HSegs")
+
+
+
+def get_bolt_panel(self, layout):
+	layout.label(text="Bolt", icon='TOOL_SETTINGS')
+	# col = layout.column(align=True)
+	# this function copyed from bolt factory addon 
+	# bf.Boltfactory.add_mesh_bolt.draw(self, None)
+	col = layout.column()
+
+	# ENUMS
+	col.prop(self, 'bf_Model_Type')
+	col.separator()
+
+	# Bit
+	if self.bf_Model_Type == 'bf_Model_Bolt':
+		col.prop(self, 'bf_Bit_Type')
+		if self.bf_Bit_Type == 'bf_Bit_None':
+			pass
+		elif self.bf_Bit_Type == 'bf_Bit_Allen':
+			col.prop(self, 'bf_Allen_Bit_Depth')
+			col.prop(self, 'bf_Allen_Bit_Flat_Distance')
+		elif self.bf_Bit_Type == 'bf_Bit_Torx':
+			col.prop(self, 'bf_Torx_Bit_Depth')
+			col.prop(self, 'bf_Torx_Size_Type')
+		elif self.bf_Bit_Type == 'bf_Bit_Philips':
+			col.prop(self, 'bf_Phillips_Bit_Depth')
+			col.prop(self, 'bf_Philips_Bit_Dia')
+		col.separator()
+	# Head
+	if self.bf_Model_Type == 'bf_Model_Bolt':
+		col.prop(self, 'bf_Head_Type')
+		if self.bf_Head_Type == 'bf_Head_Hex':
+			col.prop(self, 'bf_Hex_Head_Height')
+			col.prop(self, 'bf_Hex_Head_Flat_Distance')
+		elif self.bf_Head_Type == 'bf_Head_12Pnt':
+			col.prop(self, 'bf_12_Point_Head_Height')
+			col.prop(self, 'bf_12_Point_Head_Flat_Distance')
+			col.prop(self, 'bf_12_Point_Head_Flange_Dia')
+		elif self.bf_Head_Type == 'bf_Head_Cap':
+			col.prop(self, 'bf_Cap_Head_Height')
+			col.prop(self, 'bf_Cap_Head_Dia')
+		elif self.bf_Head_Type == 'bf_Head_Dome':
+			col.prop(self, 'bf_Dome_Head_Dia')
+		elif self.bf_Head_Type == 'bf_Head_Pan':
+			col.prop(self, 'bf_Pan_Head_Dia')
+		elif self.bf_Head_Type == 'bf_Head_CounterSink':
+			col.prop(self, 'bf_CounterSink_Head_Dia')
+		col.separator()
+	# Shank
+	if self.bf_Model_Type == 'bf_Model_Bolt':
+		col.label(text='Shank')
+		col.prop(self, 'bf_Shank_Length')
+		col.prop(self, 'bf_Shank_Dia')
+		col.separator()
+	# Nut
+	if self.bf_Model_Type == 'bf_Model_Nut':
+		col.prop(self, 'bf_Nut_Type')
+		if self.bf_Nut_Type == "bf_Nut_12Pnt":
+			col.prop(self, 'bf_12_Point_Nut_Height')
+			col.prop(self, 'bf_12_Point_Nut_Flat_Distance')
+			col.prop(self, 'bf_12_Point_Nut_Flange_Dia')
+		else:
+			col.prop(self, 'bf_Hex_Nut_Height')
+			col.prop(self, 'bf_Hex_Nut_Flat_Distance')
+
+	# Thread
+	col.label(text='Thread')
+	if self.bf_Model_Type == 'bf_Model_Bolt':
+		col.prop(self, 'bf_Thread_Length')
+	col.prop(self, 'bf_Major_Dia')
+	col.prop(self, 'bf_Minor_Dia')
+	col.prop(self, 'bf_Pitch')
+	col.prop(self, 'bf_Crest_Percent')
+	col.prop(self, 'bf_Root_Percent')
+	col.prop(self, 'bf_Div_Count')
+
+	if self.change == False:
+		# generic transform props
+		col.separator()
+		col.prop(self, 'align')
+		col.prop(self, 'location')
+		col.prop(self, 'rotation')
 
 
 
@@ -511,6 +596,9 @@ def get_panel(self, layout):
 
 	elif self.classname == "Box":
 		get_box_panel(self, layout)
+
+	elif self.classname == "Bolt":
+		get_bolt_panel(self, layout)
 
 	elif self.classname == "Cone":
 		get_cone_panel(self, layout)

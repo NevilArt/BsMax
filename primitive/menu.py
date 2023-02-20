@@ -58,6 +58,11 @@ class BsMax_MT_Mesh_Extera(Menu):
 						text="Pillow",
 						icon="GHOST_ENABLED")
 		
+		layout.operator_context = "EXEC_DEFAULT"
+		layout.operator("object.create",
+					text="Bolt",
+					icon="TOOL_SETTINGS").type='BOLT'
+		
 
 
 # Mesh create menu
@@ -509,6 +514,9 @@ def mesh_add_append_menu(self, ctx):
 
 	layout.operator("object.create",
 					text="Monkey", icon="MESH_MONKEY").type='MONKEY'
+
+	layout.operator("object.create",
+					text="Bolt", icon="TOOL_SETTINGS").type='BOLT'
 
 	# layout.separator()
 	# layout.menu("BSMAX_MT_vertex_create_menu", icon='DOT').type=''
