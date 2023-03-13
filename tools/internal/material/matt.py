@@ -43,18 +43,18 @@ class Material_OT_Assign_To_Selection(Operator):
 
 
 class Material_OT_Import(Operator):
-	bl_idname = "material.import_node_groupe"
+	bl_idname = "nodes.import_node_groupe"
 	bl_label = "Import Node Groupe Preset"
 	bl_description = "Import Node Groupe Presets"
 	bl_options = {'REGISTER'}
 
 	name: StringProperty()
 
-	@classmethod
-	def poll(self, ctx):
-		if ctx.space_data.type == "NODE_EDITOR" and ctx.mode == 'OBJECT':
-			return ctx.space_data.shader_type == 'OBJECT'
-		return False
+	# @classmethod
+	# def poll(self, ctx):
+	# 	if ctx.space_data.type == "NODE_EDITOR" and ctx.mode == 'OBJECT':
+	# 		return ctx.space_data.shader_type == 'OBJECT'
+	# 	return False
 
 	def execute(self, ctx):
 		# Check for exist
@@ -62,6 +62,7 @@ class Material_OT_Import(Operator):
 			# Get current script path
 			dirs = path.dirname(__file__).split('\\')
 			
+			# TODO change this method
 			# Remove 3 step of sub folders to get Addon root Directory
 			root_path = ''
 			for i in range(len(dirs)-3):
@@ -75,9 +76,17 @@ class Material_OT_Import(Operator):
 
 		# Add to node editor
 		value = 'bpy.data.node_groups["' + self.name + '"]'
-		bpy.ops.node.add_node(type="ShaderNodeGroup", use_transform=True,
-			settings=[{"name":"node_tree", "value":value}])
+		editorType = {'GeometryNodeTree':'GeometryNodeGroup',
+					'ShaderNodeTree':"ShaderNodeGroup"
+		}
+		
+		nodeGrroupType = editorType[ctx.area.ui_type]
 
+		bpy.ops.node.add_node(type=nodeGrroupType, use_transform=True,
+			settings=[{"name":"node_tree", "value":value}])
+		
+		bpy.ops.node.translate_attach()
+		
 		return{"FINISHED"}
 
 
@@ -89,43 +98,57 @@ class BsMax_MT_material_presets(Menu):
 	def draw(self, ctx):
 		layout=self.layout
 		# Effects
-		layout.operator("material.import_node_groupe",
+		layout.operator("nodes.import_node_groupe",
 						text="Blure").name='Blure'
 
-		layout.operator("material.import_node_groupe",
+		layout.operator("nodes.import_node_groupe",
 						text="Falloff").name='Falloff'
 
 		# Map
 		layout.separator()
-		layout.operator("material.import_node_groupe",
+		layout.operator("nodes.import_node_groupe",
 						text="Ocean Caustic").name='Ocean Caustic'
 
 		# Parallax (coordinate)
 		layout.separator()
-		layout.operator("material.import_node_groupe",
+		layout.operator("nodes.import_node_groupe",
 						text="Parallax Box").name='Parallax Box X4'
 
-		layout.operator("material.import_node_groupe",
+		layout.operator("nodes.import_node_groupe",
 						text="Parallax Layer").name='Parallax Layer X4'
 
-		layout.operator("material.import_node_groupe",
+		layout.operator("nodes.import_node_groupe",
 						text="Parallax Ice").name='Parallax Ice'
 
 		# Sprite Sheet (Coordinate)
 		layout.separator()
-		layout.operator("material.import_node_groupe",
+		layout.operator("nodes.import_node_groupe",
 						text="Sprite Sheet").name='Sprite Sheet'
 
-		layout.operator("material.import_node_groupe",
+		layout.operator("nodes.import_node_groupe",
 						text="Sprite Play Loop").name='Sprite Play Loop'
 
-		layout.operator("material.import_node_groupe",
+		layout.operator("nodes.import_node_groupe",
 						text="Sprite Play Range").name='Sprite Play Range'
 
 		# Coordinate
 		layout.separator()
-		layout.operator("material.import_node_groupe",
+		layout.operator("nodes.import_node_groupe",
 						text="Untile").name='Untile'
+
+
+
+class BsMax_MT_geometrynode_presets(Menu):
+	bl_idname = "BSMAX_MT_geometrynode_import"
+	bl_label = "Append GNode Trees"
+
+	def draw(self, ctx):
+		layout=self.layout
+		# Distribution
+		layout.operator("nodes.import_node_groupe",
+						text="Probability 10").name='Probability 10'
+		layout.operator("nodes.import_node_groupe",
+						text="Sum").name='Sum'
 
 
 
@@ -151,9 +174,24 @@ class BsMax_MT_material_Tools(Menu):
 	def draw(self, ctx):
 		layout=self.layout
 		if ctx.space_data.type == "NODE_EDITOR":
-			if ctx.space_data.shader_type == 'OBJECT':
-				layout.operator("material.assign_to_selection", text="Assign to selected")
-				layout.menu("BSMAX_MT_material_import")
+
+			if ctx.area.ui_type == 'GeometryNodeTree':
+				layout.menu("BSMAX_MT_geometrynode_import")
+
+			elif ctx.area.ui_type == 'CompositorNodeTree':
+				pass
+
+			elif ctx.area.ui_type == 'ShaderNodeTree':
+
+				if ctx.space_data.shader_type == 'OBJECT':
+					layout.operator("material.assign_to_selection",
+		     						text="Assign to selected"
+					)
+					
+					layout.menu("BSMAX_MT_material_import")
+
+				elif ctx.space_data.shader_type == 'WORLD':
+					pass
 
 
 
@@ -165,6 +203,7 @@ def matt_menu(self, ctx):
 classes = [Material_OT_Assign_To_Selection,
 	Material_OT_Import,
 	BsMax_MT_material_presets,
+	BsMax_MT_geometrynode_presets,
 	BsMax_MT_Materia_Collection,
 	BsMax_MT_material_Tools]
 

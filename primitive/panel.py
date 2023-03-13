@@ -132,6 +132,8 @@ def get_bolt_panel(self, layout):
 		col.prop(self, 'align')
 		col.prop(self, 'location')
 		col.prop(self, 'rotation')
+	
+	col.prop(self, 'height', text='Scale')
 
 
 

@@ -30,8 +30,8 @@ def get_bolt_mesh(props):
 
 	verts, faces = bf.createMesh.RemoveDoubles(verts, faces)
 
-	# verts = bf.createMesh.Scale_Mesh_Verts(verts, GLOBAL_SCALE)
-	verts = bf.createMesh.Scale_Mesh_Verts(verts, 1)
+	scale = props.height
+	verts = bf.createMesh.Scale_Mesh_Verts(verts, scale)
 	return verts, [], faces
 
 
@@ -46,6 +46,7 @@ class Bolt(Primitive_Geometry_Class):
 		self.create_mesh(ctx, mesh, self.classname)
 		pd = self.data.primitivedata
 		pd.classname = self.classname
+		pd.height = 1
 		self.update()
 
 	def update(self):
@@ -71,8 +72,7 @@ class Create_OT_Bolt(Draw_Primitive):
 
 	def update(self, ctx, clickcount, dimension):
 		if clickcount == 1:
-			self.params.width = dimension.radius
-			self.params.length = dimension.radius
+			self.params.height = dimension.radius
 
 		if clickcount > 0:
 			self.subclass.update()
