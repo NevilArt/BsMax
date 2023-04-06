@@ -15,9 +15,7 @@
 
 import bpy
 
-from os import path
 from bpy.types import Operator, Menu
-from bpy.props import StringProperty
 
 
 
@@ -42,58 +40,9 @@ class Material_OT_Assign_To_Selection(Operator):
 
 
 
-class Material_OT_Import(Operator):
-	bl_idname = "nodes.import_node_groupe"
-	bl_label = "Import Node Groupe Preset"
-	bl_description = "Import Node Groupe Presets"
-	bl_options = {'REGISTER'}
-
-	name: StringProperty()
-
-	# @classmethod
-	# def poll(self, ctx):
-	# 	if ctx.space_data.type == "NODE_EDITOR" and ctx.mode == 'OBJECT':
-	# 		return ctx.space_data.shader_type == 'OBJECT'
-	# 	return False
-
-	def execute(self, ctx):
-		# Check for exist
-		if not self.name in bpy.data.node_groups:
-			# Get current script path
-			dirs = path.dirname(__file__).split('\\')
-			
-			# TODO change this method
-			# Remove 3 step of sub folders to get Addon root Directory
-			root_path = ''
-			for i in range(len(dirs)-3):
-				root_path += dirs[i] + '\\'
-
-			# Make Path
-			directory = root_path + 'presets.blend\\NodeTree\\'
-
-			# Append the Node Tree
-			bpy.ops.wm.append(filename=self.name, directory=directory)
-
-		# Add to node editor
-		value = 'bpy.data.node_groups["' + self.name + '"]'
-		editorType = {'GeometryNodeTree':'GeometryNodeGroup',
-					'ShaderNodeTree':"ShaderNodeGroup"
-		}
-		
-		nodeGrroupType = editorType[ctx.area.ui_type]
-
-		bpy.ops.node.add_node(type=nodeGrroupType, use_transform=True,
-			settings=[{"name":"node_tree", "value":value}])
-		
-		bpy.ops.node.translate_attach()
-		
-		return{"FINISHED"}
-
-
-
 class BsMax_MT_material_presets(Menu):
 	bl_idname = "BSMAX_MT_material_import"
-	bl_label = "Append Node Trees"
+	bl_label = "BsMax Presets"
 
 	def draw(self, ctx):
 		layout=self.layout
@@ -138,19 +87,6 @@ class BsMax_MT_material_presets(Menu):
 
 
 
-class BsMax_MT_geometrynode_presets(Menu):
-	bl_idname = "BSMAX_MT_geometrynode_import"
-	bl_label = "Append GNode Trees"
-
-	def draw(self, ctx):
-		layout=self.layout
-		# Distribution
-		layout.operator("nodes.import_node_groupe",
-						text="Probability 10").name='Probability 10'
-		layout.operator("nodes.import_node_groupe",
-						text="Sum").name='Sum'
-
-
 
 class BsMax_MT_Materia_Collection(Menu):
 	bl_idname = "BSMAX_MT_material_collection"
@@ -167,53 +103,23 @@ class BsMax_MT_Materia_Collection(Menu):
 
 
 
-class BsMax_MT_material_Tools(Menu):
-	bl_idname = "BSMAX_MT_material_tools"
-	bl_label = "Tools"
-
-	def draw(self, ctx):
-		layout=self.layout
-		if ctx.space_data.type == "NODE_EDITOR":
-
-			if ctx.area.ui_type == 'GeometryNodeTree':
-				layout.menu("BSMAX_MT_geometrynode_import")
-
-			elif ctx.area.ui_type == 'CompositorNodeTree':
-				pass
-
-			elif ctx.area.ui_type == 'ShaderNodeTree':
-
-				if ctx.space_data.shader_type == 'OBJECT':
-					layout.operator("material.assign_to_selection",
-		     						text="Assign to selected"
-					)
-					
-					layout.menu("BSMAX_MT_material_import")
-
-				elif ctx.space_data.shader_type == 'WORLD':
-					pass
+def bsmax_matt_menu(self, ctx):
+	layout = self.layout
+	layout.separator()
+	self.layout.menu("BSMAX_MT_material_import")
 
 
 
-def matt_menu(self, ctx):
-	self.layout.menu("BSMAX_MT_material_tools")
-
-
-
-classes = [Material_OT_Assign_To_Selection,
-	Material_OT_Import,
+classes = (Material_OT_Assign_To_Selection,
 	BsMax_MT_material_presets,
-	BsMax_MT_geometrynode_presets,
-	BsMax_MT_Materia_Collection,
-	BsMax_MT_material_Tools]
+	BsMax_MT_Materia_Collection
+)
 
 def register_matt():
 	for c in classes:
 		bpy.utils.register_class(c)
-	bpy.types.NODE_MT_editor_menus.append(matt_menu)
 
 def unregister_matt():
-	bpy.types.NODE_MT_editor_menus.remove(matt_menu)
 	for c in classes:
 		bpy.utils.unregister_class(c)
 

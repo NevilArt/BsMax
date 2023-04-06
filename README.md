@@ -1,5 +1,5 @@
 
-# BsMax Blender Addon 2.93LTS ~ 3.5Beta
+# BsMax Blender Addon 2.93LTS ~ 3.5
 
 BsMax is package of Modeling, Rig & Animation, Render tools and UI mimic for [Blender 3D](https://www.blender.org/).
 
@@ -37,10 +37,8 @@ If you found this product useful and want to support this project you can Donate
 * [Download Older Version (2.80-2.92)](https://github.com/NevilArt/BsMax_2_80)
 
 ## Recent Updates and Changes
-* Scale parapeter added for Bolt primitive.
-* GN 'Probability' node group added to GN/Tools/Append GNode Trees.
-* Note: Control Colection info item propablity on 'Instance on points'.
-* Connect nodegroup output to 'Instance on points' Selection.
+* Shader and GNode preset menu moved to end of add menu.
+* 3DsMax to Blender Maxscript updated now support link constraint cameras too.
 * [Change log ...](https://github.com/NevilArt/BsMax/blob/master/CHANGELOG.md)
 
 ## License

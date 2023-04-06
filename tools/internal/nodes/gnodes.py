@@ -13,10 +13,33 @@
 #	along with this program.  If not, see <https://www.gnu.org/licenses/>.
 ############################################################################
 
-from .matt import register_matt,unregister_matt
+import bpy
 
-def register_material():
-	register_matt()
+from bpy.types import Menu
 
-def unregister_material():
-	unregister_matt()
+
+
+class BsMax_MT_geometrynode_presets(Menu):
+	bl_idname = "BSMAX_MT_geometrynode_import"
+	bl_label = "BsMax Presets"
+
+	def draw(self, ctx):
+		layout=self.layout
+		# Distribution
+		layout.operator("nodes.import_node_groupe",
+						text="Probability 10").name='Probability 10'
+
+		# Math
+		layout.operator("nodes.import_node_groupe",
+						text="Sum").name='Sum'
+
+
+
+def register_gnodes():
+	bpy.utils.register_class(BsMax_MT_geometrynode_presets)
+
+def unregister_gnodes():
+	bpy.utils.unregister_class(BsMax_MT_geometrynode_presets)
+
+if __name__ == "__main__":
+	register_gnodes()

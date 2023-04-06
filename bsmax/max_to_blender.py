@@ -55,6 +55,17 @@ def create_camera(name, location, rotation):
 
 
 
+def create_empty(name, location, rotation, scale, type='CUBE'):
+	bpy.ops.object.empty_add(type=type)
+	empty = ctx.active_object
+	empty.name = name
+	empty.location = location #(0, 0, 0)
+	empty.rotation_euler = rotation #(0, 0, 0)
+	# empty.scale = scale #(1, 1, 1)
+	return empty
+
+
+
 def set_attribute():
 	pass
 

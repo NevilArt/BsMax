@@ -20,8 +20,8 @@ bl_info = {
 	'name': 'BsMax',
 	'description': 'Package of many tools + other CG apps UI mimic',
 	'author': 'Naser Merati (Nevil)',
-	'version': (0, 1, 1, 20230313),
-	'blender': (2, 93, 0),# 2.93LTS ~ 3.5Beta
+	'version': (0, 1, 1, 20230406),
+	'blender': (2, 93, 0),# 2.93LTS ~ 3.5
 	'location': 'Almost Everywhere in Blender',
 	'wiki_url': 'https://github.com/NevilArt/BsMax/wiki',
 	'doc_url': 'https://github.com/NevilArt/BsMax/wiki',
@@ -507,7 +507,7 @@ def register():
 	register_tools(preferences)
 	register_menu(preferences)
 	# templates.register()
-	start_new_thread(register_delay,tuple([preferences]))
+	start_new_thread(register_delay, tuple([preferences]))
 	
 
 

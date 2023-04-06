@@ -20,7 +20,7 @@ from .clip_editor import register_clip_editor, unregister_clip_editor
 from .curve import register_curve, unregister_curve
 from .file import register_file, unregister_file
 from .ligth import register_light, unregister_light
-from .material import register_material, unregister_material
+from .nodes import register_nodes, unregister_nodes
 from .mesh import register_mesh, unregister_mesh
 from .object import register_object, unregister_object
 from .particle import register_particle, unregister_particle
@@ -46,8 +46,8 @@ def register_internal(preferences):
 	register_curve()
 	register_file()
 	register_light()
-	register_material()
 	register_mesh()
+	register_nodes()
 	register_object(preferences)
 	register_particle()
 	register_render()
@@ -69,8 +69,8 @@ def unregister_internal():
 	unregister_curve()
 	unregister_file()
 	unregister_light()
-	unregister_material()
 	unregister_mesh()
+	unregister_nodes()
 	unregister_object()
 	unregister_particle()
 	unregister_render()
