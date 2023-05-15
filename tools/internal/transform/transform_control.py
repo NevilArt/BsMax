@@ -15,10 +15,17 @@
 
 import bpy
 
+from mathutils import Vector
+
 from bpy.types import Operator, Menu
 from bpy.props import BoolProperty
 
-from bsmax.bsmatrix import matrix_to_array, array_to_matrix
+from bsmax.bsmatrix import (
+    					BsMatrix,
+					    matrix_from_elements,
+						matrix_to_array,
+						array_to_matrix
+					)
 from bsmax.actions import (
 						freeze_transform,
 						copy_array_to_clipboard,
@@ -96,6 +103,15 @@ class Object_OT_Transform_Copy(Operator):
 
 
 
+def get_clipboard_key():
+	string = bpy.context.window_manager.clipboard
+	lines = string.splitlines()
+	if lines:
+		return lines[0]
+	return None
+
+
+
 class Object_OT_Transform_Paste(Operator):
 	""" Paste transform from buffer """
 	bl_idname = "object.transform_paste"
@@ -107,13 +123,32 @@ class Object_OT_Transform_Paste(Operator):
 		return ctx.mode == 'OBJECT' and ctx.active_object
 		
 	def execute(self, ctx):
-		array = paste_array_from_clipboard('BSMAXTRANSFORMCLIPBOARD')
-		if array:
-			matrix_world = array_to_matrix(array)
+		key = get_clipboard_key()
 
-			if matrix_world:
-				ctx.object.matrix_world = matrix_world
+		if key == 'BSMAXTRANSFORMCLIPBOARD':
 
+			array = paste_array_from_clipboard('BSMAXTRANSFORMCLIPBOARD')
+			if array:
+				matrix_world = array_to_matrix(array)
+
+				if matrix_world:
+					ctx.object.matrix_world = matrix_world
+		
+		elif key == "BSMAXTRANSFORMCLIPBOARDV2":
+			lines = (bpy.context.window_manager.clipboard).splitlines()
+			cbData = [float(f) for f in lines[1].split(",")]
+
+			location = Vector((cbData[0], cbData[1], cbData[2]))
+			rotation = Vector((cbData[3], cbData[4], cbData[5]))
+			scale = Vector((cbData[6], cbData[7], cbData[8]))
+			
+			matrix = matrix_from_elements(
+							location=location,
+							euler_rotation=rotation,
+							scale=scale
+			)
+			ctx.object.matrix_world = matrix
+			print(matrix)
 		return{"FINISHED"}
 
 

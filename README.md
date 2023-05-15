@@ -37,8 +37,16 @@ If you found this product useful and want to support this project you can Donate
 * [Download Older Version (2.80-2.92)](https://github.com/NevilArt/BsMax_2_80)
 
 ## Recent Updates and Changes
-* Shader and GNode preset menu moved to end of add menu.
-* 3DsMax to Blender Maxscript updated now support link constraint cameras too.
+* Maxscript Pack updated
+Some of the tools I wrote in 2 decade working with 3DsMax collected in Bsmax/Maxscript folder I`ll add all other tools too.
+The reason I put maxscript stuff inside the Blender Addon is some of tools are working directly with paralel one in Blender and has to update together.
+* e.g. Copy object Transform in 3DsMax and paste on an object inside the Blender.
+* e.g. Copy camera with animation inside 3DsMax or Blender and paste inside other 3DsMax, Blender or Unreal engine.
+* How to use :
+Drag and drop inistall.ms file in to 3DsMax viewport.
+* There is no tutorial at the time but I`ll make a refrence page soon as posible.
+* Almost 50 Tool update and added but need to check and more cleanup yet and some of them may not work properly yet.
+* Similar Tool package for Unreal engine is on the way too.
 * [Change log ...](https://github.com/NevilArt/BsMax/blob/master/CHANGELOG.md)
 
 ## License

@@ -464,4 +464,144 @@ function creat_python_script_and_copy_to_clipboard =
 	setclipboardText script
 )
 
-creat_python_script_and_copy_to_clipboard()
+
+
+function physical_camera_convertor =
+(
+	for Cam in Cameras do (
+        if classof Cam == Physical do (
+            -- Create a temprary camera ---------------------------------------------------------------
+            NewCam = undefined
+            if Cam.targeted then (
+                NewCam = Targetcamera wirecolor:Cam.wirecolor
+            )
+            else (
+                NewCam = Freecamera wirecolor:C.wirecolor
+            )
+
+            -- copy FOV key frames ---------------------------------------------------------------------
+            if classof Cam.fov.controller == bezier_float do (
+                NewCam.fov.controller = bezier_float()
+                for key in Cam.fov.controller.keys do (
+                    NewKey = addNewKey NewCam.fov.controller K.time
+                    NewKey.value  = Key.value
+                )
+            )
+
+            -- repalece new cam darta with the old cam data ------------------------------------------
+            Cam.baseobject = NewCam.baseobject
+
+            -- eremove the Phys from camera name --
+            if findString $.name "Phys" != undefined do (
+                S = (findString $.name "Phys") + 4 
+                Cam.name = substring Cam.name s Cam.name.count
+            )
+
+            -- delete the temprary camera --------------------------------------------------------------
+            delete NewCam
+        )
+    )
+)
+
+
+function camera_movment_catcher =
+(
+	--TODO if no selection try to get scene active camera
+	if selection.count != 1 do (
+		return undefined
+	)
+
+	if superclassof selection[1] != camera do (
+		return undefined
+	)
+
+	function Compartransform Tr1 Tr2 =
+	(
+		function ComparP3 P1 P2 Tol =
+		(
+			function ComparF F1 F2 Tol =
+			(
+				if F1 != F2 then (
+					local Heigher, Lower
+
+					if F1 >= F2 then (
+						Heigher = F1; Lower = F2;
+					)
+					else (
+						Heigher = F2; Lower = F1;
+					)
+
+					return Heigher <= Lower + Tol
+				) 
+				else (
+					return True
+				)
+			)
+
+			local X = ComparF P1.x P2.x Tol
+			local Y = ComparF P1.y P2.y Tol
+			local Z = ComparF P1.z P2.z Tol
+
+			return  (X and Y and Z)
+		)
+
+		if Tr1 != undefined and Tr2 != undefined then (
+			local P1 = Tr1.Pos, P2 = Tr2.Pos
+			local Q1 = quatToEuler Tr1.rotation order:1
+			local Q2 = quatToEuler Tr2.rotation order:1
+			local CP = P1 == P2
+			local CQ = ComparP3 Q1 Q2 (0.01) -- <-- Tolerance Value
+			return (CP and CQ)
+		) 
+		else (
+			return False
+		)
+	)
+	----------------------------------------------------------------------------------------
+	local Cam = selection[1], OldCamTransfirm, OldTargTransfirm, Frames = #()
+	
+	for T = animationRange.start to animationRange.end do
+	(
+		at time T (
+			NewCamTransfirm = at time T Cam.transform
+			if not Compartransform OldCamTransfirm NewCamTransfirm do (
+				appendifunique Frames ((T as string) as integer)
+			)
+			OldCamTransfirm = NewCamTransfirm
+		)
+	)
+
+	local Str = ""
+	append Frames Frames[Frames.count]
+	for i = 1 to Frames.count - 1 do (
+		if Frames[i] >= 0 then (
+			if (Frames[i] + 1 == Frames[i + 1]) then (
+				if Str[Str.count] != "-" do (
+					if Str.count > 0 and Str[Str.count] != "," do (
+						Str += ","
+					)
+
+					Str += Frames[i] as string + "-"
+				)
+			)
+			else (
+				if Str.count > 0 and Str[Str.count] != "-" and Str[Str.count] != "," do (
+					Str += ","
+				)
+
+				Str += Frames[i] as string
+			)
+		)
+		else (
+			-- Negative numbers not saported on Frames render and have to ignored --
+			--if Str.count > 0 and Str[Str.count] != "," do Str += ","
+			--Str += Frames[i] as string
+		)
+	)
+
+	renderSceneDialog.close()
+	rendTimeType  = 4
+	rendPickupFrames = Str
+	renderSceneDialog.open()
+)
+

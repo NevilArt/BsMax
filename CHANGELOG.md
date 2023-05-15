@@ -1,3 +1,7 @@
+# 0, 1, 1, 20230406
+* Shader and GNode preset menu moved to end of add menu.
+* 3DsMax to Blender Maxscript updated now support link constraint cameras too.
+
 # 0, 1, 1, 20230313
 * Scale parapeter added for Bolt primitive.
 * GN 'Probability' node group added to GN/Tools/Append GNode Trees.
