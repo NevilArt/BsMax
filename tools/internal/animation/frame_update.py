@@ -18,6 +18,18 @@ from bpy.types import Operator
 from bpy.app.handlers import persistent
 
 
+def get_dopesheet_editor_space_header_color():
+	ctx = bpy.context
+	h = ctx.preferences.themes['Default'].dopesheet_editor.space.header
+	color = (h[0], h[1], h[2], h[3])
+
+	# If Red return defult defined color
+	if h[0] != 0.5 and h[1] != 0.0 and h[2] != 0.0 and h[3] != 1.0:
+		return (0.2588, 0.2588, 0.2588, 1.0)
+
+	return color
+
+
 
 class Scene_Stata:
 	def __init__(self):
@@ -26,16 +38,20 @@ class Scene_Stata:
 		self.use_select_pick_depth = False
 		self.active_auto_use_select_pick_depth = False
 		self.use_keyframe_insert_auto = False
-		self.dopesheet_editor_space_header_color = (0.2588, 0.2588, 0.2588, 1.0)
+		self.dopesheet_editor_space_header_color = get_dopesheet_editor_space_header_color()
+		self.preferences = None
 	
-	def store(self, ctx):
+	def store(self, ctx, preferences):
 		""" Store use_select_pick_depth State """
 		system = ctx.preferences.system
 		self.use_select_pick_depth = system.use_select_pick_depth
+
+		self.preferences = preferences
 		
 		""" Store dopesheet_editor.header Color """
 		h = ctx.preferences.themes['Default'].dopesheet_editor.space.header
 		color = (h[0],h[1],h[2],h[3])
+
 		""" Pass if collor is allredy Red """
 		if h[0] != 0.5 and h[1] != 0.0 and h[2] != 0.0 and h[3] != 1.0:
 			self.dopesheet_editor_space_header_color = color
@@ -51,12 +67,12 @@ class Scene_Stata:
 			ctx.preferences.system.use_select_pick_depth = uspds
 
 	def autokey_state_updated(self, ctx):
-		if ctx.scene.tool_settings.use_keyframe_insert_auto:
-			color = (0.5, 0.0, 0.0, 1.0) # Dark Red Color
-		else:
-			color = self.dopesheet_editor_space_header_color
-		ctx.preferences.themes['Default'].dopesheet_editor.space.header = color
-	
+		autoKey = ctx.scene.tool_settings.use_keyframe_insert_auto
+		color = (0.5, 0.0, 0.0, 1.0) if autoKey else self.dopesheet_editor_space_header_color
+		# allow to update if affect_theme active in preference
+		if color and self.preferences.affect_theme:
+			ctx.preferences.themes['Default'].dopesheet_editor.space.header = color
+
 	def check(self, ctx):
 		""" Calls once on mode changed """
 		if self.mode != ctx.mode:
@@ -133,22 +149,31 @@ class Anim_OT_Auto_Use_Select_Pick_Depth_Toggle(Operator):
 classes = [Anim_OT_Auto_Key_Toggle,
 	Anim_OT_Auto_Use_Select_Pick_Depth_Toggle]
 
-def register_frame_update():
+
+
+def register_frame_update(preferences):
 	for c in classes:
 		bpy.utils.register_class(c)
-	scene_state.store(bpy.context)
+
+	scene_state.store(bpy.context, preferences)
 	# bpy.app.handlers.frame_change_pre.append(frame_Update)
 	# bpy.app.handlers.render_init.append(render_init)
 	bpy.app.handlers.depsgraph_update_pre.append(depsgraph_update)
 
+
+
 def unregister_frame_update():
 	""" Return the defult values befor remove """
 	scene_state.restore(bpy.context)
+
 	# bpy.app.handlers.frame_change_pre.remove(frame_Update)
 	# bpy.app.handlers.render_init.remove(render_init)
 	bpy.app.handlers.depsgraph_update_pre.remove(depsgraph_update)
+
 	for c in classes:
 		bpy.utils.unregister_class(c)
+
+
 
 if __name__ == '__main__':
 	register_frame_update()

@@ -20,10 +20,10 @@
 """ This file can be instaled as an stand alone add-on too """
 bl_info = {
 	"name": "BsMax-Backburner",
-	"description": "Backburner for Blender 2.80 ~ 3.1",
+	"description": "Backburner for Blender 2.93 ~ 3.6",
 	"author": "Matt Ebb | Blaize | Anthony Hunt | Spirou4D | Nevil",
 	"version": (0, 2, 0, 10),# 2022-02-28
-	"blender": (2, 80, 0),# to 3.2
+	"blender": (2, 93, 0),# to 3.6
 	"location": "Properties/ Output/ Backbrner",
 	"wiki_url": "https://github.com/NevilArt/BsMax_2_80/wiki",
 	"doc_url": "https://github.com/NevilArt/BsMax_2_80/wiki",

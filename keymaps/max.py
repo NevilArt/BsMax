@@ -183,46 +183,46 @@ def add_float_editors(km, space):
 
 
 
-def add_float_menu(km, space, preferences):
-	if preferences.floatmenus == '3DsMax':
-		km.new(space, 'bsmax.view3dquadmenue', 'V', 'PRESS',
-			[('menu', 'viewport'), ('space', 'View3D')])
+# def add_float_menu(km, space, preferences):
+# 	if preferences.floatmenus == '3DsMax':
+# 		km.new(space, 'bsmax.view3dquadmenue', 'V', 'PRESS',
+# 			[('menu', 'viewport'), ('space', 'View3D')])
 
-		""" This not needed drop tool can call this """
-		# km.new(space,"bsmax.view3dquadmenue","RIGHTMOUSE","PRESS",
-		# 		[('menu', 'default'),('space', 'View3D')])
+# 		""" This not needed drop tool can call this """
+# 		# km.new(space,"bsmax.view3dquadmenue","RIGHTMOUSE","PRESS",
+# 		# 		[('menu', 'default'),('space', 'View3D')])
 
-		""" Ignore Alt + RMB in Maya navigation enabled """
-		if preferences.navigation_3d != 'Maya':
-			km.new(space, 'bsmax.view3dquadmenue', 'RIGHTMOUSE', 'PRESS',
-					[('menu', 'coordinate'), ('space', 'View3D')], alt=True)
+# 		""" Ignore Alt + RMB in Maya navigation enabled """
+# 		if preferences.navigation_3d != 'Maya':
+# 			km.new(space, 'bsmax.view3dquadmenue', 'RIGHTMOUSE', 'PRESS',
+# 					[('menu', 'coordinate'), ('space', 'View3D')], alt=True)
 
-		km.new(space, 'bsmax.view3dquadmenue', 'RIGHTMOUSE', 'PRESS',
-				[('menu', 'create'), ('space', 'View3D')], ctrl=True)
+# 		km.new(space, 'bsmax.view3dquadmenue', 'RIGHTMOUSE', 'PRESS',
+# 				[('menu', 'create'), ('space', 'View3D')], ctrl=True)
 
-		km.new(space, 'bsmax.view3dquadmenue', 'RIGHTMOUSE', 'PRESS',
-				[('menu', 'snap'), ('space', 'View3D')], shift=True)
+# 		km.new(space, 'bsmax.view3dquadmenue', 'RIGHTMOUSE', 'PRESS',
+# 				[('menu', 'snap'), ('space', 'View3D')], shift=True)
 
-		km.new(space, 'bsmax.view3dquadmenue', 'RIGHTMOUSE', 'PRESS',
-				[('menu', 'render'), ('space', 'View3D')], alt=True, ctrl=True)
+# 		km.new(space, 'bsmax.view3dquadmenue', 'RIGHTMOUSE', 'PRESS',
+# 				[('menu', 'render'), ('space', 'View3D')], alt=True, ctrl=True)
 
-		km.new(space, 'bsmax.view3dquadmenue', 'RIGHTMOUSE', 'PRESS',
-				[('menu', 'fx'), ('space', 'View3D')], alt=True, shift=True)
+# 		km.new(space, 'bsmax.view3dquadmenue', 'RIGHTMOUSE', 'PRESS',
+# 				[('menu', 'fx'), ('space', 'View3D')], alt=True, shift=True)
 
-		km.new(space, 'bsmax.view3dquadmenue', 'RIGHTMOUSE', 'PRESS',
-				[('menu', 'Selection'), ('space', 'View3D')],
-				ctrl=True, shift=True)
+# 		km.new(space, 'bsmax.view3dquadmenue', 'RIGHTMOUSE', 'PRESS',
+# 				[('menu', 'Selection'), ('space', 'View3D')],
+# 				ctrl=True, shift=True)
 
-		km.new(space, 'bsmax.view3dquadmenue', 'RIGHTMOUSE', 'PRESS',
-				[('menu', 'custom'), ('space', 'View3D')],
-				alt=True, ctrl=True, shift=True)
+# 		km.new(space, 'bsmax.view3dquadmenue', 'RIGHTMOUSE', 'PRESS',
+# 				[('menu', 'custom'), ('space', 'View3D')],
+# 				alt=True, ctrl=True, shift=True)
 	
-	if preferences.floatmenus == 'PieMax':
-		km.new(space, 'wm.call_menu_pie', 'RIGHTMOUSE', 'PRESS', 
-				[('name', 'BSMAX_MT_default_pi')])
+# 	if preferences.floatmenus == 'PieMax':
+# 		km.new(space, 'wm.call_menu_pie', 'RIGHTMOUSE', 'PRESS', 
+# 				[('name', 'BSMAX_MT_default_pi')])
 
-		km.new(space, 'wm.call_menu_pie', 'RIGHTMOUSE', 'PRESS', 
-				[('name', 'BSMAX_MT_create_pi')], ctrl=True)
+# 		km.new(space, 'wm.call_menu_pie', 'RIGHTMOUSE', 'PRESS', 
+# 				[('name', 'BSMAX_MT_create_pi')], ctrl=True)
 
 
 
@@ -313,7 +313,7 @@ def view3d(km, preferences):
 	add_switch_view(km, space)
 	add_view3d_tweak_selection(km, space)
 	add_float_editors(km, space)
-	add_float_menu(km, space, preferences)
+	# add_float_menu(km, space, preferences)
 	add_transform_tool(km, space, preferences, smax=True)
 
 	if preferences.view_undo:
@@ -635,7 +635,7 @@ def object_mode(km, preferences):
 	add_snap(km, space)
 	add_subobject(km, space)
 	add_float_editors(km, space)
-	add_float_menu(km, space, preferences)
+	# add_float_menu(km, space, preferences)
 	add_show_types(km, space)
 	add_transform_tool(km, space, preferences, smax=False)
 	
@@ -725,7 +725,7 @@ def mesh(km, preferences):
 	add_side_panel(km, space)
 	add_view3d_tweak_selection(km, space)
 	add_switch_view(km, space)
-	add_float_menu(km, space, preferences)
+	# add_float_menu(km, space, preferences)
 	add_subobject(km, space)
 	add_transform_tool(km, space, preferences, smax=False)
 
@@ -846,7 +846,7 @@ def curve(km, preferences):
 	add_view3d_tweak_selection(km, space)
 	add_subobject(km, space)
 	add_switch_view(km, space)
-	add_float_menu(km, space, preferences)
+	# add_float_menu(km, space, preferences)
 	add_transform_tool(km, space, preferences, smax=False)
 
 	km.new(space, 'mesh.select_element_toggle', 'FIVE', 'PRESS',
@@ -913,7 +913,7 @@ def armature(km, preferences):
 	add_switch_view(km, space)
 	add_show_types(km, space)
 	add_view3d_click_selection(km, space)
-	add_float_menu(km, space, preferences)
+	# add_float_menu(km, space, preferences)
 	add_transform_tool(km, space, preferences, smax=False)
 
 	km.new(space, 'view3d.drop_tool', 'RIGHTMOUSE', 'PRESS', [])
@@ -1028,7 +1028,7 @@ def grease_pencil(km, preferences):
 	space = km.space('Grease Pencil', 'EMPTY', 'WINDOW')
 	add_search(km, space)
 	add_side_panel(km, space)
-	add_float_menu(km, space, preferences)
+	# add_float_menu(km, space, preferences)
 	add_transform_tool(km, space, preferences, smax=False)
 	km.new(space, 'gpencil.copy', 'INSERT', 'PRESS', [], ctrl=True)
 	km.new(space, 'gpencil.paste', 'INSERT', 'PRESS', [], shift=True)
@@ -1043,7 +1043,7 @@ def pos(km, preferences):
 	add_subobject(km, space)
 	add_show_types(km, space)
 	add_time(km, space)
-	add_float_menu(km, space, preferences)
+	# add_float_menu(km, space, preferences)
 	add_transform_tool(km, space, preferences, smax=False)
 
 	km.new(space, 'view3d.drop_tool', 'RIGHTMOUSE', 'PRESS', [])

@@ -39,7 +39,7 @@ from .menu import register_menu, unregister_menu
 
 
 def register_internal(preferences):
-	register_animation()
+	register_animation(preferences)
 	register_armature()
 	register_camera()
 	register_clip_editor()

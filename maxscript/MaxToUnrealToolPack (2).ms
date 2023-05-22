@@ -1029,5 +1029,4 @@ rollout maxtoUnrealToolPackRo "To Unreal"
 CreateDialog maxtoUnrealToolPackRo width:170
 
 
-
 -- execute ("macroScript MaxToUnreal tooltip:\"Max To Unreal\" category:\"Scene Tools\" ( filein \"" + getSourceFileName() +"\" )")

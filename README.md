@@ -1,5 +1,5 @@
 
-# BsMax Blender Addon 2.93LTS ~ 3.5
+# BsMax Blender Addon 2.93LTS ~ 3.6Beta
 
 BsMax is package of Modeling, Rig & Animation, Render tools and UI mimic for [Blender 3D](https://www.blender.org/).
 
@@ -32,21 +32,17 @@ If you found this product useful and want to support this project you can Donate
 * This file can be inistaled sepratly as Add-on.
 * Click on the link and 'Ctrl + S' to download the file.
 * [backburner.py](https://raw.github.com/NevilArt/BsMax/master/tools/internal/render/backburner.py)
+* [shapekey.py](https://raw.github.com/NevilArt/BsMax/master/tools/internal/rigg/shapekey.py)
 
 ## Older Version
 * [Download Older Version (2.80-2.92)](https://github.com/NevilArt/BsMax_2_80)
 
 ## Recent Updates and Changes
-* Maxscript Pack updated
-Some of the tools I wrote in 2 decade working with 3DsMax collected in Bsmax/Maxscript folder I`ll add all other tools too.
-The reason I put maxscript stuff inside the Blender Addon is some of tools are working directly with paralel one in Blender and has to update together.
-* e.g. Copy object Transform in 3DsMax and paste on an object inside the Blender.
-* e.g. Copy camera with animation inside 3DsMax or Blender and paste inside other 3DsMax, Blender or Unreal engine.
-* How to use :
-Drag and drop inistall.ms file in to 3DsMax viewport.
-* There is no tutorial at the time but I`ll make a refrence page soon as posible.
-* Almost 50 Tool update and added but need to check and more cleanup yet and some of them may not work properly yet.
-* Similar Tool package for Unreal engine is on the way too.
+* Theme change can be disable from addon prefrence option.
+* Multi Target ShapeKey tool can be inistaled as stand alone addon (requested).
+* Maxscript pack inistalation issue and many of bugs fixed (need to work on it yet).
+* Character to ABC maxscript tool added.
+* Auto Facial GUI maxscript added (need to update and bugfix yet).
 * [Change log ...](https://github.com/NevilArt/BsMax/blob/master/CHANGELOG.md)
 
 ## License

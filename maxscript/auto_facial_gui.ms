@@ -13,33 +13,38 @@
 #	along with this program.  If not, see <https://www.gnu.org/licenses/>.
 ##########################################################################*/
 
-if classof GUIRO == RolloutClass do destroydialog GUIRO
+
+
 Global FacialUIs = #()
+
 function CreateFGUI obj =
 (
-	if classof obj.baseobject ==  Rectangle do
-	(
+	if classof obj.baseobject ==  Rectangle do (
 		Global PosManager, Talkerro
 		Global SFrame = 1, Handel = 2, Hlimit = 3, Vlimit = 4, Freezed = 5, Upper = 1, Lower = 2
 		Global Size = 800
 		Global MainFrame = obj
 		Global SubFrame = #(), Caption = #(), OrPos = #(), OrSize = #()
 		Global SelectedJoys = #(), TalkFilter = #()
-		function AddToCaption Tobj = append Caption #(Tobj.baseobject.text, [in coordsys MainFrame Tobj.pos.x, in coordsys MainFrame Tobj.pos.y])
+		
+		function AddToCaption Tobj = (
+			append Caption #(Tobj.baseobject.text, [in coordsys MainFrame Tobj.pos.x, in coordsys MainFrame Tobj.pos.y])
+		)
 
 		-- Collect All joysticks --
 		for SF in MainFrame.children do (
-			if classof SF.baseobject == text do
+			if classof SF.baseobject == text do (
 				AddToCaption SF -- collect caption in frame root
+			)
 
 			for H in SF.children do (
-				if classof H.baseobject == text do
+				if classof H.baseobject == text do (
 					AddToCaption H -- collect caption in sub root
+				)
 
 				if classof SF.baseobject == Rectangle do (
-					--###########################################################################################################################
 					-- collect handels with freezed transform --
-					if H.position.controller as string == "Controller:Position_List" do
+					if H.position.controller as string == "Controller:Position_List" do (
 						if H.position.controller[1] as string == "SubAnim:Frozen_Position" and H.position.controller[2] as string == "SubAnim:Zero_Pos_XYZ" do (
 							IsJoy = false
 							local Hlim = #(), VLim = #()
@@ -66,7 +71,11 @@ function CreateFGUI obj =
 								VLim = #(ULimit, LLimit)
 								IsJoy = true
 							)
-							if IsJoy do Append SubFrame #(SF, H, Hlim, Vlim, true)
+
+							if IsJoy do (
+								Append SubFrame #(SF, H, Hlim, Vlim, true)
+							)
+						)
 					)
 					-- collect handels with Non freezed transform --
 					if H.transform.controller[1] as string == "XXXX" do (
@@ -90,19 +99,20 @@ function CreateFGUI obj =
 							IsJoy = true
 						)
 
-						if IsJoy do
+						if IsJoy do (
 							Append SubFrame #(SF, H, Hlim, Vlim, false)
+						)
 					)
-					--###########################################################################################################################
 				)
 			)-- End of or H in SF.children do
 		)
+
 		if SubFrame.count > 0 do (
 			function Pixelof num = Size * ( num / MainFrame.width)
 			function Valueof pix = MainFrame.width * (pix as float  / Size as float)
 			Global FrameWidth = Size
 			Global FrameHeight = Pixelof MainFrame.length
-			--======================================================================================================================================================================--
+
 			rollout GUIRO (filterstring MainFrame.name "_")[1]
 			(
 				function Pixelof num = Size * ( num / MainFrame.width)
@@ -134,12 +144,16 @@ function CreateFGUI obj =
 							)
 					)
 					try(
-						if Ret == 0 then
+						if Ret == 0 then (
 							select MainFrame
-						else
+						)
+						else (
 							select Nodes[Ret]
 						)
-					catch() --## dont work after change file 
+					)
+					catch (
+						--pass
+					) --## dont work after change file 
 					--## do this 
 					-- try if catch scan again --
 					return  Ret
@@ -156,67 +170,88 @@ function CreateFGUI obj =
 							JoyStick[i].Location.y = DifPos[i].y - pixelof (HPos.y - JPos.y - OPos.y)
 						)
 					)
-					catch
+					catch (
 						destroydialog GUIRO
+					)
 				)
 				
-				function MoveJoyHandel X Y = if index > 0 do 
+				function MoveJoyHandel X Y =  
 				(
-					--###########################################################################################################################
+					if index <= 0 do (
+						return undefined
+					)
+
 					--stopAnimation()
 					--## limitation not work on some joysticks --
 					-- Apply movement to joystick
-					JoyStick[index].Location.x += X
-					JoyStick[index].Location.y += Y
+					joyLocation = JoyStick[index].Location
+					joySize = JoyStick[index].size
+					frameSize = Frame[index].size
+					joyLocation.x += X
+					joyLocation.y += Y
 					-- Limit tje joystick 
-					if SubFrame[index][3][2] == 0 then
-						if JoyStick[index].Location.x < DifPos[index].x do
-							JoyStick[index].Location.x = DifPos[index].x
-
-					else if JoyStick[index].Location.x < 0 do
-						JoyStick[index].Location.x = 0
+					if SubFrame[index][3][2] == 0 then (
+						if joyLocation.x < DifPos[index].x do (
+							joyLocation.x = DifPos[index].x
+						)
+					)
+					else if joyLocation.x < 0 do (
+						joyLocation.x = 0
+					)
 						
-					if SubFrame[index][4][2] == 0 then
-						if JoyStick[index].Location.y < DifPos[index].y do
-							JoyStick[index].Location.y = DifPos[index].x
-
-					else if JoyStick[index].Location.y < 0 do
-						JoyStick[index].Location.y = 0
+					if SubFrame[index][4][2] == 0 then (
+						if joyLocation.y < DifPos[index].y do (
+							joyLocation.y = DifPos[index].x
+						)
+					)
+					else if joyLocation.y < 0 do (
+						joyLocation.y = 0
+					)
 						
-					if SubFrame[index][3][1] == 0 then
-						if JoyStick[index].Location.x > DifPos[index].x do
-							JoyStick[index].Location.x = DifPos[index].x
-
-					else if JoyStick[index].Location.x + JoyStick[index].size.width > Frame[index].size.width do
-						JoyStick[index].Location.x = Frame[index].size.width - JoyStick[index].size.width
+					if SubFrame[index][3][1] == 0 then (
+						if joyLocation.x > DifPos[index].x do (
+							joyLocation.x = DifPos[index].x
+						)
+					)
+					else if joyLocation.x + joySize.width > frameSize.width do (
+						joyLocation.x = frameSize.width - joySize.width
+					)
 					
-					if SubFrame[index][4][1] == 0 then
-						if JoyStick[index].Location.y > DifPos[index].y do
-							JoyStick[index].Location.y = DifPos[index].y
-					else if JoyStick[index].Location.y + JoyStick[index].size.height > Frame[index].size.height do
-						JoyStick[index].Location.y = Frame[index].size.height - JoyStick[index].size.height
+					if SubFrame[index][4][1] == 0 then (
+						if joyLocation.y > DifPos[index].y do (
+							joyLocation.y = DifPos[index].y
+						)
+					)
+					else if joyLocation.y + joySize.height > frameSize.height do (
+						joyLocation.y = frameSize.height - joySize.height
+					)
 
 					-- Apply movement to handel 
 					in coordsys MainFrame move SubFrame[index][Handel] [Valueof X, Valueof -Y, 0]
 					--###########################################################################################################################
 				)
 				
-				function ResetJoystick Sindex = if Sindex > 0 do undo on
+				function ResetJoystick Sindex =
 				(
-					-- reset the Joy position --
-					JoyStick[Sindex].Location.x = DifPos[Sindex].x
-					JoyStick[Sindex].Location.y = Difpos[Sindex].y
+					if Sindex <= 0 do (
+						return undefined
+					)
+					undo on (
+						-- reset the Joy position --
+						JoyStick[Sindex].Location.x = DifPos[Sindex].x
+						JoyStick[Sindex].Location.y = Difpos[Sindex].y
 
-					-- reset the freezed transform and limeted controller
-					try(
-						SubFrame[Sindex][2].transform.controller[1][2][1].value = 0
+						-- reset the freezed transform and limeted controller
+						try(
+							SubFrame[Sindex][2].transform.controller[1][2][1].value = 0
+						)
+						catch()
+						
+						try(
+							SubFrame[Sindex][2].transform.controller[1][2][2].value = 0
+						)
+						catch()
 					)
-					catch()
-					
-					try(
-						SubFrame[Sindex][2].transform.controller[1][2][2].value = 0
-					)
-					catch()
 				)
 				
 				/*on Clocktm tick do
@@ -232,66 +267,83 @@ function CreateFGUI obj =
 					try(
 						SetDialogPos GUIRO (execute(getINISetting (getMAXIniFile()) "AutoFacialGUI" "pos"))
 					)
-					catch()
+					catch(
+						--pass
+					)
 					--------------------------------------------------------------------------------------------------------------------------------------------
 					FR = MainFrame.wirecolor.R
 					FG = MainFrame.wirecolor.G
 					FB = MainFrame.wirecolor.B
+
 					-- Setup the main form --
 					GUI_DN.BackColor = (dotNetClass "System.Drawing.Color").FromARGB FR FG FB
+
 					-- Set up the sticks --
 					for i = 1 to SubFrame.count do (
 						SF = SubFrame[i]
+						
 						-- Collect info from max objects -------------------------------------------------
 						-- Global SFrame = 1, Handel = 2, Hlimit = 3, Vlimit = 4, Freezed = 5
 						SFrameW = Pixelof (SF[SFrame].width * (SF[SFrame].scale.x / MainFrame.scale.x))
 						SFrameH = Pixelof (SF[SFrame].length * (SF[SFrame].scale.y / MainFrame.scale.y))
+
 						SR = SF[SFrame].wirecolor.R
 						SG = SF[SFrame].wirecolor.G
 						SB = SF[SFrame].wirecolor.B
+
 						FPosX = Pixelof (in coordsys  SF[SFrame].parent SF[SFrame].pos.x) + GUI_DN.width / 2 - SFrameW / 2
 						FPosY = GUI_DN.height - (Pixelof (in coordsys SF[SFrame].parent SF[SFrame].pos.y ) + GUI_DN.height / 2 + SFrameH / 2)
+
 						-- calculation of Joy size --------------------------------------------------
 						local HSizeW = 0, HSizeH = 0;
 						if SF[Hlimit].count == 2 then (
-							if SF[Hlimit][1] == 0 and SF[Hlimit][2] == 0 then
+							if SF[Hlimit][1] == 0 and SF[Hlimit][2] == 0 then (
 								HSizeW = SFrameW
-							else
+							)
+							else (
 								HSizeW = Pixelof (((in coordsys MainFrame SF[Handel].max.x) - (in coordsys MainFrame SF[Handel].min.x)))
+							)
 
-							if HSizeW < SFrameW / 5 do
+							if HSizeW < SFrameW / 5 do (
 								HSizeW = SFrameW / 5
+							)
 						) -- end of if SF[3].count == 2 then
-
-						else
+						else (
 							HSizeW = SFrameW
+						)
 
 						if SF[Vlimit].count == 2 then (
-							if SF[Vlimit][1] == 0 and SF[Vlimit][2] == 0 then
+							if SF[Vlimit][1] == 0 and SF[Vlimit][2] == 0 then (
 								HSizeH = SFrameH
-							else
+							)
+							else (
 								HSizeH = Pixelof (((in coordsys MainFrame SF[Handel].max.y) - (in coordsys MainFrame SF[Handel].min.y)))
+							)
 
-							if HSizeH < SFrameH / 5 do
+							if HSizeH < SFrameH / 5 do (
 								HSizeH = SFrameH / 5
+							)
 						) -- end of if SF[4].count == 2 then
-
-						else
+						else (
 							HSizeH = SFrameH
+						)
 
 						HR = SF[Handel].wirecolor.R
 						HG = SF[Handel].wirecolor.G
 						HB = SF[Handel].wirecolor.B
+
 						-- Calculation of Joy position -----------------------------------
 						Offset_X =  Pixelof ((SF[3][1] + SF[3][2]) / 2)
 						Offset_Y =  -Pixelof ((SF[4][1] + SF[4][2]) / 2)
 						HPosX = SFrameW / 2 - HSizeW / 2 - Offset_X
 						HPosY = SFrameH / 2 - HSizeH / 2 - Offset_Y
 						append DifPos [HPosX, HPosY]
+
 						----------------------------------------------------------------------
 						-- create similar controllers on dot net ---
 						FrameDN = dotNetObject "System.Windows.Forms.Label"
 						FrameDN.Enabled = false
+						
 						--FrameDN.Name =  CName
 						GUI_DN.ForeColor = (dotNetClass "System.Drawing.Color").FromARGB 200 200 200
 						FrameDN.BackColor = (dotNetClass "System.Drawing.Color").FromARGB SR SG SB
@@ -299,8 +351,10 @@ function CreateFGUI obj =
 						FrameDN.Location = dotNetObject "System.Drawing.Point" FPosX FPosY
 						FrameDN.Size = dotNetObject "System.Drawing.Size" SFrameW SFrameH
 						GUI_DN.Controls.Add FrameDN
+						
 						-- create hndel --
 						JoyDN = dotNetObject "System.Windows.Forms.Label"
+						
 						--JoyDN.Name = HName
 						JoyDN.Enabled = false
 						JoyDN.Size = dotNetObject "System.Drawing.Size" HSizeW HSizeH
@@ -308,6 +362,7 @@ function CreateFGUI obj =
 						JoyDN.ForeColor = (dotNetClass "System.Drawing.Color").FromARGB 255 255 255
 						JoyDN.BackColor = (dotNetClass "System.Drawing.Color").FromARGB HR HG HB
 						FrameDN.Controls.Add JoyDN
+						
 						-- Collect Joys --
 						execute ("Append JoyStick F" + i as string)
 						JoyStick[JoyStick.count] = JoyDN
@@ -315,6 +370,7 @@ function CreateFGUI obj =
 						Frame[Frame.count] = FrameDN
 						Append Nodes SF[2]					
 					) -- end of for
+
 					for C in Caption do (
 						CDN = dotNetObject "System.Windows.Forms.Label"
 						CDN.Enabled = false
@@ -326,15 +382,21 @@ function CreateFGUI obj =
 						CDN.Location = dotNetObject "System.Drawing.Point" CPosX CPosY
 						GUI_DN.Controls.Add CDN
 					)-- end of for C in Caption do
+
 					ReposHandels()
+
 				)-- end of on open
 				
 				on GUIRO close do 
 				(
-					setINISetting (getMAXIniFile()) "AutoFacialGUI" "pos" ((GetDialogPos GUIRO) as string) -- Save last position on close
-					if PosManager != undefined do destroydialog PosManager -- close the posser if open
+					-- Save last position on close
+					setINISetting (getMAXIniFile()) "AutoFacialGUI" "pos" ((GetDialogPos GUIRO) as string)
+					if PosManager != undefined do (
+						-- close the posser if open
+						destroydialog PosManager
+					)
 				)
-				
+
 				function DisplayActiveFrame index =
 				(
 					for i = 1 to Frame.count do (
@@ -351,35 +413,44 @@ function CreateFGUI obj =
 						)
 					)
 				)
-				
+
 				function Joy_MouseDown s e =
 				(
 					index = GetJoyStick e.x e.y
 					if (dotNet.CompareEnums e.Button e.Button.Left) then (
 						if index == 0 and keyboard.controlPressed do (
 							Joys = #()
-							for SF in SubFrame do
+							for SF in SubFrame do (
 								append Joys SF[2]
+							)
 							select Joys
 						)
 
-						if index > 0 do
-							if keyboard.controlPressed then
+						if index > 0 do (
+							if keyboard.controlPressed then (
 								append SelectedJoys SubFrame[index][Handel]
-							else
+							)
+							else (
 								SelectedJoys = #(SubFrame[index][Handel])
+							)
+						)
 
-							DisplayActiveFrame index
+						DisplayActiveFrame index
 					)
 
 					if (dotNet.CompareEnums e.Button e.Button.Right) then (
-						if index > 0 then
-							ResetJoystick index -- Reset selected
-						else if keyboard.controlPressed do
-							for i = 1 to SubFrame.count do
-								ResetJoystick i -- reset all joysticks
+						if index > 0 then (
+							-- Reset selected
+							ResetJoystick index
+						)
+						else if keyboard.controlPressed do (
+							for i = 1 to SubFrame.count do (
+								-- reset all joysticks
+								ResetJoystick i
+							)
+						)
 
-							DisplayActiveFrame index
+						DisplayActiveFrame index
 					)
 
 					if (dotNet.CompareEnums e.Button e.Button.middle) do (
@@ -395,18 +466,33 @@ function CreateFGUI obj =
 					MYM = e.y - MOPY -- Mouse Y Movement
 					MOPX = e.x
 					MOPY = e.y
+					
 					-- Isolate axis----------------------------------------------------------------------------
-					if keyboard.altPressed do
+					if keyboard.altPressed do (
 						MXM = 0 -- only vertical move 
-					if keyboard.shiftPressed do
+					)
+					if keyboard.shiftPressed do (
 						MYM = 0 -- only Horizontal move
+					)
+					
 					-------------------------------------------------------------------------------------------
-					if (dotNet.CompareEnums e.Button e.Button.Left and index > 0) do
-						if MXM != 0 or MYM != 0 do
+					if (dotNet.CompareEnums e.Button e.Button.Left and index > 0) do (
+						if MXM != 0 or MYM != 0 do (
 							MoveJoyHandel MXM MYM
+						)
+					)
 				)-- end of function Joy_MouseMove s e = 
 				
-				function Joy_MouseUp s e = if (dotNet.CompareEnums e.Button e.Button.Left) do if keyboard.controlPressed do if index != 0 do select SelectedJoys
+				function Joy_MouseUp s e = 
+				(
+					if (dotNet.CompareEnums e.Button e.Button.Left) do (
+						if keyboard.controlPressed do (
+							if index != 0 do (
+								select SelectedJoys
+							)
+						)
+					)
+				)
 				
 				on GUI_DN MouseDown s e do Joy_MouseDown s e
 				on GUI_DN MouseMove s e do Joy_MouseMove s e
@@ -429,7 +515,9 @@ function CreateFGUI obj =
 				
 				on GUIRO moved pos do 
 				(
-					if PosManager != undefined do SetDialogPos PosManager (GetDialogPos  GUIRO + [FrameWidth + 10, 1])
+					if PosManager != undefined do (
+						SetDialogPos PosManager (GetDialogPos  GUIRO + [FrameWidth + 10, 1])
+					)
 				)
 				
 				on Helpbt pressed do 
@@ -468,8 +556,7 @@ function CreateFGUI obj =
 				
 				on Posercbt changed arg do
 				(
-					if arg then
-					(
+					if arg then (
 						rollout PosManager "Pos Manager"
 						(
 							Global PoserKeyCode = "SLKJASHFeOIFOeFIRFIRAbFPOKASFBOPJEIhNEVILfASfVAUIDADQWHASHdMNABDWUIDGAV1"
@@ -480,7 +567,9 @@ function CreateFGUI obj =
 							function UpdateListBox =
 							(
 								items = #()
-								for P in Presets do append items P[1]
+								for P in Presets do (
+									append items P[1]
+								)
 								Poslb.items = items
 							)
 							function SavePresetsTofile =
@@ -488,31 +577,41 @@ function CreateFGUI obj =
 								str = PoserKeyCode + "\n"
 								for P in Presets do (
 									s = "#(\"" + P[1] + "\", ";
+
 									for i = 2 to P.count do (
 										s += P[i] as string
-										if i < P.count do s += ","
+
+										if i < P.count do (
+											s += ","
+										)
 									)
 									s += ")\n"
 									str += s
 								)
+
 								openedfile = openfile PosFile mode:"w"
 								format Str to:openedfile
 								close openedfile
 							)
+
 							on PosManager open do
 							(
 								PosFile = (getFilenamePath (getSourceFileName()) + "AutoFacialGUI\\" + GUIRO.title +".AGP")
 								if doesFileExist PosFile then (
 									openedfile = openfile PosFile mode:"r"
-									if not eof openedfile do
+
+									if not eof openedfile do (
 										if readLine openedfile == PoserKeyCode do (
 											Presets = #()
+
 											while not eof openedfile do (
 												s = readLine openedfile
 												append Presets (execute s)
 											)
+
 											UpdateListBox()
 										)
+									)
 									close openedfile
 								)
 								else if makeDir (getFilenamePath PosFile) do (
@@ -526,10 +625,12 @@ function CreateFGUI obj =
 							)
 							on Poslb selected arg do
 							(
-								if Poslb.selected != undefined then
+								if Poslb.selected != undefined then (
 									nameet.text = Poslb.selected
-								else
+								)
+								else (
 									nameet.text = ""
+								)
 
 								if Poslb.selection > 0 and keyboard.altPressed do (
 									deleteItem Presets Poslb.selection
@@ -550,6 +651,7 @@ function CreateFGUI obj =
 									Y = Su[Handel].transform.controller[1][2][2].value
 									Z = Su[Handel].transform.controller[1][2][3].value
 									append localCurntVal [X, Y, Z]
+
 									for i = 2 to Presets[Poslb.selection].count do (
 										if Presets[Poslb.selection][i][1] == Su[Handel].name do (										
 											append localPrestVal Presets[Poslb.selection][i][2]
@@ -563,22 +665,25 @@ function CreateFGUI obj =
 								for i = 1 to SubFrame.count do (
 									 -- Combine mode
 									if keyboard.controlPressed or CombineMode then (
-										if localPrestVal[i] == [0,0,0] then
+										if localPrestVal[i] == [0,0,0] then (
 											P = (localCurntVal[i])
-
-										else
+										)
+										else (
 											p = (localCurntVal[i]) * (1 - val) + ( localPrestVal[i] * Val)
+										)
 									)
 
 									else if keyboard.altPressed then (
-										if localPrestVal[i] == [0,0,0] then
+										if localPrestVal[i] == [0,0,0] then (
 											P = (localCurntVal[i])
-										else
+										)
+										else (
 											p = (localCurntVal[i]) * (1 - val) - ( localPrestVal[i] * Val)
+										)
 									)
-
-									else
+									else (
 										p = (localCurntVal[i]) * (1 - val) + ( localPrestVal[i] * Val) -- switch Mode
+									)
 
 									SubFrame[i][Handel].transform.controller[1][2][1].value = p.x
 									SubFrame[i][Handel].transform.controller[1][2][2].value = p.y
@@ -588,11 +693,16 @@ function CreateFGUI obj =
 								GUIRO.ReposHandels() -- update the joysticks
 							)
 							--########################################
-							on nameet entered newname do if nameet.text != "" do
+							on nameet entered newname do
 							(
+								if nameet.text == "" do (
+									return 0
+								)
+
 								if keyboard.controlPressed then (
-									if Poslb.selection > 0 do
+									if Poslb.selection > 0 do (
 										Presets[Poslb.selection][1] = newname -- rename selected pos
+									)
 								)
 								else (
 									-- Create a preset ---
@@ -615,70 +725,90 @@ function CreateFGUI obj =
 										)
 
 									-- add new pos
-									if IsNew do
+									if IsNew do (
 										append Presets newpreset
+									)
 								)
 
 								-- Sort --
 								local Tarray = #()
-								for P in Presets do
+								for P in Presets do (
 									append Tarray P[1]
+								)
+
 								sort Tarray
 								local TParray = #()
-								for T in Tarray do
-									for P in Presets do
+
+								for T in Tarray do (
+									for P in Presets do (
 										if T == P[1] do (
 											append TParray P
 											break
 										)
+									)
+								)
 								Presets = deepcopy TParray
+
 								-- Update other parts --
 								UpdateListBox()
 								SavePresetsTofile()
 								nameet.text = ""
 							)
+
 							global CurntVal = #()
 							global PrestVal = #()
-							on Applysl buttondown do if Poslb.selection > 0 do
+
+							on Applysl buttondown do
 							(
-								for Su in SubFrame do (
-									X = Su[Handel].transform.controller[1][2][1].value
-									Y = Su[Handel].transform.controller[1][2][2].value
-									Z = Su[Handel].transform.controller[1][2][3].value
-									append CurntVal [X, Y, Z]
-									for i = 2 to Presets[Poslb.selection].count do (
-										if Presets[Poslb.selection][i][1] == Su[Handel].name do (										
-											append PrestVal Presets[Poslb.selection][i][2]
-											break
+								if Poslb.selection > 0 do (
+									for Su in SubFrame do (
+										X = Su[Handel].transform.controller[1][2][1].value
+										Y = Su[Handel].transform.controller[1][2][2].value
+										Z = Su[Handel].transform.controller[1][2][3].value
+										append CurntVal [X, Y, Z]
+										for i = 2 to Presets[Poslb.selection].count do (
+											if Presets[Poslb.selection][i][1] == Su[Handel].name do (										
+												append PrestVal Presets[Poslb.selection][i][2]
+												break
+											)
 										)
 									)
 								)
 							)
+							
 							on Applysl changed Val do if Poslb.selection > 0 do
 							(
-								CombineMode = if Poslb.selected[1] == "+" then true else false
-								for i = 1 to SubFrame.count do (
-									 -- Combine mode
-									if keyboard.controlPressed or CombineMode then (
-										if PrestVal[i] == [0,0,0] then
-											P = (CurntVal[i])
-										else
-											p = (CurntVal[i]) * (1 - val) + ( PrestVal[i] * Val)
-									)
-									else if keyboard.altPressed then (
-										if PrestVal[i] == [0,0,0] then
-											P = (CurntVal[i])
-										else
-											p = (CurntVal[i]) * (1 - val) - ( PrestVal[i] * Val)
-									)
+								if Poslb.selection > 0 do (
+									CombineMode = if Poslb.selected[1] == "+" then true else false
+									
+									for i = 1 to SubFrame.count do (
+										-- Combine mode
+										if keyboard.controlPressed or CombineMode then (
+											if PrestVal[i] == [0,0,0] then (
+												P = (CurntVal[i])
+											)
+											else (
+												p = (CurntVal[i]) * (1 - val) + ( PrestVal[i] * Val)
+											)
+										)
+										else if keyboard.altPressed then (
+											if PrestVal[i] == [0,0,0] then (
+												P = (CurntVal[i])
+											)
+											else (
+												p = (CurntVal[i]) * (1 - val) - ( PrestVal[i] * Val)
+											)
+										)
+										else (
+											p = (CurntVal[i]) * (1 - val) + ( PrestVal[i] * Val) -- switch Mode
+										)
 
-									else p = (CurntVal[i]) * (1 - val) + ( PrestVal[i] * Val) -- switch Mode
-
-									SubFrame[i][Handel].transform.controller[1][2][1].value = p.x
-									SubFrame[i][Handel].transform.controller[1][2][2].value = p.y
-									SubFrame[i][Handel].transform.controller[1][2][3].value = p.z
+										SubFrame[i][Handel].transform.controller[1][2][1].value = p.x
+										SubFrame[i][Handel].transform.controller[1][2][2].value = p.y
+										SubFrame[i][Handel].transform.controller[1][2][3].value = p.z
+									)
+									-- GUIRO.ReposHandels() -- realtime update
 								)
-								-- GUIRO.ReposHandels() -- realtime update
 							)
 							on Applysl buttonup do 
 							(
@@ -691,7 +821,11 @@ function CreateFGUI obj =
 						)-- end of posmanager roout
 						createdialog PosManager width:150 height:(FrameHeight + 61) pos:(GetDialogPos  GUIRO + [FrameWidth + 10, 1]) style:#()
 					)
-					else if PosManager != undefined do destroydialog PosManager
+					else (
+						if PosManager != undefined do (
+							destroydialog PosManager
+						)
+					)
 				)
 			)-- end of roolout
 			createdialog GUIRO width:FrameWidth height:(FrameHeight + 30) style:#(#style_titlebar, #style_border, #style_sysmenu, #style_minimizebox)--, #style_resizing) 
@@ -699,65 +833,84 @@ function CreateFGUI obj =
 		) -- end of SubFrame count
 	)-- end of if selection count
 ) -- End of function
+
+
+
 -- Scan the scene for Facial UIs --
-for R in Shapes do
-(
-	if classof R.baseobject == Rectangle do
-	(
+for R in Shapes do (
+	if classof R.baseobject == Rectangle do (
 		ISFUI = false
-		for SR in R.children do for H in SR.children do
-		(
-			if classof SR.baseobject == Rectangle do
-			(
-				try (
-					if H.transform.controller[1] as string == "SubAnim:Position" do
-						if H.transform.controller[1][1] as string == "SubAnim:Frozen_Position" do
-							if H.transform.controller[1][2] as string == "SubAnim:Zero_Pos_XYZ" do (
-								IsJoy = false
+		for SR in R.children do (
+			for H in SR.children do (
+				if classof SR.baseobject == Rectangle do (
+					try (
+						if H.transform.controller[1] as string == "SubAnim:Position" do (
+							if H.transform.controller[1][1] as string == "SubAnim:Frozen_Position" do (
+								
+								if H.transform.controller[1][2] as string == "SubAnim:Zero_Pos_XYZ" do (
 
-								-- check in X_Position Controller --
-							if H.transform.controller[1][2][1][1] as string == "SubAnim:Limited_Controller__Bezier_Float" do
-								ISFUI = true
-	
-							-- check in Y_Position Controller --
-							if H.transform.controller[1][2][1][1] as string == "SubAnim:Limited_Controller__Bezier_Float" do
-								ISFUI = true
+									IsJoy = false
+										-- check in X_Position Controller --
+									if H.transform.controller[1][2][1][1] as string == "SubAnim:Limited_Controller__Bezier_Float" do (
+										ISFUI = true
+									)
+			
+									-- check in Y_Position Controller --
+									if H.transform.controller[1][2][1][1] as string == "SubAnim:Limited_Controller__Bezier_Float" do (
+										ISFUI = true
+									)
 
-							if ISFUI do
-								exit
+									if ISFUI do (
+										exit
+									)
+								)
+							)
 						)
-				)
-				catch(
-					ISFUI = false
+					)
+					catch(
+						ISFUI = false
+					)
 				)
 			)
 		)
 		if ISFUI do append FacialUIs R
 	)
 )-- End of scan
--- check the scan result --
-if FacialUIs.count == 1 then CreateFGUI FacialUIs[1]
-else if FacialUIs.count > 0 do
+
+
+
+
+function open_auto_face_gui_dialog =
 (
-	-- Create Character Selector --
-	local S = "rollout SelectCharacter \"Select Character\"\n"
-	S += "(\n"
-	S += "	on SelectCharacter open do try(SetDialogPos SelectCharacter (execute(getINISetting (getMAXIniFile()) \"AutoFacialGUI\" \"pos\")))catch()\n"
-	for i = 1 to FacialUIs.count do
-	(
-		S += "		button BT" + i as string + " \"" + (filterstring FacialUIs[i].name "_")[1] + "\" width:150\n"
-		S += "		on BT" + i as string + " pressed do\n"
-		S += "		(\n"
-		S += " 			Select $'" + FacialUIs[i].name  + "'\n"
-		S += "			CreateFGUI FacialUIs[" + i as string + "]\n"
-		S += "			destroydialog SelectCharacter\n"
-		S += "		)\n"
+	if classof GUIRO == RolloutClass do (
+		destroydialog GUIRO
 	)
-	S += "	button Cancel_bt \"Cancel\" width:150\n"
-	S += "		on Cancel_bt pressed do destroydialog SelectCharacter\n"
-	S += ")\n"
-	S += "createdialog SelectCharacter"
-	execute S
+
+	-- check the scan result --
+	if FacialUIs.count == 1 then (
+		CreateFGUI FacialUIs[1]
+	)
+	else if FacialUIs.count > 0 do (
+		-- Create Character Selector --
+		local S = "rollout SelectCharacter \"Select Character\"\n"
+		S += "(\n"
+		S += "	on SelectCharacter open do try(SetDialogPos SelectCharacter (execute(getINISetting (getMAXIniFile()) \"AutoFacialGUI\" \"pos\")))catch()\n"
+		for i = 1 to FacialUIs.count do (
+			S += "		button BT" + i as string + " \"" + (filterstring FacialUIs[i].name "_")[1] + "\" width:150\n"
+			S += "		on BT" + i as string + " pressed do\n"
+			S += "		(\n"
+			S += " 			Select $'" + FacialUIs[i].name  + "'\n"
+			S += "			CreateFGUI FacialUIs[" + i as string + "]\n"
+			S += "			destroydialog SelectCharacter\n"
+			S += "		)\n"
+		)
+		S += "	button Cancel_bt \"Cancel\" width:150\n"
+		S += "		on Cancel_bt pressed do destroydialog SelectCharacter\n"
+		S += ")\n"
+		S += "createdialog SelectCharacter"
+		execute S
+	)
 )
+
 -- Update runner macro Macro --
 -- execute ("macroScript FacialGUI tooltip:\"Facial GUI\" category:\"Animation Tools\" ( try(filein \"" + getSourceFileName() +"\")catch() )")

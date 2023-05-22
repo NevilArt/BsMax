@@ -310,15 +310,7 @@ rollout maxToABC "Max to ABC"
 	)
 )
 
-
-
-CreateDialog maxToABC
-
-
-
--- Register as Macro
-register = "macroScript scene2ABC "
-register += "tooltip:\"Characters To ABC\" "
-register += "category:\"Scene Tools\" "
-register += "(filein \"" + getSourceFileName() +"\")"
-execute(register)
+function open_character_to_abc_dialog =
+(
+	CreateDialog maxToABC
+)

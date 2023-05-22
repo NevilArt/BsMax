@@ -100,7 +100,7 @@ function open_afterefect_time_calculator =
 )
 
 
-function wirecolor_to_standard_material =  tooltip:"" category:"Scene Tools"
+function wirecolor_to_standard_material =
 (
 	for o in selection do if o.material == undefined do
 	(

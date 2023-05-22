@@ -16,6 +16,7 @@
 from .max import register_max, unregister_max
 from .blender import register_blender, unregister_blender
 from .cinema4d import register_cinema4d, unregister_cinema4d
+from .float_menu import register_float_menu, unregister_float_menu
 from .maya import register_maya, unregister_maya
 from .modo import register_modo, unregister_modo
 from .premiere import register_premiere, unregister_premiere
@@ -31,6 +32,7 @@ def register_keymaps(preferences):
 	register_premiere(preferences)
 	register_blender(preferences)
 	register_cinema4d(preferences)
+	register_float_menu(preferences)
 	register_softimage(preferences)
 	register_unreal(preferences)
 
@@ -40,6 +42,7 @@ def unregister_keymaps():
 	unregister_max()
 	unregister_blender()
 	unregister_cinema4d()
+	unregister_float_menu()
 	unregister_maya()
 	unregister_modo()
 	unregister_premiere()

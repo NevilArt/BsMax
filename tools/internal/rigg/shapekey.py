@@ -12,6 +12,23 @@
 #	You should have received a copy of the GNU General Public License
 #	along with this program.  If not, see <https://www.gnu.org/licenses/>.
 ############################################################################
+
+
+""" This file can be instaled as an stand alone add-on too """
+bl_info = {
+	"name": "BsMax-Shapekey",
+	"description": "Drive multiple Shapekey (Blender 2.93LTS ~ 3.6)",
+	"author": "Matt Ebb | Blaize | Anthony Hunt | Spirou4D | Nevil",
+	"version": (0, 1, 0, 1),# 2023-05-21
+	"blender": (2, 93, 0),# to 3.6
+	"location": "Properties/ Output/ Backbrner",
+	"wiki_url": "https://github.com/NevilArt/BsMax_2_80/wiki",
+	"doc_url": "https://github.com/NevilArt/BsMax_2_80/wiki",
+	"tracker_url": "https://github.com/NevilArt/BsMax_2_80/issues",
+	"category": "Render"
+}
+
+
 import bpy
 from bpy.types import Operator
 
@@ -216,6 +233,14 @@ def unregister_shapekey():
 	bpy.types.DATA_PT_shape_keys.remove(shapekey_tools)
 	for c in classes:
 		bpy.utils.unregister_class(c)
+
+
+
+def register():
+	register_shapekey()
+
+def unregister():
+	unregister_shapekey()
 
 if __name__ == "__main__":
 	register_shapekey()

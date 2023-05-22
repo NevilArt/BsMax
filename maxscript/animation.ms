@@ -268,7 +268,9 @@ rollout TimesliderToolro "Time Slider"
         startk = basek; anykey = false;
 
         if basek != undefined  and selection.count != 0 then (
+
             basek = basek as integer / (4800 / framerate)	
+
             while true do (
                 basek = at time basek trackbar.getPreviousKeyTime() as integer / (4800 / framerate)	
                 firstkey = min_fn (firstkey) (basek)
@@ -278,19 +280,19 @@ rollout TimesliderToolro "Time Slider"
                     exit
                 )
             )
-        --------------------------------------------------------------------------------	
+
             firstselectedkey = lastkey
             lastselectedkey = firstkey
             
             for i = 1 to selection.count do (
-                ---------------------------------------------------------------------
                 keycount = numKeys selection[i].pos.controller
+
                 if keycount > 0 do (
                     mink = keycount
                     maxk = 1
                     
                     for j = 1 to keycount do (
-                        if isKeySelected  selection[i].pos.controller j do (
+                        if isKeySelected selection[i].pos.controller j do (
                             if mink > j do mink = j
                             if maxk < j do maxk = j
                             anykey = true
@@ -363,7 +365,8 @@ rollout TimesliderToolro "Time Slider"
                 )
                 ----------------------------------------------------------------------------
             )
-            if anykeydo (
+
+            if anykey do (
                 firstkey = firstselectedkey
                 lastkey = lastselectedkey
             )
@@ -372,16 +375,18 @@ rollout TimesliderToolro "Time Slider"
                 lastkey += 1
             )
             --------------------------------------------------------------------------------
-        )-- end of iff
+        )
         else (
             firstkey = 0
             lastkey = 100
         )
+
         case mode of (
             "start" : animationrange = interval firstkey animationRange.end
             "end" : animationrange = interval animationRange.start lastkey
             "start & End" : animationrange = interval firstkey lastkey
         )
+
         animationrange = interval firstkey animationRange.end
     )
     
@@ -474,8 +479,8 @@ function hide_bone_toggle =
 
 rollout CameraTools "Time Cam Tools"
 (
-    SceneCameras = #()
-    TimeSliderList = #()
+    global SceneCameras = #()
+    global TimeSliderList = #()
     
     group "Camera"
     (
@@ -486,6 +491,7 @@ rollout CameraTools "Time Cam Tools"
         button FlatCamerabtn "Horizon" width:140 tooltip:"Flat the camera in horizon"
         button FOV45btn "F.O.V. 45" width:140 tooltip:"Camera F.O.V. = 45"
     )
+
     Group "Time Slider"
     (
         listbox Listmlb "" width:140 offset:[-2,0]
@@ -542,10 +548,11 @@ rollout CameraTools "Time Cam Tools"
 
     function Updatefn =
     (
-        -- reset values ---------------------------------------------------------
+        -- reset values 
         SceneCameras = #()
         TimeSliderList = #()
-        -- Camera tools ----------------------------------------------------------
+
+        -- Camera tools 
         CamNames = #()
         for C in Cameras do (
             if superclassof C == camera do (
@@ -554,11 +561,12 @@ rollout CameraTools "Time Cam Tools"
             )
         )
         CamsDDL.Items = CamNames
-        -- Time Slider -----------------------------------------------------------
+
+        -- Time Slider 
         Loadfn()
         Listmlb.items = TimeSliderList
     )
-    --------------------------------------------------------------------------------------------------------------------------------------
+
     function GetTarget cam = try(cam.target)catch(Updatefn())4
 
     function SmartDetect str =
@@ -584,7 +592,7 @@ rollout CameraTools "Time Cam Tools"
                 animationRange = (interval slidertime animationRange.end)
                 IsCommand = true
             )
-            else if str == ">" then (
+            else if str == ">" do (
                 animationRange = (interval animationRange.start (slidertime + 1))
                 IsCommand = true
             )
@@ -594,7 +602,8 @@ rollout CameraTools "Time Cam Tools"
 
     on CameraTools open do Updatefn()
     on CameraTools lbuttondblclk p do Updatefn()
-    -- Camera Events ------------------------------------------------------------------------------------------------------------------------------------------------------------------
+
+    -- Camera Events 
     on SelectCambtn pressed do (
         if SceneCameras.count > 0 do (
             try(
@@ -651,6 +660,7 @@ rollout CameraTools "Time Cam Tools"
         if SceneCameras.count > 0 do (
             try (
                 local cam = SceneCameras[CamsDDL.selection]
+
                 if cam != undefined do (
                     T = SceneCameras[CamsDDL.selection].target
                 )
@@ -693,7 +703,7 @@ rollout CameraTools "Time Cam Tools"
         )
     )
 
-    -- Time slider Events ----------------------------------------------------------------------------------------------------------------------------------------------------------
+    -- Time slider Events 
     on Addbtn pressed do 
     (
         local UniqueItem = true, TheNewItem = (animationRange.start as string + " " + animationRange.end as string)

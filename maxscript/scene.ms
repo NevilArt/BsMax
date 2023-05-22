@@ -637,7 +637,7 @@ rollout PasteDialogRo ""
                 merge pasteobj
             )
         )
-        destroydialog Pastero
+        destroydialog PasteDialogRo
     )
 
     function MergeObjMenu =
@@ -717,7 +717,7 @@ rollout PasteDialogRo ""
             )
         )
 
-        destroydialog Pastero
+        destroydialog PasteDialogRo
     )
     
     function loadMultiMaterial =
@@ -744,7 +744,7 @@ rollout PasteDialogRo ""
 
         -- Delete tempray refrenced objects --
         delete newSelectionList
-        destroydialog Pastero
+        destroydialog PasteDialogRo
     )
     
     function LoadMattMenu =
@@ -839,7 +839,7 @@ rollout PasteDialogRo ""
             )
         )
 
-        destroydialog Pastero
+        destroydialog PasteDialogRo
     )
 
     function LoadTransformMenu =
@@ -871,7 +871,7 @@ rollout PasteDialogRo ""
     on clock tick do
     (
         if keyboard.escPressed do (
-            destroydialog Pastero
+            destroydialog PasteDialogRo
         )
     )
     on Pastero open do
@@ -936,6 +936,7 @@ rollout PasteDialogRo ""
     (
         popUpMenu (LoadTransformMenu()) rollout:Pastero
     )
+)
 
 function open_paste_dialog =
 (
@@ -944,70 +945,75 @@ function open_paste_dialog =
 
 
 
+
+function has_skin Obj =
+(
+    local result = false
+    for m in Obj.modifiers do (
+        if classof m == Skin do (
+            result = true
+            exit
+        )
+    )
+    return result
+)
+
+function find_skin Objs =
+(
+    local result = false
+    for o in Objs do (
+        if has_skin o do (
+            result = true
+            exit
+        )
+    )
+    return result
+)
+
+
+function get_master_layer Layer =
+(
+    Ret = undefined
+    while true do (
+        LP = Layer.getParent()
+        if LP != undefined then (
+            Ret = LP
+            Layer = LP
+        )
+        else (
+            exit
+        )
+    )
+    return ret
+)
+
+
 function mesh_layer_selector =
 (
-	MeshLayers = #()
+	meshLayers = #()
 	MeshObjs = #()
 
-    fn GetMaster Layer =
-	(
-		Ret = undefined
-		while true do (
-			LP = Layer.getParent()
-			if LP != undefined then (
-                Ret = LP
-                Layer = LP
-            )
-            else (
-                exit
-            )
-		)
-		return ret
-	)
+    -- create a beter method to get all characters
+    CatParents = ( for obj in helpers where classof obj == CATParent collect obj )
 
-    fn HasSkin Obj =
-	(
-		local result = false
-		for m in Obj.modifiers do (
-            if classof m == Skin do (
-                result = true
+    for C in CatParents do (
+        MasterLayer = get_master_layer C.Layer
+        for i = 1 to MasterLayer.getNumChildren() do (
+            M = MasterLayer.getChild i
+            M.Nodes &objs
+            if find_skin objs do (
+                append meshLayers M
                 exit
             )
         )
-		return result
-	)
+    )
 
-    fn FindSkin Objs =
-	(
-		local result = false
-		for o in Objs do (
-            if HasSkin o do (
-                result = true
-                exit
-            )
-        )
-		return result
-	)
+    for M in meshLayers do (
+        M.Nodes &objs
+        join MeshObjs objs
+    )
 
-    -- create a beter method to get all characters ------------------------------------------------------
-	CatParents = (for obj in helpers where classof obj == CATParent collect obj)
-	for C in CatParents do (
-		MasterLayer = GetMaster C.Layer
-		for i = 1 to MasterLayer.getNumChildren() do (
-			M = MasterLayer.getChild i
-			M.Nodes &objs
-			if FindSkin objs do (
-                append MeshLayers M
-                exit
-            )
-		)
-	)
-
-    for M in MeshLayers do (
-		M.Nodes &objs
-		join MeshObjs objs
-	)
-	select MeshObjs
+    select MeshObjs
 )
 
 
@@ -1068,7 +1074,7 @@ function add_note_modifier =
 
 function multi_mesh_cache =
 (
-	if selection.count == 0 do (
+    if selection.count == 0 do (
         return undefined
     )
 
@@ -1079,23 +1085,23 @@ function multi_mesh_cache =
     select NewObjs
     macros.run "Modifier Stack" "Convert_to_Mesh"
     NewNode = NewObjs[1]
-    
+
     local OrigTransform = NewNode.transform
-    
+
     try( NewNode.Transform.controller = prs ())catch()
     try( NewNode.pos.controller = Position_XYZ ())catch()
     try(NewNode.pos.controller.X_Position.controller = bezier_float ())catch()
     try(NewNode.pos.controller.Y_Position.controller = bezier_float ())catch()
     try(NewNode.pos.controller.Z_Position.controller = bezier_float ())catch()
-    
+
     try(NewNode.rotation.controller = Euler_XYZ ())catch()
     try(NewNode.rotation.controller.X_Rotation.controller = bezier_float ())catch()
     try(NewNode.rotation.controller.Y_Rotation.controller = bezier_float ())catch()
     try(NewNode.rotation.controller.Z_Rotation.controller = bezier_float ())catch()
-    
+
     try(NewNode.scale.controller = bezier_scale ())catch()
     try(NewNode.transform = OrigTransform)catch()
-    
+
     NewNode.Parent = Undefined	
     NewNode.transform = OrigTransform
     NewNode.name += "_PCache"
@@ -1115,11 +1121,7 @@ function multi_mesh_cache =
 
 
 
-MyScriptpath = getINISetting (getMAXIniFile()) "NevilTools" "LocalScriptPath";
-
-if quicktoolrunner_to != undefined and quicktoolrunner_to.isDisplayed do (
-    destroyDialog quicktoolrunner_to
-)
+global MyScriptpath = getINISetting (getMAXIniFile()) "NevilTools" "LocalScriptPath"
 
 Rollout quicktoolrunner_to "Script Runner V01.3.0"
 (
@@ -1148,19 +1150,21 @@ Rollout quicktoolrunner_to "Script Runner V01.3.0"
     function getfiles_fn =
     (
         _myfile_ = #()
-        try(
+
+        try (
                 _myfile_ = getFiles (MyScriptpath + Folder_lb.selected + "\*.ms");
                 join _myfile_ (getFiles (MyScriptpath + Folder_lb.selected + "\*.mse"));
                 join _myfile_ (getFiles (MyScriptpath + Folder_lb.selected + "\*.mcr"));
                 join _myfile_ (getFiles (MyScriptpath + Folder_lb.selected + "\*.mzp"));
             )
-        catch(
+        catch (
             -- pass
         )
-        
+
         for i = 1 to _myfile_.count do (
             _myfile_[i] = filenameFromPath _myfile_[i]
         )
+
         File_lb.items = _myfile_
     )
 
@@ -1178,11 +1182,13 @@ Rollout quicktoolrunner_to "Script Runner V01.3.0"
     on globalserchtb changed str do
     (
         newlist = #()
+
         for i in _mydire_ do (
             if (findstring i str) != undefined do (
                 append newlist i
             )
         )
+
         Folder_lb.items = newlist
         getfiles_fn()
     )
@@ -1190,26 +1196,30 @@ Rollout quicktoolrunner_to "Script Runner V01.3.0"
     on localserchtb changed str do
     (
         newlist = #()
+
         for i in _myfile_ do (
             if (findstring i str) != undefined do (
                 append newlist i
             )
         )
+
         File_lb.items = newlist
     )
 
-    on File_lb selected  arg do
+    on File_lb selected arg do
     (
         if edit_cbt.checked then (
-            edit (MyScriptpath+Folder_lb.selected+"\\"+File_lb.selected)
+            edit (MyScriptpath + Folder_lb.selected+"\\" + File_lb.selected)
         )
         else (
             try (
-                filein (MyScriptpath+Folder_lb.selected+"\\"+File_lb.selected)
+                filein (MyScriptpath + Folder_lb.selected+"\\" + File_lb.selected)
             )
-            catch()
+            catch(
+                -- pass
+            )
         )
-        destroydialog quicktoolrunner_to;
+        destroydialog quicktoolrunner_to
     )
 
     on Change_bt pressed do
@@ -1232,10 +1242,19 @@ Rollout quicktoolrunner_to "Script Runner V01.3.0"
     (
         HiddenDOSCommand ("explorer \""+ MyScriptpath + Folder_lb.selected +"\"")
     )
-)
+
+) -- end of rollout
+
+
+
 
 function open_script_runner_dialog =
 (
+    if quicktoolrunner_to != undefined and quicktoolrunner_to.isDisplayed do (
+        destroyDialog quicktoolrunner_to
+    )
+
+
     if MyScriptpath == "" then (
 		try(
             MyScriptpath = getSavePath()  + "\\"
@@ -1253,6 +1272,7 @@ function open_script_runner_dialog =
         createdialog quicktoolrunner_to width:500
     )
 )
+
 
 
 function show_non_xform =

@@ -20,8 +20,8 @@ bl_info = {
 	'name': 'BsMax',
 	'description': 'Package of many tools + other CG apps UI mimic',
 	'author': 'Naser Merati (Nevil)',
-	'version': (0, 1, 1, 20230515),
-	'blender': (2, 93, 0),# 2.93LTS ~ 3.5
+	'version': (0, 1, 1, 20230522),
+	'blender': (2, 93, 0),# 2.93LTS ~ 3.6Beta
 	'location': 'Almost Everywhere in Blender',
 	'wiki_url': 'https://github.com/NevilArt/BsMax/wiki',
 	'doc_url': 'https://github.com/NevilArt/BsMax/wiki',
@@ -280,7 +280,7 @@ class BsMax_AddonPreferences(bpy.types.AddonPreferences):
 	options: BoolProperty(default=False)
 
 	view_undo: BoolProperty(
-		name='View Undo',default=False,
+		name='View Undo', default=False,
 		update= lambda self, ctx: update_preferences(self, ctx, 'view_undo'),
 		description='undo the only view angle'
 	)
@@ -298,6 +298,11 @@ class BsMax_AddonPreferences(bpy.types.AddonPreferences):
 	nevil_stuff: BoolProperty(
 		name='Developer Exteras', default=False,
 		description='This tools may not usefull for theres, just keep it off'
+	)
+
+	affect_theme: BoolProperty(
+		name='Affect Theme', default=True,
+		description='Let addon change some part of theme'
 	)
 
 	def refine(self):
@@ -424,6 +429,8 @@ class BsMax_AddonPreferences(bpy.types.AddonPreferences):
 			row = box.row()
 			row.prop(self, 'blender_transform_type')
 			row.prop(self, 'nevil_stuff')
+			row = box.row()
+			row.prop(self, 'affect_theme')
 
 		if self.menu_scale < 1:
 			self.menu_scale = 1
@@ -499,13 +506,16 @@ def register_delay(preferences):
 def register():
 	register_class(BsMax_OT_Save_Preferences)
 	register_class(BsMax_AddonPreferences)
+
 	global addons
 	preferences = addons[__name__].preferences
 	load_preferences(preferences)
 	preferences.active = True
+
 	register_primitives()
 	register_tools(preferences)
 	register_menu(preferences)
+
 	# templates.register()
 	start_new_thread(register_delay, tuple([preferences]))
 	
@@ -514,13 +524,16 @@ def register():
 def unregister():
 	global addons
 	save_preferences(addons[__name__].preferences)
+
 	unregister_keymaps()
 	unregister_menu()
 	unregister_tools()
 	unregister_primitives()
 	unregister_startup()
+
 	unregister_class(BsMax_AddonPreferences)
 	unregister_class(BsMax_OT_Save_Preferences)
+
 	# templates.unregister()
 	if path in sys.path:
 		sys.path.remove(path)

@@ -23,11 +23,11 @@ from .menu import register_menu, unregister_menu
 from .selection_set import register_selection_set, unregister_selection_set
 from .time import register_time, unregister_time
 
-def register_animation():
+def register_animation(preferences):
 	register_animation_key()
 	register_character_lister()
 	register_driver_fixer()
-	register_frame_update()
+	register_frame_update(preferences)
 	register_parent()
 	register_pose()
 	register_selection_set()

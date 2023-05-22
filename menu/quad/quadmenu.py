@@ -15,7 +15,7 @@
 
 import bpy
 from bpy.types import Operator
-from bpy.props import StringProperty
+from bpy.props import StringProperty, EnumProperty
 from .q_refrence import quadmenuref
 from .q_menu import QuadMenu
 from .menu_standard import * # all functions started with "get_" came frome here
@@ -28,13 +28,28 @@ class BsMax_OT_View3D_QuadMenu(Operator):
 
 	x, y = 0, 0
 	handler = None
+	handlerSpace = None
 	controllers = []
-	# TODO make enom
-	menu: StringProperty(name = 'default')
-	space: StringProperty(name = 'View3D')
-	# TODO remove space just make it auto
-	#'View3D', 'UVEditor', 'GraphEditor', 'DopeSheetEditor', 'NodeEditor'
-	#ClipEditor, ImageEditor, NLA, NodeEditorPath, Outliner3D
+	items = [
+		('default', 'default', ''),
+		('create', 'create', ''),
+		('viewport', 'viewport', ''),
+		('coordinate', 'coordinate', ''),
+		('snap', 'snap', ''),
+		('render', 'render', ''),
+		('Selection', 'Selection', ''),
+		('fx', 'fx', ''),
+		('custom', 'custom', ''),
+		('UV', 'UV', ''),
+		('TrackView', 'TrackView', '')
+	]
+	
+	menu: EnumProperty(name = 'default', items=items, default='default',
+		    description="")
+
+	# space property do nothing any mode just keept for users that used this 
+	# in there own scripts
+	space: StringProperty(name = 'View3D', description="")
 
 	@classmethod
 	def poll(self, ctx):
@@ -45,29 +60,23 @@ class BsMax_OT_View3D_QuadMenu(Operator):
 
 		if ctx.area:
 			ctx.area.tag_redraw()
+
 		if event.type == 'MOUSEMOVE':
 			self.update(event.mouse_region_x, event.mouse_region_y)
+
 		if event.type == 'LEFTMOUSE':
 			if event.value == 'RELEASE':
 				self.click(event.mouse_region_x, event.mouse_region_y)
+
 		if event.type == 'RIGHTMOUSE':
 			if event.value == 'PRESS':
 				if self.handler != None:
 					quadmenuref.finish = True
 
-		# resize the quad menu
-		# if event.type == 'NUMPAD_MINUS':
-		# 	if event.value == 'PRESS':
-		# 		if quadmenuref.size > 15:
-		# 			quadmenuref.size -= 1
-		# if event.type == 'NUMPAD_PLUS':
-		# 	if event.value == 'PRESS':
-		# 		if quadmenuref.size < 60:
-		# 			quadmenuref.size += 1
-
 		if event.type in {'ESC'} or quadmenuref.finish:
 			self.unregister_handler()
 			return {'CANCELLED'}
+
 		return {'RUNNING_MODAL'}
 
 	def update(self, x, y):
@@ -83,88 +92,127 @@ class BsMax_OT_View3D_QuadMenu(Operator):
 	def draw(self, ctx):
 		for c in self.controllers:
 			c.update()
+
 		for c in self.controllers:
 			c.update_lbl()
 
-	def SpaceFromName(self, name):
+	def get_space_from_name(self, name):
 		if name == 'View3D':
 			return bpy.types.SpaceView3D
+
 		elif name == 'UVEditor':
 			return bpy.types.SpaceUVEditor
+
 		elif name == 'GraphEditor':
 			return bpy.types.SpaceGraphEditor
+
 		elif name == 'DopeSheetEditor':
 			return bpy.types.SpaceDopeSheetEditor
+
 		elif name == 'NodeEditor':
 			return bpy.types.SpaceNodeEditor
+
+		return None
+	
+	def get_current_space(self, ctx):
+		spaceName = ctx.area.spaces.active.type
+
+		if spaceName == 'VIEW_3D':
+			return bpy.types.SpaceView3D
+
+		elif spaceName == 'UVEditor':
+			return bpy.types.SpaceUVEditor
+
+		elif spaceName == 'GraphEditor':
+			return bpy.types.SpaceGraphEditor
+
+		elif spaceName == 'DopeSheetEditor':
+			return bpy.types.SpaceDopeSheetEditor
+
+		elif spaceName == 'NodeEditor':
+			return bpy.types.SpaceNodeEditor
+
 		return None
 
 	def register_handler(self, ctx):
-		space = self.SpaceFromName(self.space)
-		if space != None:
-			self.handler = space.draw_handler_add(self.draw,tuple([ctx]),
-												'WINDOW','POST_PIXEL')    
+		self.handlerSpace = self.get_current_space(ctx)
+		if self.handlerSpace:
+			self.handler = self.handlerSpace.draw_handler_add(
+								self.draw,tuple([ctx]),
+								'WINDOW',
+								'POST_PIXEL'
+							)
 
 	def unregister_handler(self):
-		space = self.SpaceFromName(self.space)
-		if space != None:
-			space.draw_handler_remove(self.handler, "WINDOW")
+		if self.handlerSpace:
+			self.handlerSpace.draw_handler_remove(self.handler, "WINDOW")
 				
 	def create(self, ctx):
 		self.controllers.clear()
 		global quadmenuref
 		quadmenuref.finish = False
 		Menus = []
-		########################################
+
 		# all this function are "from .menu_standard import *"
 		if self.menu == 'default': # RMB
 			Menus.append(get_view3d_transform(ctx))
 			Menus.append(get_view3d_display(ctx))
 			Menus.append(get_view3d_tool1(ctx))
 			Menus.append(get_view3d_tool2(ctx))
+
 		elif self.menu == 'create': # Ctrl + RMB
 			Menus.append(get_view3d_transform(ctx))
 			Menus.append(get_view3D_create(ctx))
 			Menus.append(get_view3d_tool1(ctx))
 			Menus.append(get_view3d_tool2(ctx))
+
 		elif self.menu == 'viewport': # V
 			Menus.append(get_view3D_viewport(ctx))
 			Menus.append(get_view3d_camera(ctx))
+
 		elif self.menu == 'coordinate': # Alt + RMB
 			Menus.append(get_view3d_set(ctx))
 			Menus.append(get_view3d_coordinates(ctx))
 			Menus.append(get_view3d_transform2(ctx))
 			Menus.append(get_view3d_pose(ctx))
+
 		elif self.menu == 'snap': # Shift + RMB
 			Menus.append(get_view3d_snap_toggles(ctx))
 			Menus.append(get_view3d_snap_override(ctx))
 			Menus.append(get_view3d_snap_options(ctx))
+
 		elif self.menu == 'render': # Alt + Ctrl + RMB
 			Menus.append(get_view3d_rendering_properties(ctx))
 			Menus.append(get_view3d_render(ctx))
 			Menus.append(get_view3d_rendering_tools(ctx))
+
 		elif self.menu == 'Selection': # Ctrl + Shift + RMB
 			Menus.append(get_view3d_selection1(ctx))
 			Menus.append(get_view3d_selection2(ctx))
 			Menus.append(get_view3d_selection3(ctx))
 			Menus.append(get_view3d_selection4(ctx))
+
 		elif self.menu == 'fx': # Alt + Shift + RMB
 			Menus.append(get_view3d_fx_tools(ctx))
 			Menus.append(get_view3d_fx_objects(ctx))
 			Menus.append(get_view3d_fx_simulation(ctx))
 			Menus.append(get_view3d_fx_constraints(ctx))
+
 		elif self.menu == 'custom': # Alt + Ctrl + Shift + RMB
 			Menus = []
+
 		elif self.menu == 'UV': # RMB
 			Menus.append(get_uv_editor_transform(ctx))
 			Menus.append(get_uv_editor_display(ctx))
 			Menus.append(get_uv_editor_tools1(ctx))
 			Menus.append(get_uv_editor_tools2(ctx))
+
 		elif self.menu == 'TrackView': # RMB
 			Menus.append(get_grapheditor_trackview(ctx))
-		##############################################
+
 		for M in Menus:
 			lbl, items, index = M
+
 			if len(items) > 0:
 				NewQuad = QuadMenu(self.x, self.y, lbl, items, index)
 				self.controllers.append(NewQuad)
@@ -183,6 +231,7 @@ class BsMax_OT_View3D_QuadMenu(Operator):
 
 class Quad_Menu_Data:
 	preferences = None
+
 	def get_scale(self):
 		if self.preferences:
 			return self.preferences.menu_scale
@@ -193,6 +242,7 @@ class Quad_Menu_Data:
 qmd = Quad_Menu_Data()
 
 def register_quadmenu(preferences):
+	global qmd
 	qmd.preferences = preferences
 	bpy.utils.register_class(BsMax_OT_View3D_QuadMenu)
 
