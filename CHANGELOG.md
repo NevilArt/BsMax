@@ -1,3 +1,10 @@
+# 0, 1, 1, 20230522
+* Theme change can be disable from addon prefrence option.
+* Multi Target ShapeKey tool can be inistaled as stand alone addon (requested).
+* Maxscript pack inistalation issue and many of bugs fixed (need to work on it yet).
+* Character to ABC maxscript tool added.
+* Auto Facial GUI maxscript added (need to update and bugfix yet).
+
 # 0, 1, 1, 20230515
 * Maxscript Pack updated
 Some of the tools I wrote in 2 decade working with 3DsMax collected in Bsmax/Maxscript folder I`ll add all other tools too.

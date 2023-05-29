@@ -541,7 +541,7 @@ function optimizeSelectionMatewrials =
     objList = filterSelection()
     newMattList = #()
 
-    for obj in objList do(
+    for obj in objList do (
         mattDataPack = collectMaterials #(obj)
         mattList = mattDataPack[1]
         mattPackList = mattDataPack[2]

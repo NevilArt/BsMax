@@ -18,16 +18,9 @@ from bpy.types import Operator
 from bpy.app.handlers import persistent
 
 
-def get_dopesheet_editor_space_header_color():
+def get_header_color():
 	ctx = bpy.context
-	h = ctx.preferences.themes['Default'].dopesheet_editor.space.header
-	color = (h[0], h[1], h[2], h[3])
-
-	# If Red return defult defined color
-	if h[0] != 0.5 and h[1] != 0.0 and h[2] != 0.0 and h[3] != 1.0:
-		return (0.2588, 0.2588, 0.2588, 1.0)
-
-	return color
+	return ctx.preferences.themes['Default'].text_editor.space.header
 
 
 
@@ -38,7 +31,6 @@ class Scene_Stata:
 		self.use_select_pick_depth = False
 		self.active_auto_use_select_pick_depth = False
 		self.use_keyframe_insert_auto = False
-		self.dopesheet_editor_space_header_color = get_dopesheet_editor_space_header_color()
 		self.preferences = None
 	
 	def store(self, ctx, preferences):
@@ -48,14 +40,6 @@ class Scene_Stata:
 
 		self.preferences = preferences
 		
-		""" Store dopesheet_editor.header Color """
-		h = ctx.preferences.themes['Default'].dopesheet_editor.space.header
-		color = (h[0],h[1],h[2],h[3])
-
-		""" Pass if collor is allredy Red """
-		if h[0] != 0.5 and h[1] != 0.0 and h[2] != 0.0 and h[3] != 1.0:
-			self.dopesheet_editor_space_header_color = color
-
 		# """ Store use_keyframe_insert_auto state """
 		# ukias = ctx.scene.tool_settings.use_keyframe_insert_auto
 		# self.use_keyframe_insert_auto = ukias
@@ -68,7 +52,7 @@ class Scene_Stata:
 
 	def autokey_state_updated(self, ctx):
 		autoKey = ctx.scene.tool_settings.use_keyframe_insert_auto
-		color = (0.5, 0.0, 0.0, 1.0) if autoKey else self.dopesheet_editor_space_header_color
+		color = (0.5, 0.0, 0.0, 1.0) if autoKey else get_header_color()
 		# allow to update if affect_theme active in preference
 		if color and self.preferences.affect_theme:
 			ctx.preferences.themes['Default'].dopesheet_editor.space.header = color
@@ -146,8 +130,10 @@ class Anim_OT_Auto_Use_Select_Pick_Depth_Toggle(Operator):
 
 
 
-classes = [Anim_OT_Auto_Key_Toggle,
-	Anim_OT_Auto_Use_Select_Pick_Depth_Toggle]
+classes = (
+	Anim_OT_Auto_Key_Toggle,
+	Anim_OT_Auto_Use_Select_Pick_Depth_Toggle
+)
 
 
 

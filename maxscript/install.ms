@@ -137,7 +137,6 @@ register "Characters To ABC..." "Render Tools" "abc" "open_character_to_abc_dial
 
 /* Animation */
 register "Transform To Key..." "Nevil Tools" "animation" "open_transform_to_key_dialog"
--- register "Timeslider Tools..." "Nevil Tools" "animation" "open_time_slider_tool_dialog" --<<<<<<<<
 register "Previous Key" "Animation Tools" "animation" "set_slider_time_to_previous_key"
 register "Next Key" "Animation Tools" "animation" "set_slider_time_to_next_key"
 register "Hide Bone Toggle" "Tools" "animation" "hide_bone_toggle"
@@ -209,11 +208,11 @@ register "Character Auto Rename" "Nevil Tools" "character" "character_auto_renam
 
 
 -- /* Rigg */
--- register "Make Stretch IK" "Rigg Tools" "rigg" "make_ik_stretchable"
--- register "Clear Transform Controllers" "Rigg Tools" "rigg" "clear_transform_controllers"
--- register "Spline Control" "Rigg Tools" "rigg" "spline_control"
--- register "Morpher Connector" "Rigg Tools" "rigg" "morpher_connector"
--- register "Joystick Creator" "Rigg Tools" "rigg" "joystick_creator"
+-- register "Make Stretch IK" "Rigg Tools" "rigg" "make_ik_stretchable" --Done
+-- register "Clear Transform Controllers" "Rigg Tools" "rigg" "clear_transform_controllers" --Done
+-- register "Spline Control" "Rigg Tools" "rigg" "spline_control" --<<
+-- register "Morpher Connector" "Rigg Tools" "rigg" "morpher_connector" --Done
+-- register "Joystick Creator" "Rigg Tools" "rigg" "joystick_creator" -- working on this
 -- register "HI Solver" "Rigg Tools" "rigg" "hi_solver"
 -- register "Transform Holder" "Rigg Tools" "rigg" "open_transform_holder_dialog"
 
