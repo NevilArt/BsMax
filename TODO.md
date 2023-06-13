@@ -120,6 +120,7 @@
 - [ ] smart loop/ring update or remove.
 - [x] Select all in object mode select pose bones too.
 - [ ] Conver to and join plus do not works on some cases.
+- [ ] shapeky sort need to brtter sorting to arrange numbers correctly.
 
 
 ### Primitives

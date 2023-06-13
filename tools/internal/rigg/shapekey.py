@@ -17,9 +17,9 @@
 """ This file can be instaled as an stand alone add-on too """
 bl_info = {
 	"name": "BsMax-Shapekey",
-	"description": "Drive multiple Shapekey (Blender 2.93LTS ~ 3.6)",
+	"description": "Drive multiple Shapekey (Blender 2.93LTS ~ 3.6LTS)",
 	"author": "Matt Ebb | Blaize | Anthony Hunt | Spirou4D | Nevil",
-	"version": (0, 1, 0, 1),# 2023-05-21
+	"version": (0, 1, 0, 2),# 2023-06-11
 	"blender": (2, 93, 0),# to 3.6
 	"location": "Properties/ Output/ Backbrner",
 	"wiki_url": "https://github.com/NevilArt/BsMax_2_80/wiki",
@@ -33,10 +33,12 @@ import bpy
 from bpy.types import Operator
 
 # a-----------v----------b----------v------c
-# p = (v-a)/(b-a) if v < b else (c-v)/(c-b)
+# p = (v-a)/(b-a) if v < b else (c-v)/(c-b) #zerout
+# p = (v-a)/(b-a) if v < b else 1 #aditive
 
 class MultiShapeKey:
-	def __init__(self, name, value):
+	def __init__(self, name, value, seprator):
+		self.seprator = seprator
 		self.name = name
 		self.values = [value]
 
@@ -85,6 +87,159 @@ class Mesh_TO_Shapekeys_Sort_by_name(Operator):
 		return{"FINISHED"}
 
 
+def has_integer_sufix(string, key):
+	""" get underline position """
+	index = string.rfind(key)
+	""" seprate name from sufix """
+	integer = string[index + 1:]
+	name = string[:index]
+	""" check if sufix integer and in range 0~100 """
+
+	if integer.isdigit():
+		val = int(integer)
+		if 0 <= val <= 100:
+			return name, val
+
+	return None
+
+
+
+def remove_shapekey_by_name(obj, shapekey_name):
+	key_blocks = obj.data.shape_keys.key_blocks
+	obj.active_shape_key_index = key_blocks.keys().index(shapekey_name)
+	bpy.ops.object.shape_key_remove()
+
+
+
+def get_shapekeys(ctx):
+	allowedShapekeys = []
+	for n in ctx.object.data.shape_keys.key_blocks:									
+		if n.name == 'Basis':
+			continue
+
+		if n.name.rfind('_') > 0 or n.name.rfind('=') \
+			or n.name.rfind('%') > 0 or n.name.rfind('+') :
+
+			allowedShapekeys.append(n.name)
+
+	return allowedShapekeys
+
+
+
+def get_groups_by(shapekeys, key):
+	multi_shapekeys = []
+	for n in shapekeys:
+		ret = has_integer_sufix(n, key)
+		if ret != None:
+			multi_shapekeys.append(ret)
+	return multi_shapekeys
+
+
+def devide_numeric_shapekeys_to_sub_groups(shapekeys, seprator):
+	groups = []
+	for sapekey in shapekeys:
+		is_new = True
+		for group in groups:
+			if sapekey[0] == group.name:
+				group.append(sapekey[1])
+				is_new = False
+				break
+
+		if is_new:
+			groups.append(MultiShapeKey(sapekey[0], sapekey[1], seprator))
+	return groups
+
+
+
+def create_multi_shapekey_driver(ctx):
+	""" Collect names whit underline """
+	shapekeys = get_shapekeys(ctx)
+
+	""" Groupe the shape keys """
+	groups = devide_numeric_shapekeys_to_sub_groups(get_groups_by(shapekeys, '_'), '_')
+	groups += devide_numeric_shapekeys_to_sub_groups(get_groups_by(shapekeys, '%'), '%')
+	groups += devide_numeric_shapekeys_to_sub_groups(get_groups_by(shapekeys, '+'), '+')
+
+
+	""" remove groups with single value """
+	for group in groups:
+		if len(group.values) < 2:
+			groups.remove(group)
+
+	""" sort all group values """
+	for group in groups:
+		group.sort()
+
+	""" setup drivers """
+	shell =  ctx.object		
+	names = [n.name for n in shell.data.shape_keys.key_blocks
+										if n.name != 'Basis']
+
+	for group in groups:
+		""" Create empty shapekey for driving """
+		if not group.name in names:
+			shell.shape_key_add(name=group.name, from_mix=False)
+
+		for index, val in enumerate(group.values):
+			""" Set up driver to shape keys """
+			shape_key = group.name + group.seprator + str(val)
+			key_block = shell.data.shape_keys.key_blocks[shape_key]
+			key_block.driver_remove('value')
+			driver = key_block.driver_add('value')
+			driver.driver.type = 'SCRIPTED'
+
+			var = driver.driver.variables.new()
+			var.name = 'v'
+			var.type = 'SINGLE_PROP'
+			target = var.targets[0]
+			target.id_type = 'KEY'
+			target.id = shell.data.shape_keys
+			target.data_path = 'key_blocks["' + group.name + '"].value'
+
+			""" Create driver script """
+			# previes shapekey start value
+			start = 0 if index == 0 else float(group.values[index-1]) / 100.0
+			# current shapkey satrt value
+			current = float(val) / 100.0
+			# next shapekey satrt value if avalible
+			end = float(group.values[index+1]) / 100.0 if index < len(group.values)-1 else None
+			# length of a to b
+			preLength = current - start
+			# length of b to c  
+			postLength = end - current if end else 0
+			
+			start, current = str(start), str(current)
+			preLength, postLength = str(preLength), str(postLength)
+					
+			# keep on 1 previes shapekeys
+			if group.seprator == '+':
+				if start == '0':
+					script = 'v / ' + preLength
+				else:
+					script = '(v - ' + start + ') / ' + preLength
+				
+				script += ' if v < ' + current + ' else 1'
+
+			# zero out previes shapekeys
+			elif group.seprator in ('_', '%'):
+				if start == '0':
+					script = 'v / ' + preLength
+				else:
+					script = '(v - ' + start + ') / ' + preLength
+				
+				script += ' if ' + start + ' < v <= ' + current + ' else '
+
+				if end:
+					end = str(end)
+					script += '(' + end +' - v) / ' + postLength
+					script += ' if ' + current +' < v <= ' + end + ' else '
+
+				script += '0'
+			
+			""" apply script to driver """
+			driver.driver.expression = script
+
+
 
 class Mesh_TO_Create_Multi_Target_Shapekeys(Operator):
 	"""Name Sequence Targets like this\n
@@ -96,117 +251,13 @@ class Mesh_TO_Create_Multi_Target_Shapekeys(Operator):
 	bl_idname = "mesh.create_multi_target_shapekeys"
 	bl_label = "Create Multi Target Shapekeys"
 	bl_options = {'REGISTER', 'UNDO', 'INTERNAL'}
-	
+
 	@classmethod
 	def poll(self, ctx):
 		return ctx.object.data.shape_keys
-
-	def has_integer_sufix(self, string):
-		""" get underline position """
-		index = string.rfind('_')
-		""" seprate name from sufix """
-		integer = string[index+1:]
-		name = string[:index]
-		""" check if sufix integer and in range 0~100 """
-
-		if integer.isdigit():
-			val = int(integer)
-			if 0 <= val <= 100:
-				return name, val
-
-		return None
 	
-	def remove_shapekey_by_name(self, obj, shapekey_name):
-		key_blocks = obj.data.shape_keys.key_blocks
-		obj.active_shape_key_index = key_blocks.keys().index(shapekey_name)
-		bpy.ops.object.shape_key_remove()
-
-	def execute(self,ctx):
-		""" Collect names whit underline """
-		shapekeys = [n.name for n in ctx.object.data.shape_keys.key_blocks
-											if n.name != 'Basis' and \
-												n.name.rfind('_') != -1]
-	
-		""" Filter names with integer end """
-		multi_shapekeys = []
-		for n in shapekeys:
-			ret = self.has_integer_sufix(n)
-			if ret != None:
-				multi_shapekeys.append(ret)
-	
-		""" Groupe the shape keys """
-		groups = []
-		for sapekey in multi_shapekeys:
-			is_new = True
-			for group in groups:
-				if sapekey[0] == group.name:
-					group.append(sapekey[1])
-					is_new = False
-					break
-			if is_new:
-				groups.append(MultiShapeKey(sapekey[0], sapekey[1]))
-	
-		""" remove groups with single value """
-		for group in groups:
-			if len(group.values) < 2:
-				groups.remove(group)
-	
-		""" sort all group values """
-		for group in groups:
-			group.sort()
-	
-		""" setup drivers """
-		shell =  ctx.object		
-		names = [n.name for n in shell.data.shape_keys.key_blocks
-											if n.name != 'Basis']
-
-		for group in groups:
-			""" Create empty shapekey for driving """
-			if not group.name in names:
-				shell.shape_key_add(name=group.name, from_mix=False)
-
-			for index, val in enumerate(group.values):
-				""" Set up driver to shape keys """
-				shape_key = group.name + '_' + str(val)
-				key_block = shell.data.shape_keys.key_blocks[shape_key]
-				key_block.driver_remove('value')
-				driver = key_block.driver_add('value')
-				driver.driver.type = 'SCRIPTED'
-
-				var = driver.driver.variables.new()
-				var.name = 'v'
-				var.type = 'SINGLE_PROP'
-				target = var.targets[0]
-				target.id_type = 'KEY'
-				target.id = shell.data.shape_keys
-				target.data_path = 'key_blocks["' + group.name + '"].value'
-
-				""" Create driver script """
-				a = 0 if index == 0 else float(group.values[index-1]) / 100.0
-				b = float(val) / 100.0
-				c = float(group.values[index+1]) / 100.0 if index < len(group.values)-1 else None
-				l1 = b - a
-				l2 = c - b if c else 0
-				a, b, l1, l2 = str(a), str(b), str(l1), str(l2)
-			
-				if a == '0':
-					script = 'v / ' + l1
-
-				else:
-					script = '(v - ' + a + ') / ' + l1
-				script += ' if ' + a + ' < v <= ' + b + ' else '
-
-				if c:
-					c = str(c)
-					script += '(' + c +' - v) / ' + l2
-					script += ' if ' + b +' < v <= ' + c + ' else '
-					script += '0'
-
-				else:
-					script += '0'
-				
-				""" apply script to driver """
-				driver.driver.expression = script
+	def execute(self, ctx):
+		create_multi_shapekey_driver(ctx)
 		return{"FINISHED"}
 
 

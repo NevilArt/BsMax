@@ -162,12 +162,16 @@ def rename_selection_set(self, ctx):
 
 
 class Selection_Set_Scene(PropertyGroup):
-	mode: EnumProperty(name='Mode', default='SELECT',
+	mode: EnumProperty(
+		name='Mode',
+		default='SELECT',
 		items =[
 			('SELECT', 'Select', 'Select group of bones'),
 			('SET', 'Set', 'Set Selection groups'),
 			# ('RENAME', 'Rename', 'Rename buttons'),
-			('EDIT', 'Edit', 'Edit buttons layout')])
+			('EDIT', 'Edit', 'Edit buttons layout')
+		]
+	)
 	multi: BoolProperty(name='Multi Selection', default=False)
 	unselect: BoolProperty(name='Remove From Selection', default=False)
 	name: StringProperty(name="", update=rename_selection_set)
@@ -393,13 +397,14 @@ class Armature_OP_Selection_Set(Panel):
 
 
 
-classes = [
+classes = (
 	Selection_Set_Scene,
 	Selection_Set_Armature,
 	Armature_OP_Selection_Set,
 	ARMATURE_OT_Selection_Set,
 	ARMATURE_OT_Selection_Set_Transfer,
-	ARMATURE_OT_Selection_Set_Dimension_Resize]
+	ARMATURE_OT_Selection_Set_Dimension_Resize
+)
 
 def register_selection_set():
 	for c in classes:

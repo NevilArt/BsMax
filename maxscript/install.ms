@@ -16,7 +16,7 @@
 -- C:\Users\<USER>\AppData\Local\Autodesk\3dsMax\2020 - 64bit\ENU\usermacros
 -- pathConfig.GetDir #userMacros
 
-scriptPath = getFilenamePath  (getSourceFileName())
+scriptPath = getFilenamePath  (getSourceFileName()) + "tools\\"
 createdMacroCount = 0
 
 
@@ -157,20 +157,19 @@ register "Character Auto Rename" "Nevil Tools" "character" "character_auto_renam
 
 
 -- /* Scene */
--- register "Instancer" "Nevil Tools" "scene" "open_instancer_dialog" --<<<<<<<
--- register "Arrange by Distance" "Nevil Tools" "scene" "arrange_by_distance" --<<<<<<
--- register "Arrange on path" "Nevil Tools" "scene" "arrange_on_shape" --<<<<<<<
--- register "Root Cleaner" "Nevil Tools" "scene" "open_root_cleaner"
--- register "Ground Picker" "Scene Tools" "scene" "open_ground_picker_dialog"
--- register "Copy..." "Scene Tools" "scene" "open_copy_dialog"
--- register "Paste..." "Scene Tools" "scene" "open_paste_dialog"
+register "Instancer" "Nevil Tools" "instancer" "open_instancer_dialog" --<<<<<<<
+register "Arrange by Distance" "Nevil Tools" "arrange" "arrange_by_distance" --<<<<<<
+register "Arrange on path" "Nevil Tools" "arrange" "arrange_on_shape" --<<<<<<<
+register "Root Cleaner" "Nevil Tools" "cleaner" "open_root_cleaner"
+register "Ground Picker" "Scene Tools" "ground_picker" "open_ground_picker_dialog"
+register "Copy..." "Scene Tools" "copy_paste" "open_copy_dialog"
+register "Paste..." "Scene Tools" "copy_paste" "open_paste_dialog"
 -- register "Mesh Layer Select" "Scene Tools" "scene" "mesh_layer_selector"
 -- register "Dublicated Names Fixer" "Scene Tools" "scene" "fix_dublicated_names"
 -- register "After Efect Time Calculator..." "Scene Tools" "scene" "open_afterefect_time_calculator"
--- register "Select My Layer" "Scene Tools" "scene" "select_my_layer"
+register "Select My Layer" "Scene Tools" "layer" "select_my_layer"
 -- register "Add Note Modifier" "Scene Tools" "scene" "add_note_modifier"
 -- register "Multi Mesh Cache" "Scene Tools" "scene" "multi_mesh_cache"
--- register "Script Runner..." "Scene Tools" "scene" "open_script_runner_dialog"
 -- register "Show None Xforms" "Scene Tools" "scene" "show_non_xform"
 -- register "Set Select Filter All" "Scene Tools" "" "SetSelectFilter" arguments:#(1)
 -- register "Set Select Filter Geometry" "Scene Tools" "" "SetSelectFilter" arguments:#(2)

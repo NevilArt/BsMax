@@ -78,11 +78,13 @@ function setTransformToKey objs startFrame endFrame =
     for obj in Objs do (
         newTransformPack = transformPack()
         newTransformPack.owner = obj
-        for frame = startFrame to endFrame do (
+
+		for frame = startFrame to endFrame do (
             newTranskey = transKey()
             newTranskey.transform = at time frame obj.transform
             newTranskey.frame = frame
-            -- Store camera info
+
+			-- Store camera info
             if superClassOf obj == camera do (
                 newTranskey.fov = at time frame obj.fov
                 newTranskey.nearclip = at time frame obj.nearclip
@@ -96,20 +98,24 @@ function setTransformToKey objs startFrame endFrame =
 
     /* Clear Obj controller layers */
     for obj in Objs do (
-        try(
+        try (
             obj.Transform.controller = prs()
             obj.pos.controller = Position_XYZ()
 
-            for i = 1 to 3 do
+            for i = 1 to 3 do (
                 obj.pos.controller[i].controller = bezier_float()
+			)
             obj.rotation.controller = Euler_XYZ()
 
-            for i = 1 to 3 do
+            for i = 1 to 3 do (
                 obj.rotation.controller[i].controller = bezier_float()
+			)
 
             obj.scale.controller = bezier_scale()
         )
-        catch()
+        catch(
+			--pass
+		)
         obj.parent = undefined
     )
     
@@ -125,7 +131,7 @@ function setTransformToKey objs startFrame endFrame =
             for tk in tfp.transKeys do (
                 at time tk.frame (
                     tfp.owner.transform = tk.transform
-                    if superClassOf tfp.owner == camera do(
+                    if superClassOf tfp.owner == camera do (
                         tfp.owner.fov = tk.fov
                         tfp.owner.nearclip = tk.nearclip
                         tfp.owner.farclip = tk.farclip
@@ -148,10 +154,11 @@ function replace_parent obj =
 		return:
 			None
 	*/
-	if obj.parent == undefined do
+	if obj.parent == undefined do (
 		return undefined
+	) 
 
-	newParent = Point pos:[0,0,0] isSelected:off
+	newParent = Point pos:[0, 0, 0] isSelected:off
 	newParent.name = obj.parent.name + "_baked"
 	newParent.transform = obj.parent.transform
 	newParent.parent = obj.parent
@@ -176,13 +183,16 @@ function solve_parent cam =
 	-- FreeCamera --
 	if camType == Freecamera do (
 		-- No parent No controller
-		if controlType == prs and cam.parent == undefined do
+		if controlType == prs and cam.parent == undefined do (
 			return #(cam)
+		)
 		
 		-- No controller Has parent
-		if controlType == prs do
-			if cam.parent != undefined do
+		if controlType == prs do (
+			if cam.parent != undefined do (
 				return #(replace_parent cam, cam)
+			)
+		)
 
 		-- Has controller (Do not care about parent)
 		setTransformToKey #(cam) animationRange.start animationRange.end
@@ -197,21 +207,25 @@ function solve_parent cam =
 
 		-- No Controller No Parent
 		-- Camera
-		if controlType == lookat and cam.parent == undefined do
+		if controlType == lookat and cam.parent == undefined do (
 			append retItems cam
+		)
 		
 		-- Target
-		if targConType == prs and targ.parent == undefined do
+		if targConType == prs and targ.parent == undefined do (
 			append retItems targ
+		)
 		
 		-- No Controller Has parent
 		-- Camera
-		if controlType == lookat and cam.parent != undefined do
+		if controlType == lookat and cam.parent != undefined do (
 			append retItems (replace_parent cam)
+		)
 
 		-- target
-		if targConType == prs and targ.parent != undefined do
+		if targConType == prs and targ.parent != undefined do (
 			append retItems (replace_parent targ)
+		)
 
 		-- Has Controller
 		-- Camera
@@ -256,26 +270,41 @@ function append_transform_key &transform_keys key_time key_channel key_value =
 	-- put given data in key class --
 	active_key.key_time = key_time
 	
-	if key_channel == "pos_x" do
+	if key_channel == "pos_x" do (
 		active_key.pos_x = key_value
-	if key_channel == "pos_y" do
+	)
+	
+	if key_channel == "pos_y" do (
 		active_key.pos_y = key_value
-	if key_channel == "pos_z" do
+	)
+
+	if key_channel == "pos_z" do (
 		active_key.pos_z = key_value
+	)
 	
-	if key_channel == "rot_x" do
+	if key_channel == "rot_x" do (
 		active_key.rot_x = key_value
-	if key_channel == "rot_y" do
+	)
+
+	if key_channel == "rot_y" do (
 		active_key.rot_y = key_value
-	if key_channel == "rot_z" do
+	)
+
+	if key_channel == "rot_z" do (
 		active_key.rot_z = key_value
+	)
 	
-	if key_channel == "scl_x" do
+	if key_channel == "scl_x" do (
 		active_key.scl_x = key_value
-	if key_channel == "scl_y" do
+	)
+
+	if key_channel == "scl_y" do (
 		active_key.scl_y = key_value
-	if key_channel == "scl_z" do
+	)
+
+	if key_channel == "scl_z" do (
 		active_key.scl_z = key_value
+	)
 )
 
 
@@ -285,20 +314,30 @@ function free_camera_to_blender_python cam =
 	transform_keys = #()
 
 	-- Collect the Position kesy --
-	for key in cam.pos.controller.x_position.keys do
+	for key in cam.pos.controller.x_position.keys do (
 		append_transform_key &transform_keys (asFrame(key.time)) "pos_x" (key.value/100)
-	for key in cam.pos.controller.y_position.keys do
+	)
+
+	for key in cam.pos.controller.y_position.keys do (
 		append_transform_key &transform_keys (asFrame(key.time)) "pos_y" (key.value/100)
-	for key in cam.pos.controller.z_position.keys do
+	)
+
+	for key in cam.pos.controller.z_position.keys do (
 		append_transform_key &transform_keys (asFrame(key.time)) "pos_z" (key.value/100)
+	)
 
 	-- collect the rotation keys --
-	for key in cam.rotation.controller.x_rotation.keys do
+	for key in cam.rotation.controller.x_rotation.keys do (
 		append_transform_key &transform_keys (asFrame(key.time)) "rot_x" (degtorad key.value)
-	for key in cam.rotation.controller.y_rotation.keys do
+	)
+	
+	for key in cam.rotation.controller.y_rotation.keys do (
 		append_transform_key &transform_keys (asFrame(key.time)) "rot_y" (degtorad key.value)
-	for key in cam.rotation.controller.z_rotation.keys do
+	)
+
+	for key in cam.rotation.controller.z_rotation.keys do (
 		append_transform_key &transform_keys (asFrame(key.time)) "rot_z" (degtorad key.value)
+	)
 	
 
 	-- convert dato to blender python script --
@@ -341,21 +380,31 @@ function target_camera_to_blender_python cam =
 	target_transform_keys = #()
 
 	-- Collect the camera Position kesy --
-	for key in cam.pos.controller.x_position.keys do
+	for key in cam.pos.controller.x_position.keys do (
 		append_transform_key &camera_transform_keys (asFrame(key.time)) "pos_x" (key.value/100)
-	for key in cam.pos.controller.y_position.keys do
+	)
+
+	for key in cam.pos.controller.y_position.keys do (
 		append_transform_key &camera_transform_keys (asFrame(key.time)) "pos_y" (key.value/100)
-	for key in cam.pos.controller.z_position.keys do
+	)
+
+	for key in cam.pos.controller.z_position.keys do (
 		append_transform_key &camera_transform_keys (asFrame(key.time)) "pos_z" (key.value/100)
+	)
 	
 	
 	-- Collect the target Position kesy --
-	for key in cam.target.pos.controller.x_position.keys do
+	for key in cam.target.pos.controller.x_position.keys do (
 		append_transform_key &target_transform_keys (asFrame(key.time)) "pos_x" (key.value/100)
-	for key in cam.target.pos.controller.y_position.keys do
+	)
+
+	for key in cam.target.pos.controller.y_position.keys do (
 		append_transform_key &target_transform_keys (asFrame(key.time)) "pos_y" (key.value/100)
-	for key in cam.target.pos.controller.z_position.keys do
+	)
+
+	for key in cam.target.pos.controller.z_position.keys do (
 		append_transform_key &target_transform_keys (asFrame(key.time)) "pos_z" (key.value/100)
+	)
 
 	-- convert dato to blender python script --
 	str = "cam = create_camera('" + cam.name +  "', (0, 0, 0), (0, 0, 0))\n"
@@ -379,13 +428,14 @@ function target_camera_to_blender_python cam =
 	str += "cam.data.lens_unit = 'FOV'\n"
 	str += "\n"
 
-	if classof cam.fov.controller != UndefinedClass do
+	if classof cam.fov.controller != UndefinedClass do (
 		for key in cam.fov.keys do (
 			frame = asFrame(key.time)
 			str += "cam.data.angle = " + (DegToRad key.value) as string + "\n"
 			str += "cam.data.keyframe_insert(data_path='lens', index=-1, frame=" + frame + ")\n"
 			str += "\n"
 		)
+	)
 	str += "\n"
 	str += "cam.data.lens_unit = 'MILLIMETERS'\n"
 	
@@ -399,20 +449,30 @@ function helper_to_blender_python obj =
 	transform_keys = #()
 
 	-- Collect the Position kesy --
-	for key in obj.pos.controller.x_position.keys do
+	for key in obj.pos.controller.x_position.keys do (
 		append_transform_key &transform_keys (asFrame(key.time)) "pos_x" (key.value/100)
-	for key in obj.pos.controller.y_position.keys do
+	)
+
+	for key in obj.pos.controller.y_position.keys do (
 		append_transform_key &transform_keys (asFrame(key.time)) "pos_y" (key.value/100)
-	for key in obj.pos.controller.z_position.keys do
+	)
+
+	for key in obj.pos.controller.z_position.keys do (
 		append_transform_key &transform_keys (asFrame(key.time)) "pos_z" (key.value/100)
+	)
 
 	-- collect the rotation keys --
-	for key in obj.rotation.controller.x_rotation.keys do
+	for key in obj.rotation.controller.x_rotation.keys do (
 		append_transform_key &transform_keys (asFrame(key.time)) "rot_x" (degtorad key.value)
-	for key in obj.rotation.controller.y_rotation.keys do
+	)
+
+	for key in obj.rotation.controller.y_rotation.keys do (
 		append_transform_key &transform_keys (asFrame(key.time)) "rot_y" (degtorad key.value)
-	for key in obj.rotation.controller.z_rotation.keys do
+	)
+
+	for key in obj.rotation.controller.z_rotation.keys do (
 		append_transform_key &transform_keys (asFrame(key.time)) "rot_z" (degtorad key.value)
+	)
 
 
 	-- convert dato to blender python script --
@@ -436,6 +496,7 @@ function helper_to_blender_python obj =
 )
 
 
+
 function creat_python_script_and_copy_to_clipboard =
 (
 	-- Filter selection --
@@ -443,8 +504,9 @@ function creat_python_script_and_copy_to_clipboard =
 
 	-- Solve controllers and parents --
 	cams = #()
-	for obj in objs do
+	for obj in objs do (
 		join cams (solve_parent obj)
+	)
 
 	-- Create script as text --
 	script = "from bsmax.max_to_blender import *\n"
@@ -521,21 +583,22 @@ function camera_movment_catcher =
 		(
 			function ComparF F1 F2 Tol =
 			(
-				if F1 != F2 then (
-					local Heigher, Lower
+				if F1 != F2 do (
+					Heigher
+					Lower
 
 					if F1 >= F2 then (
-						Heigher = F1; Lower = F2;
+						Heigher = F1
+						Lower = F2
 					)
 					else (
-						Heigher = F2; Lower = F1;
+						Heigher = F2
+						Lower = F1
 					)
 
 					return Heigher <= Lower + Tol
-				) 
-				else (
-					return True
 				)
+				return True
 			)
 
 			local X = ComparF P1.x P2.x Tol
@@ -545,7 +608,7 @@ function camera_movment_catcher =
 			return  (X and Y and Z)
 		)
 
-		if Tr1 != undefined and Tr2 != undefined then (
+		if Tr1 != undefined and Tr2 != undefined do (
 			local P1 = Tr1.Pos, P2 = Tr2.Pos
 			local Q1 = quatToEuler Tr1.rotation order:1
 			local Q2 = quatToEuler Tr2.rotation order:1
@@ -553,15 +616,12 @@ function camera_movment_catcher =
 			local CQ = ComparP3 Q1 Q2 (0.01) -- <-- Tolerance Value
 			return (CP and CQ)
 		) 
-		else (
-			return False
-		)
+		return False
 	)
 	----------------------------------------------------------------------------------------
 	local Cam = selection[1], OldCamTransfirm, OldTargTransfirm, Frames = #()
 	
-	for T = animationRange.start to animationRange.end do
-	(
+	for T = animationRange.start to animationRange.end do (
 		at time T (
 			NewCamTransfirm = at time T Cam.transform
 			if not Compartransform OldCamTransfirm NewCamTransfirm do (

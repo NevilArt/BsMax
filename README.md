@@ -37,8 +37,8 @@ If you found this product useful and want to support this project you can Donate
 * [Download Older Version (2.80-2.92)](https://github.com/NevilArt/BsMax_2_80)
 
 ## Recent Updates and Changes
-* Autokey Red bar issue with difrent themes issue fixed.
-* More maxscript fixes still not completed yet.
+* Multyshapekey Tool has aditive mode if use '+' rather than '_' (need a better sorting yet).
+* e.g. key+25, key+50, ... ,key+100.
 * [Change log ...](https://github.com/NevilArt/BsMax/blob/master/CHANGELOG.md)
 
 ## License

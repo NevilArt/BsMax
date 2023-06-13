@@ -1,3 +1,7 @@
+# 0, 1, 1, 20230523
+* Autokey Red bar issue with difrent themes fixed.
+* More maxscript fixes still not completed yet.
+
 # 0, 1, 1, 20230522
 * Theme change can be disable from addon prefrence option.
 * Multi Target ShapeKey tool can be inistaled as stand alone addon (requested).
