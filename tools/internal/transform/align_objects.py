@@ -23,7 +23,7 @@ from bsmax.bsmatrix import matrix_from_elements
 
 
 
-class Align_Object_Option:
+class AlignObjectOption:
 	def __init__(self):
 		self.location = BoolVector()
 		self.rotation = BoolVector()
@@ -31,7 +31,8 @@ class Align_Object_Option:
 		self.current_mode = 'pivot'
 		self.target_mode = 'pivot'
 		self.percent = 1.0
-public_option = Align_Object_Option()
+
+public_option = AlignObjectOption()
 
 
 
@@ -113,14 +114,19 @@ class Bounding_Box:
 			for v in cld:
 				if self.min.x > v.x:
 					self.min.x = v.x
+
 				if self.min.y > v.y:
 					self.min.y = v.y
+
 				if self.min.z > v.z:
 					self.min.z = v.z
+
 				if self.max.x < v.x:
 					self.max.x = v.x
+
 				if self.max.y < v.y:
 					self.max.y = v.y
+
 				if self.max.z < v.z:
 					self.max.z = v.z
 	

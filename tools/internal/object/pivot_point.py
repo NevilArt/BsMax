@@ -16,8 +16,31 @@
 import bpy
 from mathutils import Vector, Matrix
 from bpy.types import Menu, Operator
+from bpy.props import EnumProperty
 
 from bsmax.actions import set_origen
+
+class BoundBox():
+	def __init__(self, obj):
+		self.obj = obj
+		self.min = Vector((0,0,0))
+		self.max = Vector((0,0,0))
+		self.center = Vector((0,0,0))
+		self.calculate()
+	
+	def calculate(self):
+		b = [self.obj.matrix_world @ Vector(v) for v in self.obj.bound_box]
+
+		self.min.x = min(b[0][0], b[1][0], b[2][0], b[3][0], b[4][0], b[5][0], b[6][0])
+		self.max.x = max(b[0][0], b[1][0], b[2][0], b[3][0], b[4][0], b[5][0], b[6][0])
+		self.min.y = min(b[0][1], b[1][1], b[2][1], b[3][1], b[4][1], b[5][1], b[6][1])
+		self.max.y = max(b[0][1], b[1][1], b[2][1], b[3][1], b[4][1], b[5][1], b[6][1])
+		self.min.z = min(b[0][2], b[1][2], b[2][2], b[3][2], b[4][2], b[5][2], b[6][2])
+		self.max.z = max(b[0][2], b[1][2], b[2][2], b[3][2], b[4][2], b[5][2], b[6][2])
+		
+		self.center.x = (self.min.x + self.max.x) / 2
+		self.center.y = (self.min.y + self.max.y) / 2
+		self.center.z = (self.min.z + self.max.z) / 2
 
 
 
@@ -51,9 +74,8 @@ class Object_OT_Pivot_To_First_Point(Operator):
 				if obj.type != 'CURVE':
 					return False
 			return True
-		else:
-			return False
-	
+		return False
+
 	def execute(self,ctx):
 		for obj in ctx.selected_objects:
 			if len(obj.data.splines)>0:
@@ -62,37 +84,134 @@ class Object_OT_Pivot_To_First_Point(Operator):
 					delta_origin = obj.data.splines[0].bezier_points[0].co.copy()
 					obj.data.transform(Matrix.Translation(-delta_origin))
 					obj.matrix_world.translation = old_origin
+
 		return {"FINISHED"}
+
+
+
+def get_mass_center(obj):
+	verts = [obj.matrix_world @ vert.co for vert in obj.data.vertices]
+
+	minCo = verts[0].copy()
+	maxCo = verts[0].copy()
+
+	for co in verts:
+		if minCo.x > co.x:
+			minCo.x = co.x
+
+		if minCo.y > co.y:
+			minCo.y = co.y
+
+		if minCo.z > co.z:
+			minCo.z = co.z
+
+		if maxCo.x < co.x:
+			maxCo.x = co.x
+
+		if maxCo.y < co.y:
+			maxCo.y = co.y
+	
+	center_x = (minCo.x + maxCo.x) / 2
+	center_y = (minCo.y + maxCo.y) / 2
+	return Vector((center_x, center_y, minCo.z))
+
+
+
+def get_bound_center(obj):
+	bBox = BoundBox(obj)
+	return Vector((bBox.center.x, bBox.center.y, bBox.min.z))
+
+
+
+def get_touched_center(obj):
+	bBox = BoundBox(obj)
+	height = bBox.max.z - bBox.min.z
+	level = bBox.min.z + height/100
+
+	verts = [
+		obj.matrix_world @ vert.co for vert in obj.data.vertices 
+	  		if (obj.matrix_world @ vert.co).z <= level
+	]
+
+	min = verts[0].copy()
+	max = verts[0].copy()
+
+	for co in verts:
+		if min.x > co.x:
+			min.x = co.x
+
+		if min.y > co.y:
+			min.y = co.y
+
+		if min.z > co.z:
+			min.z = co.z
+
+		if max.x < co.x:
+			max.x = co.x
+
+		if max.y < co.y:
+			max.y = co.y
+	
+	center_x = (min.x + max.x) / 2
+	center_y = (min.y + max.y) / 2
+	return Vector((center_x, center_y, min.z))
 
 
 
 class Object_OT_Pivot_To_Buttom_Center(Operator):
 	bl_idname = "object.pivot_to_buttom_center"
-	bl_label = "Pivot to Buttom Center"
+	bl_label = "Pivot to object base"
 	bl_options = {'REGISTER', 'UNDO'}
+
+	center: EnumProperty(
+		name="Center by:",
+		default="BOUND",
+		items=[
+			("BOUND", "Bound Center", "Center Pivot Bouning Box"),
+			("MASS", "Mass Center", "Center Pivot by vertex position avrage"),
+			("TOUCH", "Touch Center", "Center by vertex on the lover part of object")
+		]
+	)
 
 	@classmethod
 	def poll(self, ctx):
 		return len(ctx.selected_objects) > 0
-		
-	def pivot_to_buttom_center(self, ctx, obj):
-		""" TODO bound_box return value in local coordinate """
-		""" need a fast method to get bound box in world space """
-		b = [obj.matrix_world @ Vector(v) for v in obj.bound_box]
-		min_x = min(b[0][0], b[1][0], b[2][0], b[3][0], b[4][0], b[5][0], b[6][0])
-		max_x = max(b[0][0], b[1][0], b[2][0], b[3][0], b[4][0], b[5][0], b[6][0])
-		min_y = min(b[0][1], b[1][1], b[2][1], b[3][1], b[4][1], b[5][1], b[6][1])
-		max_y = max(b[0][1], b[1][1], b[2][1], b[3][1], b[4][1], b[5][1], b[6][1])
-		min_z = min(b[0][2], b[1][2], b[2][2], b[3][2], b[4][2], b[5][2], b[6][2])
-		center_x = (min_x + max_x)/2
-		center_y = (min_y + max_y)/2
-		location = Vector((center_x, center_y, min_z))
-		set_origen(ctx, obj, location)
-
-	def execute(self,ctx):
+	
+	def execute(self, ctx):
 		for obj in ctx.selected_objects:
-			self.pivot_to_buttom_center(ctx, obj)
+
+			if self.center == "MASS":
+				location = get_mass_center(obj)
+
+			elif self.center == "TOUCH":
+				location = get_touched_center(obj)
+
+			else:
+				location = get_bound_center(obj)
+
+			set_origen(ctx, obj, location)
+
 		return {"FINISHED"}
+
+
+
+class OBJECT_MT_Set_Pivot_Object_Base(Menu):
+	bl_idname = "OBJECT_MT_Set_Pivot_to_object_base"
+	bl_label = "Pivot to objects Base"
+
+	def draw(self, ctx):
+		layout = self.layout
+		layout.operator("object.pivot_to_buttom_center",
+			text="Bound Center"
+		).center="BOUND"
+
+		layout.operator("object.pivot_to_buttom_center",
+			text="Mass Center"
+		).center="MASS"
+
+		layout.operator("object.pivot_to_buttom_center",
+			text="Touch Center"
+		).center="TOUCH"
 
 
 
@@ -117,8 +236,7 @@ class OBJECT_MT_Set_Pivot_Point(Menu):
 		layout.operator("object.origin_set",
 						text="Pivot to Geometry").type='ORIGIN_CENTER_OF_MASS'
 
-		layout.operator("object.pivot_to_buttom_center",
-						text="Pivot to Buttom Center")
+		layout.menu("OBJECT_MT_Set_Pivot_to_object_base")
 
 		layout.operator("object.pivot_to_first_point",
 						text="Pivot to First BezierPoint")
@@ -160,20 +278,33 @@ def snap_menu(self, ctx):
 	layout.separator()
 	layout.operator("object.pivot_to_first_point")
 
-classes = [Object_OT_Pivot_To_First_Point,
+
+
+classes = (
+	Object_OT_Pivot_To_First_Point,
 	Object_OT_Modify_Pivot,
 	Object_OT_Pivot_To_Buttom_Center,
-	OBJECT_MT_Set_Pivot_Point]
+	OBJECT_MT_Set_Pivot_Object_Base,
+	OBJECT_MT_Set_Pivot_Point
+)
+
+
 
 def register_pivot_point():
 	for c in classes:
 		bpy.utils.register_class(c)
+
 	bpy.types.VIEW3D_MT_snap.append(snap_menu)
+
+
 
 def unregister_pivot_point():
 	bpy.types.VIEW3D_MT_snap.remove(snap_menu)
+
 	for c in classes:
 		bpy.utils.unregister_class(c)
+
+
 
 if __name__ == "__main__":
 	register_pivot_point()

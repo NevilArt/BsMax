@@ -21,6 +21,8 @@ from .q_seprator import QuadSeprator
 #TODO this is circular import but works some how
 # do not need to fix for now kabuz quadmenu will be rewrite anyway
 from .q_subbutton import * #QuadSubMenuButton
+from bpy.app import version
+
 
 
 
@@ -49,8 +51,13 @@ class QuadSubMenu:
 		for i in self.items:
 			if i.text != None:
 				size = int(quadmenuref.size * 0.75)
-				blf.size(0, size, 72)
-				w,h = blf.dimensions(0, i.text)
+
+				if version < (3, 6, 0):
+					blf.size(0, size, 72)
+				else:
+					blf.size(0, size)
+
+				w, _ = blf.dimensions(0, i.text)
 				if w > width:
 					width = int(w)
 		

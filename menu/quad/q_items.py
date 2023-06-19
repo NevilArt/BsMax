@@ -13,9 +13,24 @@
 #	along with this program.  If not, see <https://www.gnu.org/licenses/>.
 ############################################################################
 
-import gpu, blf
+import gpu
+import blf
+
 from gpu_extras.batch import batch_for_shader
+
+from bpy.app import version
+
 from .q_refrence import quadmenuref
+
+
+
+def get_uniform_color(mode="2D"):
+	if version < (3, 6, 0):
+		if mode == "2D":
+			return "2D_UNIFORM_COLOR"
+		else:
+			return "3D_UNIFORM_COLOR"
+	return "UNIFORM_COLOR"
 
 
 
@@ -57,7 +72,7 @@ class ItemShape:
 		pass
 
 	def create(self):
-		self.shader = gpu.shader.from_builtin('2D_UNIFORM_COLOR')
+		self.shader = gpu.shader.from_builtin(get_uniform_color(mode="2D"))
 
 	def mousehover(self, x, y, clicked):
 		return False
@@ -81,7 +96,11 @@ class ItemText:
 
 	def update_lbl(self):
 		global quadmenuref
-		blf.size(0, self.size, 72)
+		if version < (3, 6, 0):
+			blf.size(0, self.size, 72)
+		else:
+			blf.size(0, self.size)
+
 		# w, h = blf.dimensions(0, self.text)
 		w = blf.dimensions(0, self.text)[0]
 		x = self.x + quadmenuref.size

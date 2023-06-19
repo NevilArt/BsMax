@@ -1,3 +1,7 @@
+# 0, 1, 1, 20230613
+* Multyshapekey Tool has aditive mode if use '+' rather than '_' (need a better sorting yet).
+* e.g. key+25, key+50, ... ,key+100.
+
 # 0, 1, 1, 20230523
 * Autokey Red bar issue with difrent themes fixed.
 * More maxscript fixes still not completed yet.

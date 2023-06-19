@@ -16,7 +16,7 @@
 import bpy
 
 from bpy.types import Operator
-from bpy.props import BoolProperty
+from bpy.props import BoolProperty, EnumProperty
 
 from bsmax.actions import convert_to_solid_mesh, clear_relations
 
@@ -26,7 +26,28 @@ def geometrynode_solve(obj):
 	# find geo node modifiers
 	# find output node
 	# add relize instance note
-	pass	
+	pass
+
+
+
+def select_objects(objects):
+	for obj in objects:
+		obj.select_set(True)
+
+
+
+def set_as_active_object(ctx, obj):
+	obj.select_set(True)
+	ctx.view_layer.objects.active = obj
+
+
+
+def rename_uvs(name, objects):
+	for obj in objects:
+		if len(obj.data.uv_layers) == 1:
+			obj.data.uv_layers[0].name = name
+
+
 
 class Object_OT_Convert_TO(Operator):
 	bl_idname = "object.convert_to"
@@ -34,17 +55,21 @@ class Object_OT_Convert_TO(Operator):
 	bl_description = "Simulate 3DsMax Convert To operator"
 	bl_options = {'REGISTER', 'UNDO'}
 
-	target: bpy.props.EnumProperty(default='MESH',
-		items=[('MESH','Mesh',''),('CURVE','Curve',''),
-		('GPENCIL','Grease Pencil',''),('POINTCLOUD','Point Cloude','')])
+	target: EnumProperty(default='MESH',
+		items=[
+			('MESH','Mesh',''),
+	 		('CURVE','Curve',''),
+			('GPENCIL','Grease Pencil',''),
+			('POINTCLOUD','Point Cloude','')
+		]
+	)
 
 	def execute(self, ctx):
 		selected_objects = ctx.selected_objects.copy()
 		bpy.ops.object.select_all(action='DESELECT')
 		
 		for obj in selected_objects:
-			obj.select_set(True)
-			ctx.view_layer.objects.active = obj
+			set_as_active_object(ctx, obj)
 			
 			""" clear primitive data """
 			if obj.type in {'MESH','CURVE'}:
@@ -58,8 +83,7 @@ class Object_OT_Convert_TO(Operator):
 
 			obj.select_set(False)
 		
-		for obj in selected_objects:
-			obj.select_set(True)
+		select_objects(selected_objects)
 		return{"FINISHED"}
 
 
@@ -102,8 +126,7 @@ class Object_OT_Join_Plus(Operator):
 			bpy.ops.object.select_all(action='DESELECT')
 			
 			for obj in selected_objects:
-				obj.select_set(True)
-				ctx.view_layer.objects.active = obj
+				set_as_active_object(ctx, obj)
 				
 				""" clear primitive data """
 				if obj.type in {'MESH','CURVE'}:
@@ -123,8 +146,7 @@ class Object_OT_Join_Plus(Operator):
 				
 				obj.select_set(False)
 
-			for obj in selected_objects:
-				obj.select_set(True)
+			select_objects(selected_objects)
 			
 			target.select_set(True)
 			ctx.view_layer.objects.active = target
@@ -137,7 +159,7 @@ class Object_OT_Join_Plus(Operator):
 
 
 
-classes = [Object_OT_Convert_TO, Object_OT_Join_Plus]
+classes = (Object_OT_Convert_TO, Object_OT_Join_Plus)
 
 def register_convert():
 	for c in classes:

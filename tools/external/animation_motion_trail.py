@@ -32,11 +32,23 @@ bl_info = {
 	"tracker_url": "https://developer.blender.org/maniphest/task/edit/form/2/",
 	"category": "3D View"
 }
+
 import bpy, bgl,blf, gpu, math, mathutils, bpy_extras
 from gpu_extras.batch import batch_for_shader
 from bpy_extras import view3d_utils
 from bpy.props import BoolProperty, EnumProperty, FloatProperty, IntProperty, StringProperty, PointerProperty
 from bpy.types import Operator, Panel ,PropertyGroup
+from bpy.app import version
+
+
+
+def get_uniform_color(mode="2D"):
+	if version < (3, 6, 0):
+		if mode == "2D":
+			return "2D_UNIFORM_COLOR"
+		else:
+			return "3D_UNIFORM_COLOR"
+	return "UNIFORM_COLOR"
 
 
 # fake fcurve class, used if no fcurve is found for a path
@@ -547,7 +559,7 @@ def draw_callback(self, context):
 	bgl.glLineWidth(context.window_manager.motion_trail.path_width)
 	alpha = 1.0 - (context.window_manager.motion_trail.path_transparency / 100.0)
 
-	self.shader = gpu.shader.from_builtin('2D_UNIFORM_COLOR')
+	self.shader = gpu.shader.from_builtin(get_uniform_color(mode="2D"))
 	self.shader.bind()
 
 	self.vertices = []
@@ -736,7 +748,11 @@ def draw_callback(self, context):
 
 	# draw keyframe-numbers
 	if context.window_manager.motion_trail.keyframe_numbers:
-		blf.size(0, 12, 72)
+		if version < (3, 6, 0):
+			blf.size(0, 12, 72)
+		else:
+			blf.size(0, 12)
+
 		blf.color(0, 1.0, 1.0, 0.0, 1.0)
 		for objectname, values in self.keyframes.items():
 			for frame, coords in values.items():

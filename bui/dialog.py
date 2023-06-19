@@ -13,15 +13,31 @@
 #	along with this program.  If not, see <https://www.gnu.org/licenses/>.
 ############################################################################
 
-import bpy, gpu, bgl, blf
+# import bpy
+import gpu
+# import bgl
+import blf
+
 from gpu_extras.batch import batch_for_shader
 from bpy.types import Operator
+from bpy.app import version
+
 from .master.bui import BUI
 from .master.classes import Vector2
-from .master.graphic import Rectangle
-from .button import Button
-from .box import Box
+# from .master.graphic import Rectangle
+# from .button import Button
+# from .box import Box
 from .titlebar import TitleBar
+
+
+
+def get_uniform_color(mode="2D"):
+	if version < (3, 6, 0):
+		if mode == "2D":
+			return "2D_UNIFORM_COLOR"
+		else:
+			return "3D_UNIFORM_COLOR"
+	return "UNIFORM_COLOR"
 
 
 
@@ -41,7 +57,7 @@ class Dialog(Operator,BUI):
 		super().__init__(background=True)
 		self.handler = None
 		self.active_space = None
-		self.shader = gpu.shader.from_builtin('2D_UNIFORM_COLOR')
+		self.shader = gpu.shader.from_builtin(get_uniform_color(mode="2D"))
 		self.escape = False
 		self.size.auto = True
 
@@ -74,7 +90,11 @@ class Dialog(Operator,BUI):
 
 		for caption in self.get_captions():
 			if not caption.hide:
-				blf.size(0,caption.font_size,72)
+				if version < (3, 6, 0):
+					blf.size(0, caption.font_size, 72)
+				else:
+					blf.size(0, caption.font_size)
+				
 				location = caption.location()
 				blf.position(0,location.x,location.y,0)
 				blf.color(0,1,1,1,1)

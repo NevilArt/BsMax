@@ -28,7 +28,7 @@ from bsmax.bsmatrix import matrix_from_elements
 # TODO replace with new one after finish
 
 
-class Align_Object_Option:
+class AlignObjectOption:
 	def __init__(self):
 		self.location = BoolVector()
 		self.rotation = BoolVector()
@@ -36,7 +36,8 @@ class Align_Object_Option:
 		self.current_mode = 'pivot'
 		self.target_mode = 'pivot'
 		self.percent = 1.0
-public_option = Align_Object_Option()
+
+public_option = AlignObjectOption()
 
 
 

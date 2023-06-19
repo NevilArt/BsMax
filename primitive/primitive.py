@@ -26,6 +26,18 @@ from bsmax.actions import link_to_scene, set_as_active_object
 from .gride import Gride, Dimension, Click_Point
 from bsmax.gride import Local_Gride
 
+from bpy.app import version
+
+
+
+def get_uniform_color(mode="2D"):
+	if version < (3, 6, 0):
+		if mode == "2D":
+			return "2D_UNIFORM_COLOR"
+		else:
+			return "3D_UNIFORM_COLOR"
+	return "UNIFORM_COLOR"
+
 
 
 class Primitive_Public_Class:
@@ -190,7 +202,7 @@ def GetCursurMesh(size, x, y):
 
 def DrawCursurOveride(self):
 	bgl.glEnable(bgl.GL_BLEND)
-	shader = gpu.shader.from_builtin('2D_UNIFORM_COLOR')
+	shader = gpu.shader.from_builtin(get_uniform_color(mode="2D"))
 	v,f = GetCursurMesh(20, self.mpos.x, self.mpos.y)
 	batch = batch_for_shader(shader, 'TRIS', {"pos":v}, indices=f)
 	shader.bind()

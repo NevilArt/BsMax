@@ -133,14 +133,19 @@ class PickOperator(Operator):
 			######################################################
 			self.start = get_screen_pos(ctx,self.center) 
 			self.end = event.mouse_region_x, event.mouse_region_y
+
 			if self.start != None:
-				sx, sy = int(self.start.x), int(self.start.y)
+				sx = int(self.start.x)
+				sy = int(self.start.y)
 			else:
 				sx, sy = 0, 0
+
 			if self.end != None:
-				ex, ey = self.end[0], self.end[1]
+				ex = self.end[0]
+				ey = self.end[1]
 			else:
 				ex, ey = 0, 0
+
 			self.rb.create(sx, sy, ex, ey)
 			######################################################
 
@@ -149,6 +154,7 @@ class PickOperator(Operator):
 				""" clear all selection """
 				if ctx.mode != 'OBJECT':
 					bpy.ops.object.mode_set(mode='OBJECT', toggle=False)
+
 				bpy.ops.object.select_all(action='DESELECT')
 				ctx.view_layer.objects.active = None
 				
@@ -164,6 +170,7 @@ class PickOperator(Operator):
 			if event.value =='RELEASE':
 				""" if target selected check and return """
 				picked_object = ctx.view_layer.objects.active
+
 				if picked_object != None:
 					allowed = False
 					""" Filter the selection types """
@@ -208,6 +215,7 @@ class PickOperator(Operator):
 	def get_bone(self, ctx, event, armature):
 		coord = event.mouse_region_x, event.mouse_region_y
 		ctx.view_layer.objects.active = armature
+
 		if self.mode == 'EDIT_ARMATURE':
 			bpy.ops.object.mode_set(mode='EDIT', toggle=False)
 			bpy.ops.armature.select_all(action='DESELECT')
@@ -218,6 +226,7 @@ class PickOperator(Operator):
 			bpy.ops.pose.select_all(action='DESELECT')
 			bpy.ops.view3d.select(extend=False, location=coord)
 			selection = ctx.selected_pose_bones
+
 		bone = selection[0] if len(selection) > 0 else None
 		bpy.ops.object.mode_set(mode='OBJECT', toggle=False)
 		return bone
@@ -227,6 +236,7 @@ class PickOperator(Operator):
 			return ctx.selected_pose_bones
 		elif ctx.mode == 'EDIT_ARMATURE':
 			return ctx.selected_bones
+
 		return []
 	
 	def pre_setup(self, ctx, event):
@@ -254,9 +264,11 @@ class PickOperator(Operator):
 			bpy.ops.object.mode_set(mode='OBJECT', toggle=False)
 		bpy.ops.object.select_all(action='DESELECT')
 		ctx.view_layer.objects.active = self.active
+
 		for obj in self.source:
 			obj.select_set(state = True)
 		self.set_mode(ctx, self.mode)
+
 		for sub in self.subsource:
 			if ctx.mode == 'POSE':
 				sub.bone.select = True

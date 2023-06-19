@@ -20,6 +20,17 @@ import gpu
 from bgl import glEnable, GL_BLEND, glDisable, glLineWidth
 from gpu_extras.batch import batch_for_shader
 from bpy_extras.view3d_utils import location_3d_to_region_2d
+from bpy.app import version
+
+
+
+def get_uniform_color(mode="2D"):
+	if version < (3, 6, 0):
+		if mode == "2D":
+			return "2D_UNIFORM_COLOR"
+		else:
+			return "3D_UNIFORM_COLOR"
+	return "UNIFORM_COLOR"
 
 
 
@@ -47,13 +58,20 @@ def register_line(ctx, self, mode, color):
 	""" self.start self.end """
 	space = ctx.area.spaces.active
 	if mode == '2d':
-		return space.draw_handler_add(draw_line,
-									tuple([self, '2D_UNIFORM_COLOR', color]),
-									'WINDOW', 'POST_PIXEL')
+		return space.draw_handler_add(
+				draw_line,
+				tuple([self, get_uniform_color(mode="2D"), color]),
+				'WINDOW',
+				'POST_PIXEL'
+			)
+	
 	if mode == '3d':
-		return space.draw_handler_add(draw_line,
-									tuple([self, '3D_UNIFORM_COLOR', color]),
-									'WINDOW', 'POST_VIEW')
+		return space.draw_handler_add(
+			draw_line,
+			tuple([self, get_uniform_color(mode="3D"), color]),
+			'WINDOW',
+			'POST_VIEW'
+		)
 
 
 
@@ -74,23 +92,15 @@ class Rubber_Band:
 		self.colors = []
 		self.color_a = (0.0, 0.5, 0.5, 1.0)
 		self.color_b = (0.2, 0.0, 0.0, 1.0)
-		self.shader = gpu.shader.from_builtin('2D_UNIFORM_COLOR')
-		# self.shader = gpu.shader.from_builtin('2D_SMOOTH_COLOR')
+		self.shader = gpu.shader.from_builtin(get_uniform_color(mode="2D"))
 		
 	def create(self, sx, sy, ex, ey):
-		# x = (ex-sx) / self.segment
-		# y = (ey-sy) / self.segment
 		self.vertices.clear()
 		self.colors.clear()
 		self.vertices.append((sx, sy))
 		self.vertices.append((ex, ey))
 		self.colors.append(self.color_a)
 		self.colors.append(self.color_b)
-		# for index in range(self.segment):
-		# 	self.vertices.append((sx+x*index, sy+y*index, 0))
-		# 	self.vertices.append((sx+x*(index+1), sy+y*(index+1), 0))
-		# 	self.colors.append(self.color_a)
-		# 	self.colors.append(self.color_b)
 	
 	def draw_rubber(self):
 		glEnable(GL_BLEND)
@@ -99,7 +109,6 @@ class Rubber_Band:
 		if len(self.vertices) == 2:
 			coords = [self.vertices[0], self.vertices[1]]
 			batch = batch_for_shader(self.shader, 'LINE_STRIP', {"pos": coords})
-			# batch = batch_for_shader(self.shader, 'LINES', {"pos":self.vertices, "color":self.colors})
 
 			self.shader.bind()
 			self.shader.uniform_float("color", self.color_a)
