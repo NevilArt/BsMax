@@ -22,6 +22,18 @@ from mathutils import Vector
 
 from bsmax.bsmatrix import BsMatrix, transform_point_to_matrix
 
+from bpy.app import version
+
+
+
+def get_uniform_color(mode="2D"):
+	if version < (3, 6, 0):
+		if mode == "2D":
+			return "2D_UNIFORM_COLOR"
+		else:
+			return "3D_UNIFORM_COLOR"
+	return "UNIFORM_COLOR"
+
 
 
 class Local_Gride:
@@ -97,7 +109,7 @@ class Local_Gride:
 	def draw(self):
 		glEnable(GL_BLEND)
 		glLineWidth(1)
-		shader = gpu.shader.from_builtin('3D_UNIFORM_COLOR')
+		shader = gpu.shader.from_builtin(get_uniform_color(mode="3D"))
 
 		# draw gride
 		self.draw_shader(shader, self.gride, 'LINES', self.gride_color)

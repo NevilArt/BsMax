@@ -1,5 +1,5 @@
 
-# BsMax Blender Addon 2.93LTS ~ 3.6Beta
+# BsMax Blender Addon 2.93LTS ~ 3.6LTS
 
 BsMax is package of Modeling, Rig & Animation, Render tools and UI mimic for [Blender 3D](https://www.blender.org/).
 
@@ -37,8 +37,7 @@ If you found this product useful and want to support this project you can Donate
 * [Download Older Version (2.80-2.92)](https://github.com/NevilArt/BsMax_2_80)
 
 ## Recent Updates and Changes
-* Set pivot to bottom center tool replaced with Set Pivot to Base with more option.
-* BsMax works on Blender 4.0 Alpha too.
+* Just some bug fixed and new stuff that not completed yet.
 * [Change log ...](https://github.com/NevilArt/BsMax/blob/master/CHANGELOG.md)
 
 ## License

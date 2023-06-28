@@ -1,3 +1,7 @@
+# 0, 1, 1, 20230619
+* Set pivot to bottom center tool replaced with Set Pivot to Base with more option.
+* BsMax works on Blender 4.0 Alpha too.
+
 # 0, 1, 1, 20230613
 * Multyshapekey Tool has aditive mode if use '+' rather than '_' (need a better sorting yet).
 * e.g. key+25, key+50, ... ,key+100.

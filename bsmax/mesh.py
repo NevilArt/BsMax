@@ -13,6 +13,7 @@
 #	along with this program.  If not, see <https://www.gnu.org/licenses/>.
 ############################################################################
 
+import numpy as np
 
 
 def get_selected_verts(mesh):
@@ -38,3 +39,24 @@ def get_selected_verts(mesh):
 # 				vertices[i][j] = (vertex[j] - center[j]) / length * size/2 + center[j]
 
 # 	return vertices, faces
+
+
+def get_concave_vertices(vertices):
+	concaveVertices = []
+
+	# Convert the vertices to a numpy array for easier computation
+	vertices = np.array(vertices)
+
+	for i in range(len(vertices)):
+		currentVertex = vertices[i]
+		prevVertex = vertices[i - 1]
+		nextVertex = vertices[(i + 1) % len(vertices)]  # Wrap around to the first vertex
+		
+		# Calculate the cross product of the vectors formed by the adjacent vertices
+		cross_product = np.cross(prevVertex - currentVertex, nextVertex - currentVertex)
+		
+		# If the cross product is negative, it means the vertex is concave
+		if cross_product < 0:
+			concaveVertices.append(currentVertex)
+
+	return concaveVertices

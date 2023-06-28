@@ -23,6 +23,12 @@ from mathutils import Vector
 # empty world bounding box
 
 
+def calculate_center(self):
+	self.center.x = (self.min.x + self.max.x) / 2
+	self.center.y = (self.min.y + self.max.y) / 2
+	self.center.z = (self.min.z + self.max.z) / 2
+
+
 
 def get_bound_from_object_local(self):
 	b = [self.obj.matrix_world @ Vector(v) for v in self.obj.bound_box]
@@ -34,9 +40,7 @@ def get_bound_from_object_local(self):
 	self.min.z = min(b[0][2], b[1][2], b[2][2], b[3][2], b[4][2], b[5][2], b[6][2])
 	self.max.z = max(b[0][2], b[1][2], b[2][2], b[3][2], b[4][2], b[5][2], b[6][2])
 	
-	self.center.x = (self.min.x + self.max.x) / 2
-	self.center.y = (self.min.y + self.max.y) / 2
-	self.center.z = (self.min.z + self.max.z) / 2
+	calculate_center(self)
 
 
 
@@ -44,31 +48,103 @@ def get_bound_from_verts(self, verts):
 	if not verts:
 		return
 	
-	min = verts[0].copy()
-	max = verts[0].copy()
+	self.min = verts[0].copy()
+	self.max = verts[0].copy()
 
 	for co in verts:
-		if min.x > co.x:
-			min.x = co.x
+		if self.min.x > co.x:
+			self.min.x = co.x
 
-		if min.y > co.y:
-			min.y = co.y
+		if self.min.y > co.y:
+			self.min.y = co.y
 
-		if min.z > co.z:
-			min.z = co.z
+		if self.min.z > co.z:
+			self.min.z = co.z
 
-		if max.x < co.x:
-			max.x = co.x
+		if self.max.x < co.x:
+			self.max.x = co.x
 
-		if max.y < co.y:
-			max.y = co.y
+		if self.max.y < co.y:
+			self.max.y = co.y
 
-		if max.z < co.z:
-			max.z = co.z
+		if self.max.z < co.z:
+			self.max.z = co.z
 	
-	self.center.x = (min.x + max.x) / 2
-	self.center.y = (min.y + max.y) / 2
-	self.center.z = (min.z + max.z) / 2
+	calculate_center(self)
+
+
+
+def get_empty_bound(self):
+	displayType = self.obj.empty_display_type
+	size = self.obj.empty_display_size
+	location = self.obj.matrix_world.translation
+
+	if displayType in ('PLAIN_AXES', 'SPHERE', 'CUBE'):
+		#TODO need to apply transfomr for cube and plane_axes
+		self.min.x = location.x - size
+		self.max.x = location.x + size
+		self.min.y = location.y - size
+		self.max.y = location.y + size
+		self.min.z = location.z - size
+		self.max.z = location.z + size
+		self.center = location
+
+	elif displayType == 'ARROWS':
+		#TODO need to apply transfomr
+		self.min.x = location.x
+		self.max.x = location.x + size
+		self.min.y = location.y
+		self.max.y = location.y + size
+		self.min.z = location.z
+		self.max.z = location.z + size
+		calculate_center(self)
+
+	elif displayType == 'SINGLE_ARROW':
+		#TODO need to aply transform
+		width = size * 0.07
+		self.min.x = location.x - width
+		self.max.x = location.x + width
+		self.min.y = location.y - width
+		self.max.y = location.y + width
+		self.min.z = location.z
+		self.max.z = location.z + size
+		calculate_center(self)
+
+	elif displayType == 'CIRCLE':
+		#TODO need to apply transfomr
+		self.min.x = location.x - size
+		self.max.x = location.x + size
+		self.min.y = location.y
+		self.max.y = location.y
+		self.min.z = location.z - size
+		self.max.z = location.z + size
+		self.center = location
+
+	elif displayType == 'CONE':
+		#TODO need to apply transfomr
+		self.min.x = location.x - size
+		self.max.x = location.x + size
+		self.min.y = location.y
+		self.max.y = location.y + size*2
+		self.min.z = location.z - size
+		self.max.z = location.z + size
+		calculate_center(self)
+
+	elif displayType == 'IMAGE':
+		#TODO need to calculate aspect ratio from image
+		# and apply to transform
+		self.min.x = location.x - size
+		self.max.x = location.x + size
+		self.min.y = location.y - size
+		self.max.y = location.y + size
+		self.min.z = location.z
+		self.max.z = location.z
+		calculate_center(self)
+
+
+
+def get_light_bound(self):
+	pass
 
 
 
@@ -97,10 +173,10 @@ class BoundBox():
 			get_bound_from_verts(self, verts)
 
 		elif self.obj.type == "EMPTY":
-			pass
+			get_empty_bound(self)
 
 		elif self.obj.type == "LIGHT":
-			pass
+			get_light_bound(self)
 	
 	def get_from_selection(self):
 		matrix_world = self.obj.matrix_world
