@@ -24,6 +24,12 @@ from bpy.app import version
 
 
 
+def get_header_color():
+	theme = bpy.context.preferences.themes['Default']
+	return theme.text_editor.space.header
+
+
+
 def get_uniform_color(mode="2D"):
 	if version < (3, 6, 0):
 		if mode == "2D":

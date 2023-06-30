@@ -1,3 +1,6 @@
+# 0, 1, 1, 20230628
+* Just some bug fixed and new stuff that not completed yet.
+
 # 0, 1, 1, 20230619
 * Set pivot to bottom center tool replaced with Set Pivot to Base with more option.
 * BsMax works on Blender 4.0 Alpha too.

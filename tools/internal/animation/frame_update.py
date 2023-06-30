@@ -14,13 +14,28 @@
 ############################################################################
 
 import bpy
+
 from bpy.types import Operator
 from bpy.app.handlers import persistent
 
+from bsmax.graphic import get_header_color
 
-def get_header_color():
-	ctx = bpy.context
-	return ctx.preferences.themes['Default'].text_editor.space.header
+
+
+def mode_updated(self, ctx):
+	if self.active_auto_use_select_pick_depth:
+		""" uspds use_select_pick_depth State """
+		uspds = False if (ctx.mode == 'POSE') else self.use_select_pick_depth
+		ctx.preferences.system.use_select_pick_depth = uspds
+
+
+
+def autokey_state_updated(self, ctx):
+	autoKey = ctx.scene.tool_settings.use_keyframe_insert_auto
+	color = (0.5, 0.0, 0.0, 1.0) if autoKey else get_header_color()
+	# allow to update if affect_theme active in preference
+	if color and self.preferences.affect_theme:
+		ctx.preferences.themes['Default'].dopesheet_editor.space.header = color
 
 
 
@@ -43,48 +58,29 @@ class Scene_Stata:
 		# """ Store use_keyframe_insert_auto state """
 		# ukias = ctx.scene.tool_settings.use_keyframe_insert_auto
 		# self.use_keyframe_insert_auto = ukias
-	
-	def mode_updated(self, ctx):
-		if self.active_auto_use_select_pick_depth:
-			""" uspds use_select_pick_depth State """
-			uspds = False if (ctx.mode == 'POSE') else self.use_select_pick_depth
-			ctx.preferences.system.use_select_pick_depth = uspds
-
-	def autokey_state_updated(self, ctx):
-		autoKey = ctx.scene.tool_settings.use_keyframe_insert_auto
-		color = (0.5, 0.0, 0.0, 1.0) if autoKey else get_header_color()
-		# allow to update if affect_theme active in preference
-		if color and self.preferences.affect_theme:
-			ctx.preferences.themes['Default'].dopesheet_editor.space.header = color
 
 	def check(self, ctx):
 		""" Calls once on mode changed """
 		if self.mode != ctx.mode:
-			self.mode_updated(ctx)
+			mode_updated(self, ctx)
 			self.mode = ctx.mode
 
 		""" Call once on autokey state changes """
 		tool_settings = ctx.scene.tool_settings
 		if tool_settings.use_keyframe_insert_auto != self.use_keyframe_insert_auto:
-			self.autokey_state_updated(ctx)
+			autokey_state_updated(self, ctx)
 			self.use_keyframe_insert_auto = tool_settings.use_keyframe_insert_auto
-	
+
 	def restore(self, ctx):
 		""" Restore use_select_pick_depth State """
 		system = bpy.context.preferences.system
 		system.use_select_pick_depth = self.use_select_pick_depth
 
 		""" Restore dopesheet_editor.header Color """
-		color = self.dopesheet_editor_space_header_color
+		color = get_header_color()
 		ctx.preferences.themes['Default'].dopesheet_editor.space.header = color
 
 scene_state = Scene_Stata()
-
-
-
-# @persistent
-# def frame_Update(scene):
-# 	pass
 
 
 
@@ -142,7 +138,6 @@ def register_frame_update(preferences):
 		bpy.utils.register_class(c)
 
 	scene_state.store(bpy.context, preferences)
-	# bpy.app.handlers.frame_change_pre.append(frame_Update)
 	# bpy.app.handlers.render_init.append(render_init)
 	bpy.app.handlers.depsgraph_update_pre.append(depsgraph_update)
 
@@ -151,8 +146,6 @@ def register_frame_update(preferences):
 def unregister_frame_update():
 	""" Return the defult values befor remove """
 	scene_state.restore(bpy.context)
-
-	# bpy.app.handlers.frame_change_pre.remove(frame_Update)
 	# bpy.app.handlers.render_init.remove(render_init)
 	bpy.app.handlers.depsgraph_update_pre.remove(depsgraph_update)
 

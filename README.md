@@ -37,7 +37,10 @@ If you found this product useful and want to support this project you can Donate
 * [Download Older Version (2.80-2.92)](https://github.com/NevilArt/BsMax_2_80)
 
 ## Recent Updates and Changes
-* Just some bug fixed and new stuff that not completed yet.
+* Blender 3.6 and later Parent coordinate added to quadmenu (Alt+RMB 3DsMax Mode).
+* Red timeline at starup issue fixed.
+* Issue with Enable/Disable addon in Blender 3.6 fixed.
+* Theme changes (Camera, Empty, Light) color reset on addon disable or remove.
 * [Change log ...](https://github.com/NevilArt/BsMax/blob/master/CHANGELOG.md)
 
 ## License

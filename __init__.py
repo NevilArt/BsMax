@@ -20,7 +20,7 @@ bl_info = {
 	'name': 'BsMax',
 	'description': 'Package of many tools + other CG apps UI mimic',
 	'author': 'Naser Merati (Nevil)',
-	'version': (0, 1, 1, 20230628),
+	'version': (0, 1, 1, 20230630),
 	'blender': (2, 93, 0),# 2.93LTS ~ 3.6LTS
 	'location': 'Almost Everywhere in Blender',
 	'wiki_url': 'https://github.com/NevilArt/BsMax/wiki',
@@ -55,6 +55,7 @@ from .tools import register_tools, unregister_tools
 
 addons = bpy.context.preferences.addons
 wiki = 'https://github.com/NevilArt/BsMax/wiki/'
+iniFileName = bpy.utils.user_resource('SCRIPTS') + '\\addons\\BsMax.ini'
 
 
 
@@ -438,7 +439,7 @@ class BsMax_AddonPreferences(bpy.types.AddonPreferences):
 
 
 def save_preferences(preferences):
-	filename = bpy.utils.user_resource('SCRIPTS') + '\\addons\\BsMax.ini'
+	global iniFileName
 	string = ''
 
 	for prop in preferences.bl_rna.properties:
@@ -448,7 +449,7 @@ def save_preferences(preferences):
 				val = str(getattr(preferences, key))
 				string += key + '=' + val + os.linesep
 
-	ini = open(filename, 'w')
+	ini = open(iniFileName, 'w')
 	ini.write(string)
 	ini.close()
 
@@ -464,12 +465,15 @@ def isfloat(value):
 
 
 def load_preferences(preferences):
-	filename = bpy.utils.user_resource('SCRIPTS') + '\\addons\\BsMax.ini'
-	if os.path.exists(filename):
-		string = open(filename).read()
+	global iniFileName
+
+	if os.path.exists(iniFileName):
+		string = open(iniFileName).read()
 		props = string.splitlines()
+
 		for prop in props:
 			key = prop.split('=')
+
 			if len(key) == 2:
 				if isfloat(key[1]):
 					value = float(key[1])
@@ -477,10 +481,12 @@ def load_preferences(preferences):
 					value = key[1] == 'True'
 				else:
 					value = key[1]
+
 				try:
 					if hasattr(preferences, key[0]):
 						setattr(preferences, key[0], value)
 				except:
+					# ignore if there is not the attribute
 					pass
 
 
@@ -489,6 +495,7 @@ class BsMax_OT_Save_Preferences(bpy.types.Operator):
 	bl_idname = 'bsmax.save_preferences'
 	bl_label = 'Save BsMax Preferences'
 	bl_options = {'REGISTER', 'INTERNAL'}
+
 	def execute(self, ctx):
 		global addons
 		save_preferences(addons[__name__].preferences)
@@ -504,8 +511,19 @@ def register_delay(preferences):
 
 
 def register():
-	register_class(BsMax_OT_Save_Preferences)
-	register_class(BsMax_AddonPreferences)
+	try:
+		register_class(BsMax_OT_Save_Preferences)
+	except:
+		#already registered and donot need to do some thing else
+		#TODO add a check method to avoid to use try/except
+		pass 
+	
+	try:
+		register_class(BsMax_AddonPreferences)
+	except:
+		#already registered and donot need to do some thing else
+		#TODO add a check method to avoid to use try/except
+		pass
 
 	global addons
 	preferences = addons[__name__].preferences

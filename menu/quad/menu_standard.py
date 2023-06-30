@@ -13,9 +13,13 @@
 #	along with this program.  If not, see <https://www.gnu.org/licenses/>.
 ############################################################################
 
+from bpy.app import version
+
+from bsmax.state import is_active_primitive, get_active_type
+
 from .commands import * # all "c0000" are from here
 from .q_items import QuadItem
-from bsmax.state import is_active_primitive, get_active_type
+
 
 # Indexes
 # [3] [2]
@@ -435,6 +439,8 @@ def get_view3d_coordinates(ctx):
 	if ctx.mode == 'OBJECT':
 		items.append(QuadItem("Local", f, t, n, c0083, n))
 		items.append(QuadItem("Normal", f, t, n, c0084, n))
+		if version >= (3, 6, 0):
+			items.append(QuadItem("Parent", f, t, n, c0241, n))
 	# Pose Mode
 	if ctx.mode == 'POSE':
 		items.append(QuadItem("Local", f, t, n, c0136, n))
