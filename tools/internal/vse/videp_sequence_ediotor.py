@@ -12,7 +12,9 @@
 #	You should have received a copy of the GNU General Public License
 #	along with this program.  If not, see <https://www.gnu.org/licenses/>.
 ############################################################################
+
 import bpy
+
 from bpy.types import Operator
 from bpy.props import EnumProperty, IntProperty
 
@@ -35,17 +37,22 @@ def get_selected_sequences(scene):
 	return [sequence for sequence in scene.sequence_editor.sequences if sequence.select]
 
 
+
 class Sequencer_OT_Shift(Operator):
 	bl_idname = "sequencer.shift"
 	bl_label = "Shift Sequences"
 	bl_description = ""
 	bl_options = {'REGISTER', 'UNDO', 'INTERNAL'}
 
-	direction: EnumProperty(items=[
-		('UP', 'Up', 'Move selected Sequences to upper empty chanel'),
-		('DOWN', 'Down', 'Move selected Sequences to lower empty chanel'), 
-		('LEFT', 'Left', 'Shift selected Sequences to one frame to Left'),
-		('RIGHT', 'Right', 'Shift selected Sequences to one frame to Right')])
+	direction: EnumProperty(
+		items=[
+			('UP', 'Up', 'Move selected Sequences to upper empty chanel'),
+			('DOWN', 'Down', 'Move selected Sequences to lower empty chanel'), 
+			('LEFT', 'Left', 'Shift selected Sequences to one frame to Left'),
+			('RIGHT', 'Right', 'Shift selected Sequences to one frame to Right')
+		]
+	)
+
 	step: IntProperty(name="Step Size", min= 1, max= 64, default=1)
 
 	def sort_by_channel(self, sequences, invert=False):
@@ -59,6 +66,7 @@ class Sequencer_OT_Shift(Operator):
 			if sequence.channel not in channels:
 				channels.append(sequence.channel)
 		channels.sort()
+
 		if invert:
 			channels.reverse()
 
@@ -67,6 +75,7 @@ class Sequencer_OT_Shift(Operator):
 			for sequence in sequences:
 				if sequence.channel == channel:
 					sorted_sequences.append(sequence)
+
 		return sorted_sequences
 
 	def sort_by_start(self, sequences, invert=False):
@@ -178,17 +187,25 @@ class Sequencer_OT_Zoom_Extended(Operator):
 
 
 
-classes = [Sequencer_OT_Shift,
+classes = (
+	Sequencer_OT_Shift,
 	Sequencer_OT_Mute_Toggle,
-	Sequencer_OT_Zoom_Extended]
+	Sequencer_OT_Zoom_Extended
+)
+
+
 
 def register_video_sequence_ediotor():
 	for c in classes:
 		bpy.utils.register_class(c)
 
+
+
 def unregister_video_sequence_ediotor():
 	for c in classes:
 		bpy.utils.unregister_class(c)
+
+
 
 if __name__ == "__main__":
 	register_video_sequence_ediotor()

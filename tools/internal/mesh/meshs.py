@@ -14,7 +14,7 @@
 ############################################################################
 
 import bpy
-from bpy.types import Operator, Menu
+from bpy.types import Operator
 from bpy.props import BoolProperty, EnumProperty
 
 
@@ -24,6 +24,7 @@ class Mesh_OT_Connect_Data:
 		self.segments = 1
 		self.pinch = 0
 		self.slide = 0
+
 mocd = Mesh_OT_Connect_Data()
 
 
@@ -379,17 +380,19 @@ def mesh_show_hide_plus_menu(self, ctx):
 
 
 
-classes = [Mesh_OT_Create_Curve_From_Edges,
-		Mesh_OT_Auto_Loop_Select,
-		Mesh_OT_Auto_Ring_Select,
-		Mesh_OT_Connect,
-		Mesh_OT_Delete_Auto,
-		Mesh_OT_Dot_Loop_Select,
-		Mesh_OT_Dot_Ring_Select,
-		Mesh_OT_Hide_Plus,
-		Mesh_OT_NURMS_Toggle,
-		Mesh_OT_Remove,
-		Mesh_OT_Remove_Isolated_Geometry]
+classes = (
+	Mesh_OT_Create_Curve_From_Edges,
+	Mesh_OT_Auto_Loop_Select,
+	Mesh_OT_Auto_Ring_Select,
+	Mesh_OT_Connect,
+	Mesh_OT_Delete_Auto,
+	Mesh_OT_Dot_Loop_Select,
+	Mesh_OT_Dot_Ring_Select,
+	Mesh_OT_Hide_Plus,
+	Mesh_OT_NURMS_Toggle,
+	Mesh_OT_Remove,
+	Mesh_OT_Remove_Isolated_Geometry
+)
 
 
 
@@ -398,10 +401,14 @@ def register_meshs():
 		bpy.utils.register_class(c)
 	bpy.types.VIEW3D_MT_edit_mesh_showhide.append(mesh_show_hide_plus_menu)
 
+
+
 def unregister_meshs():
 	bpy.types.VIEW3D_MT_edit_mesh_showhide.remove(mesh_show_hide_plus_menu)
 	for c in classes:
 		bpy.utils.unregister_class(c)
+
+
 
 if __name__ == "__main__":
 	register_meshs()

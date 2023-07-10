@@ -19,8 +19,6 @@ from bpy.types import Panel, Operator, PropertyGroup
 from bpy.props import (PointerProperty, StringProperty,
 						EnumProperty, BoolProperty)
 from bpy.app.handlers import persistent
-from bpy.app import version
-
 
 from os import path, mkdir, access, W_OK
 from glob import glob
@@ -72,12 +70,9 @@ def get_manual_part(ctx, engin_name):
 		script += bcs + 'use_persistent_data = ' + str(render.use_persistent_data) + '\n'
 		script += bcs + 'use_motion_blur = ' + str(render.use_motion_blur) + '\n'
 
-		if version >= (3, 0, 0):
-			pass
-			# script += bcs + 'use_save_buffers = ' + str(render.use_save_buffers) + '\n'
-			# TODO find new alternative
-		else:
-			script += bcs + 'use_save_buffers = ' + str(render.use_save_buffers) + '\n'
+		# script += bcs + 'use_save_buffers = ' + str(render.use_save_buffers) + '\n'
+		# TODO find new alternative
+
 	
 	if engin_name == 'eevee':
 		eevee = ctx.scene.eevee
@@ -224,12 +219,8 @@ def create_preset_script(ctx):
 		script += get_manual_part(ctx, 'eevee')
 
 	elif ctx.scene.render.engine == 'CYCLES':
-		if version >= (3, 0, 0):
-			script += get_script(ctx.scene.cycles, 'cycles')
-			script += get_manual_part(ctx, 'cycles_x')
-		else:	
-			script += get_script(ctx.scene.cycles, 'cycles')
-			script += get_manual_part(ctx, 'cycles')
+		script += get_script(ctx.scene.cycles, 'cycles')
+		script += get_manual_part(ctx, 'cycles_x')
 
 	elif ctx.scene.render.engine == 'BLENDER_WORKBENCH':
 		script += get_script(ctx.scene, 'scene')
@@ -386,6 +377,7 @@ class Render_PrePostScript(PropertyGroup):
 
 
 class RENDER_PT_Script(Panel):
+
 	bl_space_type = 'PROPERTIES'
 	bl_region_type = 'WINDOW'
 	bl_context = 'render'
@@ -403,6 +395,7 @@ class RENDER_PT_Script(Panel):
 		row.prop(rpps, 'post_render_script')
 
 
+
 @persistent
 def pre_render(scene):
 	if scene.render_prepost_script.pre_render_active:
@@ -413,6 +406,8 @@ def pre_render(scene):
 				exec(script)
 			except:
 				pass
+
+
 
 @persistent
 def post_render(scene):
@@ -426,25 +421,32 @@ def post_render(scene):
 				pass
 
 
-classes = [	Render_OT_Save_Preset,
-			Render_OT_Copy_Preset,
-			Render_OT_Load_Preset,
-			Render_OT_Paste_Preset,
-			Render_PrePostScript,
-			RENDER_PT_Preset,
-			RENDER_PT_Script]
+
+classes = (
+	Render_OT_Save_Preset,
+	Render_OT_Copy_Preset,
+	Render_OT_Load_Preset,
+	Render_OT_Paste_Preset,
+	Render_PrePostScript,
+	RENDER_PT_Preset,
+	RENDER_PT_Script
+)
 
 
 
 def register_preset():
 	for c in classes:
 		bpy.utils.register_class(c)
-	bpy.types.Scene.render_prepost_script = PointerProperty(type=Render_PrePostScript,
-		name='Pre/Post Render Script')
+
+	bpy.types.Scene.render_prepost_script = PointerProperty(
+		type=Render_PrePostScript,
+		name='Pre/Post Render Script'
+	)
 	
 	bpy.app.handlers.render_init.append(pre_render)
 	bpy.app.handlers.render_complete.append(post_render)
 	
+
 
 def unregister_preset():
 	for c in classes:
@@ -452,6 +454,8 @@ def unregister_preset():
 
 	bpy.app.handlers.render_init.remove(pre_render)
 	bpy.app.handlers.render_complete.remove(post_render)
+
+
 
 if __name__ == '__main__':
 	register_preset()

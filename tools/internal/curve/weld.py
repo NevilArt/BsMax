@@ -14,10 +14,14 @@
 ############################################################################
 
 import bpy
+
 from bpy.types import Operator
 from bpy.props import BoolProperty, FloatProperty
+
 from bsmax.curve import Curve#, Spline
 from bsmax.operator import CurveTool
+
+
 
 class Curve_OT_Break(Operator):
 	bl_idname = "curve.break"
@@ -40,6 +44,8 @@ class Curve_OT_Break(Operator):
 
 		self.report({'OPERATOR'},'bpy.ops.curve.break()')
 		return{"FINISHED"}
+
+
 
 class Curve_OT_Make_First(Operator):
 	bl_idname = "curve.make_first"
@@ -64,6 +70,8 @@ class Curve_OT_Make_First(Operator):
 		
 		self.report({'OPERATOR'},'bpy.ops.curve.make_first()')
 		return{"FINISHED"}
+
+
 
 class Curve_OT_Merge_By_Distance(CurveTool):
 	bl_idname = "curve.merge_by_distance"
@@ -98,11 +106,21 @@ class Curve_OT_Merge_By_Distance(CurveTool):
 	def self_report(self):
 		self.report({'OPERATOR'},'bpy.ops.curve.merge_by_distance()')
 
-classes = [Curve_OT_Merge_By_Distance, Curve_OT_Break, Curve_OT_Make_First]
+
+
+classes = (
+	Curve_OT_Merge_By_Distance,
+	Curve_OT_Break,
+	Curve_OT_Make_First
+)
+
+
 
 def register_weld():
 	for c in classes:
 		bpy.utils.register_class(c)
+
+
 
 def unregister_weld():
 	for c in classes:

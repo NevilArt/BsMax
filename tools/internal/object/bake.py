@@ -12,8 +12,12 @@
 #	You should have received a copy of the GNU General Public License
 #	along with this program.  If not, see <https://www.gnu.org/licenses/>.
 ############################################################################
+
 import bpy
+
 from bpy.props import BoolProperty, EnumProperty
+
+
 
 def bake(self,ctx,hi,low,cage,bake_type):
 	bpy.ops.object.select_all(action='DESELECT')
@@ -29,7 +33,6 @@ def bake(self,ctx,hi,low,cage,bake_type):
 	ctx.scene.cycles.bake_type = bake_type
 
 	
-
 
 class Object_OT_Bake_Texture(bpy.types.Operator):
 	bl_idname = "object.bake_texture"
@@ -115,11 +118,17 @@ class Object_OT_Bake_Texture(bpy.types.Operator):
 		ctx.window_manager.invoke_props_dialog(self)
 		return {'RUNNING_MODAL'}
 
+
+
 def register_bake():
 	bpy.utils.register_class(Object_OT_Bake_Texture)
 
+
+
 def unregister_bake():
 	bpy.utils.unregister_class(Object_OT_Bake_Texture)
+
+
 
 if __name__ == "__main__":
 	register_bake()

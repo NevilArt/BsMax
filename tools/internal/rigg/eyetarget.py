@@ -19,6 +19,8 @@ from bsmax.math import get_distance
 from bsmax.actions import link_to,set_create_target,freeze_transform
 from primitive.rectangle import Rectangle
 
+
+
 def create_rectangle(ctx, location, width, length):
 	rec = Rectangle()
 	rec.create(ctx)
@@ -30,6 +32,8 @@ def create_rectangle(ctx, location, width, length):
 	rec.owner.location = location
 	return rec.owner
 
+
+
 def create_target(ctx, location, radius, frame):
 	bpy.ops.object.empty_add(type='CIRCLE', location=location)
 	targ = ctx.active_object
@@ -37,12 +41,16 @@ def create_target(ctx, location, radius, frame):
 	link_to(targ, frame)
 	return targ
 
+
+
 def create_holder(ctx, location, radius, target):
 	bpy.ops.object.empty_add(type='CUBE',location=location)
 	holder = ctx.active_object
 	holder.empty_display_size = radius
 	set_create_target(holder, target)
 	return holder
+
+
 
 class Rigg_TO_Eye_Target_Creator(bpy.types.Operator):
 	bl_idname = "rigg.eye_target_creator"
@@ -101,8 +109,12 @@ class Rigg_TO_Eye_Target_Creator(bpy.types.Operator):
 		self.report({'OPERATOR'},'bpy.ops.rigg.eye_target_creator()')
 		return {"FINISHED"}
 
+
+
 def register_eyetarget():
 	bpy.utils.register_class(Rigg_TO_Eye_Target_Creator)
+
+
 
 def unregister_eyetarget():
 	bpy.utils.unregister_class(Rigg_TO_Eye_Target_Creator)

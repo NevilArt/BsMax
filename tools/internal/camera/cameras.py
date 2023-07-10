@@ -264,24 +264,32 @@ def camera_menu(self, ctx):
 
 
 
-classes = [Camera_OT_Set_Active,
-			Camera_OT_Create_From_View,
-			Camera_OT_Select,
-			Camera_OT_Lock_To_View_Toggle,
-			Camera_OT_Lock_Transform,
-			Camera_OT_Select_Active_Camera,
-			Camera_OT_Show_Safe_Area,
-			Camera_OT_Lock_Toggle]
+classes = (
+	Camera_OT_Set_Active,
+	Camera_OT_Create_From_View,
+	Camera_OT_Select,
+	Camera_OT_Lock_To_View_Toggle,
+	Camera_OT_Lock_Transform,
+	Camera_OT_Select_Active_Camera,
+	Camera_OT_Show_Safe_Area,
+	Camera_OT_Lock_Toggle
+)
+
+
 
 def register_cameras():
 	for c in classes:
 		bpy.utils.register_class(c)
 	bpy.types.VIEW3D_MT_view_cameras.append(camera_menu)
 
+
+
 def unregister_cameras():
 	bpy.types.VIEW3D_MT_view_cameras.remove(camera_menu)	
 	for c in classes:
 		bpy.utils.unregister_class(c)
+
+
 
 if __name__ == '__main__':
 	register_cameras()

@@ -12,7 +12,9 @@
 #	You should have received a copy of the GNU General Public License
 #	along with this program.  If not, see <https://www.gnu.org/licenses/>.
 ############################################################################
+
 import bpy
+
 from bpy.types import Operator
 from bpy.props import EnumProperty
 
@@ -63,8 +65,10 @@ class Render_OT_Setting_Toggle(Operator):
 	bl_idname = "render.setting_toggle"
 	bl_label = "Render Setting Toggle"
 
-	name: EnumProperty(name='Name', default='use_gtao',
-		items=[('use_gtao', 'use_gtao',''),
+	name: EnumProperty(
+		name='Name', default='use_gtao',
+		items=[
+			('use_gtao', 'use_gtao',''),
 			('use_bloom', 'use_bloom',''),
 			('use_ssr', 'use_ssr',''),
 			('use_motion_blur', 'use_motion_blur',''),
@@ -77,7 +81,9 @@ class Render_OT_Setting_Toggle(Operator):
 			('show_shadows', 'show_shadows',''),
 			('show_cavity', 'show_cavity',''),
 			('use_dof', 'use_dof',''),
-			('show_object_outline', 'show_object_outline','')])
+			('show_object_outline', 'show_object_outline','')
+		]
+	)
 
 	def execute(self, ctx):
 		if self.name == 'use_gtao':
@@ -114,17 +120,25 @@ class Render_OT_Setting_Toggle(Operator):
 
 
 
-classes = [Render_OT_Quick_Render,
+classes = (
+	Render_OT_Quick_Render,
 	Render_OT_Set_Renderer,
-	Render_OT_Setting_Toggle]
+	Render_OT_Setting_Toggle
+)
+
+
 
 def register_quick_render():
 	for c in classes:
 		bpy.utils.register_class(c)
 
+
+
 def unregister_quick_render():
 	for c in classes:
 		bpy.utils.unregister_class(c)
+
+
 
 if __name__ == "__main__":
 	register_quick_render()

@@ -110,9 +110,13 @@ def register_hair_cache():
 	bpy.utils.register_class(Particle_OT_Hair_Cache_Combine)
 	bpy.types.PARTICLE_PT_cache.append(hair_cache_panle)
 
+
+
 def unregister_hair_cache():
 	bpy.types.PARTICLE_PT_cache.remove(hair_cache_panle)
 	bpy.utils.unregister_class(Particle_OT_Hair_Cache_Combine)
+
+
 
 if __name__ == "__main__":
 	register_hair_cache()

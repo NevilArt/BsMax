@@ -15,9 +15,13 @@
 
 from .make_ready_render import register_make_ready_render, unregister_make_ready_render
 
+
+
 def register_pipeline(preferences):
 	if preferences.nevil_stuff:
 		register_make_ready_render()
+
+
 
 def unregister_pipeline():
 	unregister_make_ready_render()

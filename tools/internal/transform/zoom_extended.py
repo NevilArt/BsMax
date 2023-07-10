@@ -12,9 +12,13 @@
 #	You should have received a copy of the GNU General Public License
 #	along with this program.  If not, see <https://www.gnu.org/licenses/>.
 ############################################################################
+
 import bpy
-from bpy.types import Operator
+
 from mathutils import Matrix
+
+from bpy.types import Operator
+
 
 class View3d_OT_HomeView(Operator):
 	bl_idname = 'view3d.homeview'
@@ -30,6 +34,8 @@ class View3d_OT_HomeView(Operator):
 		ctx.area.spaces.active.region_3d.view_matrix = Matrix(homeview)
 		# self.report({'OPERATOR'},'bpy.ops.view3d.homeview()')
 		return{'FINISHED'}
+
+
 
 class View3d_OT_Zoom_Extended(Operator):
 	bl_idname = 'view3d.zoom_extended'
@@ -60,6 +66,8 @@ class View3d_OT_Zoom_Extended(Operator):
 		# self.report({'OPERATOR'},'bpy.ops.view3d.zoom_extended()')
 		return{'FINISHED'}
 
+
+
 class Node_OT_Zoom_Extended(Operator):
 	bl_idname = 'node.zoom_extended'
 	bl_label = 'Zoom Extended'
@@ -78,17 +86,27 @@ class Node_OT_Zoom_Extended(Operator):
 				pass
 		return{'FINISHED'}
 
-classes = [View3d_OT_HomeView,
-			View3d_OT_Zoom_Extended,
-			Node_OT_Zoom_Extended]
+
+
+classes = (
+	View3d_OT_HomeView,
+	View3d_OT_Zoom_Extended,
+	Node_OT_Zoom_Extended
+)
+
+
 
 def register_zoom_extended():
 	for c in classes:
 		bpy.utils.register_class(c)
 
+
+
 def unregister_zoom_extended():
 	for c in classes:
 		bpy.utils.unregister_class(c)
+
+
 
 if __name__ == '__main__':
 	register_zoom_extended()

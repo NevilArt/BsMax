@@ -109,21 +109,31 @@ def outliner_header(self, ctx):
 	self.layout.operator("collection.link_to_active", text="", icon='LIBRARY_DATA_DIRECT')
 
 
-classes = [Collection_OT_Move_To_Active,
+
+classes = (
+	Collection_OT_Move_To_Active,
 	Collection_OT_Link_To_Active,
 	Collection_OT_Remove_From_Collection,
-	Outliner_OT_Rename_Selection]
+	Outliner_OT_Rename_Selection
+)
+
 
 
 def register_collection():
 	for c in classes:
 		bpy.utils.register_class(c)
+
 	bpy.types.OUTLINER_HT_header.append(outliner_header)
+
+
 
 def unregister_collection():
 	bpy.types.OUTLINER_HT_header.remove(outliner_header)
+
 	for c in classes:
 		bpy.utils.unregister_class(c)
+
+
 
 if __name__ == "__main__":
 	register_collection()

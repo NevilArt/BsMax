@@ -14,7 +14,10 @@
 ############################################################################
 
 import bpy
+
 from bsmax.operator import PickOperator
+
+
 
 class Curve_OT_Attach(PickOperator):
 	bl_idname = 'curve.attach'
@@ -39,15 +42,17 @@ class Curve_OT_Attach(PickOperator):
 		bpy.ops.curve.attach('INVOKE_DEFAULT')
 		# self.report({'OPERATOR'},'bpy.ops.curve.attach()')
 
-classes = [Curve_OT_Attach]
+
 
 def register_attach():
-	for c in classes:
-		bpy.utils.register_class(c)
+	bpy.utils.register_class(Curve_OT_Attach)
+
+
 
 def unregister_attach():
-	for c in classes:
-		bpy.utils.unregister_class(c)
+	bpy.utils.unregister_class(Curve_OT_Attach)
+
+
 
 if __name__ == "__main__":
 	register_attach()

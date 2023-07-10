@@ -12,9 +12,12 @@
 #	You should have received a copy of the GNU General Public License
 #	along with this program.  If not, see <https://www.gnu.org/licenses/>.
 ############################################################################
+
 import bpy
+
 from bpy.types import Operator
 from bpy.props import EnumProperty, BoolProperty, StringProperty
+
 from bsmax.actions import set_as_active_object
 
 
@@ -91,13 +94,14 @@ class Object_OT_Hide(Operator):
 	# bl_description = ""
 	bl_options = {'REGISTER', 'UNDO'}
 
-	mode: EnumProperty(default='selection',
-					items=[
-						('selection', 'Hide Selection', ''),
-						('unselected', 'Hide Unselected', ''),
-						('clear', 'Unhide All', '')
-					]
-			)
+	mode: EnumProperty(
+		default='selection',
+		items=[
+			('selection', 'Hide Selection', ''),
+			('unselected', 'Hide Unselected', ''),
+			('clear', 'Unhide All', '')
+		]
+	)
 
 	collection: BoolProperty(default=False)
 
@@ -130,15 +134,24 @@ class Object_OT_Hide(Operator):
 
 
 
-classes = (Object_OT_Freeze, Object_OT_Hide, Object_TO_Select_By_Name)
+classes = (
+	Object_OT_Freeze,
+	Object_OT_Hide,
+	Object_TO_Select_By_Name
+)
+
+
 
 def register_freeze():
 	for c in classes:
 		bpy.utils.register_class(c)
 
+
+
 def unregister_freeze():
 	for c in classes:
 		bpy.utils.unregister_class(c)
+
 
 if __name__ == "__main__":
 	register_freeze()

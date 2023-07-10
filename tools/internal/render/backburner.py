@@ -545,21 +545,28 @@ def backburner_menu(self, ctx):
 
 
 
-classes = [Backburner_Property,
+classes = (
+	Backburner_Property,
 	Render_OT_Backburner,
 	Render_OT_Save_BackBurner,
 	Render_OT_Load_BackBurner,
 	Render_OT_Submit_To_Backburner,
 	Render_OT_Update_Job_Name,
-	RENDER_PT_Backburner]
+	RENDER_PT_Backburner
+)
+
+
 
 def register_backburner():
 	for c in classes:
 		bpy.utils.register_class(c)
+	
 	bpy.types.Scene.backburner = PointerProperty(type=Backburner_Property,
 												name='Backburner Submission')
 
 	bpy.types.TOPBAR_MT_render.prepend(backburner_menu)
+
+
 
 def unregister_backburner():
 	bpy.types.TOPBAR_MT_render.remove(backburner_menu)
@@ -574,8 +581,12 @@ def unregister_backburner():
 def register():
 	register_backburner()
 
+
+
 def unregister():
 	unregister_backburner()
+
+
 
 if __name__ == "__main__":
 	register_backburner()

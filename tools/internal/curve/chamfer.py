@@ -14,9 +14,11 @@
 ############################################################################
 
 import bpy
-from bpy.props import BoolProperty, FloatProperty
+from bpy.props import (BoolProperty, FloatProperty)
 # from bsmax.curve import Curve
 from bsmax.operator import CurveTool
+
+
 
 class Curve_OT_Chamfer(CurveTool):
 	bl_idname = 'curve.chamfer'
@@ -48,8 +50,12 @@ class Curve_OT_Chamfer(CurveTool):
 		col.prop(self, 'fillet', text=text, icon=icon)
 		col.prop(self, 'value', text='Value')
 
+
+
 def register_chamfer():
 	bpy.utils.register_class(Curve_OT_Chamfer)
+
+
 
 def unregister_chamfer():
 	bpy.utils.unregister_class(Curve_OT_Chamfer)

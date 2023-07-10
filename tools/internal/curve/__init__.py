@@ -21,6 +21,8 @@ from .menu import register_menu, unregister_menu
 from .selection import register_selection, unregister_selection
 from .weld import register_weld, unregister_weld
 
+
+
 def register_curve():
 	register_attach()
 	register_chamfer()
@@ -30,6 +32,8 @@ def register_curve():
 	register_menu()
 	register_selection()
 	register_weld()
+
+
 
 def unregister_curve():
 	unregister_attach()

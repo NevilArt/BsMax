@@ -135,8 +135,12 @@ class UV_OP_Property_Panel(Panel):
 def register_panel():
 	bpy.utils.register_class(UV_OP_Property_Panel)
 
+
+
 def unregister_panel():
 	bpy.utils.unregister_class(UV_OP_Property_Panel)
+
+
 
 if __name__ == "__main__":
 	register_panel()

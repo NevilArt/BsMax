@@ -70,19 +70,25 @@ class View3D_OT_Copy_Data(Operator):
 		
 		if self.material:
 			target = self.create_buffer_object(ctx,
-				'BsMax_Copy_Past_Material_Temprary_Object')
+				'BsMax_Copy_Past_Material_Temprary_Object'
+			)
+
 			bpy.ops.object.make_links_data(type='MATERIAL')
 			# self.send_to_buffer(target)
 		
 		if self.modifier:
 			target = self.create_buffer_object(ctx, 
-				'BsMax_Copy_Past_Modifier_Temprary_Object')
+				'BsMax_Copy_Past_Modifier_Temprary_Object'
+			)
+			
 			bpy.ops.object.make_links_data(type='MODIFIERS')
 			self.send_to_buffer(target)
 		
 		if self.animation:
 			target = self.create_buffer_object(ctx,
-				'BsMax_Copy_Past_Animation_Temprary_Object')
+				'BsMax_Copy_Past_Animation_Temprary_Object'
+			)
+			
 			bpy.ops.object.make_links_data(type='ANIMATION')
 			self.send_to_buffer(target)
 		
@@ -93,15 +99,16 @@ class View3D_OT_Copy_Data(Operator):
 
 
 
-classes = [View3D_OT_Copy_Data]
 
 def register_copy_past():
-	for c in classes:
-		bpy.utils.register_class(c)
+	bpy.utils.register_class(View3D_OT_Copy_Data)
+
+
 
 def unregister_copy_past():
-	for c in classes:
-		bpy.utils.unregister_class(c)
+	bpy.utils.unregister_class(View3D_OT_Copy_Data)
+
+
 
 if __name__ == "__main__":
 	register_copy_past()

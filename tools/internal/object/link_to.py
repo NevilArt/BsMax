@@ -161,7 +161,14 @@ def linkto_menu(self, ctx):
 	layout.operator("object.link_to")
 	layout.operator('object.create_upnode')
 
-classes = [Object_OT_Link_to, Object_OT_Unlink, Object_OT_Create_up_node]
+
+
+classes = (
+	Object_OT_Link_to,
+	Object_OT_Unlink,
+	Object_OT_Create_up_node
+)
+
 
 
 def register_link_to():
@@ -171,11 +178,13 @@ def register_link_to():
 	bpy.types.VIEW3D_MT_object_parent.append(linkto_menu)
 
 
+
 def unregister_link_to():
 	bpy.types.VIEW3D_MT_object_parent.remove(linkto_menu)
 
 	for c in classes:
 		bpy.utils.unregister_class(c)
+
 
 
 if __name__ == "__main__":

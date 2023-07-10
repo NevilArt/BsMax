@@ -55,8 +55,9 @@ class NodeGroupe_OT_Import(Operator):
 		# Add to node editor
 		value = 'bpy.data.node_groups["' + self.name + '"]'
 
-		editorType = {'GeometryNodeTree':'GeometryNodeGroup',
-					'ShaderNodeTree':"ShaderNodeGroup"
+		editorType = {
+			'GeometryNodeTree':'GeometryNodeGroup',
+			'ShaderNodeTree':"ShaderNodeGroup"
 		}
 
 		nodeGrroupType = editorType[ctx.area.ui_type]
@@ -73,8 +74,12 @@ class NodeGroupe_OT_Import(Operator):
 def register_presets():
 	bpy.utils.register_class(NodeGroupe_OT_Import)
 
+
+
 def unregister_presets():
 	bpy.utils.unregister_class(NodeGroupe_OT_Import)
+
+
 
 if __name__ == "__main__":
 	register_presets()

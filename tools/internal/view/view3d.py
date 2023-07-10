@@ -14,8 +14,10 @@
 ############################################################################
 
 import bpy
+
 from bpy.types import Operator
-from bpy.props import StringProperty
+
+
 
 class View3D_OT_perespective(Operator):
 	bl_idname = 'view3d.perespective'
@@ -34,16 +36,23 @@ class View3D_OT_perespective(Operator):
 				view_matrix = ctx.area.spaces.active.region_3d.view_matrix
 				r3d.view_perspective = 'PERSP'
 				ctx.area.spaces.active.region_3d.view_matrix = view_matrix
+
 			elif r3d.view_perspective == 'PERSP':
 				r3d.view_perspective = 'ORTHO'
+
 			elif r3d.view_perspective == 'ORTHO':
 				r3d.view_perspective = 'PERSP'
+
 		elif self.mode == 'Perspective':
 			r3d.view_perspective = 'PERSP'
+
 		elif self.mode == 'Orthographic':
 			r3d.view_perspective = 'ORTHO'
+
 		return{'FINISHED'}
-	
+
+
+
 class Object_OT_Viewport_Display(Operator):
 	bl_idname = "object.viewoport_display"
 	bl_label = "Object Viewport Dispaly"
@@ -77,15 +86,26 @@ class Object_OT_Viewport_Display(Operator):
 	def invoke(self,ctx,event):
 		return ctx.window_manager.invoke_props_dialog(self, width=150)
 
-classes = [View3D_OT_perespective, Object_OT_Viewport_Display]
+
+
+classes = (
+	View3D_OT_perespective,
+	Object_OT_Viewport_Display
+)
+
+
 
 def register_view3d():
 	for c in classes:
 		bpy.utils.register_class(c)
 
+
+
 def unregister_view3d():
 	for c in classes:
 		bpy.utils.unregister_class(c)
+
+
 
 if __name__ == "__main__":
 	register_view3d()

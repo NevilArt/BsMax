@@ -1,3 +1,9 @@
+# 0, 1, 1, 20230630
+* Blender 3.6 and later Parent coordinate added to quadmenu (Alt+RMB 3DsMax Mode).
+* Red timeline at starup issue fixed.
+* Issue with Enable/Disable addon in Blender 3.6 fixed.
+* Theme changes (Camera, Empty, Light) color reset on addon disable or remove.
+
 # 0, 1, 1, 20230628
 * Just some bug fixed and new stuff that not completed yet.
 

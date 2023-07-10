@@ -14,6 +14,7 @@
 ############################################################################
 
 import bpy
+
 from bpy.props import FloatProperty, EnumProperty
 
 # Object Mode: Mirror
@@ -73,6 +74,8 @@ def bmaxMirror_Execute_OM(self, ctx):
 			texture_space = False)
 			# ,release_confirm = False)
 
+
+
 class Object_OT_Mirror(bpy.types.Operator):
 	bl_idname = "object.mirror"
 	bl_label = "Mirror"
@@ -127,8 +130,12 @@ class Object_OT_Mirror(bpy.types.Operator):
 		ctx.window_manager.invoke_props_dialog(self)
 		return {'RUNNING_MODAL'}
 
+
+
 def register_mirror():
 	bpy.utils.register_class(Object_OT_Mirror)
+
+
 
 def unregister_mirror():
 	bpy.utils.unregister_class(Object_OT_Mirror)

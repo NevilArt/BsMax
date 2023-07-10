@@ -161,21 +161,27 @@ class Mesh_OT_paste(Operator):
 
 
 
-classes = [
-			Mesh_OT_Chamfer,
-			Mesh_OT_Smart_Select,
-			Mesh_OT_Drag,
-			Mesh_OT_Copy,
-			Mesh_OT_paste
-		]
+classes = (
+	Mesh_OT_Chamfer,
+	Mesh_OT_Smart_Select,
+	Mesh_OT_Drag,
+	Mesh_OT_Copy,
+	Mesh_OT_paste
+)
+
+
 
 def register_edit():
 	for c in classes:
 		bpy.utils.register_class(c)
 
+
+
 def unregister_edit():
 	for c in classes:
 		bpy.utils.unregister_class(c)
+
+
 
 if __name__ == "__main__":
 	register_edit()

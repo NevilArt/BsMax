@@ -14,11 +14,15 @@
 ############################################################################
 
 import bpy
+
 from mathutils import Vector, Matrix
+
 from bpy.types import Menu, Operator
 from bpy.props import EnumProperty
 
 from bsmax.actions import set_origen
+
+
 
 class BoundBox():
 	def __init__(self, obj):

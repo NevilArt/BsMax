@@ -440,15 +440,18 @@ class Anim_OP_Freeze_on(Panel):
 
 
 
-classes = [ Freeze_on_Property,
-			Anim_OT_Set_Key_Filters,
-			Anim_OT_Set_Key,
-			Anim_OT_Frame_Set,
-			Anim_OT_Delete_Key,
-			Anim_OT_Freeze_on,
-			Anim_OP_Freeze_on,
-			Dopesheet_OT_Zoom_Extended
-		]
+classes = (
+	Freeze_on_Property,
+	Anim_OT_Set_Key_Filters,
+	Anim_OT_Set_Key,
+	Anim_OT_Frame_Set,
+	Anim_OT_Delete_Key,
+	Anim_OT_Freeze_on,
+	Anim_OP_Freeze_on,
+	Dopesheet_OT_Zoom_Extended
+)
+
+
 
 def register_animation_key():
 	for c in classes:
@@ -457,11 +460,15 @@ def register_animation_key():
 	bpy.types.Scene.freeze_on = PointerProperty(type=Freeze_on_Property,
 												name='Freeze On')
 
+
+
 def unregister_animation_key():
 	del bpy.types.Scene.freeze_on
 
 	for c in classes:
 		bpy.utils.unregister_class(c)
+
+
 
 if __name__ == '__main__':
 	register_animation_key()

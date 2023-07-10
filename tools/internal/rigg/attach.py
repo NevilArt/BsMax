@@ -12,10 +12,15 @@
 #	You should have received a copy of the GNU General Public License
 #	along with this program.  If not, see <https://www.gnu.org/licenses/>.
 ############################################################################
+
 import bpy
+
 from bpy.types import Operator
-from bsmax.operator import PickOperator
 from bpy.props import EnumProperty, StringProperty
+
+from bsmax.operator import PickOperator
+
+
 
 class Armature_OT_Attach(PickOperator):
 	bl_idname = 'armature.attach'
@@ -26,9 +31,7 @@ class Armature_OT_Attach(PickOperator):
 	@classmethod
 	def poll(self, ctx):
 		if ctx.area.type == 'VIEW_3D':
-			if len(ctx.scene.objects) > 0:
-				if ctx.object != None:
-					return ctx.mode == 'OBJECT' #edit armature
+			return ctx.object and ctx.mode == 'OBJECT' #edit armature
 		return False
 	
 	def convert(self, ctx, obj):
@@ -63,9 +66,8 @@ class Object_TO_Connect_Script_to_Object(Operator):
 	@classmethod
 	def poll(self, ctx):
 		if ctx.area.type == 'VIEW_3D':
-			return ctx.active_object != None
-		else:
-			return False
+			return ctx.active_object
+		return False
 
 	def draw(self, ctx):
 		layout = self.layout
@@ -84,16 +86,15 @@ class Object_TO_Connect_Script_to_Object(Operator):
 
 
 
-
-classes = [Object_TO_Connect_Script_to_Object]
-
 def register_attach():
-	for c in classes:
-		bpy.utils.register_class(c)
+	bpy.utils.register_class(Object_TO_Connect_Script_to_Object)
+
+
 
 def unregister_attach():
-	for c in classes:
-		bpy.utils.unregister_class(c)
+	bpy.utils.unregister_class(Object_TO_Connect_Script_to_Object)
+
+
 
 if __name__ == "__main__":
 	register_attach()

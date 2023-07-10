@@ -190,15 +190,18 @@ class BBone_Add_Controller(Operator):
 		for bone_name in bone_names:
 			create_control_bones(ctx, armature, bone_name)
 
-		return { 'FINISHED'}
+		return {'FINISHED'}
 
 
 
 def register_bendy_bone():
 	bpy.utils.register_class(BBone_Add_Controller)
 
+
+
 def unregister_bendy_bone():
 	bpy.utils.unregister_class(BBone_Add_Controller)
+
 
 
 if __name__ == "__main__":

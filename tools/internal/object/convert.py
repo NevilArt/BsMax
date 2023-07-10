@@ -55,7 +55,8 @@ class Object_OT_Convert_TO(Operator):
 	bl_description = "Simulate 3DsMax Convert To operator"
 	bl_options = {'REGISTER', 'UNDO'}
 
-	target: EnumProperty(default='MESH',
+	target: EnumProperty(
+		default='MESH',
 		items=[
 			('MESH','Mesh',''),
 	 		('CURVE','Curve',''),
@@ -159,15 +160,24 @@ class Object_OT_Join_Plus(Operator):
 
 
 
-classes = (Object_OT_Convert_TO, Object_OT_Join_Plus)
+classes = (
+	Object_OT_Convert_TO,
+	Object_OT_Join_Plus
+)
+
+
 
 def register_convert():
 	for c in classes:
 		bpy.utils.register_class(c)
 
+
+
 def unregister_convert():
 	for c in classes:
 		bpy.utils.unregister_class(c)
+
+
 
 if __name__ == "__main__":
 	register_convert()

@@ -23,8 +23,10 @@ class Object_OT_Snap_Setting(Operator):
 	bl_idname = "object.snap_setting"
 	bl_label = "Snap Setting"
 
-	mode : EnumProperty(name='Mode', default='INCREMENT',
-		items=[('INCREMENT', 'Grid Points',''),
+	mode : EnumProperty(
+		name='Mode', default='INCREMENT',
+		items=[
+			('INCREMENT', 'Grid Points',''),
 			('VERTEX', 'Vertex',''),
 			('VOLUME','Volume',''),
 			('EDGE','Edge/Segment',''),
@@ -37,7 +39,9 @@ class Object_OT_Snap_Setting(Operator):
 
 			('MOVE','Move',''),
 			('ROTATE','Rotate',''),
-			('SCALE','Scale','')])
+			('SCALE','Scale','')
+		]
+		)
 
 	def execute(self, ctx):
 		tool_settings = ctx.scene.tool_settings
@@ -67,6 +71,7 @@ class Object_OT_Snap_Setting(Operator):
 class Snap:
 	def __init__(self, snap_elements, use_snap_translate,
 					use_snap_rotate, use_snap_scale):
+
 		self.snap_elements = snap_elements
 		self.use_snap_translate = use_snap_translate
 		self.use_snap_rotate = use_snap_rotate
@@ -178,19 +183,27 @@ class OBJECT_MT_snap_setting(Menu):
 
 
 
-classes = [Object_OT_Snap_Setting,
+classes = (
+	Object_OT_Snap_Setting,
 	Object_OT_Snap_Toggle,
 	Object_OT_Angel_Snap,
 	Object_OT_Placment,
-	OBJECT_MT_snap_setting]
+	OBJECT_MT_snap_setting
+)
+
+
 
 def register_snap():
 	for c in classes:
 		bpy.utils.register_class(c)
 
+
+
 def unregister_snap():
 	for c in classes:
 		bpy.utils.unregister_class(c)
+
+
 
 if __name__ == "__main__":
 	register_snap()

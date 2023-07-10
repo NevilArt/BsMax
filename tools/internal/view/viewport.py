@@ -27,6 +27,7 @@ from bpy.props import EnumProperty, BoolProperty
 class View3DData:
 	def __init__(self):
 		self._shading_type = 'SOLID'
+
 v3dd = View3DData()
 
 
@@ -56,6 +57,7 @@ class View3D_OT_Wireframe_Toggle(Operator):
 class Lighting_type:
 	def __init__(self):
 		self.shading_type = 'SOLID'
+
 lst = Lighting_type()
 
 
@@ -163,16 +165,17 @@ class View3D_OT_Show_Types_Toggle(Operator):
 	bl_label = "Show Types Toggle"
 	bl_options = {'REGISTER', 'INTERNAL'}
 
-	mode: EnumProperty(name='Type', default='GEOMETRY', 
-					items=[
-							('GEOMETRY', 'Geometry', ""),
-							('EMPTY', 'Empty', ""),
-							('CURVE', 'Curve', ""),
-							('LIGHT', 'Light', ""),
-							('ARMATURE', 'Armature', ''),
-							('CAMERA', 'Camera', ''),
-					]
-			)
+	mode: EnumProperty(
+		name='Type', default='GEOMETRY', 
+		items=[
+			('GEOMETRY', 'Geometry', ""),
+			('EMPTY', 'Empty', ""),
+			('CURVE', 'Curve', ""),
+			('LIGHT', 'Light', ""),
+			('ARMATURE', 'Armature', ''),
+			('CAMERA', 'Camera', ''),
+		]
+	)
 
 	@classmethod
 	def poll(self, ctx):
@@ -240,12 +243,13 @@ class View3D_OT_Random_Object_Color(Operator):
 	bl_options = {'REGISTER', 'UNDO'}
 
 	selected: BoolProperty(name="Selected only", default=False)
-	mode: EnumProperty(name="Mode", default="RAND", 
-						items=[
-							('RAND', 'Random', ''),
-							('UNIQ', 'Unique', '')
-							]
-					)
+	mode: EnumProperty(
+		name="Mode", default="RAND", 
+		items=[
+			('RAND', 'Random', ''),
+			('UNIQ', 'Unique', '')
+		]
+	)
 
 	@classmethod
 	def poll(self, ctx):
@@ -278,8 +282,10 @@ class View3D_OT_Setting(Operator):
 	bl_label = 'Setting'
 	bl_options = {'REGISTER', 'UNDO', 'INTERNAL'}
 
-	name: EnumProperty(name='Name', default='SHADOW',
-		items=[('SHADOW', 'Shadow',''),
+	name: EnumProperty(
+		name='Name', default='SHADOW',
+		items=[
+			('SHADOW', 'Shadow',''),
 			('WIREFRAME', 'Wireframe',''),
 			('SOLID', 'Solid',''),
 			('MATERIAL', 'Material',''),
@@ -296,23 +302,30 @@ class View3D_OT_Setting(Operator):
 			('MIST', 'Mist',''),
 			('use_transform_skip_children', 'Use transform skip children',''),
 			('use_scene_lights_render', 'Use scene lights render',''),
-			('use_scene_world_render', 'Use scene world render','')])
+			('use_scene_world_render', 'Use scene world render','')
+		]
+	)
 
 	def execute(self, ctx):
+		shading = ctx.space_data.shading
+		tool_settings = ctx.scene.tool_settings.use_transform_skip_children
+
 		if self.name in {'WIREFRAME', 'SOLID', 'MATERIAL', 'RENDERED'}:
-			ctx.space_data.shading.type = self.name
+			shading.type = self.name
 		
 		elif self.name in {'COMBINED', 'EMISSION', 'ENVIRONMENT', 'SHADOW',
 			'DIFFUSE_LIGHT', 'DIFFUSE_COLOR', 'SPECULAR_LIGHT', 'SPECULAR_COLOR',
 			'VOLUME_TRANSMITTANCE', 'VOLUME_SCATTER', 'NORMAL', 'MIST'}:
-			ctx.space_data.shading.render_pass = self.name
+			shading.render_pass = self.name
 		
 		elif self.name == 'use_transform_skip_children':
-			ctx.scene.tool_settings.use_transform_skip_children = not ctx.scene.tool_settings.use_transform_skip_children
+			tool_settings.use_transform_skip_children = not tool_settings.use_transform_skip_children
+
 		elif self.name == 'use_scene_lights_render':
-			ctx.space_data.shading.use_scene_lights_render = not ctx.space_data.shading.use_scene_lights_render
+			shading.use_scene_lights_render = not shading.use_scene_lights_render
+
 		elif self.name == 'use_scene_world_render':
-			ctx.space_data.shading.use_scene_world_render = not ctx.space_data.shading.use_scene_world_render
+			shading.use_scene_world_render = not shading.use_scene_world_render
 
 		return {'FINISHED'}
 
@@ -325,17 +338,22 @@ class VIEW3D_MT_Preview(Menu):
 	def draw(self, ctx):
 		layout=self.layout
 		layout.operator_context = 'INVOKE_REGION_WIN'
-		layout.operator("render.opengl",
-						text="Viewport Render Image",
-						icon='RENDER_STILL')
+		layout.operator(
+			"render.opengl",
+			text="Viewport Render Image",
+			icon='RENDER_STILL'
+		)
 
 		layout.operator("render.opengl",
-						text="Viewport Render Animation",
-						icon='RENDER_ANIMATION').animation = True
+			text="Viewport Render Animation",
+			icon='RENDER_ANIMATION'
+		).animation = True
 
-		props = layout.operator("render.opengl",
-								text="Viewport Render Keyframes",
-								icon='RENDER_ANIMATION').animation = True
+		props = layout.operator(
+			"render.opengl",
+			text="Viewport Render Keyframes",
+			icon='RENDER_ANIMATION'
+		).animation = True
 
 		props.render_keyed_only = True
 
@@ -353,7 +371,8 @@ class VIEW3D_MT_ViewLayer(Menu):
 			window, "view_layer",
 			scene, "view_layers",
 			new="scene.view_layer_add",
-			unlink="scene.view_layer_remove")
+			unlink="scene.view_layer_remove"
+		)
 
 
 
@@ -363,19 +382,20 @@ def random_object_color_menu(self, ctx):
 
 
 
-classes = [
-		View3D_OT_Edge_Face_Toggle,
-		View3D_OT_Lighting_Toggle,
-		View3D_OT_Random_Object_Color,
-		View3D_OT_Shade_Selected_Faces,
-		View3D_OT_Show_Statistics,
-		View3D_OT_Show_Types_Toggle,
-		View3D_OT_Setting,
-		View3D_OT_Wireframe_Toggle,
+classes = (
+	View3D_OT_Edge_Face_Toggle,
+	View3D_OT_Lighting_Toggle,
+	View3D_OT_Random_Object_Color,
+	View3D_OT_Shade_Selected_Faces,
+	View3D_OT_Show_Statistics,
+	View3D_OT_Show_Types_Toggle,
+	View3D_OT_Setting,
+	View3D_OT_Wireframe_Toggle,
 
-		VIEW3D_MT_Preview,
-		VIEW3D_MT_ViewLayer	
-	]
+	VIEW3D_MT_Preview,
+	VIEW3D_MT_ViewLayer	
+)
+
 
 
 def register_viewport():
@@ -385,11 +405,13 @@ def register_viewport():
 	bpy.types.VIEW3D_MT_object_showhide.append(random_object_color_menu)
 
 
+
 def unregister_viewport():
 	bpy.types.VIEW3D_MT_object_showhide.remove(random_object_color_menu)
 
 	for c in classes:
 		bpy.utils.unregister_class(c)
+
 
 
 if __name__ == "__main__":

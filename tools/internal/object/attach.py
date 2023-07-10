@@ -12,6 +12,7 @@
 #	You should have received a copy of the GNU General Public License
 #	along with this program.  If not, see <https://www.gnu.org/licenses/>.
 ############################################################################
+
 import bpy
 
 from bpy.types import Operator
@@ -107,15 +108,24 @@ class Object_TO_Delete_Plus(Operator):
 
 
 
-classes = (Object_OT_Attach, Object_TO_Delete_Plus)
+classes = (
+	Object_OT_Attach,
+	Object_TO_Delete_Plus
+)
+
+
 
 def register_attach():
 	for c in classes:
 		bpy.utils.register_class(c)
 
+
+
 def unregister_attach():
 	for c in classes:
 		bpy.utils.unregister_class(c)
+
+
 
 if __name__ == '__main__':
 	register_attach()

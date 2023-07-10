@@ -263,13 +263,15 @@ def lattice_menu(self, ctx):
 
 
 
-classes = [Lattice_OT_Set_On_Selection,
+classes = (
+	Lattice_OT_Set_On_Selection,
 	Modifier_OT_Lattice_2x2x2_Set,
 	Modifier_OT_Lattice_3x3x3_Set,
 	Modifier_OT_Lattice_4x4x4_Set,
 	Modifier_OT_FFD_2x2x2_Set,
 	Modifier_OT_FFD_3x3x3_Set,
-	Modifier_OT_FFD_4x4x4_Set]
+	Modifier_OT_FFD_4x4x4_Set
+)
 
 def register_lattice(preferences):
 	global lattice_data

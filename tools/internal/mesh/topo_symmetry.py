@@ -16,11 +16,15 @@
 import bpy, bmesh
 from bpy.types import Operator
 
+
+
 class Vertex:
 	def __init__(self):
 		self.index = 0
 		self.edges = []
 		self.faces = []
+
+
 
 class Edge:
 	def __init__(self):
@@ -28,11 +32,15 @@ class Edge:
 		self.verts = []
 		self.faces = []
 
+
+
 class Face:
 	def __init__(self):
 		self.index = 0
 		self.verts = []
 		self.edges = []
+
+
 
 class Mesh:
 	def __init__(self, data):
@@ -54,6 +62,8 @@ class Mesh:
 			for i,v in enumerate(face.verts):
 				pass
 			self.polygons.append(face)
+
+
 
 class Fast_Mesh:
 	def __init__(self, owner):
@@ -97,6 +107,8 @@ class Fast_Mesh:
 		bm.select_flush_mode()
 		bmesh.update_edit_mesh(data)
 
+
+
 class Mesh_OT_Topo_Symmetry(Operator):
 	bl_idname = "mesh.topo_symmetry"
 	bl_label = "Topo Symmetry"
@@ -124,11 +136,16 @@ class Mesh_OT_Topo_Symmetry(Operator):
 	# 	return ctx.window_manager.invoke_props_dialog(self)
 
 
+
 def register_topo():
 	bpy.utils.register_class(Mesh_OT_Topo_Symmetry)
 
+
+
 def unregister_topo():
 	bpy.utils.unregister_class(Mesh_OT_Topo_Symmetry)
+
+
 
 if __name__ == "__main__":
 	register_topo()

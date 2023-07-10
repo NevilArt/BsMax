@@ -14,7 +14,7 @@
 ############################################################################
 
 import bpy
-from bpy_extras.view3d_utils import region_2d_to_location_3d,location_3d_to_region_2d
+# from bpy_extras.view3d_utils import region_2d_to_location_3d,location_3d_to_region_2d
 
 # def obj_ray_cast(obj, matrix):
 # 	"""Wrapper for ray casting that moves the ray into object space"""
@@ -58,21 +58,29 @@ def view_pan(ctx,x,y):
 	print("Pan")
 	pass
 
+
+
 def view_orbit(ctx,x,y):
 	#bpy.ops.view3d.rotate('INVOKE_DEFAULT')
 	print("Orbit")
 	pass
+
+
 
 def view_dolly(ctx,x,y):
 	#bpy.ops.view3d.dolly('INVOKE_DEFAULT')
 	print("dolly")
 	pass
 
+
+
 def view_zoom(ctx,x,y):
 	val = ctx.space_data.lens + y
 	val = 250 if val > 250 else val
 	val = 1 if val < 1 else val
 	ctx.space_data.lens = val
+
+
 
 class View2D_OT_3DsMax_Navigation(bpy.types.Operator):
 	bl_idname = "view3d.max_navigation"
@@ -142,8 +150,12 @@ class View2D_OT_3DsMax_Navigation(bpy.types.Operator):
 		ctx.window_manager.modal_handler_add(self)
 		return {'RUNNING_MODAL'}
 
+
+
 def register_navigation():
 	bpy.utils.register_class(View2D_OT_3DsMax_Navigation)
+
+
 
 def unregister_navigation():
 	bpy.utils.unregister_class(View2D_OT_3DsMax_Navigation)

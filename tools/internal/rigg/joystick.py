@@ -73,13 +73,13 @@ def create_rectangle_frame_Mesh(ctx, mode, rectangle):
 
 	""" fix orient """
 	bpy.ops.transform.rotate(
-			value=-1.5708,
-			orient_axis='X',
-			orient_type='LOCAL',
-			orient_matrix=((1, 0, 0), (0, 1, 0), (0, 0, 1)),
-			orient_matrix_type='LOCAL',
-			constraint_axis=(True, False, False),
-		)
+		value=-1.5708,
+		orient_axis='X',
+		orient_type='LOCAL',
+		orient_matrix=((1, 0, 0), (0, 1, 0), (0, 0, 1)),
+		orient_matrix_type='LOCAL',
+		constraint_axis=(True, False, False),
+	)
 
 	""" convert (curve) frame to mesh """
 	bpy.ops.object.mode_set(mode='OBJECT', toggle=False)
@@ -128,6 +128,7 @@ def catche_joy_mesh(ctx):
 	
 	if ctx.mode != 'OBJECT':
 		bpy.ops.object.mode_set(mode='OBJECT', toggle=False)
+	
 	# Create new one
 	bpy.ops.mesh.primitive_circle_add(radius=1, location=(0,0,0), vertices=16)
 	joy_mesh = ctx.active_object
@@ -138,6 +139,7 @@ def catche_joy_mesh(ctx):
 	bpy.ops.object.mode_set(mode='OBJECT', toggle=False)
 	collection = catche_collection(ctx, "Joystick_Meshes")
 	move_to_collection(joy_mesh, collection)
+	
 	return joy_mesh
 
 
@@ -172,7 +174,6 @@ def create_armature(ctx, name, frame_mesh, joy_mesh,
 		joystick.pose.bones['Joy'].custom_shape_scale_xyz = [joy_radius, joy_radius, 1]
 
 	set_as_active_object(ctx, joystick)
-
 
 	return joystick
 
@@ -633,7 +634,6 @@ class Rigg_TO_Joystick_Shapekey_Connector(Operator):
 
 
 
-
 def joystick_connectore_menu(self, ctx):
 	layout = self.layout
 	layout.separator()
@@ -643,18 +643,26 @@ def joystick_connectore_menu(self, ctx):
 
 
 
-classes = [Rigg_TO_Joystick_Creator,
-	Rigg_TO_Joystick_Shapekey_Connector]
+classes = (
+	Rigg_TO_Joystick_Creator,
+	Rigg_TO_Joystick_Shapekey_Connector
+)
+
+
 
 def register_joystic():
 	for c in classes:
 		bpy.utils.register_class(c)
 	bpy.types.VIEW3D_MT_make_links.append(joystick_connectore_menu)
 
+
+
 def unregister_joystic():
 	bpy.types.VIEW3D_MT_make_links.remove(joystick_connectore_menu)
 	for c in classes:
 		bpy.utils.unregister_class(c)
+
+
 
 if __name__ == '__main__':
 	register_joystic()

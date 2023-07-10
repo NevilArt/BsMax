@@ -255,21 +255,30 @@ class Object_OT_TTI_Call(Operator):
 
 	def execute(self, ctx):
 		if self.switch in {'move','rotate','scale'}:
-		 	bpy.ops.wm.tool_set_by_id(name='builtin.' + self.switch)
+			bpy.ops.wm.tool_set_by_id(name='builtin.' + self.switch)
 		bpy.ops.object.transform_type_in('INVOKE_DEFAULT')
 		return {'FINISHED'}
 
 
 
-classes = [Object_OT_Transform_Type_In, Object_OT_TTI_Call]
+classes = (
+	Object_OT_Transform_Type_In,
+	Object_OT_TTI_Call
+)
+
+
 
 def register_transform_type_in():
 	for c in classes:
 		bpy.utils.register_class(c)
 
+
+
 def unregister_transform_type_in():
 	for c in classes:
 		bpy.utils.unregister_class(c)
+
+
 
 if __name__ == "__main__":
 	register_transform_type_in()

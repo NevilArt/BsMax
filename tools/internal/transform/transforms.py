@@ -84,6 +84,7 @@ def is_transform_avalible(ctx):
 class Transform_Mode:
 	def __init__(self):
 		self.auto_switch = False
+
 transform_mode = Transform_Mode()
 
 
@@ -252,12 +253,14 @@ class View3D_OT_Tweak_Better(Operator):
 
 
 
-classes = [	View3D_OT_Transform_Gizmo_Size,
-			Object_OT_Auto_Coordinate_Toggle,
-			Object_OT_Move,
-			Object_OT_Rotate,
-			Object_OT_Scale,
-			View3D_OT_Tweak_Better]
+classes = (
+	View3D_OT_Transform_Gizmo_Size,
+	Object_OT_Auto_Coordinate_Toggle,
+	Object_OT_Move,
+	Object_OT_Rotate,
+	Object_OT_Scale,
+	View3D_OT_Tweak_Better
+)
 
 
 
@@ -265,9 +268,13 @@ def register_transforms(preferences):
 	for c in classes:
 		bpy.utils.register_class(c)
 
+
+
 def unregister_transforms():
 	for c in classes:
 		bpy.utils.unregister_class(c)
+
+
 
 if __name__ == "__main__":
 	[bpy.utils.register_class(c) for c in classes]

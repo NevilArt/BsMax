@@ -14,7 +14,9 @@
 ############################################################################
 
 import bpy
+
 from bpy.types import Operator
+
 from bsmax.actions import modifier_add
 from bsmax.state import is_objects_selected
 
@@ -99,17 +101,21 @@ class Modifier_OT_Add_TurboSmooth(Operator):
 
 
 
-classes = [
+classes = (
 	Modifier_OT_Add_Bevel,
 	Modifier_OT_Add_Lathe,
 	Object_OT_Reset_Xform,
 	Modifier_OT_Add_Shell,
 	Modifier_OT_Add_TurboSmooth
-]
+)
+
+
 
 def register_modifier():
 	for c in classes:
 		bpy.utils.register_class(c)
+
+
 
 def unregister_modifier():
 	for c in classes:

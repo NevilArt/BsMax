@@ -14,9 +14,13 @@
 ############################################################################
 
 import bpy
+
+
 from bsmax.state import is_objects_selected
-from bsmax.mouse import ClickPoint, get_click_point_info
+from bsmax.mouse import get_click_point_info
 from bsmax.math import get_axis_constraint
+
+
 
 class Object_OT_Drag_Clone(bpy.types.Operator):
 	bl_idname = "object.drag_clone"
@@ -58,8 +62,12 @@ class Object_OT_Drag_Clone(bpy.types.Operator):
 		ctx.window_manager.modal_handler_add(self)
 		return {'RUNNING_MODAL'}
 
+
+
 def register_dragclone():
 	bpy.utils.register_class(Object_OT_Drag_Clone)
+
+
 
 def unregister_dragclone():
 	bpy.utils.unregister_class(Object_OT_Drag_Clone)

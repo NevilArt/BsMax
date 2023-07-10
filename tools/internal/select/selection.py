@@ -374,6 +374,7 @@ def register_selection():
 	bpy.types.Scene.selection_lock = PointerProperty(type=Selection_lock_Property)
 
 
+
 def unregister_selection():
 	bpy.types.VIEW3D_MT_select_object.remove(prepend_select_menu)
 	bpy.types.VIEW3D_MT_select_object.remove(append_select_menu)
@@ -382,6 +383,8 @@ def unregister_selection():
 
 	for c in classes:
 		bpy.utils.unregister_class(c)
+
+
 
 if __name__ == "__main__":
 	register_selection()

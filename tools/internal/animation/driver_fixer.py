@@ -15,6 +15,8 @@
 import bpy
 from bpy.types import Operator
 
+
+
 class Driver_Reconnect:
 	def get_shapekey_driver(self, obj, name):
 		if hasattr(obj.data.shape_keys.animation_data, 'drivers'):
@@ -63,7 +65,8 @@ class Driver_Reconnect:
 		for obj in bpy.data.objects:
 			if obj.type in {'MESH','CURVE'}:
 				self.fix_shapekey(obj)
-	
+
+
 
 class Anim_TO_Driver_Fixer(Operator):
 	""" Solve overide library issue with drivers """
@@ -79,11 +82,17 @@ class Anim_TO_Driver_Fixer(Operator):
 		dr.update()
 		return{"FINISHED"}
 
+
+
 def register_driver_fixer():
 	bpy.utils.register_class(Anim_TO_Driver_Fixer)
 
+
+
 def unregister_driver_fixer():
 	bpy.utils.unregister_class(Anim_TO_Driver_Fixer)
+
+
 
 if __name__ == "__main__":
 	register_driver_fixer()

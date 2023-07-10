@@ -14,6 +14,7 @@
 ############################################################################
 
 import bpy
+
 from bpy.props import (StringProperty, FloatProperty, IntProperty,
 	BoolProperty, EnumProperty)
 
@@ -59,9 +60,11 @@ def read_info(self, ctx):
 	if obj.type == 'MESH':
 		self.verteces = len(obj.data.vertices)
 		self.faces = len(obj.data.polygons)
+
 	elif obj.type == 'CURVE':
 		self.verteces = get_knots_count(obj)
 		self.faces = len(obj.data.splines)
+
 	elif obj.type == 'ARMATURE':
 		normal_bone, deform_bone = get_bone_count(obj)
 		self.verteces = normal_bone
@@ -316,26 +319,45 @@ class Object_OT_Properties(bpy.types.Operator):
 	ignore_extents: BoolProperty(name="Ignore Extents", update=ignore_extents)
 	never_degread: BoolProperty(name="Never Degread", update=never_degread)
 	show_frozenin_gray: BoolProperty(name="Show Frozen In Gray")
-	vertices_chanel_display: BoolProperty(name="Vertices Chanel Display", update=vertices_chanel_display)
+	
+	vertices_chanel_display: BoolProperty(
+		name="Vertices Chanel Display",
+		update=vertices_chanel_display
+	)
+	
 	vertex_chanel: EnumProperty(
 		name ='', description ='mode', default ='VER_COL',
 		update = vertices_chanel_display,
-		items =[('VER_COL', 'Vertex Color', ''),
-				 ('VER_ILLUM', 'Vertex Illumination', ''),
-				 ('VER_ALPHA', 'Vertex Alpha', ''),
-				 ('MAP_CHANEL', 'Map Chanel Color', ''),
-				 ('SOFTSEL_COL', 'Soft Selection Colore', '')])
+		items =[
+			('VER_COL', 'Vertex Color', ''),
+			('VER_ILLUM', 'Vertex Illumination', ''),
+			('VER_ALPHA', 'Vertex Alpha', ''),
+			('MAP_CHANEL', 'Map Chanel Color', ''),
+			('SOFTSEL_COL', 'Soft Selection Colore', '')
+		]
+	)
+
 	map_chanel: IntProperty(name="Map Chanel", min=1, max=999, update=map_chanel)
 
 	#Rendering Control
 	renderable: BoolProperty(name="Renderable", update=renderable)
 	inherit_visablity: BoolProperty(name="Inherit Visablity", update=inherit_visablity)
 	visable_to_camera: BoolProperty(name="Visable to Camera", update=visable_to_camera)
-	visable_to_reflection_refraction: BoolProperty(name="Visable to Reflection/Refraction",update=visable_to_reflection_refraction)
+	
+	visable_to_reflection_refraction: BoolProperty(
+		name="Visable to Reflection/Refraction",
+		update=visable_to_reflection_refraction
+	)
+	
 	recive_shadow: BoolProperty(name="Recive Shadow", update=recive_shadow)
 	cast_shadow: BoolProperty(name="Cast Shadow", update=cast_shadow)
 	apply_atmospherics: BoolProperty(name="Apply Atmospherics", update=apply_atmospherics)
-	render_occluded_objects: BoolProperty(name="Render Occluded Objects", update=render_occluded_objects)
+	
+	render_occluded_objects: BoolProperty(
+		name="Render Occluded Objects",
+		update=render_occluded_objects
+	)
+	
 	shadow_catcher: BoolProperty(name="Shadow Catcher", update=shadow_catcher)
 	hold_out: BoolProperty(name="Holdout", update=hold_out)
 	
@@ -374,12 +396,15 @@ class Object_OT_Properties(bpy.types.Operator):
 			row.prop(self,"dim_y")
 			row.prop(self,"dim_z")
 			row =box.row()
+
 			if obj.type == 'MESH':
 				row.prop(self,"verteces", text='Vertexes')
 				row.prop(self,"faces", text='Faces')
+
 			elif obj.type == 'CURVE':
 				row.prop(self,"verteces", text='Bezier point')
 				row.prop(self,"faces", text='Splines')
+
 			elif obj.type == 'ARMATURE':
 				row.prop(self,"verteces", text='Bones (NonDeform)')	
 				row.prop(self,"faces", text='Bones (Deform)')
@@ -464,8 +489,12 @@ class Object_OT_Properties(bpy.types.Operator):
 def register_object_properties():
 	bpy.utils.register_class(Object_OT_Properties)
 
+
+
 def unregister_object_properties():
 	bpy.utils.unregister_class(Object_OT_Properties)
+
+
 
 if __name__ =="__main__":
 	register_object_properties()

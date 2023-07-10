@@ -15,8 +15,11 @@
 from .videp_sequence_ediotor import register_video_sequence_ediotor, unregister_video_sequence_ediotor
 
 
+
 def register_vse():
 	register_video_sequence_ediotor()
+
+
 
 def unregister_vse():
 	unregister_video_sequence_ediotor()

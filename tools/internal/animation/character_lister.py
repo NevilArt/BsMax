@@ -18,6 +18,8 @@ from bpy.types import Operator
 from bpy.props import StringProperty
 from bsmax.actions import set_as_active_object
 
+
+
 class CharacterSet:
 	def __init__(self):
 		self.characters = []
@@ -162,11 +164,13 @@ def library_override_menu(self, ctx):
 
 
 
-classes = [Armature_TO_Character_Hide,
+classes = (
+	Armature_TO_Character_Hide,
 	Armature_TO_Character_Isolate,
 	Armature_TO_Character_Rest,
 	Anim_TO_Character_Lister,
-	Object_TO_Make_Override_Library_plus]
+	Object_TO_Make_Override_Library_plus
+)
 
 def register_character_lister():
 	for c in classes:

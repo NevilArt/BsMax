@@ -104,5 +104,7 @@ class BMAX_PickViewportBackground_MT(Menu):
 def register_viewportbg():
 	bpy.utils.register_class(View3D_OT_Background)
 
+
+
 def unregister_viewportbg():
 	bpy.utils.unregister_class(View3D_OT_Background)

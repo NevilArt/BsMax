@@ -30,11 +30,17 @@ class BsMax_MT_rigg_tools(bpy.types.Menu):
 		layout.operator("bone.add_bbone_controller", icon='IPO_EASE_IN_OUT')
 		# layout.operator("rigg.eye_target_creator",icon="HIDE_OFF")
 
+
+
 def rigg_menu(self, ctx):
 	self.layout.menu("BSMAX_MT_riggtools")
 
+
+
 def register_menu():
 	bpy.utils.register_class(BsMax_MT_rigg_tools)
+
+
 
 def unregister_menu():
 	bpy.utils.unregister_class(BsMax_MT_rigg_tools)

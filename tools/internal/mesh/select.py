@@ -46,6 +46,8 @@ class Mesh_OT_Select_Element_Toggle(Operator):
 		msm.active = not msm.active
 		return{"FINISHED"}
 
+
+
 def view3d_select(mode,x,y):
 	if mode == 'SET':
 		bpy.ops.view3d.select(deselect_all=True, location=(x, y))
@@ -53,6 +55,8 @@ def view3d_select(mode,x,y):
 		bpy.ops.view3d.select(toggle=True, location=(x, y))
 	elif mode == 'SUB':
 		bpy.ops.view3d.select(deselect=True, location=(x, y))
+
+
 
 def mesh_select(mode):
 	global msm
@@ -79,6 +83,8 @@ def mesh_select(mode):
 		bpy.ops.mesh.select_linked_pick('INVOKE_DEFAULT',
 			deselect=True, delimit=delimit)
 
+
+
 def curve_select(mode):
 	if mode == 'SET':
 		bpy.ops.curve.select_all(action='DESELECT')
@@ -88,6 +94,8 @@ def curve_select(mode):
 	elif mode == 'SUB':
 		bpy.ops.curve.select_linked_pick('INVOKE_DEFAULT',deselect=True)
 
+
+
 def particle_select(mode):
 	if mode == 'SET':
 		bpy.ops.particle.select_all(action='DESELECT')
@@ -96,6 +104,8 @@ def particle_select(mode):
 		bpy.ops.particle.select_linked_pick('INVOKE_DEFAULT',deselect=False)
 	elif mode == 'SUB':
 		bpy.ops.particle.select_linked_pick('INVOKE_DEFAULT',deselect=True)
+
+
 
 class Mesh_OT_Select_Element_Setting(Operator):
 	bl_idname = "mesh.select_element_setting"
@@ -243,19 +253,27 @@ class Particle_OT_Select_Max(Operator):
 
 
 
-classes = [	Mesh_OT_Select_Element_Toggle,
-			Mesh_OT_Select_Element_Setting,
-			Mesh_OT_Select_Max,
-			Curve_OT_Select_Max,
-			Particle_OT_Select_Max]
+classes = (
+	Mesh_OT_Select_Element_Toggle,
+	Mesh_OT_Select_Element_Setting,
+	Mesh_OT_Select_Max,
+	Curve_OT_Select_Max,
+	Particle_OT_Select_Max
+)
+
+
 
 def register_select():
 	for c in classes:
 		bpy.utils.register_class(c)
 
+
+
 def unregister_select():
 	for c in classes:
 		bpy.utils.unregister_class(c)
+
+
 
 if __name__ == "__main__":
 	register_select()

@@ -14,7 +14,10 @@
 ############################################################################
 
 import bpy
+
 from bpy.types import Operator
+
+
 
 class Console_OT_Cut(Operator):
 	bl_idname = "console.cut"
@@ -24,8 +27,12 @@ class Console_OT_Cut(Operator):
 		bpy.ops.console.delete('INVOKE_DEFAULT')
 		return {'FINISHED'}
 
+
+
 def register_console():
 	bpy.utils.register_class(Console_OT_Cut)
+
+
 
 def unregister_console():
 	bpy.utils.unregister_class(Console_OT_Cut)

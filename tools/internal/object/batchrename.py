@@ -12,10 +12,15 @@
 #	You should have received a copy of the GNU General Public License
 #	along with this program.  If not, see <https://www.gnu.org/licenses/>.
 ############################################################################
+
 import bpy
+
 from bpy.types import Operator
 from bpy.props import BoolProperty, StringProperty, IntProperty, EnumProperty
+
 from bsmax.math import get_index_str
+
+
 
 def get_active_collection(ctx):
 	active_layer_name = ctx.view_layer.active_layer_collection.name
@@ -24,6 +29,8 @@ def get_active_collection(ctx):
 	else:
 		collection = bpy.data.collections[active_layer_name]
 	return collection
+
+
 
 def arrange_selected_items(active, selected):
 	# bring the active object to first in array
@@ -35,6 +42,8 @@ def arrange_selected_items(active, selected):
 	# if len(selected) == 0 and active != None:
 	# 	items.append(active)
 	return items
+
+
 
 class WM_OT_Multi_Item_Rename(Operator):
 	bl_idname = "wm.multi_item_rename" 
@@ -192,11 +201,17 @@ class WM_OT_Multi_Item_Rename(Operator):
 
 		return {'FINISHED'}
 
+
+
 def register_batchrename():
 	bpy.utils.register_class(WM_OT_Multi_Item_Rename)
 
+
+
 def unregister_batchrename():
 	bpy.utils.unregister_class(WM_OT_Multi_Item_Rename)
+
+
 
 if __name__ == "__main__":
 	register_batchrename()

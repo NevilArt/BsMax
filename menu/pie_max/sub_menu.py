@@ -12,6 +12,7 @@
 #	You should have received a copy of the GNU General Public License
 #	along with this program.  If not, see <https://www.gnu.org/licenses/>.
 ############################################################################
+
 from bpy.utils import register_class, unregister_class
 from bpy.types import Menu
 
@@ -44,9 +45,6 @@ class VIEW3D_MT_PIE_Transform(Menu):
 		# layout.operator("", text="Driver Editor...")
 		# layout.operator("", text="NLA Editor...")
 		# layout.operator("", text="Text Editor...")
-		# if version > (2, 92, 0):
-		# 	layout.operator("", text="Move")
-		# 	layout.operator("", text="Geometry Node Editor...")
 		# layout.operator("", text="Conver to")
 
 
@@ -69,9 +67,13 @@ class VIEW3D_MT_PIE_Create_Light(Menu):
 		layout.operator("create.light_probe_grid",
 			text="Irradiance Volume", icon="LIGHTPROBE_GRID")
 
-classes = [
+
+
+classes = (
 	VIEW3D_MT_PIE_Transform,
-	VIEW3D_MT_PIE_Create_Light]
+	VIEW3D_MT_PIE_Create_Light
+)
+
 
 
 def register_sub_menu():
@@ -79,9 +81,11 @@ def register_sub_menu():
 		register_class(c)
 
 
+
 def unregister_sub_menu():
 	for c in classes:
 		unregister_class(c)
+
 
 
 if __name__ == "__main__":

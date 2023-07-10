@@ -14,7 +14,9 @@
 ############################################################################
 
 import bpy
+
 from bpy.types import Operator
+
 from bsmax.actions import modifier_add
 from bsmax.state import is_objects_selected
 
@@ -33,17 +35,13 @@ class Modifier_OT_Add_Revolve(Operator):
 		modifier_add(ctx,ctx.selected_objects, 'SCREW', name='Revolve')
 		return {'FINISHED'}
 
-classes = [Modifier_OT_Add_Revolve]
-
 
 
 def register_modifier():
-	for c in classes:
-		bpy.utils.register_class(c)
+	bpy.utils.register_class(Modifier_OT_Add_Revolve)
 
 
 
 def unregister_modifier():
-	for c in classes:
-		if hasattr(bpy.types, c.bl_idname):
-			bpy.utils.unregister_class(c)
+	if hasattr(bpy.types, Modifier_OT_Add_Revolve.bl_idname):
+		bpy.utils.unregister_class(Modifier_OT_Add_Revolve)

@@ -14,7 +14,10 @@
 ############################################################################
 
 import bpy
+
 from bpy.types import Operator
+
+
 
 class Text_OT_Smart_Save(Operator):
 	bl_idname = "text.smart_save"
@@ -28,11 +31,17 @@ class Text_OT_Smart_Save(Operator):
 			bpy.ops.text.save('INVOKE_DEFAULT')
 		return {'FINISHED'}
 
+
+
 def register_text_editor():
 	bpy.utils.register_class(Text_OT_Smart_Save)
 
+
+
 def unregister_text_editor():
 	bpy.utils.unregister_class(Text_OT_Smart_Save)
+
+
 
 if __name__ == "__main__":
 	register_text_editor()

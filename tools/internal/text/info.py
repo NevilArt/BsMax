@@ -14,7 +14,10 @@
 ############################################################################
 
 import bpy
+
 from bpy.types import Operator
+
+
 
 class Info_OT_Clear(Operator):
 	bl_idname = "info.clear"
@@ -23,6 +26,8 @@ class Info_OT_Clear(Operator):
 		bpy.ops.info.select_all(action='SELECT')
 		bpy.ops.info.report_delete('INVOKE_DEFAULT')
 		return {'FINISHED'}
+
+
 
 class Info_OT_NewScript(Operator):
 	bl_idname = "info.new_script"
@@ -41,12 +46,12 @@ class Info_OT_NewScript(Operator):
 		# 		bpy.ops.text.paste()
 		return {'FINISHED'}
 
-classes = [Info_OT_Clear]#,Info_OT_NewScript]
+
 
 def register_info():
-	for c in classes:
-		bpy.utils.register_class(c)
+	bpy.utils.register_class(Info_OT_Clear)
+
+
 
 def unregister_info():
-	for c in classes:
-		bpy.utils.unregister_class(c)
+	bpy.utils.unregister_class(Info_OT_Clear)

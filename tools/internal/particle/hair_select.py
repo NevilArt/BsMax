@@ -12,7 +12,9 @@
 #	You should have received a copy of the GNU General Public License
 #	along with this program.  If not, see <https://www.gnu.org/licenses/>.
 ############################################################################
+
 import bpy
+
 from bpy.types import Operator
 from bpy.props import BoolProperty, FloatProperty
 
@@ -54,11 +56,17 @@ class Particle_OT_Hair_Select(Operator):
 	def invoke(self,ctx,event):
 		return ctx.window_manager.invoke_props_dialog(self)
 
+
+
 def register_hair_symmetry():
 	bpy.utils.register_class(Particle_OT_Hair_Select)
 
+
+
 def unregister_hair_symmetry():
 	bpy.utils.unregister_class(Particle_OT_Hair_Select)
+
+
 
 if __name__ =="__main__":
 	register_hair_symmetry()

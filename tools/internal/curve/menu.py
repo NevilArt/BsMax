@@ -15,6 +15,8 @@
 
 import bpy
 
+
+
 def controlpoints_menu(self, ctx):
 	layout = self.layout
 	layout.separator()
@@ -22,6 +24,8 @@ def controlpoints_menu(self, ctx):
 	layout.operator("curve.break",text="Break")
 	layout.operator("curve.make_first",text="Make First")
 	layout.operator("curve.chamfer",text="Chamfer/Fillet").typein=True
+
+
 
 def segments_menu(self, ctx):
 	layout = self.layout
@@ -43,10 +47,14 @@ def segments_menu(self, ctx):
 	bc = layout.operator("curve.boolean",text="Boolean (Cut)")
 	bc.typein = False
 	bc.mode = 'CUT'
-		
+
+
+
 def register_menu():
 	bpy.types.VIEW3D_MT_edit_curve_ctrlpoints.append(controlpoints_menu)
 	bpy.types.VIEW3D_MT_edit_curve_segments.append(segments_menu)
+
+
 
 def unregister_menu():
 	bpy.types.VIEW3D_MT_edit_curve_ctrlpoints.remove(controlpoints_menu)

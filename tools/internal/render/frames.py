@@ -14,8 +14,11 @@
 ############################################################################
 
 import bpy
+
 from bpy.types import Panel
 from bpy.app.handlers import persistent
+
+
 
 class RENDER_PT_frames(Panel):
 	bl_space_type = 'PROPERTIES'
@@ -33,6 +36,8 @@ class RENDER_PT_frames(Panel):
 		row = col.row(align=True)
 		row.prop(ctx.scene, "frames", text="")
 		row.prop(ctx.scene, "use_frames", text="")
+
+
 
 class BitArray:
 	def __init__(self):
@@ -62,6 +67,8 @@ class BitArray:
 						self.ints.append(i)
 		self.ints.sort()
 
+
+
 class Scene_Data:
 	def __init__(self):
 		self.frame_start = 0
@@ -75,7 +82,9 @@ class Scene_Data:
 
 sd = Scene_Data()
 ba = BitArray()
-	
+
+
+
 @persistent
 def frames_render_init(scene):
 	if scene.use_frames:
@@ -85,10 +94,14 @@ def frames_render_init(scene):
 		scene.frame_start = min(ba.ints)
 		scene.frame_end = max(ba.ints)
 
+
+
 @persistent
 def frames_render_complete(scene):
 	if scene.use_frames:
 		sd.restore(scene)
+
+
 
 @persistent
 def check_render_frame(scene):
@@ -96,7 +109,9 @@ def check_render_frame(scene):
 		if len(ba.ints) > 0:
 			scene.frame_current = ba.ints[0]
 			ba.ints.pop(0)
-		
+
+
+
 def register_frames():
 	bpy.types.Scene.frames = bpy.props.StringProperty()
 	bpy.types.Scene.use_frames = bpy.props.BoolProperty()
@@ -105,11 +120,15 @@ def register_frames():
 	bpy.app.handlers.render_complete.append(frames_render_complete)
 	bpy.app.handlers.render_pre.append(check_render_frame)
 
+
+
 def unregister_frames():
 	bpy.app.handlers.render_pre.remove(check_render_frame)
 	bpy.app.handlers.render_init.remove(frames_render_init)
 	bpy.app.handlers.render_complete.remove(frames_render_complete)
 	bpy.utils.unregister_class(RENDER_PT_frames)
+
+
 
 if __name__ == "__main__":
 	try:

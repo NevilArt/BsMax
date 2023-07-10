@@ -1,5 +1,5 @@
 import bpy
-from bui import Dialog,Button,Numeric,TextBox,CheckBox
+from bui import Dialog, Button, Numeric, TextBox, CheckBox
 
 def btn2_clicked():
 	bpy.ops.mesh.primitive_cube_add(size=2, enter_editmode=False, location=(0, 0, 0))

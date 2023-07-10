@@ -15,6 +15,8 @@
 import bpy
 from bpy.types import Operator
 
+
+
 def fill_sequence_gaps(seq, size):
 	ret = []
 	for i in range(len(seq)):
@@ -29,7 +31,9 @@ def fill_sequence_gaps(seq, size):
 					for j in range(seq[i] + 1, seq[i + 1] - 1):
 						ret.append(j)
 	return ret
-	
+
+
+
 def remove_tinys(seq, size):
 	ret,i = [], 1
 	while i < len(seq):
@@ -54,6 +58,8 @@ def remove_tinys(seq, size):
 		ret.append(seq[-1])
 	return ret
 
+
+
 def frames_to_string(frames):
 	print("-Frames> ",frames)
 	string = ''
@@ -72,11 +78,15 @@ def frames_to_string(frames):
 			string += str(frames[-1])
 	return string
 
+
+
 def has_right(frames, index):
 	if index < len(frames):
 		if frames[index] + 1 == frames[index + 1]:
 			return True
 	return False
+
+
 
 def has_left(frames, index):
 	if index > 0:
@@ -84,17 +94,23 @@ def has_left(frames, index):
 			return True
 	return False
 
+
+
 def is_right_stand(frames, index, count):
 	if index + 1 < len(frames):
 		if frames[index] + count < frames[index + 1]:
 			return True
 	return False
 
+
+
 def is_left_stand(frames, index, count):
 	if index - 1 > 0:
 		if frames[index - 1] + count < frames[index]:
 			return True
 	return False
+
+
 
 def is_right_seq(frames, index, count):
 	ret = True
@@ -104,6 +120,8 @@ def is_right_seq(frames, index, count):
 			if not ret:
 				break
 	return ret
+
+
 
 def is_left_seq(frames, index, count):
 	ret = True
@@ -115,6 +133,8 @@ def is_left_seq(frames, index, count):
 		else:
 			return False
 	return ret
+
+
 
 class Transform_Data:
 	def __init__(self):
@@ -129,6 +149,8 @@ class Transform_Data:
 	@property
 	def rotation(self):
 		return self.matrix_world.to_euler()
+
+
 
 def collect_transform_data(ctx, obj, first, last):
 	transform_data = []
@@ -153,6 +175,8 @@ def collect_transform_data(ctx, obj, first, last):
 	ctx.scene.frame_current = frame_current
 	return transform_data
 
+
+
 def compar_params(cam, time1, time2):
 	""" this function checs the FOV changes """
 	# Ret = True
@@ -165,17 +189,23 @@ def compar_params(cam, time1, time2):
 	# return Ret
 	return True
 
+
+
 def compar_f(f1, f2, tol):
 	if f1 != f2:
 		heigher, lower = [f1, f2] if f1 >= f2 else [f2, f1]
 		return heigher <= lower + tol
 	return True
 
+
+
 def compar_p3(p1, p2, tol):
 	x = compar_f(p1.x, p2.x, tol)
 	y = compar_f(p1.y, p2.y, tol)
 	z = compar_f(p1.z, p2.z, tol)
 	return  x and y and z
+
+
 
 def compar_transform(tr1, tr2, tol):
 	if tr1 != None and tr2 != None:
@@ -186,10 +216,13 @@ def compar_transform(tr1, tr2, tol):
 		return cp
 	return False
 
+
+
 def collect_move_frames(ctx, cam):
 	first, last = ctx.scene.frame_start, ctx.scene.frame_end
 	transform_datas = collect_transform_data(ctx, cam, first, last)
 	frames = []
+
 	for i in range(len(transform_datas)-1):
 		current_frame = transform_datas[i]
 		next_frame = transform_datas[i+1]
@@ -206,7 +239,10 @@ def collect_move_frames(ctx, cam):
 	""" Make sure end frame is in list """
 	if not last in frames:
 		frames.append(last)
+
 	return frames
+
+
 
 def catch_camera_frames(ctx):
 	cam = ctx.scene.camera
@@ -220,7 +256,9 @@ def catch_camera_frames(ctx):
 		print("-- remove_tinys >",frames)
 		string = frames_to_string(frames)
 		""" Note: back burner has 498 character limit for frames list string """
+
 	return string
+
 
 
 class Camera_OT_Catch_Frames(Operator):
@@ -239,11 +277,16 @@ class Camera_OT_Catch_Frames(Operator):
 		return{"FINISHED"}
 
 
+
 def register_camera_catcher():
 	bpy.utils.register_class(Camera_OT_Catch_Frames)
 
+
+
 def unregister_camera_catcher():
 	bpy.utils.unregister_class(Camera_OT_Catch_Frames)
+
+
 
 if __name__ == "__main__":
 	register_camera_catcher()

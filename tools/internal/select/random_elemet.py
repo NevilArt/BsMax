@@ -14,7 +14,10 @@
 ############################################################################
 
 import bpy, bmesh
+
 from bpy.types import Operator
+
+
 
 class Object_OT_Select_random_element(Operator):
 	bl_idname = "object.select_random_element"
@@ -43,11 +46,17 @@ class Object_OT_Select_random_element(Operator):
 			obj.data.polygons[index].select
 		return{"FINISHED"}
 
+
+
 def register_random_element():
 	bpy.utils.register_class(Object_OT_Select_random_element)
 
+
+
 def unregister_random_element():
 	bpy.utils.unregister_class(Object_OT_Select_random_element)
+
+
 
 if __name__ == "__main__":
 	register_random_element()

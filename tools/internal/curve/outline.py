@@ -20,6 +20,8 @@ from bpy.props import BoolProperty, FloatProperty, IntProperty
 # from bsmax.curve import Curve
 from bsmax.operator import CurveTool
 
+
+
 class Curve_OT_Outline(CurveTool):
 	bl_idname = "curve.outline"
 	bl_label = "Outline (Curve)"
@@ -81,8 +83,12 @@ class Curve_OT_Outline(CurveTool):
 		# self.report({'OPERATOR'},'bpy.ops.curve.outline()')
 		pass
 
+
+
 def register_outline():
 	bpy.utils.register_class(Curve_OT_Outline)
+
+
 
 def unregister_outline():
 	bpy.utils.unregister_class(Curve_OT_Outline)

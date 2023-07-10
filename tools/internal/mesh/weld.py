@@ -130,17 +130,25 @@ class Mesh_OT_Weld(Operator):
 
 
 
-classes = [	Mesh_OT_Target_Weld,
-			VIEW3D_MT_edit_mesh_weld,
-			Mesh_OT_Weld]
+classes = (
+	Mesh_OT_Target_Weld,
+	VIEW3D_MT_edit_mesh_weld,
+	Mesh_OT_Weld
+)
+
+
 
 def register_weld():
 	for c in classes:
 		bpy.utils.register_class(c)
 
+
+
 def unregister_weld():
 	for c in classes:
 		bpy.utils.unregister_class(c)
+
+
 
 if __name__ == "__main__":
 	register_weld()

@@ -382,19 +382,29 @@ def render_menu(self, ctx):
 
 
 
-classes = [Render_OT_Light_Lister, 
-		Camera_OT_Actve_By_Name,
-		Render_OT_Camera_Lister]
+classes = (
+	Render_OT_Light_Lister, 
+	Camera_OT_Actve_By_Name,
+	Render_OT_Camera_Lister
+)
+
+
 
 def register_light_lister():
 	for c in classes:
 		bpy.utils.register_class(c)
+
 	bpy.types.TOPBAR_MT_render.append(render_menu)
+
+
 
 def unregister_light_lister():
 	bpy.types.TOPBAR_MT_render.remove(render_menu)
+
 	for c in classes:
 		bpy.utils.unregister_class(c)
+
+
 
 if __name__ == '__main__':
 	register_light_lister()

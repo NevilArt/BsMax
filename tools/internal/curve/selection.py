@@ -12,8 +12,9 @@
 #	You should have received a copy of the GNU General Public License
 #	along with this program.  If not, see <https://www.gnu.org/licenses/>.
 ############################################################################
-from os import stat
+
 import bpy
+
 from bpy.types import Operator
 from bpy.props import EnumProperty, FloatProperty, IntProperty, BoolProperty
 
@@ -191,19 +192,27 @@ def selection_menu(self, ctx):
 
 
 
-classes = [Curve_OT_Select_By_Length,
+classes = (
+	Curve_OT_Select_By_Length,
 	Curve_OT_Select_By_Segment_Count,
-	Curve_OT_Select_Close]
+	Curve_OT_Select_Close
+)
+
+
 
 def register_selection():
 	for c in classes:
 		bpy.utils.register_class(c)
 	bpy.types.VIEW3D_MT_select_edit_curve.append(selection_menu)
 
+
+
 def unregister_selection():
 	bpy.types.VIEW3D_MT_select_edit_curve.remove(selection_menu)
 	for c in classes:
 		bpy.utils.unregister_class(c)
+
+
 
 if __name__ == "__main__":
 	register_selection()

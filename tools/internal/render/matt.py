@@ -14,8 +14,8 @@
 ############################################################################
 
 # this operator is just for test maybe change or remove in future
-
 import bpy
+
 from bpy.types import Operator
 
 
@@ -56,6 +56,8 @@ class Render_OT_Matt_Set(Operator):
 		set_matt(ctx, True)
 		return{'FINISHED'}
 
+
+
 class Render_OT_Mat_Unset(Operator):
 	bl_idname = 'render.matt_unset'
 	bl_label = 'Matt Unset'
@@ -71,16 +73,24 @@ class Render_OT_Mat_Unset(Operator):
 
 
 
-classes = [Render_OT_Matt_Set,
-	Render_OT_Mat_Unset]
+classes = (
+	Render_OT_Matt_Set,
+	Render_OT_Mat_Unset
+)
+
+
 
 def register_matt():
 	for c in classes:
 		bpy.utils.register_class(c)
 
+
+
 def unregister_matt():
 	for c in classes:
 		bpy.utils.unregister_class(c)
+
+
 
 if __name__ == '__main__':
 	register_matt()

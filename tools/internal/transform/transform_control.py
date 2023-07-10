@@ -21,15 +21,14 @@ from bpy.types import Operator, Menu
 from bpy.props import BoolProperty
 
 from bsmax.bsmatrix import (
-    					BsMatrix,
-					    matrix_from_elements,
-						matrix_to_array,
-						array_to_matrix
+				    matrix_from_elements,
+					matrix_to_array,
+					array_to_matrix
 					)
 from bsmax.actions import (
-						freeze_transform,
-						copy_array_to_clipboard,
-						paste_array_from_clipboard
+					freeze_transform,
+					copy_array_to_clipboard,
+					paste_array_from_clipboard
 					)
 
 
@@ -148,7 +147,8 @@ class Object_OT_Transform_Paste(Operator):
 							scale=scale
 			)
 			ctx.object.matrix_world = matrix
-			print(matrix)
+			# print(matrix)
+		
 		return{"FINISHED"}
 
 
@@ -176,22 +176,28 @@ class Object_MT_Object_Paste(Menu):
 
 
 
-classes = [
-			Object_OT_Freeze_Transform,
-			Object_OT_Transform_To_Zero, 
-			Object_OT_Transform_Copy,
-			Object_OT_Transform_Paste,
-			Object_MT_Object_Copy,
-			Object_MT_Object_Paste
-		]
+classes = (
+	Object_OT_Freeze_Transform,
+	Object_OT_Transform_To_Zero, 
+	Object_OT_Transform_Copy,
+	Object_OT_Transform_Paste,
+	Object_MT_Object_Copy,
+	Object_MT_Object_Paste
+)
+
+
 
 def register_transform_control():
 	for c in classes:
 		bpy.utils.register_class(c)
 
+
+
 def unregister_transform_control():
 	for c in classes:
 		bpy.utils.unregister_class(c)
+
+
 
 if __name__ == "__main__":
 	register_transform_control()

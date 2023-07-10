@@ -38,6 +38,7 @@ class ObjectData:
 		self.owner.matrix_world = self.matrix_world
 
 
+
 def get_farest_objects(objs):
 	""" return two farest object in given list """
 	first, last, max_distance = objs[1], objs[2], 0
@@ -240,15 +241,21 @@ classes = (
 	Object_OT_Arrange_Path_picker
 )
 
+
+
 def register_arrange():
 	for c in classes:
 		bpy.utils.register_class(c)
 	bpy.types.VIEW3D_MT_transform_object.append(object_sort_menu)
 
+
+
 def unregister_arrange():
 	bpy.types.VIEW3D_MT_transform_object.remove(object_sort_menu)
 	for c in classes:
 		bpy.utils.unregister_class(c)
+
+
 
 if __name__ == "__main__":
 	register_arrange()

@@ -99,15 +99,15 @@ class Armature_OT_Attach(PickOperator):
 
 
 
-classes = [Armature_OT_Attach]
-
 def register_attach():
-	for c in classes:
-		bpy.utils.register_class(c)
+	bpy.utils.register_class(Armature_OT_Attach)
+
+
 
 def unregister_attach():
-	for c in classes:
-		bpy.utils.unregister_class(c)
+	bpy.utils.unregister_class(Armature_OT_Attach)
+
+
 
 if __name__ == "__main__":
 	register_attach()

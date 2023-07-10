@@ -84,9 +84,12 @@ class VIEW3D_MT_PIE_Default(Menu):
 		# pie.menu("BSMAX_MT_empty_create_menu", text="Empty/Image")
 
 
-classes = [
+
+classes = (
 	VIEW3D_MT_PIE_Default,
-	VIEW3D_MT_PIE_Create]
+	VIEW3D_MT_PIE_Create
+)
+
 
 
 def register_pie_max():
@@ -94,9 +97,11 @@ def register_pie_max():
 		bpy.utils.register_class(c)
 
 
+
 def unregister_pie_max():
 	for c in classes:
 		bpy.utils.unregister_class(c)
+
 
 
 if __name__ == "__main__":

@@ -239,13 +239,13 @@ def view_undorido_menu(self, ctx):
 
 
 classes = (
-		BsMax_OT_ViewUndoRedo,
-		View3D_OT_MoveCover,
-		View3D_OT_RotateCover,
-		View3D_OT_ZoomCover,
-		View3D_OT_ZoomInCover,
-		View3D_OT_ZoomOutCover,
-		View3D_OT_DollyCover
+	BsMax_OT_ViewUndoRedo,
+	View3D_OT_MoveCover,
+	View3D_OT_RotateCover,
+	View3D_OT_ZoomCover,
+	View3D_OT_ZoomInCover,
+	View3D_OT_ZoomOutCover,
+	View3D_OT_DollyCover
 )
 
 
@@ -256,6 +256,8 @@ def register_undo(preferences):
 	if preferences.view_undo:
 		bpy.types.VIEW3D_MT_view.prepend(view_undorido_menu)
 
+
+
 def unregister_undo():
 	try: # temprary solution
 		if view_undorido_menu in bpy.types.VIEW3D_MT_view:
@@ -264,6 +266,8 @@ def unregister_undo():
 		pass
 	for c in classes:
 		bpy.utils.unregister_class(c)
+
+
 
 if __name__ == "__main__":
 	register_undo

@@ -253,8 +253,10 @@ class Object_OT_Snap_shot(Operator):
 	end: IntProperty(name='To', min=0, default=250)
 	count: IntProperty(name="Number of Copy", min=2, default=10)
 
-	copy_type: EnumProperty(name='Clone Type', default='MESH', 
-		items=[('COPY', 'Copy', ''),
+	copy_type: EnumProperty(
+		name='Clone Type', default='MESH', 
+		items=[
+			('COPY', 'Copy', ''),
 			('LINKED', 'Instance (Linked)', ''),
 			('MESH', 'Mesh', '')
 		]
@@ -319,6 +321,7 @@ class Object_OT_Snap_shot(Operator):
 		return {'RUNNING_MODAL'}
 
 
+
 def object_menu(self, ctx):
 	layout = self.layout
 	layout.separator()
@@ -326,7 +329,13 @@ def object_menu(self, ctx):
 	layout.operator("object.snap_shot")
 
 
-classes = (Object_OT_Clone_Array, Object_OT_Snap_shot)
+
+classes = (
+	Object_OT_Clone_Array,
+	Object_OT_Snap_shot
+)
+
+
 
 def register_clone_object():
 	for c in classes:
@@ -334,11 +343,15 @@ def register_clone_object():
 
 	bpy.types.VIEW3D_MT_object.append(object_menu)
 
+
+
 def unregister_clone_object():
 	bpy.types.VIEW3D_MT_object.remove(object_menu)
 
 	for c in classes:
 		bpy.utils.unregister_class(c)
+
+
 
 if __name__ == "__main__":
 	register_clone_object()

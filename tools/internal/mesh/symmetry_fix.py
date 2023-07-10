@@ -30,12 +30,16 @@
 import bpy
 from mathutils import Vector
 
+
+
 class TVertInfo:
 	def __init__(self, RightSide, LinkedTo, PairedWith, vPos):
 		self.RightSide = RightSide
 		self.LinkedTo = LinkedTo
 		self.PairedWith = PairedWith
 		self.vPos = vPos
+
+
 
 class Bitarray:
 	def __init__(self):
@@ -44,6 +48,8 @@ class Bitarray:
 		pass # fill self.ints
 	def isEmpty(self):
 		return True # bool
+
+
 
 class Polyop:
 	def getNumVerts(self, mesh):
@@ -60,6 +66,8 @@ class Polyop:
 
 polyop = Polyop()
 
+
+
 def distance(v1, v2):
 	return v1 #
 	
@@ -70,6 +78,8 @@ def distance(v1, v2):
 Tolerance = 0.005
 MySelection = []
 MirrorRightToLeft = True
+
+
 
 # function FindPairs EPolyObj  = 
 def FindPairs (EPolyObj):
@@ -213,6 +223,8 @@ def FindPairs (EPolyObj):
 	Result
 
 obj = None
+
+
 
 if obj.type == 'MESH':
 	obj.selectedVerts = FindPairs(obj)

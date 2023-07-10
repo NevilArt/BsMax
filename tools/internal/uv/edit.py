@@ -29,9 +29,10 @@ class UV_OT_Mirror_Cover(Operator):
 	bl_label = "Mirror (Cover)"
 	bl_options = {'REGISTER', 'UNDO', 'INTERNAL'}
 	
-	axis: EnumProperty(name="Axis",  default='X', 
-				items=[('X', 'X', ''), ('Y', 'Y', '')]
-			)
+	axis: EnumProperty(
+		name="Axis",  default='X', 
+		items=[('X', 'X', ''), ('Y', 'Y', '')]
+	)
 
 	@classmethod
 	def poll(self, ctx):
@@ -40,8 +41,10 @@ class UV_OT_Mirror_Cover(Operator):
 	def execute(self, ctx):
 		if self.axis == 'X':
 			bpy.ops.transform.mirror(constraint_axis=(True, False, False))
+
 		if self.axis == 'Y':
 			bpy.ops.transform.mirror(constraint_axis=(False, True, False))
+
 		return{"FINISHED"}
 
 
@@ -60,12 +63,15 @@ class UV_OT_Turn(Operator):
 
 	def execute(self, ctx):
 		value = 1.5708 if self.ccw else -1.5708
-		bpy.ops.transform.rotate(value=value,
-								orient_axis='Z',
-								orient_type='VIEW',
-								orient_matrix=((1, 0, 0), ( 0, 1, 0), ( 0, 0, 1)),
-								orient_matrix_type='VIEW'
-				)
+
+		bpy.ops.transform.rotate(
+			value=value,
+			orient_axis='Z',
+			orient_type='VIEW',
+			orient_matrix=((1, 0, 0), ( 0, 1, 0), ( 0, 0, 1)),
+			orient_matrix_type='VIEW'
+		)
+		
 		return{"FINISHED"}
 
 
@@ -223,13 +229,13 @@ def uv_select_menu(self, ctx):
 
 
 classes = (
-		UV_OT_Mirror_Cover,
-		UV_OT_Turn,
-		UV_OT_Select_Flipped_UVs,
-		UV_OT_Snap_Toggle,
-		UV_OT_Split_To_Island,
-		UV_OT_Rectangulate_Active_Face
-	)
+	UV_OT_Mirror_Cover,
+	UV_OT_Turn,
+	UV_OT_Select_Flipped_UVs,
+	UV_OT_Snap_Toggle,
+	UV_OT_Split_To_Island,
+	UV_OT_Rectangulate_Active_Face
+)
 
 
 def register_edit():
@@ -238,11 +244,15 @@ def register_edit():
 	
 	bpy.types.IMAGE_MT_select.append(uv_select_menu)
 
+
+
 def unregister_edit():
 	bpy.types.IMAGE_MT_select.remove(uv_select_menu)
 
 	for c in classes:
 		bpy.utils.unregister_class(c)
+
+
 
 if __name__ == '__main__':
 	register_edit()

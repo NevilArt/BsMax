@@ -15,8 +15,6 @@
 
 import bpy
 
-from bpy.app import version
-
 
 
 class KeyMap:
@@ -47,25 +45,15 @@ class KeyMap:
 		if self.space in self.keymaps:
 			keymap_items = self.keymaps[self.space].keymap_items
 
-			if version < (3, 2, 0):
-				for k in keymap_items:
-					if self.idname == k.idname:
-						if self.type == k.type and self.value == k.value and \
-							self.any == k.any and self.alt == k.alt and \
-							self.ctrl == k.ctrl and self.shift == k.shift:
-							
-							self._key = k
-							break
-			else:
-				for k in keymap_items:
-					if self.idname == k.idname:
-						if self.type == k.type and self.value == k.value and \
-							self.any == k.any and self.alt == k.alt and \
-							self.ctrl == k.ctrl and self.shift == k.shift and \
-							self.direction == k.direction:
-							
-							self._key = k
-							break
+			for k in keymap_items:
+				if self.idname == k.idname:
+					if self.type == k.type and self.value == k.value and \
+						self.any == k.any and self.alt == k.alt and \
+						self.ctrl == k.ctrl and self.shift == k.shift and \
+						self.direction == k.direction:
+						
+						self._key = k
+						break
 
 	
 	def compare(self, space, idname, type, value,

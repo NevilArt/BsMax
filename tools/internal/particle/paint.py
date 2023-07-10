@@ -20,7 +20,9 @@
 # https://blender.stackexchange.com/questions/15172/turn-weight-paintvertex-groups-into-vertex-paint
 
 import bpy
+
 from mathutils import Color
+
 from bpy.props import BoolProperty
 from bpy.types import Operator
 
@@ -93,13 +95,19 @@ def paint_menu(self, ctx):
 	layout.separator()
 	layout.operator("object.weight_to_vertex_color")
 
+
+
 def register_paint():
 	bpy.utils.register_class(Object_OT_Weight_to_Vertex_Color)
 	bpy.types.VIEW3D_MT_paint_vertex.append(paint_menu)
 
+
+
 def unregister_paint():
 	bpy.types.VIEW3D_MT_paint_vertex.remove(paint_menu)
 	bpy.utils.unregister_class(Object_OT_Weight_to_Vertex_Color)
+
+
 
 if __name__ == "__main__":
 	register_paint()

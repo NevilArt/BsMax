@@ -16,6 +16,7 @@
 import bpy
 
 from bpy.types import Operator
+
 from bsmax.actions import modifier_add
 from bsmax.state import is_objects_selected
 
@@ -817,65 +818,69 @@ class Modifier_OT_SOFT_BODY_Add(Operator):
 
 
 
-classes = [
-		Modifier_OT_DATA_TRANSFER_Add,
-		Modifier_OT_MESH_CACHE_Add,
-		Modifier_OT_MESH_SEQUENCE_CACHE_Add,
-		Modifier_OT_NORMAL_EDIT_Add,
-		Modifier_OT_WEIGHTED_NORMAL_Add,
-		Modifier_OT_UV_PROJECT_Add,
-		Modifier_OT_UV_WARP_Add,
-		Modifier_OT_VERTEX_WEIGHT_EDIT_Add,
-		Modifier_OT_VERTEX_WEIGHT_MIX_Add,
-		Modifier_OT_VERTEX_WEIGHT_PROXIMITY_Add,
-		Modifier_OT_ARRAY_Add,
-		Modifier_OT_BEVEL_Add,
-		Modifier_OT_BOOLEAN_Add,
-		Modifier_OT_BUILD_Add,
-		Modifier_OT_DECIMATE_Add,
-		Modifier_OT_EDGE_SPLIT_Add,
-		Modifier_OT_Mask_Add,
-		Modifier_OT_MIRROR_Add,
-		Modifier_OT_MULTIRES_Add,
-		Modifier_OT_Geometry_Nodes_Add,
-		Modifier_OT_REMESH_Add,
-		Modifier_OT_Screw_Add,
-		Modifier_OT_SKIN_Add,
-		Modifier_OT_SOLIDIFY_Add,
-		Modifier_OT_SUBSURF_Add,
-		Modifier_OT_TRIANGULATE_Add,
-		Modifier_OT_WIREFRAME_Add,
-		Modifier_OT_ARMATURE_Add,
-		Modifier_OT_CAST_Add,
-		Modifier_OT_CURVE_Add,
-		Modifier_OT_DISPLACE_Add,
-		Modifier_OT_HOOK_Add,
-		Modifier_OT_LAPLACIANDEFORM_Add,
-		Modifier_OT_LATTICE_Add,
-		Modifier_OT_MESH_DEFORM_Add,
-		Modifier_OT_SHRINKWRAP_Add,
-		Modifier_OT_SIMPLE_DEFORM_Add,
-		Modifier_OT_SMOOTH_Add,
-		Modifier_OT_CORRECTIVE_SMOOTH_Add,
-		Modifier_OT_LAPLACIANSMOOTH_Add,
-		Modifier_OT_SURFACE_DEFORM_Add,
-		Modifier_OT_WARP_Add,
-		Modifier_OT_WAVE_Add,
-		Modifier_OT_CLOTH_Add,
-		Modifier_OT_COLLISION_Add,
-		Modifier_OT_DYNAMIC_PAINT_Add,
-		Modifier_OT_EXPLODE_Add,
-		Modifier_OT_FLUID_SIMULATION_Add,
-		Modifier_OT_OCEAN_Add,
-		Modifier_OT_PARTICLE_INSTANCE_Add,
-		Modifier_OT_PARTICLE_SYSTEM_Add,
-		Modifier_OT_SMOKE_Add,
-		Modifier_OT_SOFT_BODY_Add
-]
-		
+classes = (
+	Modifier_OT_DATA_TRANSFER_Add,
+	Modifier_OT_MESH_CACHE_Add,
+	Modifier_OT_MESH_SEQUENCE_CACHE_Add,
+	Modifier_OT_NORMAL_EDIT_Add,
+	Modifier_OT_WEIGHTED_NORMAL_Add,
+	Modifier_OT_UV_PROJECT_Add,
+	Modifier_OT_UV_WARP_Add,
+	Modifier_OT_VERTEX_WEIGHT_EDIT_Add,
+	Modifier_OT_VERTEX_WEIGHT_MIX_Add,
+	Modifier_OT_VERTEX_WEIGHT_PROXIMITY_Add,
+	Modifier_OT_ARRAY_Add,
+	Modifier_OT_BEVEL_Add,
+	Modifier_OT_BOOLEAN_Add,
+	Modifier_OT_BUILD_Add,
+	Modifier_OT_DECIMATE_Add,
+	Modifier_OT_EDGE_SPLIT_Add,
+	Modifier_OT_Mask_Add,
+	Modifier_OT_MIRROR_Add,
+	Modifier_OT_MULTIRES_Add,
+	Modifier_OT_Geometry_Nodes_Add,
+	Modifier_OT_REMESH_Add,
+	Modifier_OT_Screw_Add,
+	Modifier_OT_SKIN_Add,
+	Modifier_OT_SOLIDIFY_Add,
+	Modifier_OT_SUBSURF_Add,
+	Modifier_OT_TRIANGULATE_Add,
+	Modifier_OT_WIREFRAME_Add,
+	Modifier_OT_ARMATURE_Add,
+	Modifier_OT_CAST_Add,
+	Modifier_OT_CURVE_Add,
+	Modifier_OT_DISPLACE_Add,
+	Modifier_OT_HOOK_Add,
+	Modifier_OT_LAPLACIANDEFORM_Add,
+	Modifier_OT_LATTICE_Add,
+	Modifier_OT_MESH_DEFORM_Add,
+	Modifier_OT_SHRINKWRAP_Add,
+	Modifier_OT_SIMPLE_DEFORM_Add,
+	Modifier_OT_SMOOTH_Add,
+	Modifier_OT_CORRECTIVE_SMOOTH_Add,
+	Modifier_OT_LAPLACIANSMOOTH_Add,
+	Modifier_OT_SURFACE_DEFORM_Add,
+	Modifier_OT_WARP_Add,
+	Modifier_OT_WAVE_Add,
+	Modifier_OT_CLOTH_Add,
+	Modifier_OT_COLLISION_Add,
+	Modifier_OT_DYNAMIC_PAINT_Add,
+	Modifier_OT_EXPLODE_Add,
+	Modifier_OT_FLUID_SIMULATION_Add,
+	Modifier_OT_OCEAN_Add,
+	Modifier_OT_PARTICLE_INSTANCE_Add,
+	Modifier_OT_PARTICLE_SYSTEM_Add,
+	Modifier_OT_SMOKE_Add,
+	Modifier_OT_SOFT_BODY_Add
+)
+
+
+
 def register_modifier():
 	for c in classes:
 		bpy.utils.register_class(c)
+
+
 
 def unregister_modifier():
 	for c in classes:

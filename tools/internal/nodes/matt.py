@@ -110,18 +110,25 @@ def bsmax_matt_menu(self, ctx):
 
 
 
-classes = (Material_OT_Assign_To_Selection,
+classes = (
+	Material_OT_Assign_To_Selection,
 	BsMax_MT_material_presets,
 	BsMax_MT_Materia_Collection
 )
+
+
 
 def register_matt():
 	for c in classes:
 		bpy.utils.register_class(c)
 
+
+
 def unregister_matt():
 	for c in classes:
 		bpy.utils.unregister_class(c)
+
+
 
 if __name__ == "__main__":
 	register_matt()

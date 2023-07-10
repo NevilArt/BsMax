@@ -17,12 +17,18 @@ from .blender import register_blender, unregister_blender
 from .max import register_max, unregister_max
 from .maya import register_maya, unregister_maya
 
+
+
 class RegisterData:
 	def __init__(self):
 		self.pack_max = False
 		self.pack_maya = False
 		self.pack_blender = False
+
 reg = RegisterData()
+
+
+
 
 def get_active_apps(preferences):
 	prefs = [preferences.viowport]
@@ -41,6 +47,8 @@ def get_active_apps(preferences):
 			apps.append(app)
 	return apps
 
+
+
 def register_special(preferences):
 	unregister_special()
 	
@@ -55,6 +63,8 @@ def register_special(preferences):
 	if not reg.pack_maya:
 		register_maya()
 		reg.pack_maya = True
+
+
 
 def unregister_special():
 	if reg.pack_blender:

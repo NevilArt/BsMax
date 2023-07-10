@@ -14,7 +14,10 @@
 ############################################################################
 
 import bpy
+
 from bpy.types import Operator
+
+
 
 class Scene_OT_Hold(Operator):
 		bl_idname = "scene.hold"
@@ -24,6 +27,8 @@ class Scene_OT_Hold(Operator):
 			# self.report({'OPERATOR'},'bpy.ops.scene.hold()')
 			return{"FINISHED"}
 
+
+
 class Scene_OT_Fetch(Operator):
 		bl_idname = "scene.fetch"
 		bl_label = "Fetch"
@@ -32,11 +37,20 @@ class Scene_OT_Fetch(Operator):
 			# self.report({'OPERATOR'},'bpy.ops.scene.fetch()')
 			return{"FINISHED"}
 
-classes = [Scene_OT_Hold, Scene_OT_Fetch]
+
+
+classes = (
+	Scene_OT_Hold,
+	Scene_OT_Fetch
+)
+
+
 
 def register_hold():
 	for c in classes:
 		bpy.utils.register_class(c)
+
+
 
 def unregister_hold():
 	for c in classes:

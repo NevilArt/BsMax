@@ -106,8 +106,10 @@ def time_context_menu(self, ctx):
 
 
 
-classes = [Anim_OT_Set_TimeLine_Range,
-		Anim_OT_Keys_Range_Set]
+classes = (
+	Anim_OT_Set_TimeLine_Range,
+	Anim_OT_Keys_Range_Set
+)
 
 def register_time():
 	for c in classes:

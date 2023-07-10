@@ -1,5 +1,5 @@
 
-# BsMax Blender Addon 2.93LTS ~ 3.6LTS
+# BsMax Blender Addon 3.3LTS ~ 3.6LTS
 
 BsMax is package of Modeling, Rig & Animation, Render tools and UI mimic for [Blender 3D](https://www.blender.org/).
 
@@ -35,12 +35,12 @@ If you found this product useful and want to support this project you can Donate
 
 ## Older Version
 * [Download Older Version (2.80-2.92)](https://github.com/NevilArt/BsMax_2_80)
+* [Download Older Version (2.93-3.2)](https://github.com/NevilArt/BsMax_2_80)
 
 ## Recent Updates and Changes
-* Blender 3.6 and later Parent coordinate added to quadmenu (Alt+RMB 3DsMax Mode).
-* Red timeline at starup issue fixed.
-* Issue with Enable/Disable addon in Blender 3.6 fixed.
-* Theme changes (Camera, Empty, Light) color reset on addon disable or remove.
+* Stuff and codes for older then Blender 3.3 droped.
+* Daz3d to Blender armature auto renamer tool.
+* Some code cleaning.
 * [Change log ...](https://github.com/NevilArt/BsMax/blob/master/CHANGELOG.md)
 
 ## License

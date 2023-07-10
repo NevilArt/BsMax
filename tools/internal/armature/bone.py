@@ -178,11 +178,13 @@ def select_keyed_menu(self, ctx):
 
 
 classes = (
-		Armature_OT_Bone_Type,
-		Armature_OT_Bone_Devide,
-		Armature_OT_Freeze,
-		Armature_OT_Select_Keyed_Bone
+	Armature_OT_Bone_Type,
+	Armature_OT_Bone_Devide,
+	Armature_OT_Freeze,
+	Armature_OT_Select_Keyed_Bone
 )
+
+
 
 def register_bone():
 	for c in classes:
@@ -190,11 +192,15 @@ def register_bone():
 	
 	bpy.types.VIEW3D_MT_select_pose.append(select_keyed_menu)
 
+
+
 def unregister_bone():
 	bpy.types.VIEW3D_MT_select_pose.remove(select_keyed_menu)
 
 	for c in classes:
 		bpy.utils.unregister_class(c)
+
+
 
 if __name__ == "__main__":
 	register_bone()

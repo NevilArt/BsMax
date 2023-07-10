@@ -17,6 +17,7 @@ import bpy
 
 from bpy.props import StringProperty, BoolProperty
 from bpy.types import Operator
+
 from bsmax.operator import PickOperator
 
 
@@ -99,6 +100,8 @@ class Mesh_Detach_Data:
 
 mdd = Mesh_Detach_Data()
 
+
+
 class Mesh_OT_Detach(Operator):
 	""" Create new Object/Element form selection """
 	bl_idname = 'mesh.detach'
@@ -155,15 +158,25 @@ class Mesh_OT_Detach(Operator):
 
 
 
-classes = [Mesh_OT_Attach, Mesh_OT_Detach] #Mesh_OT_Attach_List
+classes = (
+	Mesh_OT_Attach,
+	Mesh_OT_Detach
+	#Mesh_OT_Attach_List
+)
+
+
 
 def register_attach():
 	for c in classes:
 		bpy.utils.register_class(c)
 
+
+
 def unregister_attach():
 	for c in classes:
 		bpy.utils.unregister_class(c)
+
+
 
 if __name__ == '__main__':
 	register_attach()

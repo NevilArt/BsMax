@@ -78,10 +78,12 @@ def set_location(self):
 	self.owner.location = Vector((x, y, z))
 
 
+
 def get_pivot_offset(self):
 	offset = self.node['pivot_offset']
 	scale = self.node['scale']
 	return [offset[0]*scale[0]*self.scale, offset[1]*scale[1]*self.scale]
+
 
 
 def get_image_size(self):
@@ -151,7 +153,6 @@ def shift_images(image_planes):
 
 
 
-
 class Bound:
 	def __init__(self):
 		self.left = 0
@@ -206,6 +207,7 @@ class Image_Plane:
 		set_material(self.owner, material)
 		set_location(self)
 		self.bound.from_object(self.owner)
+
 
 
 
@@ -293,13 +295,18 @@ def menu_func_import(self, ctx):
 
 
 
+#TODO put in this to experimental
 def register_sprite_json_importer():
 	bpy.utils.register_class(File_TO_Sprite_JSON_Import)
 	bpy.types.TOPBAR_MT_file_import.append(menu_func_import)
 
+
+
 def unregister_sprite_json_importer():
 	bpy.types.TOPBAR_MT_file_import.remove(menu_func_import)
 	bpy.utils.unregister_class(File_TO_Sprite_JSON_Import)
+
+
 
 if __name__ == "__main__":
 	register_sprite_json_importer()

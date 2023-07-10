@@ -14,7 +14,10 @@
 ############################################################################
 
 import bpy
+
 from bpy.props import IntProperty
+
+
 
 class Object_OT_Subobject_Level(bpy.types.Operator):
 	bl_idname = "object.subobject_level"
@@ -180,11 +183,17 @@ class Object_OT_Subobject_Level(bpy.types.Operator):
 					self.set('OBJECT')
 		return{"FINISHED"}
 
+
+
 def register_subobject_level():
 	bpy.utils.register_class(Object_OT_Subobject_Level)
 
+
+
 def unregister_subobject_level():
 	bpy.utils.unregister_class(Object_OT_Subobject_Level)
+
+
 
 if __name__ == "__main__":
 	register_subobject_level()

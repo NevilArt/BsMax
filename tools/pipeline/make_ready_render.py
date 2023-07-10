@@ -583,7 +583,9 @@ class Sequencer_OT_Make_Ready_Render(Operator):
 		metadata_set()
 		passes_set()
 		composit_setup()
+
 		return{"FINISHED"}
+
 
 
 def register_make_ready_render():
@@ -592,9 +594,13 @@ def register_make_ready_render():
 	except:
 		pass
 
+
+
 def unregister_make_ready_render():
 	if hasattr(bpy.types, Sequencer_OT_Make_Ready_Render.bl_idname):
 		bpy.utils.unregister_class(Sequencer_OT_Make_Ready_Render)
+
+
 
 if __name__ == '__main__':
 	register_make_ready_render()

@@ -14,9 +14,11 @@
 ############################################################################
 
 """ Note: this file is not active yet """
-
 import bpy
+
 from bpy.types import WorkSpaceTool
+
+
 
 class CurveFilletTool(WorkSpaceTool):
 	bl_space_type='VIEW_3D'
@@ -33,6 +35,8 @@ class CurveFilletTool(WorkSpaceTool):
 	def draw_settings(ctx, layout, tool):
 		props = tool.operator_properties("curve.chamfer")
 
+
+
 class CurveChamferTool(WorkSpaceTool):
 	bl_space_type='VIEW_3D'
 	bl_context_mode='EDIT_CURVE'
@@ -48,15 +52,22 @@ class CurveChamferTool(WorkSpaceTool):
 		# layout.prop(props, "mode")
 		pass
 
-def panel_cls(register):
-	if register:
-		bpy.utils.register_tool(CurveFilletTool, after={"builtin.randomize"}, separator=True, group=True)
-		bpy.utils.register_tool(CurveChamferTool, after={CurveFilletTool.bl_idname})
-	else:
-		bpy.utils.unregister_tool(CurveFilletTool)
-		bpy.utils.unregister_tool(CurveChamferTool)
+
+
+def register_panel():
+	bpy.utils.register_tool(CurveFilletTool,
+			after={"builtin.randomize"}, separator=True, group=True
+	)
+	
+	bpy.utils.register_tool(CurveChamferTool, after={CurveFilletTool.bl_idname})
+
+
+
+def unregister_panel():
+	bpy.utils.unregister_tool(CurveFilletTool)
+	bpy.utils.unregister_tool(CurveChamferTool)
+
+
 
 if __name__ == '__main__':
-	panel_cls(True)
-
-__all__ = ["panel_cls"]
+	register_panel(True)

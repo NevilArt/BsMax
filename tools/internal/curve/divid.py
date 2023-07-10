@@ -14,13 +14,18 @@
 ############################################################################
 
 import bpy
+\
 from bpy.types import Operator
 from bpy.props import BoolProperty, IntProperty, FloatProperty
+
 from mathutils.geometry import intersect_point_line
-from bpy_extras.view3d_utils import region_2d_to_location_3d, region_2d_to_vector_3d ,location_3d_to_region_2d
+from bpy_extras.view3d_utils import region_2d_to_location_3d, location_3d_to_region_2d
+
 from bsmax.math import get_bias, get_distance
 from bsmax.curve import Curve
 from bsmax.operator import CurveTool
+
+
 
 class Point:
 	def __init__(self, segment, time, distance, point_on_view):
@@ -175,15 +180,24 @@ class Curve_OT_Refine(Operator):
 		return {'RUNNING_MODAL'}
 
 
-classes = [Curve_OT_divid_plus, Curve_OT_Refine]
+classes = (
+	Curve_OT_divid_plus,
+	Curve_OT_Refine
+)
+
+
 
 def register_divid():
 	for c in classes:
 		bpy.utils.register_class(c)
 
+
+
 def unregister_divid():
 	for c in classes:	
 		bpy.utils.unregister_class(c)
+
+
 
 if __name__ == "__main__":
 	register_divid()

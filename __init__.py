@@ -20,8 +20,8 @@ bl_info = {
 	'name': 'BsMax',
 	'description': 'Package of many tools + other CG apps UI mimic',
 	'author': 'Naser Merati (Nevil)',
-	'version': (0, 1, 1, 20230630),
-	'blender': (2, 93, 0),# 2.93LTS ~ 3.6LTS
+	'version': (0, 1, 1, 20230710),
+	'blender': (3, 3, 0),# 3.3LTS ~ 3.6LTS
 	'location': 'Almost Everywhere in Blender',
 	'wiki_url': 'https://github.com/NevilArt/BsMax/wiki',
 	'doc_url': 'https://github.com/NevilArt/BsMax/wiki',
@@ -379,41 +379,65 @@ class BsMax_AddonPreferences(bpy.types.AddonPreferences):
 			col = row.column()
 			col.label(text='Select packages parts customly')
 
-			self.row_prop(col, 'navigation_3d',
-						'navigation_3d-' + self.navigation_3d)
+			self.row_prop(
+				col, 'navigation_3d',
+				'navigation_3d-' + self.navigation_3d
+			)
 
-			self.row_prop(col, 'navigation_2d',
-						'navigation_2d-' + self.navigation_2d)
+			self.row_prop(
+				col, 'navigation_2d',
+				'navigation_2d-' + self.navigation_2d
+			)
 
-			self.row_prop(col, 'viowport',
-						'viowport-' + self.viowport)
+			self.row_prop(
+				col, 'viowport',
+				'viowport-' + self.viowport
+			)
 
-			self.row_prop(col, 'sculpt',
-						'sculpt-' + self.sculpt)
+			self.row_prop(
+				col, 'sculpt',
+				'sculpt-' + self.sculpt
+			)
 
-			self.row_prop(col, 'uv_editor',
-						'uv_editor-' + self.uv_editor)
+			self.row_prop(
+				col, 'uv_editor',
+				'uv_editor-' + self.uv_editor
+			)
 
-			self.row_prop(col, 'node_editor',
-						'node_editor-' + self.node_editor)
+			self.row_prop(
+				col, 'node_editor',
+				'node_editor-' + self.node_editor
+			)
 
-			self.row_prop(col, 'text_editor',
-						'text_editor-' + self.text_editor)
+			self.row_prop(
+				col, 'text_editor',
+				'text_editor-' + self.text_editor
+			)
 
-			self.row_prop(col, 'graph_editor',
-						'graph_editor-' + self.graph_editor)
+			self.row_prop(
+				col, 'graph_editor',
+				'graph_editor-' + self.graph_editor
+			)
 
-			self.row_prop(col, 'clip_editor',
-						'clip_editor-' + self.clip_editor)
+			self.row_prop(
+				col, 'clip_editor',
+				'clip_editor-' + self.clip_editor
+			)
 
-			self.row_prop(col, 'video_sequencer',
-						'video_sequencer-' + self.video_sequencer)
+			self.row_prop(
+				col, 'video_sequencer',
+				'video_sequencer-' + self.video_sequencer
+			)
 
-			self.row_prop(col, 'file_browser',
-						'file_browser-' + self.file_browser)
+			self.row_prop(
+				col, 'file_browser',
+				'file_browser-' + self.file_browser
+			)
 
-			self.row_prop(col, 'floatmenus',
-						'floatmenus-' + self.floatmenus)
+			self.row_prop(
+				col, 'floatmenus',
+				'floatmenus-' + self.floatmenus
+			)
 
 		box = layout.box()
 		row = box.row()
@@ -459,6 +483,7 @@ def isfloat(value):
 	try:
 		float(value)
 		return True
+
 	except ValueError:
 		return False
 

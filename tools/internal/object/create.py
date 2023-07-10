@@ -233,8 +233,12 @@ class Object_OT_Create(Operator):
 def register_create():
 	bpy.utils.register_class(Object_OT_Create)
 
+
+
 def unregister_create():
 	bpy.utils.unregister_class(Object_OT_Create)
+
+
 
 if __name__ == "__main__":
 	register_create()

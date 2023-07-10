@@ -15,9 +15,13 @@
 from .cameras import register_cameras, unregister_cameras
 from .target_camera import register_terget_camera, unregister_terget_camera
 
+
+
 def register_camera():
 	register_cameras()
 	register_terget_camera()
+
+
 
 def unregister_camera():
 	unregister_cameras()

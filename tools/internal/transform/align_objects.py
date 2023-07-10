@@ -12,7 +12,9 @@
 #	You should have received a copy of the GNU General Public License
 #	along with this program.  If not, see <https://www.gnu.org/licenses/>.
 ############################################################################
+
 import bpy
+
 from bpy.props import EnumProperty, BoolProperty, FloatProperty
 from mathutils import Vector, Euler
 from bpy.types import Operator
@@ -580,17 +582,25 @@ class Object_OT_Align_Selected_to_Target(PickOperator):
 
 
 
-classes = [Object_OT_Align_Objects,
+classes = (
+	Object_OT_Align_Objects,
 	Object_OT_Align_Selected_to_Active,
-	Object_OT_Align_Selected_to_Target]
+	Object_OT_Align_Selected_to_Target
+)
+
+
 
 def register_align_objects():
 	for c in classes:
 		bpy.utils.register_class(c)
 
+
+
 def unregister_align_objects():
 	for c in classes:
 		bpy.utils.unregister_class(c)
+
+
 
 if __name__ == "__main__":
 	register_align_objects()

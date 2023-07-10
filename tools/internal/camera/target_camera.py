@@ -259,15 +259,15 @@ def camera_menu(self, ctx):
 
 
 
-classes = [
-		Camera_PT_Panel,
-		Camera_OT_Clear_Target,
-		Camera_OT_Create_Target,
-		Camera_OT_Create_DOF_Target,
-		Camera_OT_DOF_Depth_Picker,
-		Camera_OT_Select_DOF_Target,
-		Camera_OT_Select_Target
-]
+classes = (
+	Camera_PT_Panel,
+	Camera_OT_Clear_Target,
+	Camera_OT_Create_Target,
+	Camera_OT_Create_DOF_Target,
+	Camera_OT_DOF_Depth_Picker,
+	Camera_OT_Select_DOF_Target,
+	Camera_OT_Select_Target
+)
 
 
 
@@ -276,10 +276,14 @@ def register_terget_camera():
 		bpy.utils.register_class(c)
 	bpy.types.VIEW3D_MT_view_cameras.append(camera_menu)
 
+
+
 def unregister_terget_camera():
 	bpy.types.VIEW3D_MT_view_cameras.remove(camera_menu)
 	for c in classes:
 		bpy.utils.unregister_class(c)
+
+
 
 if __name__ == "__main__":
 	register_terget_camera()

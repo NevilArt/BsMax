@@ -81,8 +81,12 @@ class View3D_OT_Show_Hide_Gride(bpy.types.Operator):
 def register_gride():
 	bpy.utils.register_class(View3D_OT_Show_Hide_Gride)
 
+
+
 def unregister_gride():
 	bpy.utils.unregister_class(View3D_OT_Show_Hide_Gride)
+
+
 
 if __name__ == "__main__":
 	register_gride()

@@ -14,6 +14,7 @@
 ############################################################################
 
 import bpy
+
 from bpy.types import Operator
 from bpy.props import EnumProperty
 
@@ -36,7 +37,7 @@ class Modifier_OT_Copy_Selected(Operator):
 		description='List of modifiers to copy', 
 		items=get_modifiers,
 		options={"ENUM_FLAG"}
-		)
+	)
 
 	def draw(self,ctx):
 		layout = self.layout
@@ -72,11 +73,16 @@ class Modifier_OT_Copy_Selected(Operator):
 		return ctx.window_manager.invoke_props_dialog(self)
 
 
+
 def register_modifier():
 	bpy.utils.register_class(Modifier_OT_Copy_Selected)
 
+
+
 def unregister_modifier():
 	bpy.utils.unregister_class(Modifier_OT_Copy_Selected)
+
+
 
 if __name__ == "__main__":
 	register_modifier()

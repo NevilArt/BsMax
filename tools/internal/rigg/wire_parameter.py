@@ -14,8 +14,10 @@
 ############################################################################
 
 import bpy
+
 from bpy.types import Operator
-from bpy.props import BoolProperty, EnumProperty, FloatProperty
+from bpy.props import EnumProperty, FloatProperty
+
 
 
 def create_obj_driver(obj, chanel, subchanel, start, end):
@@ -54,18 +56,21 @@ class Rigg_TO_Wire_Parameter(Operator):
 	bl_description = ''
 	bl_options = {'REGISTER', 'UNDO'}
 
-	chanel: EnumProperty(items=[
-							("LOCATION", "Location", ""),
-							("ROTATION", "Rotation", ""),
-							("SCALE", "Scale", "")
-						]
-					)
-	axis: EnumProperty(items=[
-							("X", "X", ""),
-							("Y", "Y", ""),
-							("Z", "Z", "")
-						]
-					)
+	chanel: EnumProperty(
+		items=[
+			("LOCATION", "Location", ""),
+			("ROTATION", "Rotation", ""),
+			("SCALE", "Scale", "")
+		]
+	)
+	
+	axis: EnumProperty(
+		items=[
+			("X", "X", ""),
+			("Y", "Y", ""),
+			("Z", "Z", "")
+		]
+	)
 	
 	start: FloatProperty()
 	end: FloatProperty()
@@ -101,8 +106,12 @@ class Rigg_TO_Wire_Parameter(Operator):
 def register_wire_parameter():
 	bpy.utils.register_class(Rigg_TO_Wire_Parameter)
 
+
+
 def unregister_wire_parameter():
 	bpy.utils.unregister_class(Rigg_TO_Wire_Parameter)
+
+
 
 if __name__ == '__main__':
 	register_wire_parameter()

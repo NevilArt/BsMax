@@ -480,7 +480,8 @@ class OffsetBase:
 		for lp in loops:
 			verts, directions = self.get_directions(
 				lp, vec_upward, normal_fallback, vert_mirror_pairs,
-				**options)
+				**options
+			)
 
 			if verts:
 				# convert vert objects to vert indexs
@@ -526,6 +527,7 @@ class OffsetBase:
 			bmesh.update_edit_mesh(me)
 
 
+
 class Mesh_OT_Outline_Offset(Operator, OffsetBase):
 	"""Outline Offset"""
 	bl_idname = "mesh.outline_offset"
@@ -533,24 +535,31 @@ class Mesh_OT_Outline_Offset(Operator, OffsetBase):
 	bl_options = {'REGISTER', 'UNDO'}
 
 	follow_face: BoolProperty(name="Follow Face", default=False,
-		description="Offset along faces around")
+		description="Offset along faces around"
+	)
 	
 	mirror_modifier: BoolProperty(name="Mirror Modifier", default=False,
-		description="Take into account of Mirror modifier")
+		description="Take into account of Mirror modifier"
+	)
 	
 	edge_rail: BoolProperty(name="Edge Rail", default=False,
-		description="Align vertices along inner edges")
+		description="Align vertices along inner edges"
+	)
 	
 	edge_rail_only_end: BoolProperty(name="Edge Rail Only End", default=False,
-		description="Apply edge rail to end verts only")
+		description="Apply edge rail to end verts only"
+	)
 	
-	lock_axis: EnumProperty(items=[
+	lock_axis: EnumProperty(
+		items=[
 			('none', "None", "Don't lock axis"),
 			('x', "X", "Lock X axis"),
 			('y', "Y", "Lock Y axis"),
 			('z', "Z", "Lock Z axis"),
-			('view', "VIEW", "Lock view axis")],
-		name="Lock Axis", default='none')
+			('view', "VIEW", "Lock view axis")
+		],
+		name="Lock Axis", default='none'
+	)
 
 	# Functions below are update functions.
 
@@ -581,34 +590,48 @@ class Mesh_OT_Outline_Offset(Operator, OffsetBase):
 
 		return ret_width, ret_angle
 
-	width: FloatProperty(name="Width", default=.2, precision=4, step=1,
-		update=OffsetBase.use_caches)
+	width: FloatProperty(
+		name="Width", default=.2, precision=4, step=1,
+		update=OffsetBase.use_caches
+	)
 	
-	flip_width: BoolProperty(name="Flip Width", default=False,
+	flip_width: BoolProperty(
+		name="Flip Width", default=False,
 		description="Flip width direction",
-		update=OffsetBase.use_caches)
+		update=OffsetBase.use_caches
+	)
 	
-	depth: FloatProperty(name="Depth", default=.0, precision=4, step=1,
-		update=OffsetBase.use_caches)
+	depth: FloatProperty(
+		name="Depth", default=.0, precision=4, step=1,
+		update=OffsetBase.use_caches
+	)
 
-	flip_depth: BoolProperty(name="Flip Depth", default=False,
+	flip_depth: BoolProperty(
+		name="Flip Depth", default=False,
 		description="Flip depth direction",
-		update=OffsetBase.use_caches)
+		update=OffsetBase.use_caches
+	)
 
 	depth_mode: EnumProperty(
-		items=[('angle', "Angle", "Angle"),
-			   ('depth', "Depth", "Depth")],
+		items=[
+			('angle', "Angle", "Angle"),
+			('depth', "Depth", "Depth")
+		],
 		name="Depth mode", default='angle',
-		update=change_depth_mode)
+		update=change_depth_mode
+	)
 
 	angle: FloatProperty(
 		name="Angle", default=0, precision=3, step=100,
 		min=-2*pi, max=2*pi, subtype='ANGLE', description="Angle",
-		update=OffsetBase.use_caches)
+		update=OffsetBase.use_caches
+	)
+	
 	flip_angle: bpy.props.BoolProperty(
 		name="Flip Angle", default=False,
 		description="Flip Angle",
-		update=OffsetBase.use_caches)
+		update=OffsetBase.use_caches
+	)
 
 	def get_lockvector(self, ctx):
 		axis = self.lock_axis
@@ -719,6 +742,7 @@ class Mesh_OT_Outline_Offset(Operator, OffsetBase):
 		ob_edit = ctx.edit_object
 		if self.is_face_selected(ob_edit):
 			self.follow_face = True
+		
 		if self.is_mirrored(ob_edit):
 			self.mirror_modifier = True
 
@@ -739,8 +763,7 @@ class Mesh_OT_Outline_Offset(Operator, OffsetBase):
 			self._A = 0
 			
 			return {'RUNNING_MODAL'}
-		else:
-			return self.execute(ctx)
+		return self.execute(ctx)
 
 	def modal(self, ctx, event):
 		# In edit mode
@@ -759,8 +782,7 @@ class Mesh_OT_Outline_Offset(Operator, OffsetBase):
 				if ret:
 					self.do_offset(self._bm, me, self._offset_infos, self._exverts)
 					return {'RUNNING_MODAL'}
-				else:
-					return {'CANCELLED'}
+				return {'CANCELLED'}
 
 		if event.type == 'A':
 			# toggle depth_mode
@@ -805,10 +827,14 @@ class Mesh_OT_Outline_Offset(Operator, OffsetBase):
 	# methods below are usded in interactive mode
 	def create_header(self):
 		header = "".join(
-			["Width {width: .4}  ",
-			 "Depth {depth: .4}('A' to Angle)  " if self.depth_mode == 'depth' else "Angle {angle: 4.0F}В°('A' to Depth)  ",
-			 "FollowFace(F):",
-			 "(ON)" if self.follow_face else "(OFF)",])
+			[
+			"Width {width: .4}  ",
+			"Depth {depth: .4}('A' to Angle)  " if self.depth_mode == 'depth' else \
+												"Angle {angle: 4.0F}В°('A' to Depth)  ",
+			"FollowFace(F):",
+			"(ON)" if self.follow_face else "(OFF)",
+			]
+		)
 
 		return header.format(width=self.width, depth=self.depth, angle=degrees(self.angle))
 
@@ -896,17 +922,26 @@ def draw_offset_edges(self, ctx):
 	layout.operator('mesh.outline_offset')
 
 
-classes = [Mesh_OT_Outline_Offset, Mesh_OT_3DsMax_Like_Bevel]
+classes = (
+	Mesh_OT_Outline_Offset,
+	Mesh_OT_3DsMax_Like_Bevel
+)
+
+
 
 def register_outline():
 	for c in classes:
 		bpy.utils.register_class(c)
+
 	bpy.types.VIEW3D_MT_edit_mesh_edges.append(draw_offset_edges)
+
 
 def unregister_outline():
 	for c in classes:
 		bpy.utils.unregister_class(c)
+
 	bpy.types.VIEW3D_MT_edit_mesh_edges.remove(draw_offset_edges)
+
 
 
 if __name__ == '__main__':

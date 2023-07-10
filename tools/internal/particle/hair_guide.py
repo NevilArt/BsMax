@@ -14,7 +14,6 @@
 ############################################################################
 
 import bpy
-from bpy.app import version
 from bpy.types import Operator, Menu
 
 from bsmax.math import point_on_spline
@@ -244,26 +243,30 @@ class BsMax_MT_particle_tools(Menu):
 		layout=self.layout
 		layout.operator("particle.hair_guides_from_curve", icon="PARTICLEMODE")
 		layout.operator("particle.hair_guides_to_curve", icon="TRACKING")
-
-		hair_icon = 'HAIR' if version < (3, 2, 0) else 'CURVES'
-		layout.operator("particle.hair_grap_style", icon=hair_icon)
+		layout.operator("particle.hair_grap_style", icon='CURVES')
 
 
 
-classes = [
+classes = (
 	Particle_OT_Hair_Guides_From_Curve,
 	Particle_OT_Hair_Guides_To_Curve,
 	Particle_OT_Hair_Grap_Style,
 	BsMax_MT_particle_tools
-	]
+)
+
+
 
 def register_hair_guide():
 	for c in classes:
 		bpy.utils.register_class(c)
 
+
+
 def unregister_hair_guide():
 	for c in classes:
 		bpy.utils.unregister_class(c)
+
+
 
 if __name__ == "__main__":
 	register_hair_guide()

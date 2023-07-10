@@ -14,6 +14,7 @@
 ############################################################################
 
 import bpy
+
 from bpy.types import Operator
 from bpy.props import StringProperty
 
@@ -43,12 +44,18 @@ class Object_OT_Set_Local_Coord_in_Pose_Mode(Operator):
 
 
 
-classes = [Object_OT_Coord_System,
-	Object_OT_Set_Local_Coord_in_Pose_Mode]
+classes = (
+	Object_OT_Coord_System,
+	Object_OT_Set_Local_Coord_in_Pose_Mode
+)
+
+
 
 def register_coordinate():
 	for c in classes:
 		bpy.utils.register_class(c)
+
+
 
 def unregister_coordinate():
 	for c in classes:

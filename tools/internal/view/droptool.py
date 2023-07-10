@@ -14,6 +14,7 @@
 ############################################################################
 
 import bpy
+
 from bpy.types import Operator
 from bpy.props import EnumProperty
 
@@ -120,15 +121,16 @@ class View3D_OT_Drop_Tool(Operator):
 	def drop_tool(self, ctx):
 		tools = ctx.workspace.tools
 		tool = tools.from_space_view3d_mode(ctx.mode, create=False).idname
-		leagals = ( "builtin.select",
-					"builtin.select_box",
-					"builtin.select_circle",
-					"builtin.select_lasso",
-					"builtin.cursor",
-					"builtin.move",
-					"builtin.rotate",
-					"builtin.scale",
-					"builtin.scale_cage"
+		leagals = ( 
+			"builtin.select",
+			"builtin.select_box",
+			"builtin.select_circle",
+			"builtin.select_lasso",
+			"builtin.cursor",
+			"builtin.move",
+			"builtin.rotate",
+			"builtin.scale",
+			"builtin.scale_cage"
 		)
 		
 		if not tool in leagals:
@@ -163,11 +165,15 @@ classes = (
 	View3D_OT_Drop_Tool
 )
 
+
+
 def register_droptool(preferences):
 	View3D_OT_Drop_Tool.preferences = preferences
 
 	for c in classes:
 		bpy.utils.register_class(c)
+
+
 
 def unregister_droptool():
 	for c in classes:

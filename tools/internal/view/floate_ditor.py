@@ -14,7 +14,7 @@
 ############################################################################
 
 import bpy
-from bpy.app import version
+
 from bpy.types import Operator, Menu
 from bpy.props import StringProperty, BoolProperty
 
@@ -163,9 +163,8 @@ class BsMax_MT_New_Editor(Menu):
 		layout.operator("editor.float", text='File Browser',
 						icon='FILE_FOLDER').ui_type='FILES'
 
-		if version > (2, 93, 0):
-			layout.operator("editor.float", text='Asset Manager',
-							icon='ASSET_MANAGER').ui_type='ASSETS'
+		layout.operator("editor.float", text='Asset Manager',
+						icon='ASSET_MANAGER').ui_type='ASSETS'
 
 		layout.operator("editor.float", text='Sepreadsheet',
 						icon='SPREADSHEET').ui_type='SPREADSHEET'
@@ -179,9 +178,11 @@ def float_editor_menu(self, ctx):
 
 
 
-classes = [Editor_OT_Open_As_Float_Window,
+classes = (
+	Editor_OT_Open_As_Float_Window,
 	Editor_OT_Script_Listener_Open,
-	BsMax_MT_New_Editor]
+	BsMax_MT_New_Editor
+)
 
 
 
@@ -190,10 +191,14 @@ def register_float_editor():
 		bpy.utils.register_class(c)
 	bpy.types.TOPBAR_MT_window.prepend(float_editor_menu)
 
+
+
 def unregister_float_editor():
 	bpy.types.TOPBAR_MT_window.remove(float_editor_menu)
 	for c in classes:
 		bpy.utils.unregister_class(c)
+
+
 
 if __name__ == "__main__":
 	register_float_editor()

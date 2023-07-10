@@ -21,6 +21,7 @@ from mathutils import Vector
 from bsmax.operator import PickOperator
 
 
+
 def insert_key_for_current_state(chanel, frame):
 	""" Set key for Location and Scale always is same """
 	chanel.keyframe_insert(data_path='location', frame=frame)
@@ -338,14 +339,14 @@ class Anim_OT_Orientation_Constraint(PickOperator):
 
 
 
-classes = [
-			Anim_OT_Link_Constraint,
-			Anim_OT_Link_To_World,
-			Anim_OT_Path_Constraint,
-			Anim_OT_Lookat_Constraint,
-			Anim_OT_Location_Constraint,
-			Anim_OT_Orientation_Constraint
-		]
+classes = (
+	Anim_OT_Link_Constraint,
+	Anim_OT_Link_To_World,
+	Anim_OT_Path_Constraint,
+	Anim_OT_Lookat_Constraint,
+	Anim_OT_Location_Constraint,
+	Anim_OT_Orientation_Constraint
+)
 
 
 def register_parent():
