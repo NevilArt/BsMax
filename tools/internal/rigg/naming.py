@@ -15,10 +15,7 @@
 
 import bpy
 
-from mathutils import Vector
-
 from bpy.types import Operator
-from bpy.props import EnumProperty
 
 
 
@@ -39,6 +36,11 @@ def is_daz3d_name(name):
 	parts = name.split(' ')
 	if parts[0].lower() in ('left', 'right'):
 		return True
+
+
+
+def is_unnamed(name):
+	return False
 
 
 
@@ -98,128 +100,46 @@ class BoneName:
 		elif is_daz3d_name(self.name):
 			self.direction = get_daz3d_bone_name_direction(self.name)
 			self.base = get_das3d_bone_name_base(self.name)
+		
+		elif is_unnamed(self.name):
+			#TODO
+			# get bone direction
+			# create a name depend of location
+			pass
 
 	def get_blender_name(self):
 		if self.direction:
 			return self.base + "." + self.direction
 		return self.name
-	
-	def get_daz3d_Name(self):
-		if self.direction:
-			if len(self.direction) > 1:
-				return self.direction + " " + self.base
-			return self.direction + self.base
-		return self.name
-	
-
-
-def rename_bones_to_daz3d_standard(armature):
-	for bone in armature.data.bones:
-		boneName = BoneName(name=bone.name)
-		bone.name = boneName.get_daz3d_Name()
 
 
 
-def rename_bones_to_blender_standard(armature):
-	for bone in armature.data.bones:
-		boneName = BoneName(name=bone.name)
-		bone.name = boneName.get_blender_name()
-
-
-
-class Armature_TO_daz3d_auto_rename(Operator):
-	bl_idname = 'armature.daz3d_auto_rename'
-	bl_label = 'Daz3D Armature Autor Rename'
+class Armature_TO_auto_side_rename(Operator):
+	bl_idname = 'armature.auto_direction_rename'
+	bl_label = 'Armature Auto Rename'
 	bl_options = {'REGISTER', 'UNDO'}
 
-	direction: EnumProperty(
-		items=[
-			("BLENDER", "To Blender", "Rename Bones to Blender Standard"),
-			("DAZ", "To Daz3D", "Rename Armature Bones to Daz3D standard")
-		]
-	)
-	
 	@classmethod
 	def poll(self, ctx):
 		return ctx.mode in ('EDIT_ARMATURE', 'POSE')
 
-	def draw(self, ctx):
-		self.layout.prop(self, 'direction', text='')
-	
-	def execute(self,ctx):
-
-		if self.direction == "DAZ":
-			rename_bones_to_daz3d_standard(ctx.object)
-		else:
-			rename_bones_to_blender_standard(ctx.object)
-
-		return{"FINISHED"}
-
-	def invoke(self, ctx, event):
-		return ctx.window_manager.invoke_props_dialog(self, width=400)
-
-
-
-def get_bone_tail_location(bone):
-	if len(bone.children) == 0:
-		return bone.tail
-	
-	location = Vector((0, 0, 0))
-	for child in bone.children:
-		location += child.head
-	location /= len(bone.children)
-	return location
-
-
-
-def align_bone_to_parent(bone):
-	if bone.parent == None:
-		return
-
-	parent = bone.parent
-	normalVector = (parent.tail - parent.head).normalized()
-	bone.tail = bone.head + (bone.length * normalVector)
-
-
-
-class Armature_TO_daz3d_auto_bone_align(Operator):
-	bl_idname = 'armature.daz3d_auto_bone_align'
-	bl_label = 'Daz3D Armature Autor Bone Align'
-	bl_options = {'REGISTER', 'UNDO'}
-
-	@classmethod
-	def poll(self, ctx):
-		return ctx.mode == 'EDIT_ARMATURE'
-
-	def execute(self,ctx):
-		for bone in ctx.object.data.edit_bones:
-			bone.tail = get_bone_tail_location(bone)
-
-			if len(bone.children) == 0:
-				align_bone_to_parent(bone)
-
+	def execute(self, ctx):
+		for bone in ctx.object.data.bones:
+			boneName = BoneName(name=bone.name)
+			bone.name = boneName.get_blender_name()
 		return{"FINISHED"}
 
 
 
-classes = (
-	Armature_TO_daz3d_auto_rename,
-	Armature_TO_daz3d_auto_bone_align
-)
-	
-
-
-def register_daz3d():
-	for c in classes:
-		bpy.utils.register_class(c)
+def register_naming():
+	bpy.utils.register_class(Armature_TO_auto_side_rename)
 
 
 
-def unregister_daz3d():
-	for c in classes:
-		bpy.utils.unregister_class(c)
+def unregister_naming():
+	bpy.utils.unregister_class(Armature_TO_auto_side_rename)
 
 
 
 if __name__ == "__main__":
-	register_daz3d()
+	register_naming()

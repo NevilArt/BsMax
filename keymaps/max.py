@@ -838,6 +838,31 @@ def curve(km, preferences):
 
 
 
+def armature_select_hierarchy_plus(km, space):
+	km.new(space, 'pose.select_more', 'PAGE_UP', 'PRESS',
+			[], ctrl=True, shift=True, repeat=True)
+
+	km.new(space, 'pose.select_less', 'PAGE_DOWN', 'PRESS',
+			[], ctrl=True, shift=True, repeat=True)
+
+	km.new(space, 'pose.select_hierarchy_plus', 'PAGE_UP', 'PRESS',
+			[('direction', 'PARENT'), ('extend', False)])
+
+	km.new(space, 'pose.select_hierarchy_plus', 'PAGE_UP', 'PRESS',
+			[('direction', 'PARENT'), ('extend', True)], ctrl=True)
+
+	km.new(space, 'pose.select_hierarchy_plus', 'PAGE_DOWN', 'PRESS',
+			[('direction', 'CHILDREN'), ('full', False), ('extend', False)])
+
+	km.new(space, 'pose.select_hierarchy_plus', 'PAGE_DOWN', 'PRESS',
+			[('direction', 'CHILDREN'), ('full', False), ('extend', True)],
+			ctrl=True)
+
+	km.new(space, 'pose.select_hierarchy_plus', 'LEFTMOUSE', 'DOUBLE_CLICK',
+			[('direction', 'CHILDREN'), ('full', True), ('extend', True)])
+
+
+
 def armature(km, preferences):
 	space = km.space('Armature', 'EMPTY', 'WINDOW')
 	add_search(km, space)
@@ -848,6 +873,7 @@ def armature(km, preferences):
 	add_view3d_click_selection(km, space)
 	# add_float_menu(km, space, preferences)
 	add_transform_tool(km, space, preferences, smax=False)
+	armature_select_hierarchy_plus(km, space)
 
 	km.new(space, 'view3d.drop_tool', 'RIGHTMOUSE', 'PRESS', [])
 	km.new(space, 'armature.select_all', 'A', 'PRESS',
@@ -978,6 +1004,7 @@ def pos(km, preferences):
 	add_time(km, space)
 	# add_float_menu(km, space, preferences)
 	add_transform_tool(km, space, preferences, smax=False)
+	armature_select_hierarchy_plus(km, space)
 
 	km.new(space, 'view3d.drop_tool', 'RIGHTMOUSE', 'PRESS', [])
 	km.new(space, 'screen.screen_full_area', 'X', 'PRESS', [], ctrl=True)
@@ -996,29 +1023,14 @@ def pos(km, preferences):
 	km.new(space, 'pose.select_less', 'PAGE_DOWN', 'PRESS',
 			[], ctrl=True, shift=True, repeat=True)
 
-	km.new(space, 'pose.select_hierarchy_plus', 'PAGE_UP', 'PRESS',
-			[('direction', 'PARENT'), ('extend', False)])
-
-	km.new(space, 'pose.select_hierarchy_plus', 'PAGE_UP', 'PRESS',
-			[('direction', 'PARENT'), ('extend', True)], ctrl=True)
-
-	km.new(space, 'pose.select_hierarchy_plus', 'PAGE_DOWN', 'PRESS',
-			[('direction', 'CHILDREN'), ('full', False), ('extend', False)])
-
-	km.new(space, 'pose.select_hierarchy_plus', 'PAGE_DOWN', 'PRESS',
-			[('direction', 'CHILDREN'), ('full', False), ('extend', True)],
-			ctrl=True)
-
-	km.new(space, 'pose.select_hierarchy_plus', 'LEFTMOUSE', 'DOUBLE_CLICK',
-			[('direction', 'CHILDREN'), ('full', True), ('extend', True)])
-
 	km.new(space, 'camera.select', 'C', 'PRESS', [])
 	km.new(space, 'view3d.localview', 'Q', 'PRESS', [], alt=True)
 	km.new(space, 'pose.hide', 'H', 'PRESS', [], alt=True)
 	km.new(space, 'pose.hide', 'I', 'PRESS', [('unselected', True)], alt=True)
 	km.new(space, 'pose.reveal', 'U', 'PRESS', [], alt=True)
 	km.new(space, 'pose.copy', 'INSERT', 'PRESS', [], ctrl=True)
-	km.new(space, 'pose.paste', 'INSERT', 'PRESS', [], shift=True)
+	km.new(space, 'pose.paste_plus', 'INSERT', 'PRESS', [], shift=True)
+	km.new(space, 'pose.paste_plus', 'V', 'PRESS', [], ctrl=True)
 
 	km.new(space, 'wm.call_menu', 'INSERT', 'PRESS',
 			[('name', 'VIEW3D_MT_snap')], ctrl=True)

@@ -1,3 +1,8 @@
+# 0, 1, 2, 20230710
+* Stuff and codes for older then Blender 3.3 droped.
+* Daz3d to Blender armature auto renamer tool.
+* Some code cleaning.
+
 # 0, 1, 1, 20230630
 * Blender 3.6 and later Parent coordinate added to quadmenu (Alt+RMB 3DsMax Mode).
 * Red timeline at starup issue fixed.

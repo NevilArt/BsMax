@@ -38,9 +38,10 @@ If you found this product useful and want to support this project you can Donate
 * [Download Older Version (2.93-3.2)](https://github.com/NevilArt/BsMax_2_80)
 
 ## Recent Updates and Changes
-* Stuff and codes for older then Blender 3.3 droped.
-* Daz3d to Blender armature auto renamer tool.
-* Some code cleaning.
+* Select Children/Parent work on selected armature rather than only active one.
+* Paste Pose works on selected armature rather than only active one (if all bone selected).
+* Armature Selection set hold shift for add selection, hold alt for remove from selection.
+* Some more future for selection I'm working on and will update soon.
 * [Change log ...](https://github.com/NevilArt/BsMax/blob/master/CHANGELOG.md)
 
 ## License

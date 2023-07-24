@@ -435,19 +435,27 @@ def get_view3d_set(ctx):
 def get_view3d_coordinates(ctx):
 	items = []
 	items.append(QuadItem("Cursor", f, t, n, c0082, n))
+
 	# Object Mode
 	if ctx.mode == 'OBJECT':
 		items.append(QuadItem("Local", f, t, n, c0083, n))
 		items.append(QuadItem("Normal", f, t, n, c0084, n))
 		if version >= (3, 6, 0):
 			items.append(QuadItem("Parent", f, t, n, c0241, n))
+
 	# Pose Mode
 	if ctx.mode == 'POSE':
 		items.append(QuadItem("Local", f, t, n, c0136, n))
+		if version >= (3, 6, 0):
+			items.append(QuadItem("Parent", f, t, n, c0241, n))
+
 	# Edit Mode
 	if 'EDIT' in ctx.mode:
 		items.append(QuadItem("Local", f, t, n, c0084, n))
-		items.append(QuadItem("Parent", f, t, n, c0083, n))
+		if version >= (3, 6, 0):
+			items.append(QuadItem("Parent", f, t, n, c0241, n))
+		else:
+			items.append(QuadItem("Parent", f, t, n, c0083, n))
 
 	items.append(QuadItem("Gimbal", f, t, n, c0085, n))
 	items.append(QuadItem("Screen", f, t, n, c0086, n))

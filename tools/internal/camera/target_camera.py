@@ -14,7 +14,8 @@
 ############################################################################
 
 import bpy
-from bpy.types import (Operator, Panel)
+
+from bpy.types import Operator, Panel
 
 from bsmax.actions import set_create_target, set_as_active_object
 from bsmax.state import has_constraint

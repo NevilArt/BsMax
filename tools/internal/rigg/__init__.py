@@ -13,35 +13,35 @@
 #	along with this program.  If not, see <https://www.gnu.org/licenses/>.
 ############################################################################
 
+from .alignment import register_alignment, unregister_alignment
 from .attach import register_attach, unregister_attach
 from .bendy_bone import register_bendy_bone, unregister_bendy_bone
-from .daz3d import register_daz3d, unregister_daz3d
-# from .eyetarget import register_eyetarget, unregister_eyetarget
 from .joystick import register_joystic, unregister_joystic
 from .menu import register_menu, unregister_menu
+from .naming import register_naming, unregister_naming
 from .shapekey import register_shapekey, unregister_shapekey
 from .wire_parameter import register_wire_parameter, unregister_wire_parameter
 
 
 
 def register_rigg():
+	register_alignment()
 	register_attach()
 	register_bendy_bone()
-	register_daz3d()
-	# register_eyetarget()
 	register_joystic()
+	register_menu()
+	register_naming()
 	register_shapekey()
 	register_wire_parameter()
-	register_menu()
 
 
 
 def unregister_rigg():
+	unregister_alignment()
 	unregister_attach()
 	unregister_bendy_bone()
-	unregister_daz3d()
-	# unregister_eyetarget()
 	unregister_joystic()
+	unregister_menu()
+	unregister_naming()
 	unregister_shapekey()
 	unregister_wire_parameter()
-	unregister_menu()

@@ -111,11 +111,8 @@ function getAlembicFileName characterName =
 	fileName = getFilenameFile maxfilename
 	nameParts = filterString fileName "_"
 
-	if nameParts.count == 1 do
-		return fileName + ".ABC"
-	
 	if nameParts.count < 3 do
-		return nameParts[1] + ".ABC"
+		return nameParts[1] + "_" + characterName + ".ABC"
 
 	/* 	combine first 3 name parts 
 	*	Projectname_Episode_Scene_charactername

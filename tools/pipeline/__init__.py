@@ -14,14 +14,17 @@
 ############################################################################
 
 from .make_ready_render import register_make_ready_render, unregister_make_ready_render
+from .make_render_ready_nhj import register_make_ready_render_v2, unregister_make_ready_render_v2
 
 
 
 def register_pipeline(preferences):
 	if preferences.nevil_stuff:
 		register_make_ready_render()
+		register_make_ready_render_v2()
 
 
 
 def unregister_pipeline():
 	unregister_make_ready_render()
+	unregister_make_ready_render_v2()

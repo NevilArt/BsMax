@@ -568,7 +568,8 @@ def create_render_file_name():
 	bpy.context.scene.render.filepath = scene_path + 'Base\\' + file_name
 
 
-class Sequencer_OT_Make_Ready_Render(Operator):
+
+class Render_OT_Make_Ready_Render(Operator):
 	bl_idname = "nevil.make_ready_render"
 	bl_label = "Make Ready Render (Nevil)"
 	bl_description = ""
@@ -590,15 +591,15 @@ class Sequencer_OT_Make_Ready_Render(Operator):
 
 def register_make_ready_render():
 	try:
-		bpy.utils.register_class(Sequencer_OT_Make_Ready_Render)
+		bpy.utils.register_class(Render_OT_Make_Ready_Render)
 	except:
 		pass
 
 
 
 def unregister_make_ready_render():
-	if hasattr(bpy.types, Sequencer_OT_Make_Ready_Render.bl_idname):
-		bpy.utils.unregister_class(Sequencer_OT_Make_Ready_Render)
+	if hasattr(bpy.types, Render_OT_Make_Ready_Render.bl_idname):
+		bpy.utils.unregister_class(Render_OT_Make_Ready_Render)
 
 
 

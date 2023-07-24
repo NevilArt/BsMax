@@ -17,6 +17,7 @@ import bpy
 
 from bpy.types import Operator
 from bpy.props import IntProperty, EnumProperty, BoolProperty
+
 from bsmax.state import is_active_object
 
 

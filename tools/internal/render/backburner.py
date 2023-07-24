@@ -22,7 +22,7 @@ bl_info = {
 	"name": "BsMax-Backburner",
 	"description": "Backburner for Blender 2.93 ~ 3.6",
 	"author": "Matt Ebb | Blaize | Anthony Hunt | Spirou4D | Nevil",
-	"version": (0, 2, 0, 10),# 2022-02-28
+	"version": (0, 2, 0, 10),# 2023-07-22
 	"blender": (2, 93, 0),# to 3.6
 	"location": "Properties/ Output/ Backbrner",
 	"wiki_url": "https://github.com/NevilArt/BsMax_2_80/wiki",
@@ -37,8 +37,10 @@ import subprocess
 import random
 import platform
 
-from bpy.props import (PointerProperty, StringProperty,
-						BoolProperty, IntProperty, EnumProperty)
+from bpy.props import (
+	PointerProperty, StringProperty,
+	BoolProperty, IntProperty, EnumProperty
+)
 from bpy.types import Panel, Operator, PropertyGroup
 
 
@@ -47,10 +49,13 @@ def backburner_path():
 	os_name = platform.system()
 	if os_name == 'Windows':
 		return '"C:/Program Files (x86)/Autodesk/Backburner/cmdjob.exe"'
+
 	if os_name == 'Linux':
 		return '"/opt/Autodesk/backburner/cmdjob"'
+
 	if os_name == 'Darwin':
 		return '"/opt/Autodesk/backburner/cmdjob"'
+
 	return '""'
 
 
@@ -78,8 +83,10 @@ def string_to_integer_array(frames):
 		if len(n) == 1:
 			if n[0] != '':
 				ints.append(int(n[0]))
+
 		elif len(n) == 2:
-			n1,n2 = int(n[0]), int(n[1])
+			n1 = int(n[0])
+			n2 = int(n[1])
 			if n2 > n1:
 				for i in range(n1, n2+1):
 					ints.append(i)
@@ -115,9 +122,11 @@ def filter_frames_bitarray(self, ctx):
 	""" Remove illeagle character from Frames field """
 	csbb = ctx.scene.backburner
 	string = ''
+
 	for l in csbb.frames_bitarray:
 		if l in '0123456789,-':
 			string += l
+
 	if csbb.frames_bitarray != string:
 		csbb.frames_bitarray = string
 
@@ -144,12 +153,16 @@ class Backburner_Property(PropertyGroup):
 	suspended: BoolProperty (name='Suspended', default=True,
 		description='Submit Job as Suspended')
 
-	override_frame_range: EnumProperty(name='Frames',
+	override_frame_range: EnumProperty(
+		name='Frames',
 		description='Override Render frames Range', 
 		default='ACTIVE',
-		items=[('ACTIVE', 'Active Time', ''),
-				('RANGE', 'Range', ''),
-				('FRAMES', 'Specific Frames', '')])
+		items=[
+			('ACTIVE', 'Active Time', ''),
+			('RANGE', 'Range', ''),
+			('FRAMES', 'Specific Frames', '')
+		]
+	)
 
 	frame_start: IntProperty(name='Start Frame',
 		description='Start frame of animation sequence to render', 
@@ -186,8 +199,10 @@ class Backburner_Property(PropertyGroup):
 	
 	submit_file: BoolProperty (name='Submit file to Manager', default=False)
 	
-	servers: StringProperty(name='Servers', maxlen=400, default='',
-		description='Render this job only with the servers specified (semi-colon separated list - ignored if group is used)')
+	servers: StringProperty(
+		name='Servers', maxlen=400, default='',
+		description='Render this job only with the servers specified (semi-colon separated list - ignored if group is used)'
+	)
 
 
 
@@ -195,9 +210,12 @@ class Backburner_Property(PropertyGroup):
 def task_fild(start, end):
 	""" Create one field of render task for multiple Frame per task mode  """
 	field = 'Frame_' + str(start)
+
 	if start != end:
 		field += '-' + str(end)
+
 	field += '\t' + str(start) + '\t' + str(end) + '\n'
+
 	return field
 
 
@@ -214,9 +232,11 @@ def create_task_list_file(scene, filename):
 	""" Get user given range and genarate array of frames most render """
 	if mode == 'FRAMES':
 		frames = string_to_integer_array(backburner.frames_bitarray)
+
 	else:
 		start_frame = backburner.frame_start if mode == 'RANGE' else scene.frame_start
 		end_frame = backburner.frame_end if mode == 'RANGE' else scene.frame_end
+
 		for frame in range(start_frame, end_frame+1):
 			frames.append(frame)
 
@@ -288,27 +308,50 @@ def create_cmd_command(scene):
 	# cmd += ' -netmask: ' + '255.255.0.0'
 	if cbb.group != '':
 		cmd += ' -group:"' + cbb.group + '"'
+
 	if cbb.job_details != '':
 		cmd += ' -description:"' + cbb.job_details + '"'
+
 	cmd += ' -priority:' + str(cbb.priority)
 	cmd += ' -timeout:' + str(cbb.timeout)
+
 	if cbb.suspended:
 		cmd += ' -suspended'
 	cmd += ' -taskList:"' + task_list_file + '"'
 	cmd += ' -taskName: 1'
+
 	if cbb.use_custom_path:
 		cmd += ' "' + cbb.blender_path + '"'
 	else:
 		cmd += ' "' + blender_path() + '"'
 	# cmd += ' -submit: "'+ bpy.data.filepath + '"'
+
 	if cbb.background_render:
 		cmd += ' --background'
+
 	cmd += ' "' + file_name + '"'
 	cmd += ' --frame-start %tp2'
 	cmd += ' --frame-end %tp3'
 	cmd += ' --render-anim'
 	
 	return task_list_file, cmd
+
+
+
+def submit(scene):
+	task_list_file, cmd = create_cmd_command(scene)
+	succeed = True
+	""" Try to Submit job to backburner """
+	try:
+		subprocess.check_output(cmd, shell=True)
+	except:
+		succeed = False
+		
+	""" Delete the Task list text file """
+	os.remove(task_list_file)
+
+	return succeed
+
 
 
 
@@ -321,40 +364,31 @@ class Render_OT_Submit_To_Backburner(Operator):
 	@classmethod
 	def poll(cls, ctx):
 		return ctx.scene != None
-
-	def submit(self, scene):
-		self.report({'OPERATOR'},'Submitting...')
-
-		task_list_file, cmd = create_cmd_command(scene)
-
-		""" Try to Submit job to backburner """
-		try:
-			subprocess.check_output(cmd, shell=True)
-			self.report({'OPERATOR'},'Job Submited to backburner manager')
-		except:
-			self.report({'WARNING'},'Backburner manager not found. Failed to submission.')
-			
-		""" Delete the Task list text file """
-		os.remove(task_list_file)
-
-		return {'FINISHED'}
 	
 	def execute(self, ctx):
-		if ctx.blend_data.filepath != '':
-			csbb = ctx.scene.backburner
-			if csbb.blender_path == '':
-				self.report({'ERROR'}, "Network path to Blender hasn't been set")
-				return {'CANCELLED'}
-
-			if csbb.path_backburner == '':
-				self.report({'ERROR'}, "Path to Backburner cmdjob.exe hasn't been set")
-				return {'CANCELLED'}
-
-			self.submit(ctx.scene)
-
-		else:
+		if ctx.blend_data.filepath == '':
 			self.report({'WARNING'},'Save File Befor Submit')
-		return{"FINISHED"}
+			return{"FINISHED"}
+
+		csbb = ctx.scene.backburner
+
+		if csbb.blender_path == '':
+			self.report({'ERROR'}, "Network path to Blender hasn't been set")
+			return {'CANCELLED'}
+
+		if csbb.path_backburner == '':
+			self.report({'ERROR'}, "Path to Backburner cmdjob.exe hasn't been set")
+			return {'CANCELLED'}
+
+		self.report({'OPERATOR'},'Submitting...')
+
+		if submit(ctx.scene):
+			self.report({'OPERATOR'},'Job Submited to backburner manager')
+		else:
+			self.report({'WARNING'},'Backburner manager not found. Failed to submission.')
+		#TODO delete render file if fails
+
+		return {'FINISHED'}
 
 
 
@@ -370,6 +404,7 @@ class Render_OT_Update_Job_Name(Operator):
 		if blend_file_name != "":
 			file_name = bpy.path.basename(blend_file_name)
 			the_name = (file_name.split('.'))[0]
+
 		else:
 			the_name = "New Job"
 
@@ -386,6 +421,7 @@ def get_preset_file_path():
 	''' Creat preset directory if not exist '''
 	if not os.path.isdir(preset_path):
 		os.mkdir(preset_path)
+
 	file_name = 'Backburner.ini'
 
 	''' if Backburner.ini file not exist create an empty one '''
@@ -401,32 +437,36 @@ def get_preset_file_path():
 
 
 
+def create_script_text(ctx):
+	backburner = ctx.scene.backburner
+
+	text = 'import bpy\n'
+	text += 'backburner = bpy.context.scene.backburner\n'
+	text += 'backburner.timeout = ' + str(backburner.timeout) + '\n'
+	text += 'backburner.priority = ' + str(backburner.priority) + '\n'
+	text += 'backburner.suspended = ' + str(backburner.suspended) + '\n'
+	text += 'backburner.frames_per_task = ' + str(backburner.frames_per_task) + '\n'
+	text += 'backburner.manager = "' + backburner.manager + '"\n'
+	text += 'backburner.port = ' + str(backburner.port) + '\n'
+	text += 'backburner.group = "' + backburner.group + '"\n'
+	text += 'backburner.background_render = ' + str(backburner.background_render) + '\n'
+	text += 'backburner.use_custom_path = ' + str(backburner.use_custom_path) + '\n'
+	text += 'backburner.blender_path = r"' + backburner.blender_path +'"'
+
+	return text
+
+
+
 class Render_OT_Save_BackBurner(Operator):
 	""" Save curent state of Backburner setting as python file """
 	bl_idname = "render.save_backburner_preset"
 	bl_label = "Save Backburner Preset"
 	bl_options = {'REGISTER', 'INTERNAL'}
 
-	def create_script_text(self, ctx):
-		backburner = ctx.scene.backburner
-		text = 'import bpy\n'
-		text += 'backburner = bpy.context.scene.backburner\n'
-		text += 'backburner.timeout = ' + str(backburner.timeout) + '\n'
-		text += 'backburner.priority = ' + str(backburner.priority) + '\n'
-		text += 'backburner.suspended = ' + str(backburner.suspended) + '\n'
-		text += 'backburner.frames_per_task = ' + str(backburner.frames_per_task) + '\n'
-		text += 'backburner.manager = "' + backburner.manager + '"\n'
-		text += 'backburner.port = ' + str(backburner.port) + '\n'
-		text += 'backburner.group = "' + backburner.group + '"\n'
-		text += 'backburner.background_render = ' + str(backburner.background_render) + '\n'
-		text += 'backburner.use_custom_path = ' + str(backburner.use_custom_path) + '\n'
-		text += 'backburner.blender_path = r"' + backburner.blender_path +'"'
-		return text
-
 	def execute(self, ctx):
 		preset_path, file_name = get_preset_file_path()
-		string = self.create_script_text(ctx)
-		
+		string = create_script_text(ctx)
+
 		if not os.path.exists(preset_path):
 			if os.access(preset_path, os.W_OK):
 				os.mkdir(preset_path)
@@ -448,9 +488,11 @@ class Render_OT_Load_BackBurner(Operator):
 	def execute(self, ctx):
 		preset_path, file_name = get_preset_file_path()
 		preset_file = preset_path + file_name
+
 		if os.path.isfile(preset_file):
 			script = open(preset_file).read()
 			exec(script)
+
 		return{"FINISHED"}
 
 
@@ -460,8 +502,10 @@ def draw_backburner_panel(self, ctx):
 
 	layout = self.layout
 	row = layout.row()
-	row.operator('wm.url_open',
-				icon='HELP').url= "https://github.com/NevilArt/BsMax/wiki/Render-Tools"
+	row.operator(
+		'wm.url_open',
+		icon='HELP'
+	).url= "https://github.com/NevilArt/BsMax/wiki/Render-Tools"
 
 	row.operator('render.submit_to_backburner', icon='RENDER_ANIMATION')
 	row.operator('render.save_backburner_preset', text='', icon='ADD')
@@ -491,6 +535,7 @@ def draw_backburner_panel(self, ctx):
 	if csbb.override_frame_range == 'RANGE':
 		row.prop(csbb, 'frame_start')
 		row.prop(csbb, 'frame_end')
+
 	elif csbb.override_frame_range == 'FRAMES':
 		layout.prop(csbb, 'frames_bitarray', text='')
 	
@@ -561,8 +606,10 @@ def register_backburner():
 	for c in classes:
 		bpy.utils.register_class(c)
 	
-	bpy.types.Scene.backburner = PointerProperty(type=Backburner_Property,
-												name='Backburner Submission')
+	bpy.types.Scene.backburner = PointerProperty(
+		type=Backburner_Property,
+		name='Backburner Submission'
+	)
 
 	bpy.types.TOPBAR_MT_render.prepend(backburner_menu)
 
