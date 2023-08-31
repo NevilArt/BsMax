@@ -356,6 +356,7 @@ def view3d(km, preferences):
 
 	km.new(space, 'view3d.zoom_extended', 'Z', 'PRESS', [])
 	km.new(space, 'camera.select', 'C', 'PRESS', [])
+	#TODO this key not called in blender 4.0 check it Beta
 	km.new(space, 'view3d.show_hide_gride', 'G', 'PRESS', [])
 	km.new(space, 'view3d.show_statistics', 'SEVEN', 'PRESS', [])
 	km.new(space, 'wm.multi_item_rename', 'F2', 'PRESS', [])

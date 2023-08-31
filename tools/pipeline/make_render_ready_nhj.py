@@ -164,13 +164,29 @@ def set_cycle_paraqmeters(scene):
 	scene.view_settings.use_curve_mapping = False
 
 
+def create_out_path():
+	outPath =  get_output_path()
+
+	dirs = [
+		outPath,
+		outPath + 'Base\\',
+		outPath + 'Matt\\',
+		outPath + 'Mask\\',
+		outPath + 'Mist\\'
+	]
+
+	for dir in dirs:
+		if not os.path.isdir(dir):
+			os.mkdir(dir)
+
+
 
 def clone_scene(ctx):
 	if 'EEVEE' in bpy.data.scenes:
 		return bpy.data.scenes['EEVEE']
 	
 	elif 'Cycles' in bpy.data.scenes:
-		set_as_active_scene(bpy.data.scenes['Cycles'])
+		set_as_active_scene(ctx, bpy.data.scenes['Cycles'])
 	
 	bpy.ops.scene.new(type='LINK_COPY')
 	return ctx.scene
@@ -398,6 +414,7 @@ def setup_render_setting(ctx):
 	set_as_active_scene(ctx, cyclesScene)
 	
 	out_put_setting(ctx, cyclesScene)
+	create_out_path()
 	meta_data_setting(cyclesScene)
 
 	set_composit_up(cyclesScene, eeveeScene)

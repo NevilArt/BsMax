@@ -1,3 +1,9 @@
+# 0, 1, 2, 20230724
+* Select Children/Parent work on selected armature rather than only active one.
+* Paste Pose works on selected armature rather than only active one (if all bone selected).
+* Armature Selection set hold shift for add selection, hold alt for remove from selection.
+* Some more future for selection I'm working on and will update soon.
+
 # 0, 1, 2, 20230710
 * Stuff and codes for older then Blender 3.3 droped.
 * Daz3d to Blender armature auto renamer tool.

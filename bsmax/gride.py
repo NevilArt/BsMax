@@ -36,7 +36,7 @@ def get_uniform_color(mode="2D"):
 
 
 
-class Local_Gride:
+class LocalGride:
 	def __init__(self):
 		self.size = 1
 		self.segments = 1
@@ -107,27 +107,30 @@ class Local_Gride:
 	
 	
 	def draw(self):
-		glEnable(GL_BLEND)
-		glLineWidth(1)
-		shader = gpu.shader.from_builtin(get_uniform_color(mode="3D"))
+		if version < (4, 0, 0):
+			glEnable(GL_BLEND)
+			glLineWidth(1)
+			shader = gpu.shader.from_builtin(get_uniform_color(mode="3D"))
 
-		# draw gride
-		self.draw_shader(shader, self.gride, 'LINES', self.gride_color)
-		
-		# draw border
-		if self.border:
-			self.draw_shader(shader, self.border,
-							'LINE_STRIP', self.border_color)
+			# draw gride
+			self.draw_shader(shader, self.gride, 'LINES', self.gride_color)
+			
+			# draw border
+			if self.border:
+				self.draw_shader(shader, self.border,
+								'LINE_STRIP', self.border_color)
 
-		# draw closs
-		if self.cross:
-			self.draw_shader(shader, self.cross[0:2],
-							'LINES', self.cross_x_color)
+			# draw closs
+			if self.cross:
+				self.draw_shader(shader, self.cross[0:2],
+								'LINES', self.cross_x_color)
 
-			self.draw_shader(shader, self.cross[2:4],
-							'LINES', self.cross_y_color)
+				self.draw_shader(shader, self.cross[2:4],
+								'LINES', self.cross_y_color)
 
-		glDisable(GL_BLEND)
+			glDisable(GL_BLEND)
+		else:
+			pass
 
 	def register(self, ctx):
 		space = ctx.area.spaces.active
@@ -143,9 +146,9 @@ class Local_Gride:
 # """ test """"
 # class View3D_OT_Local_Gride(bpy.types.Operator):
 # 	bl_idname = "view3d.local_gride"
-# 	bl_label = "local gride"
+# 	bl_label = "local Gride"
 
-# 	local_gride = Local_Gride()
+# 	localGride = LocalGride()
 
 # 	@classmethod
 # 	def poll(self, ctx):
@@ -154,13 +157,13 @@ class Local_Gride:
 # 	def execute(self, ctx):
 # 		if ctx.object:
 # 			matrix = ctx.object.matrix_world.copy()
-# 			self.local_gride.set(1, 10, matrix)
+# 			self.localGride.set(1, 10, matrix)
 
-# 		self.local_gride.border_on = True
-# 		self.local_gride.cross_on = True
+# 		self.localGride.border_on = True
+# 		self.localGride.cross_on = True
 
-# 		self.local_gride.genarate_gride_lines()
-# 		self.local_gride.register(ctx)
+# 		self.localGride.genarate_gride_lines()
+# 		self.localGride.register(ctx)
 
 # 		return{"FINISHED"}
 

@@ -48,14 +48,18 @@ def get_screen_pos(ctx,coord):
 
 
 def draw_line(self, mode, color):
-	glEnable(GL_BLEND)
-	coords = [self.start, self.end]
-	shader = gpu.shader.from_builtin(mode)
-	batch = batch_for_shader(shader, 'LINE_STRIP', {'pos': coords})
-	shader.bind()
-	shader.uniform_float('color', color)
-	batch.draw(shader)
-	glDisable(GL_BLEND)
+	if version < (4, 0, 0):
+		glEnable(GL_BLEND)
+		coords = [self.start, self.end]
+		shader = gpu.shader.from_builtin(mode)
+		batch = batch_for_shader(shader, 'LINE_STRIP', {'pos': coords})
+		shader.bind()
+		shader.uniform_float('color', color)
+		batch.draw(shader)
+		glDisable(GL_BLEND)
+	else:
+		pass
+
 
 
 
@@ -109,7 +113,7 @@ class Rubber_Band:
 		self.colors.append(self.color_b)
 	
 	def draw_rubber(self):
-		glEnable(GL_BLEND)
+		# glEnable(GL_BLEND)
 		glLineWidth(self.size)
 
 		if len(self.vertices) == 2:
@@ -120,7 +124,7 @@ class Rubber_Band:
 			self.shader.uniform_float("color", self.color_a)
 			
 			batch.draw(self.shader)
-			glDisable(GL_BLEND)
+			# glDisable(GL_BLEND)
 	
 	def register(self):
 		SpaceView3D = bpy.types.SpaceView3D

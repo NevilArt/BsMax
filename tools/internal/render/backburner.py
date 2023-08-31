@@ -183,7 +183,7 @@ class Backburner_Property(PropertyGroup):
 	
 	group: StringProperty(name='Groups', maxlen=400, default='',
 		description='Name of Render Group')
-
+	
 	path_backburner: StringProperty(name='Backburner Path',
 		description='Path to Backburner cmdjob.exe', 
 		maxlen=400, subtype='FILE_PATH', default=backburner_path())
@@ -304,8 +304,10 @@ def create_cmd_command(scene):
 	cmd = cbb.path_backburner
 	cmd += ' -jobName:"' + cbb.job_name + '"'
 	cmd += ' -manager: ' + cbb.manager
-	# cmd += ' -port: '+ str(cbb.port)
-	# cmd += ' -netmask: ' + '255.255.0.0'
+
+	if cbb.port != 3234:
+		cmd += ' -port: '+ str(cbb.port)
+
 	if cbb.group != '':
 		cmd += ' -group:"' + cbb.group + '"'
 
@@ -317,6 +319,7 @@ def create_cmd_command(scene):
 
 	if cbb.suspended:
 		cmd += ' -suspended'
+
 	cmd += ' -taskList:"' + task_list_file + '"'
 	cmd += ' -taskName: 1'
 

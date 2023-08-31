@@ -102,7 +102,7 @@ class Anim_OT_Set_Key_Filters(Operator):
 		self.bbone_shape = key_data.bbone_shape
 		self.whole_character = key_data.whole_character
 		self.whole_character_selected = key_data.whole_character
-		return ctx.window_manager.invoke_props_dialog(self,width=200)
+		return ctx.window_manager.invoke_props_dialog(self, width=200)
 
 
 

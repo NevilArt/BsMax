@@ -29,19 +29,19 @@ If you found this product useful and want to support this project you can Donate
 * [Video Tutorial](https://youtu.be/JolpAmvd3CE).
 
 ## Stand Alone Tools
-* Click on the link and 'Ctrl + S' to download the file then install it as an add-on.
 * [backburner.py](https://raw.github.com/NevilArt/BsMax/master/tools/internal/render/backburner.py)
 * [shapekey.py](https://raw.github.com/NevilArt/BsMax/master/tools/internal/rigg/shapekey.py)
 
 ## Older Version
-* [Download Older Version (2.80-2.92)](https://github.com/NevilArt/BsMax_2_80)
-* [Download Older Version (2.93-3.2)](https://github.com/NevilArt/BsMax_2_80)
+* [Download Older Version (2.80-2.92)(2.93-3.2)](https://github.com/NevilArt/BsMax_2_80)
 
 ## Recent Updates and Changes
-* Select Children/Parent work on selected armature rather than only active one.
-* Paste Pose works on selected armature rather than only active one (if all bone selected).
-* Armature Selection set hold shift for add selection, hold alt for remove from selection.
-* Some more future for selection I'm working on and will update soon.
+* Some bug fix and code cleaning done.
+* Working on a new selection set for armature. not ready for publish yet but almost done (maybe in next update).
+* New Selection set has:
+* --> multi button sheet and Tabs for each character.
+* --> you can add Icon for buttons
+* --> each button can has other action such as reset, set ke and ...
 * [Change log ...](https://github.com/NevilArt/BsMax/blob/master/CHANGELOG.md)
 
 ## License

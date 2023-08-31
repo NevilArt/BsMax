@@ -24,7 +24,7 @@ from mathutils import Vector
 
 from bsmax.actions import link_to_scene, set_as_active_object
 from .gride import Gride, Dimension, Click_Point
-from bsmax.gride import Local_Gride
+from bsmax.gride import LocalGride
 
 from bpy.app import version
 
@@ -201,14 +201,17 @@ def GetCursurMesh(size, x, y):
 
 
 def DrawCursurOveride(self):
-	bgl.glEnable(bgl.GL_BLEND)
-	shader = gpu.shader.from_builtin(get_uniform_color(mode="2D"))
-	v,f = GetCursurMesh(20, self.mpos.x, self.mpos.y)
-	batch = batch_for_shader(shader, 'TRIS', {"pos":v}, indices=f)
-	shader.bind()
-	shader.uniform_float("color",(0.8, 0.8, 0.8, 0.6))
-	batch.draw(shader)
-	bgl.glDisable(bgl.GL_BLEND)
+	if version < (4, 0, 0):
+		bgl.glEnable(bgl.GL_BLEND)
+		shader = gpu.shader.from_builtin(get_uniform_color(mode="2D"))
+		v,f = GetCursurMesh(20, self.mpos.x, self.mpos.y)
+		batch = batch_for_shader(shader, 'TRIS', {"pos":v}, indices=f)
+		shader.bind()
+		shader.uniform_float("color",(0.8, 0.8, 0.8, 0.6))
+		batch.draw(shader)
+		bgl.glDisable(bgl.GL_BLEND)
+	else:
+		pass
 
 
 
@@ -309,7 +312,7 @@ class Draw_Primitive(Operator):
 	shift, ctrl, alt = False, False, False
 	""" click point info """
 	gride = Gride()
-	local_gride = Local_Gride()
+	localGride = LocalGride()
 	""" 3D coordinate and info of click points """
 	point_start, point_current = Click_Point(), Click_Point()
 	""" flag that choos click point type use gride or not """
@@ -364,10 +367,10 @@ class Draw_Primitive(Operator):
 
 		##########################
 		# just a prototype #
-		self.local_gride.matrix = self.gride.gride_matrix
-		self.local_gride.set(2, 15, None)
-		self.local_gride.genarate_gride_lines()
-		self.local_gride.register(ctx)
+		self.localGride.matrix = self.gride.gride_matrix
+		self.localGride.set(2, 15, None)
+		self.localGride.genarate_gride_lines()
+		self.localGride.register(ctx)
 		##########################
 
 		""" Get First Click Point """
@@ -396,7 +399,7 @@ class Draw_Primitive(Operator):
 		self.point_start.reset()
 		self.point_current.reset()
 		self.step = 0
-		self.local_gride.unregister()
+		self.localGride.unregister()
 	
 	def jump_to_end(self):
 		self.use_single_draw = False
@@ -412,7 +415,7 @@ class Draw_Primitive(Operator):
 			self.subclass.abort()
 
 		self.reset()
-		self.local_gride.unregister()
+		self.localGride.unregister()
 	
 	def check_event(self, key, action):
 		pass
@@ -470,8 +473,8 @@ class Draw_Primitive(Operator):
 				elif self.use_surface:
 					self.point_current.location = self.gride.get_click_point_surface(ctx, x, y)
 					################
-					self.local_gride.matrix = self.gride.gride_matrix
-					self.local_gride.genarate_gride_lines()
+					self.localGride.matrix = self.gride.gride_matrix
+					self.localGride.genarate_gride_lines()
 					################
 				else:
 					self.point_current.location = self.gride.get_click_point_gride(ctx, x, y)
