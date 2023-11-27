@@ -1,5 +1,5 @@
 
-# BsMax Blender Addon 3.3LTS ~ 3.6LTS
+# BsMax Blender Addon 3.3LTS ~ 4.0
 
 BsMax is package of Modeling, Rig & Animation, Render tools and UI mimic for [Blender 3D](https://www.blender.org/).
 
@@ -36,12 +36,11 @@ If you found this product useful and want to support this project you can Donate
 * [Download Older Version (2.80-2.92)(2.93-3.2)](https://github.com/NevilArt/BsMax_2_80)
 
 ## Recent Updates and Changes
-* Some bug fix and code cleaning done.
-* Working on a new selection set for armature. not ready for publish yet but almost done (maybe in next update).
-* New Selection set has:
-* --> multi button sheet and Tabs for each character.
-* --> you can add Icon for buttons
-* --> each button can has other action such as reset, set ke and ...
+* Note: In past few month I was busy on a movie project and not able work on BsMax. But finally I'm Back.
+* Note: Some features may not work properly in Blender 4.0 but I am working on to fix that. 
+* Backburner timeout limit issue fixed.
+* Backburner submiter shows numbeer of frames are going to render, helps to avoid submit thousands of frame by mistake.
+* Unfinished stuff put on experimental mode and hide by default.
 * [Change log ...](https://github.com/NevilArt/BsMax/blob/master/CHANGELOG.md)
 
 ## License

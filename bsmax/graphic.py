@@ -57,9 +57,9 @@ def draw_line(self, mode, color):
 		shader.uniform_float('color', color)
 		batch.draw(shader)
 		glDisable(GL_BLEND)
+
 	else:
 		pass
-
 
 
 
@@ -91,6 +91,31 @@ def unregister_line(handle):
 
 
 
+def rubber_band_create(self, sx, sy, ex, ey):
+	self.vertices.clear()
+	self.colors.clear()
+	self.vertices.append((sx, sy))
+	self.vertices.append((ex, ey))
+	self.colors.append(self.color_a)
+	self.colors.append(self.color_b)
+
+
+def rubber_band_draw(self):
+	# glEnable(GL_BLEND)
+	glLineWidth(self.size)
+
+	if len(self.vertices) == 2:
+		coords = [self.vertices[0], self.vertices[1]]
+		batch = batch_for_shader(self.shader, 'LINE_STRIP', {"pos": coords})
+
+		self.shader.bind()
+		self.shader.uniform_float("color", self.color_a)
+		
+		batch.draw(self.shader)
+		# glDisable(GL_BLEND)
+
+
+
 class Rubber_Band:
 	def __init__(self):
 		self.start = (0, 0, 0)
@@ -105,26 +130,10 @@ class Rubber_Band:
 		self.shader = gpu.shader.from_builtin(get_uniform_color(mode="2D"))
 		
 	def create(self, sx, sy, ex, ey):
-		self.vertices.clear()
-		self.colors.clear()
-		self.vertices.append((sx, sy))
-		self.vertices.append((ex, ey))
-		self.colors.append(self.color_a)
-		self.colors.append(self.color_b)
+		rubber_band_create(self, sx, sy, ex, ey)
 	
 	def draw_rubber(self):
-		# glEnable(GL_BLEND)
-		glLineWidth(self.size)
-
-		if len(self.vertices) == 2:
-			coords = [self.vertices[0], self.vertices[1]]
-			batch = batch_for_shader(self.shader, 'LINE_STRIP', {"pos": coords})
-
-			self.shader.bind()
-			self.shader.uniform_float("color", self.color_a)
-			
-			batch.draw(self.shader)
-			# glDisable(GL_BLEND)
+		rubber_band_draw(self)
 	
 	def register(self):
 		SpaceView3D = bpy.types.SpaceView3D

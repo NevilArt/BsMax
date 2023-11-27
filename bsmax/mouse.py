@@ -16,9 +16,9 @@
 # import bpy#, mathutils
 from mathutils import Vector, geometry
 from math import pi
-from bpy_extras.view3d_utils import (region_2d_to_location_3d,
-									region_2d_to_vector_3d,
-									region_2d_to_origin_3d)
+from bpy_extras.view3d_utils import (
+	region_2d_to_location_3d, region_2d_to_vector_3d,region_2d_to_origin_3d
+)
 
 
 
@@ -73,9 +73,11 @@ def visible_objects_and_duplis(ctx):
 
 	depsgraph = ctx.evaluated_depsgraph_get()
 	for dup in depsgraph.object_instances:
+
 		if dup.is_instance:  # Real dupli instance
 			obj = dup.instance_object
 			yield (obj, dup.matrix_world.copy())
+
 		else:  # Usual object
 			obj = dup.object
 			yield (obj, obj.matrix_world.copy())
@@ -128,12 +130,14 @@ def ray_cast(ctx, mouse_x, mouse_y):
 
 	for obj, matrix in visible_objects_and_duplis(ctx):
 		if obj.type == 'MESH':
+
 			hit, normal, face = obj_ray_cast(obj, matrix, ray_origin, ray_target)
 			if hit is not None:
 				_, rot, _ = matrix.decompose()
 				hit_world = matrix @ hit
 				normal_world = rot.to_matrix() @ normal
 				length_squared = (hit_world - ray_origin).length_squared
+
 				if closest_loc is None or length_squared < best_length_squared:
 					best_length_squared = length_squared
 					closest_loc = hit_world
@@ -157,8 +161,10 @@ def get_click_point_on_face(ctx, face, x, y):
 		ray_depth = view_matrix @ Vector((0, 0, -1000000))
 		ray_end = region_2d_to_location_3d(region, region_data, (x, y), ray_depth)
 	
-		click_point = geometry.intersect_ray_tri(face[0], face[1], face[2],
-											ray_end, ray_start, False)
+		click_point = geometry.intersect_ray_tri(
+			face[0], face[1], face[2], ray_end, ray_start, False
+		)
+
 		if click_point:
 			return click_point
 		

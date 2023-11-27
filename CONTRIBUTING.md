@@ -1,4 +1,12 @@
+# Licence
+* licence text most be on top of all files.
+* 
+
 # Import
+* 
+
+# Public bsmax library
+* 
 
 # Variables
 * variable name start with lower case and camel cap.
@@ -20,4 +28,16 @@
 * Define classes at the last of code right befor register functions.
 * Try to do not right much code inside the classes define variables and function and then link function to an external function. this makes code mode readable and easy to understand.
 
+# Operator Classes
+* 
+
+# Menu
+
 # Register
+* register and unregister functions came on end of each python file.
+* this functions names satart with register or unregister and then file name.
+* if prefrence data need in file sent it thruh register fanction from main _init_ file.
+* e.g. register_animation(prefrence)
+
+# Tets
+* 

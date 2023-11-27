@@ -35,6 +35,96 @@ def get_uniform_color(mode="2D"):
 	return "UNIFORM_COLOR"
 
 
+def local_gride_set(self, size, segments, matrix):
+	self.size = size
+	self.segments = segments
+	if matrix:
+		self.matrix.from_matrix(matrix)
+
+
+def local_gride_genarate_gride_lines(self):
+	self.gride.clear()
+	self.border.clear()
+	self.cross.clear()
+
+	step = self.size / self.segments
+	start, end = -self.size / 2, self.size / 2
+	for i in range(self.segments + 1):
+		p = i * step + start
+		# Genarate and transform grid line points
+		points = [
+			Vector((p, start, 0)),
+			Vector((p, end, 0)),
+			Vector((start, p, 0)),
+			Vector((end, p, 0))
+		]
+
+		self.gride += transform_point_to_matrix(points, self.matrix)
+
+	# genarate borde lines if asked
+	if self.border_on:
+		self.border = [
+			Vector((start, start, 0)),
+			Vector((end, start, 0)),
+			Vector((end, end, 0)),
+			Vector((start, end, 0)),
+			Vector((start, start, 0))
+		]
+
+		self.border = transform_point_to_matrix(self.border, self.matrix)
+
+	# genarate cross lines if asked
+	if self.cross_on:
+		self.cross = [
+			# X axis line
+			Vector((start, 0, 0)),
+			Vector((end, 0, 0)),
+			# Y axis line
+			Vector((0, start, 0)),
+			Vector((0, end, 0))
+		]
+
+		self.cross = transform_point_to_matrix(self.cross, self.matrix)
+
+
+
+def local_gride_draw_shader(shader, coords, mode, color):
+	batch = batch_for_shader(shader, mode, {'pos': coords})
+	shader.bind()
+	shader.uniform_float('color', color)
+	batch.draw(shader)
+
+
+
+def local_gride_draw(self):
+	if version < (4, 0, 0):
+		glEnable(GL_BLEND)
+		glLineWidth(1)
+		shader = gpu.shader.from_builtin(get_uniform_color(mode="3D"))
+
+		# draw gride
+		self.draw_shader(shader, self.gride, 'LINES', self.gride_color)
+		
+		# draw border
+		if self.border:
+			self.draw_shader(shader, self.border,
+							'LINE_STRIP', self.border_color)
+
+		# draw closs
+		if self.cross:
+			self.draw_shader(shader, self.cross[0:2],
+							'LINES', self.cross_x_color)
+
+			self.draw_shader(shader, self.cross[2:4],
+							'LINES', self.cross_y_color)
+
+		glDisable(GL_BLEND)
+
+	else:
+		pass
+
+
+
 
 class LocalGride:
 	def __init__(self):
@@ -53,84 +143,16 @@ class LocalGride:
 		self.handler = None
 	
 	def set(self, size, segments, matrix=None):
-		self.size = size
-		self.segments = segments
-		if matrix:
-			self.matrix.from_matrix(matrix)
+		local_gride_set(self, size, segments, matrix)
 	
 	def genarate_gride_lines(self):
-		self.gride.clear()
-		self.border.clear()
-		self.cross.clear()
-
-		step = self.size / self.segments
-		start, end = -self.size / 2, self.size / 2
-		for i in range(self.segments + 1):
-			p = i * step + start
-			# Genarate and transform grid line points
-			points = [
-						Vector((p, start, 0)),
-						Vector((p, end, 0)),
-						Vector((start, p, 0)),
-						Vector((end, p, 0))
-			]
-			self.gride += transform_point_to_matrix(points, self.matrix)
-
-		# genarate borde lines if asked
-		if self.border_on:
-			self.border = [
-							Vector((start, start, 0)),
-							Vector((end, start, 0)),
-							Vector((end, end, 0)),
-							Vector((start, end, 0)),
-							Vector((start, start, 0))
-			]
-			self.border = transform_point_to_matrix(self.border, self.matrix)
-
-		# genarate cross lines if asked
-		if self.cross_on:
-			self.cross = [
-							# X axis line
-							Vector((start, 0, 0)),
-							Vector((end, 0, 0)),
-							# Y axis line
-							Vector((0, start, 0)),
-							Vector((0, end, 0))
-			]
-			self.cross = transform_point_to_matrix(self.cross, self.matrix)
+		local_gride_genarate_gride_lines(self)
 
 	def draw_shader(self, shader, coords, mode, color):
-		batch = batch_for_shader(shader, mode, {'pos': coords})
-		shader.bind()
-		shader.uniform_float('color', color)
-		batch.draw(shader)
-	
-	
+		local_gride_draw_shader(shader, coords, mode, color)
+		
 	def draw(self):
-		if version < (4, 0, 0):
-			glEnable(GL_BLEND)
-			glLineWidth(1)
-			shader = gpu.shader.from_builtin(get_uniform_color(mode="3D"))
-
-			# draw gride
-			self.draw_shader(shader, self.gride, 'LINES', self.gride_color)
-			
-			# draw border
-			if self.border:
-				self.draw_shader(shader, self.border,
-								'LINE_STRIP', self.border_color)
-
-			# draw closs
-			if self.cross:
-				self.draw_shader(shader, self.cross[0:2],
-								'LINES', self.cross_x_color)
-
-				self.draw_shader(shader, self.cross[2:4],
-								'LINES', self.cross_y_color)
-
-			glDisable(GL_BLEND)
-		else:
-			pass
+		local_gride_draw(self)
 
 	def register(self, ctx):
 		space = ctx.area.spaces.active

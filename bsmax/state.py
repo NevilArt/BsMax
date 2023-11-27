@@ -15,6 +15,8 @@
 from math import pi
 from mathutils import Vector
 
+
+
 def is_active_object(ctx, types):
 	""" Return True if active object is same as given object type """
 	if ctx.area.type == 'VIEW_3D':
@@ -74,7 +76,8 @@ def get_view_orientation(ctx):
 		(r(-pi/2), 0, 0):'FRONT',
 		(r(pi/2), 0, r(-pi)):'BACK',
 		(r(-pi/2), r(pi/2), 0):'LEFT',
-		(r(-pi/2), r(-pi/2), 0):'RIGHT'}
+		(r(-pi/2), r(-pi/2), 0):'RIGHT'
+	}
 	
 	r3d = ctx.area.spaces.active.region_3d
 	view_rot = r3d.view_matrix.to_euler()
@@ -86,6 +89,12 @@ def get_view_orientation(ctx):
 
 
 
+view_orients ={
+	'TOP':(0, 0, 0), 'BOTTOM':(pi, 0, 0),
+	'FRONT':(pi/2, 0, 0), 'BACK':(-pi/2, pi, 0),
+	'LEFT':(pi/2, 0, -pi/2), 'RIGHT':(pi/2, 0, pi/2)
+}
+
 #TODO need to clear name
 def get_rotation_of_view_orient(view_orient):
 	""" Get view name and return rotation vector
@@ -96,18 +105,30 @@ def get_rotation_of_view_orient(view_orient):
 		return:
 			Vector()
 	"""
-	if view_orient == 'TOP':
-		return Vector((0, 0, 0))
-	if view_orient == 'BOTTOM':
-		return Vector((pi, 0, 0))
-	if view_orient == 'FRONT':
-		return Vector((pi/2, 0, 0))
-	if view_orient == 'BACK':
-		return Vector((-pi/2, pi, 0))
-	if view_orient == 'LEFT':
-		return Vector((pi/2, 0, -pi/2))
-	if view_orient == 'RIGHT':
-		return Vector((pi/2, 0, pi/2))
+	global view_orients
+
+	if view_orient in view_orients:
+		return Vector(view_orients[view_orient]) 
+
+
+	# if view_orient == 'TOP':
+	# 	return Vector((0, 0, 0))
+
+	# if view_orient == 'BOTTOM':
+	# 	return Vector((pi, 0, 0))
+
+	# if view_orient == 'FRONT':
+	# 	return Vector((pi/2, 0, 0))
+
+	# if view_orient == 'BACK':
+	# 	return Vector((-pi/2, pi, 0))
+
+	# if view_orient == 'LEFT':
+	# 	return Vector((pi/2, 0, -pi/2))
+
+	# if view_orient == 'RIGHT':
+	# 	return Vector((pi/2, 0, pi/2))
+
 	return Vector((0, 0, 0))
 
 
@@ -127,13 +148,17 @@ def get_dimensions_avrage(obj, x, y, z):
 	if x:
 		value += obj.dimensions.x
 		count += 1
+
 	if y:
 		value += obj.dimensions.y
 		count += 1
+
 	if z:
 		value += obj.dimensions.z
 		count += 1
+
 	return value/count
+
 
 
 def has_key_in_frame(obj, frame: int):
@@ -148,4 +173,5 @@ def has_key_in_frame(obj, frame: int):
 	if obj and obj.animation_data and obj.animation_data.action:
 		for fcurves in obj.animation_data.action.fcurves:
 			return frame in (point.co.x for point in fcurves.keyframe_points)
+
 	return False

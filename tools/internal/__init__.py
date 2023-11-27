@@ -44,7 +44,7 @@ def register_internal(preferences):
 	register_camera()
 	register_clip_editor()
 	register_curve()
-	register_file()
+	register_file(preferences)
 	register_light()
 	register_mesh()
 	register_nodes()

@@ -27,7 +27,7 @@ class ImageData():
 		self.isSkin = None
 	
 	def is_skin_texture(self):
-		pass
+		return False
 
 
 class ImageList():

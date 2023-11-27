@@ -17,13 +17,15 @@
 # https://www.dropbox.com/s/ivschytl309jm2n/render_backburner.zip?dl=0 #
 # Update and Modified for Blender 2.8x to 3.x by Nevil #
 
+#TODO critic check box
+
 """ This file can be instaled as an stand alone add-on too """
 bl_info = {
 	"name": "BsMax-Backburner",
 	"description": "Backburner for Blender 2.93 ~ 3.6",
 	"author": "Matt Ebb | Blaize | Anthony Hunt | Spirou4D | Nevil",
-	"version": (0, 2, 0, 10),# 2023-07-22
-	"blender": (2, 93, 0),# to 3.6
+	"version": (0, 2, 1, 0),# Updated on 2023-11-26
+	"blender": (3, 6, 0),# to 4.0
 	"location": "Properties/ Output/ Backbrner",
 	"wiki_url": "https://github.com/NevilArt/BsMax_2_80/wiki",
 	"doc_url": "https://github.com/NevilArt/BsMax_2_80/wiki",
@@ -132,6 +134,20 @@ def filter_frames_bitarray(self, ctx):
 
 
 
+def get_render_frames_count(ctx):
+	scene = ctx.scene
+	backburner = scene.backburner
+	mode = backburner.override_frame_range
+	
+	if mode == 'FRAMES':
+		return len(string_to_integer_array(backburner.frames_bitarray))
+	
+	start_frame = backburner.frame_start if mode == 'RANGE' else scene.frame_start
+	end_frame = backburner.frame_end if mode == 'RANGE' else scene.frame_end
+	return end_frame - start_frame + 1
+
+
+
 class Backburner_Property(PropertyGroup):
 	job_name: StringProperty(name='Job Name', maxlen=256, default='New Job',
 		description='Name of the job to be shown in Backburner')
@@ -140,11 +156,11 @@ class Backburner_Property(PropertyGroup):
 		description='Add aditional information to render task')
 	
 	frames_per_task: IntProperty(name='Frames per Task', 
-		min=1, max=1000, soft_min=1, soft_max=64, default=1,
+		min=1, max=9999, soft_min=1, soft_max=1000, default=1,
 		description='Number of frames to give each render node')
 
 	timeout: IntProperty(name='Timeout', description='Timeout per task',
-		default=120, min=1, max=1000, soft_min=1, soft_max=64)
+		default=120, min=1, max=99999, soft_min=1, soft_max=1440)
 
 	priority: IntProperty(name='Priority',
 		description='Priority of this job (0 is Critical)',
@@ -357,66 +373,6 @@ def submit(scene):
 
 
 
-
-class Render_OT_Submit_To_Backburner(Operator):
-	'''Submit the render to backburner'''
-	bl_idname = "render.submit_to_backburner"
-	bl_label = "Submit to Backburner"
-	bl_options = {'REGISTER', 'INTERNAL'}
-
-	@classmethod
-	def poll(cls, ctx):
-		return ctx.scene != None
-	
-	def execute(self, ctx):
-		if ctx.blend_data.filepath == '':
-			self.report({'WARNING'},'Save File Befor Submit')
-			return{"FINISHED"}
-
-		csbb = ctx.scene.backburner
-
-		if csbb.blender_path == '':
-			self.report({'ERROR'}, "Network path to Blender hasn't been set")
-			return {'CANCELLED'}
-
-		if csbb.path_backburner == '':
-			self.report({'ERROR'}, "Path to Backburner cmdjob.exe hasn't been set")
-			return {'CANCELLED'}
-
-		self.report({'OPERATOR'},'Submitting...')
-
-		if submit(ctx.scene):
-			self.report({'OPERATOR'},'Job Submited to backburner manager')
-		else:
-			self.report({'WARNING'},'Backburner manager not found. Failed to submission.')
-		#TODO delete render file if fails
-
-		return {'FINISHED'}
-
-
-
-class Render_OT_Update_Job_Name(Operator):
-	''' Autocreat Jobe name from Filename '''
-	bl_idname = "render.update_job_name"
-	bl_label = "Update Jon Name"
-	bl_options = {'REGISTER', 'INTERNAL'}
-
-	def execute(self, ctx):
-		blend_file_name = ctx.blend_data.filepath
-
-		if blend_file_name != "":
-			file_name = bpy.path.basename(blend_file_name)
-			the_name = (file_name.split('.'))[0]
-
-		else:
-			the_name = "New Job"
-
-		ctx.scene.backburner.job_name = the_name
-
-		return{"FINISHED"}
-
-
-
 def get_preset_file_path():
 	''' Return the pathand file name of preset file '''
 	preset_path = bpy.utils.user_resource('CONFIG') + '/BsMax/'
@@ -460,46 +416,6 @@ def create_script_text(ctx):
 
 
 
-class Render_OT_Save_BackBurner(Operator):
-	""" Save curent state of Backburner setting as python file """
-	bl_idname = "render.save_backburner_preset"
-	bl_label = "Save Backburner Preset"
-	bl_options = {'REGISTER', 'INTERNAL'}
-
-	def execute(self, ctx):
-		preset_path, file_name = get_preset_file_path()
-		string = create_script_text(ctx)
-
-		if not os.path.exists(preset_path):
-			if os.access(preset_path, os.W_OK):
-				os.mkdir(preset_path)
-
-		preset_file = open(preset_path + file_name, "w")
-		preset_file.write(string)
-		preset_file.close()
-
-		return{"FINISHED"}
-
-
-
-class Render_OT_Load_BackBurner(Operator):
-	""" Load and run Backburner.py file """
-	bl_idname = "render.load_backburner_preset"
-	bl_label = "Load Backburner Preset"
-	bl_options = {'REGISTER', 'INTERNAL'}
-
-	def execute(self, ctx):
-		preset_path, file_name = get_preset_file_path()
-		preset_file = preset_path + file_name
-
-		if os.path.isfile(preset_file):
-			script = open(preset_file).read()
-			exec(script)
-
-		return{"FINISHED"}
-
-
-
 def draw_backburner_panel(self, ctx):
 	csbb = ctx.scene.backburner
 
@@ -510,7 +426,12 @@ def draw_backburner_panel(self, ctx):
 		icon='HELP'
 	).url= "https://github.com/NevilArt/BsMax/wiki/Render-Tools"
 
-	row.operator('render.submit_to_backburner', icon='RENDER_ANIMATION')
+	row.operator(
+		'render.submit_to_backburner',
+		text='Submit ' + str(get_render_frames_count(ctx)) + ' frames to Backburner',
+		icon='RENDER_ANIMATION'
+	)
+	
 	row.operator('render.save_backburner_preset', text='', icon='ADD')
 	row.operator('render.load_backburner_preset', text='', icon='RECOVER_LAST')
 	layout.separator()
@@ -558,10 +479,110 @@ def draw_backburner_panel(self, ctx):
 
 
 
+class Render_OT_Submit_To_Backburner(Operator):
+	'''Submit the render to backburner'''
+	bl_idname = "render.submit_to_backburner"
+	bl_label = "Submit to Backburner"
+	bl_options = {'REGISTER', 'INTERNAL'}
+
+	@classmethod
+	def poll(cls, ctx):
+		return ctx.scene != None
+	
+	def execute(self, ctx):
+		if ctx.blend_data.filepath == '':
+			self.report({'WARNING'},'Save File Befor Submit')
+			return{"FINISHED"}
+
+		csbb = ctx.scene.backburner
+
+		if csbb.blender_path == '':
+			self.report({'ERROR'}, "Network path to Blender hasn't been set")
+			return {'CANCELLED'}
+
+		if csbb.path_backburner == '':
+			self.report({'ERROR'}, "Path to Backburner cmdjob.exe hasn't been set")
+			return {'CANCELLED'}
+
+		self.report({'OPERATOR'},'Submitting...')
+
+		if submit(ctx.scene):
+			self.report({'OPERATOR'},'Job Submited to backburner manager')
+		else:
+			self.report({'WARNING'},'Backburner manager not found. Failed to submission.')
+		#TODO delete temp render file if fails
+
+		return {'FINISHED'}
+
+
+
+class Render_OT_Update_Job_Name(Operator):
+	''' Autocreat Jobe name from Filename '''
+	bl_idname = "render.update_job_name"
+	bl_label = "Update Jon Name"
+	bl_options = {'REGISTER', 'INTERNAL'}
+
+	def execute(self, ctx):
+		blend_file_name = ctx.blend_data.filepath
+
+		if blend_file_name != "":
+			file_name = bpy.path.basename(blend_file_name)
+			the_name = (file_name.split('.'))[0]
+
+		else:
+			the_name = "New Job"
+
+		ctx.scene.backburner.job_name = the_name
+
+		return{"FINISHED"}
+
+
+
+class Render_OT_Save_BackBurner(Operator):
+	""" Save curent state of Backburner setting as python file """
+	bl_idname = "render.save_backburner_preset"
+	bl_label = "Save Backburner Preset"
+	bl_options = {'REGISTER', 'INTERNAL'}
+
+	def execute(self, ctx):
+		preset_path, file_name = get_preset_file_path()
+		string = create_script_text(ctx)
+
+		if not os.path.exists(preset_path):
+			if os.access(preset_path, os.W_OK):
+				os.mkdir(preset_path)
+
+		preset_file = open(preset_path + file_name, "w")
+		preset_file.write(string)
+		preset_file.close()
+
+		return{"FINISHED"}
+
+
+
+
+class Render_OT_Load_BackBurner(Operator):
+	""" Load and run Backburner.py file """
+	bl_idname = "render.load_backburner_preset"
+	bl_label = "Load Backburner Preset"
+	bl_options = {'REGISTER', 'INTERNAL'}
+
+	def execute(self, ctx):
+		preset_path, file_name = get_preset_file_path()
+		preset_file = preset_path + file_name
+
+		if os.path.isfile(preset_file):
+			script = open(preset_file).read()
+			exec(script)
+
+		return{"FINISHED"}
+
+
+
 class Render_OT_Backburner(Operator):
 	""" Submit scene to Backburner as render job. """
 	bl_idname = 'render.backburner'
-	bl_label = 'Backburner'
+	bl_label = 'Backburner V0.2.1.0'
 	bl_options = {'REGISTER'}
 
 	def draw(self, ctx):
@@ -588,8 +609,11 @@ class RENDER_PT_Backburner(Panel):
 
 
 def backburner_menu(self, ctx):
-	self.layout.operator('render.backburner',
-		text='Submit to Backburner', icon='NETWORK_DRIVE')
+	self.layout.operator(
+		'render.backburner',
+		text='Submit to Backburner',
+		icon='NETWORK_DRIVE'
+	)
 
 
 

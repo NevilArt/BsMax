@@ -14,12 +14,13 @@
 ############################################################################
 
 from .sprite_json_import import (
-								register_sprite_json_importer,
-								unregister_sprite_json_importer
-							)
+	register_sprite_json_importer,
+	unregister_sprite_json_importer
+)
 
-def register_file():
-	register_sprite_json_importer()
+def register_file(preferences):
+	if preferences.experimental:
+		register_sprite_json_importer()
 
 def unregister_file():
 	unregister_sprite_json_importer()

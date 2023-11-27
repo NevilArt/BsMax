@@ -13,6 +13,8 @@
 #	along with this program.  If not, see <https://www.gnu.org/licenses/>.
 ############################################################################
 
+# Updata On 2023/09/20
+
 import bpy
 import os
 
@@ -35,10 +37,13 @@ def get_output_path():
 
 	return renderDir
 
+
+
 def get_output_name():
 	fileName = os.path.basename(bpy.data.filepath)
 	nameParts = str(fileName).split('_')
 	return nameParts[0] + "_" + nameParts[1] + "_"
+
 
 
 def get_file_path(name):
@@ -102,7 +107,7 @@ def meta_data_setting(scene):
 
 
 
-def set_cycle_paraqmeters(scene):
+def set_cycle_parameters(scene):
 	scene.name = "Cycles"
 	scene.render.engine = 'CYCLES'
 	cycles = scene.cycles
@@ -114,8 +119,8 @@ def set_cycle_paraqmeters(scene):
 
 	# samples
 	cycles.use_adaptive_sampling = True
-	cycles.adaptive_threshold = 0.04
-	cycles.samples = 512
+	cycles.adaptive_threshold = 0.005
+	cycles.samples = 2048
 
 	# denoise
 	cycles.use_denoising = True
@@ -162,6 +167,10 @@ def set_cycle_paraqmeters(scene):
 	scene.view_settings.gamma = 1
 	scene.sequencer_colorspace_settings.name = 'sRGB'
 	scene.view_settings.use_curve_mapping = False
+
+	# Performance
+	scene.render.use_persistent_data = True
+
 
 
 def create_out_path():
@@ -228,6 +237,20 @@ def set_eevee_parameters(scene):
 
 
 
+def set_eevee_world(scene):
+	# turn off world
+	scene.world.use_nodes = False
+
+	# set or create new world
+	if not "EEVEE_World" in bpy.data.worlds:
+		bpy.data.worlds.new("EEVEE_World")
+
+	# set simple world to eevee scene
+	eeveeWorld = bpy.data.worlds["EEVEE_World"]
+	scene.world = eeveeWorld
+
+
+
 def set_view_layer(scene):
 	scene.render.use_single_layer = False
 	view_layer = scene.view_layers[0]
@@ -275,7 +298,7 @@ def set_mist(scene):
 	mist_settings = scene.world.mist_settings
 	mist_settings.start = 0
 	mist_settings.depth = get_max_mist_distance(scene)
-	mist_settings.falloff = 'INVERSE_QUADRATIC'
+	mist_settings.falloff = 'LINEAR'
 
 
 
@@ -403,12 +426,74 @@ def get_cycles_scene(ctx):
 
 
 
+def force_get_colection(ctx, name):
+	collections = bpy.data.collections
+	if name in collections:
+		collection = collections[name]
+		return collection
+
+	newCollection = collections.new(name)
+	ctx.scene.collection.children.link(newCollection)
+	return newCollection
+
+
+
+def force_get_empty_object(ctx, name):
+	if name in bpy.data.objects:
+		return bpy.data.objects[name]
+	
+	bpy.ops.object.empty_add(
+		type='SINGLE_ARROW',
+		align='WORLD',
+		location=(0, 0, 0),
+		scale=(1, 1, 1)
+	)
+
+	newEmpty = ctx.active_object
+	newEmpty.name = name
+	return newEmpty
+
+
+
+def link_to_collection(obj, collection):
+	for layer in obj.users_collection:
+		layer.objects.unlink(obj)
+	collection.objects.link(obj)
+
+
+
+def setup_crypto_stuff(ctx):
+	# Char crypto parent
+	charLayer = force_get_colection(ctx, "Char")
+	charLayer.color_tag = 'COLOR_07' #pink
+	charCryptoParent = force_get_empty_object(ctx, "CharCryptoParent")
+	link_to_collection(charCryptoParent, charLayer)
+	
+	# Prop Crypto Parent
+	propLayer = force_get_colection(ctx, "Prop")
+	propLayer.color_tag = 'COLOR_05' #blue
+	propCryptoParent = force_get_empty_object(ctx, "PropCryptoParent")
+	link_to_collection(propCryptoParent, propLayer)
+
+
+
+def safty_check():
+	if not bpy.data.filepath:
+		return False
+	return True
+
+
+
 def setup_render_setting(ctx):
+	if not safty_check():
+		return
+
 	cyclesScene = get_cycles_scene(ctx)
-	set_cycle_paraqmeters(cyclesScene)
+	set_cycle_parameters(cyclesScene)
 
 	eeveeScene = clone_scene(ctx)
 	set_eevee_parameters(eeveeScene)
+	set_eevee_world(eeveeScene)
 	set_mist(eeveeScene)
 
 	set_as_active_scene(ctx, cyclesScene)
@@ -416,6 +501,8 @@ def setup_render_setting(ctx):
 	out_put_setting(ctx, cyclesScene)
 	create_out_path()
 	meta_data_setting(cyclesScene)
+
+	setup_crypto_stuff(ctx)
 
 	set_composit_up(cyclesScene, eeveeScene)
 

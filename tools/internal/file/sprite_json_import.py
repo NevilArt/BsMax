@@ -295,7 +295,6 @@ def menu_func_import(self, ctx):
 
 
 
-#TODO put in this to experimental
 def register_sprite_json_importer():
 	bpy.utils.register_class(File_TO_Sprite_JSON_Import)
 	bpy.types.TOPBAR_MT_file_import.append(menu_func_import)
@@ -304,6 +303,7 @@ def register_sprite_json_importer():
 
 def unregister_sprite_json_importer():
 	bpy.types.TOPBAR_MT_file_import.remove(menu_func_import)
+	hasattr(bpy.types, bpy.ops.file.sprite_json_importer)
 	bpy.utils.unregister_class(File_TO_Sprite_JSON_Import)
 
 

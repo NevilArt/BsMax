@@ -148,6 +148,45 @@ def get_light_bound(self):
 
 
 
+def bound_box_get_world_bound(self):
+	matrix_world = self.obj.matrix_world
+		
+	if self.obj.type == "MESH":
+		vertices = self.obj.data.vertices
+		verts = [matrix_world @ vert.co for vert in vertices]
+		get_bound_from_verts(self, verts)
+
+	elif self.obj.type == "CURVE":
+		verts = []
+		for spn in self.obj.data.splines:
+			verts += [matrix_world @ pts.co for pts in spn.bezier_points]
+		get_bound_from_verts(self, verts)
+
+	elif self.obj.type == "EMPTY":
+		get_empty_bound(self)
+
+	elif self.obj.type == "LIGHT":
+		get_light_bound(self)
+
+
+
+def bound_box_get_from_selection(self):
+	matrix_world = self.obj.matrix_world
+
+	if self.obj.type == "MESH":
+		vertices = self.obj.data.vertices
+		verts = [matrix_world @ vert.co for vert in vertices if vert.select]
+		get_bound_from_verts(self, verts)
+
+	if self.obj.type == "CURVE":
+		verts = []
+		for spline in self.obj.data.splines:
+			verts += [matrix_world @ pts.co for pts in spline.bezier_points
+				if pts.select_control_point]
+		get_bound_from_verts(self, verts)
+
+
+
 class BoundBox():
 	def __init__(self, obj):
 		self.obj = obj
@@ -159,36 +198,7 @@ class BoundBox():
 		get_bound_from_object_local(self)
 	
 	def get_world_bound(self):
-		matrix_world = self.obj.matrix_world
-		
-		if self.obj.type == "MESH":
-			vertices = self.obj.data.vertices
-			verts = [matrix_world @ vert.co for vert in vertices]
-			get_bound_from_verts(self, verts)
-
-		elif self.obj.type == "CURVE":
-			verts = []
-			for spn in self.obj.data.splines:
-				verts += [matrix_world @ pts.co for pts in spn.bezier_points]
-			get_bound_from_verts(self, verts)
-
-		elif self.obj.type == "EMPTY":
-			get_empty_bound(self)
-
-		elif self.obj.type == "LIGHT":
-			get_light_bound(self)
+		bound_box_get_world_bound(self)
 	
 	def get_from_selection(self):
-		matrix_world = self.obj.matrix_world
-
-		if self.obj.type == "MESH":
-			vertices = self.obj.data.vertices
-			verts = [matrix_world @ vert.co for vert in vertices if vert.select]
-			get_bound_from_verts(self, verts)
-
-		if self.obj.type == "CURVE":
-			verts = []
-			for spline in self.obj.data.splines:
-				verts += [matrix_world @ pts.co for pts in spline.bezier_points
-	      			if pts.select_control_point]
-			get_bound_from_verts(self, verts)
+		bound_box_get_from_selection(self)

@@ -19,12 +19,19 @@ from copy import deepcopy
 from math import sin, cos, atan2, pi
 from itertools import product
 
-from bsmax.math import (get_lines_intersection, split_segment, point_on_line,
-						point_on_cubic_bezier_curve, get_distance, get_3_points_angle_3d,
-						shift_number, bounding_box_colide_with,
-						get_cubic_bezier_curve_length, get_point_on_spline,
-						get_bezier_tangent
-					)
+from bsmax.math import (
+	get_lines_intersection,
+	split_segment,
+	point_on_line,
+	point_on_cubic_bezier_curve,
+	get_distance,
+	get_3_points_angle_3d,
+	shift_number,
+	bounding_box_colide_with,
+	get_cubic_bezier_curve_length,
+	get_point_on_spline,
+	get_bezier_tangent
+)
 
 
 
@@ -32,10 +39,11 @@ from bsmax.math import (get_lines_intersection, split_segment, point_on_line,
 ## temprary function need to simplifying ###################################################
 ############################################################################################
 param_tollerance = 0.0001
-cubic_roots_of_unity = [complex(1, 0),
-						complex(-1, math.sqrt(3))*0.5,
-						complex(-1, -math.sqrt(3))*0.5]
-
+cubic_roots_of_unity = [
+	complex(1, 0),
+	complex(-1, math.sqrt(3))*0.5,
+	complex(-1, -math.sqrt(3))*0.5
+]
 
 
 def get_bezier_roots(dists, tollerance=0.0001):
@@ -75,7 +83,9 @@ def get_bezier_roots(dists, tollerance=0.0001):
 		disc = c*c-4*b*d
 		if disc < 0:
 			return []
+
 		disc = math.sqrt(disc)
+
 		return [(-c-disc)/(2*b), (-c+disc)/(2*b)]
 
 	elif abs(c) > tollerance: # Linear
@@ -89,8 +99,40 @@ def get_bezier_roots(dists, tollerance=0.0001):
 
 def get_bezier_point1(points, t):
 	s = 1-t
-	return s**3*points[0]+3*s*s*t*points[1]+3*s*t*t*points[2]+t**3*points[3]
+	p0, p1, p2, p3 = points
+	return s**3*p0 + 3*s*s*t*p1 + 3*s*t*t*p2 + t**3*p3
 
+
+
+def are_intersections_adjacent(intersections, index):
+	if len(intersections) < 2:
+		return
+
+	prev = intersections[index-1]
+	current = intersections[index]
+
+	if prev[1] == current[0] and \
+		prev[2] > 1.0-param_tollerance and \
+		current[2] < param_tollerance and \
+		((prev[3] < 0 and current[3] < 0) or \
+		(prev[3] > 0 and current[3] > 0)):
+		intersections.pop(index)
+
+
+
+def append_intersection(spline_points ,intersections, origin,index, root, tangentY, intersectionX):
+		startpoint = spline_points[index-1]
+		endPoint = spline_points[index]
+
+		if root == float('inf'): # Segment is parallel to ray
+			# if index == 0 and spline.use_cyclic_u:
+			# 	cyclic_parallel_fix_flag = True
+			if len(intersections) > 0 and intersections[-1][1] == startpoint:
+				intersections[-1][1] = endPoint # Skip in adjacency test
+
+		elif intersectionX >= origin.x:
+			intersections.append([startpoint, endPoint, root, tangentY, intersectionX])
+			are_intersections_adjacent(intersections, len(intersections)-1)
 
 
 def xray_spline_intersection(spline, origin):
@@ -98,74 +140,78 @@ def xray_spline_intersection(spline, origin):
 	cyclic_parallel_fix_flag = False
 	intersections = []
 
-	def are_intersections_adjacent(index):
-		if len(intersections) < 2:
-			return
-		prev = intersections[index-1]
-		current = intersections[index]
-		if prev[1] == current[0] and \
-		   prev[2] > 1.0-param_tollerance and \
-		   current[2] < param_tollerance and \
-		   ((prev[3] < 0 and current[3] < 0) or \
-		   (prev[3] > 0 and current[3] > 0)):
-			intersections.pop(index)
-
-	def append_intersection(index, root, tangentY, intersectionX):
-		startpoint = spline_points[index-1]
-		endPoint = spline_points[index]
-		if root == float('inf'): # Segment is parallel to ray
-			# if index == 0 and spline.use_cyclic_u:
-			# 	cyclic_parallel_fix_flag = True
-			if len(intersections) > 0 and intersections[-1][1] == startpoint:
-				intersections[-1][1] = endPoint # Skip in adjacency test
-		elif intersectionX >= origin.x:
-			intersections.append([startpoint, endPoint, root, tangentY, intersectionX])
-			are_intersections_adjacent(len(intersections)-1)
-
 	if spline.type == 'BEZIER':
 		for index, endPoint in enumerate(spline.bezier_points):
 			if index == 0 and not spline.use_cyclic_u:
 				continue
+
 			startpoint = spline_points[index-1]
-			points = (startpoint.co, 
-						startpoint.handle_right,
-						endPoint.handle_left,
-						endPoint.co)
+
+			points = (
+				startpoint.co, 
+				startpoint.handle_right,
+				endPoint.handle_left,
+				endPoint.co
+			)
+
 			a, b, c, d = points
-			roots = get_bezier_roots((points[0].y - origin.y,
-								 points[1].y - origin.y,
-								 points[2].y - origin.y,
-								 points[3].y - origin.y))
+			roots = get_bezier_roots((
+					points[0].y - origin.y,
+					points[1].y - origin.y,
+					points[2].y - origin.y,
+					points[3].y - origin.y
+				)
+			)
+
 			if roots == float('inf'): # Intersection
-				append_intersection(index, float('inf'), None, None)
+				append_intersection(
+					spline_points ,intersections, origin,
+					index, float('inf'), None, None
+				)
 			else:
 				for root in roots:
-					append_intersection(index, root,
-										get_bezier_tangent(a, b, c, d, root)[1],
-										get_bezier_point1(points, root)[0])
+					append_intersection(
+						spline_points ,intersections, origin,
+						index, root,
+						get_bezier_tangent(a, b, c, d, root)[1],
+						get_bezier_point1(points, root)[0]
+					)
 
 	elif spline.type == 'POLY':
 		for index, endPoint in enumerate(spline.points):
 			if index == 0 and not spline.use_cyclic_u:
 				continue
+
 			startpoint = spline_points[index-1]
 			points = (startpoint.co, endPoint.co)
+
 			if (points[0].x < origin.x and points[1].x < origin.x) or \
 			   (points[0].y < origin.y and points[1].y < origin.y) or \
 			   (points[0].y > origin.y and points[1].y > origin.y):
 				continue
+
 			diff = points[1]-points[0]
 			height = origin[1]-points[0].y
+
 			if diff[1] == 0: # Parallel
 				if height == 0: # Intersection
 					append_intersection(index, float('inf'), None, None)
+
 			else: # Not parallel
 				root = height/diff[1]
-				append_intersection(index, root, diff[1], points[0].x+diff[0]*root)
+				append_intersection(
+					spline_points ,intersections, origin,
+					index, root, diff[1], points[0].x+diff[0]*root
+				)
 
 	if cyclic_parallel_fix_flag:
-		append_intersection(0, float('inf'), None, None)
-	are_intersections_adjacent(0)
+		append_intersection(
+			spline_points ,intersections, origin,
+			0, float('inf'), None, None
+		)
+
+	are_intersections_adjacent(intersections, 0)
+
 	return intersections
 
 
@@ -177,13 +223,16 @@ def is_point_in_spline(point, spline):
 
 def get_inout_segments(me, targ):
 	inner,outer = [],[]
+
 	for index in range(len(me.bezier_points)):
 		a,b,c,d = me.get_segment(index)
 		p = point_on_cubic_bezier_curve(a, b, c, d, 0.5)
+
 		if is_point_in_spline(p, targ):
 			inner.append(index)
 		else:
 			outer.append(index)
+
 	return inner,outer
 
 ############################################################################################
@@ -246,6 +295,7 @@ def get_curve_selection_index(splines, mode):
 			# 		sel.append(j)
 			sel = [j for j, point in enumerate(spline.bezier_points)
 					if point.select_control_point]
+
 			if len(sel) > 0:
 				selection.append([i,sel])
 	
@@ -253,39 +303,49 @@ def get_curve_selection_index(splines, mode):
 		for i, spline in enumerate(splines):
 			sel = []
 			count = len(spline.bezier_points)
+
 			for j in range(count):
 				k = j+1
 				if k >= count:
+
 					if spline.use_cyclic_u:
 						k = 0
 					else:
 						break
+
 				point1 = spline.bezier_points[j].select_control_point
 				point2 = spline.bezier_points[k].select_control_point
+
 				if point1 and point2:
 					sel.append(j)
+
 			if len(sel) > 0:
 				selection.append([i, sel])
 	
 	elif mode == 'spline':
 		for i, spline in enumerate(splines):
 			istrue = True
+
 			for point in spline.bezier_points:
 				if not point.select_control_point:
 					istrue = False
 					break
+
 			if istrue:
 				selection.append(i)
 	
 	elif mode == 'close':
 		for i, spline in enumerate(splines):
+
 			if not spline.use_cyclic_u:
 				break
+
 			istrue = True
 			for point in spline.bezier_points:
 				if not point.select_control_point:
 					istrue = False
 					break
+
 			if istrue:
 				selection.append(i)
 	
@@ -314,59 +374,66 @@ def get_curve_activespline_index(splines):
 
 
 
-def get_segments_intersection_points(segment1, segment2, tollerance):
+def scan(segment1, segment2, tollerance, section1, section2):
+	diva, divb, points = [], [], []
 	t = tollerance
+	for s1s, s1e in section1:
+		b1 = segment1.boundingbox(s1s, s1e, 30)
+
+		for s2s, s2e in section2:
+			b2 = segment2.boundingbox(s2s, s2e, 30)
+
+			if not b1.is_colide_with(b2):
+				continue
+
+			""" devide bonding box untill one of edge smaller than tollerance """
+			diva = get_devide_range(s1s,s1e) if b1.width > t and \
+												b1.length > t else [[s1s,s1e]]
+
+			divb = get_devide_range(s2s,s2e) if b2.width > t and \
+												b2.length > t else [[s2s,s2e]]
+
+			if (b1.width <= t or b1.length <= t) and \
+				(b2.width <= t or b2.length <= t):
+
+				""" if both bondig boxes are smaller then tollerance """
+				""" get line between start and end of each bonding box """
+				p1 = segment1.get_point_on(s1s)
+				p2 = segment1.get_point_on(s1e)
+				p3 = segment2.get_point_on(s2s)
+				p4 = segment2.get_point_on(s2e)
+				""" get cros point of lines """
+				co = get_lines_intersection(p1, p2, p3, p4)
+				time1 = get_cros_time(s1s, s1e, p1, p2, co)
+				time2 = get_cros_time(s2s, s2e, p3, p4, co)
+
+				points.append(CurveIntersectionPoint(segment1, time1,
+													segment2, time2, co))
+
+			else:
+				""" rescan divided boxes """
+				points += scan(segment1, segment2, tollerance, diva, divb)
 	
-	def scan(section1, section2):
-		diva, divb, points = [], [], []
-		for s1s, s1e in section1:
-			b1 = segment1.boundingbox(s1s, s1e, 30)
-			for s2s, s2e in section2:
-				b2 = segment2.boundingbox(s2s, s2e, 30)
+	""" remove doubles """
+	retpoints = []
 
-				if b1.is_colide_with(b2):
-					""" devide bonding box untill one of edge smaller than tollerance """
-					diva = get_devide_range(s1s,s1e) if b1.width > t and \
-														b1.length > t else [[s1s,s1e]]
+	for p in points:
+		overlap = False
 
-					divb = get_devide_range(s2s,s2e) if b2.width > t and \
-														b2.length > t else [[s2s,s2e]]
+		for r in retpoints:
+			if get_distance(p.co, r.co) < tollerance/10:
+				overlap = True
+				break
 
-					if (b1.width <= t or b1.length <= t) and \
-						(b2.width <= t or b2.length <= t):
-						""" if both bondig boxes are smaller then tollerance """
-						""" get line between start and end of each bonding box """
-						p1 = segment1.get_point_on(s1s)
-						p2 = segment1.get_point_on(s1e)
-						p3 = segment2.get_point_on(s2s)
-						p4 = segment2.get_point_on(s2e)
-						""" get cros point of lines """
-						co = get_lines_intersection(p1, p2, p3, p4)
-						time1 = get_cros_time(s1s, s1e, p1, p2, co)
-						time2 = get_cros_time(s2s, s2e, p3, p4, co)
-						points.append(CurveIntersectionPoint(segment1, time1,
-															segment2, time2, co))
+		if not overlap:
+			retpoints.append(p)
 
-					else:
-						""" rescan divided boxes """
-						points += scan(diva, divb)
-		
-		""" remove doubles """
-		retpoints = []
-	
-		for p in points:
-			overlap = False
-			for r in retpoints:
-				if get_distance(p.co, r.co) < tollerance/10:
-					overlap = True
-					break
+	return retpoints
 
-			if not overlap:
-				retpoints.append(p)
 
-		return retpoints
-	
-	return scan([[0,1]], [[0,1]])
+
+def get_segments_intersection_points(segment1, segment2, tollerance):
+	return scan(segment1, segment2, tollerance, [[0,1]], [[0,1]])
 
 
 
@@ -441,7 +508,8 @@ def spline_offset(spline, value):
 def bezier_point_normalized(left, co, right):
 	n = ((right - co).normalized() - (left - co).normalized()).normalized()
 	return Vector((-n[1], n[0], n[2]))
-	
+
+
 
 def spline_chamfer(spline, indexs, value, tention):
 	# TODO need to optimize and add tention functinality
@@ -607,28 +675,35 @@ def spline_multi_division(spline, index, times, cos=[]):
 			newpoint = Bezier_point(None)
 			newpoint.handle_left_type = "FREE"
 			newpoint.handle_right_type = "FREE"
+
 			if len(pc) > 0:
 				pc[-1].handle_right = seg[1]
+
 			newpoint.handle_left = seg[2]
 			newpoint.co = seg[3]
 			newpoint.handle_right = seg[4]
 			pc.append(newpoint)
+
 		pe.handle_left = segs[-1][-2] # fix last pionts left handle
 
 	for i in range(len(pc)):
 		spline.bezier_points.insert(index+i+1, pc[i])
 
 
+
 def spline_merge_points_by_distance(spline, distance, selectedonly):
 	dellist = []
+
 	if len(spline.bezier_points) > 1:
 		for i in range(len(spline.bezier_points)):
 			if i == 0:
 				ii = len(spline.bezier_points) - 1
 			else:
 				ii = i - 1
+
 			dot = spline.bezier_points[i]
 			dot1 = spline.bezier_points[ii]
+
 			while dot1 in dellist and i != ii:
 				ii -= 1
 				if ii < 0:
@@ -650,12 +725,15 @@ def spline_merge_points_by_distance(spline, distance, selectedonly):
 				else:
 					# Handles that are on main point position converts to vector,
 					# if next handle are also vector
+					
 					if dot.handle_left_type == 'VECTOR' and\
 						(dot1.handle_right - dot1.co).length < distance:
 						dot1.handle_right_type = "VECTOR"
+
 					if dot1.handle_right_type == 'VECTOR' and\
 						(dot.handle_left - dot.co).length < distance:
 						dot.handle_left_type = "VECTOR"
+
 	delindex = []
 
 	for bezier_point in dellist:
@@ -667,46 +745,36 @@ def spline_merge_points_by_distance(spline, distance, selectedonly):
 
 
 
-class SegmentDivisions:
-	def __init__(self, index, time, co):
-		self.index = index
-		self.times = [time]
-		self.cos = [co]
-	
-	def append(self, time, co):
-		if 0 < time < 1 and not time in self.times:
-			self.times.append(time)
-			self.cos.append(co)
-	
-	def sort(self, reverse=False):
-		times = self.times.copy()
-		cos = self.cos.copy()
-		self.cos.clear()
-		self.times.sort(reverse=reverse)
-		
-		""" sort correction point as time sort """
-		for time in self.times:
-			self.cos.append(cos[times.index(time)])
+def bezier_point_from_blender_bpoint(self, bpoint):
+	self.select_left_handle = bpoint.select_left_handle
+	self.select_right_handle = bpoint.select_right_handle
+	self.select_control_point = bpoint.select_control_point
+	self.hide = bpoint.hide
+	self.handle_left_type = bpoint.handle_left_type
+	self.handle_right_type = bpoint.handle_right_type
+	self.handle_left = Vector(bpoint.handle_left)
+	self.co = Vector(bpoint.co)
+	self.handle_right = Vector(bpoint.handle_right)
+	self.tilt = bpoint.tilt
+	self.weight_softbody = bpoint.weight_softbody
+	self.radius = bpoint.radius
 
 
 
-class SplineDivisions:
-	def __init__(self, spline, segsub):
-		self.spline = spline
-		self.segments = [segsub]
-	
-	def sort(self, reverse=False):
-		indexes = [sd.index for sd in self.segments]
-		indexes.sort(reverse=reverse)
-		segments = []
-	
-		for i in indexes:
-			for s in self.segments:
-				if i == s.index:
-					segments.append(s)
-					break
-
-		self.segments = deepcopy(segments)
+#TODO  naming has to fixed
+def bezier_point_get_bezier_point(self, bezier_point):
+	bezier_point.hide = self.hide
+	bezier_point.tilt = self.tilt
+	bezier_point.radius = self.radius
+	bezier_point.co = self.co
+	bezier_point.handle_left_type = self.handle_left_type
+	bezier_point.handle_right_type = self.handle_right_type
+	bezier_point.handle_left = self.handle_left
+	bezier_point.handle_right = self.handle_right
+	bezier_point.select_left_handle = self.select_left_handle
+	bezier_point.select_control_point = self.select_control_point
+	bezier_point.select_right_handle = self.select_right_handle
+	bezier_point.weight_softbody = self.weight_softbody
 
 
 
@@ -719,6 +787,7 @@ def collect_splines_divisions(intersections):
 		for div in divisions:
 			if segment.spline == div.spline:
 				isNewSegment = True
+
 				for dseg in div.segments:
 					if segment.index == dseg.index:
 						dseg.times.append(time)
@@ -729,13 +798,16 @@ def collect_splines_divisions(intersections):
 				if isNewSegment:
 					""" creat a new SegmentDivisions object """
 					div.segments.append(SegmentDivisions(segment.index, time, co))
+
 				isNewSpline = False
 		
 		""" create a new SplineDivisions object """
 		if isNewSpline:
-			newdiv = SplineDivisions(segment.spline,
-									SegmentDivisions(segment.index, time, co)
-								)
+			newdiv = SplineDivisions(
+				segment.spline,
+				SegmentDivisions(segment.index, time, co)
+			)
+
 			divisions.append(newdiv)
 
 	for i in intersections:
@@ -744,10 +816,485 @@ def collect_splines_divisions(intersections):
 
 	for d in divisions:
 		d.sort(reverse=True)
+
 		for ds in d.segments:
 			ds.sort()
 		
 	return divisions
+
+
+
+def curve_boolean(self, index1, index2, mode, tollerance):
+	spline1, spline2 = self.splines[index1], self.splines[index2]
+	intersections = get_curves_intersection_points(spline1, spline2, tollerance)
+	divisions = collect_splines_divisions(intersections)
+
+	for d in divisions:
+		for s in d.segments:
+			d.spline.multi_division(s.index, s.times, cos=s.cos)
+
+	inner1, outer1 = get_inout_segments(spline1, spline2)
+	inner2, outer2 = get_inout_segments(spline2, spline1)
+
+	if mode == 'UNION':
+		self.delete_segments(index1, inner1)
+		self.delete_segments(index2, inner2)
+
+	elif mode == 'INTERSECTION':
+		self.delete_segments(index1, outer1)
+		self.delete_segments(index2, outer2)
+
+	elif mode == 'DIFFERENCE':
+		self.delete_segments(index1, inner1)
+		self.delete_segments(index2, outer2)
+
+	self.merge_gaps_by_distance(0.0001, False)
+
+
+
+def curve_merge_gaps_by_distance(self, distance, selectedonly):
+
+	def is_gap(spline1, index1, spline2, index2, distance, selectedonly):
+		if selectedonly:
+			if not spline1.bezier_points[index1].select_control_point or\
+				not spline2.bezier_points[index2].select_control_point:
+				return False
+
+		if spline1.use_cyclic_u or spline2.use_cyclic_u:
+			return False
+
+		if spline1 == spline2 and index1 == index2:
+			return False
+
+		newDistance = get_distance(
+			spline1.bezier_points[index1].co,
+			spline2.bezier_points[index2].co
+		)
+
+		return newDistance <= distance
+
+	def collaps_splines(spline1, spline2):
+		spline1.bezier_points[-1].handle_right_type = "FREE"
+		spline1.bezier_points[-1].handle_right = spline2.bezier_points[0].handle_right
+		spline2.remove(0)
+
+		if spline1 == spline2:
+			""" close the spline """
+			spline1.use_cyclic_u = True
+		else:
+			""" combine 2 spline """
+			spline1.join(spline2)
+			self.remove(spline2)
+
+		return True
+
+	hasgap = True
+	while hasgap:
+		hasgap = False
+
+		"""self loop"""
+		for spline in self.splines:
+			if is_gap(spline, 0, spline, -1, distance, selectedonly):
+				hasgap = collaps_splines(spline, spline)
+
+		for spline1, spline2 in product(self.splines, self.splines):
+			"""end to head"""
+			if is_gap(spline1, -1, spline2, 0, distance, selectedonly):
+				hasgap = collaps_splines(spline1, spline2)
+				break
+
+			"""head to heads"""
+			if is_gap(spline1, 0, spline2, 0, distance, selectedonly):
+				spline1.reverse()
+				hasgap = collaps_splines(spline1, spline2)
+				break
+
+			"""end to ends"""
+			if is_gap(spline1, -1, spline2, -1, distance, selectedonly):
+				spline2.reverse()
+				hasgap = collaps_splines(spline1, spline2)
+				break
+
+			"""head to end """
+			if is_gap(spline1, 0, spline2, -1, distance, selectedonly):
+				hasgap = collaps_splines(spline2, spline1)
+				break
+
+
+
+def curve_break_point(self, spline, points):
+	""" seprate spline from given point indexe
+			spline can be Spline class or index
+		"""
+	if type(spline) == int:
+		spline = self.splines[spline]
+
+	points.sort()
+
+	if spline.use_cyclic_u:
+		first = points[0]
+		spline.make_first(first)
+		spline.append(spline.bezier_points[0])
+		spline.use_cyclic_u = False
+		maximum = len(spline.bezier_points)
+		points = [shift_number(i, -first, 0, maximum) for i in points]
+		points.sort()
+
+	if not spline.use_cyclic_u and points[0] != 0:
+		newspline = Spline(spline)
+		newspline.clear()
+		newspline.bezier_points = spline.bezier_points[0 : points[0] + 1]
+		self.append(newspline)
+
+	for i in range(len(points)):
+		newspline = Spline(spline)
+		newspline.clear()
+		start = points[i]
+
+		if i < len(points) - 1:
+			end = points[i + 1] + 1
+			newspline.bezier_points = spline.bezier_points[start : end]
+
+		else:
+			newspline.bezier_points = spline.bezier_points[start:]
+
+		self.append(newspline)
+
+	self.remove(spline)
+
+
+
+def curve_delete_segments(self, splineindex, indexes):
+	indexes.sort()
+	segments, new = [], []
+	spline = self.splines[splineindex]
+
+	for i in range(len(spline.bezier_points)):
+		if i not in indexes:
+			new.append(i)
+			continue
+
+		if len(new) > 0:
+			segments.append(new.copy())
+			new.clear()
+
+	if len(new) > 0:
+		segments.append(new.copy())
+
+	splines = []
+	for indexes in segments:
+		""" clone same spline to have same properties """
+		newspline = Spline(spline)
+		newspline.bezier_points.clear()
+		newspline.use_cyclic_u = False
+		count = len(indexes)
+		
+		for i, index in enumerate(indexes):
+			newspline.bezier_points.append(spline.bezier_points[index])
+
+			if i >= count-1:
+				right = spline.get_next_index(index)
+				newspline.bezier_points.append(spline.bezier_points[right])
+		
+		splines.append(deepcopy(newspline))
+
+	""" replace first part with original and append others """
+	self.splines[splineindex] = splines[0]
+	splines.pop(0)
+
+	for newspline in splines:
+		self.splines.append(newspline)
+
+
+
+def curve_swap(self, index1, index2):
+	count = len(self.splines)
+
+	if index1 < count and index1 < count:
+		temp = self.splines[index1]
+		self.splines[index1] = self.splines[index2]
+		self.splines[index2] = temp
+		return True
+
+	return False
+
+
+
+def curve_clone(self, index):
+	if index < len(self.splines):
+		return deepcopy(self.splines[index])
+	return None
+
+
+
+def curve_remove(self, spline):
+	if type(spline) == int:
+		self.splines.pop(spline)
+
+	if type(spline) == Spline:
+		for i, s in enumerate(self.splines):
+			if s == spline:
+				self.splines.pop(i)
+				break
+
+
+
+def curve_reset(self):
+	self.obj.data.splines.clear()
+	for spline in self.original:
+		spline.create(self.obj.data)
+
+
+
+def curve_update(self):
+	self.obj.data.splines.clear()
+	for spline in self.splines:
+		spline.create(self.obj.data)
+
+
+
+def segment_boundingbox(self, start, end, divid):
+	step = (end - start) / divid
+	cuts = [point_on_cubic_bezier_curve(self.a, self.b, self.c, self.d, start + t*step) 
+			for t in range(divid + 1)]
+	return get_boundingbox(cuts)
+
+
+
+def segment_get_section_line(self, start, end):
+	a = point_on_cubic_bezier_curve(self.a, self.b, self.c, self.d, start)
+	b = point_on_cubic_bezier_curve(self.a, self.b, self.c, self.d, end)
+	return Line(a, b)
+
+
+
+def segment_divisions_append(self, time, co):
+	if 0 < time < 1 and not time in self.times:
+		self.times.append(time)
+		self.cos.append(co)
+
+
+def segment_divisions_sort(self, reverse):
+	times = self.times.copy()
+	cos = self.cos.copy()
+	self.cos.clear()
+	self.times.sort(reverse=reverse)
+	
+	""" sort correction point as time sort """
+	for time in self.times:
+		self.cos.append(cos[times.index(time)])
+
+
+
+def spline_divisions_sort(self, reverse):
+	indexes = [sd.index for sd in self.segments]
+	indexes.sort(reverse=reverse)
+	segments = []
+
+	for i in indexes:
+		for s in self.segments:
+			if i == s.index:
+				segments.append(s)
+				break
+
+	self.segments = deepcopy(segments)
+
+
+
+def spline_get_next_index(self, index, riverce):
+	""" Get next point index
+		args:
+			spline: spline objects
+			index: Integer current index
+			riverce: Boolean True>Right False>Left
+		return:
+			integer
+	"""
+	if riverce:
+		if index == 0:
+			return len(self.bezier_points) - 1 if self.use_cyclic_u else index
+		return index - 1
+
+	if index >= len(self.bezier_points) - 1:
+		return 0 if self.use_cyclic_u else index
+
+	return index + 1
+
+
+
+def spline_get_segment(self, index):
+	start, end = self.get_segment_indexes(index)
+	a = self.bezier_points[start].co
+	b = self.bezier_points[start].handle_right
+	c = self.bezier_points[end].handle_left
+	d = self.bezier_points[end].co
+	return a, b, c, d
+
+
+
+def spline_get_segment_length(self, index, steps):
+	if index <= len(self.bezier_points)-2:
+		a, b, c, d = self.get_segment(index)
+		return get_cubic_bezier_curve_length(a, b, c, d, steps=steps)
+		#bpy.context.active_object.data.splines[0].calc_length()
+	return 0
+
+
+
+def spline_get_as_segments(self):
+	count = len(self.bezier_points) if self.use_cyclic_u else \
+										len(self.bezier_points)-1
+	return [Segment(self,i) for i in range(count)]
+
+
+
+def spline_set_free(self, full):
+	if not self.bezier_points:
+		return
+
+	if full:
+		for point in self.bezier_points:
+			point.handle_left_type = 'FREE'
+			point.handle_right_type = 'FREE'
+
+	if not self.use_cyclic_u:
+		ps,pe = self.bezier_points[0], self.bezier_points[-1]
+		ps.handle_left_type = 'VECTOR'
+
+		if ps.handle_right_type in {'AUTO','ALIGNED'}:
+			ps.handle_right_type = 'FREE'
+
+		if ps.handle_left_type in {'AUTO','ALIGNED'}:
+			pe.handle_left_type = 'FREE'
+
+		pe.handle_right_type = 'VECTOR'
+
+
+
+def spline_join(self, spline):
+	# TODO add modes for join the last and first point
+	# keep both
+	# keep first
+	# keep last
+	# merge to center
+	for point in spline.bezier_points:
+		self.bezier_points.append(point)
+
+
+
+def spline_remove(self, index):
+	if type(index) == int:
+		self.bezier_points.pop(index)
+
+	elif type(index) == list:
+		index.sort(reverse=True)
+		for i in index:
+			self.bezier_points.pop(i)
+
+
+
+def spline_make_first(self, index):
+	if self.use_cyclic_u:
+		spb = self.bezier_points.copy()
+		self.bezier_points.clear()
+		self.bezier_points = spb[index:] + spb[0:index]
+
+	elif index == len(self.bezier_points) - 1:
+		self.reverse()
+
+
+
+def spline_select(self, select):
+	for point in self.bezier_points:
+		point.select_left_handle = select
+		point.select_right_handle = select
+		point.select_control_point = select
+
+
+
+def spline_create(self, data):
+	newspline = data.splines.new(self.type)
+	newspline.bezier_points.add(len(self.bezier_points) - 1)
+
+	for i in range(len(self.bezier_points)):
+		point = self.bezier_points[i]
+		point.get_bezier_point(newspline.bezier_points[i])
+
+	newspline.tilt_interpolation = self.tilt_interpolation
+	#newspline.radius_interpolatio = self.radius_interpolation
+	#newspline.point_count_u = self.point_count_u
+	#newspline.point_count_v = self.point_count_v
+	newspline.order_u = self.order_u
+	newspline.order_v = self.order_v
+	newspline.resolution_u = self.resolution_u
+	newspline.resolution_v = self.resolution_v
+	newspline.use_cyclic_u = self.use_cyclic_u
+	newspline.use_cyclic_v = self.use_cyclic_v
+	newspline.use_endpoint_u = self.use_endpoint_u
+	newspline.use_endpoint_v = self.use_endpoint_v
+	newspline.use_bezier_u = self.use_bezier_u
+	newspline.use_bezier_v = self.use_bezier_v
+	newspline.use_smooth = self.use_smooth
+	newspline.hide = self.hide
+	newspline.material_index = self.material_index
+	#newspline.character_index = self.character_index
+
+
+
+def spline_get_point_index(self, point):
+	for index, bezier_point in enumerate(self.bezier_points):
+		if point == bezier_point:
+			return index
+	return None
+
+
+
+def spline_from_blender_spline(self, spline):
+	self.points = []
+	self.bezier_points = self.get_bezier_points(spline)
+	self.tilt_interpolation = spline.tilt_interpolation
+	self.radius_interpolation = spline.radius_interpolation
+	self.type = spline.type
+	self.point_count_u = spline.point_count_u
+	self.point_count_v = spline.point_count_v
+	self.order_u = spline.order_u
+	self.order_v = spline.order_v
+	self.resolution_u = spline.resolution_u
+	self.resolution_v = spline.resolution_v
+	self.use_cyclic_u = spline.use_cyclic_u
+	self.use_cyclic_v = spline.use_cyclic_v
+	self.use_endpoint_u = spline.use_endpoint_u
+	self.use_endpoint_v = spline.use_endpoint_v
+	self.use_bezier_u = spline.use_bezier_u
+	self.use_bezier_v = spline.use_bezier_v
+	self.use_smooth = spline.use_smooth
+	self.hide = spline.hide
+	self.material_index = spline.material_index
+	self.character_index = spline.character_index
+
+
+
+class SegmentDivisions:
+	def __init__(self, index, time, co):
+		self.index = index
+		self.times = [time]
+		self.cos = [co]
+	
+	def append(self, time, co):
+		segment_divisions_append(self, time, co)
+	
+	def sort(self, reverse=False):
+		segment_divisions_sort(self, reverse)
+
+
+
+class SplineDivisions:
+	def __init__(self, spline, segsub):
+		self.spline = spline
+		self.segments = [segsub]
+	
+	def sort(self, reverse=False):
+		spline_divisions_sort(self, reverse)
 
 
 
@@ -802,46 +1349,24 @@ class CurveIntersectionPoint:
 
 class Bezier_point:
 	def __init__(self, bpoint):
+		self.select_left_handle = False
+		self.select_right_handle = False
+		self.select_control_point = False
+		self.hide = False
+		self.handle_left_type = 'VECTOR'
+		self.handle_right_type = 'VECTOR'
+		self.handle_left = Vector((0, 0, 0))
+		self.co = Vector((0, 0, 0))
+		self.handle_right = Vector((0, 0, 0))
+		self.tilt = 0
+		self.weight_softbody = 0.001
+		self.radius = 1
+		
 		if bpoint:
-			self.select_left_handle = bpoint.select_left_handle
-			self.select_right_handle = bpoint.select_right_handle
-			self.select_control_point = bpoint.select_control_point
-			self.hide = bpoint.hide
-			self.handle_left_type = bpoint.handle_left_type
-			self.handle_right_type = bpoint.handle_right_type
-			self.handle_left = Vector(bpoint.handle_left)
-			self.co = Vector(bpoint.co)
-			self.handle_right = Vector(bpoint.handle_right)
-			self.tilt = bpoint.tilt
-			self.weight_softbody = bpoint.weight_softbody
-			self.radius = bpoint.radius
-		else:
-			self.select_left_handle = False
-			self.select_right_handle = False
-			self.select_control_point = False
-			self.hide = False
-			self.handle_left_type = 'VECTOR'
-			self.handle_right_type = 'VECTOR'
-			self.handle_left = Vector((0, 0, 0))
-			self.co = Vector((0, 0, 0))
-			self.handle_right = Vector((0, 0, 0))
-			self.tilt = 0
-			self.weight_softbody = 0.001
-			self.radius = 1
+			bezier_point_from_blender_bpoint(self, bpoint)
 
 	def get_bezier_point(self, bezier_point):
-		bezier_point.hide = self.hide
-		bezier_point.tilt = self.tilt
-		bezier_point.radius = self.radius
-		bezier_point.co = self.co
-		bezier_point.handle_left_type = self.handle_left_type
-		bezier_point.handle_right_type = self.handle_right_type
-		bezier_point.handle_left = self.handle_left
-		bezier_point.handle_right = self.handle_right
-		bezier_point.select_left_handle = self.select_left_handle
-		bezier_point.select_control_point = self.select_control_point
-		bezier_point.select_right_handle = self.select_right_handle
-		bezier_point.weight_softbody = self.weight_softbody
+		bezier_point_get_bezier_point(self, bezier_point)	
 
 
 
@@ -858,18 +1383,13 @@ class Segment:
 		self.end = Bezier_point(spline.bezier_points[end])
 	
 	def boundingbox(self, start, end, divid):
-		step = (end - start) / divid
-		cuts = [point_on_cubic_bezier_curve(self.a, self.b, self.c, self.d, start + t*step) 
-				for t in range(divid + 1)]
-		return get_boundingbox(cuts)
+		return segment_boundingbox(self, start, end, divid)
 	
 	def get_point_on(self, t):
 		return point_on_cubic_bezier_curve(self.a, self.b, self.c, self.d, t)
 	
 	def get_section_line(self, start, end):
-		a = point_on_cubic_bezier_curve(self.a, self.b, self.c, self.d, start)
-		b = point_on_cubic_bezier_curve(self.a, self.b, self.c, self.d, end)
-		return Line(a, b)
+		segment_get_section_line(self, start, end)
 	
 	def get_length(self, steps=100):
 		return get_cubic_bezier_curve_length(self.a, self.b, self.c, self.d, steps=steps)
@@ -878,99 +1398,51 @@ class Segment:
 
 class Spline:
 	def __init__(self, spline):
-		if spline != None:
-			""" create mirror of ariginal spline """
-			self.points = []
-			self.bezier_points = self.get_bezier_points(spline)
-			self.tilt_interpolation = spline.tilt_interpolation
-			self.radius_interpolation = spline.radius_interpolation
-			self.type = spline.type
-			self.point_count_u = spline.point_count_u
-			self.point_count_v = spline.point_count_v
-			self.order_u = spline.order_u
-			self.order_v = spline.order_v
-			self.resolution_u = spline.resolution_u
-			self.resolution_v = spline.resolution_v
-			self.use_cyclic_u = spline.use_cyclic_u
-			self.use_cyclic_v = spline.use_cyclic_v
-			self.use_endpoint_u = spline.use_endpoint_u
-			self.use_endpoint_v = spline.use_endpoint_v
-			self.use_bezier_u = spline.use_bezier_u
-			self.use_bezier_v = spline.use_bezier_v
-			self.use_smooth = spline.use_smooth
-			self.hide = spline.hide
-			self.material_index = spline.material_index
-			self.character_index = spline.character_index
-		else:
-			""" create a default empty spline """
-			self.points = []
-			self.bezier_points = []
-			self.tilt_interpolation = 'LINEAR'
-			self.radius_interpolation = 'LINEAR'
-			self.type = 'BEZIER'
-			self.point_count_u = 2
-			self.point_count_v = 1
-			self.order_u = 4
-			self.order_v = 4
-			self.resolution_u = 12
-			self.resolution_v = 12
-			self.use_cyclic_u = False
-			self.use_cyclic_v = False
-			self.use_endpoint_u = False
-			self.use_endpoint_v = False
-			self.use_bezier_u = False
-			self.use_bezier_v = False
-			self.use_smooth = True
-			self.hide = False
-			self.material_index = 0
-			self.character_index = 0
+		""" create a default empty spline """
+		self.points = []
+		self.bezier_points = []
+		self.tilt_interpolation = 'LINEAR'
+		self.radius_interpolation = 'LINEAR'
+		self.type = 'BEZIER'
+		self.point_count_u = 2
+		self.point_count_v = 1
+		self.order_u = 4
+		self.order_v = 4
+		self.resolution_u = 12
+		self.resolution_v = 12
+		self.use_cyclic_u = False
+		self.use_cyclic_v = False
+		self.use_endpoint_u = False
+		self.use_endpoint_v = False
+		self.use_bezier_u = False
+		self.use_bezier_v = False
+		self.use_smooth = True
+		self.hide = False
+		self.material_index = 0
+		self.character_index = 0
+
+		if spline:
+			spline_from_blender_spline(self, spline)
+			
 
 	def get_bezier_points(self, spline):
 		return [Bezier_point(bp) for bp in spline.bezier_points]
 
 	def get_next_index(self, index, riverce=False):
-		""" Get next point index
-
-			args:
-				spline: spline objects
-				index: Integer current index
-				riverce: Boolean True>Right False>Left
-			return:
-				integer
-		"""
-		if riverce:
-			if index == 0:
-				return len(self.bezier_points) - 1 if self.use_cyclic_u else index
-			return index - 1
-
-		if index >= len(self.bezier_points) - 1:
-			return 0 if self.use_cyclic_u else index
-		return index + 1
-
+		return spline_get_next_index(self, index, riverce)
 
 	def get_segment_indexes(self, index):
 		""" return start and end point index of segment """
 		return [index, self.get_next_index(index)]
 
 	def get_segment(self, index):
-		start, end = self.get_segment_indexes(index)
-		a = self.bezier_points[start].co
-		b = self.bezier_points[start].handle_right
-		c = self.bezier_points[end].handle_left
-		d = self.bezier_points[end].co
-		return a, b, c, d
+		return spline_get_segment(self, index)
 
 	def get_as_segments(self):
-		count = len(self.bezier_points) if self.use_cyclic_u else \
-											len(self.bezier_points)-1
-		return [Segment(self,i) for i in range(count)]
+		return spline_get_as_segments(self)
 
 	def get_segment_length(self, index, steps=100):
-		if index <= len(self.bezier_points)-2:
-			a, b, c, d = self.get_segment(index)
-			return get_cubic_bezier_curve_length(a, b, c, d, steps=steps)
-			#bpy.context.active_object.data.splines[0].calc_length()
-		return 0
+		return spline_get_segment_length(self, index, steps)
 
 	def get_point_on_segment(self, index, t):
 		a, b, c, d = self.get_segment(index)
@@ -980,20 +1452,7 @@ class Spline:
 		return get_point_on_spline(self, time)
 
 	def set_free(self, full=False):
-		if len(self.bezier_points) > 0:
-			if full:
-				for point in self.bezier_points:
-					point.handle_left_type = 'FREE'
-					point.handle_right_type = 'FREE'
-
-			if not self.use_cyclic_u:
-				ps,pe = self.bezier_points[0], self.bezier_points[-1]
-				ps.handle_left_type = 'VECTOR'
-				if ps.handle_right_type in {'AUTO','ALIGNED'}:
-					ps.handle_right_type = 'FREE'
-				if ps.handle_left_type in {'AUTO','ALIGNED'}:
-					pe.handle_left_type = 'FREE'
-				pe.handle_right_type = 'VECTOR'
+		spline_set_free(self, full)
 
 	def append(self, bezier_point):
 		self.bezier_points.append(bezier_point)
@@ -1009,67 +1468,22 @@ class Spline:
 		self.bezier_points.clear()
 
 	def join(self, spline):
-		# TODO add modes for join the last and first point
-		# keep both
-		# keep first
-		# keep last
-		# merge to center
-		for point in spline.bezier_points:
-			self.bezier_points.append(point)
+		spline_join(self, spline)
 
 	def remove(self, index):
-		if type(index) == int:
-			self.bezier_points.pop(index)
-
-		elif type(index) == list:
-			index.sort(reverse=True)
-			for i in index:
-				self.bezier_points.pop(i)
+		spline_remove(self, index)
 
 	def reverse(self):
 		spline_reverse(self)
 
 	def make_first(self, index):
-		if self.use_cyclic_u:
-			spb = self.bezier_points.copy()
-			self.bezier_points.clear()
-			self.bezier_points = spb[index:] + spb[0:index]
-
-		elif index == len(self.bezier_points) - 1:
-			self.reverse()
+		spline_make_first(self, index)
 
 	def select(self, select):
-		for point in self.bezier_points:
-			point.select_left_handle = select
-			point.select_right_handle = select
-			point.select_control_point = select
+		spline_select(self, select)
 
 	def create(self, data):
-		newspline = data.splines.new(self.type)
-		newspline.bezier_points.add(len(self.bezier_points) - 1)
-
-		for i in range(len(self.bezier_points)):
-			point = self.bezier_points[i]
-			point.get_bezier_point(newspline.bezier_points[i])
-
-		newspline.tilt_interpolation = self.tilt_interpolation
-		#newspline.radius_interpolatio = self.radius_interpolation
-		#newspline.point_count_u = self.point_count_u
-		#newspline.point_count_v = self.point_count_v
-		newspline.order_u = self.order_u
-		newspline.order_v = self.order_v
-		newspline.resolution_u = self.resolution_u
-		newspline.resolution_v = self.resolution_v
-		newspline.use_cyclic_u = self.use_cyclic_u
-		newspline.use_cyclic_v = self.use_cyclic_v
-		newspline.use_endpoint_u = self.use_endpoint_u
-		newspline.use_endpoint_v = self.use_endpoint_v
-		newspline.use_bezier_u = self.use_bezier_u
-		newspline.use_bezier_v = self.use_bezier_v
-		newspline.use_smooth = self.use_smooth
-		newspline.hide = self.hide
-		newspline.material_index = self.material_index
-		#newspline.character_index = self.character_index
+		spline_create(self, data)
 
 	def offset(self, value):
 		spline_offset(self, value)
@@ -1084,10 +1498,7 @@ class Spline:
 		spline_multi_division(self, index, times, cos=cos)
 
 	def get_point_index(self, point):
-		for index, bezier_point in enumerate(self.bezier_points):
-			if point == bezier_point:
-				return index
-		return None
+		return spline_get_point_index(self, point)
 
 	def merge_points_by_distance(self, distance, selectedonly):
 		spline_merge_points_by_distance(self, distance, selectedonly)
@@ -1125,183 +1536,31 @@ class Curve:
 		self.splines[index].join(spline)
 
 	def remove(self, spline):
-		if type(spline) == int:
-			self.splines.pop(spline)
-		if type(spline) == Spline:
-			for i, s in enumerate(self.splines):
-				if s == spline:
-					self.splines.pop(i)
-					break
+		curve_remove(self, spline)
 
 	def restore(self):
 		self.splines = deepcopy(self.original)
 
 	def reset(self):
-		self.obj.data.splines.clear()
-		for spline in self.original:
-			spline.create(self.obj.data)
+		curve_reset(self)
 
 	def update(self):
-		self.obj.data.splines.clear()
-		for spline in self.splines:
-			spline.create(self.obj.data)
+		curve_update(self)
 
 	def clone(self, index):
-		if index < len(self.splines):
-			return deepcopy(self.splines[index])
-		return None
+		return curve_clone(self, index)
 
 	def swap(self, index1, index2):
-		count = len(self.splines)
-		if index1 < count and index1 < count:
-			temp = self.splines[index1]
-			self.splines[index1] = self.splines[index2]
-			self.splines[index2] = temp
-			return True
-		return False
+		return curve_swap(self, index1, index2)
 
 	def delete_segments(self, splineindex, indexes):
-		indexes.sort()
-		segments, new = [], []
-		spline = self.splines[splineindex]
-		for i in range(len(spline.bezier_points)):
-			if i not in indexes:
-				new.append(i)
-			else:
-				if len(new) > 0:
-					segments.append(new.copy())
-					new.clear()
-		if len(new) > 0:
-			segments.append(new.copy())
-		splines = []
-		for indexes in segments:
-			""" clone same spline to have same properties """
-			newspline = Spline(spline)
-			newspline.bezier_points.clear()
-			newspline.use_cyclic_u = False
-			count = len(indexes)
-			for i, index in enumerate(indexes):
-				newspline.bezier_points.append(spline.bezier_points[index])
-				if i >= count-1:
-					right = spline.get_next_index(index)
-					newspline.bezier_points.append(spline.bezier_points[right])
-			splines.append(deepcopy(newspline))
-		""" replace first part with original and append others """
-		self.splines[splineindex] = splines[0]
-		splines.pop(0)
-		for newspline in splines:
-			self.splines.append(newspline)
+		curve_delete_segments(self, splineindex, indexes)
 
 	def break_point(self, spline, points):
-		""" seprate spline from given point indexe
-			spline can be Spline class or index
-		"""
-		if type(spline) == int:
-			spline = self.splines[spline]
-
-		points.sort()
-
-		if spline.use_cyclic_u:
-			first = points[0]
-			spline.make_first(first)
-			spline.append(spline.bezier_points[0])
-			spline.use_cyclic_u = False
-			maximum = len(spline.bezier_points)
-			points = [shift_number(i, -first, 0, maximum) for i in points]
-			points.sort()
-
-		if not spline.use_cyclic_u and points[0] != 0:
-			newspline = Spline(spline)
-			newspline.clear()
-			newspline.bezier_points = spline.bezier_points[0 : points[0] + 1]
-			self.append(newspline)
-
-		for i in range(len(points)):
-			newspline = Spline(spline)
-			newspline.clear()
-			start = points[i]
-			if i < len(points) - 1:
-				end = points[i + 1] + 1
-				newspline.bezier_points = spline.bezier_points[start : end]
-			else:
-				newspline.bezier_points = spline.bezier_points[start:]
-			self.append(newspline)
-		self.remove(spline)
+		curve_break_point(self, spline, points)
 
 	def merge_gaps_by_distance(self, distance, selectedonly):
-		def is_gap(spline1, index1, spline2, index2, distance, selectedonly):
-			if selectedonly:
-				if not spline1.bezier_points[index1].select_control_point or\
-					not spline2.bezier_points[index2].select_control_point:
-					return False
-			if spline1.use_cyclic_u or spline2.use_cyclic_u:
-				return False
-			if spline1 == spline2 and index1 == index2:
-				return False
-			return get_distance(spline1.bezier_points[index1].co,
-								spline2.bezier_points[index2].co) <= distance
-		def collaps_splines(spline1, spline2):
-			spline1.bezier_points[-1].handle_right_type = "FREE"
-			spline1.bezier_points[-1].handle_right = spline2.bezier_points[0].handle_right
-			spline2.remove(0)
-			if spline1 == spline2:
-				""" close the spline """
-				spline1.use_cyclic_u = True
-			else:
-				""" combine 2 spline """
-				spline1.join(spline2)
-				self.remove(spline2)
-			return True
-		hasgap = True
-		while hasgap:
-			hasgap = False
-			"""self loop"""
-			for spline in self.splines:
-				if is_gap(spline, 0, spline, -1, distance, selectedonly):
-					hasgap = collaps_splines(spline, spline)
-
-			for spline1, spline2 in product(self.splines, self.splines):
-				"""end to head"""
-				if is_gap(spline1, -1, spline2, 0, distance, selectedonly):
-					hasgap = collaps_splines(spline1, spline2)
-					break
-				"""head to heads"""
-				if is_gap(spline1, 0, spline2, 0, distance, selectedonly):
-					spline1.reverse()
-					hasgap = collaps_splines(spline1, spline2)
-					break
-				"""end to ends"""
-				if is_gap(spline1, -1, spline2, -1, distance, selectedonly):
-					spline2.reverse()
-					hasgap = collaps_splines(spline1, spline2)
-					break
-				"""head to end """
-				if is_gap(spline1, 0, spline2, -1, distance, selectedonly):
-					hasgap = collaps_splines(spline2, spline1)
-					break
+		curve_merge_gaps_by_distance(self, distance, selectedonly)
 
 	def boolean(self, index1, index2, mode, tollerance):
-		spline1, spline2 = self.splines[index1], self.splines[index2]
-		intersections = get_curves_intersection_points(spline1, spline2, tollerance)
-		divisions = collect_splines_divisions(intersections)
-
-		for d in divisions:
-			for s in d.segments:
-				d.spline.multi_division(s.index, s.times, cos=s.cos)
-
-		inner1, outer1 = get_inout_segments(spline1, spline2)
-		inner2, outer2 = get_inout_segments(spline2, spline1)
-
-		if mode == 'UNION':
-			self.delete_segments(index1, inner1)
-			self.delete_segments(index2, inner2)
-
-		elif mode == 'INTERSECTION':
-			self.delete_segments(index1, outer1)
-			self.delete_segments(index2, outer2)
-
-		elif mode == 'DIFFERENCE':
-			self.delete_segments(index1, inner1)
-			self.delete_segments(index2, outer2)
-
-		self.merge_gaps_by_distance(0.0001, False)
+		curve_boolean(self, index1, index2, mode, tollerance)

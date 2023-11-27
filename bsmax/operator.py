@@ -21,6 +21,255 @@ from bsmax.graphic import Rubber_Band, get_screen_pos
 
 
 
+def curve_tool_get_data(self, ctx):
+	self.obj = ctx.active_object
+	self.curve = Curve(self.obj)
+
+
+
+def curve_tool_execute(self):
+	if self.canceled:
+		self.abort()
+	else:
+		self.apply()
+	return{'FINISHED'}
+
+
+
+def curve_tool_check(self):
+	if not self.start:
+		self.start = True
+	self.apply()
+
+
+
+def curve_tool_modal(self, ctx, event):
+	if self.singleaction:
+		self.apply()
+		return{'FINISHED'}
+
+	if event.type == 'LEFTMOUSE':
+		if not self.start:
+			self.start = True
+			self.start_x = event.mouse_x
+			self.start_y = event.mouse_y
+			self.get_data(ctx)
+
+	if event.type == 'MOUSEMOVE':
+		if self.start:
+			self.value_x = (event.mouse_x - self.start_x) / 200
+			self.value_y = (event.mouse_y - self.start_y) / 200
+			self.apply()
+
+	if self.start and event.value =='RELEASE':
+		self.finish = True
+
+	#TODO mouse weel changes self.value_w
+	if self.finish:
+		if self.value_x + self.value_y == 0:
+			self.abort()
+		self.apply()
+		return{'FINISHED'}
+
+	if event.type in {'RIGHTMOUSE', 'ESC'}:
+		self.abort()
+		return {'CANCELLED'}
+
+	return {'RUNNING_MODAL'}
+
+
+
+def curve_tool_invoke(self, ctx):
+	self.get_data(ctx)
+	if self.typein:
+		wm = ctx.window_manager
+		return wm.invoke_props_dialog(self)
+	else:
+		ctx.window_manager.modal_handler_add(self)
+		return {'RUNNING_MODAL'}
+
+
+
+def pick_operator_modal(self, ctx, event):
+	ctx.area.tag_redraw()
+	if not event.type in {'LEFTMOUSE', 'RIGHTMOUSE', 'MOUSEMOVE', 'ESC'}:
+		return {'PASS_THROUGH'}
+	
+	elif event.type == 'MOUSEMOVE':
+		""" update the line coordinate """
+		""" self.center is a 3D coordinate """
+		######################################################
+		self.start = get_screen_pos(ctx,self.center) 
+		self.end = event.mouse_region_x, event.mouse_region_y
+
+		if self.start != None:
+			sx = int(self.start.x)
+			sy = int(self.start.y)
+		else:
+			sx, sy = 0, 0
+
+		if self.end != None:
+			ex = self.end[0]
+			ey = self.end[1]
+		else:
+			ex, ey = 0, 0
+
+		self.rb.create(sx, sy, ex, ey)
+		######################################################
+
+	elif event.type == 'LEFTMOUSE':
+		if event.value == 'PRESS':
+			""" clear all selection """
+			if ctx.mode != 'OBJECT':
+				bpy.ops.object.mode_set(mode='OBJECT', toggle=False)
+
+			bpy.ops.object.select_all(action='DESELECT')
+			ctx.view_layer.objects.active = None
+			
+			""" Pick new object as target """
+			coord = event.mouse_region_x, event.mouse_region_y
+			bpy.ops.view3d.select(extend=False, location=coord)
+
+			""" Ignore source obects as target """
+			if ctx.active_object in self.source:
+				if self.subsource == []:
+					ctx.view_layer.objects.active = None
+
+		if event.value =='RELEASE':
+			""" if target selected check and return """
+			picked_object = ctx.view_layer.objects.active
+
+			if picked_object:
+				allowed = False
+				""" Filter the selection types """
+				if 'ANY' in self.filters:
+					allowed = True
+				
+				if picked_object.type in self.filters:
+					allowed = True
+				
+				if 'AUTO' in self.filters and len(self.source) > 0:
+					#TODO need to smarter method
+					if self.source[0].type == picked_object.type and \
+						self.source[0] != picked_object:
+
+						allowed = True
+			
+				if allowed:
+					self.rb.unregister()
+					self.finish(ctx, event, picked_object)
+					return {'CANCELLED'}
+				else:
+					ctx.view_layer.objects.active = None
+					bpy.ops.object.select_all(action='DESELECT')
+			
+			self.restore_mode(ctx)
+
+		return {'RUNNING_MODAL'}
+
+	elif event.type in {'RIGHTMOUSE','ESC'}:
+		self.rb.unregister()
+		return {'CANCELLED'}
+
+	return {'RUNNING_MODAL'}
+
+
+
+def get_objects_center(objs):
+	""" Return selected objects midil """
+	location = Vector((0,0,0))
+	for obj in objs:
+		location += obj.matrix_world.translation
+	return location / len(objs)
+
+
+
+def pick_operator_get_bone(self, ctx, event, armature):
+	coord = event.mouse_region_x, event.mouse_region_y
+	ctx.view_layer.objects.active = armature
+
+	if self.mode == 'EDIT_ARMATURE':
+		bpy.ops.object.mode_set(mode='EDIT', toggle=False)
+		bpy.ops.armature.select_all(action='DESELECT')
+		bpy.ops.view3d.select(extend=False, location=coord)
+		selection = ctx.selected_bones
+	else:
+		bpy.ops.object.mode_set(mode='POSE', toggle=False)
+		bpy.ops.pose.select_all(action='DESELECT')
+		bpy.ops.view3d.select(extend=False, location=coord)
+		selection = ctx.selected_pose_bones
+
+	bone = selection[0] if len(selection) > 0 else None
+	bpy.ops.object.mode_set(mode='OBJECT', toggle=False)
+
+	return bone
+
+
+def pick_operator_get_sub_itme(ctx, objs):
+	if ctx.mode == 'POSE':
+		return ctx.selected_pose_bones
+	elif ctx.mode == 'EDIT_ARMATURE':
+		return ctx.selected_bones
+	return []
+
+
+def pick_operator_setup(self, ctx, event):
+	self.mode = ctx.mode
+	self.active = ctx.active_object
+	self.source = ctx.selected_objects.copy()
+	self.subsource = self.get_sub_itme(ctx, self.source)
+	self.center = self.get_center(self.source)
+	######################################################
+	self.start = self.end = event.mouse_region_x, event.mouse_region_y
+	######################################################
+
+
+
+def pick_operator_set_mode(ctx, mode):
+	if mode in {'OBJECT', 'POSE'}:
+		if ctx.mode != mode:
+			bpy.ops.object.mode_set(mode=mode, toggle=False)
+	else:
+		bpy.ops.object.mode_set(mode='EDIT', toggle=False)
+
+
+
+def pick_operator_restore_mode(self, ctx):
+	if ctx.mode != 'OBJECT':
+		bpy.ops.object.mode_set(mode='OBJECT', toggle=False)
+	bpy.ops.object.select_all(action='DESELECT')
+	ctx.view_layer.objects.active = self.active
+
+	for obj in self.source:
+		obj.select_set(state = True)
+	self.set_mode(ctx, self.mode)
+
+	for sub in self.subsource:
+		if ctx.mode == 'POSE':
+			sub.bone.select = True
+		elif ctx.mode == 'EDIT_ARMATURE':
+			sub.select = True
+
+
+
+def pick_operator_finish(self, ctx, event, target):
+	subtarget = self.get_bone(ctx, event, target) \
+				if target.type == 'ARMATURE' else None
+
+	self.restore_mode(ctx)
+	self.picked(ctx, self.source, self.subsource, target, subtarget)
+
+
+
+def pick_operator_invoke(self, ctx, event):
+	self.pre_setup(ctx, event)
+	self.setup(ctx, event)
+	self.rb.register()
+	ctx.window_manager.modal_handler_add(self)
+	return {'RUNNING_MODAL'}
+
+
+
 class CurveTool(Operator):
 	bl_options = {'REGISTER', 'UNDO'}
 	curve, obj = None, None
@@ -32,15 +281,10 @@ class CurveTool(Operator):
 
 	@classmethod
 	def poll(self, ctx):
-		if ctx.area.type == 'VIEW_3D':
-			if len(ctx.scene.objects) > 0:
-				if ctx.object:
-					return ctx.mode == 'EDIT_CURVE'
-		return False
+		return ctx.mode == 'EDIT_CURVE'
 
 	def get_data(self, ctx):
-		self.obj = ctx.active_object
-		self.curve = Curve(self.obj)
+		curve_tool_get_data(self, ctx)
 
 	def apply(self):
 		pass
@@ -52,66 +296,24 @@ class CurveTool(Operator):
 		self.curve.reset()
 
 	def execute(self, ctx):
-		if self.canceled:
-			self.abort()
-		else:
-			self.apply()
-		return{'FINISHED'}
+		return curve_tool_execute(self)
 
 	def check(self, ctx):
-		if not self.start:
-			self.start = True
-		self.apply()
+		curve_tool_check(self)
 
 	def modal(self, ctx, event):
-		if self.singleaction:
-			self.apply()
-			return{'FINISHED'}
-
-		if event.type == 'LEFTMOUSE':
-			if not self.start:
-				self.start = True
-				self.start_x = event.mouse_x
-				self.start_y = event.mouse_y
-				self.get_data(ctx)
-
-		if event.type == 'MOUSEMOVE':
-			if self.start:
-				self.value_x = (event.mouse_x - self.start_x) / 200
-				self.value_y = (event.mouse_y - self.start_y) / 200
-				self.apply()
-
-		if self.start and event.value =='RELEASE':
-			self.finish = True
-
-		#TODO mouse weel changes self.value_w
-		if self.finish:
-			if self.value_x + self.value_y == 0:
-				self.abort()
-			self.apply()
-			return{'FINISHED'}
-
-		if event.type in {'RIGHTMOUSE', 'ESC'}:
-			self.abort()
-			return {'CANCELLED'}
-
-		return {'RUNNING_MODAL'}
+		return curve_tool_modal(self, ctx, event)
 
 	def invoke(self, ctx, event):
-		self.get_data(ctx)
-		if self.typein:
-			wm = ctx.window_manager
-			return wm.invoke_props_dialog(self)
-		else:
-			ctx.window_manager.modal_handler_add(self)
-			return {'RUNNING_MODAL'}
+		return curve_tool_invoke(self, ctx)
 
 
 #TODO preview the object name under the cursure befor pick
 #TODO convert to raycast picker rathr than select base operator
 class PickOperator(Operator):
 	""" Call a function with early selected and new selected Objects """
-	source, subsource, active = [], None, None
+	source = []
+	subsource, active = None, None
 	start, center, end = None, Vector((0, 0, 0)), None
 	mode, filters = 'OBJECT' , ['ANY']
 	rb = Rubber_Band()
@@ -123,177 +325,40 @@ class PickOperator(Operator):
 		return False
 
 	def modal(self, ctx, event):
-		ctx.area.tag_redraw()
-		if not event.type in {'LEFTMOUSE', 'RIGHTMOUSE', 'MOUSEMOVE', 'ESC'}:
-			return {'PASS_THROUGH'}
-		
-		elif event.type == 'MOUSEMOVE':
-			""" update the line coordinate """
-			""" self.center is a 3D coordinate """
-			######################################################
-			self.start = get_screen_pos(ctx,self.center) 
-			self.end = event.mouse_region_x, event.mouse_region_y
-
-			if self.start != None:
-				sx = int(self.start.x)
-				sy = int(self.start.y)
-			else:
-				sx, sy = 0, 0
-
-			if self.end != None:
-				ex = self.end[0]
-				ey = self.end[1]
-			else:
-				ex, ey = 0, 0
-
-			self.rb.create(sx, sy, ex, ey)
-			######################################################
-
-		elif event.type == 'LEFTMOUSE':
-			if event.value == 'PRESS':
-				""" clear all selection """
-				if ctx.mode != 'OBJECT':
-					bpy.ops.object.mode_set(mode='OBJECT', toggle=False)
-
-				bpy.ops.object.select_all(action='DESELECT')
-				ctx.view_layer.objects.active = None
-				
-				""" Pick new object as target """
-				coord = event.mouse_region_x, event.mouse_region_y
-				bpy.ops.view3d.select(extend=False, location=coord)
-
-				""" Ignore source obects as target """
-				if ctx.active_object in self.source:
-					if self.subsource == []:
-						ctx.view_layer.objects.active = None
-
-			if event.value =='RELEASE':
-				""" if target selected check and return """
-				picked_object = ctx.view_layer.objects.active
-
-				if picked_object != None:
-					allowed = False
-					""" Filter the selection types """
-					if 'ANY' in self.filters:
-						allowed = True
-					
-					if picked_object.type in self.filters:
-						allowed = True
-					
-					if 'AUTO' in self.filters and len(self.source) > 0:
-						#TODO need to smarter method
-						if self.source[0].type == picked_object.type and \
-							self.source[0] != picked_object:
-
-							allowed = True
-				
-					if allowed:
-						self.rb.unregister()
-						self.finish(ctx, event, picked_object)
-						return {'CANCELLED'}
-					else:
-						ctx.view_layer.objects.active = None
-						bpy.ops.object.select_all(action='DESELECT')
-				
-				self.restore_mode(ctx)
-
-			return {'RUNNING_MODAL'}
-
-		elif event.type in {'RIGHTMOUSE','ESC'}:
-			self.rb.unregister()
-			return {'CANCELLED'}
-
-		return {'RUNNING_MODAL'}
+		return pick_operator_modal(self, ctx, event)
 	
 	def get_center(self, objs):
-		""" Return selected objects midil """
-		location = Vector((0,0,0))
-		for obj in objs:
-			location += obj.matrix_world.translation
-		return location / len(objs)
+		return get_objects_center(objs)
 	
 	def get_bone(self, ctx, event, armature):
-		coord = event.mouse_region_x, event.mouse_region_y
-		ctx.view_layer.objects.active = armature
-
-		if self.mode == 'EDIT_ARMATURE':
-			bpy.ops.object.mode_set(mode='EDIT', toggle=False)
-			bpy.ops.armature.select_all(action='DESELECT')
-			bpy.ops.view3d.select(extend=False, location=coord)
-			selection = ctx.selected_bones
-		else:
-			bpy.ops.object.mode_set(mode='POSE', toggle=False)
-			bpy.ops.pose.select_all(action='DESELECT')
-			bpy.ops.view3d.select(extend=False, location=coord)
-			selection = ctx.selected_pose_bones
-
-		bone = selection[0] if len(selection) > 0 else None
-		bpy.ops.object.mode_set(mode='OBJECT', toggle=False)
-		return bone
+		return pick_operator_get_bone(self, ctx, event, armature)
 	
 	def get_sub_itme(self, ctx, objs):
-		if ctx.mode == 'POSE':
-			return ctx.selected_pose_bones
-		elif ctx.mode == 'EDIT_ARMATURE':
-			return ctx.selected_bones
-
-		return []
+		return pick_operator_get_sub_itme(ctx, objs)
 	
 	def pre_setup(self, ctx, event):
 		pass
 	
 	def setup(self, ctx, event):
-		self.mode = ctx.mode
-		self.active = ctx.active_object
-		self.source = ctx.selected_objects.copy()
-		self.subsource = self.get_sub_itme(ctx, self.source)
-		self.center = self.get_center(self.source)
-		######################################################
-		self.start = self.end = event.mouse_region_x, event.mouse_region_y
-		######################################################	
+		pick_operator_setup(self, ctx, event)
 	
 	def set_mode(self, ctx, mode):
-		if mode in {'OBJECT', 'POSE'}:
-			if ctx.mode != mode:
-				bpy.ops.object.mode_set(mode=mode, toggle=False)
-		else:
-			bpy.ops.object.mode_set(mode='EDIT', toggle=False)
+		pick_operator_set_mode(ctx, mode)
 	
 	def restore_mode(self, ctx):
-		if ctx.mode != 'OBJECT':
-			bpy.ops.object.mode_set(mode='OBJECT', toggle=False)
-		bpy.ops.object.select_all(action='DESELECT')
-		ctx.view_layer.objects.active = self.active
-
-		for obj in self.source:
-			obj.select_set(state = True)
-		self.set_mode(ctx, self.mode)
-
-		for sub in self.subsource:
-			if ctx.mode == 'POSE':
-				sub.bone.select = True
-			elif ctx.mode == 'EDIT_ARMATURE':
-				sub.select = True
+		pick_operator_restore_mode(self, ctx)
 			
 	def cancel(self, ctx):
 		self.set_mode(ctx, self.modal)
 
 	def finish(self, ctx, event, target):
-		subtarget = self.get_bone(ctx, event, target) \
-					if target.type == 'ARMATURE' else None
-
-		self.restore_mode(ctx)
-		self.picked(ctx, self.source, self.subsource, target, subtarget)
+		pick_operator_finish(self, ctx, event, target)
 	
 	def picked(self, ctx, source, subsource, target, subtarget):
 		pass
 	
 	def invoke(self, ctx, event):
-		self.pre_setup(ctx, event)
-		self.setup(ctx, event)
-		self.rb.register()
-		ctx.window_manager.modal_handler_add(self)
-		return {'RUNNING_MODAL'}
+		return pick_operator_invoke(self, ctx, event)
 
 # class picker_OT_test(PickOperator):
 # 	bl_idname = "object.picker"

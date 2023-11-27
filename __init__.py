@@ -20,8 +20,8 @@ bl_info = {
 	'name': 'BsMax',
 	'description': 'Package of many tools + other CG apps UI mimic',
 	'author': 'Naser Merati (Nevil)',
-	'version': (0, 1, 2, 20230831),
-	'blender': (3, 3, 0),# 3.3LTS ~ 3.6LTS
+	'version': (0, 1, 2, 20231127),
+	'blender': (3, 3, 0),# 3.3LTS ~ 4.0
 	'location': 'Almost Everywhere in Blender',
 	'wiki_url': 'https://github.com/NevilArt/BsMax/wiki',
 	'doc_url': 'https://github.com/NevilArt/BsMax/wiki',
@@ -306,6 +306,11 @@ class BsMax_AddonPreferences(bpy.types.AddonPreferences):
 		description='Let addon change some part of theme'
 	)
 
+	experimental: BoolProperty(
+		name='Experimental', default=False,
+		description='Enable unfinished tools too'
+	)
+
 	def refine(self):
 		""" Disactive keymap update """
 		self.active = False
@@ -456,6 +461,7 @@ class BsMax_AddonPreferences(bpy.types.AddonPreferences):
 			row.prop(self, 'nevil_stuff')
 			row = box.row()
 			row.prop(self, 'affect_theme')
+			row.prop(self, 'experimental')
 
 		if self.menu_scale < 1:
 			self.menu_scale = 1

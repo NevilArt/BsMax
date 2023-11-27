@@ -1,3 +1,7 @@
+# 0, 1, 2, 20230831
+* Some bug fix and code cleaning done.
+* Working on a new selection set for armature.
+
 # 0, 1, 2, 20230724
 * Select Children/Parent work on selected armature rather than only active one.
 * Paste Pose works on selected armature rather than only active one (if all bone selected).
