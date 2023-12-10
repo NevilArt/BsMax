@@ -15,9 +15,20 @@
 # Original code for blender 2.7x from "Matt Ebb | Blaize | Anthony Hunt | Spirou4D" #
 # https://blenderartists.org/t/addon-blender-to-backburner-free-autodesk-network-renderer/661539 #
 # https://www.dropbox.com/s/ivschytl309jm2n/render_backburner.zip?dl=0 #
-# Update and Modified for Blender 2.8x to 3.x by Nevil #
+# Update and Modified for Blender 2.8x to 4.x by Nevil #
 
-#TODO critic check box
+#TODO List
+# out of range warning
+# gount out of range warning
+# backburner frames bit array arrenge
+# Frames Invert range
+# Frames refine
+# breake long frame strings
+# Fx ir Rx or Mx fore get renge between 2 markers
+# bpy.data.is_saved use this isted of is has file name or not
+
+#ISSUE
+# in frame mode can not submite a singel frame
 
 """ This file can be instaled as an stand alone add-on too """
 bl_info = {
@@ -97,6 +108,11 @@ def string_to_integer_array(frames):
 
 
 
+def integer_array_to_bitarray_string(ints):
+	return ""
+
+
+
 def create_new_file_name(file_name):
 	random_id = random.randint(1000000, 9999999)
 	append_text = '_BACKBURNERTEMPFILE_' + str(random_id)
@@ -145,81 +161,6 @@ def get_render_frames_count(ctx):
 	start_frame = backburner.frame_start if mode == 'RANGE' else scene.frame_start
 	end_frame = backburner.frame_end if mode == 'RANGE' else scene.frame_end
 	return end_frame - start_frame + 1
-
-
-
-class Backburner_Property(PropertyGroup):
-	job_name: StringProperty(name='Job Name', maxlen=256, default='New Job',
-		description='Name of the job to be shown in Backburner')
-	
-	job_details: StringProperty(name='Description', maxlen=400, default='',
-		description='Add aditional information to render task')
-	
-	frames_per_task: IntProperty(name='Frames per Task', 
-		min=1, max=9999, soft_min=1, soft_max=1000, default=1,
-		description='Number of frames to give each render node')
-
-	timeout: IntProperty(name='Timeout', description='Timeout per task',
-		default=120, min=1, max=99999, soft_min=1, soft_max=1440)
-
-	priority: IntProperty(name='Priority',
-		description='Priority of this job (0 is Critical)',
-		min=0, max=99, soft_min=0, soft_max=99, default=50)
-
-	suspended: BoolProperty (name='Suspended', default=True,
-		description='Submit Job as Suspended')
-
-	override_frame_range: EnumProperty(
-		name='Frames',
-		description='Override Render frames Range', 
-		default='ACTIVE',
-		items=[
-			('ACTIVE', 'Active Time', ''),
-			('RANGE', 'Range', ''),
-			('FRAMES', 'Specific Frames', '')
-		]
-	)
-
-	frame_start: IntProperty(name='Start Frame',
-		description='Start frame of animation sequence to render', 
-		min=1, max=50000, default=1, update=check_start_frame)
-
-	frame_end: IntProperty(name='End Frame',
-		description='End frame of animation sequence to render',
-		min=1, max=50000, default=250, update=check_end_frame)
-	
-	frames_bitarray: StringProperty(name='Frames', maxlen=400, default='1,3,5-7',
-		description='Custom frames', update=filter_frames_bitarray)
-
-	manager: StringProperty(name='Manager', maxlen=400, default='localhost',
-		description='Name of render manager')
-	
-	port: IntProperty(name='Port', description='Manager Port',
-		min=0, max=999999, default=3234)
-	
-	group: StringProperty(name='Groups', maxlen=400, default='',
-		description='Name of Render Group')
-	
-	path_backburner: StringProperty(name='Backburner Path',
-		description='Path to Backburner cmdjob.exe', 
-		maxlen=400, subtype='FILE_PATH', default=backburner_path())
-
-	use_custom_path: BoolProperty (name='Use Custom Blender', default=False)
-
-	blender_path: StringProperty(name='Blender Path', description='Path to blender.exe',
-		maxlen=400, subtype='FILE_PATH', default=blender_path())
-	
-	# options: BoolProperty (name='More', default=False)
-
-	background_render: BoolProperty (name='Render in Background', default=True)
-	
-	submit_file: BoolProperty (name='Submit file to Manager', default=False)
-	
-	servers: StringProperty(
-		name='Servers', maxlen=400, default='',
-		description='Render this job only with the servers specified (semi-colon separated list - ignored if group is used)'
-	)
-
 
 
 
@@ -427,18 +368,29 @@ def draw_backburner_panel(self, ctx):
 	).url= "https://github.com/NevilArt/BsMax/wiki/Render-Tools"
 
 	row.operator(
-		'render.submit_to_backburner',
+		'render.backburner_action',
 		text='Submit ' + str(get_render_frames_count(ctx)) + ' frames to Backburner',
 		icon='RENDER_ANIMATION'
-	)
+	).action='SUBMIT'
 	
-	row.operator('render.save_backburner_preset', text='', icon='ADD')
-	row.operator('render.load_backburner_preset', text='', icon='RECOVER_LAST')
+	row.operator('render.backburner_action', text='', icon='ADD').action='SAVE'
+
+	row.operator(
+		'render.backburner_action',
+		text='',
+		icon='RECOVER_LAST'
+	).action='LOAD'
+	
 	layout.separator()
 	
 	row = layout.row()
 	row.prop(csbb, 'job_name')
-	row.operator('render.update_job_name',text='', icon='FILE_REFRESH')
+
+	row.operator(
+		'render.backburner_action',
+		text='',
+		icon='FILE_REFRESH'
+	).action='GETNAME'
 	
 	row = layout.row()
 	row.prop(csbb, 'job_details')
@@ -478,104 +430,184 @@ def draw_backburner_panel(self, ctx):
 		row.prop(csbb, 'blender_path')
 
 
+def subcation_get_name(ctx):
+	blend_file_name = ctx.blend_data.filepath
 
-class Render_OT_Submit_To_Backburner(Operator):
-	'''Submit the render to backburner'''
-	bl_idname = "render.submit_to_backburner"
-	bl_label = "Submit to Backburner"
-	bl_options = {'REGISTER', 'INTERNAL'}
+	if blend_file_name != "":
+		file_name = bpy.path.basename(blend_file_name)
+		the_name = (file_name.split('.'))[0]
 
-	@classmethod
-	def poll(cls, ctx):
-		return ctx.scene != None
+	else:
+		the_name = "New Job"
+
+	ctx.scene.backburner.job_name = the_name
+
+
+
+def subaction_save(ctx):
+	preset_path, file_name = get_preset_file_path()
+	string = create_script_text(ctx)
+
+	if not os.path.exists(preset_path):
+		if os.access(preset_path, os.W_OK):
+			os.mkdir(preset_path)
+
+	preset_file = open(preset_path + file_name, "w")
+	preset_file.write(string)
+	preset_file.close()
+
+
+
+def subaction_load(ctx):
+	preset_path, file_name = get_preset_file_path()
+	preset_file = preset_path + file_name
+
+	if os.path.isfile(preset_file):
+		script = open(preset_file).read()
+		exec(script)
+
+
+
+def subaction_refine_frames(ctx):
+	frames = string_to_integer_array("")
+	integer_array_to_bitarray_string(frames)
+	pass
+
+
+
+def subaction_riverce_frames(ctx):
+	pass
+
+
+
+def subaction_submit(self, ctx):
+	if ctx.blend_data.filepath == '':
+		self.report({'WARNING'},'Save File Befor Submit')
+		return{"FINISHED"}
+
+	csbb = ctx.scene.backburner
+
+	if csbb.blender_path == '':
+		self.report({'ERROR'}, "Network path to Blender hasn't been set")
+		return {'CANCELLED'}
+
+	if csbb.path_backburner == '':
+		self.report({'ERROR'}, "Path to Backburner cmdjob.exe hasn't been set")
+		return {'CANCELLED'}
+
+	self.report({'OPERATOR'},'Submitting...')
+
+	if submit(ctx.scene):
+		self.report({'OPERATOR'},'Job Submited to backburner manager')
+	else:
+		self.report({'WARNING'},'Backburner manager not found. Failed to submission.')
+	#TODO delete temp render file if fails
+
+
+
+class Backburner_Property(PropertyGroup):
+	job_name: StringProperty(name='Job Name', maxlen=256, default='New Job',
+		description='Name of the job to be shown in Backburner')
 	
+	job_details: StringProperty(name='Description', maxlen=400, default='',
+		description='Add aditional information to render task')
+	
+	frames_per_task: IntProperty(name='Frames per Task', 
+		min=1, max=9999, soft_min=1, soft_max=1000, default=1,
+		description='Number of frames to give each render node')
+
+	timeout: IntProperty(name='Timeout', description='Timeout per task',
+		default=120, min=1, max=99999, soft_min=1, soft_max=1440)
+
+	priority: IntProperty(name='Priority',
+		description='Priority of this job (0 is Critical)',
+		min=0, max=99, soft_min=0, soft_max=99, default=50)
+
+	suspended: BoolProperty (name='Suspended', default=True,
+		description='Submit Job as Suspended')
+
+	override_frame_range: EnumProperty(
+		name='Frames',
+		description='Override Render frames Range', 
+		default='ACTIVE',
+		items=[
+			('ACTIVE', 'Active Time', ''),
+			('RANGE', 'Range', ''),
+			('FRAMES', 'Specific Frames', '')
+		]
+	)
+
+	frame_start: IntProperty(name='Start Frame',
+		description='Start frame of animation sequence to render', 
+		min=1, max=50000, default=1, update=check_start_frame)
+
+	frame_end: IntProperty(name='End Frame',
+		description='End frame of animation sequence to render',
+		min=1, max=50000, default=250, update=check_end_frame)
+	
+	frames_bitarray: StringProperty(name='Frames', maxlen=400, default='1,3,5-7',
+		description='Custom frames', update=filter_frames_bitarray)
+
+	manager: StringProperty(name='Manager', maxlen=400, default='localhost',
+		description='Name of render manager')
+	
+	port: IntProperty(name='Port', description='Manager Port',
+		min=0, max=999999, default=3234)
+	
+	group: StringProperty(name='Groups', maxlen=400, default='',
+		description='Name of Render Group')
+	
+	path_backburner: StringProperty(name='Backburner Path',
+		description='Path to Backburner cmdjob.exe', 
+		maxlen=400, subtype='FILE_PATH', default=backburner_path())
+
+	use_custom_path: BoolProperty (name='Use Custom Blender', default=False)
+
+	blender_path: StringProperty(name='Blender Path', description='Path to blender.exe',
+		maxlen=400, subtype='FILE_PATH', default=blender_path())
+	
+	# options: BoolProperty (name='More', default=False)
+
+	background_render: BoolProperty (name='Render in Background', default=True)
+	
+	submit_file: BoolProperty (name='Submit file to Manager', default=False)
+	
+	servers: StringProperty(
+		name='Servers', maxlen=400, default='',
+		description='Render this job only with the servers specified (semi-colon separated list - ignored if group is used)'
+	)
+
+
+
+class Render_OT_Backburner_Action(Operator):
+	""" All Backburner sub action """
+	bl_idname = "render.backburner_action"
+	bl_label = "Backburner Sub action"
+	bl_options = {'REGISTER', 'INTERNAL'}
+	
+	action: StringProperty(name='Action')
+
 	def execute(self, ctx):
-		if ctx.blend_data.filepath == '':
-			self.report({'WARNING'},'Save File Befor Submit')
-			return{"FINISHED"}
 
-		csbb = ctx.scene.backburner
+		if self.action == 'SUBMIT':
+			subaction_submit(self, ctx)
 
-		if csbb.blender_path == '':
-			self.report({'ERROR'}, "Network path to Blender hasn't been set")
-			return {'CANCELLED'}
+		elif self.action == 'GETNAME':
+			subcation_get_name(ctx)
 
-		if csbb.path_backburner == '':
-			self.report({'ERROR'}, "Path to Backburner cmdjob.exe hasn't been set")
-			return {'CANCELLED'}
+		elif self.action == 'SAVE':
+			subaction_save(ctx)
 
-		self.report({'OPERATOR'},'Submitting...')
+		elif self.action == 'LOAD':
+			subaction_load(ctx)
 
-		if submit(ctx.scene):
-			self.report({'OPERATOR'},'Job Submited to backburner manager')
-		else:
-			self.report({'WARNING'},'Backburner manager not found. Failed to submission.')
-		#TODO delete temp render file if fails
+		elif self.action == 'REFINEFRAMES':
+			subaction_refine_frames(ctx)
+
+		elif self.action == 'REVERCEFRAMES':
+			subaction_riverce_frames(ctx)
 
 		return {'FINISHED'}
-
-
-
-class Render_OT_Update_Job_Name(Operator):
-	''' Autocreat Jobe name from Filename '''
-	bl_idname = "render.update_job_name"
-	bl_label = "Update Jon Name"
-	bl_options = {'REGISTER', 'INTERNAL'}
-
-	def execute(self, ctx):
-		blend_file_name = ctx.blend_data.filepath
-
-		if blend_file_name != "":
-			file_name = bpy.path.basename(blend_file_name)
-			the_name = (file_name.split('.'))[0]
-
-		else:
-			the_name = "New Job"
-
-		ctx.scene.backburner.job_name = the_name
-
-		return{"FINISHED"}
-
-
-
-class Render_OT_Save_BackBurner(Operator):
-	""" Save curent state of Backburner setting as python file """
-	bl_idname = "render.save_backburner_preset"
-	bl_label = "Save Backburner Preset"
-	bl_options = {'REGISTER', 'INTERNAL'}
-
-	def execute(self, ctx):
-		preset_path, file_name = get_preset_file_path()
-		string = create_script_text(ctx)
-
-		if not os.path.exists(preset_path):
-			if os.access(preset_path, os.W_OK):
-				os.mkdir(preset_path)
-
-		preset_file = open(preset_path + file_name, "w")
-		preset_file.write(string)
-		preset_file.close()
-
-		return{"FINISHED"}
-
-
-
-
-class Render_OT_Load_BackBurner(Operator):
-	""" Load and run Backburner.py file """
-	bl_idname = "render.load_backburner_preset"
-	bl_label = "Load Backburner Preset"
-	bl_options = {'REGISTER', 'INTERNAL'}
-
-	def execute(self, ctx):
-		preset_path, file_name = get_preset_file_path()
-		preset_file = preset_path + file_name
-
-		if os.path.isfile(preset_file):
-			script = open(preset_file).read()
-			exec(script)
-
-		return{"FINISHED"}
 
 
 
@@ -620,10 +652,7 @@ def backburner_menu(self, ctx):
 classes = (
 	Backburner_Property,
 	Render_OT_Backburner,
-	Render_OT_Save_BackBurner,
-	Render_OT_Load_BackBurner,
-	Render_OT_Submit_To_Backburner,
-	Render_OT_Update_Job_Name,
+	Render_OT_Backburner_Action,
 	RENDER_PT_Backburner
 )
 
@@ -651,7 +680,7 @@ def unregister_backburner():
 
 
 
-""" This part will call if use as stand alone add-on """
+""" Calls when installed as stand alone add-on """
 def register():
 	register_backburner()
 

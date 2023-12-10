@@ -36,11 +36,12 @@ If you found this product useful and want to support this project you can Donate
 * [Download Older Version (2.80-2.92)(2.93-3.2)](https://github.com/NevilArt/BsMax_2_80)
 
 ## Recent Updates and Changes
-* Note: In past few month I was busy on a movie project and not able work on BsMax. But finally I'm Back.
-* Note: Some features may not work properly in Blender 4.0 but I am working on to fix that. 
-* Backburner timeout limit issue fixed.
-* Backburner submiter shows numbeer of frames are going to render, helps to avoid submit thousands of frame by mistake.
-* Unfinished stuff put on experimental mode and hide by default.
+* Backburner submiter optimized, Same functionality with less registerd operators.
+* Reset operator open new empty scene with one click. (File/Reset)
+* Note: You still able to add and delete defult cube from New. (File/New/General)
+* Join plus rename UVs chanels if chanels count is same in surce and target objects. (Optinal)
+* Quadmenu Convert to issues fixed. (3DsMax mode)
+* After effect exporter is part of BsMax now (Original authors Bartek Skorupa & Damien Picard)
 * [Change log ...](https://github.com/NevilArt/BsMax/blob/master/CHANGELOG.md)
 
 ## License

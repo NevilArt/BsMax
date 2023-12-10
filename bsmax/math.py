@@ -61,6 +61,9 @@ class BitArray:
 	
 	def get(self):
 		return self.ints
+	
+	def as_string(self):
+		return ""
 
 
 

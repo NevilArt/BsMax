@@ -268,10 +268,11 @@ class File_TO_Sprite_JSON_Import(Operator, ImportHelper):
 		layout.prop(self, 'shading', text="Shading Mode")
 
 	def execute(self, ctx):
-		name, nodes, path = read_json_file(self.filepath)
+		# name, nodes, path = read_json_file(self.filepath)
+		_, nodes, path = read_json_file(self.filepath)
 
 		image_planes = []
-		bones = []
+		# bones = []
 
 		for node in nodes:
 			if node['type'] == "SPRITE":
@@ -290,8 +291,10 @@ class File_TO_Sprite_JSON_Import(Operator, ImportHelper):
 
 
 def menu_func_import(self, ctx):
-	self.layout.operator("file.sprite_json_importer",
-						text="Sprites (*.json) [In production]")
+	self.layout.operator(
+		"file.sprite_json_importer",
+		text="Sprites (*.json) [In production]"
+	)
 
 
 

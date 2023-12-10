@@ -1,3 +1,8 @@
+# 0, 1, 2, 20231127
+* Backburner timeout limit issue fixed.
+* Backburner submiter shows numbeer of frames are going to render, helps to avoid submit thousands of frame by mistake.
+* Unfinished stuff put on experimental mode and hide by default.
+
 # 0, 1, 2, 20230831
 * Some bug fix and code cleaning done.
 * Working on a new selection set for armature.

@@ -14,21 +14,32 @@
 ############################################################################
 import bpy
 
-from .maxivz_tools.mvztools import (MESH_OT_SmartSelectLoop,
-									MESH_OT_SmartSelectRing)
+from .maxivz_tools.mvztools import (
+	MESH_OT_SmartSelectLoop,
+	MESH_OT_SmartSelectRing
+)
 
 from .spiderwebs import register_spider_web, unregister_spider_web
 
 
 
-classes = [MESH_OT_SmartSelectLoop, MESH_OT_SmartSelectRing]
+classes = (
+	MESH_OT_SmartSelectLoop,
+	MESH_OT_SmartSelectRing
+)
+
+
 
 def register_external():
 	for c in classes:
 		bpy.utils.register_class(c)
+
 	register_spider_web()
-	
+
+
+
 def unregister_external():
 	for c in classes:
 		bpy.utils.unregister_class(c)
+
 	unregister_spider_web()

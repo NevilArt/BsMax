@@ -13,14 +13,25 @@
 #	along with this program.  If not, see <https://www.gnu.org/licenses/>.
 ############################################################################
 
+from .after_effect_exporter import (
+	register_after_effect_exporter,
+	unregister_after_effect_exporter
+)
 from .sprite_json_import import (
 	register_sprite_json_importer,
 	unregister_sprite_json_importer
 )
 
+
+
 def register_file(preferences):
+	register_after_effect_exporter()
+
 	if preferences.experimental:
 		register_sprite_json_importer()
 
+
+
 def unregister_file():
+	unregister_after_effect_exporter()
 	unregister_sprite_json_importer()

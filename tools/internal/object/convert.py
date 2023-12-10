@@ -18,12 +18,15 @@ import bpy
 from bpy.types import Operator
 from bpy.props import BoolProperty, EnumProperty
 
-from bsmax.actions import convert_to_solid_mesh, clear_relations
-
 # TODO Make unique Add realize instance to geometry node before apply
+# in quad menu conver to Gpencil and curves not working
+# hide impossible items from convert list e.g. conver to curves for mesh objects
+# add type check or filter if multiple object was selected
+# 
 
 def geometrynode_solve(obj):
 	# find geo node modifiers
+	# make it unique
 	# find output node
 	# add relize instance note
 	pass
@@ -35,10 +38,10 @@ def select_objects(objects):
 		obj.select_set(True)
 
 
-
 def set_as_active_object(ctx, obj):
 	obj.select_set(True)
-	ctx.view_layer.objects.active = obj
+	if obj != ctx.active_object:
+		ctx.view_layer.objects.active = obj
 
 
 
@@ -46,6 +49,111 @@ def rename_uvs(name, objects):
 	for obj in objects:
 		if len(obj.data.uv_layers) == 1:
 			obj.data.uv_layers[0].name = name
+
+
+
+def convert_to_execute(self, ctx):
+	activeObject = ctx.active_object
+	selectedObjects = ctx.selected_objects.copy()
+	bpy.ops.object.select_all(action='DESELECT')
+
+	for obj in selectedObjects:
+		""" Clear primitive data """
+		if obj.type in {'MESH','CURVE'}:
+			obj.data.primitivedata.classname = ""
+
+		""" Make unique """
+		obj.data = obj.data.copy()
+
+		""" Make GeoNode possible to apply """
+		geometrynode_solve(obj)
+		
+		""" Set the target mode """
+		if obj.type != self.target:
+			set_as_active_object(ctx, obj)
+			bpy.ops.object.convert(target=self.target)
+
+	# convert to graspancel delete the old object an genarate new one
+	if self.target != 'GPENCIL':
+		select_objects(selectedObjects)
+		set_as_active_object(ctx, activeObject)
+
+
+
+def uv_name_fixer(active, objs):
+	names = [uvLayer.name for uvLayer in active.data.uv_layers]
+	for obj in objs:
+		if len(names) == len(obj.data.uv_layers):
+			for i in range(len(names)):
+				obj.data.uv_layers[i].name = names[i]
+
+
+
+def join_plus_execute(self, ctx):
+	target = ctx.active_object
+		
+	""" if active object not selected ignore it and pick first object """
+	if not target:
+		target = ctx.view_layer.objects.active = ctx.selected_objects[0]
+
+	if not target.select_get():
+		target = ctx.view_layer.objects.active = ctx.selected_objects[0]
+
+	""" """
+	if self.convert:
+		
+		selectedObjects = ctx.selected_objects.copy()
+		bpy.ops.object.select_all(action='DESELECT')
+
+		""" filter selection """
+		leagles = ('MESH','CURVE','FONT','GPENCIL')
+		selectedObjects = [obj for obj in selectedObjects if obj.type in leagles]
+
+		""" if both object active and target has only one UV chanel make the name same """
+		if self.renameUVs:
+			uv_name_fixer(target, selectedObjects)
+		
+		""" clear primitive data """
+		if target.type in {'MESH','CURVE'}:
+			target.data.primitivedata.classname = ""
+		
+		for obj in selectedObjects:
+
+			""" Make same type as possible """
+			if obj.type != target.type:
+				set_as_active_object(ctx, obj)
+				bpy.ops.object.convert(target=target.type)
+
+			""" Make instanse objects unique """
+			obj.data = obj.data.copy()
+			
+			""" Apply Modifiers """
+			for modifier in obj.modifiers:
+				set_as_active_object(ctx, obj)
+				bpy.ops.object.modifier_apply(modifier=modifier.name)
+		
+			obj.select_set(False)
+
+		""" Refine selection """
+		select_objects(selectedObjects)
+		set_as_active_object(ctx, target)
+
+	bpy.ops.object.join()	
+
+
+
+def join_plus_draw(self, ctx):
+	layout = self.layout
+
+	row = layout.row()
+	row.prop(self, 'convert')
+	row.prop(self, 'renameUVs')
+
+	if self.convert:
+		layout.label(text="Apply Modifiers and make objects Unique befor joine")
+	else:
+		layout.label(text="Don`t make any change and just call Join Operator")
+
 
 
 
@@ -61,30 +169,12 @@ class Object_OT_Convert_TO(Operator):
 			('MESH','Mesh',''),
 	 		('CURVE','Curve',''),
 			('GPENCIL','Grease Pencil',''),
-			('POINTCLOUD','Point Cloude','')
+			('CURVES', 'Curves (Hair)', '')
 		]
 	)
 
 	def execute(self, ctx):
-		selected_objects = ctx.selected_objects.copy()
-		bpy.ops.object.select_all(action='DESELECT')
-		
-		for obj in selected_objects:
-			set_as_active_object(ctx, obj)
-			
-			""" clear primitive data """
-			if obj.type in {'MESH','CURVE'}:
-				obj.data.primitivedata.classname = ""
-
-			""" make unique """
-			obj.data = obj.data.copy()
-			
-			""" set the target mode """
-			bpy.ops.object.convert(target=self.target)
-
-			obj.select_set(False)
-		
-		select_objects(selected_objects)
+		convert_to_execute(self, ctx)
 		return{"FINISHED"}
 
 
@@ -97,64 +187,19 @@ class Object_OT_Join_Plus(Operator):
 	bl_options = {'REGISTER', 'UNDO'}
 
 	convert: BoolProperty(name='Apply befor Join', default=True)
+	renameUVs: BoolProperty(default=True)
 
 	@classmethod
 	def poll(self, ctx):
 		return len(ctx.selected_objects) > 1
 	
 	def draw(self,ctx):
-		layout = self.layout
-		layout.prop(self, 'convert')
-		if self.convert:
-			layout.label(text="Apply Modifiers and make objects Unique befor joine")
-		else:
-			layout.label(text="Don`t make any change and just call Join Operator")
+		join_plus_draw(self, ctx)
 
 	def execute(self, ctx):
-		target = ctx.active_object
-		
-		""" if active object not selected ignore it and pick first object """
-		if not target:
-			target = ctx.view_layer.objects.active = ctx.selected_objects[0]
-
-		if not target.select_get():
-			target = ctx.view_layer.objects.active = ctx.selected_objects[0]
-
-		""" """
-		if self.convert:
-			
-			selected_objects = ctx.selected_objects.copy()
-			bpy.ops.object.select_all(action='DESELECT')
-			
-			for obj in selected_objects:
-				set_as_active_object(ctx, obj)
-				
-				""" clear primitive data """
-				if obj.type in {'MESH','CURVE'}:
-					obj.data.primitivedata.classname = ""
-				
-					""" make same type if possible """
-					if obj.type != target.type:
-						bpy.ops.object.convert_to(target=target.type)
-
-				""" make unique """
-				obj.data = obj.data.copy()
-				
-				""" collaps modifiers """
-				for modifier in obj.modifiers:
-					bpy.ops.object.modifier_apply(modifier=modifier.name)
-				#TODO obj.to_mesh()
-				
-				obj.select_set(False)
-
-			select_objects(selected_objects)
-			
-			target.select_set(True)
-			ctx.view_layer.objects.active = target
-
-		bpy.ops.object.join()	
+		join_plus_execute(self, ctx)
 		return{"FINISHED"}
-	
+
 	def invoke(self,ctx,event):
 		return ctx.window_manager.invoke_props_dialog(self)
 

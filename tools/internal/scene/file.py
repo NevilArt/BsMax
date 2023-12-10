@@ -109,6 +109,32 @@ class File_OT_Save_Check(Operator):
 
 
 
+
+class Scene_OT_Reset(Operator):
+	bl_idname = "scene.reset"
+	bl_label = "Reset"
+	bl_options = {'REGISTER', 'INTERNAL'}
+
+	def draw(self, ctx):
+		self.layout.label(
+			text="Scene has unsaved data. Do you want to continue?",
+			icon="QUESTION"
+		)
+
+	def execute(self, ctx):
+		bpy.ops.wm.read_homefile(app_template="")
+		for obj in ctx.scene.objects:
+			bpy.data.objects.remove(obj, do_unlink=True)
+		return{"FINISHED"}
+	
+	def invoke(self, ctx, event):
+		if bpy.data.is_dirty:
+			return ctx.window_manager.invoke_props_dialog(self)
+		return self.execute(ctx)
+
+
+
+
 def version_menu(self, ctx):
 	layout = self.layout
 	layout.separator()
@@ -116,10 +142,16 @@ def version_menu(self, ctx):
 
 
 
+def reset_menu(self, ctx):
+	self.layout.operator("scene.reset", text='Reset', icon='FILE')
+
+
+
 classes = (
 	File_OT_Scale_Icons,
 	File_OT_Version,
-	File_OT_Save_Check
+	File_OT_Save_Check,
+	Scene_OT_Reset
 )
 
 
@@ -127,11 +159,13 @@ classes = (
 def register_file():
 	for c in classes:
 		bpy.utils.register_class(c)
+	bpy.types.TOPBAR_MT_file.prepend(reset_menu)	
 	bpy.types.TOPBAR_MT_file.append(version_menu)
 
 
 
 def unregister_file():
+	bpy.types.TOPBAR_MT_file.remove(reset_menu)
 	bpy.types.TOPBAR_MT_file.remove(version_menu)
 	for c in classes:
 		bpy.utils.unregister_class(c)

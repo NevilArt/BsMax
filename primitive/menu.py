@@ -563,8 +563,7 @@ def curve_add_append_menu(self, ctx):
 def objects_context_menu(self, ctx):
 	layout = self.layout
 	layout.separator()
-	layout.operator("primitive.cleardata",
-					text="Convert to Ragular Object")
+	layout.operator("primitive.cleardata", text="Clear Primitive Data")
 
 
 
@@ -594,6 +593,8 @@ classes = (
 	BsMax_MT_ForceFieldCreate,
 	BsMax_MT_Create
 )
+
+
 
 def register_menu():
 	for c in classes:

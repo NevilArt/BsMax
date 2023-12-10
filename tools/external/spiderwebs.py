@@ -99,7 +99,8 @@ class Render_OT_Add_Spider_Web(Operator):
 
 	def execute(self, ctx):
 		seed(self.SeedProp)
-		Webs(size=self.size,
+		Webs(
+			size=self.size,
 			webs_number=self.number,
 			gravity_strength=self.gravity,
 			draw_3d=self.draw_3d,
@@ -108,7 +109,8 @@ class Render_OT_Add_Spider_Web(Operator):
 			draw_curve=self.draw_curve,
 			density=self.density,
 			detect_floor=self.detect_floor,
-			randomness=self.randomness)
+			randomness=self.randomness
+		)
 
 		return {'FINISHED'}
 
