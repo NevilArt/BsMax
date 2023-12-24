@@ -1,3 +1,11 @@
+# 0, 1, 2, 20231210
+* Backburner submiter optimized, Same functionality with less registerd operators.
+* Reset operator open new empty scene with one click. (File/Reset)
+* Note: You still able to add and delete defult cube from New. (File/New/General)
+* Join plus rename UVs chanels if chanels count is same in surce and target objects. (Optinal)
+* Quadmenu Convert to issues fixed. (3DsMax mode)
+* After effect exporter is part of BsMax now (Original authors Bartek Skorupa & Damien Picard)
+
 # 0, 1, 2, 20231127
 * Backburner timeout limit issue fixed.
 * Backburner submiter shows numbeer of frames are going to render, helps to avoid submit thousands of frame by mistake.

@@ -24,7 +24,7 @@ class Speaker(Primitive_Public_Class):
 		self.owner = None
 
 	def abort(self):
-		bpy.ops.object.delete({'selected_objects': [self.owner]})
+		bpy.ops.object.delete(confirm=False)
 
 
 

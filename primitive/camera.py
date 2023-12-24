@@ -25,9 +25,10 @@ class Camera(Primitive_Public_Class):
 		self.target = None
 
 	def abort(self):
-		bpy.ops.object.delete({'selected_objects': [self.owner]})
-		if self.target:
-			bpy.ops.object.delete({'selected_objects': [self.target]})
+		bpy.ops.object.select_all(action='DESELECT')
+		self.owner.select_set(True)
+		self.target.select_set(True)
+		bpy.ops.object.delete(confirm=False)
 
 
 

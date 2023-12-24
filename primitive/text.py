@@ -29,7 +29,7 @@ class Text(Primitive_Public_Class):
 		self.owner = ctx.active_object
 	
 	def abort(self):
-		bpy.ops.object.delete({'selected_objects': [self.owner]})
+		bpy.ops.object.delete(confirm=False)
 
 
 

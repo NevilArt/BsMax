@@ -30,7 +30,7 @@ class GreacePencil(Primitive_Public_Class):
 		self.data = self.owner.data
 
 	def abort(self):
-		bpy.ops.object.delete({'selected_objects': [self.owner]})
+		bpy.ops.object.delete(confirm=False)
 	
 
 

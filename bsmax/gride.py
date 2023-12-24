@@ -16,13 +16,15 @@
 import bpy
 import gpu
 
-from bgl import glEnable, GL_BLEND, glDisable, glLineWidth
 from gpu_extras.batch import batch_for_shader
 from mathutils import Vector
 
 from bsmax.bsmatrix import BsMatrix, transform_point_to_matrix
 
 from bpy.app import version
+
+if version < (4, 0, 0):
+	from bgl import glEnable, GL_BLEND, glDisable, glLineWidth
 
 
 
@@ -121,7 +123,23 @@ def local_gride_draw(self):
 		glDisable(GL_BLEND)
 
 	else:
-		pass
+		shader = gpu.shader.from_builtin(get_uniform_color(mode="3D"))
+
+		# draw gride
+		self.draw_shader(shader, self.gride, 'LINES', self.gride_color)
+		
+		# draw border
+		if self.border:
+			self.draw_shader(shader, self.border,
+							'LINE_STRIP', self.border_color)
+
+		# draw closs
+		if self.cross:
+			self.draw_shader(shader, self.cross[0:2],
+							'LINES', self.cross_x_color)
+
+			self.draw_shader(shader, self.cross[2:4],
+							'LINES', self.cross_y_color)
 
 
 

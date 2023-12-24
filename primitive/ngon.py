@@ -65,7 +65,7 @@ class NGon(Primitive_Curve_Class):
 		self.update_curve(shapes)
 
 	def abort(self):
-		bpy.ops.object.delete({'selected_objects': [self.owner]})
+		bpy.ops.object.delete(confirm=False)
 
 
 

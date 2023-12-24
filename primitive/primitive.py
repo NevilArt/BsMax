@@ -177,10 +177,12 @@ def ClearPrimitiveData(obj):
 
 # Overide mouse pointer
 def GetCursurMesh(size, x, y):
-	shape =((0.4, 0.0), (0.6, 0.0), (0.6, 0.4),
-			(1.0, 0.4), (1.0, 0.6), (0.6, 0.6),
-			(0.6, 1.0), (0.4, 1.0), (0.4, 0.6),
-			(0.0, 0.6), (0.0, 0.4), (0.4, 0.4))
+	shape =(
+		(0.4, 0.0), (0.6, 0.0), (0.6, 0.4),
+		(1.0, 0.4), (1.0, 0.6), (0.6, 0.6),
+		(0.6, 1.0), (0.4, 1.0), (0.4, 0.6),
+		(0.0, 0.6), (0.0, 0.4), (0.4, 0.4)
+	)
 	
 	verts = []
 	offset_x = x - size / 2
@@ -191,10 +193,12 @@ def GetCursurMesh(size, x, y):
 		ypos = shape[i][1] * size + offset_y
 		verts.append((xpos, ypos))
 	
-	faces =((0, 1, 11), (1, 2, 11),
-			(2, 3, 5), (3, 4, 5),
-			(5, 6, 7), (7, 8, 5),
-			(8, 9, 11), (11, 9, 10))
+	faces =(
+		(0, 1, 11), (1, 2, 11),
+		(2, 3, 5), (3, 4, 5),
+		(5, 6, 7), (7, 8, 5),
+		(8, 9, 11), (11, 9, 10)
+	)
 	
 	return verts, faces
 
@@ -210,8 +214,14 @@ def DrawCursurOveride(self):
 		shader.uniform_float("color",(0.8, 0.8, 0.8, 0.6))
 		batch.draw(shader)
 		bgl.glDisable(bgl.GL_BLEND)
+
 	else:
-		pass
+		shader = gpu.shader.from_builtin(get_uniform_color(mode="2D"))
+		v,f = GetCursurMesh(20, self.mpos.x, self.mpos.y)
+		batch = batch_for_shader(shader, 'TRIS', {"pos":v}, indices=f)
+		shader.bind()
+		shader.uniform_float("color",(0.8, 0.8, 0.8, 0.6))
+		batch.draw(shader)
 
 
 
@@ -470,12 +480,14 @@ class Draw_Primitive(Operator):
 				
 				if self.use_gride:
 					self.point_current.location = self.gride.get_click_point_gride(ctx, x, y)
+
 				elif self.use_surface:
 					self.point_current.location = self.gride.get_click_point_surface(ctx, x, y)
 					################
 					self.localGride.matrix = self.gride.gride_matrix
 					self.localGride.genarate_gride_lines()
 					################
+
 				else:
 					self.point_current.location = self.gride.get_click_point_gride(ctx, x, y)
 				

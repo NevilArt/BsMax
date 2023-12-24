@@ -49,7 +49,10 @@ class Light(Primitive_Public_Class):
 		self.owner = newlight
 
 	def abort(self):
-		bpy.ops.object.delete({'selected_objects': [self.owner, self.target]})
+		bpy.ops.object.select_all(action='DESELECT')
+		self.owner.select_set(True)
+		self.target.select_set(True)
+		bpy.ops.object.delete(confirm=False)
 
 
 
@@ -73,7 +76,7 @@ class Compass(Primitive_Curve_Class):
 		self.update_curve(shapes)
 
 	def abort(self):
-		bpy.ops.object.delete({'selected_objects': [self.owner]})
+		bpy.ops.object.delete(confirm=False)
 
 
 
@@ -168,7 +171,9 @@ class Create_OT_SunLight(Draw_Primitive):
 		if self.params.radius1 == 0:
 			for constraint in self.light.owner.constraints:
 				self.light.owner.constraints.remove(constraint)
-			bpy.ops.object.delete({'selected_objects': [self.subclass.owner]})
+			bpy.ops.object.select_all(action='DESELECT')
+			self.subclass.owner.select_set(True)
+			bpy.ops.object.delete(confirm=False)
 
 
 

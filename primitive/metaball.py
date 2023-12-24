@@ -38,7 +38,7 @@ class Metaball:
 		pass
 
 	def abort(self):
-		bpy.ops.object.delete({'selected_objects': [self.owner]})
+		bpy.ops.object.delete(confirm=False)
 	
 	def finish(self):
 		pass

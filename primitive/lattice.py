@@ -36,7 +36,7 @@ class Lattice(Primitive_Public_Class):
 		self.owner.rotation_euler = gride.rotation
 
 	def abort(self):
-		bpy.ops.object.delete({'selected_objects': [self.owner]})
+		bpy.ops.object.delete(confirm=False)
 
 
 

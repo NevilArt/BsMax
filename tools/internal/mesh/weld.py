@@ -16,7 +16,7 @@
 import bpy
 from bpy.types import Operator, Menu
 from bpy.props import FloatProperty, BoolProperty
-from bsmax.graphic import register_line, unregister_line
+from bsmax.graphic import Rubber_Band
 
 # TARGET WELD
 # Original Coded from Stromberg90 updated by Nevil
@@ -25,12 +25,9 @@ from bsmax.graphic import register_line, unregister_line
 
 #TODO Target weld for edge mode same as vertex by face orient order
 
-def SelectVert(ctx, event, started):
-	coord = event.mouse_region_x, event.mouse_region_y
-	if started:
-		result = bpy.ops.view3d.select(extend=True,location=coord)
-	else:
-		result = bpy.ops.view3d.select(extend=False,location=coord)
+def select_vert(ctx, event, started):
+	coord = (event.mouse_region_x, event.mouse_region_y)
+	result = bpy.ops.view3d.select(extend=started, location=coord)
 	if result == {'PASS_THROUGH'}:
 		bpy.ops.mesh.select_all(action='DESELECT')
 
@@ -44,6 +41,8 @@ class Mesh_OT_Target_Weld(Operator):
 	start, end, handle = None, None, None
 	drag, picked = False, False
 
+	rb = Rubber_Band()
+
 	def modal(self, ctx, event):
 		ctx.area.tag_redraw()
 		if not event.type in {'LEFTMOUSE','RIGHTMOUSE', 'MOUSEMOVE','ESC'}:
@@ -52,6 +51,9 @@ class Mesh_OT_Target_Weld(Operator):
 		elif event.type == 'MOUSEMOVE':
 			if self.start != None:
 				self.end = event.mouse_region_x, event.mouse_region_y
+				sx, sy = self.start
+				ex, ey = self.end
+				self.rb.create(sx, sy, ex, ey)
 
 		elif event.type == 'LEFTMOUSE':
 			if event.value == 'PRESS':
@@ -69,15 +71,17 @@ class Mesh_OT_Target_Weld(Operator):
 					# bm = bmesh.from_edit_mesh(mesh)
 					# bm.verts[index].co
 
-				SelectVert(ctx, event, self.start != None)
+				select_vert(ctx, event, self.start != None)
 				if ctx.object.data.total_vert_sel == 2:
 					self.start = self.end = None
 					bpy.ops.mesh.merge(type='LAST')
 					bpy.ops.mesh.select_all(action='DESELECT')
+					self.rb.create(0, 0, 0, 0)
 
 			return {'RUNNING_MODAL'}
+
 		elif event.type in {'RIGHTMOUSE','ESC'}:
-			unregister_line(self.handle)
+			self.rb.unregister()
 			return {'CANCELLED'}
 
 		return {'RUNNING_MODAL'}
@@ -88,7 +92,7 @@ class Mesh_OT_Target_Weld(Operator):
 
 	def invoke(self, ctx, event):
 		if ctx.space_data.type == 'VIEW_3D':
-			self.handle = register_line(ctx, self, '2d', (1, 0.5, 0.5, 1))
+			self.rb.register()
 			ctx.window_manager.modal_handler_add(self)
 			return {'RUNNING_MODAL'}
 		return {'CANCELLED'}
@@ -120,9 +124,11 @@ class Mesh_OT_Weld(Operator):
 		layout.prop(self, 'use_sharp_edge')
 
 	def execute(self,ctx):
-		bpy.ops.mesh.remove_doubles(threshold=self.threshold,
+		bpy.ops.mesh.remove_doubles(
+			threshold=self.threshold,
 			use_unselected=self.use_unselected,
-			use_sharp_edge_from_normals=self.use_sharp_edge)
+			use_sharp_edge_from_normals=self.use_sharp_edge
+		)
 		return{"FINISHED"}
 	
 	def invoke(self, ctx, event):

@@ -15,13 +15,15 @@
 
 from mathutils import Vector, Matrix, Euler
 from math import pi, sqrt
+
 from bpy_extras.view3d_utils import region_2d_to_location_3d
 
 from bsmax.state import get_view_orientation
 from bsmax.mouse import ray_cast, get_click_point_on_face
-from bsmax.bsmatrix import (matrix_from_elements,
-							transform_point_to_matrix,
-							points_to_local_matrix)
+
+from bsmax.bsmatrix import (
+	matrix_from_elements, transform_point_to_matrix, points_to_local_matrix
+)
 
 
 
@@ -106,10 +108,10 @@ class Gride:
 	
 	def get_defualt_face(self):
 		return (
-				Vector((-self.size, -self.size, 0)),
-				Vector((self.size, -self.size, 0)),
-				Vector((self.size, self.size, 0)),
-				Vector((-self.size, self.size, 0))
+			Vector((-self.size, -self.size, 0)),
+			Vector((self.size, -self.size, 0)),
+			Vector((self.size, self.size, 0)),
+			Vector((-self.size, self.size, 0))
 		)
 
 	def reset(self):
@@ -121,15 +123,30 @@ class Gride:
 	
 	def update(self):
 		# calculate matrix and meshes
-		self.gride_matrix = matrix_from_elements(self.location, self.rotation, Vector((1,1,1)))
-		self.floor_matrix = matrix_from_elements(Vector((0,0,0)), self.floor_rotation, Vector((1,1,1)))
-		self.gride_face = transform_point_to_matrix(self.get_defualt_face(), self.gride_matrix)
-		self.floor_face = transform_point_to_matrix(self.get_defualt_face(), self.floor_matrix)
+		self.gride_matrix = matrix_from_elements(
+			self.location, self.rotation, Vector((1,1,1))
+		)
+		
+		self.floor_matrix = matrix_from_elements(
+			Vector((0,0,0)), self.floor_rotation, Vector((1,1,1))
+		)
+		
+		self.gride_face = transform_point_to_matrix(
+			self.get_defualt_face(), self.gride_matrix
+		)
+		
+		self.floor_face = transform_point_to_matrix(
+			self.get_defualt_face(), self.floor_matrix
+		)
 
 	def get_normal_direction(self, normal):
 		if normal:
 			direction = normal.normalized()
-			matrix = Matrix([direction, -direction.cross(normal), normal]).transposed()
+
+			matrix = Matrix(
+				[direction, -direction.cross(normal), normal]
+			).transposed()
+
 			self.rotation = matrix.to_euler()
 			self.rotation.y += pi/2
 		else:
@@ -138,7 +155,11 @@ class Gride:
 	def get_vector_direction(self, start, end, normal):
 		if start and end and normal:
 			direction = (end - start).normalized()
-			matrix = Matrix([direction, -direction.cross(normal), normal]).transposed()
+
+			matrix = Matrix(
+				[direction, -direction.cross(normal), normal]
+			).transposed()
+
 			return matrix.to_euler()
 		return Euler((0, 0, 0), 'XYZ') #TODO
 
@@ -157,7 +178,10 @@ class Gride:
 		region_3d = ctx.space_data.region_3d
 		location = ctx.scene.cursor.location
 
-		click_location = region_2d_to_location_3d(region, region_3d, (x, y ), location)
+		click_location = region_2d_to_location_3d(
+			region, region_3d, (x, y ), location
+		)
+
 		view_rotation =	region_3d.view_matrix.inverted().to_euler()
 
 		return click_location, view_rotation
@@ -200,7 +224,10 @@ class Gride:
 				self.rotation = surf_rotation
 			else:
 				if view_orient == 'USER':
-					self.location = get_click_point_on_face(ctx, self.floor_face, x, y)
+					self.location = get_click_point_on_face(
+						ctx, self.floor_face, x, y
+					)
+
 					self.rotation = Vector((0, 0, 0))
 					self.floor_rotation = Vector((0, 0, 0))
 				else:

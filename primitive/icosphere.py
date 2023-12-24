@@ -67,7 +67,7 @@ class Icosphere(Primitive_Geometry_Class):
 		bm.free()
 
 	def abort(self):
-		bpy.ops.object.delete({'selected_objects': [self.owner]})
+		bpy.ops.object.delete(confirm=False)
 
 
 

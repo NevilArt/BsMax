@@ -29,7 +29,7 @@ class LightProbe(Primitive_Public_Class):
 		self.data = None
 
 	def abort(self):
-		bpy.ops.object.delete({'selected_objects': [self.owner]})
+		bpy.ops.object.delete(confirm=False)
 
 
 

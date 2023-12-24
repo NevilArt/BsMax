@@ -61,7 +61,11 @@ class Light_OT_Clear_Target(Operator):
 		obj = ctx.active_object
 		transfoem = obj.matrix_world.copy()
 		targ = obj.constraints['Track To'].target
-		bpy.ops.object.delete({'selected_objects': [targ]})
+
+		bpy.ops.object.select_all(action='DESELECT')
+		targ.select_set(True)
+		bpy.ops.object.delete(confirm=False)
+
 		TrackToConts = [ c for c in obj.constraints if c.type == 'TRACK_TO' ]
 
 		for c in TrackToConts:

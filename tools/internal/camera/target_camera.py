@@ -65,7 +65,11 @@ class Camera_OT_Clear_Target(Operator):
 		cam.data.dof.driver_remove('aperture_fstop')
 		transfoem = cam.matrix_world.copy()
 		targ = cam.constraints["Track To"].target
-		bpy.ops.object.delete({'selected_objects': [targ]})
+
+		bpy.ops.object.select_all(action='DESELECT')
+		targ.select_set(True)
+		bpy.ops.object.delete(confirm=False)
+
 		TrackToConts = [ c for c in cam.constraints if c.type == 'TRACK_TO' ]
 		for c in TrackToConts:
 			cam.constraints.remove(c)

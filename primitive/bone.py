@@ -52,7 +52,7 @@ class Armature(Primitive_Geometry_Class):
 
 		# remove armature if no bone created
 		if len(self.data.bones) == 0:
-			bpy.ops.object.delete({'selected_objects': [self.owner]})
+			bpy.ops.object.delete(confirm=False)
 
 		self.reset()
 

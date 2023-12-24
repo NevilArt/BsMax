@@ -36,12 +36,9 @@ If you found this product useful and want to support this project you can Donate
 * [Download Older Version (2.80-2.92)(2.93-3.2)](https://github.com/NevilArt/BsMax_2_80)
 
 ## Recent Updates and Changes
-* Backburner submiter optimized, Same functionality with less registerd operators.
-* Reset operator open new empty scene with one click. (File/Reset)
-* Note: You still able to add and delete defult cube from New. (File/New/General)
-* Join plus rename UVs chanels if chanels count is same in surce and target objects. (Optinal)
-* Quadmenu Convert to issues fixed. (3DsMax mode)
-* After effect exporter is part of BsMax now (Original authors Bartek Skorupa & Damien Picard)
+* Align objects and Target weld preview line is back for Blender 4.0.
+* Draw Primitives Local preview gride is back for Blender 4.0.
+* Draw Primitives Abort issue in Blender 4.0 Fixed.
 * [Change log ...](https://github.com/NevilArt/BsMax/blob/master/CHANGELOG.md)
 
 ## License

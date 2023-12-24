@@ -88,15 +88,19 @@ class Bounding_Box:
 		data = obj.data
 		if obj.type == 'MESH':
 			cld = [obj.matrix_world @ vert.co for vert in data.vertices]
+
 		elif obj.type == 'CURVE':
 			for spn in data.splines:
 				cld += [obj.matrix_world @ pts.co for pts in spn.bezier_points]
+
 		elif obj.type == 'SURFACE':
 			for spn in data.splines:
 				cld += [obj.matrix_world @ pts.co for pts in spn.points]
+
 		elif obj.type == 'FONT':
 			for spn in data.splines:
 				cld += [obj.matrix_world @ pts.co for pts in spn.bezier_points]
+
 		elif obj.type == 'ARMATURE':
 			for bone in data.bones:
 				cld.append(obj.matrix_world @ bone.head_local)
@@ -329,25 +333,32 @@ def c_update(self, ctx, check):
 			self.c_center = self.c_pivot = self.c_max = self.c_cursor = False
 			public_option.current_mode = check
 			update(self, ctx)
+
 		elif check == 'center' and self.c_center:
 			self.c_min = self.c_pivot = self.c_max = self.c_cursor = False
 			public_option.current_mode = check
 			update(self, ctx)
+
 		elif check == 'pivot' and self.c_pivot:
 			self.c_min = self.c_center = self.c_max = self.c_cursor = False
 			public_option.current_mode = check
 			update(self, ctx)
+
 		elif check == 'max' and self.c_max:
 			self.c_min = self.c_center = self.c_pivot = self.c_cursor = False
 			public_option.current_mode = check
 			update(self, ctx)
+
 		elif check == 'cursor' and self.c_cursor:
 			self.c_min = self.c_center = self.c_pivot = self.c_max = False
 			public_option.current_mode = check
 			update(self, ctx)
 
-		if not self.c_min and not self.c_center and not self.c_pivot and not self.c_max and not self.c_cursor:
-			if check == 'min': 
+		if not self.c_min and not self.c_center and \
+			not self.c_pivot and \
+			not self.c_max and not self.c_cursor:
+
+			if check == 'min':
 				self.c_min = True
 			elif check == 'center':
 				self.c_center = True
@@ -366,24 +377,31 @@ def t_update(self, ctx, check):
 			self.t_center = self.t_pivot = self.t_max = self.t_cursor = False
 			public_option.target_mode = check
 			update(self, ctx)
+
 		elif check == 'center' and self.t_center:
 			self.t_min = self.t_pivot = self.t_max = self.t_cursor = False
 			public_option.target_mode = check
 			update(self, ctx)
+
 		elif check == 'pivot' and self.t_pivot:
 			self.t_min = self.t_center = self.t_max = self.t_cursor = False
 			public_option.target_mode = check
 			update(self, ctx)
+
 		elif check == 'max' and self.t_max:
 			self.t_min = self.t_center = self.t_pivot = self.t_cursor = False
 			public_option.target_mode = check
 			update(self, ctx)
+
 		elif check == 'cursor' and self.t_cursor:
 			self.t_min = self.t_center = self.t_pivot = self.t_max = False
 			public_option.target_mode = check
 			update(self, ctx)
 
-		if not self.t_min and not self.t_center and not self.t_pivot and not self.t_max and not self.t_cursor:
+		if not self.t_min and not self.t_center and \
+			not self.t_pivot and \
+			not self.t_max and not self.t_cursor:
+			
 			if check == 'min': 
 				self.t_min = True
 			elif check == 'center':
@@ -405,12 +423,16 @@ class Object_OT_Align_Objects(Operator):
 	def sub_target(self, ctx):
 		if not align_abject.subtarget:
 			return [('OBJECT', 'Object', '')]
+
 		if align_abject.subtarget.type == 'ARMATURE':
 			return [('OBJECT', 'Armature', ''), ('SUB', 'Bone', '')]
+
 		elif align_abject.subtarget.type == 'CURVE':
 			return [('OBJECT', 'Object', ''), ('SUB', 'Spline', '')]
+
 		elif align_abject.subtarget.type == 'MESH':
 			return [('OBJECT', 'Object', ''), ('SUB', 'Vertex', '')]
+
 		return [('OBJECT', 'Object', '')]
 
 	""" Props """
@@ -418,20 +440,25 @@ class Object_OT_Align_Objects(Operator):
 	pos_y: BoolProperty(update=update)
 	pos_z: BoolProperty(update=update)
 
-	c_min: BoolProperty(update=lambda self,ctx: c_update(self,ctx,'min'))
-	t_min: BoolProperty(update=lambda self,ctx: t_update(self,ctx,'min'))
+	c_min: BoolProperty(update=lambda self,ctx: c_update(self, ctx, 'min'))
+	t_min: BoolProperty(update=lambda self,ctx: t_update(self, ctx, 'min'))
 
-	c_center: BoolProperty(update=lambda self,ctx: c_update(self,ctx,'center'))
-	t_center: BoolProperty(update=lambda self,ctx: t_update(self,ctx,'center'))
+	c_center: BoolProperty(update=lambda self,ctx: c_update(self, ctx, 'center'))
+	t_center: BoolProperty(update=lambda self,ctx: t_update(self, ctx, 'center'))
 
-	c_pivot: BoolProperty(default=True, update=lambda self,ctx: c_update(self,ctx,'pivot'))
-	t_pivot: BoolProperty(default=True, update=lambda self,ctx: t_update(self,ctx,'pivot'))
+	c_pivot: BoolProperty(
+		default=True, update=lambda self,ctx: c_update(self, ctx, 'pivot')
+	)
+
+	t_pivot: BoolProperty(
+		default=True, update=lambda self,ctx: t_update(self, ctx, 'pivot')
+	)
 	
-	c_max: BoolProperty(update=lambda self,ctx: c_update(self,ctx,'max'))
-	t_max: BoolProperty(update=lambda self,ctx: t_update(self,ctx,'max'))
+	c_max: BoolProperty(update=lambda self,ctx: c_update(self, ctx, 'max'))
+	t_max: BoolProperty(update=lambda self,ctx: t_update(self, ctx, 'max'))
 
-	c_cursor: BoolProperty(update=lambda self,ctx: c_update(self,ctx,'cursor'))
-	t_cursor: BoolProperty(update=lambda self,ctx: t_update(self,ctx,'cursor'))
+	c_cursor: BoolProperty(update=lambda self,ctx: c_update(self, ctx, 'cursor'))
+	t_cursor: BoolProperty(update=lambda self,ctx: t_update(self, ctx, 'cursor'))
 
 	target_type: EnumProperty(update=update, items=sub_target)
 
@@ -443,8 +470,10 @@ class Object_OT_Align_Objects(Operator):
 	scl_y: BoolProperty(update=update)
 	scl_z: BoolProperty(update=update)
 	
-	percent: FloatProperty(name="Percent", update=update,
-		soft_min=0, soft_max=1, default=1, step=0.1)
+	percent: FloatProperty(
+		name="Percent", update=update,
+		soft_min=0, soft_max=1, default=1, step=0.1
+	)
 
 	ready: BoolProperty(default=False, description="freeze update till UI loaded")
 
@@ -456,9 +485,9 @@ class Object_OT_Align_Objects(Operator):
 		layout = self.layout
 		box = layout.box()
 		row = box.row()
-		row.prop(self,'pos_x',text='X Position')
-		row.prop(self,'pos_y',text='Y Position')
-		row.prop(self,'pos_z',text='Z Position')
+		row.prop(self, 'pos_x', text='X Position')
+		row.prop(self, 'pos_y', text='Y Position')
+		row.prop(self, 'pos_z', text='Z Position')
 		col = box.column()
 		row = col.row()
 		box = row.box()
@@ -472,6 +501,7 @@ class Object_OT_Align_Objects(Operator):
 		box = row.box()
 		col = box.column()
 		col.label(text='Target Object')
+
 		if self.target_type == 'OBJECT':
 			col.prop(self, 't_min', text='Minimum')
 			col.prop(self, 't_center', text='Center')
@@ -492,11 +522,13 @@ class Object_OT_Align_Objects(Operator):
 		row.prop(self,'rot_x',text='X Rotation')
 		row.prop(self,'rot_y',text='Y Rotation')
 		row.prop(self,'rot_z',text='Z Rotation')
+
 		box = layout.box()
 		row = box.row()
 		row.prop(self,'scl_x',text='X Scale')
 		row.prop(self,'scl_y',text='Y Scale')
 		row.prop(self,'scl_z',text='Z Scale')
+
 		layout.prop(self, 'percent')
 		
 	def execute(self, ctx):

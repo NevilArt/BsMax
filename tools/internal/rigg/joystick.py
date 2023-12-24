@@ -20,8 +20,10 @@ from bpy.props import IntProperty, EnumProperty
 from mathutils import Vector
 
 from bsmax.state import get_obj_class
-from bsmax.actions import (set_origen, set_as_active_object,
-						catche_collection, move_to_collection)
+
+from bsmax.actions import (
+	set_origen, set_as_active_object, catche_collection, move_to_collection
+)
 
 
 
@@ -66,7 +68,9 @@ def create_rectangle_frame_Mesh(ctx, mode, rectangle):
 	name = "Joystic_Frame_" + str(mode) + "_" + str(width) + "X" + str(length)
 
 	if name in bpy.data.objects:
-		bpy.ops.object.delete({'selected_objects': [rectangle]})
+		bpy.ops.object.select_all(action='DESELECT')
+		rectangle.select_set(True)
+		bpy.ops.object.delete(confirm=False)
 		return bpy.data.objects[name]
 	
 	rectangle.name = name
@@ -166,12 +170,18 @@ def create_armature(ctx, name, frame_mesh, joy_mesh,
 	joystick.location = frame_mesh.location
 	joystick.data.bones['Frame'].use_deform = False
 	joystick.pose.bones['Frame'].custom_shape = frame_mesh
-	joystick.pose.bones['Frame'].custom_shape_scale_xyz = [frame_radius, frame_radius, 1]
+
+	joystick.pose.bones['Frame'].custom_shape_scale_xyz = [
+		frame_radius, frame_radius, 1
+	]
 
 	if joy_mesh:
 		joystick.data.bones['Joy'].use_deform = False
 		joystick.pose.bones['Joy'].custom_shape = joy_mesh
-		joystick.pose.bones['Joy'].custom_shape_scale_xyz = [joy_radius, joy_radius, 1]
+
+		joystick.pose.bones['Joy'].custom_shape_scale_xyz = [
+			joy_radius, joy_radius, 1
+		]
 
 	set_as_active_object(ctx, joystick)
 
@@ -195,11 +205,18 @@ def create_circle_joystick(ctx, circle, joy_type):
 	joy_radius = get_handle_radius(circle, joy_type)
 
 	name = circle.name
-	bpy.ops.object.delete({'selected_objects': [circle]})
+
+	bpy.ops.object.select_all(action='DESELECT')
+	circle.select_set(True)
+	bpy.ops.object.delete(confirm=False)
+
 	circle = catch_circilar_frame(ctx)
 	joy_mesh = catche_joy_mesh(ctx)
-	joystick = create_armature(ctx, name, circle, joy_mesh,
-								frame_radius, joy_radius)
+
+	joystick = create_armature(
+		ctx, name, circle, joy_mesh, frame_radius, joy_radius
+	)
+
 	joystick.matrix_world = matrix_world
 	
 	match_transform(joystick, circle)

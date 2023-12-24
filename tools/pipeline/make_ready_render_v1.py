@@ -229,7 +229,7 @@ def light_check():
 	bpy.ops.object.select_all(action='DESELECT')
 	for light in sun_lights:
 		light.select_set(True)
-	bpy.ops.object.delete({'selected_objects': sun_lights})
+	bpy.ops.object.delete(confirm=False)
 
 	""" Set Sunlight settings """
 	if sun_light.name.lower() == 'sun':
@@ -589,7 +589,7 @@ class Render_OT_Make_Ready_Render(Operator):
 
 
 
-def register_make_ready_render():
+def register_make_ready_render_v1():
 	try:
 		bpy.utils.register_class(Render_OT_Make_Ready_Render)
 	except:
@@ -597,11 +597,11 @@ def register_make_ready_render():
 
 
 
-def unregister_make_ready_render():
+def unregister_make_ready_render_v1():
 	if hasattr(bpy.types, Render_OT_Make_Ready_Render.bl_idname):
 		bpy.utils.unregister_class(Render_OT_Make_Ready_Render)
 
 
 
 if __name__ == '__main__':
-	register_make_ready_render()
+	register_make_ready_render_v1()

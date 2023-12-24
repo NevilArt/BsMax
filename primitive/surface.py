@@ -46,8 +46,8 @@ class Surface(Primitive_Geometry_Class):
 
 	def abort(self):
 		pass
-		# bpy.ops.object.delete({'selected_objects': [self.owner]})
-		#self.reset()
+		# bpy.ops.object.delete(confirm=False)
+		# self.reset()
 
 
 

@@ -69,7 +69,7 @@ class Line(Primitive_Curve_Class):
 
 	def abort(self):
 		if len(self.knots) < 2:
-			bpy.ops.object.delete({'selected_objects': [self.owner]})
+			bpy.ops.object.delete(confirm=False)
 		else:
 			self.lastknot = []
 			self.knots.pop()
