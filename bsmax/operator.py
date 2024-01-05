@@ -180,7 +180,9 @@ def get_objects_center(objs):
 	location = Vector((0,0,0))
 	for obj in objs:
 		location += obj.matrix_world.translation
-	return location / len(objs)
+	if objs:
+		return location / len(objs)
+	return location
 
 
 

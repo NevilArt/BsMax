@@ -82,7 +82,8 @@ class Primitive_Geometry_Class:
 		link_to_scene(ctx, self.owner)
 		set_as_active_object(ctx, self.owner)
 		self.data = self.owner.data
-		self.data.use_auto_smooth = True
+		if version < (4, 1, 0):
+			self.data.use_auto_smooth = True
 
 	def update_mesh(self, meshdata):
 		if self.data != None and bpy.context.mode == 'OBJECT':

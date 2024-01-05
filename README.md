@@ -36,9 +36,9 @@ If you found this product useful and want to support this project you can Donate
 * [Download Older Version (2.80-2.92)(2.93-3.2)](https://github.com/NevilArt/BsMax_2_80)
 
 ## Recent Updates and Changes
-* Align objects and Target weld preview line is back for Blender 4.0.
-* Draw Primitives Local preview gride is back for Blender 4.0.
-* Draw Primitives Abort issue in Blender 4.0 Fixed.
+* Box primitive convert to Geometrynode after Draw. (Experimental if ok will apply to all other primitives too).
+* Draw primitive issue for blender 4.1 Alpha fixed.
+* Some other bug fixed.
 * [Change log ...](https://github.com/NevilArt/BsMax/blob/master/CHANGELOG.md)
 
 ## License

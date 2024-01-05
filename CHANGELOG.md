@@ -1,3 +1,8 @@
+# 0, 1, 2, 20231225
+* Align objects and Target weld preview line is back for Blender 4.0.
+* Draw Primitives Local preview gride is back for Blender 4.0.
+* Draw Primitives Abort issue in Blender 4.0 Fixed.
+
 # 0, 1, 2, 20231210
 * Backburner submiter optimized, Same functionality with less registerd operators.
 * Reset operator open new empty scene with one click. (File/Reset)

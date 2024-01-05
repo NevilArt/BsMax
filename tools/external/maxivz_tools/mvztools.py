@@ -19,6 +19,7 @@ from bpy.props import StringProperty, EnumProperty
 from functools import reduce
 from bpy_extras.view3d_utils import region_2d_to_location_3d, region_2d_to_vector_3d
 from mathutils import Vector
+from bpy.app import version
  
 #Global Variables
 ITERATION_LIMIT = 200
@@ -359,7 +360,8 @@ class MESH_OT_QuickSG(Operator):
 	def quick_sg(self, ctx):
 		if ctx.mode == 'OBJECT':
 			bpy.ops.object.shade_smooth()
-			ctx.object.data.use_auto_smooth = True
+			if version < (4, 1, 0):
+				ctx.object.data.use_auto_smooth = True
 			ctx.object.data.auto_smooth_angle = 1.0472
 		elif ctx.mode == 'EDIT_MESH':
 			bm = get_bmesh(ctx)
