@@ -36,7 +36,7 @@ If you found this product useful and want to support this project you can Donate
 * [Download Older Version (2.80-2.92)(2.93-3.2)](https://github.com/NevilArt/BsMax_2_80)
 
 ## Recent Updates and Changes
-* 3DsMax command panel is under Under Construction.(active experimental in addon prefreence and restart than check BsMax in right side panel :D).
+* 3DsMax command panel is under Construction.(active experimental in addon prefreence and restart than check BsMax in right side panel :D).
 * Draw Box error for Blender 3.6 and lower is fixed.
 * [Change log ...](https://github.com/NevilArt/BsMax/blob/master/CHANGELOG.md)
 
