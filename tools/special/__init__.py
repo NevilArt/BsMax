@@ -53,7 +53,7 @@ def register_special(preferences):
 	unregister_special()
 	
 	if not reg.pack_max:
-		register_max()
+		register_max(preferences)
 		reg.pack_max = True
 	
 	if not reg.pack_blender:

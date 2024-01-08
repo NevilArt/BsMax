@@ -30,7 +30,7 @@ class BsMax_OT_ClearPrimitiveData(Operator):
 		return {"FINISHED"}
 
 
-def BsMax_MT_PrimitiveDataCleanerMenu(self, context):
+def BsMax_MT_PrimitiveDataCleanerMenu(self, ctx):
 	self.layout.separator()
 	self.layout.operator("primitive.cleardata")
 

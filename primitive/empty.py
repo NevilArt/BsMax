@@ -37,11 +37,19 @@ class Create_OT_Empty(Draw_Primitive):
 	use_gride = True
 	use_single_click = True
 
-	empty_type: EnumProperty(name='Type',default='PLAIN_AXES',
-		items =[('PLAIN_AXES','Point axis',''),('ARROWS','Arrows',''),
-				('SINGLE_ARROW','Single Arrow',''),('CIRCLE','Circle',''),
-				('CUBE','Cube',''),('SPHERE','Sphere',''),
-				('CONE','Cone',''),('IMAGE','Image','')])
+	empty_type: EnumProperty(
+		name='Type',default='PLAIN_AXES',
+		items =[
+			('PLAIN_AXES','Point axis',''),
+			('ARROWS','Arrows',''),
+			('SINGLE_ARROW','Single Arrow',''),
+			('CIRCLE','Circle',''),
+			('CUBE','Cube',''),
+			('SPHERE','Sphere',''),
+			('CONE','Cone',''),
+			('IMAGE','Image','')
+		]
+	)
 	depth: EnumProperty(name='Depth',default='DEFAULT',
 		items =[('DEFAULT','Default',''),('FRONT','Front',''),('BACK','Back','')])
 
@@ -78,7 +86,10 @@ class Create_OT_Image(Operator):
 
 
 
-classes = [Create_OT_Empty, Create_OT_Image]
+classes = (
+	Create_OT_Empty,
+	Create_OT_Image
+)
 
 def register_empty():
 	for c in classes:

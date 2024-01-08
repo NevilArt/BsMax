@@ -1,3 +1,8 @@
+# 0, 1, 2, 20240105
+* Box primitive convert to Geometrynode after Draw. (Experimental if ok will apply to all other primitives too).
+* Draw primitive issue for blender 4.1 Alpha fixed.
+* Some other bug fixed.
+
 # 0, 1, 2, 20231225
 * Align objects and Target weld preview line is back for Blender 4.0.
 * Draw Primitives Local preview gride is back for Blender 4.0.

@@ -14,7 +14,10 @@
 ############################################################################
 
 import bpy
+
 from primitive.primitive import Primitive_Geometry_Class, Draw_Primitive
+
+from bpy.app import version
 
 
 #############################################################################
@@ -451,13 +454,14 @@ class Create_OT_Box(Draw_Primitive):
 			self.params.height = dimension.height
 	
 	def finish(self):
-		owner = self.subclass.owner
-		pd = owner.data.primitivedata
-		convert_to_geometry_node_box(
-			owner,
-			pd.width, pd.length, pd.height,
-			pd.wsegs, pd.lsegs, pd.hsegs
-		)
+		if version >= (4, 0, 0):
+			owner = self.subclass.owner
+			pd = owner.data.primitivedata
+			convert_to_geometry_node_box(
+				owner,
+				pd.width, pd.length, pd.height,
+				pd.wsegs, pd.lsegs, pd.hsegs
+			)
 
 
 

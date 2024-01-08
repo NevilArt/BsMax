@@ -15,9 +15,13 @@
 
 # from .menu import register_menu,unregister_menu
 from .modifier import register_modifier,unregister_modifier
+from .side_panel import register_side_panel, unregister_side_panel
 
-def register_max():
+def register_max(preferences):
 	register_modifier()
+	if preferences.experimental:
+		register_side_panel()
 
 def unregister_max():
 	unregister_modifier()
+	unregister_side_panel()

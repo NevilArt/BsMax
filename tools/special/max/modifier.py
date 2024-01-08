@@ -16,10 +16,40 @@
 import bpy
 
 from bpy.types import Operator
+from bpy.props import StringProperty
 
 from bsmax.actions import modifier_add
 from bsmax.state import is_objects_selected
 
+
+
+def create_bend_modifier(gnc):
+	pass
+ 
+
+
+def create_node_groups(idName):
+	return None
+
+
+def get_node_groups(idName):
+	nodeGroup = None
+	for node_group in bpy.data.node_groups:
+		if node_group.interface.items_tree[0].description == idName:
+			nodeGroup = node_group
+	return None
+
+
+
+class Modifier_OT_Add_Geodifier(Operator):
+	bl_idname = "modifier.add_geodifier"
+	bl_label = "ADD Geodifier"
+	bl_options = {'REGISTER', 'UNDO', 'INTERNAL'}
+
+	idname: StringProperty()
+
+	def execute(self, ctx):
+		return{"FINISHED"}
 
 
 class Modifier_OT_Add_Bevel(Operator):

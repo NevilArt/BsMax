@@ -306,8 +306,11 @@ def register_sprite_json_importer():
 
 def unregister_sprite_json_importer():
 	bpy.types.TOPBAR_MT_file_import.remove(menu_func_import)
-	hasattr(bpy.types, bpy.ops.file.sprite_json_importer)
-	bpy.utils.unregister_class(File_TO_Sprite_JSON_Import)
+	# hasattr(bpy.types, bpy.ops.file.sprite_json_importer)
+	try:
+		bpy.utils.unregister_class(File_TO_Sprite_JSON_Import)
+	except:
+		pass
 
 
 

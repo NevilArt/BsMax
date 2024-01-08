@@ -210,8 +210,12 @@ class Create_OT_AreaLight(Draw_Primitive):
 
 
 
-classes = [Create_OT_PointLight, Create_OT_SunLight,
-			Create_OT_SpotLight, Create_OT_AreaLight]
+classes = (
+	Create_OT_PointLight,
+	Create_OT_SunLight,
+	Create_OT_SpotLight,
+	Create_OT_AreaLight
+)
 
 def register_light():
 	for c in classes:

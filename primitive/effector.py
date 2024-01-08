@@ -35,13 +35,25 @@ class Create_OT_Effector(Draw_Primitive):
 	subclass = Effector()
 	use_single_click = True
 
-	effector_type: EnumProperty(name='Type',default='FORCE',
-		items =[('FORCE','Force',''),('WIND','Wind',''),
-				('VORTEX','Vortex',''),('MAGNET','Magnet',''),
-				('HARMONIC','Harmonic',''),('CHARGE','Charge',''),
-				('LENNARDJ','Lennardj',''),('TEXTURE','Texture',''),
-				('GUIDE','Guide',''),('BOID','Boid',''),('TURBULENCE','Turbulence',''),
-				('DRAG','Drag',''),('SMOKE','Smoke','')])
+	effector_type: EnumProperty(
+		name='Type',
+		default='FORCE',
+		items =[
+			('FORCE','Force',''),
+			('WIND','Wind',''),
+			('VORTEX','Vortex',''),
+			('MAGNET','Magnet',''),
+			('HARMONIC','Harmonic',''),
+			('CHARGE','Charge',''),
+			('LENNARDJ','Lennardj',''),
+			('TEXTURE','Texture',''),
+			('GUIDE','Guide',''),
+			('BOID','Boid',''),
+			('TURBULENCE','Turbulence',''),
+			('DRAG','Drag',''),
+			('SMOKE','Smoke','')
+		]
+	)
 
 	def create(self, ctx):
 		bpy.ops.object.effector_add(type=self.effector_type,
