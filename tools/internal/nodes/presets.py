@@ -21,7 +21,7 @@ from bpy.props import StringProperty
 
 
 
-def get_root_path():
+def get_root_path(version="presets"):
 	# bpy.utils.user_resource('SCRIPTS') + "\\addons\\BsMax"
 	dirs = path.dirname(__file__).split('\\')
 			
@@ -29,18 +29,42 @@ def get_root_path():
 	root_path = ''
 	for i in range(len(dirs)-3):
 		root_path += dirs[i] + '\\'
+	
+	#TODO check for file exist or not
+	print(">> ", root_path + version + '.blend\\NodeTree\\')
 
 	# Make Path
-	return root_path + 'presets.blend\\NodeTree\\'
+	return root_path + version + '.blend\\NodeTree\\'
 
 presetsRootPath = get_root_path()
 
 
 
-class NodeGroupe_OT_Import(Operator):
-	bl_idname = "nodes.import_node_groupe"
+class Scene_OT_Import_Node_Group(Operator):
+	bl_idname = "scene.import_node_groupe"
 	bl_label = "Import Node Groupe Preset"
 	bl_description = "Import Node Groupe Presets"
+	bl_options = {'REGISTER', 'INTERNAL'}
+
+	name: StringProperty()
+	version: StringProperty()
+
+	def execute(self, ctx):
+		# Check for exist
+		if not self.name in bpy.data.node_groups:
+			# Append the Node Tree
+			bpy.ops.wm.append(
+				filename=self.name,
+				directory=get_root_path(self.version)
+			)
+		return{"FINISHED"}
+
+
+
+class NodeGroupe_OT_Import(Operator):
+	bl_idname = "nodes.import_node_group"
+	bl_label = "Import Node Group"
+	bl_description = "Import Node Group"
 	bl_options = {'REGISTER', 'INTERNAL'}
 
 	name: StringProperty()
@@ -71,13 +95,23 @@ class NodeGroupe_OT_Import(Operator):
 
 
 
+
+classes = (
+	Scene_OT_Import_Node_Group,
+	NodeGroupe_OT_Import
+)
+
+
+
 def register_presets():
-	bpy.utils.register_class(NodeGroupe_OT_Import)
+	for c in classes:
+		bpy.utils.register_class(c)
 
 
 
 def unregister_presets():
-	bpy.utils.unregister_class(NodeGroupe_OT_Import)
+	for c in classes:
+		bpy.utils.unregister_class(c)
 
 
 

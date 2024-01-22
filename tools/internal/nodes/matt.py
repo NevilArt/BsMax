@@ -47,43 +47,53 @@ class BsMax_MT_material_presets(Menu):
 	def draw(self, ctx):
 		layout=self.layout
 		# Effects
-		layout.operator("nodes.import_node_groupe",
-						text="Blure").name='Blure'
+		layout.operator(
+			"nodes.import_node_group", text="Blure"
+		).name='Blure'
 
-		layout.operator("nodes.import_node_groupe",
-						text="Falloff").name='Falloff'
+		layout.operator(
+			"nodes.import_node_group", text="Falloff"
+		).name='Falloff'
 
 		# Map
 		layout.separator()
-		layout.operator("nodes.import_node_groupe",
-						text="Ocean Caustic").name='Ocean Caustic'
+		layout.operator(
+			"nodes.import_node_group", text="Ocean Caustic"
+		).name='Ocean Caustic'
 
 		# Parallax (coordinate)
 		layout.separator()
-		layout.operator("nodes.import_node_groupe",
-						text="Parallax Box").name='Parallax Box X4'
+		layout.operator(
+			"nodes.import_node_group", text="Parallax Box"
+		).name='Parallax Box X4'
 
-		layout.operator("nodes.import_node_groupe",
-						text="Parallax Layer").name='Parallax Layer X4'
+		layout.operator(
+			"nodes.import_node_group", text="Parallax Layer"
+		).name='Parallax Layer X4'
 
-		layout.operator("nodes.import_node_groupe",
-						text="Parallax Ice").name='Parallax Ice'
+		layout.operator(
+			"nodes.import_node_group", text="Parallax Ice"
+		).name='Parallax Ice'
 
 		# Sprite Sheet (Coordinate)
 		layout.separator()
-		layout.operator("nodes.import_node_groupe",
-						text="Sprite Sheet").name='Sprite Sheet'
+		layout.operator(
+			"nodes.import_node_group", text="Sprite Sheet"
+		).name='Sprite Sheet'
 
-		layout.operator("nodes.import_node_groupe",
-						text="Sprite Play Loop").name='Sprite Play Loop'
+		layout.operator(
+			"nodes.import_node_group", text="Sprite Play Loop"
+		).name='Sprite Play Loop'
 
-		layout.operator("nodes.import_node_groupe",
-						text="Sprite Play Range").name='Sprite Play Range'
+		layout.operator(
+			"nodes.import_node_group",  text="Sprite Play Range"
+		).name='Sprite Play Range'
 
 		# Coordinate
 		layout.separator()
-		layout.operator("nodes.import_node_groupe",
-						text="Untile").name='Untile'
+		layout.operator(
+			"nodes.import_node_group", text="Untile"
+		).name='Untile'
 
 
 
@@ -94,12 +104,20 @@ class BsMax_MT_Materia_Collection(Menu):
 
 	def draw(self, ctx):
 		layout=self.layout
-		material_editor = layout.operator("editor.float", text="Material Editor", icon='MATERIAL')
+		
+		material_editor = layout.operator(
+			"editor.float", text="Material Editor", icon='MATERIAL'
+		)
+		
 		material_editor.ui_type='ShaderNodeTree'
 		material_editor.shader_type='OBJECT'
 		material_editor.multiple=False
-		layout.operator("object.move_to_collection",
-			text="Move To Collection", icon='OUTLINER_COLLECTION')
+
+		layout.operator(
+			"object.move_to_collection",
+			text="Move To Collection",
+			icon='OUTLINER_COLLECTION'
+		)
 
 
 

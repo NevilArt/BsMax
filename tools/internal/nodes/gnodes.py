@@ -26,20 +26,26 @@ class BsMax_MT_geometrynode_presets(Menu):
 	def draw(self, ctx):
 		layout=self.layout
 		# Distribution
-		layout.operator("nodes.import_node_groupe",
-						text="Probability 10").name='Probability 10'
+		layout.operator(
+			"nodes.import_node_group", text="Probability 10"
+		).name='Probability 10'
 
 		# Math
-		layout.operator("nodes.import_node_groupe",
-						text="Sum").name='Sum'
+		layout.operator(
+			"nodes.import_node_group", text="Sum"
+		).name='Sum'
 
 
 
 def register_gnodes():
 	bpy.utils.register_class(BsMax_MT_geometrynode_presets)
 
+
+
 def unregister_gnodes():
 	bpy.utils.unregister_class(BsMax_MT_geometrynode_presets)
+
+
 
 if __name__ == "__main__":
 	register_gnodes()

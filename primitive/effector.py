@@ -17,6 +17,8 @@ import bpy
 from bpy.props import EnumProperty
 from primitive.primitive import Draw_Primitive, Primitive_Public_Class
 
+from bpy.app import version
+
 
 
 class Effector(Primitive_Public_Class):
@@ -51,13 +53,21 @@ class Create_OT_Effector(Draw_Primitive):
 			('BOID','Boid',''),
 			('TURBULENCE','Turbulence',''),
 			('DRAG','Drag',''),
-			('SMOKE','Smoke','')
+			('SMOKE','Smoke',''),
+			('FLUID', 'Fluid', '')
 		]
 	)
 
 	def create(self, ctx):
-		bpy.ops.object.effector_add(type=self.effector_type,
-			radius=1, location=self.gride.location)
+		# SMOKE replaced with FLUID in Blende 4.0
+		effector_type = self.effector_type
+		if version >= (4, 0, 0) and effector_type == 'SMOKE':
+			effector_type = 'FLUID'
+
+		bpy.ops.object.effector_add(
+			type=effector_type,
+			radius=1, location=self.gride.location
+		)
 		self.subclass.owner = ctx.active_object
 		self.subclass.owner.rotation_euler = self.gride.rotation
 
@@ -70,8 +80,12 @@ class Create_OT_Effector(Draw_Primitive):
 def register_effector():
 	bpy.utils.register_class(Create_OT_Effector)
 
+
+
 def unregister_effector():
 	bpy.utils.unregister_class(Create_OT_Effector)
+
+
 
 if __name__ == "__main__":
 	register_effector()

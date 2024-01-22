@@ -16,28 +16,259 @@
 import bpy
 
 from bpy.types import Operator
-from bpy.props import StringProperty
+from bpy.props import StringProperty, EnumProperty
 
-from bsmax.actions import modifier_add
 from bsmax.state import is_objects_selected
 
+from bpy.app import version
 
 
-def create_bend_modifier(gnc):
-	pass
- 
+
+def get_internals_only(modifierList):
+	newList = [
+		modifer for modifer in modifierList if modifer[0][0] in ('B', 'O')
+	]
+
+	if newList:
+		return newList
+
+	return [('N-NONE', 'Empty', '')]
 
 
-def create_node_groups(idName):
+def get_mesh_modifier_list():
+	modifierList = [
+		# ('MESHSELECT', 'Mesh Select', ''),
+		# ('PATCHSELECT', 'Patch Select', ''),
+		# ('POLYSELECT', 'Poly Select', ''),
+		# ('VOLSELECT', 'Vol. Select', ''),
+
+		# ('CAMERAMAP', 'Camera Map(WSM)', ''),
+		# ('DISPLACEMESH', 'Displace Mesh(WSM)', ''),
+		# ('HAIRANDFUR', 'Hair and Fur(WSM)', ''),
+		# ('MAPSCALLER', 'MapScaler(WSM)', ''),
+		# ('PATCHDEFORM', 'PatchDeform(WSM)', ''),
+		# ('PATHDEFORM', 'PathDeform(WSM)', ''),
+		# ('PFLOWCOLLISION', 'Pflow Collision Shape(WSM)', ''),
+		# ('POINTCACHEW', 'Point Cache(WSM)', ''),
+		# ('SUBDIVIDE', 'Subdivide(WSM)', ''),
+		# ('SURFACEMAPPER', 'Surface Maper(WSM)', ''),
+		# ('SURFACECDEFORM', 'Surface Deform(WSM)', ''),
+
+		# ('AFFECTREGION', 'Affect Region', ''),
+		# ('ARNOLDPROPERTIES', 'Arnold Properties', ''),
+		('B-ARRAY', 'Array', 'ARRAY'),
+		# ('G-ARRAY', 'Array (GN)', 'Array'),
+		# ('ATTRIBUTEHOLDEDR', 'Attribute Holder', ''),
+		('G-BEND', 'Bend (GN)', 'Bend'),
+		('B-BEND', 'Bend', 'SIMPLE_DEFORM'),
+		('B-BOLLEAN', 'Boolean', 'BOOLEAN'),
+		# ('CAMERAMAP', 'Camera Map', ''),
+		# ('CAPHOLE', 'Cap Holes', ''),
+		('B-CHAMFER', 'Chamfer', 'BEVEL'),
+		# ('CLOTH', 'Cloth', ''),
+		# ('CONFIRM', 'Confirm', ''),
+		# ('CREASE', 'Crease', ''),
+		# ('CREASESET', 'CreaseSet', ''),
+		# ('DATACHANEL', 'Data Chanel', ''),
+		('B-DELETEMESH', 'Delete Mesh (Mask)', 'MASK'),
+		# ('DELETEPATCH', 'DeletePatch', ''),
+		# ('DISPAPPROX', 'Disp Approx', ''),
+		('B-DISPLACE', 'Displace', 'DISPLACE'),
+		# ('G-DISPLACE', 'Displace (GN)', ''),
+		# ('EDITMESH', 'Edit Mesh', ''),
+		# ('EDITNORMAL', 'Edit Normal', ''),
+		# ('EDITPATCH', 'Edit Patch', ''),
+		# ('EDITPOLY', 'Edit Poly', ''),
+		# ('FACEEXTRUD', 'Face Extrud', ''),
+		('O-FFD2X2X2', 'FFD 2x2x2', 'modifier.ffd_2x2x2_set'),
+		('O-FFD3X3X3', 'FFD 3x3x3', 'modifier.ffd_3x3x3_set'),
+		('O-FFD4X4X4', 'FFD 4x4x4', 'modifier.ffd_4x4x4_set'),
+		# ('FFDBOX', 'FFD(Box)', ''),
+		# ('FFDCYL', 'FFD(Cyl)', ''),
+		# ('FILTERMESHHUE', 'Filter Mesh Color By Hue', ''),
+		# ('FLEX', 'Flex', ''),
+		# ('HSHS', 'HSDS', ''),
+		('B-LATTICE', 'Lattice', 'WIREFRAME'),
+		# ('G-LATTICE', 'Lattice', ''),
+		# ('LINKEDXFORM', 'Linked Xform', ''),
+		# ('MAPSCALLER', 'MapScaller', ''),
+		# ('MASSFXRBODY', 'MassFX RBody', ''),
+		# ('MATERIAL', 'Material', ''),
+		# ('MATERIALBYELEMENT', 'MaterialByElement', ''),
+		# ('MCLOTH', 'mCloth', ''),
+		# ('G-MELT', 'Melt', ''),
+		# ('MESHCLEANER', 'Mesh Cleaner', ''),
+		# ('MESHSELECT', 'Mesh Select', ''),
+		# ('MESHSMOMTH', 'Mesh Smooth', ''),
+		('B-MIRROR', 'Mirror', 'MIRROR'),
+		# ('MORPHER', 'Morpher', ''),
+		# ('MULTIRES', 'MultiRes', ''),
+		# ('NOISE', 'Noise', ''),
+		# ('NORMAL', 'Normal', ''),
+		# ('OPENSUBDIV', 'OpenSubdiv', ''),
+		# ('OPTIMIZE', 'Optimize', ''),
+		# ('PARTICLEFORCE', 'Particle Face Creator', ''),
+		# ('PARTICLESKINNER', 'Particle Skinner', ''),
+		# ('PATHSELECT', 'Path Select', ''),
+		# ('PATHDEFORM', 'Patch Deform', ''),
+		# ('PHYSIQUE', 'Physique', ''),
+		# ('POINTCACHE', 'Point Cache', ''),
+		# ('POLYSELECT', 'Poly Select', ''),
+		# ('PRESERVE', 'Preserve', ''),
+		# ('PROJECTION', 'Projection', ''),
+		# ('PROOPTIMIZER', 'ProOptimizer', ''),
+		# ('G-PUSH', 'Push', ''),
+		# ('QUDIFYMESH', 'Qudify Mesh', ''),
+		# ('RELAX', 'Relax', ''),
+		# ('RETOPOLOGY', 'Retopology', ''),
+		('B-RIPPLE', 'Ripple', 'WAVE'),
+		# ('SELECTBYCHANEL', 'Select by Chanel', ''),
+		('B-SHELL', 'Shell (Solidify)', 'SOLIDIFY'),
+		# ('SKEW', 'Skew', ''),
+		# ('SKIN', 'Skin', ''),
+		# ('SKINMORPH', 'Skin Morph', ''),
+		# ('SKINWRAP', 'Skin Wrap', ''),
+		# ('SKINWRAPPATCH', 'Skin Wrap Patch', ''),
+		# ('SLICE', 'Slice', ''),
+		# ('SMOOTH', 'Smooth', ''),
+		('G-SPEREFY', 'Sperefy', 'To Sphere'),
+		# ('SQUEEZE', 'Squeeze', ''),
+		# ('STLCHECK', 'STL check', ''),
+		('G-STRETCH', 'Stretch (GN)', 'Stretch'),
+		# ('SUBDIVIDE', 'Subdivide', ''),
+		# ('SUBSTITUTE', 'Substitute', ''),
+		# ('SURFDEFORM', 'SurfDeform', ''),
+		('B-SYMMETRY', 'Symmetry', 'MIRROR'),
+		('G-TAPER', 'Taper (GN)', 'Taper'),
+		# ('TESSELLATE', 'Tessellate', ''),
+		('B-TURBOSMOTH', 'Turbosmooth', 'SUBSURF'),
+		# ('TURNMESH', 'Turn to Mesh', ''),
+		# ('TURNPATCH', 'Turn to Patch', ''),
+		# ('TURNPOLY', 'Turn to Poly', ''),
+		('B-TWIST', 'Twist', 'SIMPLE_DEFORM'),
+		('G-TWIST', 'Twist (GN)', 'Twist'),
+		# ('UNWRAPUVW', 'Unwrap UVW', ''),
+		# ('UVASCOLOR', 'UV as Color', ''),
+		# ('UVASHSL', 'UV as HSL Color', ''),
+		# ('UVASGRADIENT', 'UV as HSL Gradiyent', ''),
+		# ('UVASBLABLA', 'UV as HSL Gradient with mid....', ''),
+		# ('UVWMAPP', 'UVW Map', ''),
+		# ('UVMAPPADD', 'UVW Mapping Add', ''),
+		# ('UVWCLEAR', 'UVW Mapping Clear', ''),
+		# ('UVWXFORM', 'UVW Xform', ''),
+		# ('VERTEXWELD', 'Vertex Weld', ''),
+		# ('VERTEXPAINT', 'Vertex Paint', ''),
+		# ('VOLSELECT', 'Vol. Select', ''),
+		('B-WAVE', 'Wave', 'WAVE'),
+		# ('WEGHTEDNORMAL', 'Weghted Normals', ''),
+		# ('WELDER', 'Welder', ''),
+		# ('XFORM', 'Xform', '')
+	]
+
+	if version >= (4, 0, 0):
+		return modifierList
+
+	return get_internals_only(modifierList)
+
+
+
+def get_curve_modifier_list():
+	modifierList = [
+		('N-NONE', 'Empty', '')
+	]
+
+	if version >= (4, 0, 0):
+		return modifierList
+
+	return get_internals_only(modifierList)
+	
+
+
+def get_modifier_list(_, ctx):
+	if not ctx.object:
+		return [('N-NONE', 'Empty', '')]
+	
+	if ctx.object.type == 'MESH':
+		return get_mesh_modifier_list()
+
+	if ctx.object.type == 'CURVE':
+		return get_curve_modifier_list()
+
+
+
+def get_modifier_class(key):
+	parts = key.split("-")
+	if len(parts) > 1:
+		return parts[0]
+	return "B"
+
+
+
+def get_node_group(nodeGroup):
+	if nodeGroup in bpy.data.node_groups:
+		return bpy.data.node_groups[nodeGroup]
+
+	bpy.ops.scene.import_node_groupe(name=nodeGroup, version="V40")
+
+	if nodeGroup in bpy.data.node_groups:
+		return bpy.data.node_groups[nodeGroup]
+
 	return None
 
 
-def get_node_groups(idName):
-	nodeGroup = None
-	for node_group in bpy.data.node_groups:
-		if node_group.interface.items_tree[0].description == idName:
-			nodeGroup = node_group
+
+def get_modifier_node_group_name(ctx, key):
+	for pack in get_modifier_list(None, ctx):
+		if pack[0] == key:
+			return pack[2]
 	return None
+
+
+
+def add_modifier(ctx, obj, index, key):
+	category = get_modifier_class(key)
+
+	if category == "B": # Blender Internal
+		modifierType = get_modifier_node_group_name(ctx, key)
+		bpy.ops.object.modifier_add(type=modifierType)
+
+	if category == "G": # Geometry Node
+		nodeGroupName = get_modifier_node_group_name(ctx, key)
+		nodeGroup = get_node_group(nodeGroupName)
+		modifier = obj.modifiers.new(name=nodeGroupName, type='NODES')
+		modifier.node_group = nodeGroup
+	
+	if category == "O": # Operator
+		operatorIdName = get_modifier_node_group_name(ctx, key)
+		exec("bpy.ops." + operatorIdName + "()")
+
+	if category == "T": # Geometry Tool
+		pass
+
+	if category == "N": # None
+		pass
+
+
+
+class Object_OT_Create_Modifier(Operator):
+	bl_idname = 'object.create_modifier'
+	bl_label = 'Create Modifier'
+	bl_property = 'search'
+	bl_description = ''
+
+	search: EnumProperty(name='Select Modifier', items=get_modifier_list)
+	
+	
+	def execute(self, ctx):
+		idName = self.search
+		obj = ctx.object
+		index = 1
+		add_modifier(ctx, obj, index, idName)
+		return{'FINISHED'}
+	
+	def invoke(self, ctx, event):
+		ctx.window_manager.invoke_search_popup(self)
+		return{'RUNNING_MODAL'}
 
 
 
@@ -50,36 +281,6 @@ class Modifier_OT_Add_Geodifier(Operator):
 
 	def execute(self, ctx):
 		return{"FINISHED"}
-
-
-class Modifier_OT_Add_Bevel(Operator):
-	bl_idname = "modifier.add_bevel"
-	bl_label = "Bevel (Add)"
-
-	@classmethod
-	def poll(self, ctx):
-		return is_objects_selected(ctx)
-
-	def execute(self, ctx):
-		modifier_add(ctx,ctx.selected_objects,'BEVEL')
-		self.report({'OPERATOR'},'bpy.ops.modifier.add_bevel()')
-		return{"FINISHED"}
-
-
-
-class Modifier_OT_Add_Lathe(Operator):
-	bl_idname = "modifier.add_lathe"
-	bl_label = "Lathe (Add)"
-	bl_options = {'REGISTER','UNDO'}
-
-	@classmethod
-	def poll(self, ctx):
-		return is_objects_selected(ctx)
-
-	def execute(self, ctx):
-		modifier_add(ctx,ctx.selected_objects,'SCREW')
-		self.report({'OPERATOR'},'bpy.ops.modifier.add_lathe()')
-		return {'FINISHED'}
 
 
 
@@ -101,42 +302,9 @@ class Object_OT_Reset_Xform(Operator):
 
 
 
-class Modifier_OT_Add_Shell(Operator):
-	bl_idname = "modifier.add_shell"
-	bl_label = "Shell (Add)"
-
-	@classmethod
-	def poll(self, ctx):
-		return is_objects_selected(ctx)
-
-	def execute(self, ctx):
-		modifier_add(ctx,ctx.selected_objects,'SOLIDIFY',name="SHELL")
-		self.report({'OPERATOR'},'bpy.ops.modifier.add_shell()')
-		return{"FINISHED"}
-
-
-
-class Modifier_OT_Add_TurboSmooth(Operator):
-	bl_idname = "modifier.add_turbosmooth"
-	bl_label = "TurboSmooth (Add)"
-
-	@classmethod
-	def poll(self, ctx):
-		return is_objects_selected(ctx)
-
-	def execute(self, ctx):
-		modifier_add(ctx,ctx.selected_objects,'SUBSURF',name='Turbosmooth')
-		self.report({'OPERATOR'},'bpy.ops.modifier.add_turbosmooth()')
-		return{"FINISHED"}
-
-
-
 classes = (
-	Modifier_OT_Add_Bevel,
-	Modifier_OT_Add_Lathe,
-	Object_OT_Reset_Xform,
-	Modifier_OT_Add_Shell,
-	Modifier_OT_Add_TurboSmooth
+	Object_OT_Create_Modifier,
+	Object_OT_Reset_Xform
 )
 
 
@@ -151,3 +319,7 @@ def unregister_modifier():
 	for c in classes:
 		if hasattr(bpy.types, c.bl_idname):
 			bpy.utils.unregister_class(c)
+
+
+if __name__ == "__main__":
+	register_modifier()

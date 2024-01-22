@@ -1,3 +1,7 @@
+# 0, 1, 2, 20240108
+* 3DsMax command panel is under Construction.
+* Draw Box error for Blender 3.6 and lower is fixed.
+
 # 0, 1, 2, 20240105
 * Box primitive convert to Geometrynode after Draw. (Experimental if ok will apply to all other primitives too).
 * Draw primitive issue for blender 4.1 Alpha fixed.

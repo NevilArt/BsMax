@@ -36,8 +36,11 @@ If you found this product useful and want to support this project you can Donate
 * [Download Older Version (2.80-2.92)(2.93-3.2)](https://github.com/NevilArt/BsMax_2_80)
 
 ## Recent Updates and Changes
-* 3DsMax command panel is under Construction.(active experimental in addon prefreence and restart than check BsMax in right side panel :D).
-* Draw Box error for Blender 3.6 and lower is fixed.
+* Many items added to 3Ds Max Side panel and so many to still need to working on.
+* Some Modifiers can be add from 3Ds Max side panel.
+* GeoNode modifiers appear only on Blender 4.0 and above.
+* Addon-preferences/ Interface/ BsMax/ Options/ Experimental to see 3Ds Max Side panel.
+* Any cooperation for Create 3Ds Max modifiers with Geometry node acceptable.
 * [Change log ...](https://github.com/NevilArt/BsMax/blob/master/CHANGELOG.md)
 
 ## License

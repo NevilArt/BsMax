@@ -95,8 +95,10 @@ class GeometryNode():
 		self.interface = None
 		self.links = None
 		self.setup(idName)
+		
+    # def get_nodegroupe
 
-	def setup(self, name):
+	def setup(self, idName):
 		return create_geometry_node(self, idName)
 
 	def new_node(self, type, x, y, hide):

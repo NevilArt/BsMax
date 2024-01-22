@@ -14,127 +14,13 @@
 ############################################################################
 
 import bpy
+
 from bpy.types import Operator, Panel, PropertyGroup
-from bpy.props import (
-	IntProperty, StringProperty,
-	BoolProperty, PointerProperty, EnumProperty
-)
+from bpy.props import PointerProperty, EnumProperty
 
 
 
-def get_modifier_list(self, ctx):
-	return [
-		('MESHSELECT', 'Mesh Select', ''),
-		('PATCHSELECT', 'Patch Select', ''),
-		('POLYSELECT', 'Poly Select', ''),
-		('VOLSELECT', 'Vol. Select', ''),
-
-		('CAMERAMAP', 'Camera Map()', ''),
-		('DISPLACEMESH', 'Displace Mesh()', ''),
-		('HAIRANDFUR', 'Hair and Fur()', ''),
-		('MAPSCALLER', 'MapScaler()', ''),
-		('PATCHDEFORM', 'PatchDeform()', ''),
-		('PATHDEFORM', 'PathDeform()', ''),
-		('PFLOWCOLLISION', 'Pflow Collision Shape()', ''),
-		('POINTCACHEW', 'Point Cache()', ''),
-		('SUBDIVIDE', 'Subdivide()', ''),
-		('SURFACEMAPPER', 'Surface Maper()', ''),
-		('SURFACECDEFORM', 'Surface Deform()', ''),
-
-		('AFFECTREGION', 'Affect Region', ''),
-		('ARNOLDPROPERTIES', 'Arnold Properties', ''),
-		('ARRAY', 'Array', ''),
-		('ATTRIBUTEHOLDEDR', 'Attribute Holder', ''),
-		('BEND', 'Bend', ''),
-		('BOLLEAN', 'Boolean', ''),
-		('CAMERAMAP', 'Camera Map', ''),
-		('CAPHOLE', 'Cap Holes', ''),
-		('CHAMFER', 'Chamfer', ''),
-		('CLOTH', 'Cloth', ''),
-		('CONFIRM', 'Confirm', ''),
-		('CREASE', 'Crease', ''),
-		('CREASESET', 'CreaseSet', ''),
-		('DATACHANEL', 'Data Chanel', ''),
-		('DELETEMESH', 'Delete Mesh', ''),
-		('DELETEPATCH', 'DeletePatch', ''),
-		('DISPAPPROX', 'Disp Approx', ''),
-		('DISPLACE', 'Displace', ''),
-		('EDITMESH', 'Edit Mesh', ''),
-		('EDITNORMAL', 'Edit Normal', ''),
-		('EDITPATCH', 'Edit Patch', ''),
-		('EDITPOLY', 'Edit Poly', ''),
-		('FACEEXTRUD', 'Face Extrud', ''),
-		('FFD2X2X2', 'FFD 2x2x2', ''),
-		('FFD3X3X3', 'FFD 3x3x3', ''),
-		('FFD4X4X4', 'FFD 4x4x4', ''),
-		('FFDBOX', 'FFD Box', ''),
-		#...
-		('MELT', 'Melt', ''),
-		('MESHCLEANER', 'Mesh Cleaner', ''),
-		('MESHSELECT', 'Mesh Select', ''),
-		('MESHSMOMTH', 'Mesh Smooth', ''),
-		('MIRROR', 'Mirror', ''),
-		('MORPHER', 'Morpher', ''),
-		('MULTIRES', 'MultiRes', ''),
-		('NOISE', 'Noise', ''),
-		('NORMAL', 'Normal', ''),
-		('OPENSUBDIV', 'OpenSubdiv', ''),
-		('OPTIMIZE', 'Optimize', ''),
-		('PARTICLEFORCE', 'Particle Face Creator', ''),
-		('PARTICLESKINNER', 'Particle Skinner', ''),
-		('PATHSELECT', 'Path Select', ''),
-		('PATHDEFORM', 'Patch Deform', ''),
-		('PHYSIQUE', 'Physique', ''),
-		('POINTCACHE', 'Point Cache', ''),
-		('POLYSELECT', 'Poly Select', ''),
-		('PRESERVE', 'Preserve', ''),
-		('PROJECTION', 'Projection', ''),
-		('PROOPTIMIZER', 'ProOptimizer', ''),
-		('PUSH', 'Push', ''),
-		('QUDIFYMESH', 'Qudify Mesh', ''),
-		('RELAX', 'Relax', ''),
-		('RETOPOLOGY', 'Retopology', ''),
-		('RIPPLE', 'Ripple', ''),
-		('SELECTBYCHANEL', 'Select by Chanel', ''),
-		('SHELL', 'Shell', ''),
-		('SKEW', 'Skew', ''),
-		('SKIN', 'Skin', ''),
-		('SKINMORPH', 'Skin Morph', ''),
-		('SKINWRAP', 'Skin Wrap', ''),
-		('SKINWRAPPATCH', 'Skin Wrap Patch', ''),
-		('SLICE', 'Slice', ''),
-		('SMOOTH', 'Smooth', ''),
-		('SPEREFY', 'Sperefy', ''),
-		# ('', '?????', ''),
-		('STLCHECK', 'STL check', ''),
-		('STRETCH', 'Stretch', ''),
-		('SUBDIVIDE', 'Subdivide', ''),
-		# ('', '?????', ''),
-		('SURFDEFORM', 'SurfDeform', ''),
-		('SYMMETRY', 'Symmetry', ''),
-		('TAPE', 'Tape', ''),
-		('TURBOSMOTH', 'Turbosmoth', ''),
-		('UNWRAPUVW', 'Unwrap UVW', ''),
-		('UVASCOLOR', 'UV as Color', ''),
-		('UVASHSL', 'UV as HSL Color', ''),
-		('UVASGRADIENT', 'UV as HSL Gradiyent', ''),
-		('UVASBLABLA', 'UV as HSL Gradient with mid....', ''),
-		('UVWMAPP', 'UVW Map', ''),
-		('UVMAPPADD', 'UVW Mapping Add', ''),
-		('UVWCLEAR', 'UVW Mapping Clear', ''),
-		('UVWXFORM', 'UVW Xform', ''),
-		('VERTEXWELD', 'Vertex Weld', ''),
-		('VERTEXPAINT', 'Vertex Paint', ''),
-		('VOLSELECT', 'Vol. Select', ''),
-		('WAVE', 'Wave', ''),
-		('WEGHTEDNORMAL', 'Weghted Normals', ''),
-		('WELDER', 'Welder', ''),
-		('XFORM', 'Xform', '')
-	]
-
-
-
-def get_subtype(createType):
+def get_create_subtype(createType):
 	default = 'STANDARD'
 	items = [('STANDARD', 'Standard', '')]
 
@@ -165,7 +51,7 @@ def get_subtype(createType):
 			('NURBS', 'NURBS Curvs', ''),
 			('COMPOUND', 'Compound Shapes', ''),
 			('EXTENDED', 'Extended Shapes', ''),
-			('CREATIONGRAPH', 'Max Creation Graph', '')
+			# ('CREATIONGRAPH', 'Max Creation Graph', '')
 		]
 
 	elif createType == 'LIGHT':
@@ -173,14 +59,14 @@ def get_subtype(createType):
 		items = [
 			('PHOTOMETRIC','Photometric',''),
 			('STANDARD','Standard',''),
-			('ARNOLD','Arnold','')
+			# ('ARNOLD','Arnold','')
 		]
 
 	elif createType == 'CAMERA':
 		default = 'STANDARD'
 		items = [
 			('STANDARD','Standard',''),
-			('ARNOLD','Arnold','')
+			# ('ARNOLD','Arnold','')
 		]
 
 	elif createType == 'EMPTY':
@@ -233,50 +119,136 @@ def get_create_mesh_ui(layout, cPanel):
 		row = box.row()
 		row.operator("create.teapot", text="Teapot")
 		row.operator("create.plane", text="Plane")
+		row = box.row()
+		row.operator("create.text", text="TextPlus")
 
 	elif cPanel.mesh_types == 'EXTENDED':
 		row = box.row()
-		row.operator("create.box", text="ChamferBox")
-		row.operator("create.cone", text="ChamferCylinder")
+		row.operator("bsmax.reserved", text="Hedra")
+		row.operator("bsmax.reserved", text="Torus Knot")
+		row = box.row()
+		row.operator("bsmax.reserved", text="ChamferBox")
+		row.operator("bsmax.reserved", text="ChamferCyl")
+		row = box.row()
+		row.operator("create.oiltank", text="OilTank")
+		row.operator("create.capsule", text="Capsule")
+		row = box.row()
+		row.operator("bsmax.reserved", text="Spindle")
+		row.operator("bsmax.reserved", text="L-Ext")
+		row = box.row()
+		row.operator("bsmax.reserved", text="Gengon")
+		row.operator("bsmax.reserved", text="C-Ext")
+		row = box.row()
+		row.operator("bsmax.reserved", text="RingWave")
+		row.operator("bsmax.reserved", text="Hose")
+		row = box.row()
+		row.operator("bsmax.reserved", text="Prism")
 	
 	elif cPanel.mesh_types == 'COMPOUND':
-		pass
+		row = box.row()
+		row.operator("bsmax.reserved", text="Morph")
+		row.operator("bsmax.reserved", text="Scatter")
+		row = box.row()
+		row.operator("bsmax.reserved", text="Conform")
+		row.operator("bsmax.reserved", text="Connect")
+		row = box.row()
+		row.operator("bsmax.reserved", text="BlobMesh")
+		row.operator("bsmax.reserved", text="ShapeMerg")
+		row = box.row()
+		row.operator("bsmax.reserved", text="Terrain")
+		row.operator("bsmax.reserved", text="Loft")
+		row = box.row()
+		row.operator("bsmax.reserved", text="Mesher")
+		row.operator("bsmax.reserved", text="ProBooleeean")
+		row = box.row()
+		row.operator("bsmax.reserved", text="ProCutter")
+		row.operator("bsmax.reserved", text="Booleean")
 
 	elif cPanel.mesh_types == 'PARTICLE':
-		pass
+		row = box.row()
+		row.operator("bsmax.reserved", text="PF Source")
+		row.operator("bsmax.reserved", text="Spray")
+		row = box.row()
+		row.operator("bsmax.reserved", text="Snow")
+		row.operator("bsmax.reserved", text="Super Spray")
+		row = box.row()
+		row.operator("bsmax.reserved", text="Blizzard")
+		row.operator("bsmax.reserved", text="PArray")
+		row = box.row()
+		row.operator("bsmax.reserved", text="PCloud")
 
 	elif cPanel.mesh_types == 'PATHGRIDE':
-		pass
+		row = box.row()
+		row.operator("bsmax.reserved", text="Quad Patch")
+		row.operator("bsmax.reserved", text="Tri Patch")
 
 	elif cPanel.mesh_types == 'BODY':
-		pass
+		row = box.row()
+		row.operator("bsmax.reserved", text="Body Utility")
+		row.operator("bsmax.reserved", text="Body Object")
+		row = box.row()
+		row.operator("bsmax.reserved", text="Join Bodies")
+		row.operator("bsmax.reserved", text="Body Cutter")
 
 	elif cPanel.mesh_types == 'DOOR':
-		pass
+		row = box.row()
+		row.operator("bsmax.reserved", text="Pivot")
+		row.operator("bsmax.reserved", text="Sliding")
+		row = box.row()
+		row.operator("bsmax.reserved", text="BiFold")
 
 	elif cPanel.mesh_types == 'NURBS':
-		pass
+		row = box.row()
+		row.operator("bsmax.reserved", text="Point Surf")
+		row.operator("bsmax.reserved", text="CV Surf")
 	
 	elif cPanel.mesh_types == 'WINDOWS':
-		pass
+		row = box.row()
+		row.operator("bsmax.reserved", text="Awning")
+		row.operator("bsmax.reserved", text="Casement")
+		row = box.row()
+		row.operator("bsmax.reserved", text="Fixed")
+		row.operator("bsmax.reserved", text="Pivoted")
+		row = box.row()
+		row.operator("bsmax.reserved", text="Projected")
+		row.operator("bsmax.reserved", text="Sliding")
 
 	elif cPanel.mesh_types == 'AEC':
-		pass
+		row = box.row()
+		row.operator("bsmax.reserved", text="Foliage")
+		row.operator("bsmax.reserved", text="Railing")
+		row = box.row()
+		row.operator("bsmax.reserved", text="Wall")
 
 	elif cPanel.mesh_types == 'POINTCLOUD':
-		pass
+		row = box.row()
+		row.operator("bsmax.reserved", text="PointCloud")
 
 	elif cPanel.mesh_types == 'DYNAMIC':
-		pass
+		row = box.row()
+		row.operator("bsmax.reserved", text="Spring")
+		row.operator("bsmax.reserved", text="Damper")
 
 	elif cPanel.mesh_types == 'STAIRS':
-		pass
+		row = box.row()
+		row.operator("bsmax.reserved", text="Straight Stair")
+		row.operator("bsmax.reserved", text="L-Type Stair")
+		row = box.row()
+		row.operator("bsmax.reserved", text="U-Type Stair")
+		row.operator("bsmax.reserved", text="Spiral Stair")
 
 	elif cPanel.mesh_types == 'ABC':
-		pass
+		row = box.row()
+		row.operator("bsmax.reserved", text="Alembic")
+		row.operator("bsmax.reserved", text="Procedural")
+		row = box.row()
+		row.operator("bsmax.reserved", text="Volume")
+		row.operator("bsmax.reserved", text="USD")
 
 	elif cPanel.mesh_types == 'FLUIDS':
-		pass
+		row = box.row()
+		row.operator("bsmax.reserved", text="Liquid")
+		row.operator("bsmax.reserved", text="Fluid Loader")
 
 
 
@@ -300,18 +272,30 @@ def get_create_curve_ui(layout, cPanel):
 		row = box.row()
 		row.operator("create.text", text="Text")
 		row.operator("create.helix", text="Helix")
-		# row = box.row()
-		# row.operator("create.box", text="Egg")
-		# row.operator("create.cone", text="Section")
+		row = box.row()
+		row.operator("bsmax.reserved", text="Egg")
+		row.operator("bsmax.reserved", text="Section")
+		row = box.row()
+		row.operator("bsmax.reserved", text="Freehand")
 	
 	elif cPanel.curve_types == 'NURBS':
-		pass
+		row = box.row()
+		row.operator("bsmax.reserved", text="Point Curve")
+		row.operator("bsmax.reserved", text="CV Curve")
 
 	elif cPanel.curve_types == 'COMPOUND':
-		pass
+		row = box.row()
+		row.operator("bsmax.reserved", text="ShpBoolean")
 
 	elif cPanel.curve_types == 'EXTENDED':
-		pass
+		row = box.row()
+		row.operator("bsmax.reserved", text="WRectangle")
+		row.operator("bsmax.reserved", text="Chanel")
+		row = box.row()
+		row.operator("bsmax.reserved", text="Angle")
+		row.operator("bsmax.reserved", text="Tee")
+		row = box.row()
+		row.operator("bsmax.reserved", text="Wide Flange")
 
 	elif cPanel.curve_types == 'CREATIONGRAPH':
 		pass
@@ -323,16 +307,25 @@ def get_create_light_ui(layout, cPanel):
 	box = layout.box()
 
 	if cPanel.light_types == 'PHOTOMETRIC':
-		pass
+		row = box.row()
+		row.operator("bsmax.reserved", text="Target Light")
+		row.operator("bsmax.reserved", text="Free Light")
+		row = box.row()
+		row.operator("bsmax.reserved", text="Sun Positioner")
+
 	elif cPanel.light_types == 'STANDARD':
 		row = box.row()
-		row.operator("create.pointlight", text="Point Light")
-		row.operator("create.spotlight", text="Spot Light")
+		row.operator("create.pointlight", text="Point")
+		row.operator("create.spotlight", text="Spot")
 		row = box.row()
-		row.operator("create.sunlight", text="Sun Light")
-		row.operator("create.arealight", text="Area Light")
+		row.operator("create.arealight", text="Area")
+		row.operator("create.arealight", text="Area Target").free=True
+		row = box.row()
+		row.operator("create.sunlight", text="Sun")
+
 	elif cPanel.light_types == 'ARNOLD':
-		pass
+		row = box.row()
+		row.operator("bsmax.reserved", text="Arnold")
 
 
 
@@ -342,10 +335,15 @@ def get_create_camera_ui(layout, cPanel):
 
 	if cPanel.camera_types == 'STANDARD':
 		row = box.row()
-		row.operator("create.camera", text="Free Camera")
-		row.operator("create.camera", text="Target Camera")
+		row.operator("create.camera", text="Camera")
+
 	elif cPanel.camera_types == 'ARNOLD':
-		pass
+		row = box.row()
+		row.operator("bsmax.reserved", text="Vr Camera")
+		row.operator("bsmax.reserved", text="Fisheye")
+		row = box.row()
+		row.operator("bsmax.reserved", text="Spherical")
+		row.operator("bsmax.reserved", text="Cylindrical")
 
 
 
@@ -367,22 +365,104 @@ def get_create_empty_ui(layout, cPanel):
 		row.operator("create.empty", text="Cone").empty_type='CONE'
 		row.operator("create.empty", text="Image").empty_type='IMAGE'
 
+		row = box.row()
+		row.operator("bsmax.reserved", text="Dummy")
+		row.operator("bsmax.reserved", text="Containeer")
+		row = box.row()
+		row.operator("bsmax.reserved", text="Crowd")
+		row.operator("bsmax.reserved", text="Delegate")
+		row = box.row()
+		row.operator("bsmax.reserved", text="ExposeeeTm")
+		row.operator("bsmax.reserved", text="Grid")
+		row = box.row()
+		row.operator("bsmax.reserved", text="Point")
+		row.operator("bsmax.reserved", text="Tape")
+		row = box.row()
+		row.operator("bsmax.reserved", text="Protractor")
+		row.operator("bsmax.reserved", text="Influencer")
+		row = box.row()
+		row.operator("bsmax.reserved", text="Arrow")
+		row.operator("bsmax.reserved", text="Volume")
+		row = box.row()
+		row.operator("bsmax.reserved", text="Compass")
+
 	elif cPanel.empty_types == 'ATOMOSPHER':
-		pass
+		row = box.row()
+		row.operator("bsmax.reserved", text="BoxGizmo")
+		row.operator("bsmax.reserved", text="ShpereGizmo")
+		row = box.row()
+		row.operator("bsmax.reserved", text="CylGizmo")
+
 	elif cPanel.empty_types == 'CAMERAMATCH':
-		pass
+		row = box.row()
+		row.operator("bsmax.reserved", text="CamPoint")
+
 	elif cPanel.empty_types == 'ASSEMBLY':
-		pass
+		row = box.row()
+		row.operator("bsmax.reserved", text="Luminair")
+
 	elif cPanel.empty_types == 'MANPULATOR':
-		pass
+		row = box.row()
+		row.operator("bsmax.reserved", text="Cone Angle")
+		row.operator("bsmax.reserved", text="Plane Angle")
+		row = box.row()
+		row.operator("bsmax.reserved", text="Slider")
+
 	elif cPanel.empty_types == 'PFLOW':
-		pass
+		row = box.row()
+		row.operator("bsmax.reserved", text="Find Target")
+		row.operator("bsmax.reserved", text="SpeedByIcon")
+		row = box.row()
+		row.operator("bsmax.reserved", text="Initial State")
+		row.operator("bsmax.reserved", text="Group Select")
+		row = box.row()
+		row.operator("bsmax.reserved", text="Particle Paint")
+		row.operator("bsmax.reserved", text="Birth Texture")
+		row = box.row()
+		row.operator("bsmax.reserved", text="mP Solver")
+		row.operator("bsmax.reserved", text="mP Buoyancy")
+		row = box.row()
+		row.operator("bsmax.reserved", text="BrithGrid")
+		row.operator("bsmax.reserved", text="BirthStream")
+		row = box.row()
+		row.operator("bsmax.reserved", text="mP World")
+		row.operator("bsmax.reserved", text="BlurWind")
+		row = box.row()
+		row.operator("bsmax.reserved", text="Data Icon")
+		row.operator("bsmax.reserved", text="RandomWalk")
+		row = box.row()
+		row.operator("bsmax.reserved", text="Test Icon")
+
 	elif cPanel.empty_types == 'MASSFX':
-		pass
+		row = box.row()
+		row.operator("bsmax.reserved", text="UConstraint")
+
 	elif cPanel.empty_types == 'CAT':
-		pass
+		row = box.row()
+		row.operator("bsmax.reserved", text="CATMuscle")
+		row.operator("bsmax.reserved", text="Muscle Strand")
+		row = box.row()
+		row.operator("bsmax.reserved", text="CATParent")
+
 	elif cPanel.empty_types == 'VRML97':
-		pass
+		row = box.row()
+		row.operator("bsmax.reserved", text="Anchor")
+		row.operator("bsmax.reserved", text="TouchSensor")
+		row = box.row()
+		row.operator("bsmax.reserved", text="ProxSensor")
+		row.operator("bsmax.reserved", text="TimeSensor")
+		row = box.row()
+		row.operator("bsmax.reserved", text="NavInfo")
+		row.operator("bsmax.reserved", text="Background")
+		row = box.row()
+		row.operator("bsmax.reserved", text="Fog")
+		row.operator("bsmax.reserved", text="AudioClip")
+		row = box.row()
+		row.operator("bsmax.reserved", text="Sound")
+		row.operator("bsmax.reserved", text="BilBoard")
+		row = box.row()
+		row.operator("bsmax.reserved", text="LOD")
+		row.operator("bsmax.reserved", text="Inline")
 
 
 
@@ -390,7 +470,7 @@ def get_create_spacewrap_ui(layout, cPanel):
 	layout.prop(cPanel, 'spacewrap_types', text="")
 	box = layout.box()
 
-	if cPanel.empty_types == 'STANDARD':
+	if cPanel.spacewrap_types == 'FORCE':
 		row = box.row()
 		row.operator("create.effector", text="Force").effector_type='FORCE'
 		row.operator("create.effector", text="Wind").effector_type='WIND'
@@ -409,10 +489,47 @@ def get_create_spacewrap_ui(layout, cPanel):
 		row = box.row()
 		row.operator("create.effector", text="Turbulence").effector_type='TURBULENCE'
 		row.operator("create.effector", text="Drag").effector_type='DRAG'
+		# row = box.row()
+		# row.operator("create.effector", text="Smoke").effector_type='SMOKE'
+
+	elif cPanel.spacewrap_types == 'DEFELECTOR':
 		row = box.row()
-		row.operator("create.effector", text="Smoke").effector_type='SMOKE'
-	elif cPanel.empty_types == 'ATOMOSPHER':
-		pass
+		row.operator("bsmax.reserved", text="POmniFlect")
+		row.operator("bsmax.reserved", text="SOminiFlect")
+		row = box.row()
+		row.operator("bsmax.reserved", text="UOmniFlect")
+		row.operator("bsmax.reserved", text="UDefelector")
+		row = box.row()
+		row.operator("bsmax.reserved", text="SDefelector")
+		row.operator("bsmax.reserved", text="Defelector")
+	
+	elif cPanel.spacewrap_types == 'DEFORABLE':
+		row = box.row()
+		row.operator("bsmax.reserved", text="FFD(BOX)")
+		row.operator("bsmax.reserved", text="FFD(Cyl)")
+		row = box.row()
+		row.operator("bsmax.reserved", text="Wave")
+		row.operator("bsmax.reserved", text="Ripple")
+		row = box.row()
+		row.operator("bsmax.reserved", text="Displace")
+		row.operator("bsmax.reserved", text="Confirm")
+		row = box.row()
+		row.operator("bsmax.reserved", text="Bomb")
+	
+	elif cPanel.spacewrap_types == 'MODIFIER':
+		row = box.row()
+		row.operator("bsmax.reserved", text="Bend")
+		row.operator("bsmax.reserved", text="Twist")
+		row = box.row()
+		row.operator("bsmax.reserved", text="Taper")
+		row.operator("bsmax.reserved", text="Skew")
+		row = box.row()
+		row.operator("bsmax.reserved", text="Noise")
+		row.operator("bsmax.reserved", text="Stretch")
+	
+	elif cPanel.spacewrap_types == 'PARTICLE':
+		row = box.row()
+		row.operator("bsmax.reserved", text="Vector Field")
 
 
 
@@ -421,8 +538,57 @@ def get_create_setting_ui(layout, cPanel):
 	box = layout.box()
 
 	if cPanel.setting_types == 'STANDARD':
-		pass
+		row = box.row()
+		row.operator("create.bone", text="Bones")
+		row.operator("bsmax.reserved", text="Ring Array")
+		row = box.row()
+		row.operator("bsmax.reserved", text="Biped")
+		row.operator("bsmax.reserved", text="Sunlight")
+		row = box.row()
+		row.operator("bsmax.reserved", text="Daylight")
 
+
+
+def get_hierarcy_pivot_ui(layout, ctx):
+	box = layout.box()
+	# Move/Rotate/Scale
+	box.operator("bsmax.reserved", text="Affect Pivot Only")
+	box.operator("bsmax.reserved", text="Affect Object Only")
+	box.operator("bsmax.reserved", text="Affect Hierarcy Only")
+	# Alignment
+	box.operator("bsmax.reserved", text="Center to Object")
+	box.operator("bsmax.reserved", text="Align to Object")
+	box.operator("bsmax.reserved", text="Align to world")
+	# Pivot
+	box.operator("bsmax.reserved", text="Reset")
+
+	# Working pivot
+	box.operator("bsmax.reserved", text="Edit working pivot")
+	box.operator("bsmax.reserved", text="Use working pivot")
+	box.operator("bsmax.reserved", text="Alight ti view")
+	box.operator("bsmax.reserved", text="Reset")
+
+	# adjust Transform
+	box.operator("bsmax.reserved", text="Dont Affect Children")
+	box.operator("bsmax.reserved", text="Reset Transform")
+	box.operator("bsmax.reserved", text="Reset Scale")
+
+
+
+def get_hierarcy_ik_ui(layout, ctx):
+	box = layout.box()
+
+
+
+def get_hierarcy_linkinfo_ui(layout, ctx):
+	if not ctx.object:
+		return 
+
+	box = layout.box()
+	box.prop(ctx.object, 'lock_location', text="location")
+	box.prop(ctx.object, 'lock_rotation', text="Rotation")
+	box.prop(ctx.object, 'rotation_mode')
+	box.prop(ctx.object, 'lock_scale', text="Scale")
 
 
 
@@ -450,46 +616,54 @@ class BsMax_Scene_Side_Panel(PropertyGroup):
 			('SETTING', 'Setting', '', 'SETTINGS', 7),
 		],
 		default='MESH',
-		# update=
 	)
 
-	stDefault, stItems = get_subtype('MESH')
+	hierarcy_type: EnumProperty(
+		items =[
+			('PIVOT', 'Pivot', ''),
+			('IK', 'IK', ''),
+			('LINKINFO', 'Link Info', ''),
+		],
+		default='LINKINFO',
+	)
+
+	stDefault, stItems = get_create_subtype('MESH')
 	mesh_types: EnumProperty(
 		items= stItems,
 		default=stDefault
 	)
 
-	stDefault, stItems = get_subtype('CURVE')
+	stDefault, stItems = get_create_subtype('CURVE')
 	curve_types: EnumProperty(
 		items= stItems,
 		default=stDefault
 	)
 
-	stDefault, stItems = get_subtype('LIGHT')
+	stDefault, stItems = get_create_subtype('LIGHT')
 	light_types: EnumProperty(
 		items= stItems,
 		default=stDefault
 	)
 
-	stDefault, stItems = get_subtype('CAMERA')
+	stDefault, stItems = get_create_subtype('CAMERA')
 	camera_types: EnumProperty(
 		items= stItems,
 		default=stDefault
 	)
 
-	stDefault, stItems = get_subtype('EMPTY')
+	stDefault, stItems = get_create_subtype('EMPTY')
 	empty_types: EnumProperty(
 		items= stItems,
 		default=stDefault
 	)
 
-	stDefault, stItems = get_subtype('SPACEWRAP')
+	stDefault, stItems = get_create_subtype('SPACEWRAP')
 	spacewrap_types: EnumProperty(
 		items= stItems,
 		default=stDefault
 	)
 
-	stDefault, stItems = get_subtype('SETTING')
+	stDefault, stItems = get_create_subtype('SETTING')
 	setting_types: EnumProperty(
 		items= stItems,
 		default=stDefault
@@ -534,12 +708,17 @@ def get_modifier_panel(layout, ctx):
 
 
 def get_hierarcy_panel(layout, ctx):
-	box = layout.box()
-	if ctx.object:
-		box.prop(ctx.object, 'lock_location', text="location")
-		box.prop(ctx.object, 'lock_rotation', text="Rotation")
-		box.prop(ctx.object, 'rotation_mode')
-		box.prop(ctx.object, 'lock_scale', text="Scale")
+	cPanel = ctx.scene.comand_panel
+	layout.prop(cPanel, 'hierarcy_type', expand=True)
+
+	if cPanel.hierarcy_type == 'PIVOT':
+		get_hierarcy_pivot_ui(layout, ctx)
+
+	elif cPanel.hierarcy_type == 'IK':
+		get_hierarcy_ik_ui(layout, ctx)
+
+	elif cPanel.hierarcy_type == 'LINKINFO':
+		get_hierarcy_linkinfo_ui(layout, ctx)
 
 
 
@@ -561,22 +740,17 @@ def get_utility_panel(layout, ctx):
 
 
 
-class Object_OT_Create_Modifier(Operator):
-	bl_idname = 'object.create_modifier'
-	bl_label = 'Create Modifier'
-	bl_property = 'search'
+class BsMax_OT_Reserved(Operator):
+	bl_idname = 'bsmax.reserved'
+	bl_label = 'Reserveed'
 	bl_description = ''
 
-	search: EnumProperty(name='Select Modifier', items=get_modifier_list)
-	
-	
+	@classmethod
+	def poll(self, ctx):
+		return False
+
 	def execute(self, ctx):
-		print(self.search)
 		return{'FINISHED'}
-	
-	def invoke(self, ctx, event):
-		ctx.window_manager.invoke_search_popup(self)
-		return{'RUNNING_MODAL'}
 	
 	
 
@@ -615,7 +789,7 @@ class SCENE_OP_BsMax_Side_Panel(Panel):
 
 
 classes = (
-	Object_OT_Create_Modifier,
+	BsMax_OT_Reserved,
 	BsMax_Scene_Side_Panel,
 	SCENE_OP_BsMax_Side_Panel
 )
