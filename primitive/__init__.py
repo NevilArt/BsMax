@@ -12,6 +12,7 @@
 #	You should have received a copy of the GNU General Public License
 #	along with this program.  If not, see <https://www.gnu.org/licenses/>.
 ############################################################################
+# 2024/01/29
 
 from .ui import register_ui, unregister_ui
 from .panel import register_panel, unregister_panel
@@ -63,13 +64,13 @@ from .presets import register_preset, unregister_preset
 # UI
 from .menu import register_menu, unregister_menu
 
-def register_primitives():
+def register_primitives(preferences):
 	register_update()
 	register_ui()
 	register_panel()
 	# register_adaptive_plane()
 	register_arc()
-	register_box()
+	register_box(preferences)
 	register_bone()
 	register_capsule()
 	register_camera()

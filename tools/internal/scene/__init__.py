@@ -14,9 +14,16 @@
 ############################################################################
 
 from .file import register_file, unregister_file
+from .crowds import register_crowds, unregister_crowds
+
+
 
 def register_scene():
 	register_file()
+	register_crowds()
+
+
 
 def unregister_scene():
 	unregister_file()
+	unregister_crowds()

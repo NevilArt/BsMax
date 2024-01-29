@@ -14,34 +14,14 @@
 ############################################################################
 # 2024/01/28
 
-from bpy.utils import register_class, unregister_class
-
-from .maxivz_tools.mvztools import (
-	MESH_OT_SmartSelectLoop,
-	MESH_OT_SmartSelectRing
-)
-
-from .spiderwebs import register_spider_web, unregister_spider_web
+from .prerequisite import register_prerequisite, unregister_prerequisite
 
 
 
-classes = (
-	MESH_OT_SmartSelectLoop,
-	MESH_OT_SmartSelectRing
-)
+def register_bsmax():
+	register_prerequisite()
 
 
 
-def register_external():
-	for c in classes:
-		register_class(c)
-
-	register_spider_web()
-
-
-
-def unregister_external():
-	for c in classes:
-		unregister_class(c)
-
-	unregister_spider_web()
+def unregister_bsmax():
+	unregister_prerequisite()

@@ -12,23 +12,25 @@
 #	You should have received a copy of the GNU General Public License
 #	along with this program.  If not, see <https://www.gnu.org/licenses/>.
 ############################################################################
+# 2024/01/28
 
 from .external import register_external, unregister_external
 from .internal import register_internal, unregister_internal
 from .special import register_special, unregister_special
 from .pipeline import register_pipeline, unregister_pipeline
-# from .patrion import register_patreon, unregister_patreon
+
+
 
 def register_tools(preferences):
 	register_external()
 	register_internal(preferences)
 	register_special(preferences)
 	register_pipeline(preferences)
-	# register_patreon()
+
+
 
 def unregister_tools():
 	unregister_external()
 	unregister_internal()
 	unregister_special()
 	unregister_pipeline()
-	# unregister_patreon()

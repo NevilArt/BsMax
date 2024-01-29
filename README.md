@@ -36,11 +36,11 @@ If you found this product useful and want to support this project you can Donate
 * [Download Older Version (2.80-2.92)(2.93-3.2)](https://github.com/NevilArt/BsMax_2_80)
 
 ## Recent Updates and Changes
-* Many items added to 3Ds Max Side panel and so many to still need to working on.
-* Some Modifiers can be add from 3Ds Max side panel.
-* GeoNode modifiers appear only on Blender 4.0 and above.
-* Addon-preferences/ Interface/ BsMax/ Options/ Experimental to see 3Ds Max Side panel.
-* Any cooperation for Create 3Ds Max modifiers with Geometry node acceptable.
+* 3DsMax Comand panel now active from prefrenses not experimental.
+* More modifiers added to 3DsMax Comand panel modifier list.
+* Comand Panel modifier list add to all selected objects.
+* Some Crowd Tools added to view3D tool panel (More and tutorial coming soon).
+* Convert Primitive to GeoNode become optinal and off by default.
 * [Change log ...](https://github.com/NevilArt/BsMax/blob/master/CHANGELOG.md)
 
 ## License

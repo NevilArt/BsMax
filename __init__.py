@@ -15,12 +15,13 @@
 #	You should have received a copy of the GNU General Public License
 #	along with this program.  If not, see <https://www.gnu.org/licenses/>.
 ############################################################################
+# 2024/01/29
 
 bl_info = {
 	'name': 'BsMax',
 	'description': 'Package of many tools + other CG apps UI mimic',
 	'author': 'Naser Merati (Nevil)',
-	'version': (0, 1, 2, 20240122),
+	'version': (0, 1, 2, 20240129),
 	'blender': (3, 3, 0),# 3.3LTS ~ 4.0
 	'location': 'Almost Everywhere in Blender',
 	'wiki_url': 'https://github.com/NevilArt/BsMax/wiki',
@@ -45,6 +46,7 @@ path = os.path.dirname(os.path.realpath(__file__))
 if path not in sys.path:
 	sys.path.append(path)
 
+from .bsmax import register_bsmax, unregister_bsmax
 from .keymaps import register_keymaps, unregister_keymaps
 from .menu import register_menu, unregister_menu
 from .primitive import register_primitives, unregister_primitives
@@ -61,87 +63,150 @@ iniFileName = bpy.utils.user_resource('SCRIPTS') + '\\addons\\BsMax.ini'
 
 # Addon preferences
 def update_preferences(self, ctx, action):
-	""" Make Checkboxes Act as Radiobuttons """
-	if action == 'quick' and self.quick:
-		self.simple = self.custom = False
-		self.refine()
+	""" Quick Selection """
+	if self.mode == 'QUICK' and action == 'aplication':
+		if self.aplication != 'Custom':
+			self.navigation = self.aplication
+			self.keymaps = self.aplication
+			self.toolpack = self.aplication
 
-	elif action == 'simple'and self.simple:
-		self.quick = self.custom = False
-		self.refine()
+			self.navigation_3d = self.aplication
+			self.navigation_2d = self.aplication
+			self.viowport = self.aplication
+			self.sculpt = self.aplication
+			self.uv_editor = self.aplication
+			self.node_editor = self.aplication
+			self.graph_editor = self.aplication
+			self.clip_editor = self.aplication
+			self.video_sequencer = self.aplication
+			self.text_editor = self.aplication
+			self.file_browser = self.aplication
+			self.floatmenus = self.aplication
 
-	elif action == 'custom' and self.custom:
-		self.simple = self.quick = False
+			if self.aplication == '3DsMax':
+				self.side_panel='3DsMax'
+			else:
+				self.side_panel='None'
 
-	if not self.quick and not self.simple and not self.custom:
-		if action == 'quick':
-			self.quick = True
-		elif action == 'simple':
-			self.simple = True
-		elif action == 'custom':
-			self.custom = True
-		else:
-			self.simple = True
+	""" Simple Selection """
+	if self.mode == 'SIMPLE':
+		if action == 'navigation':
+			if self.navigation != 'Custom':
+				self.navigation_3d = self.navigation
+				self.navigation_2d = self.navigation
+			return
 
-	if self.active:
-		""" Quick Selection """
-		if self.quick and action == 'aplication':
-			if self.aplication != 'Custom':
-				self.navigation = self.aplication
-				self.keymaps = self.aplication
-				self.toolpack = self.aplication
+		elif action in {'keymaps', 'transform'}:
+			if self.keymaps != 'Custom':
+				self.viowport = self.keymaps
+				self.sculpt = self.keymaps
+				self.uv_editor = self.keymaps
+				self.node_editor = self.keymaps
+				self.graph_editor = self.keymaps
+				self.clip_editor = self.keymaps
+				self.video_sequencer = self.keymaps
+				self.text_editor = self.keymaps
+				self.file_browser = self.keymaps
+			return
 
-				self.navigation_3d = self.aplication
-				self.navigation_2d = self.aplication
-				self.viowport = self.aplication
-				self.sculpt = self.aplication
-				self.uv_editor = self.aplication
-				self.node_editor = self.aplication
-				self.graph_editor = self.aplication
-				self.clip_editor = self.aplication
-				self.video_sequencer = self.aplication
-				self.text_editor = self.aplication
-				self.file_browser = self.aplication
-				self.floatmenus = self.aplication
+	""" Custom Selection """
+	if action in {
+		'navigation_3d', 'navigation_2d','viowport',
+		'sculpt', 'uv_editor', 'node_editor', 'text_editopr',
+		'graph_editor','clip_editor', 'video_sequencer',
+		'text_editor','file_browser', 'floatmenus', 'view_undo'
+		}:
+		
+		global addons
+		register_keymaps(addons[__name__].preferences)
+  
 
-		""" Simple Selection """
-		if self.simple:
-			if action == 'navigation':
-				if self.navigation != 'Custom':
-					self.navigation_3d = self.navigation
-					self.navigation_2d = self.navigation
-				return
 
-			elif action in {'keymaps', 'transform'}:
-				if self.keymaps != 'Custom':
-					self.viowport = self.keymaps
-					self.sculpt = self.keymaps
-					self.uv_editor = self.keymaps
-					self.node_editor = self.keymaps
-					self.graph_editor = self.keymaps
-					self.clip_editor = self.keymaps
-					self.video_sequencer = self.keymaps
-					self.text_editor = self.keymaps
-					self.file_browser = self.keymaps
-				return
+def draw_quick_panel(self, layout):
+	row = layout.row()
+	col = row.column()
+	col.label(text='Select a packages include Navigation/ Keymap/ Menu')
+	self.row_prop(col, 'aplication', 'applications')
 
-		""" Custom Selection """
-		if action in {
-			'navigation_3d', 'navigation_2d','viowport',
-			'sculpt', 'uv_editor', 'node_editor', 'text_editopr',
-			'graph_editor','clip_editor', 'video_sequencer',
-			'text_editor','file_browser', 'floatmenus', 'view_undo'
-			}:
-			
-			global addons
-			register_keymaps(addons[__name__].preferences)
+
+
+def draw_simple_panel(self, layout):
+	row = layout.row()
+	col = row.column()
+	col.label(text='Select packages parts separately')
+	self.row_prop(col, 'navigation', 'Navigation')
+	self.row_prop(col, 'keymaps', 'Keymaps-' + self.keymaps)
+	self.row_prop(col, 'floatmenus', 'floatmenus-' + self.floatmenus)
+	#TODO update wiki page
+	self.row_prop(col, 'side_panel', 'SidePanel-' + self.floatmenus)
+
+
+
+def draw_custom_panel(self, layout):
+	row = layout.row()
+	col = row.column()
+	col.label(text='Select packages parts customly')
+
+	self.row_prop(col, 'navigation_3d', 'navigation_3d-' + self.navigation_3d)
+	self.row_prop(col, 'navigation_2d',	'navigation_2d-' + self.navigation_2d)
+	self.row_prop(col, 'viowport', 'viowport-' + self.viowport)
+	self.row_prop(col, 'sculpt', 'sculpt-' + self.sculpt)
+	self.row_prop(col, 'uv_editor','uv_editor-' + self.uv_editor)
+	self.row_prop(col, 'node_editor', 'node_editor-' + self.node_editor)
+	self.row_prop(col, 'text_editor', 'text_editor-' + self.text_editor)
+	self.row_prop(col, 'graph_editor', 'graph_editor-' + self.graph_editor)
+	self.row_prop(col, 'clip_editor', 'clip_editor-' + self.clip_editor)
+	self.row_prop(
+		col, 'video_sequencer','video_sequencer-' + self.video_sequencer
+	)
+	self.row_prop(col, 'file_browser', 'file_browser-' + self.file_browser)
+	self.row_prop(col, 'floatmenus', 'floatmenus-' + self.floatmenus)
+	self.row_prop(col, 'side_panel', 'SidePanel-' + self.floatmenus)
+
+
+def draw_option_panel(self, layout):
+	box = layout.box()
+	row = box.row()
+	row.prop(self, 'view_undo')
+	row.prop(self, 'menu_scale')
+	row = box.row()
+	row.prop(self, 'blender_transform_type')
+	row.prop(self, 'nevil_stuff')
+	row = box.row()
+	row.prop(self, 'geonode_pirimitve')
+	row.prop(self, 'affect_theme')
+	row = box.row()
+	row.prop(self, 'experimental')
 
 
 
 class BsMax_AddonPreferences(bpy.types.AddonPreferences):
 	bl_idname = __name__
 
-	active = BoolProperty(name='Active',default=False)
+	mode: EnumProperty(
+		items=[
+			# (
+			# 	'QUICK', 'Quick',
+			# 	'Select full package at once',
+			# 	'MESH_CIRCLE', 1
+			# ),
+			(
+				'SIMPLE', 'Simple',
+				'Select Package by main parts',
+				'MESH_UVSPHERE', 2
+			),
+			(
+				'CUSTOM', 'Custom',
+				'Select Package part by part',
+				'MESH_ICOSPHERE', 3
+			)
+		],
+		default='SIMPLE',
+		update= lambda self,ctx: update_preferences(self, ctx, 'aplication'),
+		description='select a package'
+	)
+
+	active = BoolProperty(name='Active', default=False)
 	
 	quick: BoolProperty(
 		name='Quick',
@@ -213,6 +278,11 @@ class BsMax_AddonPreferences(bpy.types.AddonPreferences):
 			'Do not make any changes.'
 		)
 	]
+
+	panels = [
+		('3DsMax', '3DsMax (Command Panel)', ''),
+		('None', 'None', '')
+	]
 	
 	""" Quick select mode """
 	aplication: EnumProperty(
@@ -240,6 +310,14 @@ class BsMax_AddonPreferences(bpy.types.AddonPreferences):
 		description='Extera Overide Tools'
 	)
 
+	keymaps: EnumProperty(
+		name='Keymap',
+		items=apps+custom,
+		default='Blender',
+		update= lambda self,ctx: update_preferences(self, ctx, 'keymaps'),
+		description='Overide Full Keymap'
+	)
+
 	floatmenus: EnumProperty(
 		name='Float Menu',
 		items=menus,
@@ -248,13 +326,15 @@ class BsMax_AddonPreferences(bpy.types.AddonPreferences):
 		description='Float menus type'
 	)
 
-	keymaps: EnumProperty(
-		name='Keymap',
-		items=apps+custom,
-		default='Blender',
-		update= lambda self,ctx: update_preferences(self, ctx, 'keymaps'),
-		description='Overide Full Keymap'
+
+	side_panel: EnumProperty(
+		name='Side Panel',
+		items=panels,
+		default='None',
+		# upadate= lambda self,ctx: update_preferences(self, ctx, 'panel'),
+		description='panel in right side of target software'
 	)
+	
 	
 	""" Custom select mode """
 	navigation_3d: EnumProperty(
@@ -359,6 +439,12 @@ class BsMax_AddonPreferences(bpy.types.AddonPreferences):
 		name='Float Menu Scale', min=1, max=3, description=''
 	)
 
+	menu_auto_scale: BoolProperty(
+		name='Auto',
+		default=False,
+		description='Link float menu size to thema scale value'
+	)
+
 	blender_transform_type: BoolProperty(
 		name='Blender Transform Type',
 		default=False,
@@ -382,6 +468,12 @@ class BsMax_AddonPreferences(bpy.types.AddonPreferences):
 		name='Experimental',
 		default=False,
 		description='Enable unfinished tools too'
+	)
+
+	geonode_pirimitve: BoolProperty(
+		name='GeoNode primitive',
+		default=False,
+		description='Convert Primitives to geometry node modfier'
 	)
 
 	def refine(self):
@@ -434,88 +526,16 @@ class BsMax_AddonPreferences(bpy.types.AddonPreferences):
 
 		box = layout.box()
 		row = box.row(align=True)
-		row.prop(self, 'quick', icon='MESH_CIRCLE')
-		row.prop(self, 'simple', icon='MESH_UVSPHERE')
-		row.prop(self, 'custom', icon='MESH_ICOSPHERE')
+		row.prop(self, 'mode', expand=True)
+		
+		if self.mode == 'QUICK':
+			draw_quick_panel(self, box)
 
-		if self.quick:
-			row = box.row()
-			col = row.column()
-			col.label(text='Select a packages include Navigation/ Keymap/ Menu')
-			self.row_prop(col, 'aplication', 'applications')
+		elif self.mode == 'SIMPLE':	
+			draw_simple_panel(self, box)
 
-		if self.simple:	
-			row = box.row()
-			col = row.column()
-			col.label(text='Select packages parts separately')
-			self.row_prop(col, 'navigation', 'Navigation')
-			self.row_prop(col, 'keymaps', 'Keymaps-' + self.keymaps)
-			self.row_prop(col, 'floatmenus', 'floatmenus-' + self.floatmenus)
-
-		if self.custom:
-			row = box.row()
-			col = row.column()
-			col.label(text='Select packages parts customly')
-
-			self.row_prop(
-				col, 'navigation_3d',
-				'navigation_3d-' + self.navigation_3d
-			)
-
-			self.row_prop(
-				col, 'navigation_2d',
-				'navigation_2d-' + self.navigation_2d
-			)
-
-			self.row_prop(
-				col, 'viowport',
-				'viowport-' + self.viowport
-			)
-
-			self.row_prop(
-				col, 'sculpt',
-				'sculpt-' + self.sculpt
-			)
-
-			self.row_prop(
-				col, 'uv_editor',
-				'uv_editor-' + self.uv_editor
-			)
-
-			self.row_prop(
-				col, 'node_editor',
-				'node_editor-' + self.node_editor
-			)
-
-			self.row_prop(
-				col, 'text_editor',
-				'text_editor-' + self.text_editor
-			)
-
-			self.row_prop(
-				col, 'graph_editor',
-				'graph_editor-' + self.graph_editor
-			)
-
-			self.row_prop(
-				col, 'clip_editor',
-				'clip_editor-' + self.clip_editor
-			)
-
-			self.row_prop(
-				col, 'video_sequencer',
-				'video_sequencer-' + self.video_sequencer
-			)
-
-			self.row_prop(
-				col, 'file_browser',
-				'file_browser-' + self.file_browser
-			)
-
-			self.row_prop(
-				col, 'floatmenus',
-				'floatmenus-' + self.floatmenus
-			)
+		elif self.mode == 'CUSTOM':
+			draw_custom_panel(self, box)
 
 		box = layout.box()
 		row = box.row()
@@ -529,16 +549,7 @@ class BsMax_AddonPreferences(bpy.types.AddonPreferences):
 		)
 		
 		if self.options:
-			box = box.box()
-			row = box.row()
-			row.prop(self, 'view_undo')
-			row.prop(self, 'menu_scale')
-			row = box.row()
-			row.prop(self, 'blender_transform_type')
-			row.prop(self, 'nevil_stuff')
-			row = box.row()
-			row.prop(self, 'affect_theme')
-			row.prop(self, 'experimental')
+			draw_option_panel(self, box)
 
 		if self.menu_scale < 1:
 			self.menu_scale = 1
@@ -617,28 +628,24 @@ def register_delay(preferences):
 	register_startup(preferences)
 
 
+classes = (
+	BsMax_OT_Save_Preferences,
+	BsMax_AddonPreferences
+)
+
+
 
 def register():
-	try:
-		register_class(BsMax_OT_Save_Preferences)
-	except:
-		#already registered and donot need to do some thing else
-		#TODO add a check method to avoid to use try/except
-		pass 
-	
-	try:
-		register_class(BsMax_AddonPreferences)
-	except:
-		#already registered and donot need to do some thing else
-		#TODO add a check method to avoid to use try/except
-		pass
+	for c in classes:
+		register_class(c)
 
 	global addons
 	preferences = addons[__name__].preferences
 	load_preferences(preferences)
 	preferences.active = True
 
-	register_primitives()
+	register_bsmax()
+	register_primitives(preferences)
 	register_tools(preferences)
 	register_menu(preferences)
 
@@ -656,9 +663,10 @@ def unregister():
 	unregister_tools()
 	unregister_primitives()
 	unregister_startup()
+	unregister_bsmax()
 
-	unregister_class(BsMax_AddonPreferences)
-	unregister_class(BsMax_OT_Save_Preferences)
+	for c in classes:
+		unregister_class(c)
 
 	# templates.unregister()
 	if path in sys.path:

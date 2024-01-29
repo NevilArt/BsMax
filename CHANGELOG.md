@@ -1,3 +1,8 @@
+# 0, 1, 2, 20240122
+Many items added to 3Ds Max Side panel and so many to still need to working on.
+* Some Modifiers can be add from 3Ds Max side panel.
+* GeoNode modifiers appear only on Blender 4.0 and above.
+
 # 0, 1, 2, 20240108
 * 3DsMax command panel is under Construction.
 * Draw Box error for Blender 3.6 and lower is fixed.

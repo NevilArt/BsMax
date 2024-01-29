@@ -12,6 +12,7 @@
 #	You should have received a copy of the GNU General Public License
 #	along with this program.  If not, see <https://www.gnu.org/licenses/>.
 ############################################################################
+# 2024/01/25
 
 import bpy
 
@@ -69,7 +70,7 @@ def get_mesh_modifier_list():
 		# ('CONFIRM', 'Confirm', ''),
 		# ('CREASE', 'Crease', ''),
 		# ('CREASESET', 'CreaseSet', ''),
-		# ('DATACHANEL', 'Data Chanel', ''),
+		('B-DATACHANEL', 'Data Chanel (GN)', 'NODES'),
 		('B-DELETEMESH', 'Delete Mesh (Mask)', 'MASK'),
 		# ('DELETEPATCH', 'DeletePatch', ''),
 		# ('DISPAPPROX', 'Disp Approx', ''),
@@ -104,14 +105,15 @@ def get_mesh_modifier_list():
 		# ('MORPHER', 'Morpher', ''),
 		# ('MULTIRES', 'MultiRes', ''),
 		# ('NOISE', 'Noise', ''),
-		# ('NORMAL', 'Normal', ''),
-		# ('OPENSUBDIV', 'OpenSubdiv', ''),
+		('B-NORMAL', 'Normal', 'NORMAL_EDIT'),
+		('B-OPENSUBDIV', 'OpenSubdiv', 'SUBSURF'),
 		# ('OPTIMIZE', 'Optimize', ''),
 		# ('PARTICLEFORCE', 'Particle Face Creator', ''),
 		# ('PARTICLESKINNER', 'Particle Skinner', ''),
 		# ('PATHSELECT', 'Path Select', ''),
-		# ('PATHDEFORM', 'Patch Deform', ''),
-		# ('PHYSIQUE', 'Physique', ''),
+		('B-PATHDEFORM', 'Patch Deform (Curve)', 'CURVE'),
+		# ('G-PATHDEFORM', 'Patch Deform', ''),
+		('B-PHYSIQUE', 'Physique (Armature)', 'ARMATURE'),
 		# ('POINTCACHE', 'Point Cache', ''),
 		# ('POLYSELECT', 'Poly Select', ''),
 		# ('PRESERVE', 'Preserve', ''),
@@ -125,7 +127,7 @@ def get_mesh_modifier_list():
 		# ('SELECTBYCHANEL', 'Select by Chanel', ''),
 		('B-SHELL', 'Shell (Solidify)', 'SOLIDIFY'),
 		# ('SKEW', 'Skew', ''),
-		# ('SKIN', 'Skin', ''),
+		('B-SKIN', 'Skin (Armature)', 'ARMATURE'),
 		# ('SKINMORPH', 'Skin Morph', ''),
 		# ('SKINWRAP', 'Skin Wrap', ''),
 		# ('SKINWRAPPATCH', 'Skin Wrap Patch', ''),
@@ -140,7 +142,7 @@ def get_mesh_modifier_list():
 		# ('SURFDEFORM', 'SurfDeform', ''),
 		('B-SYMMETRY', 'Symmetry', 'MIRROR'),
 		('G-TAPER', 'Taper (GN)', 'Taper'),
-		# ('TESSELLATE', 'Tessellate', ''),
+		('B-TESSELLATE', 'Tessellate', 'TRIANGULATE'),
 		('B-TURBOSMOTH', 'Turbosmooth', 'SUBSURF'),
 		# ('TURNMESH', 'Turn to Mesh', ''),
 		# ('TURNPATCH', 'Turn to Patch', ''),
@@ -230,7 +232,9 @@ def add_modifier(ctx, obj, index, key):
 
 	if category == "B": # Blender Internal
 		modifierType = get_modifier_node_group_name(ctx, key)
-		bpy.ops.object.modifier_add(type=modifierType)
+		# bpy.ops.object.modifier_add(type=modifierType)
+		for obj in ctx.selected_objects:
+			obj.modifiers.new(name="new modifier", type=modifierType)
 
 	if category == "G": # Geometry Node
 		nodeGroupName = get_modifier_node_group_name(ctx, key)

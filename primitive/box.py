@@ -12,6 +12,7 @@
 #	You should have received a copy of the GNU General Public License
 #	along with this program.  If not,see <https://www.gnu.org/licenses/>.
 ############################################################################
+# 2024/01/29
 
 import bpy
 
@@ -19,6 +20,7 @@ from primitive.primitive import Primitive_Geometry_Class, Draw_Primitive
 
 from bpy.app import version
 
+useGeonode = False
 
 #############################################################################
 def primitive_geonode_setup(self, idName):
@@ -454,7 +456,8 @@ class Create_OT_Box(Draw_Primitive):
 			self.params.height = dimension.height
 	
 	def finish(self):
-		if version >= (4, 0, 0):
+		global useGeonode
+		if version >= (4, 0, 0) and useGeonode:
 			owner = self.subclass.owner
 			pd = owner.data.primitivedata
 			convert_to_geometry_node_box(
@@ -465,7 +468,9 @@ class Create_OT_Box(Draw_Primitive):
 
 
 
-def register_box():
+def register_box(preferences):
+	global useGeonode
+	useGeonode = preferences.geonode_pirimitve
 	bpy.utils.register_class(Create_OT_Box)
 
 def unregister_box():

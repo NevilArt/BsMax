@@ -15,47 +15,30 @@
 
 import bpy
 
-from bpy.types import Menu
 
 
-
-class BsMax_MT_View3D_tools(Menu):
-	bl_idname = 'BSMAX_MT_view3dtools'
-	bl_label = 'Tools'
-	# bl_context = 'objectmode'
-
-	# @classmethod
-	# def poll(self,ctx):
-	# 	return ctx.mode == 'OBJECT'
-
-	def draw(self,ctx):
-		layout=self.layout
-		layout.menu('BSMAX_MT_animationtools',icon='ARMATURE_DATA')
-		layout.menu('BSMAX_MT_riggtools',icon='TOOL_SETTINGS')
-		layout.menu('BSMAX_MT_particletools',icon='MOD_PARTICLES')
+def bsmax_tool_menu(self, ctx):
+	layout=self.layout
+	layout.menu('BSMAX_MT_animationtools',icon='ARMATURE_DATA')
+	layout.menu('BSMAX_MT_riggtools',icon='TOOL_SETTINGS')
+	layout.menu('BSMAX_MT_particletools',icon='MOD_PARTICLES')
 
 
 
 def tools_menu(self, ctx):
-	# if ctx.mode == 'OBJECT':
-	# 	self.layout.menu('BSMAX_MT_view3dtools')
-	# elif ctx.mode == 'POSE':
-	# 	self.layout.menu('BSMAX_MT_animationtools')
 	self.layout.menu('BSMAX_MT_view3dtools')
 
 
 
 def register_menu():
-	bpy.utils.register_class(BsMax_MT_View3D_tools)
-
+	bpy.types.BSMAX_MT_view3dtools.append(bsmax_tool_menu)
 	bpy.types.VIEW3D_MT_editor_menus.append(tools_menu)
 
 
 
 def unregister_menu():
 	bpy.types.VIEW3D_MT_editor_menus.remove(tools_menu)
-
-	bpy.utils.unregister_class(BsMax_MT_View3D_tools)
+	bpy.types.BSMAX_MT_view3dtools.remove(bsmax_tool_menu)
 
 	
 

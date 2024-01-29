@@ -19,7 +19,7 @@ from .side_panel import register_side_panel, unregister_side_panel
 
 def register_max(preferences):
 	register_modifier()
-	if preferences.experimental:
+	if preferences.side_panel == '3DsMax':
 		register_side_panel()
 
 def unregister_max():

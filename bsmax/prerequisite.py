@@ -14,34 +14,39 @@
 ############################################################################
 # 2024/01/28
 
+import bpy
+
 from bpy.utils import register_class, unregister_class
+from bpy.types import Menu
 
-from .maxivz_tools.mvztools import (
-	MESH_OT_SmartSelectLoop,
-	MESH_OT_SmartSelectRing
-)
 
-from .spiderwebs import register_spider_web, unregister_spider_web
+
+class BsMax_MT_View3D_tools(Menu):
+	bl_idname = 'BSMAX_MT_view3dtools'
+	bl_label = 'Tools'
+	# bl_context = 'objectmode'
+
+	# @classmethod
+	# def poll(self,ctx):
+	# 	return ctx.mode == 'OBJECT'
+
+	def draw(self, ctx):
+		pass
 
 
 
 classes = (
-	MESH_OT_SmartSelectLoop,
-	MESH_OT_SmartSelectRing
+	BsMax_MT_View3D_tools,
 )
 
 
 
-def register_external():
+def register_prerequisite():
 	for c in classes:
 		register_class(c)
 
-	register_spider_web()
 
 
-
-def unregister_external():
+def unregister_prerequisite():
 	for c in classes:
 		unregister_class(c)
-
-	unregister_spider_web()
