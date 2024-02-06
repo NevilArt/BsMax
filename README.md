@@ -36,11 +36,15 @@ If you found this product useful and want to support this project you can Donate
 * [Download Older Version (2.80-2.92)(2.93-3.2)](https://github.com/NevilArt/BsMax_2_80)
 
 ## Recent Updates and Changes
-* 3DsMax Comand panel now active from prefrenses not experimental.
-* More modifiers added to 3DsMax Comand panel modifier list.
-* Comand Panel modifier list add to all selected objects.
-* Some Crowd Tools added to view3D tool panel (More and tutorial coming soon).
-* Convert Primitive to GeoNode become optinal and off by default.
+* Crowds geometry node presets add to preset menu (add menu on geo node editor)
+*    Crowds walking on a path.
+*    Crowds in studiom.
+*    Crowds taking or working groups.
+*    Animals inside a fance.
+*    (tutorial coming soon)
+*    Note: Crowds works on Blender 4.0 and above.
+* 3DsMax comand panel has some improvment but still many works has to do.
+* Geomeetry node Modifiers now can be add from blendeere 3.6 too.
 * [Change log ...](https://github.com/NevilArt/BsMax/blob/master/CHANGELOG.md)
 
 ## License

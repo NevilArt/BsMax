@@ -17,6 +17,8 @@
 # https://www.dropbox.com/s/ivschytl309jm2n/render_backburner.zip?dl=0 #
 # Update and Modified for Blender 2.8x to 4.x by Nevil #
 
+# 2024/02/02
+
 #TODO List
 # out of range warning
 # gount out of range warning
@@ -55,6 +57,7 @@ from bpy.props import (
 	BoolProperty, IntProperty, EnumProperty
 )
 from bpy.types import Panel, Operator, PropertyGroup
+from bpy.utils import register_class, unregister_class
 
 
 
@@ -112,7 +115,7 @@ def integer_array_to_bitarray_string(ints):
 	return ""
 
 
-
+#TODO check previees file and add +1 filename
 def create_new_file_name(file_name):
 	random_id = random.randint(1000000, 9999999)
 	append_text = '_BACKBURNERTEMPFILE_' + str(random_id)
@@ -345,12 +348,18 @@ def create_script_text(ctx):
 	text += 'backburner.timeout = ' + str(backburner.timeout) + '\n'
 	text += 'backburner.priority = ' + str(backburner.priority) + '\n'
 	text += 'backburner.suspended = ' + str(backburner.suspended) + '\n'
-	text += 'backburner.frames_per_task = ' + str(backburner.frames_per_task) + '\n'
+	text += 'backburner.frames_per_task = ' 
+	text += str(backburner.frames_per_task) + '\n'
+
 	text += 'backburner.manager = "' + backburner.manager + '"\n'
 	text += 'backburner.port = ' + str(backburner.port) + '\n'
 	text += 'backburner.group = "' + backburner.group + '"\n'
-	text += 'backburner.background_render = ' + str(backburner.background_render) + '\n'
-	text += 'backburner.use_custom_path = ' + str(backburner.use_custom_path) + '\n'
+	text += 'backburner.background_render = '
+	text += str(backburner.background_render) + '\n'
+
+	text += 'backburner.use_custom_path = '
+	text += str(backburner.use_custom_path) + '\n'
+
 	text += 'backburner.blender_path = r"' + backburner.blender_path +'"'
 
 	return text
@@ -499,32 +508,49 @@ def subaction_submit(self, ctx):
 
 	if submit(ctx.scene):
 		self.report({'OPERATOR'},'Job Submited to backburner manager')
+
 	else:
-		self.report({'WARNING'},'Backburner manager not found. Failed to submission.')
+		self.report(
+			{'WARNING'},'Backburner manager not found. Failed to submission.'
+		)
+
 	#TODO delete temp render file if fails
 
 
 
 class Backburner_Property(PropertyGroup):
-	job_name: StringProperty(name='Job Name', maxlen=256, default='New Job',
-		description='Name of the job to be shown in Backburner')
+	job_name: StringProperty(
+		name='Job Name', maxlen=256, default='New Job',
+		description='Name of the job to be shown in Backburner'
+	)
 	
-	job_details: StringProperty(name='Description', maxlen=400, default='',
-		description='Add aditional information to render task')
+	job_details: StringProperty(
+		name='Description', maxlen=400, default='',
+		description='Add aditional information to render task'
+	)
 	
-	frames_per_task: IntProperty(name='Frames per Task', 
+	frames_per_task: IntProperty(
+		name='Frames per Task', 
 		min=1, max=9999, soft_min=1, soft_max=1000, default=1,
-		description='Number of frames to give each render node')
+		description='Number of frames to give each render node'
+	)
 
-	timeout: IntProperty(name='Timeout', description='Timeout per task',
-		default=120, min=1, max=99999, soft_min=1, soft_max=1440)
+	timeout: IntProperty(
+		name='Timeout',
+		min=1, max=99999, soft_min=1, soft_max=1440, default=120,
+		description='Timeout per task'
+	)
 
-	priority: IntProperty(name='Priority',
-		description='Priority of this job (0 is Critical)',
-		min=0, max=99, soft_min=0, soft_max=99, default=50)
+	priority: IntProperty(
+		name='Priority',
+		min=0, max=99, soft_min=0, soft_max=99, default=50,
+		description='Priority of this job (0 is Critical)'
+	)
 
-	suspended: BoolProperty (name='Suspended', default=True,
-		description='Submit Job as Suspended')
+	suspended: BoolProperty (
+		name='Suspended', default=True,
+		description='Submit Job as Suspended'
+	)
 
 	override_frame_range: EnumProperty(
 		name='Frames',
@@ -537,40 +563,63 @@ class Backburner_Property(PropertyGroup):
 		]
 	)
 
-	frame_start: IntProperty(name='Start Frame',
-		description='Start frame of animation sequence to render', 
-		min=1, max=50000, default=1, update=check_start_frame)
+	frame_start: IntProperty(
+		name='Start Frame',
+		min=1, max=50000, default=1, update=check_start_frame,
+		description='Start frame of animation sequence to render'
+	)
 
-	frame_end: IntProperty(name='End Frame',
-		description='End frame of animation sequence to render',
-		min=1, max=50000, default=250, update=check_end_frame)
+	frame_end: IntProperty(
+		name='End Frame',
+		min=1, max=50000, default=250, update=check_end_frame,
+		description='End frame of animation sequence to render'
+	)
 	
-	frames_bitarray: StringProperty(name='Frames', maxlen=400, default='1,3,5-7',
-		description='Custom frames', update=filter_frames_bitarray)
+	frames_bitarray: StringProperty(
+		name='Frames', maxlen=400, default='1,3,5-7',
+		update=filter_frames_bitarray,
+		description='Custom frames'
+	)
 
-	manager: StringProperty(name='Manager', maxlen=400, default='localhost',
-		description='Name of render manager')
+	manager: StringProperty(
+		name='Manager', maxlen=400, default='localhost',
+		description='Name of render manager'
+	)
 	
-	port: IntProperty(name='Port', description='Manager Port',
-		min=0, max=999999, default=3234)
+	port: IntProperty(
+		name='Port',
+		min=0, max=999999, default=3234,
+		description='Manager Port'
+	)
 	
-	group: StringProperty(name='Groups', maxlen=400, default='',
-		description='Name of Render Group')
+	group: StringProperty(
+		name='Groups', maxlen=400, default='',
+		description='Name of Render Group'
+	)
 	
-	path_backburner: StringProperty(name='Backburner Path',
-		description='Path to Backburner cmdjob.exe', 
-		maxlen=400, subtype='FILE_PATH', default=backburner_path())
+	path_backburner: StringProperty(
+		name='Backburner Path',
+		maxlen=400, subtype='FILE_PATH', default=backburner_path(),
+		description='Path to Backburner cmdjob.exe'
+	)
 
 	use_custom_path: BoolProperty (name='Use Custom Blender', default=False)
 
-	blender_path: StringProperty(name='Blender Path', description='Path to blender.exe',
-		maxlen=400, subtype='FILE_PATH', default=blender_path())
+	blender_path: StringProperty(
+		name='Blender Path',
+		maxlen=400, subtype='FILE_PATH', default=blender_path(),
+		description='Path to blender.exe'
+	)
 	
 	# options: BoolProperty (name='More', default=False)
 
-	background_render: BoolProperty (name='Render in Background', default=True)
+	background_render: BoolProperty (
+		name='Render in Background', default=True
+	)
 	
-	submit_file: BoolProperty (name='Submit file to Manager', default=False)
+	submit_file: BoolProperty (
+		name='Submit file to Manager', default=False
+	)
 	
 	servers: StringProperty(
 		name='Servers', maxlen=400, default='',
@@ -660,7 +709,7 @@ classes = (
 
 def register_backburner():
 	for c in classes:
-		bpy.utils.register_class(c)
+		register_class(c)
 	
 	bpy.types.Scene.backburner = PointerProperty(
 		type=Backburner_Property,
@@ -676,7 +725,7 @@ def unregister_backburner():
 	del bpy.types.Scene.backburner
 
 	for c in classes:
-		bpy.utils.unregister_class(c)
+		unregister_class(c)
 
 
 

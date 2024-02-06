@@ -12,16 +12,20 @@
 #	You should have received a copy of the GNU General Public License
 #	along with this program.  If not, see <https://www.gnu.org/licenses/>.
 ############################################################################
+# 2024/02/06
 
 import bpy
 
 from os import path
 from bpy.types import Operator
 from bpy.props import StringProperty
+from bpy.utils import register_class, unregister_class
+
+from bpy.app import version
 
 
 
-def get_root_path(version="presets"):
+def get_root_path():
 	# bpy.utils.user_resource('SCRIPTS') + "\\addons\\BsMax"
 	dirs = path.dirname(__file__).split('\\')
 			
@@ -29,12 +33,11 @@ def get_root_path(version="presets"):
 	root_path = ''
 	for i in range(len(dirs)-3):
 		root_path += dirs[i] + '\\'
-	
-	#TODO check for file exist or not
-	print(">> ", root_path + version + '.blend\\NodeTree\\')
+
+	fileName = "V36" if version < (4, 0, 0) else "V40"
 
 	# Make Path
-	return root_path + version + '.blend\\NodeTree\\'
+	return root_path + fileName + '.blend\\NodeTree\\'
 
 presetsRootPath = get_root_path()
 
@@ -47,15 +50,15 @@ class Scene_OT_Import_Node_Group(Operator):
 	bl_options = {'REGISTER', 'INTERNAL'}
 
 	name: StringProperty()
-	version: StringProperty()
 
 	def execute(self, ctx):
+		global presetsRootPath
 		# Check for exist
 		if not self.name in bpy.data.node_groups:
 			# Append the Node Tree
 			bpy.ops.wm.append(
 				filename=self.name,
-				directory=get_root_path(self.version)
+				directory=presetsRootPath
 			)
 		return{"FINISHED"}
 
@@ -86,8 +89,10 @@ class NodeGroupe_OT_Import(Operator):
 
 		nodeGrroupType = editorType[ctx.area.ui_type]
 
-		bpy.ops.node.add_node(type=nodeGrroupType, use_transform=True,
-			settings=[{"name":"node_tree", "value":value}])
+		bpy.ops.node.add_node(
+			type=nodeGrroupType, use_transform=True,
+			settings=[{"name":"node_tree", "value":value}]
+		)
 		
 		bpy.ops.node.translate_attach('INVOKE_DEFAULT')
 		
@@ -105,13 +110,13 @@ classes = (
 
 def register_presets():
 	for c in classes:
-		bpy.utils.register_class(c)
+		register_class(c)
 
 
 
 def unregister_presets():
 	for c in classes:
-		bpy.utils.unregister_class(c)
+		unregister_class(c)
 
 
 

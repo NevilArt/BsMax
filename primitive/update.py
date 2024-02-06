@@ -12,15 +12,18 @@
 #	You should have received a copy of the GNU General Public License
 #	along with this program.  If not,see <https://www.gnu.org/licenses/>.
 ############################################################################
+# 2024/01/29
 
 import bpy
 
 from bpy.types import Operator, PropertyGroup
 from bpy.app.handlers import persistent
+from bpy.utils import register_class, unregister_class
 
 from bpy.props import (
 	StringProperty, IntProperty, FloatProperty,
-	BoolProperty, EnumProperty, PointerProperty
+	BoolProperty, EnumProperty, PointerProperty,
+	FloatVectorProperty
 )
 
 from .adaptive_plane import Adaptive_Plane
@@ -131,6 +134,10 @@ class Primitive_Option(PropertyGroup):
 			('SURFACE', 'Draw on Surface', '')
 		]
 	)
+
+	#TODO countinu from here
+	active_tool: StringProperty()
+	next_color: FloatVectorProperty()
 
 
 
@@ -629,18 +636,16 @@ class BsMax_OT_Update_Primitive_Geometry(Operator):
 		return {"FINISHED"}
 
 
+classes = (
+	PrimitiveData,
+	Primitive_Option,
+	BsMax_OT_Update_Primitive_Geometry
+)
+
 
 def register_update():
-	if hasattr(bpy.types.Mesh, 'primitivedata') or \
-		hasattr(bpy.types.Curve, 'primitivedata'):
-		unregister_update()
-	#TODO replace this ugly solution with chech attribute exist method
-	try:
-		bpy.utils.register_class(PrimitiveData)
-		bpy.utils.register_class(Primitive_Option)
-	except:
-		pass
-		""" pass if it is allready exist and do not need to add again """
+	for c in classes:
+		register_class(c)
 
 	bpy.types.Scene.primitive_setting = PointerProperty(
 		type=Primitive_Option,
@@ -650,15 +655,13 @@ def register_update():
 	bpy.types.Mesh.primitivedata = PointerProperty(type=PrimitiveData)
 	bpy.types.Curve.primitivedata = PointerProperty(type=PrimitiveData)
 	bpy.app.handlers.frame_change_post.append(primitive_frame_update)
-	
-	bpy.utils.register_class(BsMax_OT_Update_Primitive_Geometry)
+
+
 
 def unregister_update():
-	bpy.utils.unregister_class(BsMax_OT_Update_Primitive_Geometry)
+	for c in classes:
+		unregister_class(c)
 
 	del bpy.types.Mesh.primitivedata
 	del bpy.types.Curve.primitivedata
 	del bpy.types.Scene.primitive_setting
-
-	bpy.utils.unregister_class(PrimitiveData)
-	bpy.utils.unregister_class(Primitive_Option)

@@ -12,7 +12,7 @@
 #	You should have received a copy of the GNU General Public License
 #	along with this program.  If not, see <https://www.gnu.org/licenses/>.
 ############################################################################
-# 2024/01/25
+# 2024/02/06
 
 import bpy
 
@@ -22,7 +22,6 @@ from bpy.props import StringProperty, EnumProperty
 from bsmax.state import is_objects_selected
 
 from bpy.app import version
-
 
 
 def get_internals_only(modifierList):
@@ -167,11 +166,10 @@ def get_mesh_modifier_list():
 		# ('XFORM', 'Xform', '')
 	]
 
-	if version >= (4, 0, 0):
+	if version >= (3, 6, 0):
 		return modifierList
 
 	return get_internals_only(modifierList)
-
 
 
 def get_curve_modifier_list():
@@ -179,12 +177,11 @@ def get_curve_modifier_list():
 		('N-NONE', 'Empty', '')
 	]
 
-	if version >= (4, 0, 0):
+	if version >= (3, 6, 0):
 		return modifierList
 
 	return get_internals_only(modifierList)
 	
-
 
 def get_modifier_list(_, ctx):
 	if not ctx.object:
@@ -197,7 +194,6 @@ def get_modifier_list(_, ctx):
 		return get_curve_modifier_list()
 
 
-
 def get_modifier_class(key):
 	parts = key.split("-")
 	if len(parts) > 1:
@@ -205,18 +201,16 @@ def get_modifier_class(key):
 	return "B"
 
 
-
 def get_node_group(nodeGroup):
 	if nodeGroup in bpy.data.node_groups:
 		return bpy.data.node_groups[nodeGroup]
 
-	bpy.ops.scene.import_node_groupe(name=nodeGroup, version="V40")
+	bpy.ops.scene.import_node_groupe(name=nodeGroup)
 
 	if nodeGroup in bpy.data.node_groups:
 		return bpy.data.node_groups[nodeGroup]
 
 	return None
-
 
 
 def get_modifier_node_group_name(ctx, key):
@@ -224,7 +218,6 @@ def get_modifier_node_group_name(ctx, key):
 		if pack[0] == key:
 			return pack[2]
 	return None
-
 
 
 def add_modifier(ctx, obj, index, key):
@@ -253,7 +246,6 @@ def add_modifier(ctx, obj, index, key):
 		pass
 
 
-
 class Object_OT_Create_Modifier(Operator):
 	bl_idname = 'object.create_modifier'
 	bl_label = 'Create Modifier'
@@ -275,7 +267,6 @@ class Object_OT_Create_Modifier(Operator):
 		return{'RUNNING_MODAL'}
 
 
-
 class Modifier_OT_Add_Geodifier(Operator):
 	bl_idname = "modifier.add_geodifier"
 	bl_label = "ADD Geodifier"
@@ -285,7 +276,6 @@ class Modifier_OT_Add_Geodifier(Operator):
 
 	def execute(self, ctx):
 		return{"FINISHED"}
-
 
 
 class Object_OT_Reset_Xform(Operator):
@@ -305,18 +295,15 @@ class Object_OT_Reset_Xform(Operator):
 		return{"FINISHED"}
 
 
-
 classes = (
 	Object_OT_Create_Modifier,
 	Object_OT_Reset_Xform
 )
 
 
-
 def register_modifier():
 	for c in classes:
 		bpy.utils.register_class(c)
-
 
 
 def unregister_modifier():

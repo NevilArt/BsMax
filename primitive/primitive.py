@@ -520,11 +520,23 @@ class Draw_Primitive(Operator):
 
 			self.reset()
 
+			################################################
+			print(">>read>", ctx.scene.primitive_setting.active_tool)
+			ctx.scene.primitive_setting.active_tool = ""
+			################################################
+
 			return {'CANCELLED'}
 
 		return {'RUNNING_MODAL'}
 
 	def invoke(self, ctx, event):
+		######################################
+		print(">> subclass >>", self.subclass)
+		if self.subclass:
+			print(">>clssname: ", self.subclass.classname)
+			ctx.scene.primitive_setting.active_tool = self.subclass.classname
+		######################################
+
 		self.draw_handler = AddCursurOveride(self)
 		ctx.window_manager.modal_handler_add(self)
 		return {'RUNNING_MODAL'}

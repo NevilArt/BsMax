@@ -97,6 +97,7 @@ def get_create_subtype(createType):
 	elif createType =='SETTING':
 		default = 'STANDARD'
 		items = [('STANDARD','Standard','')]
+
 	return (default, items)
 
 
@@ -553,9 +554,19 @@ def get_create_setting_ui(layout, cPanel):
 def get_hierarcy_pivot_ui(layout, ctx):
 	box = layout.box()
 	# Move/Rotate/Scale
-	box.operator("bsmax.reserved", text="Affect Pivot Only")
-	box.operator("bsmax.reserved", text="Affect Object Only")
+	box.prop(
+		ctx.scene.tool_settings, "use_transform_data_origin",
+		text="Affect Pivot Only", toggle=True
+	)
+
+	box.prop(
+		ctx.scene.tool_settings, "use_transform_pivot_point_align",
+		text="Affect Object Only", toggle=True
+	)
+
 	box.operator("bsmax.reserved", text="Affect Hierarcy Only")
+	
+	box = layout.box()
 	# Alignment
 	box.operator("bsmax.reserved", text="Center to Object")
 	box.operator("bsmax.reserved", text="Align to Object")
@@ -563,14 +574,20 @@ def get_hierarcy_pivot_ui(layout, ctx):
 	# Pivot
 	box.operator("bsmax.reserved", text="Reset")
 
+	box = layout.box()
 	# Working pivot
 	box.operator("bsmax.reserved", text="Edit working pivot")
 	box.operator("bsmax.reserved", text="Use working pivot")
 	box.operator("bsmax.reserved", text="Alight ti view")
 	box.operator("bsmax.reserved", text="Reset")
 
+	box = layout.box()
 	# adjust Transform
-	box.operator("bsmax.reserved", text="Dont Affect Children")
+	box.prop(
+		ctx.scene.tool_settings, "use_transform_skip_children",
+		text="Dont Affect Children", toggle=True
+	)
+
 	box.operator("bsmax.reserved", text="Reset Transform")
 	box.operator("bsmax.reserved", text="Reset Scale")
 
@@ -696,6 +713,11 @@ def get_create_panel(layout, ctx):
 
 	elif cPanel.create_type == 'SETTING':
 		get_create_setting_ui(layout, cPanel)
+	
+	box = layout.box()
+	row = box.row()
+	row.label(text=ctx.scene.primitive_setting.active_tool)
+	
 
 
 

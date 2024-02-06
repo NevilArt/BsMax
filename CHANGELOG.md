@@ -1,3 +1,10 @@
+# 0, 1, 2, 20240129
+* 3DsMax Comand panel now active from prefrenses not experimental.
+* More modifiers added to 3DsMax Comand panel modifier list.
+* Comand Panel modifier list add to all selected objects.
+* Some Crowd Tools added to view3D tool panel (More and tutorial coming soon).
+* Convert Primitive to GeoNode become optinal and off by default.
+
 # 0, 1, 2, 20240122
 Many items added to 3Ds Max Side panel and so many to still need to working on.
 * Some Modifiers can be add from 3Ds Max side panel.

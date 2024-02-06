@@ -15,13 +15,13 @@
 #	You should have received a copy of the GNU General Public License
 #	along with this program.  If not, see <https://www.gnu.org/licenses/>.
 ############################################################################
-# 2024/01/29
+# 2024/02/06
 
 bl_info = {
 	'name': 'BsMax',
 	'description': 'Package of many tools + other CG apps UI mimic',
 	'author': 'Naser Merati (Nevil)',
-	'version': (0, 1, 2, 20240129),
+	'version': (0, 1, 2, 20240206),
 	'blender': (3, 3, 0),# 3.3LTS ~ 4.0
 	'location': 'Almost Everywhere in Blender',
 	'wiki_url': 'https://github.com/NevilArt/BsMax/wiki',
@@ -29,7 +29,6 @@ bl_info = {
 	'tracker_url': 'https://github.com/NevilArt/BsMax/issues',
 	'category': 'Interface'
 }
-
 
 
 import bpy
@@ -58,7 +57,6 @@ from .tools import register_tools, unregister_tools
 addons = bpy.context.preferences.addons
 wiki = 'https://github.com/NevilArt/BsMax/wiki/'
 iniFileName = bpy.utils.user_resource('SCRIPTS') + '\\addons\\BsMax.ini'
-
 
 
 # Addon preferences
@@ -121,15 +119,6 @@ def update_preferences(self, ctx, action):
 		register_keymaps(addons[__name__].preferences)
   
 
-
-def draw_quick_panel(self, layout):
-	row = layout.row()
-	col = row.column()
-	col.label(text='Select a packages include Navigation/ Keymap/ Menu')
-	self.row_prop(col, 'aplication', 'applications')
-
-
-
 def draw_simple_panel(self, layout):
 	row = layout.row()
 	col = row.column()
@@ -139,7 +128,7 @@ def draw_simple_panel(self, layout):
 	self.row_prop(col, 'floatmenus', 'floatmenus-' + self.floatmenus)
 	#TODO update wiki page
 	self.row_prop(col, 'side_panel', 'SidePanel-' + self.floatmenus)
-
+	col.label(text='Note: Sometimes need to restart Blender to addon work properly')
 
 
 def draw_custom_panel(self, layout):
@@ -162,6 +151,7 @@ def draw_custom_panel(self, layout):
 	self.row_prop(col, 'file_browser', 'file_browser-' + self.file_browser)
 	self.row_prop(col, 'floatmenus', 'floatmenus-' + self.floatmenus)
 	self.row_prop(col, 'side_panel', 'SidePanel-' + self.floatmenus)
+	col.label(text='Note: Sometimes need to restart Blender to addon work properly')
 
 
 def draw_option_panel(self, layout):
@@ -177,7 +167,6 @@ def draw_option_panel(self, layout):
 	row.prop(self, 'affect_theme')
 	row = box.row()
 	row.prop(self, 'experimental')
-
 
 
 class BsMax_AddonPreferences(bpy.types.AddonPreferences):
@@ -528,10 +517,7 @@ class BsMax_AddonPreferences(bpy.types.AddonPreferences):
 		row = box.row(align=True)
 		row.prop(self, 'mode', expand=True)
 		
-		if self.mode == 'QUICK':
-			draw_quick_panel(self, box)
-
-		elif self.mode == 'SIMPLE':	
+		if self.mode == 'SIMPLE':
 			draw_simple_panel(self, box)
 
 		elif self.mode == 'CUSTOM':
@@ -555,7 +541,6 @@ class BsMax_AddonPreferences(bpy.types.AddonPreferences):
 			self.menu_scale = 1
 
 
-
 def save_preferences(preferences):
 	global iniFileName
 	string = ''
@@ -572,7 +557,6 @@ def save_preferences(preferences):
 	ini.close()
 
 
-
 def isfloat(value):
 	try:
 		float(value)
@@ -580,7 +564,6 @@ def isfloat(value):
 
 	except ValueError:
 		return False
-
 
 
 def load_preferences(preferences):
@@ -609,7 +592,6 @@ def load_preferences(preferences):
 					pass
 
 
-
 class BsMax_OT_Save_Preferences(bpy.types.Operator):
 	bl_idname = 'bsmax.save_preferences'
 	bl_label = 'Save BsMax Preferences'
@@ -619,7 +601,6 @@ class BsMax_OT_Save_Preferences(bpy.types.Operator):
 		global addons
 		save_preferences(addons[__name__].preferences)
 		return{'FINISHED'}
-
 
 
 def register_delay(preferences):
@@ -632,7 +613,6 @@ classes = (
 	BsMax_OT_Save_Preferences,
 	BsMax_AddonPreferences
 )
-
 
 
 def register():
@@ -652,7 +632,6 @@ def register():
 	# templates.register()
 	start_new_thread(register_delay, tuple([preferences]))
 	
-
 
 def unregister():
 	global addons
