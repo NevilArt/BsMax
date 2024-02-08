@@ -2,6 +2,7 @@
 
 
 ### Keymaps
+- [ ] Keymap master class need too contain all manage system inside itself.
 - [x] Loop/ring short key in UV Editor.
 - [ ] Brush Size control hot keys (for max mode).
 - [ ] 'F9' If no active camera in scene create temprary one.

@@ -56,7 +56,6 @@ from .star import Star
 from .light import Compass
 
 
-
 # Classes
 def get_class(name):
 	if name == "Adaptive_Plane": return Adaptive_Plane()
@@ -91,7 +90,6 @@ def get_class(name):
 	else: return None
 
 
-
 # call if parametrs updated from ui manualy
 def primitive_update(self, ctx):
 	if ctx.object:
@@ -101,14 +99,12 @@ def primitive_update(self, ctx):
 			subclass.update()
 
 
-
 # call if parameter are animatable and time changed
 def update(data):
 	subclass = get_class(data.primitivedata.classname)
 	if subclass:
 		subclass.data = data
 		subclass.update()
-
 
 
 # Callback function for update primitives if are animatable
@@ -121,7 +117,6 @@ def primitive_frame_update(scene):
 	for data in bpy.data.curves:
 		if data.primitivedata.animatable:
 			update(data)
-
 
 
 class Primitive_Option(PropertyGroup):
@@ -138,7 +133,6 @@ class Primitive_Option(PropertyGroup):
 	#TODO countinu from here
 	active_tool: StringProperty()
 	next_color: FloatVectorProperty()
-
 
 
 class PrimitiveData(PropertyGroup):
@@ -655,7 +649,6 @@ def register_update():
 	bpy.types.Mesh.primitivedata = PointerProperty(type=PrimitiveData)
 	bpy.types.Curve.primitivedata = PointerProperty(type=PrimitiveData)
 	bpy.app.handlers.frame_change_post.append(primitive_frame_update)
-
 
 
 def unregister_update():

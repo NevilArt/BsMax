@@ -1,3 +1,13 @@
+# 0, 1, 2, 20240206
+* Crowds geometry node presets add to preset menu (add menu on geo node editor)
+*    Crowds walking on a path.
+*    Crowds in studiom.
+*    Crowds taking or working groups.
+*    Animals inside a fance.
+*    Note: Crowds works on Blender 4.0 and above.
+* 3DsMax comand panel has some improvment but still many works has to do.
+* Geomeetry node Modifiers now can be add from blendeere 3.6 too.
+
 # 0, 1, 2, 20240129
 * 3DsMax Comand panel now active from prefrenses not experimental.
 * More modifiers added to 3DsMax Comand panel modifier list.

@@ -12,25 +12,31 @@
 #	You should have received a copy of the GNU General Public License
 #	along with this program.  If not,see <https://www.gnu.org/licenses/>.
 ############################################################################
+# 2024/02/08
 
 import bpy
-from bpy.props import BoolProperty
-from math import pi, sin, cos
-from primitive.primitive import (Draw_Primitive,
-	Primitive_Curve_Class, Primitive_Public_Class)
-from bsmax.actions import set_create_target
 
+from bpy.props import BoolProperty
+from bpy.utils import register_class, unregister_class
+from math import pi, sin, cos
+
+from primitive.primitive import (
+	Draw_Primitive, Primitive_Curve_Class, Primitive_Public_Class
+)
+
+from bsmax.actions import set_create_target
 
 
 def get_compass_shape(radius):
 	r = radius
-	verts = [(0,r,0),(0.1*r,0.2*r,0),(0.3*r,0.3*r,0),(0.2*r,0.1*r,0),
-			(r,0,0),(0.2*r,-0.1*r,0),(0.3*r,-0.3*r,0),(0.1*r,-0.2*r,0),
-			(0,-1*r,0),(-0.1*r,-0.2*r,0),(-0.3*r,-0.3*r,0),(-0.2*r,-0.1*r,0),
-			(-1.0*r,0,0),(-0.2*r,0.1*r,0),(-0.3*r,0.3*r,0),(-0.1*r,0.2*r,0)]
+	verts = [
+		(0,r,0),(0.1*r,0.2*r,0),(0.3*r,0.3*r,0),(0.2*r,0.1*r,0),
+		(r,0,0),(0.2*r,-0.1*r,0),(0.3*r,-0.3*r,0),(0.1*r,-0.2*r,0),
+		(0,-1*r,0),(-0.1*r,-0.2*r,0),(-0.3*r,-0.3*r,0),(-0.2*r,-0.1*r,0),
+		(-1.0*r,0,0),(-0.2*r,0.1*r,0),(-0.3*r,0.3*r,0),(-0.1*r,0.2*r,0)
+	]
 	shape = [(v,v,'FREE',v,'FREE') for v in verts]
 	return [shape]
-
 
 
 class Light(Primitive_Public_Class):
@@ -51,9 +57,9 @@ class Light(Primitive_Public_Class):
 	def abort(self):
 		bpy.ops.object.select_all(action='DESELECT')
 		self.owner.select_set(True)
-		self.target.select_set(True)
+		if self.target:
+			self.target.select_set(True)
 		bpy.ops.object.delete(confirm=False)
-
 
 
 class Compass(Primitive_Curve_Class):
@@ -79,7 +85,6 @@ class Compass(Primitive_Curve_Class):
 		bpy.ops.object.delete(confirm=False)
 
 
-
 class Create_OT_PointLight(Draw_Primitive):
 	bl_idname="create.pointlight"
 	bl_label="Point Light"
@@ -94,7 +99,6 @@ class Create_OT_PointLight(Draw_Primitive):
 	def update(self, ctx, clickcount, dimension):
 		if self.drag:
 			self.subclass.owner.location = dimension.end
-
 
 
 class Create_OT_SpotLight(Draw_Primitive):
@@ -116,8 +120,6 @@ class Create_OT_SpotLight(Draw_Primitive):
 
 			if self.subclass.target != None:
 				self.subclass.target.location = dimension.end
-
-
 
 
 class Create_OT_SunLight(Draw_Primitive):
@@ -176,7 +178,6 @@ class Create_OT_SunLight(Draw_Primitive):
 			bpy.ops.object.delete(confirm=False)
 
 
-
 class Create_OT_AreaLight(Draw_Primitive):
 	bl_idname="create.arealight"
 	bl_label="Area Light"
@@ -208,8 +209,6 @@ class Create_OT_AreaLight(Draw_Primitive):
 			self.subclass.target.location = dimension.end
 
 
-
-
 classes = (
 	Create_OT_PointLight,
 	Create_OT_SunLight,
@@ -217,13 +216,16 @@ classes = (
 	Create_OT_AreaLight
 )
 
+
 def register_light():
 	for c in classes:
-		bpy.utils.register_class(c)
+		register_class(c)
+
 
 def unregister_light():
 	for c in classes:
-		bpy.utils.unregister_class(c)
+		unregister_class(c)
+
 
 if __name__ == "__main__":
 	register_light()

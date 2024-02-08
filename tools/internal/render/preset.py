@@ -12,17 +12,19 @@
 #	You should have received a copy of the GNU General Public License
 #	along with this program.  If not, see <https://www.gnu.org/licenses/>.
 ############################################################################
+# 2024/02/07
 
 import bpy
 
 from bpy.types import Panel, Operator, PropertyGroup
-from bpy.props import (PointerProperty, StringProperty,
-						EnumProperty, BoolProperty)
+from bpy.utils import register_class, unregister_class
 from bpy.app.handlers import persistent
+from bpy.props import (
+	PointerProperty, StringProperty, EnumProperty, BoolProperty
+)
 
 from os import path, mkdir, access, W_OK
 from glob import glob
-
 
 
 preset_kay = '""" BsMax Render Preset File """'
@@ -37,7 +39,6 @@ def refine_value(value):
 	if type(value).__name__ in {'float', 'bool', 'int'}:
 		return value
 	return None
-
 
 
 def get_manual_part(ctx, engin_name):
@@ -72,7 +73,6 @@ def get_manual_part(ctx, engin_name):
 
 		# script += bcs + 'use_save_buffers = ' + str(render.use_save_buffers) + '\n'
 		# TODO find new alternative
-
 	
 	if engin_name == 'eevee':
 		eevee = ctx.scene.eevee
@@ -207,7 +207,6 @@ def get_script(engin, engin_name):
 	return script
 
 
-
 def create_preset_script(ctx):
 	script = preset_kay + '\n'
 	script += 'import bpy \n'
@@ -230,7 +229,6 @@ def create_preset_script(ctx):
 	return script
 
 
-
 def is_script_preset(script):
 	if type(script).__name__ == 'str':
 		lines = script.split('\n')
@@ -239,7 +237,6 @@ def is_script_preset(script):
 		return lines[0] == preset_kay
 	else:
 		return False
-
 
 
 class Render_OT_Save_Preset(Operator):
@@ -272,7 +269,6 @@ class Render_OT_Save_Preset(Operator):
 		return ctx.window_manager.invoke_props_dialog(self)
 
 
-
 class Render_OT_Copy_Preset(Operator):
 	""" Copy curent render state to clipboard """
 	bl_idname = "render.copy_preset"
@@ -284,7 +280,6 @@ class Render_OT_Copy_Preset(Operator):
 	def execute(self, ctx):
 		ctx.window_manager.clipboard = create_preset_script(ctx)
 		return{"FINISHED"}
-
 
 
 class Render_OT_Load_Preset(Operator):
@@ -319,7 +314,6 @@ class Render_OT_Load_Preset(Operator):
 		return ctx.window_manager.invoke_props_dialog(self)
 
 
-
 class Render_OT_Paste_Preset(Operator):
 	""" Paste Preset from clipboard """
 	bl_idname = "render.paste_preset"
@@ -333,7 +327,6 @@ class Render_OT_Paste_Preset(Operator):
 		return{"FINISHED"}
 
 
-
 class Render_OT_Open_Renderpreset_folder(Operator):
 	bl_idname = "render.open_renderpreset_folder"
 	bl_label = "Open Renderpreset Folder"
@@ -341,7 +334,6 @@ class Render_OT_Open_Renderpreset_folder(Operator):
 
 	def execute(self, ctx):
 		return{"FINISHED"}
-
 
 
 class RENDER_PT_Preset(Panel):
@@ -360,7 +352,6 @@ class RENDER_PT_Preset(Panel):
 		row.operator('render.paste_preset', text='', icon='PASTEDOWN')
 
 
-
 class Render_PrePostScript(PropertyGroup):
 	pre_render_active: BoolProperty (name='Active', default=False,
 		description='Run the Script befor render start')
@@ -373,7 +364,6 @@ class Render_PrePostScript(PropertyGroup):
 	
 	post_render_script: StringProperty(name='Post', default='',
 		description='The script has to run after render finish\n Just write the name of script on text editor')
-
 
 
 class RENDER_PT_Script(Panel):
@@ -395,7 +385,6 @@ class RENDER_PT_Script(Panel):
 		row.prop(rpps, 'post_render_script')
 
 
-
 @persistent
 def pre_render(scene):
 	if scene.render_prepost_script.pre_render_active:
@@ -406,7 +395,6 @@ def pre_render(scene):
 				exec(script)
 			except:
 				pass
-
 
 
 @persistent
@@ -421,7 +409,6 @@ def post_render(scene):
 				pass
 
 
-
 classes = (
 	Render_OT_Save_Preset,
 	Render_OT_Copy_Preset,
@@ -433,10 +420,9 @@ classes = (
 )
 
 
-
 def register_preset():
 	for c in classes:
-		bpy.utils.register_class(c)
+		register_class(c)
 
 	bpy.types.Scene.render_prepost_script = PointerProperty(
 		type=Render_PrePostScript,
@@ -445,16 +431,14 @@ def register_preset():
 	
 	bpy.app.handlers.render_init.append(pre_render)
 	bpy.app.handlers.render_complete.append(post_render)
-	
 
 
 def unregister_preset():
 	for c in classes:
-		bpy.utils.unregister_class(c)
+		unregister_class(c)
 
 	bpy.app.handlers.render_init.remove(pre_render)
 	bpy.app.handlers.render_complete.remove(post_render)
-
 
 
 if __name__ == '__main__':

@@ -12,6 +12,7 @@
 #	You should have received a copy of the GNU General Public License
 #	along with this program.  If not,see <https://www.gnu.org/licenses/>.
 ############################################################################
+# 2024/02/08
 
 import bpy
 import bmesh
@@ -29,7 +30,6 @@ from bsmax.gride import LocalGride
 from bpy.app import version
 
 
-
 def get_uniform_color(mode="2D"):
 	if version < (3, 6, 0):
 		if mode == "2D":
@@ -37,7 +37,6 @@ def get_uniform_color(mode="2D"):
 		else:
 			return "3D_UNIFORM_COLOR"
 	return "UNIFORM_COLOR"
-
 
 
 class Primitive_Public_Class:
@@ -58,7 +57,6 @@ class Primitive_Public_Class:
 	
 	def finish(self):
 		pass
-
 
 
 class Primitive_Geometry_Class:
@@ -110,7 +108,6 @@ class Primitive_Geometry_Class:
 		self.ready = True
 
 
-
 class Primitive_Curve_Class:
 	def __init__(self):
 		self.classname = ""
@@ -151,7 +148,6 @@ class Primitive_Curve_Class:
 		self.ready = True
 
 
-
 # Create Curve from Splines in the shape Data
 def curve_from_shapes(curve, shapes, close):
 	""" put BsMax primitive Shape Date in to Blender Curve Data """
@@ -169,11 +165,9 @@ def curve_from_shapes(curve, shapes, close):
 		newspline.use_cyclic_u = close
 
 
-
 def ClearPrimitiveData(obj):
 	if obj != None:
 		obj.primitivedata.classname = ""
-
 
 
 # Overide mouse pointer
@@ -204,8 +198,7 @@ def GetCursurMesh(size, x, y):
 	return verts, faces
 
 
-
-def DrawCursurOveride(self):
+def draw_cursur_override(self):
 	if version < (4, 0, 0):
 		bgl.glEnable(bgl.GL_BLEND)
 		shader = gpu.shader.from_builtin(get_uniform_color(mode="2D"))
@@ -225,18 +218,15 @@ def DrawCursurOveride(self):
 		batch.draw(shader)
 
 
-
-def AddCursurOveride(self):
+def add_curcur_override(self):
 	SV3D = bpy.types.SpaceView3D
-	handle = SV3D.draw_handler_add(DrawCursurOveride, tuple([self]), 
+	handle = SV3D.draw_handler_add(draw_cursur_override, tuple([self]), 
 						'WINDOW', 'POST_PIXEL')
 	return handle
 
 
-
 def RemoveCursurOveride(handle):
 	bpy.types.SpaceView3D.draw_handler_remove(handle, 'WINDOW')
-
 
 
 def is_true_class(ctx, classname):
@@ -244,7 +234,6 @@ def is_true_class(ctx, classname):
 		if classname == ctx.active_object.primitivedata.classname:
 			return True
 	return False
-
 
 
 def fix_type_visablity(subclass, ctx):
@@ -298,7 +287,6 @@ def fix_type_visablity(subclass, ctx):
 
 	elif owner_type == 'SPEAKER':
 		ctx.space_data.show_object_viewport_speaker = True
-
 
 
 class Draw_Primitive(Operator):
@@ -530,13 +518,25 @@ class Draw_Primitive(Operator):
 		return {'RUNNING_MODAL'}
 
 	def invoke(self, ctx, event):
-		######################################
-		print(">> subclass >>", self.subclass)
-		if self.subclass:
-			print(">>clssname: ", self.subclass.classname)
-			ctx.scene.primitive_setting.active_tool = self.subclass.classname
-		######################################
-
-		self.draw_handler = AddCursurOveride(self)
+		set_active_tool(self, ctx)
+		self.draw_handler = add_curcur_override(self)
 		ctx.window_manager.modal_handler_add(self)
 		return {'RUNNING_MODAL'}
+
+
+def set_active_tool(self, ctx):
+	activeToolName = ""
+	# 
+	print(">> subclass >>", self.subclass)
+	if self.subclass:
+		# TODO just temprary solution for quick update
+		try:
+			# if hasattr(self.subclass, 'name'):
+			activeToolName = self.subclass.classname
+		except:
+			activeToolName = ""
+	else:
+		activeToolName = ""
+
+	ctx.scene.primitive_setting.active_tool = activeToolName
+	# ctx.scene.primitive_setting.next_color

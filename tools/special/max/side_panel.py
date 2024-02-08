@@ -12,13 +12,15 @@
 #	You should have received a copy of the GNU General Public License
 #	along with this program.  If not, see <https://www.gnu.org/licenses/>.
 ############################################################################
-# 2024/01/25
+# 2024/02/07
 
 import bpy
 
 from bpy.types import Operator, Panel, PropertyGroup
 from bpy.props import PointerProperty, EnumProperty
+from bpy.utils import register_class, unregister_class
 
+from bsmax.primitive_ui import get_panel
 
 
 def get_create_subtype(createType):
@@ -99,7 +101,6 @@ def get_create_subtype(createType):
 		items = [('STANDARD','Standard','')]
 
 	return (default, items)
-
 
 
 def get_create_mesh_ui(layout, cPanel):
@@ -253,7 +254,6 @@ def get_create_mesh_ui(layout, cPanel):
 		row.operator("bsmax.reserved", text="Fluid Loader")
 
 
-
 def get_create_curve_ui(layout, cPanel):
 	layout.prop(cPanel, 'curve_types', text="")
 	box = layout.box()
@@ -303,7 +303,6 @@ def get_create_curve_ui(layout, cPanel):
 		pass
 
 
-
 def get_create_light_ui(layout, cPanel):
 	layout.prop(cPanel, 'light_types', text="")
 	box = layout.box()
@@ -320,15 +319,14 @@ def get_create_light_ui(layout, cPanel):
 		row.operator("create.pointlight", text="Point")
 		row.operator("create.spotlight", text="Spot")
 		row = box.row()
-		row.operator("create.arealight", text="Area")
-		row.operator("create.arealight", text="Area Target").free=True
+		row.operator("create.arealight", text="Area").free=True
+		row.operator("create.arealight", text="Area Target")
 		row = box.row()
 		row.operator("create.sunlight", text="Sun")
 
 	elif cPanel.light_types == 'ARNOLD':
 		row = box.row()
 		row.operator("bsmax.reserved", text="Arnold")
-
 
 
 def get_create_camera_ui(layout, cPanel):
@@ -346,7 +344,6 @@ def get_create_camera_ui(layout, cPanel):
 		row = box.row()
 		row.operator("bsmax.reserved", text="Spherical")
 		row.operator("bsmax.reserved", text="Cylindrical")
-
 
 
 def get_create_empty_ui(layout, cPanel):
@@ -467,7 +464,6 @@ def get_create_empty_ui(layout, cPanel):
 		row.operator("bsmax.reserved", text="Inline")
 
 
-
 def get_create_spacewrap_ui(layout, cPanel):
 	layout.prop(cPanel, 'spacewrap_types', text="")
 	box = layout.box()
@@ -534,7 +530,6 @@ def get_create_spacewrap_ui(layout, cPanel):
 		row.operator("bsmax.reserved", text="Vector Field")
 
 
-
 def get_create_setting_ui(layout, cPanel):
 	layout.prop(cPanel, 'setting_types', text="")
 	box = layout.box()
@@ -548,7 +543,6 @@ def get_create_setting_ui(layout, cPanel):
 		row.operator("bsmax.reserved", text="Sunlight")
 		row = box.row()
 		row.operator("bsmax.reserved", text="Daylight")
-
 
 
 def get_hierarcy_pivot_ui(layout, ctx):
@@ -592,10 +586,8 @@ def get_hierarcy_pivot_ui(layout, ctx):
 	box.operator("bsmax.reserved", text="Reset Scale")
 
 
-
 def get_hierarcy_ik_ui(layout, ctx):
 	box = layout.box()
-
 
 
 def get_hierarcy_linkinfo_ui(layout, ctx):
@@ -609,11 +601,10 @@ def get_hierarcy_linkinfo_ui(layout, ctx):
 	box.prop(ctx.object, 'lock_scale', text="Scale")
 
 
-
 class BsMax_Scene_Side_Panel(PropertyGroup):
 	main_tab: EnumProperty(
 		default='CREATE',
-		items =[
+		items=[
 			('CREATE', 'Create', '', 'ADD', 1),
 			('MODIFY', 'Modify', '', 'FULLSCREEN_ENTER', 2),
 			('HIERARCHY', 'Hierarchy', '', 'PARTICLES', 3),
@@ -624,7 +615,7 @@ class BsMax_Scene_Side_Panel(PropertyGroup):
 	)
 
 	create_type: EnumProperty(
-		items =[
+		items=[
 			('MESH', 'Mesh', '', 'NODE_MATERIAL', 1),
 			('CURVE', 'Curve', '', 'MOD_SUBSURF', 2),
 			('LIGHT', 'Light', '', 'LIGHT_DATA', 3),
@@ -637,7 +628,7 @@ class BsMax_Scene_Side_Panel(PropertyGroup):
 	)
 
 	hierarcy_type: EnumProperty(
-		items =[
+		items=[
 			('PIVOT', 'Pivot', ''),
 			('IK', 'IK', ''),
 			('LINKINFO', 'Link Info', ''),
@@ -647,46 +638,39 @@ class BsMax_Scene_Side_Panel(PropertyGroup):
 
 	stDefault, stItems = get_create_subtype('MESH')
 	mesh_types: EnumProperty(
-		items= stItems,
-		default=stDefault
+		items=stItems, default=stDefault
 	)
 
 	stDefault, stItems = get_create_subtype('CURVE')
 	curve_types: EnumProperty(
-		items= stItems,
-		default=stDefault
+		items=stItems, default=stDefault
 	)
 
 	stDefault, stItems = get_create_subtype('LIGHT')
 	light_types: EnumProperty(
-		items= stItems,
-		default=stDefault
+		items=stItems, default=stDefault
 	)
 
 	stDefault, stItems = get_create_subtype('CAMERA')
 	camera_types: EnumProperty(
-		items= stItems,
+		items=stItems,
 		default=stDefault
 	)
 
 	stDefault, stItems = get_create_subtype('EMPTY')
 	empty_types: EnumProperty(
-		items= stItems,
-		default=stDefault
+		items=stItems, default=stDefault
 	)
 
 	stDefault, stItems = get_create_subtype('SPACEWRAP')
 	spacewrap_types: EnumProperty(
-		items= stItems,
-		default=stDefault
+		items=stItems, default=stDefault
 	)
 
 	stDefault, stItems = get_create_subtype('SETTING')
 	setting_types: EnumProperty(
-		items= stItems,
-		default=stDefault
+		items=stItems, default=stDefault
 	)
-
 
 
 def get_create_panel(layout, ctx):
@@ -719,15 +703,15 @@ def get_create_panel(layout, ctx):
 	row.label(text=ctx.scene.primitive_setting.active_tool)
 	
 
-
-
 def get_modifier_panel(layout, ctx):
 	layout.operator("object.create_modifier", text="Modifier List")
 	box = layout.box()
 	if ctx.object:
 		for modifer in ctx.object.modifiers:
 			box.label(text=modifer.name)
-
+	
+	box =layout.box()
+	get_panel(ctx.object.data.primitivedata, box)
 
 
 def get_hierarcy_panel(layout, ctx):
@@ -744,11 +728,9 @@ def get_hierarcy_panel(layout, ctx):
 		get_hierarcy_linkinfo_ui(layout, ctx)
 
 
-
 def get_motion_panel(layout, ctx):
 	box = layout.box()
 	box.label(text="Coming soon")
-
 
 
 def get_display_panel(layout, ctx):
@@ -756,11 +738,9 @@ def get_display_panel(layout, ctx):
 	box.label(text="Coming soon")
 
 
-
 def get_utility_panel(layout, ctx):
 	box = layout.box()
 	box.label(text="Coming soon")
-
 
 
 class BsMax_OT_Reserved(Operator):
@@ -774,8 +754,6 @@ class BsMax_OT_Reserved(Operator):
 
 	def execute(self, ctx):
 		return{'FINISHED'}
-	
-	
 
 
 class SCENE_OP_BsMax_Side_Panel(Panel):
@@ -808,7 +786,6 @@ class SCENE_OP_BsMax_Side_Panel(Panel):
 
 		elif cPanel.main_tab == 'UTILITIES':
 			get_utility_panel(layout, ctx)
-	
 
 
 classes = (
@@ -818,20 +795,18 @@ classes = (
 )
 
 
-
 def register_side_panel():
 	for c in classes:
-		bpy.utils.register_class(c)
+		register_class(c)
 	
 	bpy.types.Scene.comand_panel = PointerProperty(type=BsMax_Scene_Side_Panel)
-
 
 
 def unregister_side_panel():
 	#TODO check is class exist before remove
 	for c in classes:
 		try:
-			bpy.utils.unregister_class(c)
+			unregister_class(c)
 		except:
 			pass
 

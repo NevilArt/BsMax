@@ -60,7 +60,6 @@ from bpy.types import Panel, Operator, PropertyGroup
 from bpy.utils import register_class, unregister_class
 
 
-
 def backburner_path():
 	os_name = platform.system()
 	if os_name == 'Windows':
@@ -75,10 +74,8 @@ def backburner_path():
 	return '""'
 
 
-
 def blender_path():
 	return bpy.app.binary_path
-
 
 
 def string_to_integer_array(frames):
@@ -110,17 +107,14 @@ def string_to_integer_array(frames):
 	return ints
 
 
-
 def integer_array_to_bitarray_string(ints):
 	return ""
-
 
 #TODO check previees file and add +1 filename
 def create_new_file_name(file_name):
 	random_id = random.randint(1000000, 9999999)
 	append_text = '_BACKBURNERTEMPFILE_' + str(random_id)
 	return os.path.splitext(file_name)[0] + append_text + '.blend'
-
 
 
 def check_start_frame(self, ctx):
@@ -130,13 +124,11 @@ def check_start_frame(self, ctx):
 		csbb.frame_end = csbb.frame_start
 
 
-
 def check_end_frame(self, ctx):
 	""" Make sure end frame allways bigger then start frame """
 	csbb = ctx.scene.backburner
 	if csbb.frame_end < csbb.frame_start:
 		csbb.frame_start = csbb.frame_end
-
 
 
 def filter_frames_bitarray(self, ctx):
@@ -152,7 +144,6 @@ def filter_frames_bitarray(self, ctx):
 		csbb.frames_bitarray = string
 
 
-
 def get_render_frames_count(ctx):
 	scene = ctx.scene
 	backburner = scene.backburner
@@ -166,7 +157,6 @@ def get_render_frames_count(ctx):
 	return end_frame - start_frame + 1
 
 
-
 def task_fild(start, end):
 	""" Create one field of render task for multiple Frame per task mode  """
 	field = 'Frame_' + str(start)
@@ -177,7 +167,6 @@ def task_fild(start, end):
 	field += '\t' + str(start) + '\t' + str(end) + '\n'
 
 	return field
-
 
 
 def create_task_list_file(scene, filename):
@@ -236,7 +225,6 @@ def create_task_list_file(scene, filename):
 		file.close()
 
 	return task_list_file_name
-
 
 
 def create_cmd_command(scene):
@@ -300,7 +288,6 @@ def create_cmd_command(scene):
 	return task_list_file, cmd
 
 
-
 def submit(scene):
 	task_list_file, cmd = create_cmd_command(scene)
 	succeed = True
@@ -314,7 +301,6 @@ def submit(scene):
 	os.remove(task_list_file)
 
 	return succeed
-
 
 
 def get_preset_file_path():
@@ -337,7 +323,6 @@ def get_preset_file_path():
 			file.close()
 	
 	return preset_path, file_name
-
 
 
 def create_script_text(ctx):
@@ -363,7 +348,6 @@ def create_script_text(ctx):
 	text += 'backburner.blender_path = r"' + backburner.blender_path +'"'
 
 	return text
-
 
 
 def draw_backburner_panel(self, ctx):
@@ -452,7 +436,6 @@ def subcation_get_name(ctx):
 	ctx.scene.backburner.job_name = the_name
 
 
-
 def subaction_save(ctx):
 	preset_path, file_name = get_preset_file_path()
 	string = create_script_text(ctx)
@@ -466,7 +449,6 @@ def subaction_save(ctx):
 	preset_file.close()
 
 
-
 def subaction_load(ctx):
 	preset_path, file_name = get_preset_file_path()
 	preset_file = preset_path + file_name
@@ -476,17 +458,14 @@ def subaction_load(ctx):
 		exec(script)
 
 
-
 def subaction_refine_frames(ctx):
 	frames = string_to_integer_array("")
 	integer_array_to_bitarray_string(frames)
 	pass
 
 
-
 def subaction_riverce_frames(ctx):
 	pass
-
 
 
 def subaction_submit(self, ctx):
@@ -513,9 +492,7 @@ def subaction_submit(self, ctx):
 		self.report(
 			{'WARNING'},'Backburner manager not found. Failed to submission.'
 		)
-
 	#TODO delete temp render file if fails
-
 
 
 class Backburner_Property(PropertyGroup):
@@ -627,7 +604,6 @@ class Backburner_Property(PropertyGroup):
 	)
 
 
-
 class Render_OT_Backburner_Action(Operator):
 	""" All Backburner sub action """
 	bl_idname = "render.backburner_action"
@@ -659,7 +635,6 @@ class Render_OT_Backburner_Action(Operator):
 		return {'FINISHED'}
 
 
-
 class Render_OT_Backburner(Operator):
 	""" Submit scene to Backburner as render job. """
 	bl_idname = 'render.backburner'
@@ -676,7 +651,6 @@ class Render_OT_Backburner(Operator):
 		return ctx.window_manager.invoke_props_dialog(self, width=500)
 
 
-
 class RENDER_PT_Backburner(Panel):
 	bl_space_type = 'PROPERTIES'
 	bl_region_type = 'WINDOW'
@@ -688,7 +662,6 @@ class RENDER_PT_Backburner(Panel):
 		draw_backburner_panel(self, ctx)
 
 
-
 def backburner_menu(self, ctx):
 	self.layout.operator(
 		'render.backburner',
@@ -697,14 +670,12 @@ def backburner_menu(self, ctx):
 	)
 
 
-
 classes = (
 	Backburner_Property,
 	Render_OT_Backburner,
 	Render_OT_Backburner_Action,
 	RENDER_PT_Backburner
 )
-
 
 
 def register_backburner():
@@ -719,7 +690,6 @@ def register_backburner():
 	bpy.types.TOPBAR_MT_render.prepend(backburner_menu)
 
 
-
 def unregister_backburner():
 	bpy.types.TOPBAR_MT_render.remove(backburner_menu)
 	del bpy.types.Scene.backburner
@@ -728,16 +698,13 @@ def unregister_backburner():
 		unregister_class(c)
 
 
-
 """ Calls when installed as stand alone add-on """
 def register():
 	register_backburner()
 
 
-
 def unregister():
 	unregister_backburner()
-
 
 
 if __name__ == "__main__":

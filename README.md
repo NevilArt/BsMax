@@ -36,15 +36,10 @@ If you found this product useful and want to support this project you can Donate
 * [Download Older Version (2.80-2.92)(2.93-3.2)](https://github.com/NevilArt/BsMax_2_80)
 
 ## Recent Updates and Changes
-* Crowds geometry node presets add to preset menu (add menu on geo node editor)
-*    Crowds walking on a path.
-*    Crowds in studiom.
-*    Crowds taking or working groups.
-*    Animals inside a fance.
-*    (tutorial coming soon)
-*    Note: Crowds works on Blender 4.0 and above.
-* 3DsMax comand panel has some improvment but still many works has to do.
-* Geomeetry node Modifiers now can be add from blendeere 3.6 too.
+* Primitives can be edit under "comand panel/modifiers" similar to 3DsMax.
+* Light lister issue for Blender 4.0 Fixed.
+* Maya Key map has some clenup and update.
+* Command panel create issue fixed.
 * [Change log ...](https://github.com/NevilArt/BsMax/blob/master/CHANGELOG.md)
 
 ## License

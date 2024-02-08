@@ -12,11 +12,10 @@
 #	You should have received a copy of the GNU General Public License
 #	along with this program.  If not, see <https://www.gnu.org/licenses/>.
 ############################################################################
-
+# 2024/02/07
 import bpy
 
 from bsmax.keymaps import KeyMaps
-
 
 
 # https://www.autodesk.com/shortcuts/maya
@@ -27,13 +26,12 @@ from bsmax.keymaps import KeyMaps
 # [] Undo rido only camera
 
 
-
 def add_search(km, space):
-	km.new(space, 'wm.search_menu', 'X', 'PRESS',
-			[], ctrl=True, shift=True, alt=True)
-
 	km.new(space, 'wm.search_operator', 'X', 'PRESS', [])
-
+	km.new(
+		space, 'wm.search_menu', 'X', 'PRESS', [],
+		ctrl=True, shift=True, alt=True
+	)
 
 
 def add_undo(km, space):
@@ -42,17 +40,28 @@ def add_undo(km, space):
 	km.new(space, "ed.redo", "Z", "PRESS", [], shift=True)
 
 
+def add_transform_tool(km, space, preferences):
+	if preferences.blender_transform_type:
+		km.new(space, 'transform.translate', 'W', 'PRESS', [])
+		km.new(space, 'transform.rotate', 'E', 'PRESS', [])
+		km.new(space, 'transform.resize', 'R', 'PRESS', [])
+
+	else:
+		km.new(space, 'object.move', 'W', 'PRESS', [])
+		km.new(space, 'object.rotate', 'E', 'PRESS', [])
+		km.new(space, 'object.scale', 'R', 'PRESS', [])
+
 
 def window(km):
 	space = km.space('Window', 'EMPTY', 'WINDOW')
 	add_search(km, space)
 
 
-
 def user_interface(km):
 	space = km.space('User Interface', 'EMPTY', 'WINDOW')
-	km.new(space, 'anim.keyframe_insert_button', 'S', 'PRESS', [('all',  True)])
-
+	km.new(
+		space, 'anim.keyframe_insert_button', 'S', 'PRESS', [('all',  True)]
+	)
 
 
 def screen(km):
@@ -63,46 +72,45 @@ def screen(km):
 	# km.new(space, "render.render", "Q", "PRESS", [('use_viewport', True), ('animation', True)], shift=True)
 
 
-
 def view2d(km):
 	pass
-
 
 
 def view2d_navigation(km, preferences):
 	pass
 
 
-
-def view3d(km):
+def view3d(km, preferences):
 	space = km.space( '3D View', 'VIEW_3D', 'WINDOW')
 	add_search(km, space)
 	add_undo(km, space)
+	add_transform_tool(km, space, preferences)
 
 	km.new(space, "view3d.select", "LEFTMOUSE", "CLICK", [])
-	km.new(space, "view3d.select", "LEFTMOUSE", "CLICK",
-			[('extend', True)], ctrl=True)
+	km.new(
+		space, "view3d.select", "LEFTMOUSE", "CLICK",
+		[('extend', True)], ctrl=True
+	)
 
-	km.new(space, "view3d.select", "LEFTMOUSE", "CLICK",
-			[('deselect', True)], alt=True)
+	km.new(
+		space, "view3d.select", "LEFTMOUSE", "CLICK",
+		[('deselect', True)], alt=True
+	)
 
-	km.new(space, "wm.tool_set_by_id", "Q", "PRESS",
-			[('name', "builtin.select_box"), ('cycle', True)])
+	km.new(
+		space, "wm.tool_set_by_id", "Q", "PRESS",
+		[('name', "builtin.select_box"), ('cycle', True)]
+	)
 
-	km.new(space, "wm.tool_set_by_id", "W", "PRESS",
-			[('name', "builtin.move")])
+	km.new(
+		space, "view3d.view_selected", "F", "PRESS",
+		[('use_all_regions', False)]
+	)
 
-	km.new(space, "wm.tool_set_by_id", "E", "PRESS",
-			[('name', "builtin.rotate")])
-
-	km.new(space, "wm.tool_set_by_id", "R", "PRESS",
-			[('name', "builtin.scale"), ('cycle', True)])
-
-	km.new(space, "view3d.view_selected", "F", "PRESS",
-			[('use_all_regions', False)])
-
-	km.new(space, "view3d.view_all", "A", "PRESS",
-			[('use_all_regions', False), ('center', False)])
+	km.new(
+		space, "view3d.view_all", "A", "PRESS",
+		[('use_all_regions', False), ('center', False)]
+	)
 
 	# Display Settings ------------------------------------------
 	# 0 	Default quality display setting
@@ -113,7 +121,6 @@ def view3d(km):
 	# 5 	Shaded display
 	# 6 	Shaded and Textured display
 	# 7 	Use All Lights
-
 
 
 def view3d_navigation(km, preferences):
@@ -128,160 +135,150 @@ def view3d_navigation(km, preferences):
 		km.new(space, "view3d.zoom", "RIGHTMOUSE", "PRESS", [], alt=True)
 
 
-
 def view3d_generic(km):
 	pass
-
 
 
 def view3d_select(km):
 	pass
 
 
-
 def view3d_transform(km):
 	pass
-
 
 
 def view3d_move(km):
 	pass
 
 
-
 def view3d_rotate(km):
 	pass
-
 
 
 def view3d_scale(km):
 	pass
 
 
-
 def view3d_select_box(km):
 	pass
-
 
 
 def view3d_select_circle(km):
 	pass
 
 
-
 def view3d_select_lasso(km):
 	pass
-
 
 
 def transform(km):
 	pass
 
 
-
-def object_mode(km):
+def object_mode(km, preferences):
 	space = km.space( 'Object Non-modal', 'EMPTY', 'WINDOW')
 	km.new(space, "bsmax.mode_set", 'TAB', "PRESS", [])
 
 	space = km.space( 'Object Mode', 'EMPTY', 'WINDOW')
 	add_search(km, space)
 	add_undo(km, space)
-	km.new(space, "object.hide_view_set", "H", "PRESS", [], ctrl=True)
-	km.new(space, "object.hide_view_set", "H", "PRESS",
-			[('unselected', True)], alt=True)
+	add_transform_tool(km, space, preferences)
 
-	km.new(space, "object.hide_view_clear", "H", "PRESS",
-			[], ctrl=True, shift=True)
+	km.new(space, "object.hide_view_set", "H", "PRESS", [], ctrl=True)
+	km.new(
+		space, "object.hide_view_set", "H", "PRESS",
+		[('unselected', True)], alt=True
+	)
+
+	km.new(
+		space, "object.hide_view_clear", "H", "PRESS",
+		[], ctrl=True, shift=True
+	)
 
 	km.new(space, "object.hide_view_clear", "S", "PRESS", [])
 	# km.new(space, "anim.keyframe_insert_menu", "W", "PRESS", [('type', 'Location')], shift=True)
 	# km.new(space, "anim.keyframe_insert_menu", "E", "PRESS", [('type', 'Rotation')], shift=True)
 	# km.new(space, "anim.keyframe_insert_menu", "R", "PRESS", [('type', 'Scaling')], shift=True)
 	km.new(space, "object.modify_pivotpoint", "INSERT", "PRESS", [])
-	km.new(space, "wm.call_menu", "INSERT", "PRESS",
-			[('name', "BSMAX_MT_SetPivotPoint")], ctrl=True)
+	km.new(
+		space, "wm.call_menu", "INSERT", "PRESS",
+		[('name', "BSMAX_MT_SetPivotPoint")], ctrl=True
+	)
 
 
-
-def mesh(km):
+def mesh(km, preferences):
 	space = km.space('Mesh', 'EMPTY', 'WINDOW')
 	add_search(km, space)
 	add_undo(km, space)
+	add_transform_tool(km, space, preferences)
 
 
-
-def curve(km):
+def curve(km, preferences):
 	space = km.space('Curve', 'EMPTY', 'WINDOW')
 	add_search(km, space)
 	add_undo(km, space)
+	add_transform_tool(km, space, preferences)
 
 
-
-def armature(km):
+def armature(km, preferences):
 	space = km.space('Armature', 'EMPTY', 'WINDOW')
 	add_search(km, space)
 	add_undo(km, space)
+	add_transform_tool(km, space, preferences)
 
 
-
-def metaball(km):
+def metaball(km, preferences):
 	space = km.space('Metaball', 'EMPTY', 'WINDOW')
 	add_search(km, space)
 	add_undo(km, space)
+	add_transform_tool(km, space, preferences)
 
 
-
-def lattice(km):
+def lattice(km, preferences):
 	space = km.space('Lattice', 'EMPTY', 'WINDOW')
 	add_search(km, space)
 	add_undo(km, space)
+	add_transform_tool(km, space, preferences)
 
 
+def grease_pencil(km, preferences):
+	space = km.space('Grease Pencil', 'EMPTY', 'WINDOW')
+	add_search(km, space)
+	add_transform_tool(km, space, preferences)
 
-def grease_pencil(km):
-	pass
 
-
-
-def pos(km):
-	# space = km.space('Pose', 'EMPTY', 'WINDOW')
-	pass
-
+def pos(km, preferences):
+	space = km.space('Pose', 'EMPTY', 'WINDOW')
+	add_search(km, space)
+	add_transform_tool(km, space, preferences)
 
 
 def font(km):
 	space = km.space('Font', 'EMPTY', 'WINDOW')
 
 
-
 def vertex_paint(km):
 	pass
-
 
 
 def weight_paint(km):
 	pass
 
 
-
 def image_paint(km):
 	pass
-
 
 
 def sculpt(km):
 	pass
 
 
-
 def particle(km):
 	space = km.space('Particle', 'EMPTY', 'WINDOW')
 
 
-
 def outliner(km):
 	space = km.space('Outliner', 'OUTLINER', 'WINDOW')
-
 
 
 def node_editor(km):
@@ -317,7 +314,6 @@ def node_editor(km):
 	# , 	Up Stream
 
 
-
 def graph_editor(km):
 	# space = km.space("Dopesheet", "DOPESHEET_EDITOR, 'WINDOW'")
 	# Graph Editor ------------------------
@@ -335,35 +331,28 @@ def graph_editor(km):
 	pass
 
 
-
 def dopesheet_editor(km):
 	pass
-
 
 
 def nla_editor(km):
 	pass
 
 
-
 def uv_editor(km):
 	pass
-
 
 
 def sequence_editor(km):
 	pass
 
 
-
 def text(km):
 	pass
 
 
-
 def file_browser(km):
 	pass
-
 
 
 km_navigation_3d = KeyMaps()
@@ -377,7 +366,6 @@ km_graph_editor = KeyMaps()
 km_clip_editor = KeyMaps()
 km_video_sequencer = KeyMaps()
 km_file_browser = KeyMaps()
-
 
 
 def register_maya(preferences):
@@ -399,7 +387,7 @@ def register_maya(preferences):
 			window(km_viewport)
 			user_interface(km_viewport)
 			screen(km_viewport)
-			view3d(km_viewport)
+			view3d(km_viewport, preferences)
 			view2d(km_viewport)
 			view3d_generic(km_viewport)
 			view3d_select(km_viewport)
@@ -411,14 +399,14 @@ def register_maya(preferences):
 			view3d_select_circle(km_viewport)
 			view3d_select_lasso(km_viewport)
 			transform(km_viewport)
-			object_mode(km_viewport)
-			mesh(km_viewport)
-			curve(km_viewport)
-			armature(km_viewport)
-			metaball(km_viewport)
-			lattice(km_viewport)
-			grease_pencil(km_viewport)
-			pos(km_viewport)
+			object_mode(km_viewport, preferences)
+			mesh(km_viewport, preferences)
+			curve(km_viewport, preferences)
+			armature(km_viewport, preferences)
+			metaball(km_viewport, preferences)
+			lattice(km_viewport, preferences)
+			grease_pencil(km_viewport, preferences)
+			pos(km_viewport, preferences)
 			font(km_viewport)
 			outliner(km_viewport)
 			km_viewport.register()
@@ -478,6 +466,7 @@ def register_maya(preferences):
 			km_file_browser.register()
 		else:
 			km_file_browser.unregister()
+
 
 def unregister_maya():
 	km_navigation_3d.unregister()
