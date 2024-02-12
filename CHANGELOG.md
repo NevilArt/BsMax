@@ -1,3 +1,9 @@
+# 0, 1, 2, 20240208
+* Primitives can be edit under "comand panel/modifiers" similar to 3DsMax.
+* Light lister issue for Blender 4.0 Fixed.
+* Maya Key map has some clenup and update.
+* Command panel create issue fixed.
+
 # 0, 1, 2, 20240206
 * Crowds geometry node presets add to preset menu (add menu on geo node editor)
 *    Crowds walking on a path.

@@ -12,12 +12,17 @@
 #	You should have received a copy of the GNU General Public License
 #	along with this program.  If not,see <https://www.gnu.org/licenses/>.
 ############################################################################
+# 2024/02/11
 
 import bpy
+
 from mathutils import Vector
 from math import pi, sin, cos, radians
-from primitive.primitive import Primitive_Geometry_Class, Draw_Primitive
+from bpy.utils import register_class, unregister_class
 
+from primitive.primitive import(
+	Primitive_Geometry_Class, Draw_Primitive, set_smooth_by_angel
+)
 
 
 def get_cylinder_mesh(radius1, radius2, height, hsegs, csegs, ssegs, sliceon, sfrom, sto):
@@ -214,7 +219,6 @@ def get_cylinder_mesh(radius1, radius2, height, hsegs, csegs, ssegs, sliceon, sf
 	return verts, edges, faces
 
 
-
 class Cylinder(Primitive_Geometry_Class):
 	def init(self):
 		self.classname = "Cylinder"
@@ -228,6 +232,7 @@ class Cylinder(Primitive_Geometry_Class):
 		pd = self.data.primitivedata
 		pd.classname = self.classname
 		pd.hsegs, pd.csegs, pd.ssegs = 1, 1, 18
+		set_smooth_by_angel()
 
 	def update(self):
 		pd = self.data.primitivedata
@@ -241,7 +246,6 @@ class Cylinder(Primitive_Geometry_Class):
 		bpy.ops.object.delete(confirm=False)
 
 
-
 class Cone(Primitive_Geometry_Class):
 	def init(self):
 		self.classname = "Cone"
@@ -253,6 +257,7 @@ class Cone(Primitive_Geometry_Class):
 		pd = self.data.primitivedata
 		pd.classname = self.classname
 		pd.hsegs, pd.csegs, pd.ssegs = 1, 1, 18
+		set_smooth_by_angel()
 
 	def update(self):
 		pd = self.data.primitivedata
@@ -263,7 +268,6 @@ class Cone(Primitive_Geometry_Class):
 
 	def abort(self):
 		bpy.ops.object.delete(confirm=False)
-
 
 
 class Create_OT_Cylinder(Draw_Primitive):
@@ -292,7 +296,6 @@ class Create_OT_Cylinder(Draw_Primitive):
 				return
 			
 			self.params.height = dimension.height
-
 
 
 class Create_OT_Cone(Draw_Primitive):
@@ -338,16 +341,21 @@ class Create_OT_Cone(Draw_Primitive):
 		self.gride_updated = False
 
 
+classes = (
+	Create_OT_Cylinder,
+	Create_OT_Cone
+)
 
-classes = (Create_OT_Cylinder, Create_OT_Cone)
 
 def register_cylinder():
 	for c in classes:
-		bpy.utils.register_class(c)
+		register_class(c)
+
 
 def unregister_cylinder():
 	for c in classes:
-		bpy.utils.unregister_class(c)
+		unregister_class(c)
+
 
 if __name__ == "__main__":
 	register_cylinder()

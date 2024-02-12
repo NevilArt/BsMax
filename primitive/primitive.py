@@ -12,12 +12,13 @@
 #	You should have received a copy of the GNU General Public License
 #	along with this program.  If not,see <https://www.gnu.org/licenses/>.
 ############################################################################
-# 2024/02/08
+# 2024/02/12
 
 import bpy
 import bmesh
 import bgl
 import gpu
+import random
 
 from gpu_extras.batch import batch_for_shader
 from bpy.types import Operator
@@ -39,113 +40,69 @@ def get_uniform_color(mode="2D"):
 	return "UNIFORM_COLOR"
 
 
-class Primitive_Public_Class:
-	def __init__(self):
-		self.init()
-	
-	def init(self):
-		pass
+def set_smooth_by_angel():
+	if version >= (4, 1, 0):
+		gnPath = "geometry_nodes\\smooth_by_angle.blend\\NodeTree\\"
+		bpy.ops.object.modifier_add_node_group(
+			asset_library_type='ESSENTIALS',
+			asset_library_identifier="",
+			relative_asset_identifier=gnPath+"Smooth by Angle"
+		)
 
-	def reset(self):
-		self.__init__()
+def float_vector_to_color(floatVector):
+	return (floatVector[0], floatVector[1], floatVector[2], 1)
 
-	def update(self):
-		pass
+def primitive_geometry_class_create_mesh(self, ctx, meshdata, classname):
+	verts,edges,faces, = meshdata
+	newmesh = bpy.data.meshes.new(classname)
+	newmesh.from_pydata(verts,edges, faces)
+	newmesh.update(calc_edges=True)
+	self.owner = bpy.data.objects.new(classname, newmesh)
+	link_to_scene(ctx, self.owner)
+	set_as_active_object(ctx, self.owner)
+	self.data = self.owner.data
 
-	def abort(self):
-		pass
-	
-	def finish(self):
-		pass
+	self.owner.name = ctx.scene.primitive_setting.next_name
+	newColor = float_vector_to_color(ctx.scene.primitive_setting.next_color)
+	self.owner.color = newColor
+
+	if version < (4, 1, 0):
+		self.data.use_auto_smooth = True
 
 
-class Primitive_Geometry_Class:
-	def __init__(self):
-		self.classname = ""
-		self.finishon = 0
-		self.owner = None
-		self.data = None
-		self.ready = False
-		self.init()
-	
-	def reset(self):
-		self.__init__()
-
-	def create_mesh(self, ctx, meshdata, classname):
+def primitive_geometry_class_update_mesh(self, meshdata):
+	if self.data != None and bpy.context.mode == 'OBJECT':
 		verts,edges,faces, = meshdata
-		newmesh = bpy.data.meshes.new(classname)
-		newmesh.from_pydata(verts,edges, faces)
-		newmesh.update(calc_edges=True)
-		self.owner = bpy.data.objects.new(classname, newmesh)
-		link_to_scene(ctx, self.owner)
-		set_as_active_object(ctx, self.owner)
-		self.data = self.owner.data
-		if version < (4, 1, 0):
-			self.data.use_auto_smooth = True
+		""" Genarate New Data """
+		orgmesh = bpy.data.meshes[self.data.name]
+		tmpmesh = bpy.data.meshes.new("_NewTempMesh_")
+		tmpmesh.from_pydata(verts, edges, faces)
+		bm = bmesh.new()
+		bm.from_mesh(tmpmesh)
+		bm.to_mesh(orgmesh.id_data)
+		bm.free()
+		bpy.data.meshes.remove(tmpmesh)
+		for f in self.data.polygons:
+			f.use_smooth = True
 
-	def update_mesh(self, meshdata):
-		if self.data != None and bpy.context.mode == 'OBJECT':
-			verts,edges,faces, = meshdata
-			""" Genarate New Data """
-			orgmesh = bpy.data.meshes[self.data.name]
-			tmpmesh = bpy.data.meshes.new("_NewTempMesh_")
-			tmpmesh.from_pydata(verts, edges, faces)
-			bm = bmesh.new()
-			bm.from_mesh(tmpmesh)
-			bm.to_mesh(orgmesh.id_data)
-			bm.free()
-			bpy.data.meshes.remove(tmpmesh)
-			for f in self.data.polygons:
-				f.use_smooth = True
+
+def primitive_curve_class_create_curve(self, ctx, shapes, classname):
+	# Create Spline
+	newcurve = bpy.data.curves.new(classname, type='CURVE')
+	newcurve.dimensions = '3D'
+	curve_from_shapes(newcurve, shapes, self.close)
 	
-	def update(self):
-		pass
-
-	def abort(self):
-		pass
-	
-	def finish(self):
-		self.ready = True
+	# Create object and link to collection
+	self.owner = bpy.data.objects.new(classname, newcurve)
+	link_to_scene(ctx, self.owner)
+	set_as_active_object(ctx, self.owner)
+	self.data = self.owner.data
 
 
-class Primitive_Curve_Class:
-	def __init__(self):
-		self.classname = ""
-		self.finishon = 0
-		self.owner = None
-		self.data = None
-		self.ready = False
-		self.close = False
-		self.init()
-	
-	def reset(self):
-		self.__init__()
-
-	def create_curve(self, ctx, shapes, classname):
-		# Create Spline
-		newcurve = bpy.data.curves.new(classname, type='CURVE')
-		newcurve.dimensions = '3D'
-		curve_from_shapes(newcurve, shapes, self.close)
-		
-		# Create object and link to collection
-		self.owner = bpy.data.objects.new(classname, newcurve)
-		link_to_scene(ctx, self.owner)
-		set_as_active_object(ctx, self.owner)
-		self.data = self.owner.data
-
-	def update_curve(self, shapes):
-		if self.data != None and bpy.context.mode == 'OBJECT':
-			curve = bpy.data.curves[self.data.name]
-			curve_from_shapes(curve, shapes, self.close)
-	
-	def update(self):
-		pass
-
-	def abort(self):
-		pass
-
-	def finish(self):
-		self.ready = True
+def primitive_curve_class_update_curve(self, shapes):
+	if self.data != None and bpy.context.mode == 'OBJECT':
+		curve = bpy.data.curves[self.data.name]
+		curve_from_shapes(curve, shapes, self.close)
 
 
 # Create Curve from Splines in the shape Data
@@ -163,11 +120,6 @@ def curve_from_shapes(curve, shapes, close):
 			bez.co, bez.handle_left, bez.handle_left_type, bez.handle_right, bez.handle_right_type = shape[i]
 	
 		newspline.use_cyclic_u = close
-
-
-def ClearPrimitiveData(obj):
-	if obj != None:
-		obj.primitivedata.classname = ""
 
 
 # Overide mouse pointer
@@ -196,6 +148,11 @@ def GetCursurMesh(size, x, y):
 	)
 	
 	return verts, faces
+
+
+def ClearPrimitiveData(obj):
+	if obj != None:
+		obj.primitivedata.classname = ""
 
 
 def draw_cursur_override(self):
@@ -289,6 +246,126 @@ def fix_type_visablity(subclass, ctx):
 		ctx.space_data.show_object_viewport_speaker = True
 
 
+def set_active_tool(self, ctx):
+	activeToolName = ""
+	# 
+	print(">> subclass >>", self.subclass)
+	if self.subclass:
+		# TODO just temprary solution for quick update
+		try:
+			# if hasattr(self.subclass, 'name'):
+			activeToolName = self.subclass.classname
+		except:
+			activeToolName = ""
+	else:
+		activeToolName = ""
+
+	primitive_setting = ctx.scene.primitive_setting
+	primitive_setting.active_tool = activeToolName
+	primitive_setting.next_name = activeToolName
+	r = random.random()
+	g = random.random()
+	b = random.random()
+	primitive_setting.next_color = (r, g, b)
+
+
+def get_alt_ctrl_shift_state(self, event):
+	if event.type in {'LEFT_SHIFT', 'RIGHT_SHIFT'}:
+		if event.value == 'PRESS':
+			self.shift = True
+		if event.value == 'RELEASE':
+			self.shift = False
+	
+	if event.type in {'LEFT_CTRL', 'RIGHT_CTRL'}:
+		if event.value == 'PRESS':
+			self.ctrl = True
+		if event.value == 'RELEASE':
+			self.ctrl = False
+	
+	if event.type in {'LEFT_ALT', 'RIGHT_ALT'}:
+		if event.value == 'PRESS':
+			self.alt = True
+		if event.value == 'RELEASE':
+			self.alt = False
+
+
+class Primitive_Public_Class:
+	def __init__(self):
+		self.init()
+	
+	def init(self):
+		pass
+
+	def reset(self):
+		self.__init__()
+
+	def update(self):
+		pass
+
+	def abort(self):
+		pass
+	
+	def finish(self):
+		pass
+
+
+class Primitive_Geometry_Class:
+	def __init__(self):
+		self.classname = ""
+		self.finishon = 0
+		self.owner = None
+		self.data = None
+		self.ready = False
+		self.init()
+	
+	def reset(self):
+		self.__init__()
+
+	def create_mesh(self, ctx, meshdata, classname):
+		primitive_geometry_class_create_mesh(self, ctx, meshdata, classname)
+
+	def update_mesh(self, meshdata):
+		primitive_geometry_class_update_mesh(self, meshdata)
+	
+	def update(self):
+		pass
+
+	def abort(self):
+		pass
+	
+	def finish(self):
+		self.ready = True
+
+
+class Primitive_Curve_Class:
+	def __init__(self):
+		self.classname = ""
+		self.finishon = 0
+		self.owner = None
+		self.data = None
+		self.ready = False
+		self.close = False
+		self.init()
+	
+	def reset(self):
+		self.__init__()
+
+	def create_curve(self, ctx, shapes, classname):
+		primitive_curve_class_create_curve(self, ctx, shapes, classname)
+
+	def update_curve(self, shapes):
+		primitive_curve_class_update_curve(self, shapes)
+	
+	def update(self):
+		pass
+
+	def abort(self):
+		pass
+
+	def finish(self):
+		self.ready = True
+
+
 class Draw_Primitive(Operator):
 	bl_options = {'REGISTER','UNDO'}
 	""" Subclass is Primitive object type """
@@ -334,27 +411,6 @@ class Draw_Primitive(Operator):
 		length = abs(self.mouse_start.x - self.mouse_curent.x) + abs(self.mouse_start.y - self.mouse_curent.y)
 		return length > 8 or (length == 0 and self.use_single_click)
 	
-	def get_shift_state(self, event):
-		if event.type in {'LEFT_SHIFT', 'RIGHT_SHIFT'}:
-			if event.value == 'PRESS':
-				self.shift = True
-			if event.value == 'RELEASE':
-				self.shift = False
-	
-	def get_ctrl_state(self, event):
-		if event.type in {'LEFT_CTRL', 'RIGHT_CTRL'}:
-			if event.value == 'PRESS':
-				self.ctrl = True
-			if event.value == 'RELEASE':
-				self.ctrl = False
-	
-	def get_alt_state(self, event):
-		if event.type in {'LEFT_ALT', 'RIGHT_ALT'}:
-			if event.value == 'PRESS':
-				self.alt = True
-			if event.value == 'RELEASE':
-				self.alt = False
-	
 	def first_click(self, ctx, x, y):
 		""" Get first click and initial basic setups """
 		self.step = 1
@@ -392,19 +448,20 @@ class Draw_Primitive(Operator):
 			self.curent = Vector((x, y, 0))
 			self.point_start.location = self.point_current.location.copy()
 	
-	def reset(self):
+	def reset(self, ctx):
 		self.subclass.reset()
 		self.gride.reset()
 		self.point_start.reset()
 		self.point_current.reset()
 		self.step = 0
 		self.localGride.unregister()
+		set_active_tool(self, ctx)
 	
 	def jump_to_end(self):
 		self.use_single_draw = False
 		self.step = self.subclass.finishon
 	
-	def finish_it(self):
+	def finish_it(self, ctx):
 		""" Delete accidently drawed very tiny objects """
 		if self.acceptable():
 			self.finish()
@@ -413,7 +470,7 @@ class Draw_Primitive(Operator):
 		else:
 			self.subclass.abort()
 
-		self.reset()
+		self.reset(ctx)
 		self.localGride.unregister()
 	
 	def check_event(self, key, action):
@@ -426,10 +483,7 @@ class Draw_Primitive(Operator):
 		""" Refresh Viewport """
 		ctx.area.tag_redraw()
 
-		""" Read ctrl, shiftm alt state """
-		self.get_shift_state(event)
-		self.get_ctrl_state(event)
-		self.get_alt_state(event)
+		get_alt_ctrl_shift_state(self, event)
 
 		""" Cancel operation if subclass not defined """
 		if self.subclass == None:
@@ -472,10 +526,8 @@ class Draw_Primitive(Operator):
 
 				elif self.use_surface:
 					self.point_current.location = self.gride.get_click_point_surface(ctx, x, y)
-					################
 					self.localGride.matrix = self.gride.gride_matrix
 					self.localGride.genarate_gride_lines()
-					################
 
 				else:
 					self.point_current.location = self.gride.get_click_point_gride(ctx, x, y)
@@ -489,11 +541,11 @@ class Draw_Primitive(Operator):
 			""" finish or cancel operatoin by click count """
 			if self.subclass.finishon > 0:
 				if self.step >= self.subclass.finishon:
-					self.finish_it()
+					self.finish_it(ctx)
 			else:
 				if self.step == -1:
-					self.finish_it()
-				
+					self.finish_it(ctx)
+
 		""" abort if pointer go out of screen """
 		# if self.step == 0 and out of screen:
 		# 	self.kill = True
@@ -506,7 +558,7 @@ class Draw_Primitive(Operator):
 			if self.step > 0:
 				self.subclass.abort()
 
-			self.reset()
+			self.reset(ctx)
 
 			################################################
 			print(">>read>", ctx.scene.primitive_setting.active_tool)
@@ -522,21 +574,3 @@ class Draw_Primitive(Operator):
 		self.draw_handler = add_curcur_override(self)
 		ctx.window_manager.modal_handler_add(self)
 		return {'RUNNING_MODAL'}
-
-
-def set_active_tool(self, ctx):
-	activeToolName = ""
-	# 
-	print(">> subclass >>", self.subclass)
-	if self.subclass:
-		# TODO just temprary solution for quick update
-		try:
-			# if hasattr(self.subclass, 'name'):
-			activeToolName = self.subclass.classname
-		except:
-			activeToolName = ""
-	else:
-		activeToolName = ""
-
-	ctx.scene.primitive_setting.active_tool = activeToolName
-	# ctx.scene.primitive_setting.next_color

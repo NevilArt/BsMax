@@ -12,11 +12,13 @@
 #	You should have received a copy of the GNU General Public License
 #	along with this program.  If not,see <https://www.gnu.org/licenses/>.
 ############################################################################
-# 2024/01/29
+# 2024/02/11
 
 import bpy
 
-from primitive.primitive import Primitive_Geometry_Class, Draw_Primitive
+from primitive.primitive import(
+    Primitive_Geometry_Class, Draw_Primitive, set_smooth_by_angel
+)
 
 from bpy.app import version
 
@@ -411,6 +413,7 @@ class Box(Primitive_Geometry_Class):
 		pd = self.data.primitivedata
 		pd.classname = self.classname
 		pd.wsegs, pd.lsegs, pd.hsegs = w, l, h
+		set_smooth_by_angel()
 
 	def update(self):
 		pd = self.data.primitivedata
@@ -420,7 +423,6 @@ class Box(Primitive_Geometry_Class):
 
 	def abort(self):
 		bpy.ops.object.delete(confirm=False)
-
 
 
 class Create_OT_Box(Draw_Primitive):
@@ -465,7 +467,6 @@ class Create_OT_Box(Draw_Primitive):
 				pd.width, pd.length, pd.height,
 				pd.wsegs, pd.lsegs, pd.hsegs
 			)
-
 
 
 def register_box(preferences):

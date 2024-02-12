@@ -12,11 +12,13 @@
 #	You should have received a copy of the GNU General Public License
 #	along with this program.  If not,see <https://www.gnu.org/licenses/>.
 ############################################################################
+# 2024/02/11
 
 import bpy
 from math import pi, sin, cos, radians
-from primitive.primitive import Primitive_Geometry_Class, Draw_Primitive
-
+from primitive.primitive import(
+    Primitive_Geometry_Class, Draw_Primitive, set_smooth_by_angel
+)
 
 
 def get_tube_mesh(radius1, radius2, height, hsegs, csegs, ssegs, sliceon, sfrom, sto):
@@ -91,6 +93,7 @@ def get_tube_mesh(radius1, radius2, height, hsegs, csegs, ssegs, sliceon, sfrom,
 				c = j + c2 + 1
 			d = c - 1
 			faces.append((d, c, b, a))
+
 	# upper cap
 	for i in range(csegs):
 		for j in range(ssegs - 1):
@@ -179,10 +182,12 @@ def get_tube_mesh(radius1, radius2, height, hsegs, csegs, ssegs, sliceon, sfrom,
 				a = c1
 			else:
 				a = p1 + (i - 1) * ssegs
+
 			if i < csegs - 1:
 				b = p1 + i * ssegs
 			else:
 				b = c2
+
 			c = b + ssegs - 1
 			d = a + ssegs - 1
 			faces.append((d, c, b, a))
@@ -192,11 +197,13 @@ def get_tube_mesh(radius1, radius2, height, hsegs, csegs, ssegs, sliceon, sfrom,
 				a = c1 + hsegs * ssegs
 			else:
 				a = p2 + (i - 1) * ssegs
+
 			b = a + ssegs - 1
 			if i < csegs - 1:
 				c = p2 + ssegs - 1 + i * ssegs
 			else:
 				c = c2 + hsegs * ssegs + ssegs - 1
+
 			d = c - ssegs + 1
 			faces.append((d, c, b, a))
 
@@ -215,6 +222,7 @@ class Tube(Primitive_Geometry_Class):
 		pd = self.data.primitivedata
 		pd.classname = self.classname
 		pd.ssegs = 18
+		set_smooth_by_angel()
 
 	def update(self):
 		pd = self.data.primitivedata
@@ -225,7 +233,6 @@ class Tube(Primitive_Geometry_Class):
 
 	def abort(self):
 		bpy.ops.object.delete(confirm=False)
-
 
 
 class Create_OT_Tube(Draw_Primitive):
@@ -260,12 +267,13 @@ class Create_OT_Tube(Draw_Primitive):
 			self.params.height = dimension.height
 
 
-
 def register_tube():
 	bpy.utils.register_class(Create_OT_Tube)
 
+
 def unregister_tube():
 	bpy.utils.unregister_class(Create_OT_Tube)
+
 
 if __name__ == "__main__":
 	register_tube()

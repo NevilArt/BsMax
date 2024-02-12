@@ -124,15 +124,18 @@ class Primitive_Option(PropertyGroup):
 		name='Draw Mode', default='FLOOR',
 		update = primitive_update,
 		items =[
-			('FLOOR', 'Draw on Floor', ''),
-			('VIEW', 'Draw on View', ''),
-			('SURFACE', 'Draw on Surface', '')
+			('FLOOR', 'Gride', 'Draw on Floor Gride', 'EVENT_F', 1),
+			('VIEW', 'View' ,'Draw on View', 'EVENT_V', 2),
+			('SURFACE', 'Surface', 'Draw on Surface', 'EVENT_S', 3)
 		]
 	)
 
 	#TODO countinu from here
 	active_tool: StringProperty()
-	next_color: FloatVectorProperty()
+	next_name: StringProperty()
+	next_color: FloatVectorProperty(
+		name='Color', subtype='COLOR', default=[0.5, 0.5, 0.5]
+	)
 
 
 class PrimitiveData(PropertyGroup):

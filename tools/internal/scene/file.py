@@ -12,11 +12,12 @@
 #	You should have received a copy of the GNU General Public License
 #	along with this program.  If not, see <https://www.gnu.org/licenses/>.
 ############################################################################
+# 2024/02/12
 
 import bpy
 
 from bpy.types import Operator
-
+from bpy.utils import register_class, unregister_class
 
 
 class File_OT_Scale_Icons(Operator):
@@ -40,6 +41,7 @@ class File_OT_Scale_Icons(Operator):
 				params.display_type = large
 			elif params.display_type == small:
 				params.display_type = medium
+
 		else:
 			if params.display_type == large:
 				params.display_type = medium
@@ -47,8 +49,8 @@ class File_OT_Scale_Icons(Operator):
 				params.display_type = small
 			elif params.display_type == small:
 				params.display_type = large
-		return{"FINISHED"}
 
+		return{"FINISHED"}
 
 
 class File_OT_Version(Operator):
@@ -70,7 +72,6 @@ class File_OT_Version(Operator):
 		self.date_version = str(bpy.data.version)
 		self.app_version = str(bpy.app.version)
 		return ctx.window_manager.invoke_props_dialog(self, width=120)
-
 
 
 class File_OT_Save_Check(Operator):
@@ -108,8 +109,6 @@ class File_OT_Save_Check(Operator):
 		return{"FINISHED"}
 
 
-
-
 class Scene_OT_Reset(Operator):
 	bl_idname = "scene.reset"
 	bl_label = "Reset"
@@ -125,6 +124,7 @@ class Scene_OT_Reset(Operator):
 		bpy.ops.wm.read_homefile(app_template="")
 		for obj in ctx.scene.objects:
 			bpy.data.objects.remove(obj, do_unlink=True)
+		# ctx.space_data.shading.color_type = 'OBJECT'
 		return{"FINISHED"}
 	
 	def invoke(self, ctx, event):
@@ -133,18 +133,14 @@ class Scene_OT_Reset(Operator):
 		return self.execute(ctx)
 
 
-
-
 def version_menu(self, ctx):
 	layout = self.layout
 	layout.separator()
 	layout.operator("file.version", text='File Version', icon='BLENDER')
 
 
-
 def reset_menu(self, ctx):
 	self.layout.operator("scene.reset", text='Reset', icon='FILE')
-
 
 
 classes = (
@@ -155,21 +151,20 @@ classes = (
 )
 
 
-
 def register_file():
 	for c in classes:
-		bpy.utils.register_class(c)
+		register_class(c)
+
 	bpy.types.TOPBAR_MT_file.prepend(reset_menu)	
 	bpy.types.TOPBAR_MT_file.append(version_menu)
-
 
 
 def unregister_file():
 	bpy.types.TOPBAR_MT_file.remove(reset_menu)
 	bpy.types.TOPBAR_MT_file.remove(version_menu)
-	for c in classes:
-		bpy.utils.unregister_class(c)
 
+	for c in classes:
+		unregister_class(c)
 
 
 if __name__ == "__main__":

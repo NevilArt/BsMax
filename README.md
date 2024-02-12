@@ -1,5 +1,5 @@
 
-# BsMax Blender Addon 3.3LTS ~ 4.0
+# BsMax Blender Addon 3.3LTS ~ 4.1Beta
 
 BsMax is package of Modeling, Rig & Animation, Render tools and UI mimic for [Blender 3D](https://www.blender.org/).
 
@@ -36,10 +36,8 @@ If you found this product useful and want to support this project you can Donate
 * [Download Older Version (2.80-2.92)(2.93-3.2)](https://github.com/NevilArt/BsMax_2_80)
 
 ## Recent Updates and Changes
-* Primitives can be edit under "comand panel/modifiers" similar to 3DsMax.
-* Light lister issue for Blender 4.0 Fixed.
-* Maya Key map has some clenup and update.
-* Command panel create issue fixed.
+* Create primitive updated to work with Blender 4.1 too.
+* 3DsMax Command panel Create stuff updated.
 * [Change log ...](https://github.com/NevilArt/BsMax/blob/master/CHANGELOG.md)
 
 ## License

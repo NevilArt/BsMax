@@ -12,15 +12,20 @@
 #	You should have received a copy of the GNU General Public License
 #	along with this program.  If not,see <https://www.gnu.org/licenses/>.
 ############################################################################
+# 2024/02/12
 
 import bpy
+
 from math import sin, cos, pi, radians
 from primitive.primitive import Primitive_Geometry_Class, Draw_Primitive
 
+from bpy.app import version
 
 
-def get_torus_mesh( radius1, radius2, rotation, twist, 
-				segments, sides, sliceon, sfrom, sto):
+def get_torus_mesh(
+		radius1, radius2, rotation, twist, 
+		segments, sides, sliceon, sfrom, sto):
+
 	verts,edges,faces,segs = [],[],[],[]
 	rotation, twist = radians(rotation), radians(twist)
 	sfrom, sto = radians(sfrom), radians(sto)
@@ -100,17 +105,20 @@ class Torus(Primitive_Geometry_Class):
 		pd.classname = self.classname
 		pd.ssegs, pd.ssegs_b = 24, 12
 		""" Apply Default Settings """
-		self.data.auto_smooth_angle = self.auto_smooth_angle
+		if version <= (4, 0, 0):
+			self.data.auto_smooth_angle = self.auto_smooth_angle
 
 	def update(self):
 		pd = self.data.primitivedata
-		mesh = get_torus_mesh(pd.radius1, pd.radius2, pd.rotation, pd.twist, 
-				pd.ssegs, pd.ssegs_b, pd.sliceon, pd.sfrom, pd.sto)
+		mesh = get_torus_mesh(
+			pd.radius1, pd.radius2, pd.rotation, pd.twist, 
+			pd.ssegs, pd.ssegs_b, pd.sliceon, pd.sfrom, pd.sto
+		)
+
 		self.update_mesh(mesh)
 
 	def abort(self):
 		bpy.ops.object.delete(confirm=False)
-
 
 
 class Create_OT_Torus(Draw_Primitive):
@@ -138,7 +146,6 @@ class Create_OT_Torus(Draw_Primitive):
 				self.jump_to_end()
 				return
 			self.params.radius2 = dimension.radius
-
 
 
 def register_torus():

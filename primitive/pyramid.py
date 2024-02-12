@@ -12,10 +12,13 @@
 #	You should have received a copy of the GNU General Public License
 #	along with this program.  If not,see <https://www.gnu.org/licenses/>.
 ############################################################################
+# 2024/02/11
 
 import bpy
-from primitive.primitive import Primitive_Geometry_Class, Draw_Primitive
 
+from primitive.primitive import(
+    Primitive_Geometry_Class, Draw_Primitive, set_smooth_by_angel
+)
 
 
 def get_pyramid_mesh(width, depth, height, wsegs, dsegs, hsegs):
@@ -29,6 +32,7 @@ def get_pyramid_mesh(width, depth, height, wsegs, dsegs, hsegs):
 			x = -w + i * ws
 			y = -d + j * ds
 			verts.append((x, y, 0))
+
 	# get side vertexes x
 	for i in range(1, hsegs):
 		s = (((hsegs - i) * hc) / h)
@@ -37,16 +41,19 @@ def get_pyramid_mesh(width, depth, height, wsegs, dsegs, hsegs):
 			y = (-d + j * ds) * s
 			z = i * hs
 			verts.append((x, y, z))
+
 		for j in range(wsegs):
 			x = (-w + j * ws) * s
 			y = (-d + i * dc) * -1
 			z = i * hs
 			verts.append((x, y, z))
+
 		for j in range(dsegs):
 			x = (-w + i * wc) * -1
 			y = (-d + (dsegs - j) * ds) * s
 			z = i * hs
 			verts.append((x, y, z))
+
 		for j in range(wsegs):
 			x = (-w + (wsegs - j) * ws) * s
 			y = (-d + i * dc)
@@ -54,6 +61,7 @@ def get_pyramid_mesh(width, depth, height, wsegs, dsegs, hsegs):
 			verts.append((x, y, z))
 	# add top vertex
 	verts.append((0, 0, h))
+
 	# get floor faces
 	for i in range(wsegs):
 		for j in range(dsegs):
@@ -63,6 +71,7 @@ def get_pyramid_mesh(width, depth, height, wsegs, dsegs, hsegs):
 			c = b + dsegs + 1
 			d = c - 1
 			faces.append((a, b, c, d))
+
 	f = (wsegs + 1) * (dsegs + 1)
 	l = (wsegs + dsegs) * 2
 	for i in range(hsegs - 2):
@@ -77,8 +86,10 @@ def get_pyramid_mesh(width, depth, height, wsegs, dsegs, hsegs):
 				c = f + (i + 1) * l
 				d = a + l
 			faces.append((d, c, b, a))
+
 	v = len(verts) - 1 # last vertex index
 	f2 = f + l * (hsegs - 2) # last line first vertext
+
 	if hsegs > 1:
 		# top
 		for i in range(l):
@@ -89,6 +100,7 @@ def get_pyramid_mesh(width, depth, height, wsegs, dsegs, hsegs):
 				b = f2
 			c = v
 			faces.append((c, b, a))
+
 		# silde lowr line 1
 		for i in range(dsegs):
 			a = i
@@ -96,6 +108,7 @@ def get_pyramid_mesh(width, depth, height, wsegs, dsegs, hsegs):
 			c = f + i + 1
 			d = f + i
 			faces.append((d, c, b, a))
+
 		# silde lowr line 2
 		fl, fu = dsegs, f + dsegs
 		for i in range(wsegs):
@@ -104,6 +117,7 @@ def get_pyramid_mesh(width, depth, height, wsegs, dsegs, hsegs):
 			c = fu + i + 1
 			d = fu + i
 			faces.append((d, c, b, a))
+
 		fl = (wsegs + 1) * (dsegs + 1) - 1
 		fu = f + wsegs + dsegs
 		for i in range(dsegs):
@@ -112,6 +126,7 @@ def get_pyramid_mesh(width, depth, height, wsegs, dsegs, hsegs):
 			c = fu + i + 1
 			d = fu + i
 			faces.append((d, c, b, a))
+
 		fl = (dsegs + 1) * wsegs
 		fu = (wsegs + 3) * (dsegs + 1) + (wsegs - 2)
 		for i in range(wsegs):
@@ -123,24 +138,29 @@ def get_pyramid_mesh(width, depth, height, wsegs, dsegs, hsegs):
 				c = f
 			d = fu + i
 			faces.append((d, c, b, a))
+
 	else:
 		for i in range(dsegs):
 			a, b = i, i + 1
 			faces.append((v, b, a))
 		l = (dsegs + 1)
+
 		for i in range(wsegs):
 			a = (i + 1) * l - 1
 			b = a + l
 			faces.append((v, b, a))
+
 		for i in range(dsegs):
 			a = f - i - 1
 			b = a - 1
 			faces.append((v, b, a))
+
 		f = l * wsegs
 		for i in range(wsegs):
 			a = f - l * i
 			b = f - l * (i + 1)
 			faces.append((v, b, a))
+
 	return verts, edges, faces
 
 
@@ -156,16 +176,19 @@ class Pyramid(Primitive_Geometry_Class):
 		pd = self.data.primitivedata
 		pd.classname = self.classname
 		pd.wsegs, pd.lsegs, pd.hsegs = 1, 1, 1
+		set_smooth_by_angel()
 
 	def update(self):
 		pd = self.data.primitivedata
-		mesh = get_pyramid_mesh(pd.width, pd.length, pd.height,
-					pd.wsegs, pd.lsegs, pd.hsegs)
+		mesh = get_pyramid_mesh(
+					pd.width, pd.length, pd.height,
+					pd.wsegs, pd.lsegs, pd.hsegs
+				)
+
 		self.update_mesh(mesh)
 
 	def abort(self):
 		bpy.ops.object.delete(confirm=False)
-
 
 
 class Create_OT_Pyramid(Draw_Primitive):
@@ -186,6 +209,7 @@ class Create_OT_Pyramid(Draw_Primitive):
 				self.params.width = dimension.radius
 				self.params.length = dimension.radius
 				self.params.height = dimension.radius*0.6
+
 			else:
 				self.params.width = abs(dimension.width)
 				self.params.length = abs(dimension.length)
@@ -195,16 +219,17 @@ class Create_OT_Pyramid(Draw_Primitive):
 			if self.use_single_draw:
 				self.jump_to_end()
 				return
+
 			self.params.height = dimension.height
-
-
 
 
 def register_pyramid():
 	bpy.utils.register_class(Create_OT_Pyramid)
 
+
 def unregister_pyramid():
 	bpy.utils.unregister_class(Create_OT_Pyramid)
+
 
 if __name__ == '__main__':
 	register_pyramid()

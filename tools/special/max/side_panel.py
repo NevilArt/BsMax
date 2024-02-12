@@ -32,19 +32,16 @@ def get_create_subtype(createType):
 		items = [
 			('STANDARD', 'Standard Primitives', ''),
 			('EXTENDED', 'Extended Primitives', ''),
-			('COMPOUND','Compound Objects',''),
-			('PARTICLE','Particle System',''),
-			('PATHGRIDE','Path Gride',''),
-			('BODY','Body Objects',''),
-			('DOOR','Door',''),
-			('NURBS','Nurbs Surface',''),
-			('WINDOWS','Windows',''),
-			('AEC','AEC Extended',''),
-			('POINTCLOUD','Point Cloud objects',''),
-			('DYNAMIC','Dynamic objects',''),
-			('STAIRS','Stairs',''),
-			('ABC','Alembic',''),
-			('FLUIDS','Fluids','')
+			('COMPOUND', 'Compound Objects', ''),
+			('PARTICLE', 'Particle System', ''),
+			('PATHGRIDE', 'Path Gride', ''),
+			('BODY', 'Body Objects', ''),
+			('ARCHITECTURE', 'Architecture', ''),
+			('NURBS', 'Nurbs Surface',  ''),
+			('POINTCLOUD', 'Point Cloud objects', ''),
+			('DYNAMIC', 'Dynamic objects', ''),
+			('ABC', 'Alembic', ''),
+			('FLUIDS', 'Fluids', '')
 		]
 
 	elif createType == 'CURVE':
@@ -103,8 +100,20 @@ def get_create_subtype(createType):
 	return (default, items)
 
 
-def get_create_mesh_ui(layout, cPanel):
+def get_draw_alignment_ui(ctx, layout):
+	box = layout.box()
+	row = box.row()
+	row.label(text='Drawing Gride')
+	row.prop(
+		ctx.scene.primitive_setting, 'draw_mode',
+		text='', expand=True
+	)
+
+
+def get_create_mesh_ui(ctx, layout, cPanel):
 	layout.prop(cPanel, 'mesh_types', text="")
+	get_draw_alignment_ui(ctx, layout)
+	
 	box = layout.box()
 	if cPanel.mesh_types == 'STANDARD':
 		row = box.row()
@@ -193,35 +202,44 @@ def get_create_mesh_ui(layout, cPanel):
 		row.operator("bsmax.reserved", text="Join Bodies")
 		row.operator("bsmax.reserved", text="Body Cutter")
 
-	elif cPanel.mesh_types == 'DOOR':
-		row = box.row()
-		row.operator("bsmax.reserved", text="Pivot")
-		row.operator("bsmax.reserved", text="Sliding")
-		row = box.row()
-		row.operator("bsmax.reserved", text="BiFold")
-
 	elif cPanel.mesh_types == 'NURBS':
 		row = box.row()
 		row.operator("bsmax.reserved", text="Point Surf")
 		row.operator("bsmax.reserved", text="CV Surf")
 	
-	elif cPanel.mesh_types == 'WINDOWS':
+	elif cPanel.mesh_types == 'ARCHITECTURE':
 		row = box.row()
-		row.operator("bsmax.reserved", text="Awning")
-		row.operator("bsmax.reserved", text="Casement")
-		row = box.row()
-		row.operator("bsmax.reserved", text="Fixed")
-		row.operator("bsmax.reserved", text="Pivoted")
-		row = box.row()
-		row.operator("bsmax.reserved", text="Projected")
-		row.operator("bsmax.reserved", text="Sliding")
-
-	elif cPanel.mesh_types == 'AEC':
-		row = box.row()
-		row.operator("bsmax.reserved", text="Foliage")
-		row.operator("bsmax.reserved", text="Railing")
+		row.operator("bsmax.reserved", text="AEC Foliage")
+		row.operator("bsmax.reserved", text="AEC Railing")
+		# Wall
 		row = box.row()
 		row.operator("bsmax.reserved", text="Wall")
+		row = box.row()
+		# Doors
+		row = box.row()
+		row.operator("bsmax.reserved", text="Pivot Door")
+		row.operator("bsmax.reserved", text="Sliding Door")
+		row = box.row()
+		row.operator("bsmax.reserved", text="BiFold Door")
+		row = box.row()
+		# Stairs
+		row = box.row()
+		row.operator("bsmax.reserved", text="Straight Stair")
+		row.operator("bsmax.reserved", text="L-Type Stair")
+		row = box.row()
+		row.operator("bsmax.reserved", text="U-Type Stair")
+		row.operator("bsmax.reserved", text="Spiral Stair")
+		row = box.row()
+		# Windows
+		row = box.row()
+		row.operator("bsmax.reserved", text="Awning Window")
+		row.operator("bsmax.reserved", text="Casement Window")
+		row = box.row()
+		row.operator("bsmax.reserved", text="Fixed Window")
+		row.operator("bsmax.reserved", text="Pivoted Window")
+		row = box.row()
+		row.operator("bsmax.reserved", text="Projected Window")
+		row.operator("bsmax.reserved", text="Sliding Window")
 
 	elif cPanel.mesh_types == 'POINTCLOUD':
 		row = box.row()
@@ -231,14 +249,6 @@ def get_create_mesh_ui(layout, cPanel):
 		row = box.row()
 		row.operator("bsmax.reserved", text="Spring")
 		row.operator("bsmax.reserved", text="Damper")
-
-	elif cPanel.mesh_types == 'STAIRS':
-		row = box.row()
-		row.operator("bsmax.reserved", text="Straight Stair")
-		row.operator("bsmax.reserved", text="L-Type Stair")
-		row = box.row()
-		row.operator("bsmax.reserved", text="U-Type Stair")
-		row.operator("bsmax.reserved", text="Spiral Stair")
 
 	elif cPanel.mesh_types == 'ABC':
 		row = box.row()
@@ -250,12 +260,18 @@ def get_create_mesh_ui(layout, cPanel):
 
 	elif cPanel.mesh_types == 'FLUIDS':
 		row = box.row()
-		row.operator("bsmax.reserved", text="Liquid")
+		row.operator("object.quick_smoke", text="ُQuick Smoke")
+		row.operator("object.quick_fur", text="ُQuick Fur")
+		row = box.row()
+		row.operator("object.quick_explode", text="ُQuick Explod")
+		row.operator("object.quick_liquid", text="ُQuick Liquid")
+		row = box.row()
 		row.operator("bsmax.reserved", text="Fluid Loader")
 
 
-def get_create_curve_ui(layout, cPanel):
+def get_create_curve_ui(ctx, layout, cPanel):
 	layout.prop(cPanel, 'curve_types', text="")
+	get_draw_alignment_ui(ctx, layout)
 	box = layout.box()
 
 	if cPanel.curve_types == 'SPLINE':
@@ -279,6 +295,7 @@ def get_create_curve_ui(layout, cPanel):
 		row.operator("bsmax.reserved", text="Section")
 		row = box.row()
 		row.operator("bsmax.reserved", text="Freehand")
+		row.operator("create.torusknot", text="Tors Knot")
 	
 	elif cPanel.curve_types == 'NURBS':
 		row = box.row()
@@ -303,8 +320,9 @@ def get_create_curve_ui(layout, cPanel):
 		pass
 
 
-def get_create_light_ui(layout, cPanel):
+def get_create_light_ui(ctx, layout, cPanel):
 	layout.prop(cPanel, 'light_types', text="")
+	get_draw_alignment_ui(ctx, layout)
 	box = layout.box()
 
 	if cPanel.light_types == 'PHOTOMETRIC':
@@ -329,8 +347,9 @@ def get_create_light_ui(layout, cPanel):
 		row.operator("bsmax.reserved", text="Arnold")
 
 
-def get_create_camera_ui(layout, cPanel):
+def get_create_camera_ui(ctx, layout, cPanel):
 	layout.prop(cPanel, 'camera_types', text="")
+	get_draw_alignment_ui(ctx, layout)
 	box = layout.box()
 
 	if cPanel.camera_types == 'STANDARD':
@@ -346,8 +365,9 @@ def get_create_camera_ui(layout, cPanel):
 		row.operator("bsmax.reserved", text="Cylindrical")
 
 
-def get_create_empty_ui(layout, cPanel):
+def get_create_empty_ui(ctx, layout, cPanel):
 	layout.prop(cPanel, 'empty_types', text="")
+	get_draw_alignment_ui(ctx, layout)
 	box = layout.box()
 
 	if cPanel.empty_types == 'STANDARD':
@@ -464,8 +484,9 @@ def get_create_empty_ui(layout, cPanel):
 		row.operator("bsmax.reserved", text="Inline")
 
 
-def get_create_spacewrap_ui(layout, cPanel):
+def get_create_spacewrap_ui(ctx, layout, cPanel):
 	layout.prop(cPanel, 'spacewrap_types', text="")
+	get_draw_alignment_ui(ctx, layout)
 	box = layout.box()
 
 	if cPanel.spacewrap_types == 'FORCE':
@@ -530,8 +551,9 @@ def get_create_spacewrap_ui(layout, cPanel):
 		row.operator("bsmax.reserved", text="Vector Field")
 
 
-def get_create_setting_ui(layout, cPanel):
+def get_create_setting_ui(ctx, layout, cPanel):
 	layout.prop(cPanel, 'setting_types', text="")
+	get_draw_alignment_ui(ctx, layout)
 	box = layout.box()
 
 	if cPanel.setting_types == 'STANDARD':
@@ -673,34 +695,44 @@ class BsMax_Scene_Side_Panel(PropertyGroup):
 	)
 
 
+def create_next_ui(ctx, layout):
+	row = layout.row()
+	primitive_setting = ctx.scene.primitive_setting
+	if primitive_setting.active_tool:
+		row.prop(primitive_setting, 'next_name', text='')
+		row.prop(primitive_setting, 'next_color', text='')
+
+
 def get_create_panel(layout, ctx):
 	cPanel = ctx.scene.comand_panel
 	layout.prop(cPanel, 'create_type', expand=True)
 		
 	if cPanel.create_type == 'MESH':
-		get_create_mesh_ui(layout, cPanel)
+		get_create_mesh_ui(ctx, layout, cPanel)
 
 	elif cPanel.create_type == 'CURVE':
-		get_create_curve_ui(layout, cPanel)
+		get_create_curve_ui(ctx, layout, cPanel)
 		
 	elif cPanel.create_type == 'LIGHT':
-		get_create_light_ui(layout, cPanel)
+		get_create_light_ui(ctx, layout, cPanel)
 
 	elif cPanel.create_type == 'CAMERA':
-		get_create_camera_ui(layout, cPanel)
+		get_create_camera_ui(ctx, layout, cPanel)
 
 	elif cPanel.create_type == 'EMPTY':
-		get_create_empty_ui(layout, cPanel)
+		get_create_empty_ui(ctx, layout, cPanel)
 	
 	elif cPanel.create_type == 'SPACEWRAP':
-		get_create_spacewrap_ui(layout, cPanel)
+		get_create_spacewrap_ui(ctx, layout, cPanel)
 
 	elif cPanel.create_type == 'SETTING':
-		get_create_setting_ui(layout, cPanel)
+		get_create_setting_ui(ctx, layout, cPanel)
 	
-	box = layout.box()
-	row = box.row()
-	row.label(text=ctx.scene.primitive_setting.active_tool)
+	create_next_ui(ctx, layout.box())
+
+
+def get_edit_panel(layout, ctx):
+	layout.label(text="Edit tools will come here")
 	
 
 def get_modifier_panel(layout, ctx):
@@ -711,7 +743,14 @@ def get_modifier_panel(layout, ctx):
 			box.label(text=modifer.name)
 	
 	box =layout.box()
-	get_panel(ctx.object.data.primitivedata, box)
+	if ctx.object.data.primitivedata:
+		get_panel(ctx.object.data.primitivedata, box)
+		box.operator(
+			"primitive.cleardata", text="Clear Primitive Data",
+			description="Collaps primitive data"
+		)
+	else:
+		get_edit_panel(layout, ctx)
 
 
 def get_hierarcy_panel(layout, ctx):

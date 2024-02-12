@@ -12,6 +12,7 @@
 #	You should have received a copy of the GNU General Public License
 #	along with this program.  If not,see <https://www.gnu.org/licenses/>.
 ############################################################################
+# 2024/02/11
 
 from mathutils import Vector, Matrix, Euler
 from math import pi, sqrt
@@ -24,7 +25,6 @@ from bsmax.mouse import ray_cast, get_click_point_on_face
 from bsmax.bsmatrix import (
 	matrix_from_elements, transform_point_to_matrix, points_to_local_matrix
 )
-
 
 
 class Dimension:
@@ -74,7 +74,6 @@ class Dimension:
 		self.center.x = (self.start.x + self.end.x) / 2
 		self.center.y = (self.start.y + self.end.y) / 2
 		self.center.z = (self.start.z + self.end.z) / 2
-
 
 
 class Click_Point:
@@ -208,16 +207,22 @@ class Gride:
 		
 		elif draw_mode == 'SURFACE':
 			if view_orient == 'USER':
-				self.location = get_click_point_on_face(ctx, self.floor_face, x, y)
+				self.location = get_click_point_on_face(
+									ctx, self.floor_face, x, y
+								)
+
 				self.rotation = Vector((0, 0, 0))
 				self.floor_rotation = Vector((0, 0, 0))
+
 			else:
 				location, rotation = self.get_coordinate_view(ctx, x, y)
 				self.location = location
 				self.rotation = rotation
 				self.floor_rotation = rotation.copy()
 
-			surf_location, surf_rotation = self.get_coordinate_surface(ctx, x, y)
+			surf_location, surf_rotation = self.get_coordinate_surface(
+														ctx, x, y
+											)
 
 			if surf_location and surf_rotation:
 				self.location = surf_location
@@ -238,9 +243,13 @@ class Gride:
 			
 		else: # draw_mode == 'FLOOR':
 			if view_orient == 'USER':
-				self.location = get_click_point_on_face(ctx, self.floor_face, x, y)
+				self.location = get_click_point_on_face(
+									ctx, self.floor_face, x, y
+								)
+
 				self.rotation = Vector((0, 0, 0))
 				self.floor_rotation = Vector((0, 0, 0))
+
 			else:
 				location, rotation = self.get_coordinate_view(ctx, x, y)
 				self.location = location

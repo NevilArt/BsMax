@@ -12,10 +12,12 @@
 #	You should have received a copy of the GNU General Public License
 #	along with this program.  If not,see <https://www.gnu.org/licenses/>.
 ############################################################################
+# 2024/02/11
 
 import bpy
-from bpy.types import Menu
 
+from bpy.types import Menu
+from bpy.utils import register_class, unregister_class
 
 
 # Mesh create menu
@@ -42,7 +44,6 @@ class BsMax_MT_VertexCreate(Menu):
 		).fill_type='FACE'
 
 
-
 # Mesh create menu
 class BsMax_MT_Mesh_Extera(Menu):
 	bl_idname = "BSMAX_MT_mesh_extera_menu"
@@ -64,7 +65,6 @@ class BsMax_MT_Mesh_Extera(Menu):
 			"object.create", text="Bolt", icon="TOOL_SETTINGS"
 		).type='BOLT'
 		
-
 
 # Mesh create menu
 class BsMax_MT_MeshCreate(Menu):
@@ -149,7 +149,6 @@ class BsMax_MT_MeshCreate(Menu):
 		layout.menu("BSMAX_MT_mesh_extera_menu", icon='DOCUMENTS')
 
 
-
 # curve / shape / spline create menu
 class BsMax_MT_CurveCreate(Menu):
 	bl_idname = "BSMAX_MT_curve_create_menu"
@@ -158,7 +157,10 @@ class BsMax_MT_CurveCreate(Menu):
 	def draw(self, ctx):
 		layout = self.layout
 		layout.operator("create.line", text="Line", icon="CURVE_PATH")
-		layout.operator("create.rectangle", text="Rectangle", icon="META_PLANE")
+		layout.operator(
+			"create.rectangle", text="Rectangle", icon="META_PLANE"
+		)
+		
 		layout.operator("create.circle", text="Circle", icon="MESH_CIRCLE")
 		layout.operator("create.ellipse", text="Ellipse", icon="MESH_CAPSULE")
 		layout.operator("create.arc", text="Arc", icon="SPHERECURVE")
@@ -175,7 +177,6 @@ class BsMax_MT_CurveCreate(Menu):
 		).mode='Curve'
 
 
-
 # Surface create menu
 class BsMax_MT_SurfaceCreate(Menu):
 	bl_idname = "BSMAX_MT_surface_create_menu"
@@ -184,7 +185,6 @@ class BsMax_MT_SurfaceCreate(Menu):
 	def draw(self, ctx):
 		layout = self.layout
 		layout.label(text="coming soon")
-
 
 
 # Metaball create menu
@@ -215,7 +215,6 @@ class BsMax_MT_MetaballCreate(Menu):
 		).metaball_type='CUBE'
 
 
-
 # Text create menu
 class BsMax_MT_TextCreate(Menu):
 	bl_idname = "BSMAX_MT_text_create_menu"
@@ -224,12 +223,13 @@ class BsMax_MT_TextCreate(Menu):
 	def draw(self, ctx):
 		layout = self.layout
 
-		layout.operator("create.text", text="Text",
-			icon="OUTLINER_OB_FONT").fill_mode='BOTH'
+		layout.operator(
+			"create.text", text="Text", icon="OUTLINER_OB_FONT"
+		).fill_mode='BOTH'
 
-		layout.operator("create.text", text="Text",
-			icon="FONT_DATA").fill_mode="NONE"
-
+		layout.operator(
+			"create.text", text="Text", icon="FONT_DATA"
+		).fill_mode="NONE"
 
 
 # Greace Pencil create menu
@@ -253,7 +253,6 @@ class BsMax_MT_GreacePencilCreate(Menu):
 		).gpencil_type="MONKEY"
 
 
-
 # Armature create menu
 class BsMax_MT_ArmatureCreate(Menu):
 	bl_idname = "BSMAX_MT_armature_create_menu"
@@ -263,7 +262,6 @@ class BsMax_MT_ArmatureCreate(Menu):
 		layout = self.layout
 		layout.operator("create.bone", text="Bone", icon="BONE_DATA")
 		#layout.operator("create.bone",text="Armature",icon="ARMATURE_DATA")
-
 
 
 # Lattice create menu
@@ -287,7 +285,6 @@ class BsMax_MT_LatticeCreate(Menu):
 			"create.lattice", text='Lattice 4x4x4 (Create)',
 			icon="OUTLINER_OB_LATTICE"
 		).resolution=4
-
 
 
 # Empty create menu
@@ -330,7 +327,6 @@ class BsMax_MT_EmptyCreate(Menu):
 		).empty_type='IMAGE'
 
 
-
 # Image create menu
 class BsMax_MT_ImageCreate(Menu):
 	bl_idname = "BSMAX_MT_image_create_menu"
@@ -345,7 +341,6 @@ class BsMax_MT_ImageCreate(Menu):
 		layout.operator(
 			"create.image", text="BackGround", icon="IMAGE_BACKGROUND"
 		).image_type='BACKGROUND'
-
 
 
 # Light create menu
@@ -364,7 +359,8 @@ class BsMax_MT_LightCreate(Menu):
 		)
 
 		layout.operator(
-			"create.spotlight", text="Spot Light Free/Target", icon="LIGHT_SPOT"
+			"create.spotlight", text="Spot Light Free/Target",
+			icon="LIGHT_SPOT"
 		)
 
 		layout.operator(
@@ -376,11 +372,11 @@ class BsMax_MT_LightCreate(Menu):
 		)
 
 
-
 # Light Probs create menu
 class BsMax_MT_LightProbsCreate(Menu):
 	bl_idname = "BSMAX_MT_lightProbs_primitives"
 	bl_label = "Light Probe"
+
 	def draw(self, ctx):
 		layout = self.layout
 		layout.operator(
@@ -402,7 +398,6 @@ class BsMax_MT_LightProbsCreate(Menu):
 		)
 
 
-
 # Camera create menu
 class BsMax_MT_CameraCreate(Menu):
 	bl_idname = "BSMAX_MT_camera_create_menu"
@@ -420,7 +415,6 @@ class BsMax_MT_CameraCreate(Menu):
 		)
 
 
-
 # Speaker create menu
 class BsMax_MT_SpeakerCreate(Menu):
 	bl_idname = "BSMAX_MT_speakercreatemenu"
@@ -431,7 +425,6 @@ class BsMax_MT_SpeakerCreate(Menu):
 		layout.operator(
 			"create.speaker", text="Speaker", icon="OUTLINER_OB_SPEAKER"
 		)
-
 
 
 # Force field create menu
@@ -494,7 +487,6 @@ class BsMax_MT_ForceFieldCreate(Menu):
 		).effector_type = 'SMOKE'
 
 
-
 # View 3D Create Menu
 class BsMax_MT_Create(Menu):
 	bl_idname = "BSMAX_MT_create_menu"
@@ -507,8 +499,11 @@ class BsMax_MT_Create(Menu):
 
 	def draw(self, ctx):
 		layout = self.layout
-		layout.prop(ctx.scene.primitive_setting, 'draw_mode',
-					text='', icon='VIEW3D')
+		layout.prop(
+			ctx.scene.primitive_setting, 'draw_mode',
+			text='', icon='VIEW3D'
+		)
+		
 		layout.separator()
 		layout.menu(
 			"BSMAX_MT_mesh_create_menu", icon='OUTLINER_OB_MESH'
@@ -646,7 +641,6 @@ def mesh_add_append_menu(self, ctx):
 	# layout.menu("BSMAX_MT_vertex_create_menu", icon='DOT').type=''
 
 
-
 def curve_add_append_menu(self, ctx):
 	layout = self.layout
 	layout.separator()
@@ -693,18 +687,15 @@ def curve_add_append_menu(self, ctx):
 	).type='PROFILO'
 
 
-
 def objects_context_menu(self, ctx):
 	layout = self.layout
 	layout.separator()
 	layout.operator("primitive.cleardata", text="Clear Primitive Data")
 
 
-
 def CreateMenu_CallBack(self, ctx):
 	if ctx.mode == 'OBJECT':
 		self.layout.menu("BSMAX_MT_create_menu")
-
 
 
 classes = (
@@ -729,16 +720,15 @@ classes = (
 )
 
 
-
 def register_menu():
 	for c in classes:
-		bpy.utils.register_class(c)
+		register_class(c)
+
 	#TODO find a way to put Create menu anfter add menu rather than first of the list
 	bpy.types.VIEW3D_MT_editor_menus.prepend(CreateMenu_CallBack)
 	bpy.types.VIEW3D_MT_object_context_menu.append(objects_context_menu)
 	bpy.types.VIEW3D_MT_mesh_add.append(mesh_add_append_menu)
 	bpy.types.VIEW3D_MT_curve_add.append(curve_add_append_menu)
-
 	
 
 def unregister_menu():
@@ -746,9 +736,9 @@ def unregister_menu():
 	bpy.types.VIEW3D_MT_object_context_menu.remove(objects_context_menu)
 	bpy.types.VIEW3D_MT_mesh_add.remove(mesh_add_append_menu)
 	bpy.types.VIEW3D_MT_curve_add.remove(curve_add_append_menu)
-	for c in classes:
-		bpy.utils.unregister_class(c)
 
+	for c in classes:
+		unregister_class(c)
 
 
 if __name__ == '__main__':

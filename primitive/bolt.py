@@ -16,7 +16,9 @@
 import bpy
 import add_mesh_BoltFactory as bf
 
-from primitive.primitive import Primitive_Geometry_Class, Draw_Primitive
+from primitive.primitive import(
+	Primitive_Geometry_Class, Draw_Primitive, set_smooth_by_angel
+)
 
 
 
@@ -48,6 +50,7 @@ class Bolt(Primitive_Geometry_Class):
 		pd.classname = self.classname
 		pd.height = 1
 		self.update()
+		set_smooth_by_angel()
 
 	def update(self):
 		mesh = get_bolt_mesh(self.data.primitivedata)
