@@ -19,7 +19,7 @@ import bpy
 from bpy.types import Panel, Operator
 from bpy.utils import register_class, unregister_class
 
-from bsmax.primitive_ui import get_panel
+from bsmax.primitive_ui import get_primitive_edit_panel
 
 
 class Primitive_PT_Panel(Panel):
@@ -39,7 +39,7 @@ class Primitive_PT_Panel(Panel):
 	def draw(this, ctx):
 		layout = this.layout
 		self = ctx.object.data.primitivedata
-		get_panel(self, layout)
+		get_primitive_edit_panel(self, layout)
 		col = layout.column(align=True)
 		col.operator("primitive.cleardata", text="Convert to Ragular Object")
 
@@ -59,7 +59,7 @@ class Primitive_OT_Edit(Operator):
 
 	def draw(this,ctx):
 		self = ctx.active_object.data.primitivedata
-		get_panel(self,this.layout)
+		get_primitive_edit_panel(self,this.layout)
 
 	def execute(self,ctx):
 		return {'FINISHED'}

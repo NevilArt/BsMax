@@ -12,7 +12,7 @@
 #	You should have received a copy of the GNU General Public License
 #	along with this program.  If not, see <https://www.gnu.org/licenses/>.
 ############################################################################
-# 2024/02/07
+# 2024/02/18
 
 import bpy
 
@@ -20,7 +20,8 @@ from bpy.types import Operator, Panel, PropertyGroup
 from bpy.props import PointerProperty, EnumProperty
 from bpy.utils import register_class, unregister_class
 
-from bsmax.primitive_ui import get_panel
+from bsmax.primitive_ui import get_primitive_edit_panel
+from bsmax.state import is_primitive
 
 
 def get_create_subtype(createType):
@@ -644,7 +645,7 @@ class BsMax_Scene_Side_Panel(PropertyGroup):
 			('CAMERA', 'Camera', '', 'CAMERA_DATA', 4),
 			('EMPTY', 'Empty', '', 'MODIFIER_DATA', 5),
 			('SPACEWRAP', 'Spacewrap', '', 'FORCE_FORCE', 6),
-			('SETTING', 'Setting', '', 'SETTINGS', 7),
+			('SETTING', 'Setting', '', 'SETTINGS', 7)
 		],
 		default='MESH',
 	)
@@ -732,23 +733,25 @@ def get_create_panel(layout, ctx):
 
 
 def get_edit_panel(layout, ctx):
-	layout.label(text="Edit tools will come here")
+	pass
+	#TODO active edit panel from here
 	
 
 def get_modifier_panel(layout, ctx):
 	layout.operator("object.create_modifier", text="Modifier List")
+
 	box = layout.box()
 	if ctx.object:
-		for modifer in ctx.object.modifiers:
+		for modifer in reversed(ctx.object.modifiers):
 			box.label(text=modifer.name)
+
+	box.label(text=ctx.object.name)
 	
 	box =layout.box()
-	if ctx.object.data.primitivedata:
-		get_panel(ctx.object.data.primitivedata, box)
-		box.operator(
-			"primitive.cleardata", text="Clear Primitive Data",
-			description="Collaps primitive data"
-		)
+	if is_primitive(ctx):
+		box.operator("primitive.cleardata", text="Collaps Primitive Data")
+		get_primitive_edit_panel(ctx.object.data.primitivedata, box)
+
 	else:
 		get_edit_panel(layout, ctx)
 

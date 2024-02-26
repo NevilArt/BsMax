@@ -12,12 +12,13 @@
 #	You should have received a copy of the GNU General Public License
 #	along with this program.  If not, see <https://www.gnu.org/licenses/>.
 ############################################################################
-# 2024/02/12
+# 2024/02/25
 
 import bpy
 
 from bpy.types import Operator
 from bpy.utils import register_class, unregister_class
+from bpy.app import version
 
 
 class File_OT_Scale_Icons(Operator):
@@ -70,7 +71,7 @@ class File_OT_Version(Operator):
 	
 	def invoke(self, ctx, event):
 		self.date_version = str(bpy.data.version)
-		self.app_version = str(bpy.app.version)
+		self.app_version = str(version)
 		return ctx.window_manager.invoke_props_dialog(self, width=120)
 
 
@@ -124,8 +125,20 @@ class Scene_OT_Reset(Operator):
 		bpy.ops.wm.read_homefile(app_template="")
 		for obj in ctx.scene.objects:
 			bpy.data.objects.remove(obj, do_unlink=True)
-		# ctx.space_data.shading.color_type = 'OBJECT'
+
+		#TODO check this isuue
+		if version < (4, 1, 0):
+			pass
+			# for area in ctx.screen.areas: 
+			# 	if area.type == 'VIEW_3D':
+			# 		for space in area.spaces: 
+			# 			if space.type == 'VIEW_3D':
+			# 				space.shading.color_type = 'OBJECT'
+		else:
+			pass
+
 		return{"FINISHED"}
+
 	
 	def invoke(self, ctx, event):
 		if bpy.data.is_dirty:

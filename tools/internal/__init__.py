@@ -12,6 +12,7 @@
 #	You should have received a copy of the GNU General Public License
 #	along with this program.  If not, see <https://www.gnu.org/licenses/>.
 ############################################################################
+# 2024/02/25
 
 from .animation import register_animation, unregister_animation
 from .armature import register_armature, unregister_armature
@@ -20,6 +21,7 @@ from .clip_editor import register_clip_editor, unregister_clip_editor
 from .curve import register_curve, unregister_curve
 from .file import register_file, unregister_file
 from .ligth import register_light, unregister_light
+from .material import register_material, unregister_material
 from .nodes import register_nodes, unregister_nodes
 from .mesh import register_mesh, unregister_mesh
 from .object import register_object, unregister_object
@@ -37,7 +39,6 @@ from .vse import register_vse, unregister_vse
 from .menu import register_menu, unregister_menu
 
 
-
 def register_internal(preferences):
 	register_animation(preferences)
 	register_armature()
@@ -46,6 +47,7 @@ def register_internal(preferences):
 	register_curve()
 	register_file(preferences)
 	register_light()
+	register_material(preferences)
 	register_mesh()
 	register_nodes()
 	register_object(preferences)
@@ -61,6 +63,7 @@ def register_internal(preferences):
 	register_vse()
 	register_menu()
 
+
 def unregister_internal():
 	unregister_animation()
 	unregister_armature()
@@ -69,6 +72,7 @@ def unregister_internal():
 	unregister_curve()
 	unregister_file()
 	unregister_light()
+	unregister_material()
 	unregister_mesh()
 	unregister_nodes()
 	unregister_object()

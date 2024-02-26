@@ -12,7 +12,7 @@
 #	You should have received a copy of the GNU General Public License
 #	along with this program.  If not, see <https://www.gnu.org/licenses/>.
 ############################################################################
-# 2024/01/27
+# 2024/02/13
 
 import bpy
 
@@ -20,7 +20,9 @@ from random import random, randint
 
 from bpy.types import Operator, Menu
 from bpy.props import EnumProperty, IntProperty, FloatProperty
+from bpy.utils import register_class, unregister_class
 
+from bpy.app import version
 
 
 def get_digits(string):
@@ -52,14 +54,12 @@ def get_digits(string):
 	return string[-length:]
 
 
-
 def get_modifier(obj, modifierClass):
 	""" Find and return given modifier from object list """
 	for modifier in obj.modifiers:
 		if modifier.type == modifierClass:
 			return modifier
 	return None
-
 
 
 def get_constraint(obj, constriantClass):
@@ -70,12 +70,10 @@ def get_constraint(obj, constriantClass):
 	return None
 
 
-
 def clear_collections(obj):
 	""" clear all linked collection of given object """
 	for collection in obj.users_collection:
 		collection.objects.unlink(obj)
-
 
 
 def get_selected_collections(ctx):
@@ -87,7 +85,6 @@ def get_selected_collections(ctx):
 	return ctx.collection.children
 
 
-
 def get_collection_parent(collection):
 	""" return parent of  given collection """
 	for col in bpy.data.collections:
@@ -95,7 +92,6 @@ def get_collection_parent(collection):
 			if collection == child:
 				return col
 	return None
-
 
 
 def clone_objects_to_new_collection(ctx, objs, parent, name):
@@ -117,7 +113,6 @@ def clone_objects_to_new_collection(ctx, objs, parent, name):
 		newCollection.objects.link(obj)
 
 	return newObjs
-
 
 
 def collect_alembic_containers(objs):
@@ -143,7 +138,6 @@ def collect_alembic_containers(objs):
 	return abcs, containers
 
 
-
 def loop_offset_abc(abcs, length, start, speed):
 	for abc in abcs:
 		abc.override_frame = True
@@ -157,7 +151,6 @@ def loop_offset_abc(abcs, length, start, speed):
 		abcDriver = abc.driver_add('frame')
 		abcDriver.driver.type = 'SCRIPTED'
 		abcDriver.driver.expression = script
-
 
 
 def random_loop_abcs(abcs, length, startVar=1, speedVar=0.1):
@@ -176,7 +169,6 @@ def random_loop_abcs(abcs, length, startVar=1, speedVar=0.1):
 	loop_offset_abc(abcs, length, newStart, speedFactor)
 
 
-
 def make_unique_abc_groupe(abcs, containers):
 	for abc in abcs:
 		shared = []
@@ -191,7 +183,6 @@ def make_unique_abc_groupe(abcs, containers):
 		# Replace with others
 		for container in containers:
 			container.cache_file = newAbc
-
 
 
 def clone_collection_abc(self, ctx):
@@ -210,7 +201,6 @@ def clone_collection_abc(self, ctx):
 		abcs, containers = collect_alembic_containers(newObjs)
 		make_unique_abc_groupe(abcs, containers)
 		random_loop_abcs(abcs, self.length, 1, self.speedVariation)
-
 
 
 def clone_object_abc(self, ctx):
@@ -237,7 +227,6 @@ def clone_object_abc(self, ctx):
 		collection.objects.link(newObj)
 
 
-
 def random_abc_by_objects(self, objs):
 	for obj in objs:
 		modifier = get_modifier(obj, 'MESH_SEQUENCE_CACHE')
@@ -250,12 +239,10 @@ def random_abc_by_objects(self, objs):
 			)
 
 
-
 def random_abc_by_collection(self, collections):
 	for collection in collections:
 		abcs, containers = collect_alembic_containers(collection.objects)
 		random_loop_abcs(abcs, self.length, 1, self.speedVariation)
-
 
 
 def clone_refrences(self, ctx):
@@ -274,7 +261,6 @@ def clone_refrences(self, ctx):
 			clone_object_abc(self, ctx)
 
 
-
 def random_and_loop_refrenses(self, ctx):
 	if self.target == 'COLLECTION':
 		if self.method == 'ABC':
@@ -286,7 +272,6 @@ def random_and_loop_refrenses(self, ctx):
 			random_abc_by_objects(self, ctx.selected_objects)
 
 
-
 def has_name_end_zero(objs):
 	for obj in objs:
 		digit = get_digits(obj.name)
@@ -296,19 +281,16 @@ def has_name_end_zero(objs):
 	return False
 
 
-
 def unhide_stuff(objs):
 	for obj in objs:
 		obj.hide_viewport = False
 		obj.hide_render = False
 
 
-
 def delete_hide_stuff(objs):
 	for obj in objs:
 		if obj.hide_viewport and obj.hide_render:
 			bpy.data.objects.remove(obj, do_unlink=True)
-
 
 
 def shuffle_hide_stuff(objs):
@@ -339,7 +321,6 @@ def shuffle_hide_stuff(objs):
 			obj.hide_render = state
 
 
-
 def stuff_variation(self, ctx):
 	selected_collections = get_selected_collections(ctx)
 	if self.method == 'HIDE':
@@ -353,7 +334,6 @@ def stuff_variation(self, ctx):
 	elif self.method == 'DELETE':
 		for collection in selected_collections:
 			delete_hide_stuff(collection.objects)
-
 
 
 class Crowds_TO_Clone_Refrenses(Operator):
@@ -426,7 +406,6 @@ class Crowds_TO_Clone_Refrenses(Operator):
 		return ctx.window_manager.invoke_props_dialog(self)
 
 
-
 class Crowds_TO_Loop_Refrenses(Operator):
 	bl_idname = 'crowds.loop_refrenses'
 	bl_label = 'Loop Refrences (Crowds)'
@@ -492,7 +471,6 @@ class Crowds_TO_Loop_Refrenses(Operator):
 		return ctx.window_manager.invoke_props_dialog(self)
 
 
-
 class Crowds_TO_Stuff_Variation(Operator):
 	bl_idname = 'crowds.stuff_variation'
 	bl_label = 'Stuff Variation (Crowds)'
@@ -536,7 +514,6 @@ class Crowds_TO_Stuff_Variation(Operator):
 		return ctx.window_manager.invoke_props_dialog(self)
 
 
-
 class BsMax_MT_Crowds_Tools(Menu):
 	bl_idname = 'BSMAX_MT_crowdstools'
 	bl_label = 'Crowds'
@@ -548,10 +525,11 @@ class BsMax_MT_Crowds_Tools(Menu):
 
 	def draw(self, ctx):
 		layout=self.layout
+		icon='LIGHTPROBE_GRID' if version < (4, 1, 0) else 'LIGHTPROBE_VOLUME'
 		layout.operator(
 			'crowds.clone_refrenses',
 			text='Clone Instanses',
-			icon='LIGHTPROBE_GRID'
+			icon=icon
 		)
 
 		layout.operator(
@@ -567,10 +545,8 @@ class BsMax_MT_Crowds_Tools(Menu):
 		)
 
 
-
 def crowds_menu(self, ctx):
 	self.layout.menu('BSMAX_MT_crowdstools', icon='COMMUNITY')
-
 
 
 classes = (
@@ -581,21 +557,18 @@ classes = (
 )
 
 
-
 def register_crowds():
 	for c in classes:
-		bpy.utils.register_class(c)
+		register_class(c)
 	
 	bpy.types.BSMAX_MT_view3dtools.append(crowds_menu)
-
 
 
 def unregister_crowds():
 	bpy.types.BSMAX_MT_view3dtools.remove(crowds_menu)
 
 	for c in classes:
-		bpy.utils.unregister_class(c)
-
+		unregister_class(c)
 
 
 if __name__ == "__main__":

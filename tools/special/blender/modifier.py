@@ -12,13 +12,14 @@
 #	You should have received a copy of the GNU General Public License
 #	along with this program. If not, see <https://www.gnu.org/licenses/>.
 ############################################################################
+# 2024/02/18
 
 import bpy
 
 from bpy.types import Operator
+from bpy.utils import register_class, unregister_class
 
 from bsmax.actions import modifier_add
-from bsmax.state import is_objects_selected
 
 # this operator use to add modifier to selected objects from search box
 
@@ -30,12 +31,11 @@ class Modifier_OT_DATA_TRANSFER_Add(Operator):
 
 	@classmethod
 	def poll(self, ctx):
-		return is_objects_selected(ctx)
+		return ctx.object
 
 	def execute(self, ctx):
 		modifier_add(ctx.selected_objects, 'DATA_TRANSFER')
 		return {'FINISHED'}
-
 
 
 class Modifier_OT_MESH_CACHE_Add(Operator):
@@ -45,12 +45,11 @@ class Modifier_OT_MESH_CACHE_Add(Operator):
 
 	@classmethod
 	def poll(self, ctx):
-		return is_objects_selected(ctx)
+		return ctx.object
 
 	def execute(self, ctx):
 		modifier_add(ctx.selected_objects, 'MESH_CACHE')
 		return {'FINISHED'}
-
 
 
 class Modifier_OT_MESH_SEQUENCE_CACHE_Add(Operator):
@@ -60,12 +59,11 @@ class Modifier_OT_MESH_SEQUENCE_CACHE_Add(Operator):
 
 	@classmethod
 	def poll(self, ctx):
-		return is_objects_selected(ctx)
+		return ctx.object
 
 	def execute(self, ctx):
 		modifier_add(ctx.selected_objects, 'MESH_SEQUENCE_CACHE')
 		return {'FINISHED'}
-
 
 
 class Modifier_OT_NORMAL_EDIT_Add(Operator):
@@ -75,12 +73,11 @@ class Modifier_OT_NORMAL_EDIT_Add(Operator):
 
 	@classmethod
 	def poll(self, ctx):
-		return is_objects_selected(ctx)
+		return ctx.object
 
 	def execute(self, ctx):
 		modifier_add(ctx.selected_objects, 'NORMAL_EDIT')
 		return {'FINISHED'}
-
 
 
 class Modifier_OT_WEIGHTED_NORMAL_Add(Operator):
@@ -90,12 +87,11 @@ class Modifier_OT_WEIGHTED_NORMAL_Add(Operator):
 
 	@classmethod
 	def poll(self, ctx):
-		return is_objects_selected(ctx)
+		return ctx.object
 
 	def execute(self, ctx):
 		modifier_add(ctx.selected_objects, 'WEIGHTED_NORMAL')
 		return {'FINISHED'}
-
 
 
 class Modifier_OT_UV_PROJECT_Add(Operator):
@@ -105,12 +101,11 @@ class Modifier_OT_UV_PROJECT_Add(Operator):
 
 	@classmethod
 	def poll(self, ctx):
-		return is_objects_selected(ctx)
+		return ctx.object
 
 	def execute(self, ctx):
 		modifier_add(ctx.selected_objects, 'UV_PROJECT')
 		return {'FINISHED'}
-
 
 
 class Modifier_OT_UV_WARP_Add(Operator):
@@ -120,12 +115,11 @@ class Modifier_OT_UV_WARP_Add(Operator):
 
 	@classmethod
 	def poll(self, ctx):
-		return is_objects_selected(ctx)
+		return ctx.object
 
 	def execute(self, ctx):
 		modifier_add(ctx.selected_objects, 'UV_WARP')
 		return {'FINISHED'}
-
 
 
 class Modifier_OT_VERTEX_WEIGHT_EDIT_Add(Operator):
@@ -135,12 +129,11 @@ class Modifier_OT_VERTEX_WEIGHT_EDIT_Add(Operator):
 
 	@classmethod
 	def poll(self, ctx):
-		return is_objects_selected(ctx)
+		return ctx.object
 
 	def execute(self, ctx):
 		modifier_add(ctx.selected_objects, 'VERTEX_WEIGHT_EDIT')
 		return {'FINISHED'}
-
 
 
 class Modifier_OT_VERTEX_WEIGHT_MIX_Add(Operator):
@@ -150,12 +143,11 @@ class Modifier_OT_VERTEX_WEIGHT_MIX_Add(Operator):
 
 	@classmethod
 	def poll(self, ctx):
-		return is_objects_selected(ctx)
+		return ctx.object
 
 	def execute(self, ctx):
 		modifier_add(ctx.selected_objects, 'VERTEX_WEIGHT_MIX')
 		return {'FINISHED'}
-
 
 
 class Modifier_OT_VERTEX_WEIGHT_PROXIMITY_Add(Operator):
@@ -165,12 +157,11 @@ class Modifier_OT_VERTEX_WEIGHT_PROXIMITY_Add(Operator):
 	@classmethod
 
 	def poll(self, ctx):
-		return is_objects_selected(ctx)
+		return ctx.object
 
 	def execute(self, ctx):
 		modifier_add(ctx.selected_objects, 'VERTEX_WEIGHT_PROXIMITY')
 		return {'FINISHED'}
-
 
 
 class Modifier_OT_ARRAY_Add(Operator):
@@ -180,12 +171,11 @@ class Modifier_OT_ARRAY_Add(Operator):
 
 	@classmethod
 	def poll(self, ctx):
-		return is_objects_selected(ctx)
+		return ctx.object
 
 	def execute(self, ctx):
 		modifier_add(ctx.selected_objects, 'ARRAY')
 		return {'FINISHED'}
-
 
 
 class Modifier_OT_BEVEL_Add(Operator):
@@ -195,12 +185,11 @@ class Modifier_OT_BEVEL_Add(Operator):
 
 	@classmethod
 	def poll(self, ctx):
-		return is_objects_selected(ctx)
+		return ctx.object
 
 	def execute(self, ctx):
 		modifier_add(ctx.selected_objects, 'BEVEL')
 		return {'FINISHED'}
-
 
 
 class Modifier_OT_BOOLEAN_Add(Operator):
@@ -210,12 +199,11 @@ class Modifier_OT_BOOLEAN_Add(Operator):
 
 	@classmethod
 	def poll(self, ctx):
-		return is_objects_selected(ctx)
+		return ctx.object
 
 	def execute(self, ctx):
 		modifier_add(ctx.selected_objects, 'BOOLEAN')
 		return {'FINISHED'}
-
 
 
 class Modifier_OT_BUILD_Add(Operator):
@@ -225,12 +213,11 @@ class Modifier_OT_BUILD_Add(Operator):
 
 	@classmethod
 	def poll(self, ctx):
-		return is_objects_selected(ctx)
+		return ctx.object
 
 	def execute(self, ctx):
 		modifier_add(ctx.selected_objects, 'BUILD')
 		return {'FINISHED'}
-
 
 
 class Modifier_OT_DECIMATE_Add(Operator):
@@ -240,12 +227,11 @@ class Modifier_OT_DECIMATE_Add(Operator):
 
 	@classmethod
 	def poll(self, ctx):
-		return is_objects_selected(ctx)
+		return ctx.object
 
 	def execute(self, ctx):
 		modifier_add(ctx.selected_objects, 'DECIMATE')
 		return {'FINISHED'}
-
 
 
 class Modifier_OT_EDGE_SPLIT_Add(Operator):
@@ -255,12 +241,11 @@ class Modifier_OT_EDGE_SPLIT_Add(Operator):
 
 	@classmethod
 	def poll(self, ctx):
-		return is_objects_selected(ctx)
+		return ctx.object
 
 	def execute(self, ctx):
 		modifier_add(ctx.selected_objects, 'EDGE_SPLIT')
 		return {'FINISHED'}
-
 
 
 class Modifier_OT_Mask_Add(Operator):
@@ -270,12 +255,11 @@ class Modifier_OT_Mask_Add(Operator):
 
 	@classmethod
 	def poll(self, ctx):
-		return is_objects_selected(ctx)
+		return ctx.object
 
 	def execute(self, ctx):
 		modifier_add(ctx.selected_objects, 'MASK')
 		return {'FINISHED'}
-
 
 
 class Modifier_OT_MIRROR_Add(Operator):
@@ -285,12 +269,11 @@ class Modifier_OT_MIRROR_Add(Operator):
 
 	@classmethod
 	def poll(self, ctx):
-		return is_objects_selected(ctx)
+		return ctx.object
 
 	def execute(self, ctx):
 		modifier_add(ctx.selected_objects, 'MIRROR')
 		return {'FINISHED'}
-
 
 
 class Modifier_OT_MULTIRES_Add(Operator):
@@ -300,12 +283,11 @@ class Modifier_OT_MULTIRES_Add(Operator):
 
 	@classmethod
 	def poll(self, ctx):
-		return is_objects_selected(ctx)
+		return ctx.object
 
 	def execute(self, ctx):
 		modifier_add(ctx.selected_objects, 'MULTIRES')
 		return {'FINISHED'}
-
 
 
 class Modifier_OT_Geometry_Nodes_Add(Operator):
@@ -315,12 +297,11 @@ class Modifier_OT_Geometry_Nodes_Add(Operator):
 
 	@classmethod
 	def poll(self, ctx):
-		return is_objects_selected(ctx)
+		return ctx.object
 
 	def execute(self, ctx):
 		modifier_add(ctx.selected_objects, 'NODES')
 		return {'FINISHED'}
-
 
 
 class Modifier_OT_REMESH_Add(Operator):
@@ -330,12 +311,11 @@ class Modifier_OT_REMESH_Add(Operator):
 
 	@classmethod
 	def poll(self, ctx):
-		return is_objects_selected(ctx)
+		return ctx.object
 
 	def execute(self, ctx):
 		modifier_add(ctx.selected_objects, 'REMESH')
 		return {'FINISHED'}
-
 
 
 class Modifier_OT_Screw_Add(Operator):
@@ -345,12 +325,11 @@ class Modifier_OT_Screw_Add(Operator):
 
 	@classmethod
 	def poll(self, ctx):
-		return is_objects_selected(ctx)
+		return ctx.object
 
 	def execute(self, ctx):
 		modifier_add(ctx.selected_objects, 'SCREW')
 		return {'FINISHED'}
-
 
 
 class Modifier_OT_SKIN_Add(Operator):
@@ -360,12 +339,11 @@ class Modifier_OT_SKIN_Add(Operator):
 
 	@classmethod
 	def poll(self, ctx):
-		return is_objects_selected(ctx)
+		return ctx.object
 
 	def execute(self, ctx):
 		modifier_add(ctx.selected_objects, 'SKIN')
 		return {'FINISHED'}
-
 
 
 class Modifier_OT_SOLIDIFY_Add(Operator):
@@ -375,12 +353,11 @@ class Modifier_OT_SOLIDIFY_Add(Operator):
 
 	@classmethod
 	def poll(self, ctx):
-		return is_objects_selected(ctx)
+		return ctx.object
 
 	def execute(self, ctx):
 		modifier_add(ctx.selected_objects, 'SOLIDIFY')
 		return {'FINISHED'}
-
 
 
 class Modifier_OT_SUBSURF_Add(Operator):
@@ -390,12 +367,11 @@ class Modifier_OT_SUBSURF_Add(Operator):
 
 	@classmethod
 	def poll(self, ctx):
-		return is_objects_selected(ctx)
+		return ctx.object
 
 	def execute(self, ctx):
 		modifier_add(ctx.selected_objects, 'SUBSURF')
 		return {'FINISHED'}
-
 
 
 class Modifier_OT_TRIANGULATE_Add(Operator):
@@ -405,12 +381,11 @@ class Modifier_OT_TRIANGULATE_Add(Operator):
 
 	@classmethod
 	def poll(self, ctx):
-		return is_objects_selected(ctx)
+		return ctx.object
 
 	def execute(self, ctx):
 		modifier_add(ctx.selected_objects, 'TRIANGULATE')
 		return {'FINISHED'}
-
 
 
 class Modifier_OT_WIREFRAME_Add(Operator):
@@ -420,12 +395,11 @@ class Modifier_OT_WIREFRAME_Add(Operator):
 
 	@classmethod
 	def poll(self, ctx):
-		return is_objects_selected(ctx)
+		return ctx.object
 
 	def execute(self, ctx):
 		modifier_add(ctx.selected_objects, 'WIREFRAME')
 		return {'FINISHED'}
-
 
 
 class Modifier_OT_ARMATURE_Add(Operator):
@@ -435,12 +409,11 @@ class Modifier_OT_ARMATURE_Add(Operator):
 
 	@classmethod
 	def poll(self, ctx):
-		return is_objects_selected(ctx)
+		return ctx.object
 
 	def execute(self, ctx):
 		modifier_add(ctx.selected_objects, 'ARMATURE')
 		return {'FINISHED'}
-
 
 
 class Modifier_OT_CAST_Add(Operator):
@@ -450,12 +423,11 @@ class Modifier_OT_CAST_Add(Operator):
 
 	@classmethod
 	def poll(self, ctx):
-		return is_objects_selected(ctx)
+		return ctx.object
 
 	def execute(self, ctx):
 		modifier_add(ctx.selected_objects, 'CAST')
 		return {'FINISHED'}
-
 
 
 class Modifier_OT_CURVE_Add(Operator):
@@ -465,12 +437,11 @@ class Modifier_OT_CURVE_Add(Operator):
 
 	@classmethod
 	def poll(self, ctx):
-		return is_objects_selected(ctx)
+		return ctx.object
 
 	def execute(self, ctx):
 		modifier_add(ctx.selected_objects, 'CURVE')
 		return {'FINISHED'}
-
 
 
 class Modifier_OT_DISPLACE_Add(Operator):
@@ -480,12 +451,11 @@ class Modifier_OT_DISPLACE_Add(Operator):
 
 	@classmethod
 	def poll(self, ctx):
-		return is_objects_selected(ctx)
+		return ctx.object
 
 	def execute(self, ctx):
 		modifier_add(ctx.selected_objects, 'DISPLACE')
 		return {'FINISHED'}
-
 
 
 class Modifier_OT_HOOK_Add(Operator):
@@ -495,12 +465,11 @@ class Modifier_OT_HOOK_Add(Operator):
 
 	@classmethod
 	def poll(self, ctx):
-		return is_objects_selected(ctx)
+		return ctx.object
 
 	def execute(self, ctx):
 		modifier_add(ctx.selected_objects, 'HOOK')
 		return {'FINISHED'}
-
 
 
 class Modifier_OT_LAPLACIANDEFORM_Add(Operator):
@@ -510,12 +479,11 @@ class Modifier_OT_LAPLACIANDEFORM_Add(Operator):
 
 	@classmethod
 	def poll(self, ctx):
-		return is_objects_selected(ctx)
+		return ctx.object
 
 	def execute(self, ctx):
 		modifier_add(ctx.selected_objects, 'LAPLACIANDEFORM')
 		return {'FINISHED'}
-
 
 
 class Modifier_OT_LATTICE_Add(Operator):
@@ -525,12 +493,11 @@ class Modifier_OT_LATTICE_Add(Operator):
 
 	@classmethod
 	def poll(self, ctx):
-		return is_objects_selected(ctx)
+		return ctx.object
 
 	def execute(self, ctx):
 		modifier_add(ctx.selected_objects, 'LATTICE')
 		return {'FINISHED'}
-
 
 
 class Modifier_OT_MESH_DEFORM_Add(Operator):
@@ -540,12 +507,11 @@ class Modifier_OT_MESH_DEFORM_Add(Operator):
 
 	@classmethod
 	def poll(self, ctx):
-		return is_objects_selected(ctx)
+		return ctx.object
 
 	def execute(self, ctx):
 		modifier_add(ctx.selected_objects, 'MESH_DEFORM')
 		return {'FINISHED'}
-
 
 
 class Modifier_OT_SHRINKWRAP_Add(Operator):
@@ -555,12 +521,11 @@ class Modifier_OT_SHRINKWRAP_Add(Operator):
 
 	@classmethod
 	def poll(self, ctx):
-		return is_objects_selected(ctx)
+		return ctx.object
 
 	def execute(self, ctx):
 		modifier_add(ctx.selected_objects, 'SHRINKWRAP')
 		return {'FINISHED'}
-
 
 
 class Modifier_OT_SIMPLE_DEFORM_Add(Operator):
@@ -570,12 +535,11 @@ class Modifier_OT_SIMPLE_DEFORM_Add(Operator):
 
 	@classmethod
 	def poll(self, ctx):
-		return is_objects_selected(ctx)
+		return ctx.object
 
 	def execute(self, ctx):
 		modifier_add(ctx.selected_objects, 'SIMPLE_DEFORM')
 		return {'FINISHED'}
-
 
 
 class Modifier_OT_SMOOTH_Add(Operator):
@@ -585,12 +549,11 @@ class Modifier_OT_SMOOTH_Add(Operator):
 
 	@classmethod
 	def poll(self, ctx):
-		return is_objects_selected(ctx)
+		return ctx.object
 
 	def execute(self, ctx):
 		modifier_add(ctx.selected_objects, 'SMOOTH')
 		return {'FINISHED'}
-
 
 
 class Modifier_OT_CORRECTIVE_SMOOTH_Add(Operator):
@@ -600,12 +563,11 @@ class Modifier_OT_CORRECTIVE_SMOOTH_Add(Operator):
 
 	@classmethod
 	def poll(self, ctx):
-		return is_objects_selected(ctx)
+		return ctx.object
 
 	def execute(self, ctx):
 		modifier_add(ctx.selected_objects, 'CORRECTIVE_SMOOTH')
 		return {'FINISHED'}
-
 
 
 class Modifier_OT_LAPLACIANSMOOTH_Add(Operator):
@@ -615,12 +577,11 @@ class Modifier_OT_LAPLACIANSMOOTH_Add(Operator):
 
 	@classmethod
 	def poll(self, ctx):
-		return is_objects_selected(ctx)
+		return ctx.object
 
 	def execute(self, ctx):
 		modifier_add(ctx.selected_objects, 'LAPLACIANSMOOTH')
 		return {'FINISHED'}
-
 
 
 class Modifier_OT_SURFACE_DEFORM_Add(Operator):
@@ -630,12 +591,11 @@ class Modifier_OT_SURFACE_DEFORM_Add(Operator):
 
 	@classmethod
 	def poll(self, ctx):
-		return is_objects_selected(ctx)
+		return ctx.object
 
 	def execute(self, ctx):
 		modifier_add(ctx.selected_objects, 'SURFACE_DEFORM')
 		return {'FINISHED'}
-
 
 
 class Modifier_OT_WARP_Add(Operator):
@@ -645,12 +605,11 @@ class Modifier_OT_WARP_Add(Operator):
 
 	@classmethod
 	def poll(self, ctx):
-		return is_objects_selected(ctx)
+		return ctx.object
 
 	def execute(self, ctx):
 		modifier_add(ctx.selected_objects, 'WARP')
 		return {'FINISHED'}
-
 
 
 class Modifier_OT_WAVE_Add(Operator):
@@ -660,12 +619,11 @@ class Modifier_OT_WAVE_Add(Operator):
 
 	@classmethod
 	def poll(self, ctx):
-		return is_objects_selected(ctx)
+		return ctx.object
 
 	def execute(self, ctx):
 		modifier_add(ctx.selected_objects, 'WAVE')
 		return {'FINISHED'}
-
 
 
 class Modifier_OT_CLOTH_Add(Operator):
@@ -675,12 +633,11 @@ class Modifier_OT_CLOTH_Add(Operator):
 
 	@classmethod
 	def poll(self, ctx):
-		return is_objects_selected(ctx)
+		return ctx.object
 
 	def execute(self, ctx):
 		modifier_add(ctx.selected_objects, 'CLOTH')
 		return {'FINISHED'}
-
 
 
 class Modifier_OT_COLLISION_Add(Operator):
@@ -690,12 +647,11 @@ class Modifier_OT_COLLISION_Add(Operator):
 
 	@classmethod
 	def poll(self, ctx):
-		return is_objects_selected(ctx)
+		return ctx.object
 
 	def execute(self, ctx):
 		modifier_add(ctx.selected_objects, 'COLLISION')
 		return {'FINISHED'}
-
 
 
 class Modifier_OT_DYNAMIC_PAINT_Add(Operator):
@@ -705,12 +661,11 @@ class Modifier_OT_DYNAMIC_PAINT_Add(Operator):
 
 	@classmethod
 	def poll(self, ctx):
-		return is_objects_selected(ctx)
+		return ctx.object
 
 	def execute(self, ctx):
 		modifier_add(ctx.selected_objects, 'DYNAMIC_PAINT')
 		return {'FINISHED'}
-
 
 
 class Modifier_OT_EXPLODE_Add(Operator):
@@ -720,12 +675,11 @@ class Modifier_OT_EXPLODE_Add(Operator):
 
 	@classmethod
 	def poll(self, ctx):
-		return is_objects_selected(ctx)
+		return ctx.object
 
 	def execute(self, ctx):
 		modifier_add(ctx.selected_objects, 'EXPLODE')
 		return {'FINISHED'}
-
 
 
 class Modifier_OT_FLUID_SIMULATION_Add(Operator):
@@ -735,12 +689,11 @@ class Modifier_OT_FLUID_SIMULATION_Add(Operator):
 
 	@classmethod
 	def poll(self, ctx):
-		return is_objects_selected(ctx)
+		return ctx.object
 
 	def execute(self, ctx):
 		modifier_add(ctx.selected_objects, 'FLUID_SIMULATION')
 		return {'FINISHED'}
-
 
 
 class Modifier_OT_OCEAN_Add(Operator):
@@ -750,12 +703,11 @@ class Modifier_OT_OCEAN_Add(Operator):
 
 	@classmethod
 	def poll(self, ctx):
-		return is_objects_selected(ctx)
+		return ctx.object
 
 	def execute(self, ctx):
 		modifier_add(ctx.selected_objects, 'OCEAN')
 		return {'FINISHED'}
-
 
 
 class Modifier_OT_PARTICLE_INSTANCE_Add(Operator):
@@ -765,12 +717,11 @@ class Modifier_OT_PARTICLE_INSTANCE_Add(Operator):
 
 	@classmethod
 	def poll(self, ctx):
-		return is_objects_selected(ctx)
+		return ctx.object
 
 	def execute(self, ctx):
 		modifier_add(ctx.selected_objects, 'PARTICLE_INSTANCE')
 		return {'FINISHED'}
-
 
 
 class Modifier_OT_PARTICLE_SYSTEM_Add(Operator):
@@ -780,12 +731,11 @@ class Modifier_OT_PARTICLE_SYSTEM_Add(Operator):
 
 	@classmethod
 	def poll(self, ctx):
-		return is_objects_selected(ctx)
+		return ctx.object
 
 	def execute(self, ctx):
 		modifier_add(ctx.selected_objects, 'PARTICLE_SYSTEM')
 		return {'FINISHED'}
-
 
 
 class Modifier_OT_SMOKE_Add(Operator):
@@ -795,12 +745,11 @@ class Modifier_OT_SMOKE_Add(Operator):
 
 	@classmethod
 	def poll(self, ctx):
-		return is_objects_selected(ctx)
+		return ctx.object
 
 	def execute(self, ctx):
 		modifier_add(ctx.selected_objects, 'SMOKE')
 		return {'FINISHED'}
-
 
 
 class Modifier_OT_SOFT_BODY_Add(Operator):
@@ -810,12 +759,11 @@ class Modifier_OT_SOFT_BODY_Add(Operator):
 
 	@classmethod
 	def poll(self, ctx):
-		return is_objects_selected(ctx)
+		return ctx.object
 
 	def execute(self, ctx):
 		modifier_add(ctx.selected_objects, 'SOFT_BODY')
 		return {'FINISHED'}
-
 
 
 classes = (
@@ -875,14 +823,12 @@ classes = (
 )
 
 
-
 def register_modifier():
 	for c in classes:
-		bpy.utils.register_class(c)
-
+		register_class(c)
 
 
 def unregister_modifier():
 	for c in classes:
 		if hasattr(bpy.types, c.bl_idname):
-			bpy.utils.unregister_class(c)
+			unregister_class(c)

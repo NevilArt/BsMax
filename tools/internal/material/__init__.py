@@ -12,4 +12,19 @@
 #	You should have received a copy of the GNU General Public License
 #	along with this program.  If not, see <https://www.gnu.org/licenses/>.
 ############################################################################
+# 2024/02/25
 
+from .fbx_refiner import register_fbx_refiner, unregister_fbx_refiner
+from .tools import register_tools, unregister_tools
+
+
+def register_material(preferences):
+    register_tools()
+
+    if preferences.experimental:
+        register_fbx_refiner()
+
+
+def unregister_material():
+    unregister_tools()
+    unregister_fbx_refiner()

@@ -12,25 +12,21 @@
 #	You should have received a copy of the GNU General Public License
 #	along with this program.  If not, see <https://www.gnu.org/licenses/>.
 ############################################################################
+# 2024/02/25
 
 import bpy
 
-from bpy.types import Operator
-from bpy.props import EnumProperty, BoolProperty
+from bpy.types import Operator, PropertyGroup
+from bpy.props import EnumProperty, BoolProperty, PointerProperty
 
 
-
-class Mesh_Subobject_Mode:
-	def __init__(self):
-		self.active = False
-		self.normal = True
-		self.material = False
-		self.seam = True
-		self.sharp = True
-		self.uv = False
-
-msm = Mesh_Subobject_Mode()
-
+class Mesh_Select_Option(PropertyGroup):
+	by_element: BoolProperty (default=False)
+	normal: BoolProperty (default=True)
+	material: BoolProperty (default=False)
+	seam: BoolProperty (default=True)
+	sharp: BoolProperty (default=True)
+	uv: BoolProperty (default=False)
 
 
 class Mesh_OT_Select_Element_Toggle(Operator):
@@ -39,72 +35,70 @@ class Mesh_OT_Select_Element_Toggle(Operator):
 
 	@classmethod
 	def poll(self, ctx):
-		return ctx.mode in {'EDIT_MESH','EDIT_CURVE', 'PARTICLE'}
+		return ctx.mode in {'EDIT_MESH', 'EDIT_CURVE', 'PARTICLE'}
 	
 	def execute(self, ctx):
-		global msm
-		msm.active = not msm.active
+		mso = ctx.scene.mesh_select_option
+		mso.by_element = not mso.by_element
 		return{"FINISHED"}
 
 
-
-def view3d_select(mode,x,y):
+def view3d_select(mode, x, y):
 	if mode == 'SET':
 		bpy.ops.view3d.select(deselect_all=True, location=(x, y))
+
 	elif mode == 'ADD':
 		bpy.ops.view3d.select(toggle=True, location=(x, y))
+
 	elif mode == 'SUB':
 		bpy.ops.view3d.select(deselect=True, location=(x, y))
 
 
+def mesh_select(mode, ctx):
+	mesh_select_option = ctx.scene.mesh_select_option
 
-def mesh_select(mode):
-	global msm
 	delimit = set()
-	if msm.normal:
+	if mesh_select_option.normal:
 		delimit.add('NORMAL')
-	if msm.material:
-		delimit.add('MATERIAL')
-	if msm.seam:
-		delimit.add('SEAM')
-	if msm.sharp:
-		delimit.add('SHARP')
-	if msm.uv:
-		delimit.add('UV')
 
+	if mesh_select_option.material:
+		delimit.add('MATERIAL')
+
+	if mesh_select_option.seam:
+		delimit.add('SEAM')
+
+	if mesh_select_option.sharp:
+		delimit.add('SHARP')
+
+	if mesh_select_option.uv:
+		delimit.add('UV')
+	
 	if mode == 'SET':
 		bpy.ops.mesh.select_all(action='DESELECT')
-		bpy.ops.mesh.select_linked_pick('INVOKE_DEFAULT',
-			deselect=False, delimit=delimit)
-	elif mode == 'ADD':
-		bpy.ops.mesh.select_linked_pick('INVOKE_DEFAULT',
-			deselect=False, delimit=delimit)
-	elif mode == 'SUB':
-		bpy.ops.mesh.select_linked_pick('INVOKE_DEFAULT',
-			deselect=True, delimit=delimit)
-
+	
+	# avalible modes = ['SET', 'ADD', 'SUB'] only sub need to deselect
+	deselect = (mode == 'SUB')
+	bpy.ops.mesh.select_linked_pick(
+		'INVOKE_DEFAULT', deselect=deselect, delimit=delimit
+	)
 
 
 def curve_select(mode):
 	if mode == 'SET':
 		bpy.ops.curve.select_all(action='DESELECT')
-		bpy.ops.curve.select_linked_pick('INVOKE_DEFAULT',deselect=False)
-	elif mode == 'ADD':
-		bpy.ops.curve.select_linked_pick('INVOKE_DEFAULT',deselect=False)
-	elif mode == 'SUB':
-		bpy.ops.curve.select_linked_pick('INVOKE_DEFAULT',deselect=True)
-
+	
+	# avalible modes = ['SET', 'ADD', 'SUB'] only sub need to deselect
+	deselect = (mode == 'SUB')
+	bpy.ops.curve.select_linked_pick('INVOKE_DEFAULT', deselect=deselect)
 
 
 def particle_select(mode):
 	if mode == 'SET':
 		bpy.ops.particle.select_all(action='DESELECT')
-		bpy.ops.particle.select_linked_pick('INVOKE_DEFAULT',deselect=False)
-	elif mode == 'ADD':
-		bpy.ops.particle.select_linked_pick('INVOKE_DEFAULT',deselect=False)
-	elif mode == 'SUB':
-		bpy.ops.particle.select_linked_pick('INVOKE_DEFAULT',deselect=True)
-
+	
+	# avalible modes = ['SET', 'ADD', 'SUB'] only sub need to deselect
+	deselect = (mode == 'SUB')
+	bpy.ops.particle.select_linked_pick('INVOKE_DEFAULT', deselect=deselect)
 
 
 class Mesh_OT_Select_Element_Setting(Operator):
@@ -123,16 +117,16 @@ class Mesh_OT_Select_Element_Setting(Operator):
 		return ctx.mode == "EDIT_MESH"
 
 	def draw(self,ctx):
-		layout =self.layout
-		box =layout.box()
-		box.prop(self,"active")
+		layout = self.layout
+		box = layout.box()
+		box.prop(self, "active")
 		if self.active:
 			box =layout.box()
-			box.prop(self,"normal")
-			box.prop(self,"material")
-			box.prop(self,"seam")
-			box.prop(self,"sharp")
-			box.prop(self,"uv")
+			box.prop(self, "normal")
+			box.prop(self, "material")
+			box.prop(self, "seam")
+			box.prop(self, "sharp")
+			box.prop(self, "uv")
 
 	def commit(self):
 		global msm
@@ -162,35 +156,40 @@ class Mesh_OT_Select_Element_Setting(Operator):
 		return ctx.window_manager.invoke_props_dialog(self)
 
 
-
 class Mesh_OT_Select_Max(Operator):
 	bl_idname = "mesh.select_max"
 	bl_label = "Select (3DsMax)"
 	bl_options = {'REGISTER', 'INTERNAL'}
 
-	mode: EnumProperty(name='Mode', default='SET',
-		items=[('SET','Set',''),('ADD','Add',''),('SUB','Sub','')])
-	
-	x,y = 0,0
+	mode: EnumProperty(
+		name='Mode',
+		items=[
+			('SET', 'Set', ''),
+			('ADD', 'Add', ''),
+			('SUB', 'Sub', '')
+		],
+		 default='SET'
+	)
+
+	x, y = 0, 0
 
 	@classmethod
 	def poll(self, ctx):
 		return ctx.mode == "EDIT_MESH"
 
 	def execute(self, ctx):
-		global msm
-		if msm.active:
-			mesh_select(self.mode)
+		if ctx.scene.mesh_select_option.by_element:
+			mesh_select(self.mode, ctx)
+
 		else:
 			view3d_select(self.mode, self.x, self.y)
+
 		bpy.ops.ed.undo_push()
-		# self.report({'OPERATOR'},'bpy.ops.mesh.select_max()')
 		return{"FINISHED"}
 	
 	def invoke(self, ctx, event):
 		self.x, self.y = event.mouse_region_x, event.mouse_region_y
 		return self.execute(ctx)
-
 
 
 class Curve_OT_Select_Max(Operator):
@@ -198,29 +197,35 @@ class Curve_OT_Select_Max(Operator):
 	bl_label = "Select (3DsMax)"
 	bl_options = {'REGISTER', 'INTERNAL'}
 
-	mode: EnumProperty(name='Mode', default='SET',
-		items=[('SET','Set',''),('ADD','Add',''),('SUB','Sub','')])
-	
-	x,y = 0,0
+	mode: EnumProperty(
+		name='Mode',
+		items=[
+			('SET', 'Set', ''),
+			('ADD', 'Add', ''),
+			('SUB', 'Sub', '')
+		],
+		default='SET'
+	)
+
+	x, y = 0, 0
 
 	@classmethod
 	def poll(self, ctx):
 		return ctx.mode == "EDIT_CURVE"
 
 	def execute(self, ctx):
-		global msm
-		if msm.active:
+		if ctx.scene.mesh_select_option.by_element:
 			curve_select(self.mode)
+
 		else:
 			view3d_select(self.mode, self.x, self.y)
+
 		bpy.ops.ed.undo_push()
-		# self.report({'OPERATOR'},'bpy.ops.curve.select_max()')
 		return{"FINISHED"}
 	
 	def invoke(self, ctx, event):
 		self.x, self.y = event.mouse_region_x, event.mouse_region_y
 		return self.execute(ctx)
-
 
 
 class Particle_OT_Select_Max(Operator):
@@ -228,23 +233,30 @@ class Particle_OT_Select_Max(Operator):
 	bl_label = "Select (3DsMax)"
 	bl_options = {'REGISTER', 'INTERNAL'}
 
-	mode: EnumProperty(name='Mode', default='SET',
-		items=[('SET','Set',''),('ADD','Add',''),('SUB','Sub','')])
+	mode: EnumProperty(
+		name='Mode',
+		items=[
+			('SET', 'Set', ''),
+			('ADD', 'Add', ''),
+			('SUB', 'Sub', '')
+		],
+		default='SET'
+	)
 	
-	x,y = 0,0
+	x, y = 0, 0
 
 	@classmethod
 	def poll(self, ctx):
 		return ctx.mode == "EDIT_CURVE"
 
 	def execute(self, ctx):
-		global msm
-		if msm.active:
+		if ctx.scene.mesh_select_option.by_element:
 			particle_select(self.mode)
+
 		else:
 			view3d_select(self.mode, self.x, self.y)
+
 		bpy.ops.ed.undo_push()
-		# self.report({'OPERATOR'},'bpy.ops.curve.select_max()')
 		return{"FINISHED"}
 	
 	def invoke(self, ctx, event):
@@ -252,8 +264,8 @@ class Particle_OT_Select_Max(Operator):
 		return self.execute(ctx)
 
 
-
 classes = (
+	Mesh_Select_Option,
 	Mesh_OT_Select_Element_Toggle,
 	Mesh_OT_Select_Element_Setting,
 	Mesh_OT_Select_Max,
@@ -262,17 +274,20 @@ classes = (
 )
 
 
-
 def register_select():
 	for c in classes:
 		bpy.utils.register_class(c)
 
+	bpy.types.Scene.mesh_select_option = PointerProperty(
+		type=Mesh_Select_Option, name='Mesh Select Option'
+	)
 
 
 def unregister_select():
+	del bpy.types.Scene.mesh_select_option
+
 	for c in classes:
 		bpy.utils.unregister_class(c)
-
 
 
 if __name__ == "__main__":

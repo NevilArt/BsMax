@@ -12,7 +12,7 @@
 #	You should have received a copy of the GNU General Public License
 #	along with this program.  If not,see <https://www.gnu.org/licenses/>.
 ############################################################################
-# 2024/02/07
+# 2024/02/14
 
 import bpy
 
@@ -339,7 +339,6 @@ def get_torusknot_panel(self, layout):
 	# col.prop(self,"ssegs", text="Sides")
 
 
-
 def get_pyramid_panel(self, layout):
 	layout.label(text="Pyramid",icon='MARKER')
 	col = layout.column(align=True)
@@ -353,7 +352,6 @@ def get_pyramid_panel(self, layout):
 	col.prop(self,"hsegs", text="Height Segs")
 
 
-
 def get_quadsphere_panel(self, layout):
 	layout.label(text="QuadSphere",icon='SHADING_WIRE')
 	col = layout.column(align=True)
@@ -362,12 +360,10 @@ def get_quadsphere_panel(self, layout):
 	col.prop(self,"bias_np", text="Factor")
 
 
-
 def get_monkey_panel(self, layout):
 	layout.label(text="Monkey",icon='MESH_MONKEY')
 	col = layout.column(align=True)
 	col.prop(self,"radius1", text="Radius")
-
 
 
 def get_rectangle_panel(self, layout):
@@ -378,13 +374,11 @@ def get_rectangle_panel(self, layout):
 	col.prop(self,"chamfer1", text="Corner Radius")
 
 
-
 def get_circle_panel(self, layout):
 	layout.label(text="Circle",icon='MESH_CIRCLE')
 	col = layout.column(align=True)
 	col.prop(self,"radius1", text="Radius")
 	col.prop(self,"ssegs", text="Segments")
-
 
 
 def get_ellipse_panel(self, layout):
@@ -396,7 +390,6 @@ def get_ellipse_panel(self, layout):
 
 	if self.outline:
 		col.prop(self,"thickness", text="Thickness")
-
 
 
 def get_curve_extrude_panel(self, layout):
@@ -414,7 +407,6 @@ def get_curve_extrude_panel(self, layout):
 		col.prop(bpy.context.curve,"use_fill_caps", text="Cap")
 	except:
 		pass
-
 
 
 def get_mesh_extrude_panel(self, layout):
@@ -441,7 +433,6 @@ def get_mesh_extrude_panel(self, layout):
 		col.prop(self,"csegs", text="Segments")
 
 
-
 def get_arc_panel(self, layout):
 	layout.label(text="Arc",icon='SPHERECURVE')
 	col = layout.column(align=True)
@@ -451,13 +442,11 @@ def get_arc_panel(self, layout):
 	col.prop(self,"sliceon", text="Pie")
 
 
-
 def get_donut_panel(self, layout):
 	layout.label(text="Donut",icon='MESH_CIRCLE')
 	col = layout.column(align=True)
 	col.prop(self,"radius1", text="radius1")
 	col.prop(self,"radius2", text="radius2")
-
 
 
 def get_ngon_panel(self, layout):
@@ -467,7 +456,6 @@ def get_ngon_panel(self, layout):
 	col.prop(self,"ssegs", text="sides")
 	#col.prop(self,"chamfer1", text="cornerradius")
 	col.prop(self,"smooth", text="circular")
-
 
 
 def get_star_panel(self, layout):
@@ -481,7 +469,6 @@ def get_star_panel(self, layout):
 	#col.prop(self,"chamfer2", text="filletradius2")
 	col.prop(self,"seed", text="Seed")
 	col.prop(self,"random", text="Randval")
-
 
 
 def get_helix_panel(self, layout):
@@ -502,7 +489,6 @@ def get_helix_panel(self, layout):
 	row = col.row()
 	row.prop(self,"ccw", text="ccw")
 	row.prop(self,"bool1", text="Bezier/Segment")
-
 
 
 def get_profilo_panel(self, layout):
@@ -647,15 +633,13 @@ def get_profilo_panel(self, layout):
 	).pivotaligne = 9
 
 
-
 def get_compass_panel(self, layout):
 	layout.label(text="Compass",icon='LIGHT_SUN')
 	col = layout.column(align=True)
 	col.prop(self,"radius1", text="Icon Size")
 
 
-
-def get_panel(self, layout):
+def get_primitive_edit_panel(self, layout):
 	if self.classname == "Adaptive_Plane":
 		get_adaptive_plane_panel(self, layout)
 

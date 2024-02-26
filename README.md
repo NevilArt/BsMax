@@ -36,8 +36,8 @@ If you found this product useful and want to support this project you can Donate
 * [Download Older Version (2.80-2.92)(2.93-3.2)](https://github.com/NevilArt/BsMax_2_80)
 
 ## Recent Updates and Changes
-* Create primitive updated to work with Blender 4.1 too.
-* 3DsMax Command panel Create stuff updated.
+* 3DsMax Commandpanel EditPoly/Mesh panel updated alot (CP/Modifier Tab/Edit mode).
+* Edit Curve and Edit modifer panel are the next.
 * [Change log ...](https://github.com/NevilArt/BsMax/blob/master/CHANGELOG.md)
 
 ## License

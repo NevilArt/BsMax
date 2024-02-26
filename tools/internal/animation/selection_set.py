@@ -15,9 +15,9 @@
 import bpy
 
 from bpy.types import Operator, Panel, PropertyGroup
+from bpy.utils import register_class, unregister_class
 from bpy.props import (
-	IntProperty, StringProperty,
-	BoolProperty, PointerProperty, EnumProperty
+	IntProperty, StringProperty, BoolProperty, PointerProperty, EnumProperty
 )
 
 
@@ -34,7 +34,6 @@ class Bone_Group:
 	def __init__(self, name, groups):
 		self.name = name
 		self.groups = groups
-
 
 
 def get_names_from_armature_ss(self, armature, reload=False):
@@ -59,7 +58,6 @@ def get_names_from_armature_ss(self, armature, reload=False):
 		self.armature = armature
 
 
-
 def store_armature_date(self, armature):
 	self.orig_coumns = armature.data.selection_set.columns
 	self.orig_raws = armature.data.selection_set.rows
@@ -68,7 +66,6 @@ def store_armature_date(self, armature):
 		name = bone.name
 		new_bone = Bone_Group(name, [])
 		self.orig_bones.append(new_bone)
-
 
 
 def copy_sheet_to_clipboard(self, ctx):
@@ -115,7 +112,6 @@ def copy_sheet_to_clipboard(self, ctx):
 	ctx.window_manager.clipboard = string
 
 
-
 def past_sheet_from_clipboard(self, ctx):
 	if not self.armature:
 		return False
@@ -129,7 +125,6 @@ def past_sheet_from_clipboard(self, ctx):
 	if test[0] == self.clipboard_test_key:
 		exec(string)
 		self.get_names_from_armature(self.armature, reload=True)
-
 
 
 class Armature_Selection_Set:
@@ -169,7 +164,6 @@ class Armature_Selection_Set:
 arm_sel_set = Armature_Selection_Set()
 
 
-
 def rename_selection_set(self, ctx):
 
 	# TODO temprary solution but works
@@ -195,7 +189,6 @@ def rename_selection_set(self, ctx):
 	arm_sel_set.set_names_to_armature(ctx.active_object, new_name, selection_set.active)
 
 
-
 class Selection_Set_Scene(PropertyGroup):
 	mode: EnumProperty(
 		name='Mode',
@@ -206,18 +199,17 @@ class Selection_Set_Scene(PropertyGroup):
 			('EDIT', 'Edit', 'Edit buttons layout')
 		]
 	)
+
 	autohide: BoolProperty(name='Auto hide Non selected', default=False)
 	unselect: BoolProperty(name='Remove From Selection', default=False)
 	name: StringProperty(name="", update=rename_selection_set)
 	active: IntProperty(name="", default=0)
 
 
-
 class Selection_Set_Armature(PropertyGroup):
 	columns: IntProperty(name='columns', min=1, max=100, default=3)
 	rows: IntProperty(name='row', min=1, max=100, default=10)
 	names: StringProperty(name='')
-
 
 
 class ARMATURE_OT_Selection_Set_Transfer(Operator):
@@ -235,7 +227,6 @@ class ARMATURE_OT_Selection_Set_Transfer(Operator):
 			past_sheet_from_clipboard(arm_sel_set, ctx)
 
 		return{'FINISHED'}
-
 
 
 class ARMATURE_OT_Selection_Set_Dimension_Resize(Operator):
@@ -277,7 +268,6 @@ class ARMATURE_OT_Selection_Set_Dimension_Resize(Operator):
 				selection_set.rows -= 1
 		
 		return{'FINISHED'}
-
 
 
 class ARMATURE_OT_Selection_Set(Operator):
@@ -377,7 +367,6 @@ class ARMATURE_OT_Selection_Set(Operator):
 		return {'FINISHED'}
 
 
-
 class Armature_OP_Selection_Set(Panel):
 	bl_space_type = 'VIEW_3D'
 	bl_region_type = 'UI'
@@ -463,7 +452,6 @@ class Armature_OP_Selection_Set(Panel):
 						row.operator('pose.selection_set', text=name).index=index				
 
 
-
 classes = (
 	Selection_Set_Scene,
 	Selection_Set_Armature,
@@ -474,25 +462,22 @@ classes = (
 )
 
 
-
 def register_selection_set():
 	for c in classes:
-		bpy.utils.register_class(c)
+		register_class(c)
 
 	bpy.types.Scene.selection_set = PointerProperty(type=Selection_Set_Scene)
 	bpy.types.Armature.selection_set = PointerProperty(type=Selection_Set_Armature)
 	bpy.types.PoseBone.selection_groups = StringProperty(name='Selection Groups', default='')
 
 
-
 def unregister_selection_set():
 	for c in classes:
-		bpy.utils.unregister_class(c)
+		unregister_class(c)
 
 	del bpy.types.Scene.selection_set
 	del bpy.types.Armature.selection_set
 	del bpy.types.PoseBone.selection_groups
-
 
 
 if __name__ == "__main__":

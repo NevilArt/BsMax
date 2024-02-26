@@ -12,7 +12,7 @@
 #	You should have received a copy of the GNU General Public License
 #	along with this program.  If not,see <https://www.gnu.org/licenses/>.
 ############################################################################
-# 2024/02/11
+# 2024/02/13
 
 import bpy
 
@@ -487,92 +487,6 @@ class BsMax_MT_ForceFieldCreate(Menu):
 		).effector_type = 'SMOKE'
 
 
-# View 3D Create Menu
-class BsMax_MT_Create(Menu):
-	bl_idname = "BSMAX_MT_create_menu"
-	bl_label = "Create"
-	bl_context = "objectmode"
-
-	@classmethod
-	def poll(self, ctx):
-		return ctx.mode == 'OBJECT'
-
-	def draw(self, ctx):
-		layout = self.layout
-		layout.prop(
-			ctx.scene.primitive_setting, 'draw_mode',
-			text='', icon='VIEW3D'
-		)
-		
-		layout.separator()
-		layout.menu(
-			"BSMAX_MT_mesh_create_menu", icon='OUTLINER_OB_MESH'
-		)
-
-		layout.menu(
-			"BSMAX_MT_curve_create_menu", icon='OUTLINER_OB_CURVE'
-		)
-
-		layout.menu(
-			"BSMAX_MT_surface_create_menu", icon='OUTLINER_OB_SURFACE'
-		)
-
-		layout.menu(
-			"BSMAX_MT_metaball_create_menu", icon='OUTLINER_OB_META'
-		)
-
-		layout.menu(
-			"BSMAX_MT_text_create_menu", icon='OUTLINER_OB_FONT'
-		)
-
-		layout.menu(
-			"BSMAX_MT_gracepencil_create_menu", icon='OUTLINER_OB_GREASEPENCIL'
-		)
-
-		layout.separator()
-		layout.menu(
-			"BSMAX_MT_armature_create_menu", icon='OUTLINER_OB_ARMATURE'
-		)
-
-		layout.menu(
-			"BSMAX_MT_lattice_create_menu", icon='OUTLINER_OB_LATTICE'
-		)
-
-		layout.separator()
-		layout.menu(
-			"BSMAX_MT_empty_create_menu", icon='OUTLINER_OB_EMPTY'
-		)
-
-		layout.menu(
-			"BSMAX_MT_image_create_menu", icon='OUTLINER_OB_IMAGE'
-		)
-
-		layout.separator()
-		layout.menu(
-			"BSMAX_MT_light_create_menu", icon='OUTLINER_OB_LIGHT'
-		)
-
-		layout.menu(
-			"BSMAX_MT_lightProbs_primitives", icon='OUTLINER_OB_LIGHTPROBE'
-		)
-
-		layout.separator()
-		layout.menu(
-			"BSMAX_MT_camera_create_menu", icon='OUTLINER_OB_CAMERA'
-		)
-
-		layout.separator()
-		layout.operator(
-			"create.speaker", icon="OUTLINER_OB_SPEAKER"
-		)
-
-		layout.separator()
-		layout.menu(
-			"BSMAX_MT_forcefield_cecreate_menu", icon='OUTLINER_OB_FORCE_FIELD'
-		)
-		# OUTLINER_OB_GROUP_INSTANCE
-
-
 def mesh_add_append_menu(self, ctx):
 	layout = self.layout
 	layout.separator()
@@ -687,6 +601,82 @@ def curve_add_append_menu(self, ctx):
 	).type='PROFILO'
 
 
+def create_menu(self, ctx):
+	layout = self.layout
+	row = layout.row()
+	row.prop(
+		ctx.scene.primitive_setting, 'draw_mode', text=''
+	)
+
+	layout.separator()
+	layout.menu(
+		"BSMAX_MT_mesh_create_menu", icon='OUTLINER_OB_MESH'
+	)
+
+	layout.menu(
+		"BSMAX_MT_curve_create_menu", icon='OUTLINER_OB_CURVE'
+	)
+
+	layout.menu(
+		"BSMAX_MT_surface_create_menu", icon='OUTLINER_OB_SURFACE'
+	)
+
+	layout.menu(
+		"BSMAX_MT_metaball_create_menu", icon='OUTLINER_OB_META'
+	)
+
+	layout.menu(
+		"BSMAX_MT_text_create_menu", icon='OUTLINER_OB_FONT'
+	)
+
+	layout.menu(
+		"BSMAX_MT_gracepencil_create_menu", icon='OUTLINER_OB_GREASEPENCIL'
+	)
+
+	layout.separator()
+	layout.menu(
+		"BSMAX_MT_armature_create_menu", icon='OUTLINER_OB_ARMATURE'
+	)
+
+	layout.menu(
+		"BSMAX_MT_lattice_create_menu", icon='OUTLINER_OB_LATTICE'
+	)
+
+	layout.separator()
+	layout.menu(
+		"BSMAX_MT_empty_create_menu", icon='OUTLINER_OB_EMPTY'
+	)
+
+	layout.menu(
+		"BSMAX_MT_image_create_menu", icon='OUTLINER_OB_IMAGE'
+	)
+
+	layout.separator()
+	layout.menu(
+		"BSMAX_MT_light_create_menu", icon='OUTLINER_OB_LIGHT'
+	)
+
+	layout.menu(
+		"BSMAX_MT_lightProbs_primitives", icon='OUTLINER_OB_LIGHTPROBE'
+	)
+
+	layout.separator()
+	layout.menu(
+		"BSMAX_MT_camera_create_menu", icon='OUTLINER_OB_CAMERA'
+	)
+
+	layout.separator()
+	layout.operator(
+		"create.speaker", icon="OUTLINER_OB_SPEAKER"
+	)
+
+	layout.separator()
+	layout.menu(
+		"BSMAX_MT_forcefield_cecreate_menu", icon='OUTLINER_OB_FORCE_FIELD'
+	)
+	# OUTLINER_OB_GROUP_INSTANCE
+
+
 def objects_context_menu(self, ctx):
 	layout = self.layout
 	layout.separator()
@@ -715,8 +705,7 @@ classes = (
 	BsMax_MT_LightProbsCreate,
 	BsMax_MT_CameraCreate,
 	BsMax_MT_SpeakerCreate,
-	BsMax_MT_ForceFieldCreate,
-	BsMax_MT_Create
+	BsMax_MT_ForceFieldCreate
 )
 
 
@@ -729,13 +718,15 @@ def register_menu():
 	bpy.types.VIEW3D_MT_object_context_menu.append(objects_context_menu)
 	bpy.types.VIEW3D_MT_mesh_add.append(mesh_add_append_menu)
 	bpy.types.VIEW3D_MT_curve_add.append(curve_add_append_menu)
-	
+	bpy.types.BSMAX_MT_create_menu.append(create_menu)
+
 
 def unregister_menu():
 	bpy.types.VIEW3D_MT_editor_menus.remove(CreateMenu_CallBack)  
 	bpy.types.VIEW3D_MT_object_context_menu.remove(objects_context_menu)
 	bpy.types.VIEW3D_MT_mesh_add.remove(mesh_add_append_menu)
 	bpy.types.VIEW3D_MT_curve_add.remove(curve_add_append_menu)
+	bpy.types.BSMAX_MT_create_menu.remove(create_menu)
 
 	for c in classes:
 		unregister_class(c)

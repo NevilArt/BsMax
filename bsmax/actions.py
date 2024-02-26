@@ -12,6 +12,7 @@
 #	You should have received a copy of the GNU General Public License
 #	along with this program.  If not, see <https://www.gnu.org/licenses/>.
 ############################################################################
+# 2024/02/25
 
 import bpy
 from mathutils import Matrix
@@ -34,7 +35,6 @@ def lock_transform(obj, move, rotate, scale):
 		obj.lock_scale[i] = scale
 
 
-
 def modifier_add(objs, modifier, name=''):
 	""" Add modifier to multible object at same time
 
@@ -48,7 +48,6 @@ def modifier_add(objs, modifier, name=''):
 	for obj in objs:
 		the_name = modifier if name else name
 		obj.modifiers.new(name=the_name, type=modifier)
-
 
 
 def link_to_scene(ctx, objs):
@@ -75,7 +74,6 @@ def link_to_scene(ctx, objs):
 			collection.objects.link(obj)
 
 
-
 def set_as_active_object(ctx, obj):
 	""" Deselect all objects and set given object as active
 
@@ -89,7 +87,6 @@ def set_as_active_object(ctx, obj):
 		bpy.ops.object.select_all(action='DESELECT')
 		obj.select_set(state=True)
 		ctx.view_layer.objects.active = obj
-
 
 
 def set_create_target(obj, target, distance=(0.0, 0.0, -2.0), align=True):
@@ -129,7 +126,6 @@ def set_create_target(obj, target, distance=(0.0, 0.0, -2.0), align=True):
 	return target
 
 
-
 def link_to(objs, target):
 	""" Parent obj(s) to given object and keep transform
 
@@ -147,11 +143,9 @@ def link_to(objs, target):
 		obj.matrix_parent_inverse = target.matrix_world.inverted()
 
 
-
 def get_object_target(obj):
 	"""TODO get objects lookat target"""
 	return None
-
 
 
 def set_origen(ctx, obj, location):
@@ -178,7 +172,6 @@ def set_origen(ctx, obj, location):
 	bpy.ops.object.origin_set(type='ORIGIN_CURSOR', center='MEDIAN')
 	scene.cursor.location = saved_location
 	scene.cursor.rotation_euler = saved_rotation
-
 
 
 def match_transform(ctx, obj, target):
@@ -254,7 +247,6 @@ def match_transform(ctx, obj, target):
 	ctx.scene.tool_settings.use_transform_data_origin = use_transform_state
 
 
-
 def freeze_transform(objs, location=True, rotation=True, scale=True):
 	""" Add current transform to deleta transform and
 		reset to 0 in given objects
@@ -297,7 +289,6 @@ def freeze_transform(objs, location=True, rotation=True, scale=True):
 			obj.scale = [1, 1, 1]
 
 
-
 def insert_key_to_current_state(chanel, frame, location, rotation, scale):
 	""" Set key to given chanel in specific frame
 
@@ -329,7 +320,6 @@ def insert_key_to_current_state(chanel, frame, location, rotation, scale):
 			chanel.keyframe_insert(data_path='rotation_euler', frame=frame)
 
 
-
 def copy_array_to_clipboard(key, array):
 	""" Convert given array to string lines and copy to clipboard
 
@@ -348,7 +338,6 @@ def copy_array_to_clipboard(key, array):
 		string += variable_type + "(" + str(var) + ")\n"
 
 	bpy.context.window_manager.clipboard = string
-
 
 
 def paste_array_from_clipboard(key):
@@ -373,7 +362,6 @@ def paste_array_from_clipboard(key):
 	return [eval(line) for line in lines[1:]]
 
 
-
 def catche_collection(ctx, name):
 	""" Find and return collection by name, create new one if not exist.
 
@@ -392,7 +380,6 @@ def catche_collection(ctx, name):
 	return collection
 
 
-
 def move_to_collection(objs, collection):
 	""" Clear all collection and link to given one
 
@@ -409,7 +396,6 @@ def move_to_collection(objs, collection):
 		for collection in obj.users_collection:
 			collection.objects.unlink(obj)
 		collection.objects.link(obj)
-
 
 
 def clear_relations(objs):
@@ -439,7 +425,6 @@ def clear_relations(objs):
 
 		# restor transform
 		obj.matrix_world = matrix_world
-
 
 
 def convert_to_solid_mesh(objs):

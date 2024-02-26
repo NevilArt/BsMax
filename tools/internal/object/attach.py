@@ -12,13 +12,14 @@
 #	You should have received a copy of the GNU General Public License
 #	along with this program.  If not, see <https://www.gnu.org/licenses/>.
 ############################################################################
+# 2024/02/25
 
 import bpy
 
 from bpy.types import Operator
+from bpy.utils import register_class, unregister_class
 
 from bsmax.operator import PickOperator
-
 
 # Error: Python: Traceback (most recent call last):
 #   File "C:\Users\nevil\AppData\Roaming\Blender Foundation\Blender\3.2\scripts\addons\BsMax\bsmax\operator.py", line 183, in modal
@@ -32,7 +33,6 @@ from bsmax.operator import PickOperator
 #   File "C:\Program Files\Blender Foundation\Blender 3.2\3.2\scripts\modules\bpy\ops.py", line 115, in __call__
 #     ret = _op_call(self.idname_py(), None, kw)
 # RuntimeError: Error: Transform curve to mesh in order to apply constructive modifiers
-
 
 
 class Object_OT_Attach(PickOperator):
@@ -86,7 +86,6 @@ class Object_OT_Attach(PickOperator):
 		bpy.ops.object.attach('INVOKE_DEFAULT')
 
 
-
 class Object_TO_Delete_Plus(Operator):
 	""" Delete Plus """
 	bl_idname = 'object.delete_plus'
@@ -107,24 +106,20 @@ class Object_TO_Delete_Plus(Operator):
 		return{'FINISHED'}
 
 
-
 classes = (
 	Object_OT_Attach,
 	Object_TO_Delete_Plus
 )
 
 
-
 def register_attach():
 	for c in classes:
-		bpy.utils.register_class(c)
-
+		register_class(c)
 
 
 def unregister_attach():
 	for c in classes:
-		bpy.utils.unregister_class(c)
-
+		unregister_class(c)
 
 
 if __name__ == '__main__':

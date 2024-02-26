@@ -12,14 +12,13 @@
 #	You should have received a copy of the GNU General Public License
 #	along with this program.  If not, see <https://www.gnu.org/licenses/>.
 ############################################################################
+# 2024/02/18
 
 import bpy
 
 from bpy.types import Operator
 
 from bsmax.actions import modifier_add
-from bsmax.state import is_objects_selected
-
 
 
 class Modifier_OT_Add_Revolve(Operator):
@@ -29,17 +28,15 @@ class Modifier_OT_Add_Revolve(Operator):
 
 	@classmethod
 	def poll(self, ctx):
-		return is_objects_selected(ctx)
+		return ctx.object
 
 	def execute(self, ctx):
 		modifier_add(ctx,ctx.selected_objects, 'SCREW', name='Revolve')
 		return {'FINISHED'}
 
 
-
 def register_modifier():
 	bpy.utils.register_class(Modifier_OT_Add_Revolve)
-
 
 
 def unregister_modifier():

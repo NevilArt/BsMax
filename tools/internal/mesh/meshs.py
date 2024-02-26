@@ -12,11 +12,13 @@
 #	You should have received a copy of the GNU General Public License
 #	along with this program.  If not, see <https://www.gnu.org/licenses/>.
 ############################################################################
+# 2024/02/25
 
 import bpy
-from bpy.types import Operator
-from bpy.props import BoolProperty, EnumProperty
 
+from bpy.types import Operator
+from bpy.props import BoolProperty, EnumProperty, StringProperty
+from bpy.utils import register_class, unregister_class
 
 
 class Mesh_OT_Connect_Data:
@@ -26,7 +28,6 @@ class Mesh_OT_Connect_Data:
 		self.slide = 0
 
 mocd = Mesh_OT_Connect_Data()
-
 
 
 class Mesh_OT_Connect(Operator):
@@ -50,9 +51,10 @@ class Mesh_OT_Connect(Operator):
 	# 	# layout.prop(self,"slide")
 
 	def devide(self, ctx):
-		v,e,f = ctx.tool_settings.mesh_select_mode
+		v, e, _ = ctx.tool_settings.mesh_select_mode
 		if v: 
 			bpy.ops.mesh.vert_connect()
+
 		elif e:
 			bpy.ops.mesh.subdivide_edgering(number_cuts=1)
 			# bpy.ops.mesh.subdivide()
@@ -71,7 +73,6 @@ class Mesh_OT_Connect(Operator):
 	# 	return{"FINISHED"}
 
 
-
 class Mesh_OT_Create_Curve_From_Edges(Operator):
 	bl_idname = "mesh.create_curve_from_edge"
 	bl_label = "Create Shape from Edges"
@@ -87,8 +88,8 @@ class Mesh_OT_Create_Curve_From_Edges(Operator):
 		if ctx.mode == 'EDIT_MESH' and e:
 			bpy.ops.mesh.duplicate(mode=1)
 			bpy.ops.mesh.separate(type='SELECTED')
-		return{"FINISHED"}
 
+		return{"FINISHED"}
 
 
 class Mesh_OT_Auto_Loop_Select(Operator):
@@ -102,14 +103,16 @@ class Mesh_OT_Auto_Loop_Select(Operator):
 	
 	def execute(self, ctx):
 		if ctx.mode == 'EDIT_MESH':
-			v,e,f = ctx.tool_settings.mesh_select_mode
+			v, e, f = ctx.tool_settings.mesh_select_mode
+
 			if v or e:
 				bpy.ops.mesh.loop_multi_select(ring=False)
+
 			elif f:
 				#TODO "Face loop"
 				pass
-		return{"FINISHED"}
 
+		return{"FINISHED"}
 
 
 class Mesh_OT_Auto_Ring_Select(Operator):
@@ -123,14 +126,16 @@ class Mesh_OT_Auto_Ring_Select(Operator):
 	
 	def execute(self, ctx):
 		if ctx.mode == 'EDIT_MESH':
-			v,e,f = ctx.tool_settings.mesh_select_mode
+			v, e, f = ctx.tool_settings.mesh_select_mode
+
 			if v or e:
 				bpy.ops.mesh.loop_multi_select(ring=True)
+
 			elif f:
 				# TODO face ring
 				pass
-		return{"FINISHED"}
 
+		return{"FINISHED"}
 
 
 class Mesh_OT_Dot_Loop_Select(Operator):
@@ -146,8 +151,8 @@ class Mesh_OT_Dot_Loop_Select(Operator):
 		if ctx.mode == 'EDIT_MESH':
 			bpy.ops.mesh.smart_select_loop()
 			bpy.ops.mesh.select_nth()
-		return{"FINISHED"}
 
+		return{"FINISHED"}
 
 
 class Mesh_OT_Dot_Ring_Select(Operator):
@@ -163,8 +168,8 @@ class Mesh_OT_Dot_Ring_Select(Operator):
 		if ctx.mode == 'EDIT_MESH':
 			bpy.ops.mesh.smart_select_ring()
 			bpy.ops.mesh.select_nth()
-		return{"FINISHED"}
 
+		return{"FINISHED"}
 
 
 class Mesh_OT_Remove(Operator):
@@ -180,15 +185,17 @@ class Mesh_OT_Remove(Operator):
 	
 	def execute(self, ctx):
 		if ctx.mode == 'EDIT_MESH':
-			v,e,f = ctx.tool_settings.mesh_select_mode
+			v, e, f = ctx.tool_settings.mesh_select_mode
 			if v:
 				bpy.ops.mesh.dissolve_verts()
+
 			if e:
 				bpy.ops.mesh.dissolve_edges(use_verts=self.vert)
+
 			if f:
 				bpy.ops.mesh.dissolve_faces(use_verts=self.vert)
-		return{"FINISHED"}
 
+		return{"FINISHED"}
 
 
 class Mesh_OT_Delete_Auto(Operator):
@@ -202,19 +209,33 @@ class Mesh_OT_Delete_Auto(Operator):
 	
 	def execute(self, ctx):
 		if ctx.mode == 'EDIT_MESH':
-			v,e,f = ctx.tool_settings.mesh_select_mode
+			v, e, f = ctx.tool_settings.mesh_select_mode
 			if v:
 				bpy.ops.mesh.delete(type='VERT')
+
 			if e:
 				""" For remove the extera edges """
 				#TODO find the API for this
 				# Select expaned to Face mode (Face) Need to find python API for this
 				bpy.ops.mesh.delete(type='EDGE')
 				# ctx.tool_settings.mesh_select_mode = v,e,f # restore mode
+
 			if f:
 				bpy.ops.mesh.delete(type='FACE')
+
 		return{"FINISHED"}
 
+
+class Mesh_OT_Tool_Set_By_Id(Operator):
+	bl_idname = "mesh.tool_set_by_id"
+	bl_label = "Tool Set By ID"
+	bl_options = {'REGISTER', 'INTERNAL'}
+
+	name: StringProperty()
+
+	def execute(self, ctx):
+		bpy.ops.wm.tool_set_by_id(name=self.name)
+		return {'FINISHED'}
 
 
 class Mesh_OT_Remove_Isolated_Geometry(Operator):
@@ -228,16 +249,19 @@ class Mesh_OT_Remove_Isolated_Geometry(Operator):
 		return ctx.area.type == 'VIEW_3D'
 	
 	def execute(self, ctx):
-		v,e,f = ctx.tool_settings.mesh_select_mode
+		v, e, f = ctx.tool_settings.mesh_select_mode
 		bpy.ops.mesh.select_loose()
+
 		if v:
 			bpy.ops.mesh.delete(type='VERT')
+
 		if e:
 			bpy.ops.mesh.delete(type='EDGE')
+
 		if f:
 			bpy.ops.mesh.delete(type='FACE')
-		return {'FINISHED'}
 
+		return {'FINISHED'}
 
 
 # Simulate 3DsMax Nurms Toggle operator avalible on Quad menu
@@ -284,7 +308,6 @@ class Mesh_OT_NURMS_Toggle(Operator):
 		return{"FINISHED"}
 
 
-
 # Blender internal hide/show operator affect all Face/Edge/Vertexes
 # This operator affects only active one and keep the others
 class Mesh_OT_Hide_Plus(Operator):
@@ -293,11 +316,15 @@ class Mesh_OT_Hide_Plus(Operator):
 	bl_label = "Hide+"
 	bl_options = {'REGISTER', 'UNDO'}
 
-	mode: EnumProperty(name="Hide", default='SELECTED',
-		items=[('SELECTED', "Selected", "Hide/Show Selected"),
-		('UNSELECTED', "Unselected", "Hide/Show Unselected"),
-		('UNHIDE', "Unhide", "Unhide All"),
-		('INVERT', "Invert", "Invert Hide/Show state")])
+	mode: EnumProperty(
+		name="Hide", default='SELECTED',
+		items=[
+			('SELECTED', "Selected", "Hide/Show Selected"),
+			('UNSELECTED', "Unselected", "Hide/Show Unselected"),
+			('UNHIDE', "Unhide", "Unhide All"),
+			('INVERT', "Invert", "Invert Hide/Show state")
+		]
+	)
 	
 	@classmethod
 	def poll(self, ctx):
@@ -348,8 +375,9 @@ class Mesh_OT_Hide_Plus(Operator):
 				poly.hide = not poly.hide
 	
 	def execute(self, ctx):
-		v,e,f = ctx.tool_settings.mesh_select_mode
+		v, e, f = ctx.tool_settings.mesh_select_mode
 		bpy.ops.object.mode_set(mode="OBJECT")
+
 		for obj in ctx.selected_objects:
 			if obj.type == 'MESH':
 				if self.mode == 'SELECTED':
@@ -368,7 +396,6 @@ class Mesh_OT_Hide_Plus(Operator):
 		return{"FINISHED"}
 
 
-
 def mesh_show_hide_plus_menu(self, ctx):
 	layout = self.layout
 	layout.menu("BSMAX_MT_create_menu")
@@ -377,7 +404,6 @@ def mesh_show_hide_plus_menu(self, ctx):
 	layout.operator("mesh.hide_plus",text="Hide Unselected").mode='UNSELECTED'
 	layout.operator("mesh.hide_plus",text="Invert Hide").mode='INVERT'
 	layout.operator("mesh.hide_plus",text="Unhide All").mode='UNHIDE'
-
 
 
 classes = (
@@ -389,25 +415,25 @@ classes = (
 	Mesh_OT_Dot_Loop_Select,
 	Mesh_OT_Dot_Ring_Select,
 	Mesh_OT_Hide_Plus,
+	Mesh_OT_Tool_Set_By_Id,
 	Mesh_OT_NURMS_Toggle,
 	Mesh_OT_Remove,
 	Mesh_OT_Remove_Isolated_Geometry
 )
 
 
-
 def register_meshs():
 	for c in classes:
-		bpy.utils.register_class(c)
-	bpy.types.VIEW3D_MT_edit_mesh_showhide.append(mesh_show_hide_plus_menu)
+		register_class(c)
 
+	bpy.types.VIEW3D_MT_edit_mesh_showhide.append(mesh_show_hide_plus_menu)
 
 
 def unregister_meshs():
 	bpy.types.VIEW3D_MT_edit_mesh_showhide.remove(mesh_show_hide_plus_menu)
-	for c in classes:
-		bpy.utils.unregister_class(c)
 
+	for c in classes:
+		unregister_class(c)
 
 
 if __name__ == "__main__":

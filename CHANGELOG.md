@@ -1,3 +1,7 @@
+# 0, 1, 2, 20240212
+* Create primitive updated to work with Blender 4.1 too.
+* 3DsMax Command panel Create stuff updated.
+
 # 0, 1, 2, 20240208
 * Primitives can be edit under "comand panel/modifiers" similar to 3DsMax.
 * Light lister issue for Blender 4.0 Fixed.

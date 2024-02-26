@@ -12,34 +12,26 @@
 #	You should have received a copy of the GNU General Public License
 #	along with this program.  If not, see <https://www.gnu.org/licenses/>.
 ############################################################################
+# 2024/02/18
+
 from math import pi
 from mathutils import Vector
-
 
 
 def is_active_object(ctx, types):
 	""" Return True if active object is same as given object type """
 	if ctx.area.type == 'VIEW_3D':
-		if ctx.active_object:
-			return ctx.active_object.type in types
+		if ctx.object:
+			return ctx.object.type in types
 	return False
 
 
-
-def is_active_primitive(ctx):
+def is_primitive(ctx):
 	""" Return True if active object has primitive data """
-	if ctx.active_object:
-		if ctx.active_object.type in ['MESH','CURVE']:
-			return ctx.active_object.data.primitivedata.classname != ""
+	if ctx.object:
+		if ctx.object.type in ('MESH', 'CURVE'):
+			return ctx.object.data.primitivedata.classname != ""
 	return False
-
-
-
-def is_objects_selected(ctx):
-	""" Return True if ther was any selected objects """
-	if ctx.area.type == 'VIEW_3D':
-		return ctx.selected_objects
-
 
 
 def has_constraint(obj, constrainttype):
@@ -50,11 +42,9 @@ def has_constraint(obj, constrainttype):
 	return False
 
 
-
 def get_active_type(ctx):
 	""" Return active objects type if exist """
 	return ctx.active_object.type if ctx.active_object else None
-
 
 
 def get_obj_class(obj):
@@ -63,7 +53,6 @@ def get_obj_class(obj):
 		if obj.type in ['MESH', 'CURVE']:
 			return obj.data.primitivedata.classname
 	return ""
-
 
 
 def get_view_orientation(ctx):
@@ -88,12 +77,12 @@ def get_view_orientation(ctx):
 	return view_orientation, view_type
 
 
-
 view_orients ={
 	'TOP':(0, 0, 0), 'BOTTOM':(pi, 0, 0),
 	'FRONT':(pi/2, 0, 0), 'BACK':(-pi/2, pi, 0),
 	'LEFT':(pi/2, 0, -pi/2), 'RIGHT':(pi/2, 0, pi/2)
 }
+
 
 #TODO need to clear name
 def get_rotation_of_view_orient(view_orient):
@@ -110,27 +99,7 @@ def get_rotation_of_view_orient(view_orient):
 	if view_orient in view_orients:
 		return Vector(view_orients[view_orient]) 
 
-
-	# if view_orient == 'TOP':
-	# 	return Vector((0, 0, 0))
-
-	# if view_orient == 'BOTTOM':
-	# 	return Vector((pi, 0, 0))
-
-	# if view_orient == 'FRONT':
-	# 	return Vector((pi/2, 0, 0))
-
-	# if view_orient == 'BACK':
-	# 	return Vector((-pi/2, pi, 0))
-
-	# if view_orient == 'LEFT':
-	# 	return Vector((pi/2, 0, -pi/2))
-
-	# if view_orient == 'RIGHT':
-	# 	return Vector((pi/2, 0, pi/2))
-
 	return Vector((0, 0, 0))
-
 
 
 def get_dimensions_avrage(obj, x, y, z):
@@ -158,7 +127,6 @@ def get_dimensions_avrage(obj, x, y, z):
 		count += 1
 
 	return value/count
-
 
 
 def has_key_in_frame(obj, frame: int):

@@ -14,21 +14,43 @@
 ############################################################################
 # 2024/02/25
 
-from .external import register_external, unregister_external
-from .internal import register_internal, unregister_internal
-from .special import register_special, unregister_special
-from .pipeline import register_pipeline, unregister_pipeline
+import bpy
+
+from bpy.types import Operator
+from bpy.utils import register_class, unregister_class
 
 
-def register_tools(preferences):
-	register_external()
-	register_internal(preferences)
-	register_special(preferences)
-	register_pipeline(preferences)
+class Object_TO_Material_Slot_Remove_Plus(Operator):
+	bl_idname = 'object.material_slot_remove_plus'
+	bl_label = 'Remove Material Slot'
+	bl_options = {'REGISTER', 'UNDO', 'INTERNAL'}
+	bl_description = "Remove The Selected Material Slot"
+	
+	@classmethod
+	def poll(self, ctx):
+		return ctx.mode == 'EDIT_MESH'
+	
+	def execute(self,ctx):
+		bpy.ops.object.mode_set(mode='OBJECT', toggle=False)
+		bpy.ops.object.material_slot_remove()
+		bpy.ops.object.mode_set(mode='EDIT', toggle=False)
+		return{'FINISHED'}
+
+
+classes = (
+	Object_TO_Material_Slot_Remove_Plus,
+)
+
+
+def register_tools():
+	for c in classes:
+		register_class(c)
 
 
 def unregister_tools():
-	unregister_external()
-	unregister_internal()
-	unregister_special()
-	unregister_pipeline()
+	for c in classes:
+		unregister_class(c)
+
+
+if __name__ == '__main__':
+	register_tools()

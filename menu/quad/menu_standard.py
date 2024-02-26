@@ -15,7 +15,7 @@
 
 from bpy.app import version
 
-from bsmax.state import is_active_primitive, get_active_type
+from bsmax.state import is_primitive, get_active_type
 
 from .commands import * # all "c0000" are from here
 from .q_items import QuadItem
@@ -166,7 +166,7 @@ def get_view3d_tool1(ctx):
 		vert,  edge,  face = False,  False,  False
 
 	if get_active_type(ctx) == 'MESH':
-		if not is_active_primitive(ctx):
+		if not is_primitive(ctx):
 			#  text,  check,  enabled, menu, action, setting
 			items.append(QuadItem("Top-level", (ctx.mode=='OBJECT'), t, n, c0018, n))
 			items.append(QuadItem("Vertex", vert, t, n, c0019, n))
@@ -195,7 +195,7 @@ def get_view3d_tool1(ctx):
 	elif get_active_type(ctx) == 'CURVE':
 		items.append(QuadItem("Extrude", f, t, n, c0134, n))
 
-		if not is_active_primitive(ctx):
+		if not is_primitive(ctx):
 			items.append(seprator())
 			items.append(QuadItem("Top-level", (ctx.mode=='OBJECT'), t, n, c0018, n))
 			items.append(QuadItem("Vertex", f, t, n, c0019, n))
@@ -247,7 +247,7 @@ def get_view3d_tool2(ctx):
 
 	if get_active_type(ctx) == 'MESH':
 		V, E, F = ctx.tool_settings.mesh_select_mode
-		if ctx.mode == "EDIT_MESH" and not is_active_primitive(ctx):
+		if ctx.mode == "EDIT_MESH" and not is_primitive(ctx):
 			#  text,  check,  enabled,  menu,  action,  setting
 			items.append(QuadItem("Create", f, t, n, c0035, n))
 			items.append(seprator())

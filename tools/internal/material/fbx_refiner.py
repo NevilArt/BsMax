@@ -12,11 +12,12 @@
 #	You should have received a copy of the GNU General Public License
 #	along with this program.  If not, see <https://www.gnu.org/licenses/>.
 ############################################################################
-
+# 2024/02/25
 
 import bpy
 
 from bpy.types import Operator
+from bpy.utils import register_class, unregister_class
 
 
 class ImageData():
@@ -45,7 +46,6 @@ class ImageList():
 			self.images.append(ImageData(image))
 
 
-
 imageList = ImageList()
 
 
@@ -54,7 +54,6 @@ def set_viewport_setting(material):
 	material.diffuse_color = (0.5, 0.5, 0.5, 1)
 	material.metallic = 0
 	material.roughness = 1
-
 
 
 def get_base_node(nodes):
@@ -71,13 +70,11 @@ def get_base_node(nodes):
 	return None
 
 
-
 def pixel_compare(pixel1, pixel2, tolerance):
 	r = pixel2[0]-tolerance < pixel1[0] < pixel2[0]+tolerance
 	g = pixel2[1]-tolerance < pixel1[1] < pixel2[1]+tolerance
 	b = pixel2[2]-tolerance < pixel1[2] < pixel2[2]+tolerance
 	return r and g and b
-
 
 
 def is_skin_texture(image):
@@ -133,7 +130,6 @@ def is_skin_texture(image):
 	return False
 
 
-
 def check_base_color(baseColor):
 	if baseColor.is_linked:
 		baseImage = baseColor.links[0].from_node
@@ -147,7 +143,7 @@ def check_base_color(baseColor):
 
 			# print(">> is Skin Texture")
 
-			print(">>>>", is_skin_texture(image))
+			# print(">>>>", is_skin_texture(image))
 
 # matt = bpy.context.object.material_slots[0].material.node_tree.nodes['Image Texture']
 
@@ -191,13 +187,9 @@ def check_node_tree(material):
 	# Transmission Roughness
 	# Weight
 
-	
-
-
 
 def check_simple_material(material):
 	pass
-
 
 
 def check_materials(obj):
@@ -208,7 +200,6 @@ def check_materials(obj):
 			check_node_tree(material)
 		else:
 			check_simple_material(material)
-
 
 
 class Material_OT_FBX_Cleaner(Operator):
@@ -228,23 +219,19 @@ class Material_OT_FBX_Cleaner(Operator):
 		return{"FINISHED"}
 
 
-
 classes = (
 	Material_OT_FBX_Cleaner,
 )
 
 
-
 def register_fbx_refiner():
 	for c in classes:
-		bpy.utils.register_class(c)
-
+		register_class(c)
 
 
 def unregister_fbx_refiner():
 	for c in classes:
-		bpy.utils.unregister_class(c)
-
+		unregister_class(c)
 
 
 if __name__ == "__main__":

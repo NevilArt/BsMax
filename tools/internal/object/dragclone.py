@@ -12,14 +12,12 @@
 #	You should have received a copy of the GNU General Public License
 #	along with this program.  If not, see <https://www.gnu.org/licenses/>.
 ############################################################################
+# 2024/02/18
 
 import bpy
 
-
-from bsmax.state import is_objects_selected
 from bsmax.mouse import get_click_point_info
 from bsmax.math import get_axis_constraint
-
 
 
 class Object_OT_Drag_Clone(bpy.types.Operator):
@@ -32,7 +30,7 @@ class Object_OT_Drag_Clone(bpy.types.Operator):
 
 	@classmethod
 	def poll(self, ctx):
-		return is_objects_selected(ctx)
+		return ctx.object
 	
 	def execute(self,ctx):
 		self.report({'OPERATOR'},'bpy.ops.object.drag_clone()')
@@ -63,10 +61,8 @@ class Object_OT_Drag_Clone(bpy.types.Operator):
 		return {'RUNNING_MODAL'}
 
 
-
 def register_dragclone():
 	bpy.utils.register_class(Object_OT_Drag_Clone)
-
 
 
 def unregister_dragclone():

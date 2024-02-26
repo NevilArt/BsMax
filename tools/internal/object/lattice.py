@@ -12,16 +12,16 @@
 #	You should have received a copy of the GNU General Public License
 #	along with this program.  If not, see <https://www.gnu.org/licenses/>.
 ############################################################################
+# 2024/02/18
 
 import bpy
 
 from mathutils import Vector
 from bpy.types import Operator
 from bpy.props import IntProperty
+from bpy.utils import register_class, unregister_class
 
 from bsmax.actions import lock_transform
-from bsmax.state import is_objects_selected
-
 
 
 def get_volum_dimension(objs, selection):
@@ -66,18 +66,15 @@ def get_volum_dimension(objs, selection):
 	return pmin, pcenter, pmax
 
 
-
 def get_size(pmin, pmax):
 	w, l, h = pmax - pmin
 	return Vector((w, l, h))
-
 
 
 def set_transform(obj, location, rotation, dimension):
 	obj.location = location
 	obj.rotation_euler = rotation
 	obj.dimensions = dimension
-
 
 
 def set_modifier(obj, lt, selection):
@@ -96,7 +93,6 @@ def set_modifier(obj, lt, selection):
 		mod.object = lt
 
 
-
 def create_lattice(ctx, u, v, w):
 	bpy.ops.object.mode_set(mode='OBJECT')
 	bpy.ops.object.add(	type='LATTICE')
@@ -105,7 +101,6 @@ def create_lattice(ctx, u, v, w):
 	lattice.data.points_v = v
 	lattice.data.points_w = w
 	return lattice
-
 
 
 class Lattice_OT_Set_On_Selection(Operator):
@@ -152,7 +147,6 @@ class Lattice_OT_Set_On_Selection(Operator):
 		return{"FINISHED"}
 
 
-
 # Quik setup operators #
 class Modifier_OT_Lattice_2x2x2_Set(Operator):
 	bl_idname = "modifier.lattice_2x2x2_set"
@@ -160,12 +154,11 @@ class Modifier_OT_Lattice_2x2x2_Set(Operator):
 
 	@classmethod
 	def poll(self, ctx):
-		return is_objects_selected(ctx)
+		return ctx.object
 
 	def execute(self, ctx):
 		bpy.ops.lattice.set_on_selection(res_u=2, res_v=2, res_w=2)
 		return{"FINISHED"}
-
 
 
 class Modifier_OT_Lattice_3x3x3_Set(Operator):
@@ -174,12 +167,11 @@ class Modifier_OT_Lattice_3x3x3_Set(Operator):
 
 	@classmethod
 	def poll(self, ctx):
-		return is_objects_selected(ctx)
+		return ctx.object
 
 	def execute(self, ctx):
 		bpy.ops.lattice.set_on_selection(res_u=3, res_v=3, res_w=3)
 		return{"FINISHED"}
-
 
 
 class Modifier_OT_Lattice_4x4x4_Set(Operator):
@@ -188,12 +180,11 @@ class Modifier_OT_Lattice_4x4x4_Set(Operator):
 
 	@classmethod
 	def poll(self, ctx):
-		return is_objects_selected(ctx)
+		return ctx.object
 
 	def execute(self, ctx):
 		bpy.ops.lattice.set_on_selection(res_u=4, res_v=4, res_w=4)
 		return{"FINISHED"}
-
 
 
 class Modifier_OT_FFD_2x2x2_Set(Operator):
@@ -202,12 +193,11 @@ class Modifier_OT_FFD_2x2x2_Set(Operator):
 
 	@classmethod
 	def poll(self, ctx):
-		return is_objects_selected(ctx)
+		return ctx.object
 
 	def execute(self, ctx):
 		bpy.ops.lattice.set_on_selection(res_u=2, res_v=2, res_w=2)
 		return{"FINISHED"}
-
 
 
 class Modifier_OT_FFD_3x3x3_Set(Operator):
@@ -216,12 +206,11 @@ class Modifier_OT_FFD_3x3x3_Set(Operator):
 
 	@classmethod
 	def poll(self, ctx):
-		return is_objects_selected(ctx)
+		return ctx.object
 
 	def execute(self, ctx):
 		bpy.ops.lattice.set_on_selection(res_u=3, res_v=3, res_w=3)
 		return{"FINISHED"}
-
 
 
 class Modifier_OT_FFD_4x4x4_Set(Operator):
@@ -230,12 +219,11 @@ class Modifier_OT_FFD_4x4x4_Set(Operator):
 
 	@classmethod
 	def poll(self, ctx):
-		return is_objects_selected(ctx)
+		return ctx.object
 
 	def execute(self, ctx):
 		bpy.ops.lattice.set_on_selection(res_u=4, res_v=4, res_w=4)
 		return{"FINISHED"}
-
 
 
 class Lattice_Data:
@@ -249,18 +237,25 @@ class Lattice_Data:
 lattice_data = Lattice_Data()
 
 
-
 def lattice_menu(self, ctx):
 	layout = self.layout
 	layout.separator()
 	the_name = 'FFD' if lattice_data.is_3dmax() else 'Lattice'
-	layout.operator("modifier.lattice_2x2x2_set",
-		text=(the_name+' 2x2x2 (Set)'), icon="OUTLINER_OB_LATTICE")
-	layout.operator("modifier.lattice_3x3x3_set",
-		text=(the_name+' 3x3x3 (Set)'), icon="OUTLINER_OB_LATTICE")
-	layout.operator("modifier.lattice_4x4x4_set",
-		text=(the_name+' 4x4x4 (Set)'), icon="OUTLINER_OB_LATTICE")
 
+	layout.operator(
+		"modifier.lattice_2x2x2_set",
+		text=(the_name+' 2x2x2 (Set)'), icon="OUTLINER_OB_LATTICE"
+	)
+	
+	layout.operator(
+		"modifier.lattice_3x3x3_set",
+		text=(the_name+' 3x3x3 (Set)'), icon="OUTLINER_OB_LATTICE"
+	)
+	
+	layout.operator(
+		"modifier.lattice_4x4x4_set",
+		text=(the_name+' 4x4x4 (Set)'), icon="OUTLINER_OB_LATTICE"
+	)
 
 
 classes = (
@@ -278,7 +273,7 @@ def register_lattice(preferences):
 	lattice_data.preferences = preferences
 
 	for c in classes:
-		bpy.utils.register_class(c)
+		register_class(c)
 
 	bpy.types.BSMAX_MT_lattice_create_menu.append(lattice_menu)
 	bpy.types.VIEW3D_MT_mesh_add.append(lattice_menu)
@@ -288,7 +283,7 @@ def unregister_lattice():
 	bpy.types.VIEW3D_MT_mesh_add.remove(lattice_menu)
 
 	for c in classes:
-		bpy.utils.unregister_class(c)
+		unregister_class(c)
 
 if __name__ == "__main__":
 	register_lattice(None)

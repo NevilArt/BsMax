@@ -12,14 +12,14 @@
 #	You should have received a copy of the GNU General Public License
 #	along with this program.  If not, see <https://www.gnu.org/licenses/>.
 ############################################################################
-# 2024/02/06
+# 2024/02/18
 
 import bpy
 
 from bpy.types import Operator
 from bpy.props import StringProperty, EnumProperty
+from bpy.utils import register_class, unregister_class
 
-from bsmax.state import is_objects_selected
 
 from bpy.app import version
 
@@ -162,7 +162,7 @@ def get_mesh_modifier_list():
 		# ('VOLSELECT', 'Vol. Select', ''),
 		('B-WAVE', 'Wave', 'WAVE'),
 		# ('WEGHTEDNORMAL', 'Weghted Normals', ''),
-		# ('WELDER', 'Welder', ''),
+		('B-WELDER', 'Welder', 'WELD'),
 		# ('XFORM', 'Xform', '')
 	]
 
@@ -201,6 +201,13 @@ def get_modifier_class(key):
 	return "B"
 
 
+def get_modifier_name(key):
+	parts = key.split("-")
+	if len(parts) > 1:
+		return parts[1]
+	return key
+
+
 def get_node_group(nodeGroup):
 	if nodeGroup in bpy.data.node_groups:
 		return bpy.data.node_groups[nodeGroup]
@@ -225,9 +232,9 @@ def add_modifier(ctx, obj, index, key):
 
 	if category == "B": # Blender Internal
 		modifierType = get_modifier_node_group_name(ctx, key)
-		# bpy.ops.object.modifier_add(type=modifierType)
+		modifierName = get_modifier_name(key)
 		for obj in ctx.selected_objects:
-			obj.modifiers.new(name="new modifier", type=modifierType)
+			obj.modifiers.new(name=modifierName, type=modifierType)
 
 	if category == "G": # Geometry Node
 		nodeGroupName = get_modifier_node_group_name(ctx, key)
@@ -284,14 +291,16 @@ class Object_OT_Reset_Xform(Operator):
 
 	@classmethod
 	def poll(self, ctx):
-		return is_objects_selected(ctx)
+		return ctx.object
 
 	def execute(self, ctx):
 		for obj in ctx.selected_objects:
 			ctx.view_layer.objects.active = obj
-			bpy.ops.object.transform_apply(location=False,rotation=True,scale=True)
+			bpy.ops.object.transform_apply(
+				location=False,rotation=True,scale=True
+			)
+
 		ctx.view_layer.objects.active = obj
-		self.report({'OPERATOR'},'bpy.ops.object.reset_xform()')
 		return{"FINISHED"}
 
 
@@ -303,13 +312,13 @@ classes = (
 
 def register_modifier():
 	for c in classes:
-		bpy.utils.register_class(c)
+		register_class(c)
 
 
 def unregister_modifier():
 	for c in classes:
 		if hasattr(bpy.types, c.bl_idname):
-			bpy.utils.unregister_class(c)
+			unregister_class(c)
 
 
 if __name__ == "__main__":
