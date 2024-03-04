@@ -12,7 +12,7 @@
 #	You should have received a copy of the GNU General Public License
 #	along with this program.  If not, see <https://www.gnu.org/licenses/>.
 ############################################################################
-# 2024/02/07
+# 2024/03/04
 
 import bpy
 
@@ -711,14 +711,14 @@ def object_mode(km, preferences):
 	)
 
 	km.new(
-		space, 'object.hide', 'H', 'PRESS', [('mode', 'selection')], alt=True
+		space, 'object.hide', 'H', 'PRESS', [('mode', 'SELECTION')], alt=True
 	)
 
 	km.new(
-		space, 'object.hide', 'I', 'PRESS', [('mode', 'unselected')], alt=True
+		space, 'object.hide', 'I', 'PRESS', [('mode', 'UNSELECTED')], alt=True
 	)
 
-	km.new(space, 'object.hide', 'U', 'PRESS', [('mode', 'clear')], alt=True)
+	km.new(space, 'object.hide', 'U', 'PRESS', [('mode', 'CLEAR')], alt=True)
 
 	km.new(space, 'object.modify_pivotpoint', 'INSERT', 'PRESS', [])
 	km.new(

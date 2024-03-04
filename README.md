@@ -39,6 +39,7 @@ If you found this product useful and want to support this project you can Donate
 * Render preset save load clened up, need some more correction yet.
 * Command panel Display tab updated.
 * Command panel Edit Curve partly added.
+* Keymapbug from last update fixed.
 * [Change log ...](https://github.com/NevilArt/BsMax/blob/master/CHANGELOG.md)
 
 ## License
