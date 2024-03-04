@@ -1,3 +1,7 @@
+# 0, 1, 2, 20240226
+* 3DsMax Commandpanel EditPoly/Mesh panel updated alot (CP/Modifier Tab/Edit mode).
+* Edit Curve and Edit modifer panel are the next.
+
 # 0, 1, 2, 20240212
 * Create primitive updated to work with Blender 4.1 too.
 * 3DsMax Command panel Create stuff updated.

@@ -12,93 +12,10 @@
 #	You should have received a copy of the GNU General Public License
 #	along with this program.  If not, see <https://www.gnu.org/licenses/>.
 ############################################################################
-# 2024/02/18
+# 2024/03/03
 
-import bpy
-
-from bpy.types import Operator, Panel, PropertyGroup
-from bpy.props import PointerProperty, EnumProperty
+from bpy.types import Panel
 from bpy.utils import register_class, unregister_class
-
-from bsmax.primitive_ui import get_primitive_edit_panel
-from bsmax.state import is_primitive
-
-
-def get_create_subtype(createType):
-	default = 'STANDARD'
-	items = [('STANDARD', 'Standard', '')]
-
-	if createType == "MESH":
-		default = 'STANDARD'
-		items = [
-			('STANDARD', 'Standard Primitives', ''),
-			('EXTENDED', 'Extended Primitives', ''),
-			('COMPOUND', 'Compound Objects', ''),
-			('PARTICLE', 'Particle System', ''),
-			('PATHGRIDE', 'Path Gride', ''),
-			('BODY', 'Body Objects', ''),
-			('ARCHITECTURE', 'Architecture', ''),
-			('NURBS', 'Nurbs Surface',  ''),
-			('POINTCLOUD', 'Point Cloud objects', ''),
-			('DYNAMIC', 'Dynamic objects', ''),
-			('ABC', 'Alembic', ''),
-			('FLUIDS', 'Fluids', '')
-		]
-
-	elif createType == 'CURVE':
-		default = 'SPLINE'
-		items = [
-			('SPLINE', 'Spline', ''),
-			('NURBS', 'NURBS Curvs', ''),
-			('COMPOUND', 'Compound Shapes', ''),
-			('EXTENDED', 'Extended Shapes', ''),
-			# ('CREATIONGRAPH', 'Max Creation Graph', '')
-		]
-
-	elif createType == 'LIGHT':
-		default = 'STANDARD'
-		items = [
-			('PHOTOMETRIC','Photometric',''),
-			('STANDARD','Standard',''),
-			# ('ARNOLD','Arnold','')
-		]
-
-	elif createType == 'CAMERA':
-		default = 'STANDARD'
-		items = [
-			('STANDARD','Standard',''),
-			# ('ARNOLD','Arnold','')
-		]
-
-	elif createType == 'EMPTY':
-		default = 'STANDARD'
-		items = [
-			('STANDARD','Standard',''),
-			('ATOMOSPHER','Atomospheric Apparatus',''),
-			('CAMERAMATCH','Camera Match',''),
-			('ASSEMBLY','Assembly Head',''),
-			('MANPULATOR','Manpulator',''),
-			('PFLOW','Particle Flow',''),
-			('MASSFX','MassFX',''),
-			('CAT','Cat Objects',''),
-			('VRML97','VRML97',''),
-		]
-
-	elif createType == 'SPACEWRAP':
-		default = 'FORCE'
-		items = [
-			('FORCE','Force',''),
-			('DEFELECTOR','Defelector',''),
-			('DEFORABLE','Geometric/Deformable',''),
-			('MODIFIER','Modifier Base',''),
-			('PARTICLE','Particle & Dynamics','')
-		]
-
-	elif createType =='SETTING':
-		default = 'STANDARD'
-		items = [('STANDARD','Standard','')]
-
-	return (default, items)
 
 
 def get_draw_alignment_ui(ctx, layout):
@@ -568,134 +485,6 @@ def get_create_setting_ui(ctx, layout, cPanel):
 		row.operator("bsmax.reserved", text="Daylight")
 
 
-def get_hierarcy_pivot_ui(layout, ctx):
-	box = layout.box()
-	# Move/Rotate/Scale
-	box.prop(
-		ctx.scene.tool_settings, "use_transform_data_origin",
-		text="Affect Pivot Only", toggle=True
-	)
-
-	box.prop(
-		ctx.scene.tool_settings, "use_transform_pivot_point_align",
-		text="Affect Object Only", toggle=True
-	)
-
-	box.operator("bsmax.reserved", text="Affect Hierarcy Only")
-	
-	box = layout.box()
-	# Alignment
-	box.operator("bsmax.reserved", text="Center to Object")
-	box.operator("bsmax.reserved", text="Align to Object")
-	box.operator("bsmax.reserved", text="Align to world")
-	# Pivot
-	box.operator("bsmax.reserved", text="Reset")
-
-	box = layout.box()
-	# Working pivot
-	box.operator("bsmax.reserved", text="Edit working pivot")
-	box.operator("bsmax.reserved", text="Use working pivot")
-	box.operator("bsmax.reserved", text="Alight ti view")
-	box.operator("bsmax.reserved", text="Reset")
-
-	box = layout.box()
-	# adjust Transform
-	box.prop(
-		ctx.scene.tool_settings, "use_transform_skip_children",
-		text="Dont Affect Children", toggle=True
-	)
-
-	box.operator("bsmax.reserved", text="Reset Transform")
-	box.operator("bsmax.reserved", text="Reset Scale")
-
-
-def get_hierarcy_ik_ui(layout, ctx):
-	box = layout.box()
-
-
-def get_hierarcy_linkinfo_ui(layout, ctx):
-	if not ctx.object:
-		return 
-
-	box = layout.box()
-	box.prop(ctx.object, 'lock_location', text="location")
-	box.prop(ctx.object, 'lock_rotation', text="Rotation")
-	box.prop(ctx.object, 'rotation_mode')
-	box.prop(ctx.object, 'lock_scale', text="Scale")
-
-
-class BsMax_Scene_Side_Panel(PropertyGroup):
-	main_tab: EnumProperty(
-		default='CREATE',
-		items=[
-			('CREATE', 'Create', '', 'ADD', 1),
-			('MODIFY', 'Modify', '', 'FULLSCREEN_ENTER', 2),
-			('HIERARCHY', 'Hierarchy', '', 'PARTICLES', 3),
-			('MOTION', 'Motion', '', 'PHYSICS', 4),
-			('DISPLAY', 'Display', '', 'WORKSPACE', 5),
-			('UTILITIES', 'Utilities', '', 'MODIFIER', 6)
-		]
-	)
-
-	create_type: EnumProperty(
-		items=[
-			('MESH', 'Mesh', '', 'NODE_MATERIAL', 1),
-			('CURVE', 'Curve', '', 'MOD_SUBSURF', 2),
-			('LIGHT', 'Light', '', 'LIGHT_DATA', 3),
-			('CAMERA', 'Camera', '', 'CAMERA_DATA', 4),
-			('EMPTY', 'Empty', '', 'MODIFIER_DATA', 5),
-			('SPACEWRAP', 'Spacewrap', '', 'FORCE_FORCE', 6),
-			('SETTING', 'Setting', '', 'SETTINGS', 7)
-		],
-		default='MESH',
-	)
-
-	hierarcy_type: EnumProperty(
-		items=[
-			('PIVOT', 'Pivot', ''),
-			('IK', 'IK', ''),
-			('LINKINFO', 'Link Info', ''),
-		],
-		default='LINKINFO',
-	)
-
-	stDefault, stItems = get_create_subtype('MESH')
-	mesh_types: EnumProperty(
-		items=stItems, default=stDefault
-	)
-
-	stDefault, stItems = get_create_subtype('CURVE')
-	curve_types: EnumProperty(
-		items=stItems, default=stDefault
-	)
-
-	stDefault, stItems = get_create_subtype('LIGHT')
-	light_types: EnumProperty(
-		items=stItems, default=stDefault
-	)
-
-	stDefault, stItems = get_create_subtype('CAMERA')
-	camera_types: EnumProperty(
-		items=stItems,
-		default=stDefault
-	)
-
-	stDefault, stItems = get_create_subtype('EMPTY')
-	empty_types: EnumProperty(
-		items=stItems, default=stDefault
-	)
-
-	stDefault, stItems = get_create_subtype('SPACEWRAP')
-	spacewrap_types: EnumProperty(
-		items=stItems, default=stDefault
-	)
-
-	stDefault, stItems = get_create_subtype('SETTING')
-	setting_types: EnumProperty(
-		items=stItems, default=stDefault
-	)
-
-
 def create_next_ui(ctx, layout):
 	row = layout.row()
 	primitive_setting = ctx.scene.primitive_setting
@@ -732,126 +521,28 @@ def get_create_panel(layout, ctx):
 	create_next_ui(ctx, layout.box())
 
 
-def get_edit_panel(layout, ctx):
-	pass
-	#TODO active edit panel from here
-	
-
-def get_modifier_panel(layout, ctx):
-	layout.operator("object.create_modifier", text="Modifier List")
-
-	box = layout.box()
-	if ctx.object:
-		for modifer in reversed(ctx.object.modifiers):
-			box.label(text=modifer.name)
-
-	box.label(text=ctx.object.name)
-	
-	box =layout.box()
-	if is_primitive(ctx):
-		box.operator("primitive.cleardata", text="Collaps Primitive Data")
-		get_primitive_edit_panel(ctx.object.data.primitivedata, box)
-
-	else:
-		get_edit_panel(layout, ctx)
-
-
-def get_hierarcy_panel(layout, ctx):
-	cPanel = ctx.scene.comand_panel
-	layout.prop(cPanel, 'hierarcy_type', expand=True)
-
-	if cPanel.hierarcy_type == 'PIVOT':
-		get_hierarcy_pivot_ui(layout, ctx)
-
-	elif cPanel.hierarcy_type == 'IK':
-		get_hierarcy_ik_ui(layout, ctx)
-
-	elif cPanel.hierarcy_type == 'LINKINFO':
-		get_hierarcy_linkinfo_ui(layout, ctx)
-
-
-def get_motion_panel(layout, ctx):
-	box = layout.box()
-	box.label(text="Coming soon")
-
-
-def get_display_panel(layout, ctx):
-	box = layout.box()
-	box.label(text="Coming soon")
-
-
-def get_utility_panel(layout, ctx):
-	box = layout.box()
-	box.label(text="Coming soon")
-
-
-class BsMax_OT_Reserved(Operator):
-	bl_idname = 'bsmax.reserved'
-	bl_label = 'Reserveed'
-	bl_description = ''
+class SCENE_OP_BsMax_Create_Panel(Panel):
+	bl_space_type = 'VIEW_3D'
+	bl_region_type = 'UI'
+	bl_label = 'Create'
+	bl_idname = 'VIEW3D_PT_BsMax_create'
+	bl_category = 'BsMax'
 
 	@classmethod
 	def poll(self, ctx):
-		return False
-
-	def execute(self, ctx):
-		return{'FINISHED'}
-
-
-class SCENE_OP_BsMax_Side_Panel(Panel):
-	bl_space_type = 'VIEW_3D'
-	bl_region_type = 'UI'
-	bl_label = 'BsMax (Under Construction)'
-	bl_idname = 'VIEW3D_PT_BsMax'
-	bl_category = 'BsMax'
-
-	def draw(self, ctx):
-		layout = self.layout
-		cPanel = ctx.scene.comand_panel
-
-		layout.prop(cPanel, 'main_tab', expand=True)
-
-		if cPanel.main_tab == 'CREATE':
-			get_create_panel(layout, ctx)
-
-		elif cPanel.main_tab == 'MODIFY':
-			get_modifier_panel(layout, ctx)
-
-		elif cPanel.main_tab == 'HIERARCHY':
-			get_hierarcy_panel(layout, ctx)
-
-		elif cPanel.main_tab == 'MOTION':
-			get_motion_panel(layout, ctx)
-
-		elif cPanel.main_tab == 'DISPLAY':
-			get_display_panel(layout, ctx)
-
-		elif cPanel.main_tab == 'UTILITIES':
-			get_utility_panel(layout, ctx)
-
-
-classes = (
-	BsMax_OT_Reserved,
-	BsMax_Scene_Side_Panel,
-	SCENE_OP_BsMax_Side_Panel
-)
-
-
-def register_side_panel():
-	for c in classes:
-		register_class(c)
+		return ctx.scene.comand_panel.main_tab == 'CREATE'
 	
-	bpy.types.Scene.comand_panel = PointerProperty(type=BsMax_Scene_Side_Panel)
+	def draw(self, ctx):
+		get_create_panel(self.layout, ctx)
 
 
-def unregister_side_panel():
-	#TODO check is class exist before remove
-	for c in classes:
-		try:
-			unregister_class(c)
-		except:
-			pass
+def register_create_panel():
+	register_class(SCENE_OP_BsMax_Create_Panel)
+
+
+def unregister_create_panel():
+	unregister_class(SCENE_OP_BsMax_Create_Panel)
 
 
 if __name__ == "__main__":
-	register_side_panel()
+	register_create_panel()

@@ -21,7 +21,7 @@ from .clone_array_objects import register_clone_object, unregister_clone_object
 from .collection import register_collection, unregister_collection
 from .convert import register_convert, unregister_convert
 from .create import register_create, unregister_create
-from .freeze import register_freeze, unregister_freeze
+from .display import register_display, unregister_dispaly
 from .instancer import register_instancer, unregister_instancer
 from .lattice import register_lattice, unregister_lattice
 from .link_to import register_link_to, unregister_link_to
@@ -40,7 +40,7 @@ def register_object(preferences):
 	register_collection()
 	register_convert()
 	register_create()
-	register_freeze()
+	register_display()
 	register_instancer()
 	register_lattice(preferences)
 	register_link_to()
@@ -48,6 +48,7 @@ def register_object(preferences):
 	register_object_properties()
 	register_pivot_point()
 	register_subobject_level()
+
 
 def unregister_object():
 	unregister_arrange()
@@ -58,7 +59,7 @@ def unregister_object():
 	unregister_collection()
 	unregister_convert()
 	unregister_create()
-	unregister_freeze()
+	unregister_dispaly()
 	unregister_instancer()
 	unregister_lattice()
 	unregister_link_to()

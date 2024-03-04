@@ -12,6 +12,7 @@
 #	You should have received a copy of the GNU General Public License
 #	along with this program.  If not, see <https://www.gnu.org/licenses/>.
 ############################################################################
+# 2024/03/03
 
 import bpy
 from bpy.types import Operator
@@ -41,7 +42,6 @@ from primitive.ngon import NGon
 from primitive.profilo import Profilo
 from primitive.rectangle import Rectangle
 from primitive.star import Star
-
 
 
 def add_parametric_primitive(type, ctx):
@@ -176,11 +176,10 @@ def add_parametric_primitive(type, ctx):
 	ctx.active_object.location = ctx.scene.cursor.location
 
 
-
 class Object_OT_Create(Operator):
 	bl_idname = "object.create"
 	bl_label = "Create (Primitive object)"
-	# bl_description = ""
+	bl_description = "Create Primitive Object"
 	bl_options = {'REGISTER', 'UNDO'}
 
 	prims = [
@@ -229,15 +228,12 @@ class Object_OT_Create(Operator):
 		return wm.invoke_props_dialog(self)
 
 
-
 def register_create():
 	bpy.utils.register_class(Object_OT_Create)
 
 
-
 def unregister_create():
 	bpy.utils.unregister_class(Object_OT_Create)
-
 
 
 if __name__ == "__main__":

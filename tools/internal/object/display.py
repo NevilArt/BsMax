@@ -12,21 +12,20 @@
 #	You should have received a copy of the GNU General Public License
 #	along with this program.  If not, see <https://www.gnu.org/licenses/>.
 ############################################################################
+# 2024/03/03
 
 import bpy
 
 from bpy.types import Operator
 from bpy.props import EnumProperty, BoolProperty, StringProperty
+from bpy.utils import register_class, unregister_class
 
 from bsmax.actions import set_as_active_object
 
 
-
 class Object_TO_Select_By_Name(Operator):
-	""" Select By Name """
 	bl_idname = "object.select_by_name"
 	bl_label = "Select Object By Name"
-	# bl_description = ""
 	bl_options = {'REGISTER', 'UNDO', 'INTERNAL'}
 	
 	name: StringProperty(default="")
@@ -37,44 +36,44 @@ class Object_TO_Select_By_Name(Operator):
 	
 	def execute(self,ctx):
 		bpy.ops.object.select_all(action='DESELECT')
-		if self.name != "":
+
+		if self.name:
 			set_as_active_object(ctx, bpy.data.objects[self.name])
+
 		return{"FINISHED"}
 
 
-
 class Object_OT_Freeze(Operator):
-	""" Freeze / Unfreeze Objects """
 	bl_idname = "object.freeze"
 	bl_label = "Freeze / Unfreeze"
-	# bl_description = ""
-	bl_options = {'REGISTER', 'UNDO'}
+	bl_options = {'REGISTER', 'UNDO', 'INTERNAL'}
 
-	mode: EnumProperty(default='selection',
-						items=[
-							('selection', 'Freeze Selection', ''),
-							('unselected', 'Freeze Unselected', ''),
-							('clear', 'Unfreezee All', '')
-						]
-			)
+	mode: EnumProperty(
+		items=[
+			('SELECTION', 'Freeze Selection', ''),
+			('UNSELECTED', 'Freeze Unselected', ''),
+			('CLEAR', 'Unfreezee All', '')
+		],
+		default='SELECTION'
+	)
 	
 	@classmethod
 	def poll(self, ctx):
 		return ctx.mode == 'OBJECT'
 
 	def execute(self, ctx):
-		if self.mode == 'selection':
+		if self.mode == 'SELECTION':
 			for obj in ctx.selected_objects:
 				obj.hide_select = True
 				obj.display_type = 'SOLID'
 
-		elif self.mode == 'unselected':
+		elif self.mode == 'UNSELECTED':
 			for obj in bpy.data.objects:
 				if not obj.select_get():
 					obj.hide_select = True
 					obj.display_type = 'SOLID'
 
-		elif self.mode == 'clear':
+		elif self.mode == 'CLEAR':
 			for obj in bpy.data.objects:
 				obj.hide_select = False
 				obj.display_type = 'TEXTURED'
@@ -86,36 +85,33 @@ class Object_OT_Freeze(Operator):
 		return{"FINISHED"}
 
 
-
 class Object_OT_Hide(Operator):
-	""" Hide/Unhide Objects """
 	bl_idname = "object.hide"
 	bl_label = "Hide/Unhide"
-	# bl_description = ""
-	bl_options = {'REGISTER', 'UNDO'}
+	bl_options = {'REGISTER', 'UNDO', 'INTERNAL'}
 
 	mode: EnumProperty(
-		default='selection',
 		items=[
-			('selection', 'Hide Selection', ''),
-			('unselected', 'Hide Unselected', ''),
-			('clear', 'Unhide All', '')
-		]
+			('SELECTION', 'Hide Selection', 'Hide Selected Objects'),
+			('UNSELECTED', 'Hide Unselected', 'Hide Unselected Objects'),
+			('CLEAR', 'Unhide All', 'Unhide all hidden Objects')
+		],
+		default='SELECTION'
 	)
 
 	collection: BoolProperty(default=False)
 
 	def execute(self, ctx):
-		if self.mode == 'selection':
+		if self.mode == 'SELECTION':
 			for obj in ctx.selected_objects:
 				obj.hide_viewport = True
 
-		elif self.mode == 'unselected':
+		elif self.mode == 'UNSELECTED':
 			for obj in bpy.data.objects:
 				if not obj.select_get():
 					obj.hide_viewport = True
 
-		elif self.mode == 'clear':
+		elif self.mode == 'CLEAR':
 			if self.collection:
 				for collection in bpy.data.collections:
 					collection.hide_viewport = False
@@ -124,14 +120,8 @@ class Object_OT_Hide(Operator):
 				obj.hide_viewport = False
 
 			bpy.ops.object.hide_view_clear('INVOKE_DEFAULT')
+
 		return{"FINISHED"}
-
-
-
-#TODO isolate mode
-# view3d.localview
-# view3d.localview_remove_from
-
 
 
 classes = (
@@ -141,17 +131,15 @@ classes = (
 )
 
 
-
-def register_freeze():
+def register_display():
 	for c in classes:
-		bpy.utils.register_class(c)
+		register_class(c)
 
 
-
-def unregister_freeze():
+def unregister_dispaly():
 	for c in classes:
-		bpy.utils.unregister_class(c)
+		unregister_class(c)
 
 
 if __name__ == "__main__":
-	register_freeze()
+	register_display()

@@ -12,9 +12,10 @@
 #	You should have received a copy of the GNU General Public License
 #	along with this program.  If not, see <https://www.gnu.org/licenses/>.
 ############################################################################
-# 2024/02/25
+# 2024/03/04
 
 import bpy
+
 from mathutils import Matrix
 
 
@@ -451,3 +452,27 @@ def convert_to_solid_mesh(objs):
 
 		# apply modifiers and shapekeys
 		obj.to_mesh()
+
+
+def new_collection(ctx, name, colorIndex=0, parent=None):
+	collections = bpy.data.collections
+	colorTag = 'COLOR_0' + str(colorIndex) if colorIndex > 0 else 'NONE'
+
+	newCollection = collections[name] if name in collections else collections.new(name)
+	newCollection.color_tag = colorTag
+
+	if not parent:
+		parent = ctx.scene.collection
+
+	for collection in collections:
+		if newCollection.name in collection.children:
+			collection.children.unlink(newCollection)
+	
+	if not newCollection.name in parent.children:
+		parent.children.link(newCollection)
+	
+	if not parent == ctx.scene.collection:
+		if newCollection.name in ctx.scene.collection.children:
+			ctx.scene.collection.children.unlink(newCollection)
+
+	return newCollection

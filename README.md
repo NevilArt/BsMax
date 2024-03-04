@@ -36,8 +36,9 @@ If you found this product useful and want to support this project you can Donate
 * [Download Older Version (2.80-2.92)(2.93-3.2)](https://github.com/NevilArt/BsMax_2_80)
 
 ## Recent Updates and Changes
-* 3DsMax Commandpanel EditPoly/Mesh panel updated alot (CP/Modifier Tab/Edit mode).
-* Edit Curve and Edit modifer panel are the next.
+* Render preset save load clened up, need some more correction yet.
+* Command panel Display tab updated.
+* Command panel Edit Curve partly added.
 * [Change log ...](https://github.com/NevilArt/BsMax/blob/master/CHANGELOG.md)
 
 ## License
