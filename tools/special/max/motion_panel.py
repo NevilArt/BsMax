@@ -32,7 +32,7 @@ class SCENE_OP_BsMax_Motion_Panel(Panel):
 
 	@classmethod
 	def poll(self, ctx):
-		return ctx.scene.comand_panel.main_tab == 'MOTION'
+		return ctx.scene.command_panel.main_tab == 'MOTION'
 	
 	def draw(self, ctx):
 		get_motion_panel(self.layout, ctx)

@@ -41,7 +41,7 @@ def get_uniform_color(mode="2D"):
 
 
 def set_smooth_by_angel():
-	if version >= (4, 1, 0):
+	if version >= (4, 2, 0):
 		gnPath = "geometry_nodes\\smooth_by_angle.blend\\NodeTree\\"
 		bpy.ops.object.modifier_add_node_group(
 			asset_library_type='ESSENTIALS',
@@ -49,8 +49,10 @@ def set_smooth_by_angel():
 			relative_asset_identifier=gnPath+"Smooth by Angle"
 		)
 
+
 def float_vector_to_color(floatVector):
 	return (floatVector[0], floatVector[1], floatVector[2], 1)
+
 
 def primitive_geometry_class_create_mesh(self, ctx, meshdata, classname):
 	verts,edges,faces, = meshdata
@@ -249,7 +251,7 @@ def fix_type_visablity(subclass, ctx):
 def set_active_tool(self, ctx):
 	activeToolName = ""
 	# 
-	print(">> subclass >>", self.subclass)
+	# print(">> subclass >>", self.subclass)
 	if self.subclass:
 		# TODO just temprary solution for quick update
 		try:
@@ -561,7 +563,7 @@ class Draw_Primitive(Operator):
 			self.reset(ctx)
 
 			################################################
-			print(">>read>", ctx.scene.primitive_setting.active_tool)
+			# print(">>read>", ctx.scene.primitive_setting.active_tool)
 			ctx.scene.primitive_setting.active_tool = ""
 			################################################
 

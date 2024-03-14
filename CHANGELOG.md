@@ -1,3 +1,9 @@
+# 0, 1, 2, 20240304
+* Render preset save load clened up, need some more correction yet.
+* Command panel Display tab updated.
+* Command panel Edit Curve partly added.
+* Keymapbug from last update fixed.
+
 # 0, 1, 2, 20240226
 * 3DsMax Commandpanel EditPoly/Mesh panel updated alot (CP/Modifier Tab/Edit mode).
 * Edit Curve and Edit modifer panel are the next.

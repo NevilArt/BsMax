@@ -38,6 +38,7 @@ def register_max(preferences):
 
 		register_edit_curve()
 		register_edit_mesh()
+		
 
 def unregister_max():
 	unregister_command_panel()

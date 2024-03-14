@@ -75,7 +75,7 @@ def get_hierarcy_linkinfo_ui(layout, ctx):
 
 
 def get_hierarcy_panel(layout, ctx):
-	cPanel = ctx.scene.comand_panel
+	cPanel = ctx.scene.command_panel
 	layout.prop(cPanel, 'hierarcy_type', expand=True)
 
 	if cPanel.hierarcy_type == 'PIVOT':
@@ -97,7 +97,7 @@ class SCENE_OP_BsMax_Hierarchy_Panel(Panel):
 
 	@classmethod
 	def poll(self, ctx):
-		return ctx.scene.comand_panel.main_tab == 'HIERARCHY'
+		return ctx.scene.command_panel.main_tab == 'HIERARCHY'
 	
 	def draw(self, ctx):
 		get_hierarcy_panel(self.layout, ctx)

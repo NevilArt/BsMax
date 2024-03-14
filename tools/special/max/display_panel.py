@@ -129,7 +129,7 @@ class SCENE_OP_BsMax_Display_Color_Panel(Panel):
 
 	@classmethod
 	def poll(self, ctx):
-		return ctx.scene.comand_panel.main_tab == 'DISPLAY'
+		return ctx.scene.command_panel.main_tab == 'DISPLAY'
 	
 	def draw(self, ctx):
 		get_display_color_panel(self.layout, ctx)
@@ -144,7 +144,7 @@ class SCENE_OP_BsMax_Display_Hide_category_Panel(Panel):
 
 	@classmethod
 	def poll(self, ctx):
-		return ctx.scene.comand_panel.main_tab == 'DISPLAY'
+		return ctx.scene.command_panel.main_tab == 'DISPLAY'
 	
 	def draw(self, ctx):
 		get_display_hide_category_panel(self.layout, ctx)
@@ -159,7 +159,7 @@ class SCENE_OP_BsMax_Display_Hide_Panel(Panel):
 
 	@classmethod
 	def poll(self, ctx):
-		return ctx.scene.comand_panel.main_tab == 'DISPLAY'
+		return ctx.scene.command_panel.main_tab == 'DISPLAY'
 	
 	def draw(self, ctx):
 		get_display_hide_panel(self.layout, ctx)
@@ -174,7 +174,7 @@ class SCENE_OP_BsMax_Display_Freeze_Panel(Panel):
 
 	@classmethod
 	def poll(self, ctx):
-		return ctx.scene.comand_panel.main_tab == 'DISPLAY'
+		return ctx.scene.command_panel.main_tab == 'DISPLAY'
 	
 	def draw(self, ctx):
 		get_display_freeze_panel(self.layout, ctx)
@@ -189,7 +189,7 @@ class SCENE_OP_BsMax_Display_Properties_Panel(Panel):
 
 	@classmethod
 	def poll(self, ctx):
-		return ctx.scene.comand_panel.main_tab == 'DISPLAY'
+		return ctx.scene.command_panel.main_tab == 'DISPLAY'
 	
 	def draw(self, ctx):
 		get_display_properties_panel(self.layout, ctx)
@@ -204,7 +204,7 @@ class SCENE_OP_BsMax_Display_Links_Panel(Panel):
 
 	@classmethod
 	def poll(self, ctx):
-		return ctx.scene.comand_panel.main_tab == 'DISPLAY'
+		return ctx.scene.command_panel.main_tab == 'DISPLAY'
 	
 	def draw(self, ctx):
 		get_display_links_panel(self.layout, ctx)

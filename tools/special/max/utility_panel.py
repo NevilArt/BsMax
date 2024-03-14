@@ -32,7 +32,7 @@ class SCENE_OP_BsMax_Utilities_Panel(Panel):
 
 	@classmethod
 	def poll(self, ctx):
-		return ctx.scene.comand_panel.main_tab == 'UTILITIES'
+		return ctx.scene.command_panel.main_tab == 'UTILITIES'
 	
 	def draw(self, ctx):
 		get_utility_panel(self.layout, ctx)

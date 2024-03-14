@@ -17,7 +17,7 @@
 import bpy
 
 from bpy.types import Operator, Panel, PropertyGroup
-from bpy.props import PointerProperty, EnumProperty
+from bpy.props import PointerProperty, EnumProperty, IntProperty
 from bpy.utils import register_class, unregister_class
 
 
@@ -98,7 +98,11 @@ def get_create_subtype(createType):
 	return (default, items)
 
 
-class BsMax_Scene_Side_Panel(PropertyGroup):
+def modifer_panel_update(self, _):
+	bpy.ops.object.active_modifier(index=self.active_modifier)
+
+
+class BsMax_Command_Panel(PropertyGroup):
 	main_tab: EnumProperty(
 		default='CREATE',
 		items=[
@@ -169,6 +173,8 @@ class BsMax_Scene_Side_Panel(PropertyGroup):
 		items=stItems, default=stDefault
 	)
 
+	active_modifier: IntProperty(update=modifer_panel_update)
+
 
 class BsMax_OT_Reserved(Operator):
 	bl_idname = 'bsmax.reserved'
@@ -192,14 +198,14 @@ class SCENE_OP_BsMax_Side_Panel(Panel):
 
 	def draw(self, ctx):
 		layout = self.layout
-		cPanel = ctx.scene.comand_panel
+		cPanel = ctx.scene.command_panel
 
 		layout.prop(cPanel, 'main_tab', expand=True)
 
 
 classes = (
 	BsMax_OT_Reserved,
-	BsMax_Scene_Side_Panel,
+	BsMax_Command_Panel,
 	SCENE_OP_BsMax_Side_Panel
 )
 
@@ -208,7 +214,7 @@ def register_command_panel():
 	for c in classes:
 		register_class(c)
 	
-	bpy.types.Scene.comand_panel = PointerProperty(type=BsMax_Scene_Side_Panel)
+	bpy.types.Scene.command_panel = PointerProperty(type=BsMax_Command_Panel)
 
 
 def unregister_command_panel():

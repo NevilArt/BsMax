@@ -36,10 +36,8 @@ If you found this product useful and want to support this project you can Donate
 * [Download Older Version (2.80-2.92)(2.93-3.2)](https://github.com/NevilArt/BsMax_2_80)
 
 ## Recent Updates and Changes
-* Render preset save load clened up, need some more correction yet.
-* Command panel Display tab updated.
-* Command panel Edit Curve partly added.
-* Keymapbug from last update fixed.
+* Command Panel Modifier list updated.
+* Some more compatibility with Blender 4.1Beta
 * [Change log ...](https://github.com/NevilArt/BsMax/blob/master/CHANGELOG.md)
 
 ## License

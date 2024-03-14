@@ -19,8 +19,8 @@ from bpy.utils import register_class, unregister_class
 
 
 def is_edit_curve(ctx):
-	if 'main_tab' in ctx.scene.comand_panel:
-		if ctx.scene.comand_panel['main_tab'] == 2:
+	if 'main_tab' in ctx.scene.command_panel:
+		if ctx.scene.command_panel['main_tab'] == 2:
 			return ctx.mode == 'EDIT_CURVE'
 	return False
 
@@ -102,7 +102,22 @@ def get_curve_interpolation(layout, ctx):
 
 
 def get_curve_selection(layout, ctx):
-	pass
+	box = layout.box()
+	row = box.row()
+	mesh_option = ctx.scene.mesh_select_option
+	row.prop(mesh_option, 'by_element', text="", icon="SNAP_VOLUME")
+
+	box = layout.box()
+	row = box.row()
+	row.operator('curve.select_less', text="Shrink")
+
+	row1= row.row(align=True)
+	row1.operator('curve.select_previous', text="", icon="TRIA_LEFT")
+	row1.operator('curve.select_more', text="Grow")
+	row1.operator('curve.select_next', text="", icon="TRIA_RIGHT")
+	
+	row = box.row()
+	row.operator('curve.select_linked', text="Linked")
 	
 
 def get_curve_soft_selection(layout, ctx):

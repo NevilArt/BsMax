@@ -494,7 +494,7 @@ def create_next_ui(ctx, layout):
 
 
 def get_create_panel(layout, ctx):
-	cPanel = ctx.scene.comand_panel
+	cPanel = ctx.scene.command_panel
 	layout.prop(cPanel, 'create_type', expand=True)
 		
 	if cPanel.create_type == 'MESH':
@@ -530,7 +530,7 @@ class SCENE_OP_BsMax_Create_Panel(Panel):
 
 	@classmethod
 	def poll(self, ctx):
-		return ctx.scene.comand_panel.main_tab == 'CREATE'
+		return ctx.scene.command_panel.main_tab == 'CREATE'
 	
 	def draw(self, ctx):
 		get_create_panel(self.layout, ctx)

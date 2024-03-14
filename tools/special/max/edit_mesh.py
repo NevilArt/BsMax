@@ -19,8 +19,8 @@ from bpy.utils import register_class, unregister_class
 
 
 def is_edit_mesh(ctx):
-	if 'main_tab' in ctx.scene.comand_panel:
-		if ctx.scene.comand_panel['main_tab'] == 2:
+	if 'main_tab' in ctx.scene.command_panel:
+		if ctx.scene.command_panel['main_tab'] == 2:
 			return ctx.mode == 'EDIT_MESH'
 	return False
 
