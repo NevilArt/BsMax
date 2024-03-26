@@ -12,10 +12,14 @@
 #	You should have received a copy of the GNU General Public License
 #	along with this program.  If not, see <https://www.gnu.org/licenses/>.
 ############################################################################
+# 2024/03/16
 
 import bpy
+
 from bpy.types import Operator, Menu
 from bpy.props import FloatProperty, BoolProperty
+from bpy.utils import register_class, unregister_class
+
 from bsmax.graphic import Rubber_Band
 
 # TARGET WELD
@@ -30,7 +34,6 @@ def select_vert(ctx, event, started):
 	result = bpy.ops.view3d.select(extend=started, location=coord)
 	if result == {'PASS_THROUGH'}:
 		bpy.ops.mesh.select_all(action='DESELECT')
-
 
 
 class Mesh_OT_Target_Weld(Operator):
@@ -87,7 +90,6 @@ class Mesh_OT_Target_Weld(Operator):
 		return {'RUNNING_MODAL'}
 
 	def execute(self,ctx):
-		self.report({'OPERATOR'},'bpy.ops.mesh.target_weld()')
 		return{"FINISHED"}
 
 	def invoke(self, ctx, event):
@@ -98,7 +100,6 @@ class Mesh_OT_Target_Weld(Operator):
 		return {'CANCELLED'}
 
 
-
 class VIEW3D_MT_edit_mesh_weld(Menu):
 	bl_label = "Weld"
 	def draw(self, ctx):
@@ -106,14 +107,16 @@ class VIEW3D_MT_edit_mesh_weld(Menu):
 		self.layout.operator("mesh.remove_doubles", text="Weld by distance")
 
 
-
 class Mesh_OT_Weld(Operator):
 	bl_idname = "mesh.weld"
 	bl_label = "Weld"
 	bl_options = {'REGISTER', 'UNDO'}
 
-	threshold: FloatProperty(name='Merge Distance',
-		min=0.00001, max=10, default=0.001, unit='LENGTH')
+	threshold: FloatProperty(
+		name='Merge Distance',
+		min=0.00001, max=10, unit='LENGTH',
+		default=0.001
+	)
 	use_unselected: BoolProperty()
 	use_sharp_edge: BoolProperty()
 
@@ -135,7 +138,6 @@ class Mesh_OT_Weld(Operator):
 		return ctx.window_manager.invoke_props_dialog(self)
 
 
-
 classes = (
 	Mesh_OT_Target_Weld,
 	VIEW3D_MT_edit_mesh_weld,
@@ -143,17 +145,14 @@ classes = (
 )
 
 
-
 def register_weld():
 	for c in classes:
-		bpy.utils.register_class(c)
-
+		register_class(c)
 
 
 def unregister_weld():
 	for c in classes:
-		bpy.utils.unregister_class(c)
-
+		unregister_class(c)
 
 
 if __name__ == "__main__":

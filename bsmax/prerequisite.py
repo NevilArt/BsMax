@@ -12,13 +12,10 @@
 #	You should have received a copy of the GNU General Public License
 #	along with this program.  If not, see <https://www.gnu.org/licenses/>.
 ############################################################################
-# 2024/02/13
-
-import bpy
+# 2024/03/23
 
 from bpy.utils import register_class, unregister_class
 from bpy.types import Menu
-
 
 
 class BsMax_MT_View3D_tools(Menu):
@@ -29,6 +26,14 @@ class BsMax_MT_View3D_tools(Menu):
 	# @classmethod
 	# def poll(self,ctx):
 	# 	return ctx.mode == 'OBJECT'
+
+	def draw(self, ctx):
+		pass
+
+
+class BsMax_MT_Compositor_tools(Menu):
+	bl_idname = 'BSMAX_MT_compositor_tools'
+	bl_label = 'Tools'
 
 	def draw(self, ctx):
 		pass
@@ -49,15 +54,14 @@ class BsMax_MT_View3D_Create(Menu):
 
 classes = (
 	BsMax_MT_View3D_tools,
+	BsMax_MT_Compositor_tools,
 	BsMax_MT_View3D_Create
 )
-
 
 
 def register_prerequisite():
 	for c in classes:
 		register_class(c)
-
 
 
 def unregister_prerequisite():

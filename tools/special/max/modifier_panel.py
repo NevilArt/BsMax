@@ -12,7 +12,7 @@
 #	You should have received a copy of the GNU General Public License
 #	along with this program.  If not, see <https://www.gnu.org/licenses/>.
 ############################################################################
-# 2024/03/06
+# 2024/03/23
 
 import bpy
 
@@ -273,6 +273,46 @@ def get_base_object_name(ctx):
 	return obj.name
 
 
+def get_modifier_panel(layout, ctx):
+	layout.operator("object.modifier_create", text="Modifier List")
+
+	col = layout.box().column()
+
+	col.template_list(
+		"OBJECT_UL_modifier_list",
+		"",
+		ctx.object,
+		"modifiers",
+		ctx.scene.command_panel,
+		"active_modifier"
+	)
+
+	col.operator('object.edit_mode_toggle', text=get_base_object_name(ctx))
+
+	row = col.row()
+	row.operator('bsmax.reserved', text="", icon='PINNED')
+	row.operator('bsmax.reserved', text="", icon='EXPERIMENTAL')
+	row.operator('object.make_unique', text="", icon='POINTCLOUD_POINT')
+	row.operator('object.modifier_delete', text="", icon='TRASH')
+	row.operator('modifier.clipboard_copy', text="", icon='COPYDOWN')
+	row.operator('modifier.clipboard_past', text="", icon='PASTEDOWN')
+	
+	if is_primitive(ctx):
+		box =layout.box()
+		box.operator("primitive.cleardata", text="Collaps Primitive Data")
+		get_primitive_edit_panel(ctx.object.data.primitivedata, box)
+
+
+class ModifierClipboard:
+	def __init__(self):
+		self.object = None
+		self.modifiers = []
+	def clear(self):
+		self.object = None
+		self.modifiers = []
+modifierClipboard = ModifierClipboard()
+
+
 class OBJECT_UL_modifier_list(UIList):
 
 	def draw_item(self, context, layout, data, item, icon, active_data, active_propname):
@@ -283,29 +323,8 @@ class OBJECT_UL_modifier_list(UIList):
 			layout.prop(ob, "name", text="", emboss=False, icon_value=layout.icon(ob))
 
 
-def get_modifier_panel(layout, ctx):
-	layout.operator("object.create_modifier", text="Modifier List")
-
-	col = layout.box().column()
-
-	col.template_list(
-			"OBJECT_UL_modifier_list",
-			"",
-			ctx.object,
-			"modifiers",
-			ctx.scene.command_panel,
-			"active_modifier")
-
-	col.operator('object.edit_mode_toggle', text=get_base_object_name(ctx))
-	
-	if is_primitive(ctx):
-		box =layout.box()
-		box.operator("primitive.cleardata", text="Collaps Primitive Data")
-		get_primitive_edit_panel(ctx.object.data.primitivedata, box)
-
-
-class Object_OT_Create_Modifier(Operator):
-	bl_idname = 'object.create_modifier'
+class Object_OT_Modifier_Create(Operator):
+	bl_idname = 'object.modifier_create'
 	bl_label = 'Create Modifier'
 	bl_property = 'search'
 	bl_description = ''
@@ -320,6 +339,76 @@ class Object_OT_Create_Modifier(Operator):
 	def invoke(self, ctx, event):
 		ctx.window_manager.invoke_search_popup(self)
 		return{'RUNNING_MODAL'}
+
+
+class Object_OT_Modifier_Delete(Operator):
+	bl_idname = 'object.modifier_delete'
+	bl_label = 'Delete Modifier'
+	bl_options = {'REGISTER', 'INTERNAL', 'UNDO'}
+	bl_description = ''
+
+	def execute(self, ctx):
+		for mod in ctx.object.modifiers:
+			if mod.is_active:
+				bpy.ops.object.modifier_remove(modifier=mod.name)
+				break
+		return{'FINISHED'}
+
+
+class Modifier_OT_Clipboard_Copy(Operator):
+	bl_idname = 'modifier.clipboard_copy'
+	bl_label = 'Copy Modifier'
+	bl_options = {'REGISTER', 'INTERNAL', 'UNDO'}
+
+	@classmethod
+	def poll(self, ctx):
+		if ctx.object:
+			return len(ctx.object.modifiers) > 0
+		return False
+
+	def execute(self, ctx):
+		global modifierClipboard
+		modifierClipboard.object = ctx.object
+		modifierClipboard.modifiers.clear()
+		activeModifier = ctx.object.modifiers.active.name
+		modifierClipboard.modifiers.append(activeModifier)
+		return{'FINISHED'}
+
+
+class Modifier_OT_Clipboard_Past(Operator):
+	bl_idname = 'modifier.clipboard_past'
+	bl_label = 'Past Modifier'
+	bl_options = {'REGISTER', 'INTERNAL', 'UNDO'}
+
+	@classmethod
+	def poll(self, ctx):
+		if ctx.object:
+			global modifierClipboard
+			return modifierClipboard.object
+		return False
+
+	def execute(self, ctx):
+		# stotre current state
+		activeObject = ctx.active_object
+		selection = [obj for obj in ctx.selected_objects]
+		
+		# Copy modifiers on selected objects
+		global modifierClipboard
+		modifierClipboard.object.select_set(state=True)
+		ctx.view_layer.objects.active = modifierClipboard.object
+		for modifier in modifierClipboard.modifiers:
+			if modifier in ctx.object.modifiers:
+				bpy.ops.object.modifier_copy_to_selected(modifier=modifier)
+			else:
+				modifierClipboard.clear()
+		
+		# Restore State
+		bpy.ops.object.select_all(action='DESELECT')
+		activeObject.select_set(state=True)
+		ctx.view_layer.objects.active = activeObject
+		for obj in selection:
+			obj.select_set(state=True)
+		return{'FINISHED'}
 
 
 class Object_OT_Active_Modifier(Operator):
@@ -392,7 +481,10 @@ class SCENE_OP_BsMax_Modifier_Panel(Panel):
 
 
 classes = (
-	Object_OT_Create_Modifier,
+	Modifier_OT_Clipboard_Copy,
+	Modifier_OT_Clipboard_Past,
+	Object_OT_Modifier_Create,
+	Object_OT_Modifier_Delete,
 	Object_OT_Active_Modifier,
 	Object_OT_Edit_Mode_Toggle,
 

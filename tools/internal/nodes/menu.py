@@ -12,9 +12,9 @@
 #	You should have received a copy of the GNU General Public License
 #	along with this program.  If not, see <https://www.gnu.org/licenses/>.
 ############################################################################
+# 2024/03/23
 
 import bpy
-
 
 
 def bsmax_matt_menu(self, ctx):
@@ -22,12 +22,13 @@ def bsmax_matt_menu(self, ctx):
 	layout.separator()
 	
 	if ctx.space_data.type == "NODE_EDITOR":
+		print(ctx.area.ui_type)
 	
 		if ctx.area.ui_type == 'GeometryNodeTree':
 			layout.menu("BSMAX_MT_geometrynode_import")
 		
 		elif ctx.area.ui_type == 'CompositorNodeTree':
-				pass
+			layout.menu('BSMAX_MT_compositor_tools')
 		
 		elif ctx.area.ui_type == 'ShaderNodeTree':
 			if ctx.space_data.shader_type == 'OBJECT':
@@ -37,12 +38,13 @@ def bsmax_matt_menu(self, ctx):
 				pass
 
 
-
 def register_nodes_menu():
 	bpy.types.NODE_MT_add.append(bsmax_matt_menu)
 
+
 def unregister_nodes_menu():
 	bpy.types.NODE_MT_add.remove(bsmax_matt_menu)
+
 
 if __name__ == "__main__":
 	register_nodes_menu()

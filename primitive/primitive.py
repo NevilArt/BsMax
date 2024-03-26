@@ -41,7 +41,7 @@ def get_uniform_color(mode="2D"):
 
 
 def set_smooth_by_angel():
-	if version >= (4, 2, 0):
+	if version >= (4, 1, 0):
 		gnPath = "geometry_nodes\\smooth_by_angle.blend\\NodeTree\\"
 		bpy.ops.object.modifier_add_node_group(
 			asset_library_type='ESSENTIALS',

@@ -13,18 +13,21 @@
 #	along with this program.  If not, see <https://www.gnu.org/licenses/>.
 ############################################################################
 
+from .auto_exr import register_auto_exr, unregister_auto_exr
 from .presets import register_presets, unregister_presets
 from .matt import register_matt, unregister_matt
 from .gnodes import register_gnodes, unregister_gnodes
 from .menu import register_nodes_menu, unregister_nodes_menu
 
 def register_nodes():
+	register_auto_exr()
 	register_presets()
 	register_matt()
 	register_gnodes()
 	register_nodes_menu()
 
 def unregister_nodes():
+	unregister_auto_exr()
 	unregister_presets()
 	unregister_matt()
 	unregister_gnodes()

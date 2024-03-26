@@ -12,6 +12,7 @@
 #	You should have received a copy of the GNU General Public License
 #	along with this program.  If not, see <https://www.gnu.org/licenses/>.
 ############################################################################
+# 2024/03/18
 
 import bpy
 import gpu
@@ -25,7 +26,6 @@ from bpy.app import version
 
 if version < (4, 0, 0):
 	from bgl import glEnable, GL_BLEND, glDisable, glLineWidth
-
 
 
 def get_uniform_color(mode="2D"):
@@ -53,7 +53,7 @@ def local_gride_genarate_gride_lines(self):
 	start, end = -self.size / 2, self.size / 2
 	for i in range(self.segments + 1):
 		p = i * step + start
-		# Genarate and transform grid line points
+		# Genarate grid line points
 		points = [
 			Vector((p, start, 0)),
 			Vector((p, end, 0)),
@@ -61,6 +61,7 @@ def local_gride_genarate_gride_lines(self):
 			Vector((end, p, 0))
 		]
 
+		# transform to coordinate
 		self.gride += transform_point_to_matrix(points, self.matrix)
 
 	# genarate borde lines if asked
@@ -89,13 +90,11 @@ def local_gride_genarate_gride_lines(self):
 		self.cross = transform_point_to_matrix(self.cross, self.matrix)
 
 
-
 def local_gride_draw_shader(shader, coords, mode, color):
 	batch = batch_for_shader(shader, mode, {'pos': coords})
 	shader.bind()
 	shader.uniform_float('color', color)
 	batch.draw(shader)
-
 
 
 def local_gride_draw(self):
@@ -109,16 +108,22 @@ def local_gride_draw(self):
 		
 		# draw border
 		if self.border:
-			self.draw_shader(shader, self.border,
-							'LINE_STRIP', self.border_color)
+			self.draw_shader(
+				shader, self.border,
+				'LINE_STRIP', self.border_color
+			)
 
 		# draw closs
 		if self.cross:
-			self.draw_shader(shader, self.cross[0:2],
-							'LINES', self.cross_x_color)
+			self.draw_shader(
+				shader, self.cross[0:2],
+				'LINES', self.cross_x_color
+			)
 
-			self.draw_shader(shader, self.cross[2:4],
-							'LINES', self.cross_y_color)
+			self.draw_shader(
+				shader, self.cross[2:4],
+				'LINES', self.cross_y_color
+			)
 
 		glDisable(GL_BLEND)
 
@@ -130,18 +135,22 @@ def local_gride_draw(self):
 		
 		# draw border
 		if self.border:
-			self.draw_shader(shader, self.border,
-							'LINE_STRIP', self.border_color)
+			self.draw_shader(
+				shader, self.border,
+				'LINE_STRIP', self.border_color
+			)
 
 		# draw closs
 		if self.cross:
-			self.draw_shader(shader, self.cross[0:2],
-							'LINES', self.cross_x_color)
+			self.draw_shader(
+				shader, self.cross[0:2],
+				'LINES', self.cross_x_color
+			)
 
-			self.draw_shader(shader, self.cross[2:4],
-							'LINES', self.cross_y_color)
-
-
+			self.draw_shader(
+				shader, self.cross[2:4],
+				'LINES', self.cross_y_color
+			)
 
 
 class LocalGride:
@@ -174,7 +183,9 @@ class LocalGride:
 
 	def register(self, ctx):
 		space = ctx.area.spaces.active
-		self.handler = space.draw_handler_add(self.draw, (), 'WINDOW', 'POST_VIEW')
+		self.handler = space.draw_handler_add(
+			self.draw, (), 'WINDOW', 'POST_VIEW'
+		)
 
 	def unregister(self):
 		if self.handler:

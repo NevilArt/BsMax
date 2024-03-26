@@ -1,5 +1,5 @@
 
-# BsMax Blender Addon 3.3LTS ~ 4.1Beta
+# BsMax Blender Addon 3.3LTS ~ 4.1
 
 BsMax is package of Modeling, Rig & Animation, Render tools and UI mimic for [Blender 3D](https://www.blender.org/).
 
@@ -36,8 +36,9 @@ If you found this product useful and want to support this project you can Donate
 * [Download Older Version (2.80-2.92)(2.93-3.2)](https://github.com/NevilArt/BsMax_2_80)
 
 ## Recent Updates and Changes
-* Command Panel Modifier list updated.
-* Some more compatibility with Blender 4.1Beta
+* Some new tools added under Command Panel modifier list.
+* Make unique tool optimized (View3D/Object/Relation/Make unigue).
+* Basic Auto EXR connector added but need to more work on it (Compositor/Add/Tools/Auto EXR).
 * [Change log ...](https://github.com/NevilArt/BsMax/blob/master/CHANGELOG.md)
 
 ## License

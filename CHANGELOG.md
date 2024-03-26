@@ -1,3 +1,7 @@
+# 0, 1, 2, 20240314
+* Command Panel Modifier list updated.
+* Some more compatibility with Blender 4.1Beta
+
 # 0, 1, 2, 20240304
 * Render preset save load clened up, need some more correction yet.
 * Command panel Display tab updated.

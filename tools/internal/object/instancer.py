@@ -12,11 +12,13 @@
 #	You should have received a copy of the GNU General Public License
 #	along with this program.  If not, see <https://www.gnu.org/licenses/>.
 ############################################################################
+# 2024/03/23
+
 import bpy
 
 from bpy.types import Operator
 from bpy.props import BoolProperty
-
+from bpy.utils import register_class, unregister_class
 
 
 class OBJECT_TO_Data_Auto_Rename(Operator):
@@ -33,24 +35,8 @@ class OBJECT_TO_Data_Auto_Rename(Operator):
 	def execute(self,ctx):
 		for obj in ctx.selected_objects:
 			obj.data.name = obj.name
+		
 		return{"FINISHED"}
-
-
-
-class Object_TO_Instancer_Select(Operator):
-	""" collect and select object may suld be instance """
-	bl_idname = 'object.instancer_select'
-	bl_label = 'Instancer Select'
-	bl_options = {'REGISTER', 'UNDO'}
-	
-	@classmethod
-	def poll(self, ctx):
-		return ctx.mode == 'OBJECT'
-	
-	def execute(self,ctx):
-		# collect ans select object has data with siliar name
-		return{"FINISHED"}
-
 
 
 class Object_TO_Make_Unique(Operator):
@@ -58,48 +44,43 @@ class Object_TO_Make_Unique(Operator):
 	bl_idname = 'object.make_unique'
 	bl_label = 'Make Unique'
 	bl_options = {'REGISTER', 'UNDO'}
+	bl_description = "Make Unique Selected Instance Object"
 
-	make_unique: BoolProperty(name="Make Unique")
-	
+	group: BoolProperty(
+		name="Keep In group with each other", default=True,
+		description="Keep selected groupe with each others"
+	)
+
 	@classmethod
 	def poll(self, ctx):
-		return ctx.mode == 'OBJECT'
+		if ctx.object:
+			return ctx.object.data.users > 1
+		return False
 	
 	def draw(self, ctx):
-		layout = self.layout
-		layout.prop(self, 'make_unique')
-		if self.make_unique:
-			text='Make each object has unique data'
-		else:
-			text = "Keep selected object linked with each other"
-		layout.label(text=text)
+		self.layout.prop(self, 'group')
 	
-	def is_linked(self, objs):
-		for obj in objs:
-			if objs[0].data != obj.data:
-				return False
-		return True
-	
-	def execute(self,ctx):
-		objs = ctx.selected_objects
-		if self.is_linked(objs):
-			if self.make_unique:
-				for obj in objs:
-					obj.data = obj.data.copy()
-				return{"FINISHED"}
+	def execute(self, ctx):
+		newData = ctx.object.data.copy()
+		instances = [
+			obj for obj in ctx.selected_objects
+			if obj.data == ctx.object.data
+		]
 
-			if len(objs) > 1:
-				data = objs[0].data.copy()
-				for obj in objs:
-					obj.data = data
-
+		for obj in instances:
+			obj.data = newData if self.group else obj.data.copy()
+		
 		return{"FINISHED"}
 	
-
+	def invoke(self, ctx, event):
+		if len(ctx.selected_objects) > 1:
+			return ctx.window_manager.invoke_props_dialog(self)
+		else:
+			self.execute(ctx)
+	
 
 def make_unique_menu(self, ctx):
 	self.layout.operator('object.make_unique')
-
 
 
 classes = (
@@ -108,21 +89,19 @@ classes = (
 )
 
 
-
 def register_instancer():
-	for c in classes:
-		bpy.utils.register_class(c)
+	for c in classes: 
+		register_class(c)
 	
 	bpy.types.VIEW3D_MT_object_relations.append(make_unique_menu)
 
 
 
 def unregister_instancer():
-	bpy.types.VIEW3D_MT_object_relations.remove(make_unique_menu)
-
 	for c in classes:
-		bpy.utils.unregister_class(c)
-
+		unregister_class(c)
+	
+	bpy.types.VIEW3D_MT_object_relations.remove(make_unique_menu)
 
 
 if __name__ == "__main__":
