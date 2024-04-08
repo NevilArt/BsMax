@@ -12,12 +12,13 @@
 #	You should have received a copy of the GNU General Public License
 #	along with this program.  If not, see <https://www.gnu.org/licenses/>.
 ############################################################################
+# 2024/04/08
+# TODO combine all curve selection operators to one operator with dynamic UI
 
 import bpy
 
 from bpy.types import Operator
 from bpy.props import EnumProperty, FloatProperty, IntProperty, BoolProperty
-
 
 
 def select_spline(spline, deselect=False):
@@ -28,59 +29,90 @@ def select_spline(spline, deselect=False):
 		bezier_points.select_right_handle = state
 
 
+def check_lenght(cls, obj):
+	for spline in obj.data.splines:
+		length = spline.calc_length()
+		if cls.by == 'GREATER':
+			if length > cls.length:
+				select_spline(spline)
+			else:
+				select_spline(spline, deselect=True)
+		
+		elif cls.by == 'LESS':
+			if length < cls.length:
+				select_spline(spline)
+			else:
+				select_spline(spline, deselect=True)
+		
+		elif cls.by == 'EQUAL':
+			if cls.length - cls.tolerans < length <= cls.length + cls.tolerans:
+				select_spline(spline)
+			else:
+				select_spline(spline, deselect=True)
+
+
+def check_count(cls, obj):
+	for spline in obj.data.splines:
+		count = len(spline.bezier_points)
+		if cls.by == 'GREATER':
+			if count > cls.count:
+				select_spline(spline)
+			else:
+				select_spline(spline, deselect=True)
+		
+		elif cls.by == 'LESS':
+			if count < cls.count:
+				select_spline(spline)
+			else:
+				select_spline(spline, deselect=True)
+		
+		elif cls.by == 'EQUAL':
+			if cls.count - cls.tolerans < count < cls.count + cls.tolerans:
+				select_spline(spline)
+			else:
+				select_spline(spline, deselect=True)
+
 
 class Curve_OT_Select_By_Length(Operator):
 	bl_idname = 'curve.select_by_length'
 	bl_label = 'Select By Length'
 	bl_options = {'REGISTER', 'UNDO'}
 
-	by: EnumProperty(name = 'By', default='GREATER',
-		items=[('GREATER', 'Greater then', ''),('LESS', 'LESS than', ''),('EQUAL', 'Equal to', '')])
+	by: EnumProperty(
+		name = 'By',
+		items=[
+			('GREATER', 'Greater then', ''),
+			('LESS', 'LESS than', ''),
+			('EQUAL', 'Equal to', '')
+		],
+		 default='GREATER'
+	)
+
 	length: FloatProperty(unit='LENGTH', default=1.0, min=0)
+
 	tolerans: FloatProperty(unit='LENGTH', default=0.01, min=0)
 
 	@classmethod
 	def poll(self, ctx):
 		if ctx.area.type == 'VIEW_3D':
-			if len(ctx.scene.objects) > 0:
-				if ctx.object != None:
+			if ctx.scene.objects:
+				if ctx.object:
 					return ctx.mode == 'EDIT_CURVE'
 		return False
 	
-	def check_lenght(self, obj):
-		for spline in obj.data.splines:
-			length = spline.calc_length()
-			if self.by == 'GREATER':
-				if length > self.length:
-					select_spline(spline)
-				else:
-					select_spline(spline, deselect=True)
-			
-			elif self.by == 'LESS':
-				if length < self.length:
-					select_spline(spline)
-				else:
-					select_spline(spline, deselect=True)
-			
-			elif self.by == 'EQUAL':
-				if self.length - self.tolerans < length <= self.length + self.tolerans:
-					select_spline(spline)
-				else:
-					select_spline(spline, deselect=True)
-
 	def draw(self, ctx):
 		layout = self.layout
 		layout.prop(self, 'by')
 		layout.prop(self, 'length')
+
 		if self.by == 'EQUAL':
 			layout.prop(self, 'tolerans')
 
 	def execute(self, ctx):
 		for obj in ctx.selected_objects:
 			if obj.type == 'CURVE':
-				self.check_lenght(obj)
+				check_lenght(self, obj)
 		return{'FINISHED'}
-
 
 
 class Curve_OT_Select_By_Segment_Count(Operator):
@@ -88,53 +120,39 @@ class Curve_OT_Select_By_Segment_Count(Operator):
 	bl_label = 'Select By Segment Count'
 	bl_options = {'REGISTER', 'UNDO'}
 
-	by: EnumProperty(name = 'By', default='GREATER',
-		items=[('GREATER', 'Greater then', ''),
+	by: EnumProperty(
+		name = 'By',
+		items=[
+			('GREATER', 'Greater then', ''),
 			('LESS', 'Less than', ''),
-			('EQUAL', 'Equal to', '')])
+			('EQUAL', 'Equal to', '')
+		],
+		default='GREATER'
+	)
+
 	count: IntProperty(name="Count", min= 2, default=3)
 	tolerans: IntProperty(default=0, min=1)
 
 	@classmethod
 	def poll(self, ctx):
 		if ctx.area.type == 'VIEW_3D':
-			if len(ctx.scene.objects) > 0:
-				if ctx.object != None:
+			if ctx.scene.objects:
+				if ctx.object:
 					return ctx.mode == 'EDIT_CURVE'
 		return False
 	
-	def check_count(self, obj):
-		for spline in obj.data.splines:
-			count = len(spline.bezier_points)
-			if self.by == 'GREATER':
-				if count > self.count:
-					select_spline(spline)
-				else:
-					select_spline(spline, deselect=True)
-			
-			elif self.by == 'LESS':
-				if count < self.count:
-					select_spline(spline)
-				else:
-					select_spline(spline, deselect=True)
-			
-			elif self.by == 'EQUAL':
-				if self.count - self.tolerans < count < self.count + self.tolerans:
-					select_spline(spline)
-				else:
-					select_spline(spline, deselect=True)
-
 	def draw(self, ctx):
 		layout = self.layout
 		layout.prop(self, 'by')
 		layout.prop(self, 'count')
+
 		if self.by == 'EQUAL':
 			layout.prop(self, 'tolerans')
 
 	def execute(self, ctx):
 		for obj in ctx.selected_objects:
 			if obj.type == 'CURVE':
-				self.check_count(obj)
+				check_count(self, obj)
 		return{'FINISHED'}
 
 
@@ -150,8 +168,8 @@ class Curve_OT_Select_Close(Operator):
 	@classmethod
 	def poll(self, ctx):
 		if ctx.area.type == 'VIEW_3D':
-			if len(ctx.scene.objects) > 0:
-				if ctx.object != None:
+			if ctx.scene.objects:
+				if ctx.object:
 					return ctx.mode == 'EDIT_CURVE'
 		return False
 	
@@ -182,14 +200,12 @@ class Curve_OT_Select_Close(Operator):
 		return{'FINISHED'}
 
 
-
 def selection_menu(self, ctx):
 	layout = self.layout
 	layout.separator()
 	layout.operator('curve.select_by_length')
 	layout.operator('curve.select_close')
 	layout.operator('curve.select_by_segment_count')
-
 
 
 classes = (
@@ -199,19 +215,18 @@ classes = (
 )
 
 
-
 def register_selection():
 	for c in classes:
 		bpy.utils.register_class(c)
-	bpy.types.VIEW3D_MT_select_edit_curve.append(selection_menu)
 
+	bpy.types.VIEW3D_MT_select_edit_curve.append(selection_menu)
 
 
 def unregister_selection():
 	bpy.types.VIEW3D_MT_select_edit_curve.remove(selection_menu)
+
 	for c in classes:
 		bpy.utils.unregister_class(c)
-
 
 
 if __name__ == "__main__":

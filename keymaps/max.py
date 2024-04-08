@@ -16,6 +16,8 @@
 
 import bpy
 
+from bpy.app import version
+
 from bsmax.keymaps import KeyMaps
 
 
@@ -110,7 +112,7 @@ def add_snap(km, space):
 	km.new(space, 'object.angel_snap', 'A', 'PRESS', [])
 
 
-def add_time(km, space):
+def add_time(km, space, igoneAnimKey=False):
 	km.new(space, 'anim.frame_set', 'HOME', 'PRESS', [('frame', 'First')])
 	km.new(space, 'anim.frame_set', 'END', 'PRESS', [('frame', 'Last')])
 	km.new(space, 'anim.frame_set', 'PERIOD', 'PRESS', [('frame', 'Next')])
@@ -339,11 +341,10 @@ def view3d(km, preferences):
 
 	add_search(km, space)
 	add_snap(km, space)
-	add_time(km, space)
+	add_time(km, space, igoneAnimKey=(version > (4, 0, 0)))
 	add_switch_view(km, space)
 	add_view3d_tweak_selection(km, space)
 	add_float_editors(km, space)
-	# add_float_menu(km, space, preferences)
 	add_transform_tool(km, space, preferences, smax=True)
 
 	if preferences.view_undo:
@@ -448,11 +449,7 @@ def view3d(km, preferences):
 	km.new(space, 'screen.animation_play', 'SLASH', 'PRESS', [])
 	km.new(space, 'view.undoredo', 'Z', 'PRESS', [('redo', False)], shift=True)
 	km.new(space, 'view.undoredo', 'Y', 'PRESS', [('redo', True)], shift=True)
-	# km.new(space, 'view3d.copybuffer', 'INSERT', 'PRESS', [], ctrl=True)
 	km.new(space, 'view3d.pastebuffer', 'INSERT', 'PRESS', [], shift=True)
-
-	# This operator not woring becaus data version update after file reopen
-	# km.new(space, 'file.save_check', 'S', 'PRESS', [], ctrl=True)
 
 
 def view3d_navigation(km, preferences):
@@ -1251,7 +1248,7 @@ def pos(km, preferences):
 	add_view3d_tweak_selection(km, space)
 	add_subobject(km, space)
 	add_show_types(km, space)
-	add_time(km, space)
+	add_time(km, space, igoneAnimKey=(version > (4, 0, 0)))
 	# add_float_menu(km, space, preferences)
 	add_transform_tool(km, space, preferences, smax=False)
 	armature_select_hierarchy_plus(km, space)

@@ -86,11 +86,11 @@ def print_active_node_tree(ctx):
 	node_group = active.node_group
 	nodes = node_group.nodes
 
-	print("--<<Nodes>>--")
+	# print("--<<Nodes>>--")
 	for node in nodes:
 		print(node_to_script(node))
 	
-	print("--<<Linkes>>--")
+	# print("--<<Linkes>>--")
 
 
 

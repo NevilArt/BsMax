@@ -12,6 +12,7 @@
 #	You should have received a copy of the GNU General Public License
 #	along with this program.  If not,see <https://www.gnu.org/licenses/>.
 ############################################################################
+# 2024/04/04
 
 import bpy
 from math import pi
@@ -29,7 +30,6 @@ class Camera(Primitive_Public_Class):
 		self.owner.select_set(True)
 		self.target.select_set(True)
 		bpy.ops.object.delete(confirm=False)
-
 
 
 class Create_OT_Camera(Draw_Primitive):
@@ -59,7 +59,6 @@ class Create_OT_Camera(Draw_Primitive):
 			size = dimension.height/3
 			self.subclass.owner.data.display_size = size
 			self.subclass.target.empty_display_size = size / 10
-
 
 
 def register_camera():

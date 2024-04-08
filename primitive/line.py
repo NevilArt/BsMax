@@ -12,17 +12,21 @@
 #	You should have received a copy of the GNU General Public License
 #	along with this program.  If not,see <https://www.gnu.org/licenses/>.
 ############################################################################
+# 2024/04/04
 
 import bpy
+
 from bpy.types import Operator
 from mathutils import Vector
+from bpy_extras.view3d_utils import location_3d_to_region_2d
+from bpy.utils import register_class, unregister_class
+
 from bsmax.math import get_axis_constraint
 from primitive.primitive import Primitive_Curve_Class, Draw_Primitive
-from bpy_extras.view3d_utils import location_3d_to_region_2d
+
 
 # global variable
 close_line = False
-
 
 
 class knot:
@@ -33,13 +37,12 @@ class knot:
 		self.mode = mode
 
 
-
 def get_line_shape(knots):
 	shape = []
 	for k in knots:
 		shape.append((k.pos, k.invec, k.mode, k.outvec, k.mode))
-	return [shape]
 
+	return [shape]
 
 
 class Line(Primitive_Curve_Class):
@@ -80,7 +83,6 @@ class Line(Primitive_Curve_Class):
 		pass
 
 
-
 class Curve_OT_CloseLine(Operator):
 	bl_idname = "curve.closeline"
 	bl_label = "Close Line?"
@@ -98,14 +100,22 @@ class Curve_OT_CloseLine(Operator):
 	def invoke(self, ctx, event):
 		return ctx.window_manager.invoke_confirm(self, event)
 
-def check_for_close(self, ctx):
-	if len(self.subclass.knots) > 2:
-		region_3d = ctx.space_data.region_3d
-		p0 = location_3d_to_region_2d(ctx.region,region_3d,self.subclass.knots[0].pos)
-		pl = location_3d_to_region_2d(ctx.region,region_3d,self.subclass.lastknot[0].pos)
-		if abs(p0.x-pl.x) < 10 and abs(p0.y-pl.y) < 10:
-			bpy.ops.curve.closeline('INVOKE_DEFAULT')
 
+def check_for_close(cls, ctx):
+	if len(cls.subclass.knots) < 3: # pass if X > 2
+		return
+
+	region_3d = ctx.space_data.region_3d
+	p0 = location_3d_to_region_2d(
+		ctx.region, region_3d, cls.subclass.knots[0].pos
+	)
+	
+	pl = location_3d_to_region_2d(
+		ctx.region, region_3d, cls.subclass.lastknot[0].pos
+	)
+	
+	if abs(p0.x - pl.x) < 10 and abs(p0.y - pl.y) < 10:
+		bpy.ops.curve.closeline('INVOKE_DEFAULT')
 
 
 class Create_OT_Line(Draw_Primitive):
@@ -171,16 +181,21 @@ class Create_OT_Line(Draw_Primitive):
 		self.subclass.reset()
 
 
+classes = (
+	Create_OT_Line,
+	Curve_OT_CloseLine
+)
 
-classes = [Create_OT_Line, Curve_OT_CloseLine]
 
 def register_line():
 	for c in classes:
-		bpy.utils.register_class(c)
+		register_class(c)
+
 
 def unregister_line():
 	for c in classes:
-		bpy.utils.unregister_class(c)
+		unregister_class(c)
+
 
 if __name__ == "__main__":
 	register_line()

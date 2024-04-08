@@ -12,23 +12,175 @@
 #	You should have received a copy of the GNU General Public License
 #	along with this program.  If not, see <https://www.gnu.org/licenses/>.
 ############################################################################
+# 2024/04/08
+# TODO need to clear function for all parenting types
+# Need a better pick operator with more clear arg names
 
 import bpy
 
 from mathutils import Matrix
 from bpy.types import Operator
+from bpy.props import BoolProperty
+from bpy.utils import register_class, unregister_class
 
 from bsmax.operator import PickOperator
 from bsmax.actions import link_to, freeze_transform
 from bsmax.state import get_dimensions_avrage
 
+def link_objects_to_bone(objects, armature, bone, keepHierarchy):
+	matrixTranslation = Matrix.Translation(bone.tail - bone.head)
+	worldMatrix = armature.matrix_world @ matrixTranslation @ bone.matrix
+
+	if keepHierarchy:
+		objects = [obj for obj in objects if not obj.parent]
+
+	for obj in objects:
+		copyWorldMatrix = obj.matrix_world.copy()
+		invertMatrix = worldMatrix.inverted() @ copyWorldMatrix
+		obj.matrix_parent_inverse = invertMatrix @ obj.matrix_basis.inverted()
+		
+		obj.parent = armature
+		obj.parent_bone = bone.name
+		obj.parent_type = 'BONE' 
+
+		obj.matrix_world = copyWorldMatrix
+
+
+def link_objects_to_object(objects, target, subtarget, keepHierarchy):
+	if keepHierarchy:
+		objects = [obj for obj in objects if not obj.parent]
+
+	for obj in objects:
+		""" unparent parent if linked to self child """
+		if target.parent == obj:
+			matrix_world = target.matrix_world.copy()
+			target.parent = None
+			target.matrix_world = matrix_world
+			target.location = matrix_world.translation
+
+		""" Unparent source objcets befor reparenting """
+		matrix_world = obj.matrix_world.copy()
+		obj.parent = None
+		obj.matrix_world = matrix_world
+
+		""" link to new target """
+		obj.parent = target
+		obj.matrix_parent_inverse = target.matrix_world.inverted()
+
+
+def link_bones_to_bone(subsource, target, subtarget, keepHierarchy):
+	bpy.ops.object.mode_set(mode='EDIT', toggle=False)
+	edit_bones = target.data.edit_bones
+	for bone in subsource:
+		""" Target and source[0] are same here """
+		edit_bones[bone.name].parent = edit_bones[subtarget.name]
+		# TODO have to keep transform
+	# self.set_mode(self.mode)
+
+
+def create_upnode(ctx):
+	""" get current state info """
+	objs = ctx.selected_objects.copy()
+	bpy.ops.object.select_all(action='DESELECT')
+	emptys = []
+	frame = ctx.scene.frame_current
+	ctx.scene.frame_current = 0
+	for obj in objs:
+		bpy.ops.object.empty_add(type='PLAIN_AXES')
+		empty = ctx.active_object
+		emptys.append(empty)
+		size = get_dimensions_avrage(obj, True, True, False)
+		empty.empty_display_size = size
+		empty.name = obj.name + "_root_node"
+
+		empty.matrix_world = obj.matrix_world
+		freeze_transform([obj])
+
+		if obj.parent:
+			link_to(empty, obj.parent, False)
+			link_to(obj, empty, False)
+		else:
+			link_to(obj, empty, False)
+
+	# select only new created nodes
+	bpy.ops.object.select_all(action='DESELECT')
+	for empty in emptys:
+		empty.select_set(state=True)
+
+	ctx.scene.frame_current = frame
+
+
+def has_any_parent(objects):
+	for obj in objects:
+		if obj.parent:
+			return True
+	return False
+
+
+class LinkToBuffer():
+	def __init__(self):
+		self.source = None # Aramture or Objects
+		self.sub_source = None # Bone Name list
+		self.target = None # object or armature
+		self.sub_target = None # bone name
+	
+	def reset(self):
+		self.__init__()
+
+linkToBuffer = LinkToBuffer()
+
+
+class Object_OT_Link_to_Option(Operator):
+	bl_idname = "object.link_to_option"
+	bl_label = "Unlink"
+	bl_options = {'REGISTER', 'UNDO', 'INTERNAL'}
+
+	keepHierarchy: BoolProperty(default=False)
+
+	def draw(self, ctx):
+		layout = self.layout
+		layout.prop(self, 'keepHierarchy')
+	
+	def execute(self, ctx):
+		global linkToBuffer
+		source = linkToBuffer.source
+		subsource = linkToBuffer.sub_source
+		target = linkToBuffer.target
+		subtarget = linkToBuffer.sub_target
+
+		if source and subtarget:
+			link_objects_to_bone(
+				source, target, subtarget, self.keepHierarchy
+			)
+		
+		if not subsource and not subtarget:
+			link_objects_to_object(
+				source, target, subtarget, self.keepHierarchy
+			)
+		
+		# TODO need new pick operator
+		if subsource and subtarget:
+			link_bones_to_bone(
+				subsource, target, subtarget, self.keepHierarchy
+			)
+
+		linkToBuffer.reset()
+		return{"FINISHED"}
+
+	def invoke(self, ctx, event):
+		objects = ctx.selected_objects
+		if len(objects) > 1:
+			if has_any_parent(objects):
+				return ctx.window_manager.invoke_props_dialog(self)
+		return self.execute(ctx)
+	
 
 
 class Object_OT_Link_to(PickOperator):
 	""" This Class mimics the 3DsMax 'link to' operator """
 	bl_idname = "object.link_to"
 	bl_label = "Link to"
-	bl_options = {'REGISTER', 'UNDO'}
+	bl_options = {'REGISTER'}
 	
 	@classmethod
 	def poll(self, ctx):
@@ -36,59 +188,13 @@ class Object_OT_Link_to(PickOperator):
 			return ctx.selected_objects
 		return False
 
-	def link_to_bone(self, obj, armature, bone):
-		t = Matrix.Translation(bone.tail - bone.head)
-		tmw = armature.matrix_world @ t @ bone.matrix
-		cmw = obj.matrix_world.copy()
-
-		cml = tmw.inverted() @ cmw
-		obj.matrix_parent_inverse = cml @ obj.matrix_basis.inverted()
-		
-		obj.parent = armature
-		obj.parent_bone = bone.name
-		obj.parent_type = 'BONE' 
-
-		obj.matrix_world = cmw
-
 	def picked(self, ctx, source, subsource, target, subtarget):
-		if not subsource:
-			""" Object -> Object """
-			for sobj in source:
-				""" unparent parent if linked to self child """
-				if target.parent == sobj:
-					matrix_world = target.matrix_world.copy()
-					target.parent = None
-					target.matrix_world = matrix_world
-					target.location = matrix_world.translation
-				""" Unparent source objcets befor reparenting """
-				matrix_world = sobj.matrix_world.copy()
-				sobj.parent = None
-				sobj.matrix_world = matrix_world
-				""" link to new target """
-				sobj.parent = target
-				sobj.matrix_parent_inverse = target.matrix_world.inverted()
-		
-				""" Object -> Bone """
-				if subtarget:
-					self.link_to_bone(sobj, target, subtarget)
-		
-		if not subsource and not subtarget:
-			bpy.ops.object.select_all(action='DESELECT')
-			target.select_set(True)
-			ctx.view_layer.objects.active = target
-			bpy.ops.ed.undo_push()
-			bpy.ops.object.link_to('INVOKE_DEFAULT')
-
-		""" Bone -> Bone """
-		if subsource and subtarget:
-			bpy.ops.object.mode_set(mode='EDIT', toggle=False)
-			edit_bones = target.data.edit_bones
-			for bone in subsource:
-				""" Target and source[0] are same here """
-				edit_bones[bone.name].parent = edit_bones[subtarget.name]
-				# TODO have to keep transform
-			# self.set_mode(self.mode)
-
+		global linkToBuffer
+		linkToBuffer.source = source
+		linkToBuffer.sub_source = subsource
+		linkToBuffer.target = target
+		linkToBuffer.sub_target = subtarget
+		bpy.ops.object.link_to_option('INVOKE_DEFAULT')
 
 
 class Object_OT_Unlink(Operator):
@@ -108,7 +214,6 @@ class Object_OT_Unlink(Operator):
 		return{"FINISHED"}
 
 
-
 class Object_OT_Create_up_node(Operator):
 	bl_idname = 'object.create_upnode'
 	bl_label = 'Create Upnode'
@@ -121,38 +226,8 @@ class Object_OT_Create_up_node(Operator):
 		return False
 	
 	def execute(self, ctx):
-		""" get current state info """
-		objs = ctx.selected_objects.copy()
-		bpy.ops.object.select_all(action='DESELECT')
-		emptys = []
-		frame = ctx.scene.frame_current
-		ctx.scene.frame_current = 0
-		for obj in objs:
-			bpy.ops.object.empty_add(type='PLAIN_AXES')
-			empty = ctx.active_object
-			emptys.append(empty)
-			size = get_dimensions_avrage(obj, True, True, False)
-			empty.empty_display_size = size
-			empty.name = obj.name + "_root_node"
-
-			empty.matrix_world = obj.matrix_world
-			freeze_transform([obj])
-
-			if obj.parent:
-				link_to(empty, obj.parent)
-				link_to(obj, empty)
-			else:
-				link_to(obj, empty)
-
-		# select only new created nodes
-		bpy.ops.object.select_all(action='DESELECT')
-		for empty in emptys:
-			empty.select_set(state=True)
-
-		ctx.scene.frame_current = frame
-
+		create_upnode(ctx)
 		return{'FINISHED'}
-
 
 
 def linkto_menu(self, ctx):
@@ -162,29 +237,26 @@ def linkto_menu(self, ctx):
 	layout.operator('object.create_upnode')
 
 
-
 classes = (
 	Object_OT_Link_to,
+	Object_OT_Link_to_Option,
 	Object_OT_Unlink,
 	Object_OT_Create_up_node
 )
 
 
-
 def register_link_to():
 	for c in classes:
-		bpy.utils.register_class(c)
+		register_class(c)
 
 	bpy.types.VIEW3D_MT_object_parent.append(linkto_menu)
-
 
 
 def unregister_link_to():
 	bpy.types.VIEW3D_MT_object_parent.remove(linkto_menu)
 
 	for c in classes:
-		bpy.utils.unregister_class(c)
-
+		unregister_class(c)
 
 
 if __name__ == "__main__":

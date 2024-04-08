@@ -391,48 +391,6 @@ def get_ellipse_panel(self, layout):
 	if self.outline:
 		col.prop(self,"thickness", text="Thickness")
 
-
-def get_curve_extrude_panel(self, layout):
-	layout.label(text="Extrude",icon='EXPORT')
-	col = layout.column(align=True)
-	col.prop(self,"height", text="Height")
-	col.prop(self,"hsegs", text="Segments")
-
-	col = layout.column(align=True)
-	col.prop(self,"chamfer1", text="Upper")
-	col.prop(self,"chamfer2", text="Lover")
-
-	try:
-		# ignore this on float dialog for now but had to solve
-		col.prop(bpy.context.curve,"use_fill_caps", text="Cap")
-	except:
-		pass
-
-
-def get_mesh_extrude_panel(self, layout):
-	layout.label(text="Extrude",icon='EXPORT')
-	col = layout.column(align=True)
-	col.prop(self,"target", text="Target")
-
-	col = layout.column(align=True)
-	col.prop(self,"height", text="Height")
-	col.prop(self,"hsegs", text="Segments")
-
-	col = layout.column(align=True)
-	col.prop(self,"chamfer1", text="Upper")
-	col.prop(self,"chamfer2", text="Lover")
-
-	col = layout.column(align=True)
-	col.prop(self,"bool1", text="Cap Upper")
-	col.prop(self,"bool2", text="Cap Lower")
-
-	col = layout.column(align=True)
-	col.prop(self,"extrude_segmode", text="Mode")
-
-	if self.extrude_segmode == "Manual":
-		col.prop(self,"csegs", text="Segments")
-
-
 def get_arc_panel(self, layout):
 	layout.label(text="Arc",icon='SPHERECURVE')
 	col = layout.column(align=True)
@@ -699,12 +657,6 @@ def get_primitive_edit_panel(self, layout):
 
 	elif self.classname == "Ellipse":
 		get_ellipse_panel(self, layout)
-
-	elif self.classname == "Extrude_Curve":
-		get_curve_extrude_panel(self, layout)
-
-	elif self.classname == "Extrude_Mesh":
-		get_mesh_extrude_panel(self, layout)
 
 	elif self.classname == "Arc":
 		get_arc_panel(self, layout)

@@ -127,19 +127,36 @@ def set_create_target(obj, target, distance=(0.0, 0.0, -2.0), align=True):
 	return target
 
 
-def link_to(objs, target):
+def collect_all_children(objects):
+	allChildren = []
+	for obj in objects:
+		for child in obj.children:
+			allChildren.append(child)
+
+	if allChildren:
+		objects += collect_all_children(allChildren)
+
+	return objects
+
+
+def link_to(objects, target, keepHierarchy):
 	""" Parent obj(s) to given object and keep transform
 
 		args:
 			obj: Object or List
 			target: Object
+			keepHierarchy: Boolean
 		return:
 			None
 	"""
-	if not isinstance(objs, list):
-		objs = [objs]
+	if not isinstance(objects, list):
+		objects = [objects]
+		keepHierarchy = False
+	
+	if keepHierarchy:
+		objects = [obj for obj in objects if not obj.parent]
 
-	for obj in objs:
+	for obj in objects:
 		obj.parent = target
 		obj.matrix_parent_inverse = target.matrix_world.inverted()
 

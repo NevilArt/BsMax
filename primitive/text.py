@@ -12,11 +12,11 @@
 #	You should have received a copy of the GNU General Public License
 #	along with this program.  If not,see <https://www.gnu.org/licenses/>.
 ############################################################################
+# 2024/04/04
 
 import bpy
 from bpy.props import EnumProperty
 from primitive.primitive import Draw_Primitive, Primitive_Public_Class
-
 
 
 class Text(Primitive_Public_Class):
@@ -27,10 +27,6 @@ class Text(Primitive_Public_Class):
 	def create(self, ctx):
 		bpy.ops.object.text_add()
 		self.owner = ctx.active_object
-	
-	def abort(self):
-		bpy.ops.object.delete(confirm=False)
-
 
 
 class Create_OT_Text(Draw_Primitive):
@@ -40,11 +36,16 @@ class Create_OT_Text(Draw_Primitive):
 	use_gride = True
 	use_single_click = True
 
-	fill_mode: EnumProperty( name = 'Fill Mode',  default = 'NONE',
-		items =[('NONE', 'None', ''),
-				('FRONT', 'Front', ''),
-				('BACK', 'Back', ''),
-				('BOTH', 'Both', '')])
+	fill_mode: EnumProperty(
+		name = 'Fill Mode',
+		items =[
+			('NONE', 'None', ''),
+			('FRONT', 'Front', ''),
+			('BACK', 'Back', ''),
+			('BOTH', 'Both', '')
+		],
+		default = 'NONE'
+	)
 
 	def create(self, ctx):
 		self.subclass.create(ctx)
@@ -54,16 +55,19 @@ class Create_OT_Text(Draw_Primitive):
 		owner.rotation_euler = self.gride.rotation
 	
 	def update(self, ctx, clickcount, dimension):
-		if clickcount == 1:
-			self.subclass.owner.data.size = dimension.radius
-
+		if clickcount != 1:
+			return
+		
+		self.subclass.owner.data.size = dimension.radius
 
 
 def register_text():
 	bpy.utils.register_class(Create_OT_Text)
 
+
 def unregister_text():
 	bpy.utils.unregister_class(Create_OT_Text)
+
 
 if __name__ == "__main__":
 	register_text()

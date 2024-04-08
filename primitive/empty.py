@@ -12,12 +12,15 @@
 #	You should have received a copy of the GNU General Public License
 #	along with this program.  If not,see <https://www.gnu.org/licenses/>.
 ############################################################################
+# 2024/04/04
 
 import bpy
+
 from bpy.types import Operator
 from bpy.props import EnumProperty
-from primitive.primitive import Draw_Primitive, Primitive_Public_Class
+from bpy.utils import register_class, unregister_class
 
+from primitive.primitive import Draw_Primitive, Primitive_Public_Class
 
 
 class Empty(Primitive_Public_Class):
@@ -25,14 +28,10 @@ class Empty(Primitive_Public_Class):
 		self.finishon = 2
 		self.owner = None
 
-	def abort(self):
-		bpy.ops.object.delete(confirm=False)
-
-
 
 class Create_OT_Empty(Draw_Primitive):
-	bl_idname="create.empty"
-	bl_label="Empty"
+	bl_idname = "create.empty"
+	bl_label = "Empty"
 	subclass = Empty()
 	use_gride = True
 	use_single_click = True
@@ -50,28 +49,46 @@ class Create_OT_Empty(Draw_Primitive):
 			('IMAGE','Image','')
 		]
 	)
+
 	depth: EnumProperty(name='Depth',default='DEFAULT',
-		items =[('DEFAULT','Default',''),('FRONT','Front',''),('BACK','Back','')])
+		items =[
+			('DEFAULT','Default',''),
+			('FRONT','Front',''),
+			('BACK','Back','')
+		]
+	)
 
 	def create(self, ctx):
-		bpy.ops.object.empty_add(type=self.empty_type,location=self.gride.location)
+		bpy.ops.object.empty_add(
+			type=self.empty_type, location=self.gride.location
+		)
+		
 		self.subclass.owner = ctx.active_object
 		self.subclass.owner.rotation_euler = self.gride.rotation
+
 		if self.empty_type == "IMAGE":
 			self.subclass.owner.empty_image_depth = self.depth
 
 	def update(self, ctx, clickcount, dimension):
-		if clickcount == 1:
-			self.subclass.owner.empty_display_size = dimension.radius
-
+		if clickcount != 1:
+			return
+		
+		self.subclass.owner.empty_display_size = dimension.radius
 
 
 class Create_OT_Image(Operator):
 	bl_idname="create.image"
 	bl_label="Image"
 	bl_options={"UNDO"}
-	image_type: EnumProperty(name='Type',default='REFERENCE',
-		items =[('REFERENCE','Reference',''),('BACKGROUND','Background','')])
+
+	image_type: EnumProperty(
+		name='Type',
+		items =[
+			('REFERENCE','Reference',''),
+			('BACKGROUND','Background','')
+		],
+		default='REFERENCE'
+	)
 
 	@classmethod
 	def poll(self, ctx):
@@ -79,9 +96,15 @@ class Create_OT_Image(Operator):
 
 	def execute(self, ctx):
 		if self.image_type == "REFERENCE":
-			bpy.ops.create.empty('INVOKE_DEFAULT',empty_type="IMAGE",depth="DEFAULT")
+			bpy.ops.create.empty(
+				'INVOKE_DEFAULT', empty_type="IMAGE", depth="DEFAULT"
+			)
+
 		else:
-			bpy.ops.create.empty('INVOKE_DEFAULT',empty_type="IMAGE",depth="BACK")
+			bpy.ops.create.empty(
+				'INVOKE_DEFAULT', empty_type="IMAGE", depth="BACK"
+			)
+
 		return {'FINISHED'}
 
 
@@ -93,11 +116,11 @@ classes = (
 
 def register_empty():
 	for c in classes:
-		bpy.utils.register_class(c)
+		register_class(c)
 
 def unregister_empty():
 	for c in classes:
-		bpy.utils.unregister_class(c)
+		unregister_class(c)
 
 if __name__ == "__main__":
 	register_empty()

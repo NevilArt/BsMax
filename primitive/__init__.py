@@ -12,7 +12,7 @@
 #	You should have received a copy of the GNU General Public License
 #	along with this program.  If not, see <https://www.gnu.org/licenses/>.
 ############################################################################
-# 2024/01/29
+# 2024/04/03
 
 from .ui import register_ui, unregister_ui
 from .panel import register_panel, unregister_panel
@@ -38,7 +38,6 @@ from .vertex import register_vertex, unregister_vertex
 from .arc import register_arc, unregister_arc
 from .circle import register_circle, unregister_circle
 from .ellipse import register_ellipse, unregister_ellipse
-from .extrude import register_extrude, unregister_extrude
 from .donut import register_donut, unregister_donut
 from .ngon import register_ngon, unregister_ngon
 from .helix import register_helix, unregister_helix
@@ -80,7 +79,6 @@ def register_primitives(preferences):
 	register_effector()
 	register_ellipse()
 	register_empty()
-	register_extrude()
 	register_greacepencil()
 	register_helix()
 	register_icosphere()
@@ -126,7 +124,6 @@ def unregister_primitives():
 	unregister_effector()
 	unregister_ellipse()
 	unregister_empty()
-	unregister_extrude()
 	unregister_greacepencil()
 	unregister_helix()
 	unregister_icosphere()

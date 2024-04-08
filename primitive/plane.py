@@ -12,10 +12,10 @@
 #	You should have received a copy of the GNU General Public License
 #	along with this program.  If not,see <https://www.gnu.org/licenses/>.
 ############################################################################
+# 2024/04/04
 
 import bpy
 from primitive.primitive import Primitive_Geometry_Class, Draw_Primitive
-
 
 
 def get_plane_mesh(width, length, WSegs, LSegs):
@@ -43,11 +43,11 @@ def get_plane_mesh(width, length, WSegs, LSegs):
 	return verts, [], faces
 
 
-
 class Plane(Primitive_Geometry_Class):
 	def __init__(self):
 		self.classname = "Plane"
 		self.finishon = 2
+		self.shading = 'FLAT'
 
 	def create(self, ctx):
 		mesh = get_plane_mesh(0, 0, 1, 1)
@@ -59,10 +59,6 @@ class Plane(Primitive_Geometry_Class):
 		pd = self.data.primitivedata
 		mesh = get_plane_mesh(pd.width, pd.length, pd.wsegs, pd.lsegs)
 		self.update_mesh(mesh)
-
-	def abort(self):
-		bpy.ops.object.delete(confirm=False)
-
 
 
 class Create_OT_Plane(Draw_Primitive):
@@ -86,16 +82,18 @@ class Create_OT_Plane(Draw_Primitive):
 				self.params.width = abs(dimension.width)
 				self.params.length = abs(dimension.length)
 				self.subclass.owner.location = dimension.center
+
 		if clickcount > 0:
 			self.subclass.update()
-
 
 
 def register_plane():
 	bpy.utils.register_class(Create_OT_Plane)
 
+
 def unregister_plane():
 	bpy.utils.unregister_class(Create_OT_Plane)
+
 
 if __name__ == '__main__':
 	register_plane()

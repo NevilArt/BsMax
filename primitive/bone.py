@@ -12,6 +12,7 @@
 #	You should have received a copy of the GNU General Public License
 #	along with this program.  If not,see <https://www.gnu.org/licenses/>.
 ############################################################################
+# 2024/04/04
 
 import bpy
 
@@ -19,7 +20,6 @@ from math import atan2
 
 from primitive.primitive import Primitive_Geometry_Class, Draw_Primitive
 from bsmax.math import get_axis_constraint
-
 
 
 class Armature(Primitive_Geometry_Class):
@@ -57,7 +57,6 @@ class Armature(Primitive_Geometry_Class):
 		self.reset()
 
 
-
 def get_roll(bone):
 	""" Get edit bone and return corrective roll angle
 		args:
@@ -68,7 +67,6 @@ def get_roll(bone):
 	a = bone.head.x - bone.tail.x
 	b = bone.head.z - bone.tail.z
 	return atan2(a, b)
-
 
 
 class Create_OT_Bone(Draw_Primitive):
@@ -118,14 +116,17 @@ class Create_OT_Bone(Draw_Primitive):
 			self.lastclick = clickcount
 
 	def event(self, event, value):
-		if event == 'BACK_SPACE':
-			if value == 'RELEASE':
-				bpy.ops.object.mode_set(mode='EDIT', toggle=False)
-				edit_bones = self.subclass.data.edit_bones
+		if event != 'BACK_SPACE':
+			return
+		
+		if value != 'RELEASE':
+			return
+		
+		bpy.ops.object.mode_set(mode='EDIT', toggle=False)
+		edit_bones = self.subclass.data.edit_bones
 
-				if len(edit_bones) > 1:
-					edit_bones.remove(edit_bones[-1])
-
+		if len(edit_bones) > 1:
+			edit_bones.remove(edit_bones[-1])
 
 
 def register_bone():

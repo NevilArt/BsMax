@@ -12,7 +12,7 @@
 #	You should have received a copy of the GNU General Public License
 #	along with this program.  If not,see <https://www.gnu.org/licenses/>.
 ############################################################################
-# 2024/01/29
+# 2024/04/04
 
 import bpy
 
@@ -26,7 +26,7 @@ from bpy.props import (
 	FloatVectorProperty
 )
 
-from .adaptive_plane import Adaptive_Plane
+# from .adaptive_plane import Adaptive_Plane
 from .box import Box
 from .bolt import Bolt
 from .capsule import Capsule
@@ -47,7 +47,6 @@ from .arc import Arc
 from .circle import Circle
 from .donut import Donut
 from .ellipse import Ellipse
-from .extrude import Extrude_Curve, Extrude_Mesh
 from .helix import Helix
 from .ngon import NGon
 from .profilo import Profilo
@@ -58,8 +57,8 @@ from .light import Compass
 
 # Classes
 def get_class(name):
-	if name == "Adaptive_Plane": return Adaptive_Plane()
-	elif name == "Box": return Box()
+	# if name == "Adaptive_Plane": return Adaptive_Plane()
+	if name == "Box": return Box()
 	elif name == "Bolt": return Bolt()
 	elif name == "Capsule": return Capsule()
 	elif name == "Cone": return Cone()
@@ -79,8 +78,6 @@ def get_class(name):
 	elif name == "Circle": return Circle()
 	elif name == "Donut": return Donut()
 	elif name == "Ellipse": return Ellipse()
-	elif name == "Extrude_Curve": return Extrude_Curve()
-	elif name == "Extrude_Mesh": return Extrude_Mesh()
 	elif name == "Helix": return Helix()
 	elif name == "NGon": return NGon()
 	elif name == "Profilo": return Profilo()
@@ -91,12 +88,14 @@ def get_class(name):
 
 
 # call if parametrs updated from ui manualy
-def primitive_update(self, ctx):
-	if ctx.object:
-		subclass = get_class(ctx.object.data.primitivedata.classname)
-		if subclass:
-			subclass.data = ctx.object.data
-			subclass.update()
+def primitive_update(_, ctx):
+	if not ctx.object:
+		return
+
+	subclass = get_class(ctx.object.data.primitivedata.classname)
+	if subclass:
+		subclass.data = ctx.object.data
+		subclass.update()
 
 
 # call if parameter are animatable and time changed
@@ -109,7 +108,7 @@ def update(data):
 
 # Callback function for update primitives if are animatable
 @persistent
-def primitive_frame_update(scene):
+def primitive_frame_update(_):
 	for data in bpy.data.meshes:
 		if data.primitivedata.animatable:
 			update(data)

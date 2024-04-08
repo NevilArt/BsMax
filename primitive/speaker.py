@@ -12,20 +12,16 @@
 #	You should have received a copy of the GNU General Public License
 #	along with this program.  If not,see <https://www.gnu.org/licenses/>.
 ############################################################################
+# 2024/04/04
 
 import bpy
 from primitive.primitive import Draw_Primitive, Primitive_Public_Class
-
 
 
 class Speaker(Primitive_Public_Class):
 	def init(self):
 		self.finishon = 2
 		self.owner = None
-
-	def abort(self):
-		bpy.ops.object.delete(confirm=False)
-
 
 
 class Create_OT_Speaker(Draw_Primitive):
@@ -44,12 +40,13 @@ class Create_OT_Speaker(Draw_Primitive):
 			self.subclass.owner.location = dimension.end
 
 
-
 def register_speaker():
 	bpy.utils.register_class(Create_OT_Speaker)
 
+
 def unregister_speaker():	
 	bpy.utils.unregister_class(Create_OT_Speaker)
+
 
 if __name__ == "__main__":
 	register_speaker()

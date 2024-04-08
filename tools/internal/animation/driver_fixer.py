@@ -12,9 +12,11 @@
 #	You should have received a copy of the GNU General Public License
 #	along with this program.  If not, see <https://www.gnu.org/licenses/>.
 ############################################################################
-import bpy
-from bpy.types import Operator
+# 2024/03/27
 
+import bpy
+
+from bpy.types import Operator
 
 
 class Driver_Reconnect:
@@ -31,7 +33,7 @@ class Driver_Reconnect:
 				for target in var.targets:
 					if target.id:
 						name = target.id.name
-						# print(">>>>", target.id.type)
+
 						if target.id.type == 'MESH':
 							if name in bpy.data.objects:
 								target.id = bpy.data.objects[name]
@@ -44,7 +46,7 @@ class Driver_Reconnect:
 							if name in bpy.data.lights:
 								target.id = bpy.data.lights[name]
 						# add all other types
-						
+
 				var.targets.update()
 
 	def fix_shapekey(self, obj):
@@ -67,7 +69,6 @@ class Driver_Reconnect:
 				self.fix_shapekey(obj)
 
 
-
 class Anim_TO_Driver_Fixer(Operator):
 	""" Solve overide library issue with drivers """
 	bl_idname = "anim.driver_fixer"
@@ -83,15 +84,12 @@ class Anim_TO_Driver_Fixer(Operator):
 		return{"FINISHED"}
 
 
-
 def register_driver_fixer():
 	bpy.utils.register_class(Anim_TO_Driver_Fixer)
 
 
-
 def unregister_driver_fixer():
 	bpy.utils.unregister_class(Anim_TO_Driver_Fixer)
-
 
 
 if __name__ == "__main__":

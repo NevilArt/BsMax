@@ -12,12 +12,11 @@
 #	You should have received a copy of the GNU General Public License
 #	along with this program.  If not,see <https://www.gnu.org/licenses/>.
 ############################################################################
-# 2024/03/21
+# 2024/04/04
 
 import bpy
 
-from primitive.primitive import Primitive_Geometry_Class, Draw_Primitive, set_smooth_by_angel
-from bpy.app import version
+from primitive.primitive import Primitive_Geometry_Class, Draw_Primitive
 
 
 def get_monkey_mesh(radius):
@@ -301,27 +300,18 @@ class Monkey(Primitive_Geometry_Class):
 	def init(self):
 		self.classname = "Monkey"
 		self.finishon = 2
-		""" Default Settings """
-		self.auto_smooth_angle = 3.14159
+		self.shading = 'SMOOTH'
 
 	def create(self, ctx):
 		mesh = get_monkey_mesh(0)
 		self.create_mesh(ctx, mesh, self.classname)
 		pd = self.data.primitivedata
 		pd.classname = self.classname
-		""" Apply Default Settings """
-		if version < (4, 1, 0):
-			self.data.auto_smooth_angle = self.auto_smooth_angle
-		else:
-			set_smooth_by_angel()
 
 	def update(self):
 		pd = self.data.primitivedata
 		mesh = get_monkey_mesh(pd.radius1)
 		self.update_mesh(mesh)
-
-	def abort(self):
-		bpy.ops.object.delete(confirm=False)
 
 
 class Create_OT_Monkey(Draw_Primitive):

@@ -12,21 +12,23 @@
 #	You should have received a copy of the GNU General Public License
 #	along with this program.  If not,see <https://www.gnu.org/licenses/>.
 ############################################################################
-# 2024/02/11
+# 2024/04/04
 
 import bpy
 from math import pi, sin, cos, radians
-from primitive.primitive import(
-    Primitive_Geometry_Class, Draw_Primitive, set_smooth_by_angel
-)
+from primitive.primitive import Primitive_Geometry_Class, Draw_Primitive
 
 
-def get_tube_mesh(radius1, radius2, height, hsegs, csegs, ssegs, sliceon, sfrom, sto):
+def get_tube_mesh(
+		radius1, radius2, height, hsegs, csegs, ssegs, sliceon, sfrom, sto 
+	):
+	
 	Sides = []
 	r1, r2 = radius1, radius2
 	sfrom, sto = radians(sfrom), radians(sto)
 	if radius1 > radius2:
 		r2, r1 = radius1, radius2
+
 	Range, slicestep = pi*2, 0
 
 	if sliceon:
@@ -34,61 +36,68 @@ def get_tube_mesh(radius1, radius2, height, hsegs, csegs, ssegs, sliceon, sfrom,
 		slicestep = 1
 
 	for i in range(ssegs + slicestep):
-		d = ((Range/ssegs)*i)+sfrom
+		d = ((Range / ssegs)*i) + sfrom
 		Sides.append([sin(d), cos(d)])
+
 	ssegs += slicestep
 
-	verts,edges,faces = [],[],[]
+	verts, edges, faces = [], [], []
 	# Create inner and outer vertex
 	for r in (r1, r2):
-		for i in range(hsegs+1):
+		for i in range(hsegs + 1):
 			for x, y in Sides:
-				verts.append((r*x,r*y,i*(height/hsegs)))
+				verts.append((r*x, r*y, i*(height/hsegs)))
 
 	# Create cap vertexes
 	for h in (0, height):
 		for i in range(1, csegs):
-			r = r1+(((r2-r1)/csegs)*i)
-			for x ,y in Sides:
+			r = r1 + (((r2 - r1) / csegs)*i)
+
+			for x, y in Sides:
 				verts.append((r*x, r*y, h))
 
 	# create side vertexes
 	if sliceon:
 		for x, y in (Sides[0], Sides[-1]):
 			for i in range(1, csegs):
-				r = r1 + (((r2 - r1) / csegs) * i)
-				for i in range(1, hsegs):
-					verts.append((r*x, r*y, i*(height/hsegs)))
+				r = r1 + (((r2 - r1) / csegs)*i)
 
-	c1,c1e = 0, ssegs*(hsegs+1) - 1 # Cylinder 1 (inner) start and end
-	c2,c2e = c1e+1, c1e+ssegs*(hsegs+1) # Cylinder 2 (outter)
-	p1,p1e = c2e+1, c2e+ssegs*(csegs - 1) # cap segments upper
-	p2,p2e = p1e+1, p1e+ssegs*(csegs - 1) # cap segments lower
-	f1,f1e = p2e+1, p2e+(hsegs - 1)*(csegs - 1) # slice face 1
-	f2 = f1e+1 # slice face 2
+				for i in range(1, hsegs):
+					verts.append((r*x, r*y, i*(height / hsegs)))
+
+	c1, c1e = 0, ssegs*(hsegs + 1) - 1 # Cylinder 1 (inner) start and end
+	c2, c2e = c1e + 1, c1e + ssegs*(hsegs + 1) # Cylinder 2 (outter)
+	p1, p1e = c2e + 1, c2e + ssegs*(csegs - 1) # cap segments upper
+	p2, p2e = p1e + 1, p1e + ssegs*(csegs - 1) # cap segments lower
+	f1, f1e = p2e + 1, p2e + (hsegs - 1)*(csegs - 1) # slice face 1
+	f2 = f1e + 1 # slice face 2
 
 	# inner and our cylinders
-	for o, p in ((0,0),((ssegs*hsegs),1)):
+	for o, p in ((0, 0), ((ssegs*hsegs), 1)):
 		for i in range(hsegs):
 			for j in range(ssegs - 1):
-				a = j+((i+p)*ssegs)+o
-				b = a+1
-				c = a+ssegs+1
+
+				a = j + ((i + p)*ssegs) + o
+				b = a + 1
+				c = a + ssegs + 1
 				d = c - 1
+
 				if o == 0:
-					faces.append((a,b,c,d)) # inner faces
+					faces.append((a, b, c, d)) # inner faces
 				else:
-					faces.append((d,c,b,a)) # outer faces
+					faces.append((d, c, b, a)) # outer faces
+
 	# lower cap
 	for i in range(csegs):
 		for j in range(ssegs - 1):
 			if i == 0:
 				a = j + c1
 			else:
-				a = j + p1 + (i - 1) * ssegs
+				a = j + p1 + (i - 1)*ssegs
 			b = a + 1
+
 			if i < csegs - 1:
-				c = j + p1 + i * ssegs + 1
+				c = j + p1 + i*ssegs + 1
 			else:
 				c = j + c2 + 1
 			d = c - 1
@@ -100,12 +109,15 @@ def get_tube_mesh(radius1, radius2, height, hsegs, csegs, ssegs, sliceon, sfrom,
 			if i == 0:
 				a = j + c1e - ssegs + 1
 			else:
-				a = j + p2 + (i - 1) * ssegs
+				a = j + p2 + (i - 1)*ssegs
+
 			b = a + 1
+
 			if i < csegs - 1:
-				c = j + p2 + i * ssegs + 1
+				c = j + p2 + i*ssegs + 1
 			else:
 				c = j + c2e - ssegs + 2
+
 			d = c - 1
 			faces.append((a, b, c, d))
 
@@ -119,45 +131,50 @@ def get_tube_mesh(radius1, radius2, height, hsegs, csegs, ssegs, sliceon, sfrom,
 						if j == 0:
 							a = c1 + o
 						else:
-							a = p1 + o + (j - 1) * ssegs
+							a = p1 + o + (j - 1)*ssegs
+
 					else:
 						if j == 0:
-							a = c1 + o + i * ssegs
+							a = c1 + o + i*ssegs
 						else:
-							a = f + (i - 1) + (j - 1) * (hsegs - 1)
+							a = f + (i - 1) + (j - 1)*(hsegs - 1)
+
 					# Get B
 					if i == 0:
 						if j < csegs - 1:
-							b = p1 + o + j * ssegs
+							b = p1 + o + j*ssegs
 						else:
 							b = c2 + o
+
 					else:
 						if j < csegs - 1:
-							b = f + (i - 1) + j * (hsegs - 1)
+							b = f + (i - 1) + j*(hsegs - 1)
 						else:
-							b = c2 + o + i * ssegs
+							b = c2 + o + i*ssegs
+
 					# Get C
 					if i < hsegs - 1:
 						if j < csegs - 1:
-							c = f + i + j * (hsegs - 1)
+							c = f + i + j*(hsegs - 1)
 						else:
-							c = c2 + o + (i + 1) * ssegs
+							c = c2 + o + (i + 1)*ssegs
 					else:
 						if j < csegs - 1:
-							c = p2 + o + j * ssegs
+							c = p2 + o + j*ssegs
 						else:
-							c = c2 + o + (i + 1) * ssegs
+							c = c2 + o + (i + 1)*ssegs
 					# Get D
 					if i < hsegs - 1:
 						if j == 0:
-							d = c1 + o + (i + 1) * ssegs
+							d = c1 + o + (i + 1)*ssegs
 						else:
-							d = f + i + (j - 1) * (hsegs - 1)
+							d = f + i + (j - 1)*(hsegs - 1)
 					else:
 						if j == 0:
-							d = c1 + o + (i + 1) * ssegs
+							d = c1 + o + (i + 1)*ssegs
 						else:
-							d = p2 + o + (j - 1) * ssegs
+							d = p2 + o + (j - 1)*ssegs
+
 					if o == 0:
 						faces.append((d, c, b, a))
 					else:
@@ -166,10 +183,11 @@ def get_tube_mesh(radius1, radius2, height, hsegs, csegs, ssegs, sliceon, sfrom,
 		#Close gap
 		for cx in [c1, c2]:
 			for i in range(hsegs):
-				a = cx + i * ssegs
+				a = cx + i*ssegs
 				b = a + ssegs
-				c = cx + (i + 2) * ssegs - 1
+				c = cx + (i + 2)*ssegs - 1
 				d = b - 1
+
 				if cx == 0:
 					faces.append((a, b, c, d))
 				else:
@@ -181,10 +199,10 @@ def get_tube_mesh(radius1, radius2, height, hsegs, csegs, ssegs, sliceon, sfrom,
 			if i == 0:
 				a = c1
 			else:
-				a = p1 + (i - 1) * ssegs
+				a = p1 + (i - 1)*ssegs
 
 			if i < csegs - 1:
-				b = p1 + i * ssegs
+				b = p1 + i*ssegs
 			else:
 				b = c2
 
@@ -194,15 +212,15 @@ def get_tube_mesh(radius1, radius2, height, hsegs, csegs, ssegs, sliceon, sfrom,
 
 		for i in range(csegs):
 			if i == 0:
-				a = c1 + hsegs * ssegs
+				a = c1 + hsegs*ssegs
 			else:
-				a = p2 + (i - 1) * ssegs
+				a = p2 + (i - 1)*ssegs
 
 			b = a + ssegs - 1
 			if i < csegs - 1:
-				c = p2 + ssegs - 1 + i * ssegs
+				c = p2 + ssegs - 1 + i*ssegs
 			else:
-				c = c2 + hsegs * ssegs + ssegs - 1
+				c = c2 + hsegs*ssegs + ssegs - 1
 
 			d = c - ssegs + 1
 			faces.append((d, c, b, a))
@@ -210,11 +228,11 @@ def get_tube_mesh(radius1, radius2, height, hsegs, csegs, ssegs, sliceon, sfrom,
 	return verts, edges, faces
 
 
-
 class Tube(Primitive_Geometry_Class):
 	def init(self):
 		self.classname = "Tube"
 		self.finishon = 4
+		self.shading = 'AUTO'
 
 	def create(self, ctx):
 		mesh = get_tube_mesh(0, 0, 0, 1, 1, 18, False, 0, 360)
@@ -222,17 +240,16 @@ class Tube(Primitive_Geometry_Class):
 		pd = self.data.primitivedata
 		pd.classname = self.classname
 		pd.ssegs = 18
-		set_smooth_by_angel()
 
 	def update(self):
 		pd = self.data.primitivedata
-		mesh = get_tube_mesh(pd.radius1, pd.radius2, pd.height,
+		mesh = get_tube_mesh(
+			pd.radius1, pd.radius2, pd.height,
 			pd.hsegs, pd.csegs, pd.ssegs,
-			pd.sliceon, pd.sfrom, pd.sto)
-		self.update_mesh(mesh)
+			pd.sliceon, pd.sfrom, pd.sto
+		)
 
-	def abort(self):
-		bpy.ops.object.delete(confirm=False)
+		self.update_mesh(mesh)
 
 
 class Create_OT_Tube(Draw_Primitive):

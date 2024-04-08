@@ -12,7 +12,7 @@
 #	You should have received a copy of the GNU General Public License
 #	along with this program.  If not,see <https://www.gnu.org/licenses/>.
 ############################################################################
-# 2024/02/08
+# 2024/04/04
 
 import bpy
 
@@ -114,12 +114,14 @@ class Create_OT_SpotLight(Draw_Primitive):
 		self.subclass.owner.rotation_euler = self.gride.rotation
 
 	def update(self, ctx, clickcount, dimension):
-		if clickcount == 1:
-			if self.drag and self.subclass.target == None:
-				self.subclass.target = set_create_target(self.subclass.owner, None)
+		if clickcount != 1:
+			return
 
-			if self.subclass.target != None:
-				self.subclass.target.location = dimension.end
+		if self.drag and self.subclass.target == None:
+			self.subclass.target = set_create_target(self.subclass.owner, None)
+
+		if self.subclass.target != None:
+			self.subclass.target.location = dimension.end
 
 
 class Create_OT_SunLight(Draw_Primitive):
@@ -141,7 +143,10 @@ class Create_OT_SunLight(Draw_Primitive):
 		self.light.owner.location = self.gride.location
 		self.light.target = self.subclass.owner
 		self.params = self.subclass.owner.data.primitivedata
-		set_create_target(self.light.owner, self.subclass.owner, distance=(0,0,0))
+
+		set_create_target(
+			self.light.owner, self.subclass.owner, distance=(0,0,0)
+		)
 	
 	def update(self, ctx, clickcount, dimension):
 		if clickcount == 1:

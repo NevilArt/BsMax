@@ -26,7 +26,8 @@ bl_info = {
 import bpy
 
 from . pannels import MaxivzTools_PT_Panel
-from . mvztools import (MESH_OT_SuperSmartCreate,
+from . mvztools import (
+	MESH_OT_SuperSmartCreate,
 	MESH_OT_CSBevel,
 	MESH_OT_SmartDelete,
 	MESH_OT_SmartSelectLoop,
@@ -47,9 +48,11 @@ from . mvztools import (MESH_OT_SuperSmartCreate,
 	MESH_OT_QuickFFD,
 	MESH_OT_SmartTranslate,
 	UV_OT_QuickRotateUv90Pos,
-	UV_OT_QuickRotateUv90Neg)
+	UV_OT_QuickRotateUv90Neg
+)
 
-classes = (MESH_OT_SuperSmartCreate,
+classes = (
+	MESH_OT_SuperSmartCreate,
 	MESH_OT_CSBevel,
 	MESH_OT_SmartDelete,
 	MESH_OT_SmartSelectLoop,
@@ -71,7 +74,8 @@ classes = (MESH_OT_SuperSmartCreate,
 	MESH_OT_SmartTranslate,
 	UV_OT_QuickRotateUv90Pos,
 	UV_OT_QuickRotateUv90Neg,
-	MaxivzTools_PT_Panel)
+	MaxivzTools_PT_Panel
+)
 
 register,unregister = bpy.utils.register_classes_factory(classes)
 

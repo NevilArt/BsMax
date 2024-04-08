@@ -12,10 +12,10 @@
 #	You should have received a copy of the GNU General Public License
 #	along with this program.  If not,see <https://www.gnu.org/licenses/>.
 ############################################################################
+# 2024/04/04
 
 import bpy
 from primitive.primitive import Primitive_Curve_Class, Draw_Primitive
-
 
 
 def get_donut_shape(radius1, radius2):
@@ -32,8 +32,8 @@ def get_donut_shape(radius1, radius2):
 		pt3 = (pc3,pl3,'FREE',pr3,'FREE')
 		pt4 = (pc4,pl4,'FREE',pr4,'FREE')
 		shapes.append([pt1,pt2,pt3,pt4])
-	return shapes
 
+	return shapes
 
 
 class Donut(Primitive_Curve_Class):
@@ -54,10 +54,6 @@ class Donut(Primitive_Curve_Class):
 		pd = self.data.primitivedata
 		shapes = get_donut_shape(pd.radius1, pd.radius2)
 		self.update_curve(shapes)
-
-	def abort(self):
-		bpy.ops.object.delete(confirm=False)
-
 
 
 class Create_OT_Donut(Draw_Primitive):
@@ -85,7 +81,6 @@ class Create_OT_Donut(Draw_Primitive):
 				self.jump_to_end()
 				return
 			self.params.radius2 = dimension.distance
-
 
 
 def register_donut():

@@ -12,11 +12,11 @@
 #	You should have received a copy of the GNU General Public License
 #	along with this program.  If not,see <https://www.gnu.org/licenses/>.
 ############################################################################
+# 2024/04/04
 
 import bpy
 from math import pi, sin, cos, radians
 from primitive.primitive import Primitive_Geometry_Class, Draw_Primitive
-
 
 
 def get_capsule_mesh(radius, height, ssegs, csegs, hsegs, sliceon, sfrom, sto):
@@ -120,11 +120,11 @@ def get_capsule_mesh(radius, height, ssegs, csegs, hsegs, sliceon, sfrom, sto):
 	return verts, edges, faces
 
 
-
 class Capsule(Primitive_Geometry_Class):
 	def init(self):
 		self.classname = "Capsule"
 		self.finishon = 3
+		self.shading = 'SMOOTH'
 
 	def create(self, ctx):
 		mesh = get_capsule_mesh(0, 0, 18, 8, 6, False, 0, 360)
@@ -144,14 +144,14 @@ class Capsule(Primitive_Geometry_Class):
 			if pd.height < diameter:
 				pd.height = diameter
 			height = pd.height - pd.radius1 * 2
-		mesh = get_capsule_mesh(pd.radius1, height,
+
+		mesh = get_capsule_mesh(
+			pd.radius1, height,
 			pd.ssegs, csegs, pd.hsegs,
-			pd.sliceon, pd.sfrom, pd.sto)
+			pd.sliceon, pd.sfrom, pd.sto
+		)
+
 		self.update_mesh(mesh)
-
-	def abort(self):
-		bpy.ops.object.delete(confirm=False)
-
 
 
 class Create_OT_Capsule(Draw_Primitive):
@@ -179,7 +179,6 @@ class Create_OT_Capsule(Draw_Primitive):
 				self.jump_to_end()
 				return
 			self.params.height = dimension.height
-
 
 
 def register_capsule():

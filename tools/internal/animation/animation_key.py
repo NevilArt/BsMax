@@ -12,11 +12,13 @@
 #	You should have received a copy of the GNU General Public License
 #	along with this program.  If not, see <https://www.gnu.org/licenses/>.
 ############################################################################
+# 2024/03/27
 
 import bpy
 
 from bpy.types import Operator, Panel, PropertyGroup
 from bpy.props import BoolProperty, EnumProperty, IntProperty, PointerProperty
+from bpy.utils import register_class, unregister_class
 
 from bsmax.actions import insert_key_to_current_state
 
@@ -37,7 +39,6 @@ class KeyData:
 key_data = KeyData()
 
 
-
 class Anim_OT_Set_Key_Filters(Operator):
 	bl_idname = 'anim.set_key_filters'
 	bl_label = 'Set Key Filters'
@@ -52,7 +53,10 @@ class Anim_OT_Set_Key_Filters(Operator):
 	visual_scale: BoolProperty(name='Viasual Scale')
 	bbone_shape: BoolProperty(name='BBone Shape')
 	whole_character: BoolProperty(name='Whole Character')
-	whole_character_selected: BoolProperty(name='Whole Character (Selected only)')
+	
+	whole_character_selected: BoolProperty(
+		name='Whole Character (Selected only)'
+	)
 
 	def draw(self, ctx):
 		layout = self.layout
@@ -61,10 +65,12 @@ class Anim_OT_Set_Key_Filters(Operator):
 		box.prop(self, 'location')
 		box.prop(self, 'rotation')
 		box.prop(self, 'scale')
+
 		box = layout.box()
 		box.prop(self, 'visual_location')
 		box.prop(self, 'visual_rotation')
 		box.prop(self, 'visual_scale')
+
 		box = layout.box()
 		box.prop(self, 'bbone_shape')
 		box.prop(self, 'whole_character')
@@ -156,17 +162,20 @@ class Anim_OT_Set_Key(Operator):
 		return{'FINISHED'}
 
 
-
 class Anim_OT_Frame_Set(Operator):
 	""" Set time slider curent time value """
 	bl_idname = 'anim.frame_set'
 	bl_label = 'Set Frame'
 
-	frame: EnumProperty(name='Frame', default='Next',
-						items =[('Next', 'Next', ''),
-								('Previous', 'Previous', ''),
-								('First', 'First', ''),
-								('Last', 'Last', '')])
+	frame: EnumProperty(
+		name='Frame', default='Next',
+		items =[
+			('Next', 'Next', ''),
+			('Previous', 'Previous', ''),
+			('First', 'First', ''),
+			('Last', 'Last', '')
+		]
+	)
 	
 	def execute(self, ctx):
 		scene = ctx.scene
@@ -191,7 +200,6 @@ class Anim_OT_Frame_Set(Operator):
 		return{'FINISHED'}
 
 
-
 class Dopesheet_OT_Zoom_Extended(Operator):
 	""" Zoom on selected or all keys """
 	bl_idname = 'action.zoom_extended'
@@ -205,7 +213,6 @@ class Dopesheet_OT_Zoom_Extended(Operator):
 		bpy.ops.action.view_selected('INVOKE_DEFAULT')
 		# bpy.ops.action.view_all('INVOKE_DEFAULT')
 		return{'FINISHED'}
-
 
 
 class Anim_OT_Delete_Key(Operator):
@@ -228,13 +235,11 @@ class Anim_OT_Delete_Key(Operator):
 		return{'FINISHED'}
 
 
-
 def update_freeze_on(self, ctx):
 	""" Get from calculate fields """
 	self.frames = self.relase - self.push
 	self.next_step = self.next_push - self.push + 1
 	self.repeat = (self.end - self.push) / self.next_step
-
 
 
 def update_freeze_on_option(self, ctx):
@@ -244,46 +249,68 @@ def update_freeze_on_option(self, ctx):
 		self.repeat = 1
 
 
-
 class Freeze_on_Property(PropertyGroup):
 	""" Data method """
-	frames: IntProperty(name='Fix', min=1, default=1,
-		description='Number of frames object has to fixed')
+	frames: IntProperty(
+		name='Fix', min=1, default=1,
+		description='Number of frames object has to fixed'
+	)
 	
-	next_step: IntProperty(name='Cycle', min=1, default=1,
-		description='Length of walk/run cycle')
+	next_step: IntProperty(
+		name='Cycle', min=1, default=1,
+		description='Length of walk/run cycle'
+	)
 	
-	repeat: IntProperty(name='Repeat', min=1, default=1,
-		description='Repeat same action for next steps')
+	repeat: IntProperty(
+		name='Repeat', min=1, default=1,
+		description='Repeat same action for next steps'
+	)
 	
 	""" Key chanels """
-	key_location: BoolProperty(name='Key Location', default=True,
-		description='Set Key for Location')
+	key_location: BoolProperty(
+		name='Key Location', default=True,
+		description='Set Key for Location'
+	)
 	
-	key_rotation: BoolProperty(name='Key Rotation', default=True,
-		description='Set key for Rotation')
+	key_rotation: BoolProperty(
+		name='Key Rotation', default=True,
+		description='Set key for Rotation'
+	)
 	
-	key_scale: BoolProperty(name='Key Scale', default=False,
-		description='Set key for Scale')
+	key_scale: BoolProperty(
+		name='Key Scale', default=False,
+		description='Set key for Scale'
+	)
 	
 	""" Calculator """
 	calculator: BoolProperty(name='Calculator', default=False)
 	
-	push: IntProperty(name='Frame that first time foot touch the floor',
-		min=0, default=1, update=update_freeze_on)
+	push: IntProperty(
+		name='Frame that first time foot touch the floor',
+		min=0, default=1, update=update_freeze_on
+	)
 	
-	relase: IntProperty(name='Frame that foot untouch floor',
-		min=0, default=1, update=update_freeze_on)
+	relase: IntProperty(
+		name='Frame that foot untouch floor',
+		min=0, default=1, update=update_freeze_on
+	)
 
-	next_push: IntProperty(name='Second time foot touch floor',
-		min=0, default=1, update=update_freeze_on)
+	next_push: IntProperty(
+		name='Second time foot touch floor',
+		min=0, default=1, update=update_freeze_on
+	)
 	
-	end: IntProperty(name='End of Walk/Run cycle',
-		min=0, default=1, update=update_freeze_on)
+	end: IntProperty(
+		name='End of Walk/Run cycle',
+		min=0, default=1, update=update_freeze_on
+	)
 
 	""" Simple """
-	more: BoolProperty(name='More Option', default=False,
-						update=update_freeze_on_option)
+	more: BoolProperty(
+		name='More Option', default=False,
+		update=update_freeze_on_option
+	)
+	
 	panel: BoolProperty(name='On Panel', default=False)
 
 
@@ -337,10 +364,12 @@ def fix_object_in_location(ctx, frame_current):
 		worldlocation = obj.matrix_world
 		for frame in range(frame_current, frame_current + freeze_on.frames):
 			obj.matrix_world = worldlocation
-			insert_key_to_current_state(obj, frame,
-										freeze_on.key_location,
-										freeze_on.key_rotation,
-										freeze_on.key_scale)
+			insert_key_to_current_state(
+				obj, frame,
+				freeze_on.key_location,
+				freeze_on.key_rotation,
+				freeze_on.key_scale
+			)
 
 
 
@@ -359,13 +388,19 @@ def fix_bone_in_location(ctx, frame_current):
 			ctx.scene.frame_current = frame
 			ctx.view_layer.update()
 			# Convert World to pose bone space
-			bone.matrix = armature.convert_space(pose_bone=bone,
-				matrix=bone_matrix, from_space='WORLD', to_space='POSE')
-			insert_key_to_current_state(bone, frame,
-										freeze_on.key_location,
-										freeze_on.key_rotation,
-										freeze_on.key_scale)
-
+			bone.matrix = armature.convert_space(
+				pose_bone=bone,
+				matrix=bone_matrix,
+				from_space='WORLD',
+				to_space='POSE'
+			)
+			
+			insert_key_to_current_state(
+				bone, frame,
+				freeze_on.key_location,
+				freeze_on.key_rotation,
+				freeze_on.key_scale
+			)
 
 
 def apply_freeze_on(ctx):
@@ -439,7 +474,6 @@ class Anim_OP_Freeze_on(Panel):
 # 		graph.select_linked
 
 
-
 classes = (
 	Freeze_on_Property,
 	Anim_OT_Set_Key_Filters,
@@ -452,22 +486,20 @@ classes = (
 )
 
 
-
 def register_animation_key():
 	for c in classes:
-		bpy.utils.register_class(c)
+		register_class(c)
 
-	bpy.types.Scene.freeze_on = PointerProperty(type=Freeze_on_Property,
-												name='Freeze On')
-
+	bpy.types.Scene.freeze_on = PointerProperty(
+		type=Freeze_on_Property, name='Freeze On'
+	)
 
 
 def unregister_animation_key():
 	del bpy.types.Scene.freeze_on
 
 	for c in classes:
-		bpy.utils.unregister_class(c)
-
+		unregister_class(c)
 
 
 if __name__ == '__main__':

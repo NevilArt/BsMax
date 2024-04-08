@@ -12,12 +12,12 @@
 #	You should have received a copy of the GNU General Public License
 #	along with this program.  If not,see <https://www.gnu.org/licenses/>.
 ############################################################################
+# 2024/04/04
 
 import bpy
 
 from math import pi, cos, sin, tan
 from primitive.primitive import Primitive_Curve_Class, Draw_Primitive
-
 
 
 def get_circle_shape(radius, ssegs):
@@ -33,7 +33,7 @@ def get_circle_shape(radius, ssegs):
 					co[1] - distance * cos(theta),
 					0
 		)
-		
+
 		out_tangent = (
 					co[0] - distance * sin(theta),
 					co[1] + distance * cos(theta),
@@ -43,7 +43,6 @@ def get_circle_shape(radius, ssegs):
 		spline.append((co, in_tangent, 'FREE', out_tangent, 'FREE'))
 
 	return [spline]
-
 
 
 class Circle(Primitive_Curve_Class):
@@ -66,10 +65,6 @@ class Circle(Primitive_Curve_Class):
 		shapes = get_circle_shape(pd.radius1, pd.ssegs)
 		self.update_curve(shapes)
 
-	def abort(self):
-		bpy.ops.object.delete(confirm=False)
-
-
 
 class Create_OT_Circle(Draw_Primitive):
 	bl_idname = "create.circle"
@@ -87,7 +82,6 @@ class Create_OT_Circle(Draw_Primitive):
 	def update(self, ctx, clickcount, dimension):
 		if clickcount == 1:
 			self.params.radius1 = dimension.radius
-	
 
 
 def register_circle():

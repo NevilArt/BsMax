@@ -12,11 +12,11 @@
 #	You should have received a copy of the GNU General Public License
 #	along with this program.  If not,see <https://www.gnu.org/licenses/>.
 ############################################################################
+# 2024/04/04
 
 import bpy
 from math import pi, sqrt, sin, cos
 from primitive.primitive import Primitive_Curve_Class, Draw_Primitive
-
 
 
 def get_ngon_shape(radius, sides, cornerradius, circular):
@@ -41,8 +41,8 @@ def get_ngon_shape(radius, sides, cornerradius, circular):
 			Shape.append([pcn, pln, 'ALIGNED', prn, 'ALIGNED'])
 		else:
 			Shape.append([pcn, pln, 'VECTOR', prn, 'VECTOR'])
-	return [Shape]
 
+	return [Shape]
 
 
 class NGon(Primitive_Curve_Class):
@@ -64,10 +64,6 @@ class NGon(Primitive_Curve_Class):
 		shapes = get_ngon_shape(pd.radius1, pd.ssegs, pd.chamfer1, pd.smooth)
 		self.update_curve(shapes)
 
-	def abort(self):
-		bpy.ops.object.delete(confirm=False)
-
-
 
 class Create_OT_NGon(Draw_Primitive):
 	bl_idname = "create.ngon"
@@ -86,12 +82,13 @@ class Create_OT_NGon(Draw_Primitive):
 			self.params.radius1 = dimension.radius
 
 
-
 def register_ngon():
 	bpy.utils.register_class(Create_OT_NGon)
-	
+
+
 def unregister_ngon():
 	bpy.utils.unregister_class(Create_OT_NGon)
+
 
 if __name__ == "__main__":
 	register_ngon()

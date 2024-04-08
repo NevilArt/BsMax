@@ -12,6 +12,7 @@
 #	You should have received a copy of the GNU General Public License
 #	along with this program.  If not,see <https://www.gnu.org/licenses/>.
 ############################################################################
+# 2024/04/04
 
 import bpy
 import numpy as np
@@ -52,7 +53,6 @@ def get_torusknot_shape(radius1, radius2, height, lsegs, p, q):
 	return [spline] #return a shape with a single spline
 
 
-
 class TorusKnot(Primitive_Curve_Class):
 	def __init__(self):
 		self.classname = "TorusKnot"
@@ -71,16 +71,14 @@ class TorusKnot(Primitive_Curve_Class):
 
 	def update(self):
 		pd = self.data.primitivedata
-		shapes = get_torusknot_shape(pd.radius1, pd.radius2,
-									pd.height, pd.lsegs,
-									pd.turns, pd.twist
-				)
+		shapes = get_torusknot_shape(
+			pd.radius1, pd.radius2,
+			pd.height, pd.lsegs,
+			pd.turns, pd.twist
+		)
+		
 		self.close = pd.turns == floor(pd.turns) and pd.twist == floor(pd.twist)
 		self.update_curve(shapes)
-
-	def abort(self):
-		bpy.ops.object.delete(confirm=False)
-
 
 
 class Create_OT_TorusKnot(Draw_Primitive):
@@ -106,15 +104,17 @@ class Create_OT_TorusKnot(Draw_Primitive):
 			if self.use_single_draw:
 				self.jump_to_end()
 				return
+
 			self.params.thickness = dimension.radius
-	
 
 
 def register_torusknot():
 	bpy.utils.register_class(Create_OT_TorusKnot)
 
+
 def unregister_torusknot():
 	bpy.utils.unregister_class(Create_OT_TorusKnot)
+
 
 if __name__ == "__main__":
 	register_torusknot()

@@ -12,23 +12,27 @@
 #	You should have received a copy of the GNU General Public License
 #	along with this program.  If not,see <https://www.gnu.org/licenses/>.
 ############################################################################
+# 2024/04/04
 
 import bpy
 from primitive.primitive import Primitive_Curve_Class, Draw_Primitive
-
 
 
 def get_rectangle_shapes(width, length, corner):
 	Shapes = []
 	w, l = width / 2, length / 2
 	r, c = corner, corner - (corner * 0.551786)
+
 	if corner == 0:
 		p1, p2, p3, p4 = (-w, -l, 0), (-w,  l, 0), ( w,  l, 0), ( w, -l, 0)
+
 		pt1 = (p1, p1, 'VECTOR', p1, 'VECTOR')
 		pt2 = (p2, p2, 'VECTOR', p2, 'VECTOR')
 		pt3 = (p3, p3, 'VECTOR', p3, 'VECTOR')
 		pt4 = (p4, p4, 'VECTOR', p4, 'VECTOR')
+
 		Shapes.append([pt1, pt2, pt3, pt4])
+
 	else:
 		pc1, pl1, pr1 = (-w + r, -l, 0), (-w + c, -l, 0), (-w + r, -l, 0)
 		pc2, pl2, pr2 = ( w - r, -l, 0), ( w - r, -l, 0), ( w - c, -l, 0)
@@ -38,6 +42,7 @@ def get_rectangle_shapes(width, length, corner):
 		pc6, pl6, pr6 = ( -w + r, l, 0), ( -w + r, l, 0), ( -w + c, l, 0)
 		pc7, pl7, pr7 = ( -w, l - r, 0), ( -w, l - c, 0), ( -w, l - r, 0)
 		pc8, pl8, pr8 = ( -w, -l + r, 0), ( -w, -l + r, 0), ( -w, -l + c, 0)
+
 		pt1 = (pc1, pl1, 'FREE', pr1, 'VECTOR')
 		pt2 = (pc2, pl2, 'VECTOR', pr2, 'FREE')
 		pt3 = (pc3, pl3, 'FREE', pr3, 'VECTOR')
@@ -46,7 +51,9 @@ def get_rectangle_shapes(width, length, corner):
 		pt6 = (pc6, pl6, 'VECTOR', pr6, 'FREE')
 		pt7 = (pc7, pl7, 'FREE', pr7, 'VECTOR')
 		pt8 = (pc8, pl8, 'VECTOR', pr8, 'FREE')
+
 		Shapes.append([pt1, pt2, pt3, pt4, pt5, pt6, pt7, pt8])
+
 	return Shapes
 
 
@@ -67,10 +74,6 @@ class Rectangle(Primitive_Curve_Class):
 		pd = self.data.primitivedata
 		shapes = get_rectangle_shapes(pd.width, pd.length, pd.chamfer1)
 		self.update_curve(shapes)
-
-	def abort(self):
-		bpy.ops.object.delete(confirm=False)
-
 
 
 class Create_OT_Rectangle(Draw_Primitive):
@@ -96,12 +99,13 @@ class Create_OT_Rectangle(Draw_Primitive):
 				self.subclass.owner.location = dimension.center
 
 
-
 def register_rectangle():
 	bpy.utils.register_class(Create_OT_Rectangle)
 
+
 def unregister_rectangle():
 	bpy.utils.unregister_class(Create_OT_Rectangle)
+
 
 if __name__ == '__main__':
 	register_rectangle()

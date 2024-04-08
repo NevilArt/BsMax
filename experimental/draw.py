@@ -120,7 +120,7 @@ class Drow_OT_Box(Draw3DObject):
 					# self.start = event.mouse_region_x, event.mouse_region_y
 					self.gizmo.start = Vector((50, 50, 50))
 					self.gizmo.end = Vector((100, 100, 100))
-					print(">>>>> Created")
+					# print(">>>>> Created")
 
 
 			if event.value =='RELEASE':

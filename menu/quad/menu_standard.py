@@ -193,7 +193,7 @@ def get_view3d_tool1(ctx):
 			items.append(QuadItem("NURMS Toggle", f, t, n, c0224, n))
 
 	elif get_active_type(ctx) == 'CURVE':
-		items.append(QuadItem("Extrude", f, t, n, c0134, n))
+		# items.append(QuadItem("Extrude", f, t, n, c0134, n))
 
 		if not is_primitive(ctx):
 			items.append(seprator())

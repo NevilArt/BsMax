@@ -12,12 +12,13 @@
 #	You should have received a copy of the GNU General Public License
 #	along with this program.  If not,see <https://www.gnu.org/licenses/>.
 ############################################################################
-# 2024/02/13
+# 2024/04/03
 
 import bpy
 
 from bpy.types import Menu
 from bpy.utils import register_class, unregister_class
+from bpy.app import version
 
 
 # Mesh create menu
@@ -39,8 +40,9 @@ class BsMax_MT_VertexCreate(Menu):
 			"create.vertex", text="Edge", icon="CON_TRACKTO"
 		).fill_type='EDGE'
 
+		icon = 'LIGHTPROBE_PLANAR' if version < (4, 1, 0) else 'LIGHTPROBE_PLANE'
 		layout.operator(
-			"create.vertex", text="Face", icon="LIGHTPROBE_PLANAR"
+			'create.vertex', text="Face", icon=icon
 		).fill_type='FACE'
 
 
@@ -141,10 +143,6 @@ class BsMax_MT_MeshCreate(Menu):
 		layout.menu("BSMAX_MT_vertex_create_menu", icon='DOT')
 		layout.separator()
 
-		layout.operator(
-			"create.extrude", text="Extrude Mesh (Add)", icon="EXPORT"
-		).mode='Mesh'
-
 		layout.separator()
 		layout.menu("BSMAX_MT_mesh_extera_menu", icon='DOCUMENTS')
 
@@ -172,10 +170,6 @@ class BsMax_MT_CurveCreate(Menu):
 		layout.operator("create.profilo", text="Profilo", icon="MOD_BOOLEAN")
 		layout.separator()
 		
-		layout.operator(
-			"create.extrude", text="Extrude Curve (Add)",icon="EXPORT"
-		).mode='Curve'
-
 
 # Surface create menu
 class BsMax_MT_SurfaceCreate(Menu):
@@ -379,22 +373,22 @@ class BsMax_MT_LightProbsCreate(Menu):
 
 	def draw(self, ctx):
 		layout = self.layout
+		icon = 'LIGHTPROBE_CUBEMAP' if version < (4, 0, 0) else 'LIGHTPROBE_SPHERE'
 		layout.operator(
-			"create.light_probe_cubemap",
-			text="Reflection Cubemap",
-			icon="LIGHTPROBE_CUBEMAP"
+			'create.light_probe_cubemap',
+			text="Reflection Cubemap", icon=icon
 		)
 		
+		icon = 'LIGHTPROBE_PLANAR' if version < (4, 0, 0) else 'LIGHTPROBE_PLANE'
 		layout.operator(
-			"create.light_probe_planer",
-			text="Reflection Plane",
-			icon="LIGHTPROBE_PLANAR"
+			'create.light_probe_planer',
+			text="Reflection Plane", icon=icon
 		)
 		
+		icon = 'LIGHTPROBE_GRID' if version < (4, 0, 0) else 'LIGHTPROBE_VOLUME'
 		layout.operator(
-			"create.light_probe_grid",
-			text="Irradiance Volume",
-			icon="LIGHTPROBE_GRID"
+			'create.light_probe_grid',
+			text="Irradiance Volume", icon=icon
 		)
 
 

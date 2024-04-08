@@ -12,14 +12,14 @@
 #	You should have received a copy of the GNU General Public License
 #	along with this program.  If not,see <https://www.gnu.org/licenses/>.
 ############################################################################
+# 2024/04/03
 
 import bpy
 import add_mesh_BoltFactory as bf
 
 from primitive.primitive import(
-	Primitive_Geometry_Class, Draw_Primitive, set_smooth_by_angel
+	Primitive_Geometry_Class, Draw_Primitive
 )
-
 
 
 def get_bolt_mesh(props):
@@ -37,11 +37,11 @@ def get_bolt_mesh(props):
 	return verts, [], faces
 
 
-
 class Bolt(Primitive_Geometry_Class):
 	def __init__(self):
 		self.classname = "Bolt"
 		self.finishon = 2
+		self.shading = 'AUTO'
 
 	def create(self, ctx):
 		mesh = [], [], []
@@ -50,15 +50,10 @@ class Bolt(Primitive_Geometry_Class):
 		pd.classname = self.classname
 		pd.height = 1
 		self.update()
-		set_smooth_by_angel()
 
 	def update(self):
 		mesh = get_bolt_mesh(self.data.primitivedata)
 		self.update_mesh(mesh)
-
-	def abort(self):
-		bpy.ops.object.delete(confirm=False)
-
 
 
 class Create_OT_Bolt(Draw_Primitive):
@@ -79,7 +74,6 @@ class Create_OT_Bolt(Draw_Primitive):
 
 		if clickcount > 0:
 			self.subclass.update()
-
 
 
 def register_bolt():

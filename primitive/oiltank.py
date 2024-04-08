@@ -12,14 +12,18 @@
 #	You should have received a copy of the GNU General Public License
 #	along with this program.  If not,see <https://www.gnu.org/licenses/>.
 ############################################################################
+# 2024/04/04
 
 import bpy
 from math import pi, sin, cos, radians
 from primitive.primitive import Primitive_Geometry_Class, Draw_Primitive
 
 
-
-def get_oiltank_mesh(radius, height, capheight, blend, ssegs, csegs, hsegs, sliceon, sfrom, sto):
+def get_oiltank_mesh(
+		radius, height, capheight, blend,
+		ssegs, csegs, hsegs, sliceon, sfrom, sto
+	):
+	
 	verts,edges,faces = [],[],[]
 	sides,heights = [],[]
 	arcrange,slicestep,r = pi*2,0,radius
@@ -133,11 +137,11 @@ def get_oiltank_mesh(radius, height, capheight, blend, ssegs, csegs, hsegs, slic
 	return verts,edges,faces
 
 
-
 class OilTank(Primitive_Geometry_Class):
 	def __init__(self):
 		self.classname = "OilTank"
 		self.finishon = 4
+		self.shading = 'AUTO'
 
 	def create(self, ctx):
 		mesh = get_oiltank_mesh(0,0,0,0,18,8,6,False,0,360)
@@ -173,10 +177,6 @@ class OilTank(Primitive_Geometry_Class):
 
 		self.update_mesh(mesh)
 
-	def abort(self):
-		bpy.ops.object.delete(confirm=False)
-
-
 
 class Create_OT_OilTank(Draw_Primitive):
 	bl_idname = "create.oiltank"
@@ -209,12 +209,13 @@ class Create_OT_OilTank(Draw_Primitive):
 			self.params.thickness = dimension.radius
 
 
-
 def register_oiltank():
 	bpy.utils.register_class(Create_OT_OilTank)
-	
+
+
 def unregister_oiltank():
 	bpy.utils.unregister_class(Create_OT_OilTank)
+
 
 if __name__ == "__main__":
 	register_oiltank()

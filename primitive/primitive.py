@@ -12,7 +12,7 @@
 #	You should have received a copy of the GNU General Public License
 #	along with this program.  If not,see <https://www.gnu.org/licenses/>.
 ############################################################################
-# 2024/02/12
+# 2024/04/07
 
 import bpy
 import bmesh
@@ -23,12 +23,11 @@ import random
 from gpu_extras.batch import batch_for_shader
 from bpy.types import Operator
 from mathutils import Vector
+from bpy.app import version
 
 from bsmax.actions import link_to_scene, set_as_active_object
 from .gride import Gride, Dimension, Click_Point
 from bsmax.gride import LocalGride
-
-from bpy.app import version
 
 
 def get_uniform_color(mode="2D"):
@@ -37,46 +36,58 @@ def get_uniform_color(mode="2D"):
 			return "2D_UNIFORM_COLOR"
 		else:
 			return "3D_UNIFORM_COLOR"
+
 	return "UNIFORM_COLOR"
 
 
-def set_smooth_by_angel():
-	if version >= (4, 1, 0):
-		gnPath = "geometry_nodes\\smooth_by_angle.blend\\NodeTree\\"
-		bpy.ops.object.modifier_add_node_group(
-			asset_library_type='ESSENTIALS',
-			asset_library_identifier="",
-			relative_asset_identifier=gnPath+"Smooth by Angle"
-		)
+def set_smooth_by_angel(cls):
+	if version < (4, 1, 0):
+		cls.data.use_auto_smooth = True
+		cls.data.auto_smooth_angle = 0.523599
+
+	elif version >= (4, 1, 0):
+		#TODO find a method that work on non selected mode too
+		bpy.ops.object.shade_smooth_by_angle()
+
+
+def set_shading_mode(cls):
+	if not cls.data:
+		return
+	
+	if cls.shading == 'FLAT':
+		cls.data.shade_flat()
+
+	elif cls.shading == 'SMOOTH':
+		cls.data.shade_smooth()
+	
+	elif cls.shading == 'AUTO':
+		set_smooth_by_angel(cls)
 
 
 def float_vector_to_color(floatVector):
 	return (floatVector[0], floatVector[1], floatVector[2], 1)
 
 
-def primitive_geometry_class_create_mesh(self, ctx, meshdata, classname):
+def primitive_geometry_class_create_mesh(cls, ctx, meshdata, classname):
 	verts,edges,faces, = meshdata
 	newmesh = bpy.data.meshes.new(classname)
-	newmesh.from_pydata(verts,edges, faces)
+	newmesh.from_pydata(verts, edges, faces)
 	newmesh.update(calc_edges=True)
-	self.owner = bpy.data.objects.new(classname, newmesh)
-	link_to_scene(ctx, self.owner)
-	set_as_active_object(ctx, self.owner)
-	self.data = self.owner.data
+	cls.owner = bpy.data.objects.new(classname, newmesh)
+	link_to_scene(ctx, cls.owner)
+	set_as_active_object(ctx, cls.owner)
+	cls.data = cls.owner.data
 
-	self.owner.name = ctx.scene.primitive_setting.next_name
+	cls.owner.name = ctx.scene.primitive_setting.next_name
 	newColor = float_vector_to_color(ctx.scene.primitive_setting.next_color)
-	self.owner.color = newColor
-
-	if version < (4, 1, 0):
-		self.data.use_auto_smooth = True
+	cls.owner.color = newColor
 
 
-def primitive_geometry_class_update_mesh(self, meshdata):
-	if self.data != None and bpy.context.mode == 'OBJECT':
-		verts,edges,faces, = meshdata
+def primitive_geometry_class_update_mesh(cls, meshdata):
+	if cls.data and bpy.context.mode == 'OBJECT':
+		verts, edges, faces, = meshdata
 		""" Genarate New Data """
-		orgmesh = bpy.data.meshes[self.data.name]
+		orgmesh = bpy.data.meshes[cls.data.name]
 		tmpmesh = bpy.data.meshes.new("_NewTempMesh_")
 		tmpmesh.from_pydata(verts, edges, faces)
 		bm = bmesh.new()
@@ -84,27 +95,28 @@ def primitive_geometry_class_update_mesh(self, meshdata):
 		bm.to_mesh(orgmesh.id_data)
 		bm.free()
 		bpy.data.meshes.remove(tmpmesh)
-		for f in self.data.polygons:
+
+		for f in cls.data.polygons:
 			f.use_smooth = True
 
 
-def primitive_curve_class_create_curve(self, ctx, shapes, classname):
+def primitive_curve_class_create_curve(cls, ctx, shapes, classname):
 	# Create Spline
 	newcurve = bpy.data.curves.new(classname, type='CURVE')
 	newcurve.dimensions = '3D'
-	curve_from_shapes(newcurve, shapes, self.close)
+	curve_from_shapes(newcurve, shapes, cls.close)
 	
 	# Create object and link to collection
-	self.owner = bpy.data.objects.new(classname, newcurve)
-	link_to_scene(ctx, self.owner)
-	set_as_active_object(ctx, self.owner)
-	self.data = self.owner.data
+	cls.owner = bpy.data.objects.new(classname, newcurve)
+	link_to_scene(ctx, cls.owner)
+	set_as_active_object(ctx, cls.owner)
+	cls.data = cls.owner.data
 
 
-def primitive_curve_class_update_curve(self, shapes):
-	if self.data != None and bpy.context.mode == 'OBJECT':
-		curve = bpy.data.curves[self.data.name]
-		curve_from_shapes(curve, shapes, self.close)
+def primitive_curve_class_update_curve(cls, shapes):
+	if cls.data != None and bpy.context.mode == 'OBJECT':
+		curve = bpy.data.curves[cls.data.name]
+		curve_from_shapes(curve, shapes, cls.close)
 
 
 # Create Curve from Splines in the shape Data
@@ -153,15 +165,15 @@ def GetCursurMesh(size, x, y):
 
 
 def ClearPrimitiveData(obj):
-	if obj != None:
+	if obj:
 		obj.primitivedata.classname = ""
 
 
-def draw_cursur_override(self):
+def draw_cursur_override(cls):
 	if version < (4, 0, 0):
 		bgl.glEnable(bgl.GL_BLEND)
 		shader = gpu.shader.from_builtin(get_uniform_color(mode="2D"))
-		v,f = GetCursurMesh(20, self.mpos.x, self.mpos.y)
+		v, f = GetCursurMesh(20, cls.mpos.x, cls.mpos.y)
 		batch = batch_for_shader(shader, 'TRIS', {"pos":v}, indices=f)
 		shader.bind()
 		shader.uniform_float("color",(0.8, 0.8, 0.8, 0.6))
@@ -170,17 +182,17 @@ def draw_cursur_override(self):
 
 	else:
 		shader = gpu.shader.from_builtin(get_uniform_color(mode="2D"))
-		v,f = GetCursurMesh(20, self.mpos.x, self.mpos.y)
+		v, f = GetCursurMesh(20, cls.mpos.x, cls.mpos.y)
 		batch = batch_for_shader(shader, 'TRIS', {"pos":v}, indices=f)
 		shader.bind()
-		shader.uniform_float("color",(0.8, 0.8, 0.8, 0.6))
+		shader.uniform_float("color", (0.8, 0.8, 0.8, 0.6))
 		batch.draw(shader)
 
 
-def add_curcur_override(self):
-	SV3D = bpy.types.SpaceView3D
-	handle = SV3D.draw_handler_add(draw_cursur_override, tuple([self]), 
-						'WINDOW', 'POST_PIXEL')
+def add_curcur_override(cls):
+	handle = bpy.types.SpaceView3D.draw_handler_add(
+		draw_cursur_override, tuple([cls]), 'WINDOW', 'POST_PIXEL'
+	)
 	return handle
 
 
@@ -189,7 +201,7 @@ def RemoveCursurOveride(handle):
 
 
 def is_true_class(ctx, classname):
-	if ctx.active_object != None:
+	if ctx.active_object:
 		if classname == ctx.active_object.primitivedata.classname:
 			return True
 	return False
@@ -248,15 +260,14 @@ def fix_type_visablity(subclass, ctx):
 		ctx.space_data.show_object_viewport_speaker = True
 
 
-def set_active_tool(self, ctx):
+def set_active_tool(cls, ctx):
 	activeToolName = ""
 	# 
-	# print(">> subclass >>", self.subclass)
-	if self.subclass:
+	if cls.subclass:
 		# TODO just temprary solution for quick update
 		try:
 			# if hasattr(self.subclass, 'name'):
-			activeToolName = self.subclass.classname
+			activeToolName = cls.subclass.classname
 		except:
 			activeToolName = ""
 	else:
@@ -271,24 +282,109 @@ def set_active_tool(self, ctx):
 	primitive_setting.next_color = (r, g, b)
 
 
-def get_alt_ctrl_shift_state(self, event):
+def get_alt_ctrl_shift_state(cls, event):
 	if event.type in {'LEFT_SHIFT', 'RIGHT_SHIFT'}:
 		if event.value == 'PRESS':
-			self.shift = True
+			cls.shift = True
 		if event.value == 'RELEASE':
-			self.shift = False
+			cls.shift = False
 	
 	if event.type in {'LEFT_CTRL', 'RIGHT_CTRL'}:
 		if event.value == 'PRESS':
-			self.ctrl = True
+			cls.ctrl = True
 		if event.value == 'RELEASE':
-			self.ctrl = False
+			cls.ctrl = False
 	
 	if event.type in {'LEFT_ALT', 'RIGHT_ALT'}:
 		if event.value == 'PRESS':
-			self.alt = True
+			cls.alt = True
 		if event.value == 'RELEASE':
-			self.alt = False
+			cls.alt = False
+
+
+def draw_primitive_acceptable(cls):
+	""" Check mouse movment make sure do not create tiny invisible object"""
+	xabs = abs(cls.mouse_start.x - cls.mouse_curent.x)
+	yabs = abs(cls.mouse_start.y - cls.mouse_curent.y)
+	length = xabs + yabs
+	return length > 8 or (length == 0 and cls.use_single_click)
+
+
+def draw_primitive_first_click(cls, ctx, x, y):
+	""" Get first click and initial basic setups """
+	cls.step = 1
+	cls.mouse_start = Vector((x, y, 0))
+	cls.use_surface = ctx.scene.primitive_setting.draw_mode == 'SURFACE'
+
+	""" Create local Gride """
+	cls.gride.get_coordinate(ctx, x, y)
+
+	##########################
+	# just a prototype #
+	cls.localGride.matrix = cls.gride.gride_matrix
+	cls.localGride.set(2, 15, None)
+	cls.localGride.genarate_gride_lines()
+	cls.localGride.register(ctx)
+	##########################
+
+	""" Get First Click Point """
+	cls.point_current.location = cls.gride.location.copy()
+	cls.point_start.location = cls.point_current.location.copy()
+
+	""" Triger Draw mode for object """
+	cls.subclass.on_draw = True
+
+	cls.create(ctx)
+
+
+def draw_primitive_click_count(cls, event, x, y):
+	""" Count clicks and check movment (Draged or not) """
+	if event.value == 'PRESS':
+		cls.state = True
+	
+	if event.value =='RELEASE':
+		cls.state = cls.drag = False
+		cls.step += 1
+		cls.curent = Vector((x, y, 0))
+		cls.point_start.location = cls.point_current.location.copy()
+
+
+def draw_primitive_reset(cls, ctx):
+	cls.subclass.reset()
+	cls.gride.reset()
+	cls.point_start.reset()
+	cls.point_current.reset()
+	cls.step = 0
+	cls.localGride.unregister()
+	set_active_tool(cls, ctx)
+
+
+def draw_primitive_jump_to_end(cls):
+	cls.use_single_draw = False
+	cls.step = cls.subclass.finishon
+
+
+def draw_primitive_finish_it(cls, ctx):
+	""" Delete accidently drawed very tiny objects """
+	if draw_primitive_acceptable(cls):
+		cls.finish()
+		cls.subclass.finish()
+		bpy.ops.ed.undo_push()
+	else:
+		cls.subclass.abort()
+
+	draw_primitive_reset(cls, ctx)
+	cls.localGride.unregister()
+
+
+def draw_primitive_use_gride(cls, ctx, x, y):
+	cls.point_current.location = cls.gride.get_click_point_gride(ctx, x, y)
+
+
+def draw_primitive_use_surface(cls, ctx, x, y):
+	cls.point_current.location = cls.gride.get_click_point_surface(ctx, x, y)
+	cls.localGride.matrix = cls.gride.gride_matrix
+	cls.localGride.genarate_gride_lines()
 
 
 class Primitive_Public_Class:
@@ -305,7 +401,7 @@ class Primitive_Public_Class:
 		pass
 
 	def abort(self):
-		pass
+		bpy.ops.object.delete(confirm=False)
 	
 	def finish(self):
 		pass
@@ -318,6 +414,7 @@ class Primitive_Geometry_Class:
 		self.owner = None
 		self.data = None
 		self.ready = False
+		self.shading = 'FLAT'# 'SMOOTH', 'AUTO'
 		self.init()
 	
 	def reset(self):
@@ -325,15 +422,17 @@ class Primitive_Geometry_Class:
 
 	def create_mesh(self, ctx, meshdata, classname):
 		primitive_geometry_class_create_mesh(self, ctx, meshdata, classname)
+		set_shading_mode(self)
 
 	def update_mesh(self, meshdata):
 		primitive_geometry_class_update_mesh(self, meshdata)
+		set_shading_mode(self)
 	
 	def update(self):
 		pass
 
 	def abort(self):
-		pass
+		bpy.ops.object.delete(confirm=False)
 	
 	def finish(self):
 		self.ready = True
@@ -362,7 +461,7 @@ class Primitive_Curve_Class:
 		pass
 
 	def abort(self):
-		pass
+		bpy.ops.object.delete(confirm=False)
 
 	def finish(self):
 		self.ready = True
@@ -370,128 +469,51 @@ class Primitive_Curve_Class:
 
 class Draw_Primitive(Operator):
 	bl_options = {'REGISTER','UNDO'}
-	""" Subclass is Primitive object type """
-	subclass = None
-	""" Params = object.data.primitivedata """
-	params = None
-	""" click push/release count """
-	step = 0
-	""" first and current position of click point """	
-	mouse_start, mouse_curent = Vector((0,0,0)), Vector((0,0,0))
-	""" list of nececery keys """
-	used_keys = ['LEFTMOUSE', 'RIGHTMOUSE', 'ESC', 'MOUSEMOVE', 'Z']
-	""" keys for cancel opration """
-	cancel_keys = ['RIGHTMOUSE', 'ESC']
-	""" reserved for specila operators that needs more keys """
-	request_key = []
-	""" State (LMB is down), Draging wile LMB is down, cancel every thing """
-	state, drag, kill = False, False, False
-	""" keyboad S,C,A Flags """
-	shift, ctrl, alt = False, False, False
-	""" click point info """
-	gride = Gride()
+	subclass = None # Subclass is Primitive object type
+	params = None # object.data.primitivedata
+	step = 0 # click push/release count
+	mouse_start = Vector((0, 0, 0)) # first position of click point
+	mouse_curent = Vector((0, 0, 0)) # current position of click point
+	used_keys = ['LEFTMOUSE', 'RIGHTMOUSE', 'ESC', 'MOUSEMOVE', 'Z'] # list of needed keys
+	cancel_keys = ['RIGHTMOUSE', 'ESC'] # keys for cancel opration
+	request_key = [] # Reserved for specila operators that needs more keys
+	state = False # State (LMB is down)
+	drag = False # Draging wile LMB is down
+	kill = False # Cancel Every Thing
+	shift, ctrl, alt = False, False, False # Flag
+	gride = Gride() # Click point info
 	localGride = LocalGride()
-	""" 3D coordinate and info of click points """
-	point_start, point_current = Click_Point(), Click_Point()
-	""" flag that choos click point type use gride or not """
+	point_start = Click_Point() # 3D coordinate and info of start click point
+	point_current = Click_Point() # 3D coordinate and info of current click point
 	use_gride = False
 	use_surface = False
 	use_single_click = False
 	use_single_draw = False
 	changed = False
-	""" mouse override graphic handler """
-	draw_handler = None
-	# need to replace
-	mpos = Vector((0, 0, 0))
+	draw_handler = None # Mouse override graphic handler
+	mpos = Vector((0, 0, 0)) #TODO need to replace
 	
 	@classmethod
 	def poll(self, ctx):
 		return ctx.mode == 'OBJECT'
 	
-	def acceptable(self):
-		""" Check mouse movment make sure do not create tiny invisible object"""
-		length = abs(self.mouse_start.x - self.mouse_curent.x) + abs(self.mouse_start.y - self.mouse_curent.y)
-		return length > 8 or (length == 0 and self.use_single_click)
-	
-	def first_click(self, ctx, x, y):
-		""" Get first click and initial basic setups """
-		self.step = 1
-		self.mouse_start = Vector((x, y, 0))
-		self.use_surface = ctx.scene.primitive_setting.draw_mode == 'SURFACE'
-
-		""" Create local Gride """
-		self.gride.get_coordinate(ctx, x, y)
-
-		##########################
-		# just a prototype #
-		self.localGride.matrix = self.gride.gride_matrix
-		self.localGride.set(2, 15, None)
-		self.localGride.genarate_gride_lines()
-		self.localGride.register(ctx)
-		##########################
-
-		""" Get First Click Point """
-		self.point_current.location = self.gride.location.copy()
-		self.point_start.location = self.point_current.location.copy()
-
-		""" Triger Draw mode for object """
-		self.subclass.on_draw = True
-
-		self.create(ctx)
-		
-	def click_count(self, event, x, y):
-		""" Count clicks and check movment (Draged or not) """
-		if event.value == 'PRESS':
-			self.state = True
-		
-		if event.value =='RELEASE':
-			self.state = self.drag = False
-			self.step += 1
-			self.curent = Vector((x, y, 0))
-			self.point_start.location = self.point_current.location.copy()
-	
-	def reset(self, ctx):
-		self.subclass.reset()
-		self.gride.reset()
-		self.point_start.reset()
-		self.point_current.reset()
-		self.step = 0
-		self.localGride.unregister()
-		set_active_tool(self, ctx)
-	
 	def jump_to_end(self):
-		self.use_single_draw = False
-		self.step = self.subclass.finishon
-	
-	def finish_it(self, ctx):
-		""" Delete accidently drawed very tiny objects """
-		if self.acceptable():
-			self.finish()
-			self.subclass.finish()
-			bpy.ops.ed.undo_push()
-		else:
-			self.subclass.abort()
-
-		self.reset(ctx)
-		self.localGride.unregister()
+		draw_primitive_jump_to_end(self)
 	
 	def check_event(self, key, action):
 		pass
-	
+
 	def finish(self):
 		pass
 
 	def modal(self, ctx, event):
-		""" Refresh Viewport """
 		ctx.area.tag_redraw()
 
 		get_alt_ctrl_shift_state(self, event)
 
-		""" Cancel operation if subclass not defined """
-		if self.subclass == None:
+		if not self.subclass:
 			return {'CANCELLED'}
 		
-		""" Free non used keys """
 		if not event.type in self.used_keys:
 			return {'PASS_THROUGH'}
 
@@ -505,10 +527,10 @@ class Draw_Primitive(Operator):
 		""" Detect First click """
 		if event.type == 'LEFTMOUSE':
 			if self.step == 0:
-				self.first_click(ctx, x, y)
+				draw_primitive_first_click(self, ctx, x, y)
 				fix_type_visablity(self.subclass, ctx)
 				
-			self.click_count(event, x, y)
+			draw_primitive_click_count(self, event, x, y)
 
 		""" Check and update any movment """
 		if event.type == 'MOUSEMOVE' or self.changed:
@@ -521,20 +543,21 @@ class Draw_Primitive(Operator):
 					self.use_single_draw = self.ctrl
 				
 				""" Get mouse click point virtual gride"""
-				self.mouse_curent = Vector((x,y,0))
+				self.mouse_curent = Vector((x, y, 0))
 				
-				if self.use_gride:
-					self.point_current.location = self.gride.get_click_point_gride(ctx, x, y)
-
-				elif self.use_surface:
-					self.point_current.location = self.gride.get_click_point_surface(ctx, x, y)
-					self.localGride.matrix = self.gride.gride_matrix
-					self.localGride.genarate_gride_lines()
-
-				else:
-					self.point_current.location = self.gride.get_click_point_gride(ctx, x, y)
+				if self.use_gride:# high priority
+					draw_primitive_use_gride(self, ctx, x, y)
+				elif self.use_surface:# seconf priority
+					draw_primitive_use_surface(self, ctx, x, y)
+				else:# the only avalible option
+					draw_primitive_use_gride(self, ctx, x, y)
 				
-				dimension = Dimension(self.gride, self.point_start.location, self.point_current.location)
+				dimension = Dimension(
+					self.gride,
+					self.point_start.location,
+					self.point_current.location
+				)
+
 				self.update(ctx, self.step, dimension)
 
 				""" Updat Data object """
@@ -543,10 +566,10 @@ class Draw_Primitive(Operator):
 			""" finish or cancel operatoin by click count """
 			if self.subclass.finishon > 0:
 				if self.step >= self.subclass.finishon:
-					self.finish_it(ctx)
+					draw_primitive_finish_it(self, ctx)
 			else:
 				if self.step == -1:
-					self.finish_it(ctx)
+					draw_primitive_finish_it(self, ctx)
 
 		""" abort if pointer go out of screen """
 		# if self.step == 0 and out of screen:
@@ -560,13 +583,8 @@ class Draw_Primitive(Operator):
 			if self.step > 0:
 				self.subclass.abort()
 
-			self.reset(ctx)
-
-			################################################
-			# print(">>read>", ctx.scene.primitive_setting.active_tool)
+			draw_primitive_reset(self, ctx)
 			ctx.scene.primitive_setting.active_tool = ""
-			################################################
-
 			return {'CANCELLED'}
 
 		return {'RUNNING_MODAL'}

@@ -12,7 +12,7 @@
 #	You should have received a copy of the GNU General Public License
 #	along with this program.  If not,see <https://www.gnu.org/licenses/>.
 ############################################################################
-# 2024/02/12
+# 2024/04/04
 
 import bpy
 
@@ -22,8 +22,6 @@ from math import sin, cos, pi
 from bsmax.curve import Spline, Bezier_point
 from bsmax.math import point_on_cubic_bezier_curve
 from primitive.primitive import Primitive_Geometry_Class, Draw_Primitive
-
-from bpy.app import version
 
 
 def get_path(part):
@@ -111,6 +109,7 @@ def get_ring(point1, point2, scale):
 	p2.handle_right = point2+d
 	ring.bezier_points.append(p2)
 	ring.use_cyclic_u = True
+
 	return ring
 
 
@@ -155,7 +154,7 @@ def get_teapot_mesh(radius, csegs, body, handle, spout, lid):
 	cs = csegs*4
 	step = (pi*2)/cs
 
-	def create_body(line,flip):
+	def create_body(line, flip):
 		f = len(verts) # First vertex of element
 
 		""" Create vertexes """
@@ -177,6 +176,7 @@ def get_teapot_mesh(radius, csegs, body, handle, spout, lid):
 		for i in range(cs):
 			newface = (f,f+i,f+i+1) if flip else (f+i+1,f+i,f)
 			faces.append(newface)
+
 		newface = (f,f+cs,f+1) if flip else (f+1,f+cs,f)
 		faces.append(newface)
 				
@@ -236,10 +236,13 @@ def get_teapot_mesh(radius, csegs, body, handle, spout, lid):
 
 	if body:
 		create_body('body', True)
+
 	if lid:
 		create_body('lid', False)
+
 	if handle:
 		create_pipe("handle_a", "handle_b", "handle_s", True)
+
 	if spout:
 		create_pipe("spout_a", "spout_b", "spout_s", False)
 
@@ -250,9 +253,7 @@ class Teapot(Primitive_Geometry_Class):
 	def init(self):
 		self.classname = "Teapot"
 		self.finishon = 2
-
-		""" Default Settings """
-		self.auto_smooth_angle = 1.5708
+		self.shading = 'SMOOTH'
 
 	def create(self, ctx):
 		mesh = get_teapot_mesh(0, 4, True, True, True, True)
@@ -261,18 +262,12 @@ class Teapot(Primitive_Geometry_Class):
 		pd.classname = self.classname
 		pd.csegs = 4
 		pd.bool1, pd.bool2, pd.bool3, pd.bool4 = True, True, True, True
-		""" Apply Default Settings """
-		if version <= (4, 0, 0):
-			self.data.auto_smooth_angle = self.auto_smooth_angle
 
 	def update(self):
 		pd = self.data.primitivedata
 		mesh = get_teapot_mesh(pd.radius1, pd.csegs, 
 			pd.bool1, pd.bool2, pd.bool3, pd.bool4)
 		self.update_mesh(mesh)
-
-	def abort(self):
-		bpy.ops.object.delete(confirm=False)
 
 
 class Create_OT_Teapot(Draw_Primitive):
@@ -297,8 +292,10 @@ class Create_OT_Teapot(Draw_Primitive):
 def register_teapot():
 	bpy.utils.register_class(Create_OT_Teapot)
 
+
 def unregister_teapot():
 	bpy.utils.unregister_class(Create_OT_Teapot)
+
 
 if __name__ == "__main__":
 	register_teapot()

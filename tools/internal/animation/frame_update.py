@@ -12,14 +12,15 @@
 #	You should have received a copy of the GNU General Public License
 #	along with this program.  If not, see <https://www.gnu.org/licenses/>.
 ############################################################################
+# 2024/03/27
 
 import bpy
 
 from bpy.types import Operator
 from bpy.app.handlers import persistent
+from bpy.utils import register_class, unregister_class
 
 from bsmax.graphic import get_header_color
-
 
 
 def mode_updated(self, ctx):
@@ -29,14 +30,12 @@ def mode_updated(self, ctx):
 		ctx.preferences.system.use_select_pick_depth = uspds
 
 
-
 def autokey_state_updated(self, ctx):
 	autoKey = ctx.scene.tool_settings.use_keyframe_insert_auto
 	color = (0.5, 0.0, 0.0, 1.0) if autoKey else get_header_color()
 	# allow to update if affect_theme active in preference
 	if color and self.preferences.affect_theme:
 		ctx.preferences.themes['Default'].dopesheet_editor.space.header = color
-
 
 
 class Scene_Stata:
@@ -83,7 +82,6 @@ class Scene_Stata:
 scene_state = Scene_Stata()
 
 
-
 @persistent
 def render_init(scene):
 	""" Fix the overide issue befor render start """
@@ -93,11 +91,10 @@ def render_init(scene):
 	pass
 
 
-
 @persistent
 def depsgraph_update(scene):
+	global scene_state
 	scene_state.check(bpy.context)
-
 
 
 # this operator need to see scene_state class #
@@ -109,9 +106,9 @@ class Anim_OT_Auto_Key_Toggle(Operator):
 	def execute(self, ctx):
 		state = ctx.scene.tool_settings.use_keyframe_insert_auto
 		ctx.scene.tool_settings.use_keyframe_insert_auto = not state
-		scene_state.check(bpy.context)
+		global scene_state
+		scene_state.check(ctx)
 		return{'FINISHED'}
-
 
 
 # this operator need to see scene_state class #
@@ -121,9 +118,9 @@ class Anim_OT_Auto_Use_Select_Pick_Depth_Toggle(Operator):
 	bl_options = {'REGISTER'}
 
 	def execute(self, ctx):
+		global scene_state
 		scene_state.active_auto_use_select_pick_depth = not scene_state.active_auto_use_select_pick_depth
 		return{'FINISHED'}
-
 
 
 classes = (
@@ -132,26 +129,22 @@ classes = (
 )
 
 
-
 def register_frame_update(preferences):
 	for c in classes:
-		bpy.utils.register_class(c)
+		register_class(c)
 
 	scene_state.store(bpy.context, preferences)
 	# bpy.app.handlers.render_init.append(render_init)
 	bpy.app.handlers.depsgraph_update_pre.append(depsgraph_update)
 
 
-
 def unregister_frame_update():
-	""" Return the defult values befor remove """
 	scene_state.restore(bpy.context)
 	# bpy.app.handlers.render_init.remove(render_init)
 	bpy.app.handlers.depsgraph_update_pre.remove(depsgraph_update)
 
 	for c in classes:
-		bpy.utils.unregister_class(c)
-
+		unregister_class(c)
 
 
 if __name__ == '__main__':

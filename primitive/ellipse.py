@@ -12,10 +12,10 @@
 #	You should have received a copy of the GNU General Public License
 #	along with this program.  If not,see <https://www.gnu.org/licenses/>.
 ############################################################################
+# 2024/04/04
 
 import bpy
 from primitive.primitive import Primitive_Curve_Class, Draw_Primitive
-
 
 
 def get_ellipse_shape(length, width, outline, Thickness):
@@ -38,7 +38,6 @@ def get_ellipse_shape(length, width, outline, Thickness):
 	return Shapes
 
 
-
 class Ellipse(Primitive_Curve_Class):
 	def __init__(self):
 		self.classname = "Ellipse"
@@ -56,12 +55,11 @@ class Ellipse(Primitive_Curve_Class):
 	def update(self):
 		pd = self.data.primitivedata
 		# length, width, outline, Thickness
-		shapes = get_ellipse_shape(pd.width, pd.length, pd.outline, pd.thickness)
+		shapes = get_ellipse_shape(
+			pd.width, pd.length, pd.outline, pd.thickness
+		)
+		
 		self.update_curve(shapes)
-
-	def abort(self):
-		bpy.ops.object.delete(confirm=False)
-
 
 
 class Create_OT_Ellipse(Draw_Primitive):
@@ -77,15 +75,16 @@ class Create_OT_Ellipse(Draw_Primitive):
 		self.subclass.owner.rotation_euler = self.gride.rotation
 
 	def update(self, ctx, clickcount, dimension):
-		if clickcount == 1:
-			if self.ctrl:
-				self.params.width = abs(dimension.width)
-				self.params.length = abs(dimension.length)
-			else:
-				self.params.width = abs(dimension.width)/2
-				self.params.length = abs(dimension.length)/2
-				self.subclass.owner.location = dimension.center
+		if clickcount != 1:
+			return
 
+		if self.ctrl:
+			self.params.width = abs(dimension.width)
+			self.params.length = abs(dimension.length)
+		else:
+			self.params.width = abs(dimension.width)/2
+			self.params.length = abs(dimension.length)/2
+			self.subclass.owner.location = dimension.center
 
 
 def register_ellipse():

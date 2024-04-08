@@ -12,7 +12,7 @@
 #	You should have received a copy of the GNU General Public License
 #	along with this program.  If not, see <https://www.gnu.org/licenses/>.
 ############################################################################
-# 2024/03/23
+# 2024/04/08
 
 import bpy
 
@@ -75,8 +75,8 @@ class Object_TO_Make_Unique(Operator):
 	def invoke(self, ctx, event):
 		if len(ctx.selected_objects) > 1:
 			return ctx.window_manager.invoke_props_dialog(self)
-		else:
-			self.execute(ctx)
+
+		self.execute(ctx)
 	
 
 def make_unique_menu(self, ctx):

@@ -13,7 +13,8 @@
 #	along with this program.  If not,see <https://www.gnu.org/licenses/>.
 ############################################################################
 
-# The original author is "Vojtech Cada" that was create this amazing plugin for 3DsMax by max script.
+# The original author is "Vojtech Cada" that was create this amazing plugin
+# for 3DsMax by max script.
 
 import bpy
 
@@ -26,6 +27,7 @@ from bsmax.bsmatrix import matrix_from_elements
 from primitive.primitive import Primitive_Geometry_Class, Draw_Primitive
 
 def getMmPerUnit (unitssystemType):
+	# {'inches':25.4, 'feet':304.8, }
 	if unitssystemType == 'inches':
 		return 25.4
 	if unitssystemType == 'feet':

@@ -12,13 +12,11 @@
 #	You should have received a copy of the GNU General Public License
 #	along with this program.  If not,see <https://www.gnu.org/licenses/>.
 ############################################################################
-# 2024/02/11
+# 2024/04/04
 
 import bpy
 
-from primitive.primitive import(
-    Primitive_Geometry_Class, Draw_Primitive, set_smooth_by_angel
-)
+from primitive.primitive import Primitive_Geometry_Class, Draw_Primitive
 
 
 def get_pyramid_mesh(width, depth, height, wsegs, dsegs, hsegs):
@@ -164,11 +162,11 @@ def get_pyramid_mesh(width, depth, height, wsegs, dsegs, hsegs):
 	return verts, edges, faces
 
 
-
 class Pyramid(Primitive_Geometry_Class):
 	def init(self):
 		self.classname = "Pyramid"
 		self.finishon = 3
+		self.shading = 'FLAT'
 
 	def create(self, ctx):
 		mesh = get_pyramid_mesh(0, 0, 0, 1, 1, 1)
@@ -176,19 +174,15 @@ class Pyramid(Primitive_Geometry_Class):
 		pd = self.data.primitivedata
 		pd.classname = self.classname
 		pd.wsegs, pd.lsegs, pd.hsegs = 1, 1, 1
-		set_smooth_by_angel()
 
 	def update(self):
 		pd = self.data.primitivedata
 		mesh = get_pyramid_mesh(
-					pd.width, pd.length, pd.height,
-					pd.wsegs, pd.lsegs, pd.hsegs
-				)
+			pd.width, pd.length, pd.height,
+			pd.wsegs, pd.lsegs, pd.hsegs
+		)
 
 		self.update_mesh(mesh)
-
-	def abort(self):
-		bpy.ops.object.delete(confirm=False)
 
 
 class Create_OT_Pyramid(Draw_Primitive):

@@ -19,13 +19,12 @@ import gpu
 
 from gpu_extras.batch import batch_for_shader
 from mathutils import Vector
-
-from bsmax.bsmatrix import BsMatrix, transform_point_to_matrix
-
 from bpy.app import version
 
 if version < (4, 0, 0):
 	from bgl import glEnable, GL_BLEND, glDisable, glLineWidth
+
+from bsmax.bsmatrix import BsMatrix, transform_point_to_matrix
 
 
 def get_uniform_color(mode="2D"):

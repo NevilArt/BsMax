@@ -12,6 +12,7 @@
 #	You should have received a copy of the GNU General Public License
 #	along with this program.  If not,see <https://www.gnu.org/licenses/>.
 ############################################################################
+# 2024/04/04
 
 import bpy
 import bmesh
@@ -22,12 +23,12 @@ from mathutils import Matrix
 from primitive.primitive import Primitive_Geometry_Class, Draw_Primitive
 
 
-
 class Icosphere(Primitive_Geometry_Class):
 	def init(self):
 		self.classname = "Icosphere"
 		self.finishon = 2
 		self.is_old = version < (3, 0, 0)
+		self.shading = 'SMOOTH'
 
 	def create(self, ctx):
 		# Create an empty mesh and the object.
@@ -54,21 +55,21 @@ class Icosphere(Primitive_Geometry_Class):
 
 		if self.is_old:
 			# older then blender 3.0.0
-			bmesh.ops.create_icosphere(bm, subdivisions=pd.wsegs,
-							diameter=pd.radius1,
-							matrix=Matrix(), calc_uvs=True)
+			bmesh.ops.create_icosphere(
+				bm, subdivisions=pd.wsegs,
+				diameter=pd.radius1,
+				matrix=Matrix(), calc_uvs=True
+			)
 		else:
 			# blender 3.0.0 and later
-			bmesh.ops.create_icosphere(bm, subdivisions=pd.wsegs,
-							radius=pd.radius1,
-							matrix=Matrix(), calc_uvs=True)
+			bmesh.ops.create_icosphere(
+				bm, subdivisions=pd.wsegs,
+				radius=pd.radius1,
+				matrix=Matrix(), calc_uvs=True
+			)
 
 		bm.to_mesh(orgmesh.id_data)
 		bm.free()
-
-	def abort(self):
-		bpy.ops.object.delete(confirm=False)
-
 
 
 class Create_OT_Icosphere(Draw_Primitive):
@@ -90,9 +91,8 @@ class Create_OT_Icosphere(Draw_Primitive):
 			self.subclass.update()
 	
 	def finish(self):
-		# claculate uv at the end
+		# TODO claculate uv at the end
 		pass
-
 
 
 def register_icosphere():

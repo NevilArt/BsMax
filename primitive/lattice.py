@@ -12,17 +12,17 @@
 #	You should have received a copy of the GNU General Public License
 #	along with this program.  If not,see <https://www.gnu.org/licenses/>.
 ############################################################################
+# 2024/04/04
 
 import bpy
 
 from bpy.types import Operator
 from mathutils import Vector
-
 from bpy.props import IntProperty, FloatProperty
+from bpy.utils import register_class, unregister_class
 
 from primitive.primitive import Draw_Primitive, Primitive_Public_Class
 from bsmax.bsmatrix import transform_point_to_matrix
-
 
 
 class Lattice(Primitive_Public_Class):
@@ -34,10 +34,6 @@ class Lattice(Primitive_Public_Class):
 		bpy.ops.object.add(type='LATTICE', location=gride.location)
 		self.owner = ctx.active_object
 		self.owner.rotation_euler = gride.rotation
-
-	def abort(self):
-		bpy.ops.object.delete(confirm=False)
-
 
 
 class Create_OT_Lattice(Draw_Primitive):
@@ -78,8 +74,6 @@ class Create_OT_Lattice(Draw_Primitive):
 		self.width, self.length, self.height = 0, 0, 0
 		self.location = Vector((0,0,0))
 		self.owner_matrix = None	
-	
-
 
 
 class Lattice_OT_Edit(Operator):
@@ -144,16 +138,18 @@ class Lattice_OT_Edit(Operator):
 		return wm.invoke_props_dialog(self, width = 140)
 
 
-
-classes = [Create_OT_Lattice, Lattice_OT_Edit]
+classes = (
+	Create_OT_Lattice,
+	Lattice_OT_Edit
+)
 
 def register_lattice():
 	for c in classes:
-		bpy.utils.register_class(c)
+		register_class(c)
 
 def unregister_lattice():
 	for c in classes:
-		bpy.utils.unregister_class(c)
+		unregister_class(c)
 
 if __name__ == '__main__':
 	register_lattice()

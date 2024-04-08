@@ -12,15 +12,16 @@
 #	You should have received a copy of the GNU General Public License
 #	along with this program.  If not,see <https://www.gnu.org/licenses/>.
 ############################################################################
+# 2024/04/04
 
 import bpy
 
 from mathutils import Vector
 from bpy.types import Operator
 from bpy.props import IntProperty
+from bpy.utils import register_class, unregister_class
 
 from primitive.primitive import Primitive_Curve_Class, Draw_Primitive
-
 
 
 def Flet(point, radius, mirror_x, mirror_y, rivers):
@@ -30,8 +31,17 @@ def Flet(point, radius, mirror_x, mirror_y, rivers):
 	else:
 		rx,ry = radius * mirror_x, radius * mirror_y
 		tx,ty = rx - (rx * 0.551786), ry - (ry * 0.551786)
-		p1 = [Vector((p[0]+rx,p[1],0)),Vector((p[0]+rx,p[1],0)),Vector((p[0]+tx,p[1],0))]
-		p2 = [Vector((p[0],p[1]+ry,0)),Vector((p[0],p[1]+ty,0)),Vector((p[0],p[1]+ry,0))]
+		p1 = [
+			Vector((p[0]+rx,p[1],0)),
+			Vector((p[0]+rx,p[1],0)),
+			Vector((p[0]+tx,p[1],0))
+		]
+		
+		p2 = [
+			Vector((p[0],p[1]+ry,0)),
+			Vector((p[0],p[1]+ty,0)),
+			Vector((p[0],p[1]+ry,0))
+		]
 
 		if rivers:
 			points.append([p2[0],p2[2],'FREE',p2[1],'FREE'])
@@ -41,7 +51,6 @@ def Flet(point, radius, mirror_x, mirror_y, rivers):
 			points.append([p2[0],p2[1],'FREE',p2[2],'FREE'])
 
 	return points
-
 
 
 def Rectangle(length, width, cornerradius, rivers):
@@ -108,8 +117,10 @@ def Circle(length, width, revers):
 	return shape
 
 
-
-def Angle(length, width, thickness, synccorner, cornerradius1, cornerradius2, edgeradius):
+def Angle(
+		length, width, thickness, synccorner,
+		cornerradius1, cornerradius2, edgeradius ):
+	
 	shape = []
 
 	# L shape
@@ -151,12 +162,10 @@ def Angle(length, width, thickness, synccorner, cornerradius1, cornerradius2, ed
 	return [shape]
 
 
-
 def Bar(length, width, cornerradius1):
 	shapes = []
 	shapes.append(Rectangle(length, width, cornerradius1, False))
 	return shapes
-
 
 
 def Channel(length, width, thickness, synccorner, cornerradius1, cornerradius2):
@@ -203,7 +212,6 @@ def Channel(length, width, thickness, synccorner, cornerradius1, cornerradius2):
 	return [shape]
 
 
-
 def Cylinder(radius, slicefrom, sliceto):
 	shapes = []
 	# TODO Slice from to did not added yet
@@ -222,13 +230,11 @@ def Cylinder(radius, slicefrom, sliceto):
 	return shapes
 
 
-
 def Pipe(radius, thickness):
 	shapes = []
 	shapes.append(Circle(radius, radius, False))
 	shapes.append(Circle(radius - thickness, radius - thickness, True))
 	return shapes
-
 
 
 def Tee(length, width, thickness, cornerradius1):
@@ -264,7 +270,6 @@ def Tee(length, width, thickness, cornerradius1):
 	return [shape]
 
 
-
 def Tube(length, width, thickness, synccorner, cornerradius1, cornerradius2):
 	shapes = []
 
@@ -283,7 +288,6 @@ def Tube(length, width, thickness, synccorner, cornerradius1, cornerradius2):
 	shapes.append(Rectangle(R2[0], R2[1], R2[2], True))
 
 	return shapes
-
 
 
 def Width_flange(length, width, thickness, cornerradius1):
@@ -333,7 +337,6 @@ def Width_flange(length, width, thickness, cornerradius1):
 	return [shape]
 
 
-
 def Elipse(length, width, outline, thickness):
 	shapes = []
 	shapes.append(Circle(length, width, False))
@@ -342,7 +345,6 @@ def Elipse(length, width, outline, thickness):
 		shapes.append(Circle(length - thickness, width - thickness, True))
 
 	return shapes
-
 
 
 def get_volum_dimension(pcos):
@@ -355,22 +357,28 @@ def get_volum_dimension(pcos):
 	return pmin, pmax
 
 
-
-def get_profilo_shape(Mode, length, width, thickness,
-					cornerradius1, cornerradius2, edgeradius,
-					radius, slicefrom, sliceto,	outline, synccorner,
-					offset_x, offset_y, mirror_x, mirror_y,
-					angel, pivotaligne): # pivotaligne int 1-9
+def get_profilo_shape(
+		Mode, length, width, thickness,
+		cornerradius1, cornerradius2, edgeradius,
+		radius, slicefrom, sliceto,	outline, synccorner,
+		offset_x, offset_y, mirror_x, mirror_y,
+		angel, pivotaligne): # pivotaligne int 1-9
 
 	shapes = []
 	if Mode == "Angle":
-		shapes = Angle(length, width, thickness, synccorner, cornerradius1, cornerradius2, edgeradius)
+		shapes = Angle(
+			length, width, thickness, synccorner,
+			cornerradius1, cornerradius2, edgeradius
+		)
 
 	elif Mode == "Bar":
 		shapes = Bar(length, width, cornerradius1)
 
 	elif Mode == "Channel":
-		shapes = Channel(length, width, thickness, synccorner, cornerradius1, cornerradius2)
+		shapes = Channel(
+			length, width, thickness, synccorner,
+			cornerradius1, cornerradius2
+		)
 
 	elif Mode == "Cylinder":
 		shapes = Cylinder(radius, slicefrom, sliceto)
@@ -382,7 +390,10 @@ def get_profilo_shape(Mode, length, width, thickness,
 		shapes = Tee(length, width, thickness, cornerradius1)
 
 	elif Mode == "Tube":
-		shapes = Tube(length, width, thickness, synccorner, cornerradius1, cornerradius2)
+		shapes = Tube(
+			length, width, thickness, synccorner,
+			cornerradius1, cornerradius2
+		)
 
 	elif Mode == "Width_flange":
 		shapes = Width_flange(length, width, thickness, cornerradius1)
@@ -416,16 +427,24 @@ def get_profilo_shape(Mode, length, width, thickness,
 	for shape in shapes:
 		for p in shape:
 			if mirror_x:
-				p[0].x,p[1].x,p[3].x = (p[0].x* -1),(p[1].x* -1),(p[3].x* -1)
+				p[0].x = (p[0].x * -1)
+				p[1].x = (p[1].x * -1)
+				p[3].x = (p[3].x * -1)
 
 			if mirror_y:
-				p[0].y,p[1].y,p[3].y = (p[0].y* -1),(p[1].y* -1),(p[3].y* -1)
+				p[0].y = (p[0].y * -1)
+				p[1].y = (p[1].y * -1)
+				p[3].y = (p[3].y * -1)
 
 			# offset
-			p[0].x,p[1].x,p[3].x = (p[0].x+ox),(p[1].x+ox),(p[3].x+ox)
-			p[0].y,p[1].y,p[3].y = (p[0].y+oy),(p[1].y+oy),(p[3].y+oy)
-	
-	
+			p[0].x = (p[0].x + ox)
+			p[1].x = (p[1].x + ox)
+			p[3].x = (p[3].x + ox)
+						
+			p[0].y = (p[0].y + oy)
+			p[1].y = (p[1].y + oy)
+			p[3].y = (p[3].y + oy)
+		
 	# angel = radians(angel)
 	# matrix = matrix_from_elements(Vector((0,0,0)), Vector((0,0,angel)), Vector((1,1,1)))
 	# #[p_0, p_1, 'FREE', p_3, 'FREE']
@@ -439,7 +458,6 @@ def get_profilo_shape(Mode, length, width, thickness,
 	return shapes
 
 
-
 class Profilo(Primitive_Curve_Class):
 	def init(self):
 		self.classname = "Profilo"
@@ -447,8 +465,10 @@ class Profilo(Primitive_Curve_Class):
 		self.close = True
 
 	def create(self, ctx, mode):
-		shapes = get_profilo_shape(mode,0, 0, 0, 0, 0, 0, 0, 0, 0,
-					False, False, 0, 0,	False, False, 0, 5)
+		shapes = get_profilo_shape(
+			mode,0, 0, 0, 0, 0, 0, 0, 0, 0,
+			False, False, 0, 0,	False, False, 0, 5
+		)
 
 		self.create_curve(ctx, shapes, self.classname)
 		pd = self.data.primitivedata
@@ -458,17 +478,15 @@ class Profilo(Primitive_Curve_Class):
 	def update(self):
 		pd = self.data.primitivedata
 
-		shapes = get_profilo_shape(pd.profilo_mode, pd.length, pd.width, pd.thickness,
-					pd.chamfer1, pd.chamfer2, pd.chamfer3,
-					pd.radius1, pd.sfrom, pd.sto, pd.outline, pd.corner,
-					pd.offset_x, pd.offset_y, pd.mirror_x, pd.mirror_y,
-					pd.rotation, pd.pivotaligne)
+		shapes = get_profilo_shape(
+			pd.profilo_mode, pd.length, pd.width, pd.thickness,
+			pd.chamfer1, pd.chamfer2, pd.chamfer3,
+			pd.radius1, pd.sfrom, pd.sto, pd.outline, pd.corner,
+			pd.offset_x, pd.offset_y, pd.mirror_x, pd.mirror_y,
+			pd.rotation, pd.pivotaligne
+		)
 
 		self.update_curve(shapes)
-
-	def abort(self):
-		bpy.ops.object.delete(confirm=False)
-
 
 
 class Create_OT_Profilo(Draw_Primitive):
@@ -484,12 +502,13 @@ class Create_OT_Profilo(Draw_Primitive):
 		self.subclass.owner.rotation_euler = self.gride.rotation
 
 	def update(self, ctx, clickcount, dimension):
-		if clickcount == 1:
-			width = self.params.width = abs(dimension.width)
-			length = self.params.length = abs(dimension.length)
-			self.params.thickness = min(width, length) / 5
-			self.subclass.owner.location = dimension.center
+		if clickcount != 1:
+			return
 
+		width = self.params.width = abs(dimension.width)
+		length = self.params.length = abs(dimension.length)
+		self.params.thickness = min(width, length) / 5
+		self.subclass.owner.location = dimension.center
 
 
 class Create_OT_Set_Profilo_Pivot_Aligne(Operator):
@@ -499,11 +518,13 @@ class Create_OT_Set_Profilo_Pivot_Aligne(Operator):
 
 	@classmethod
 	def poll(self, ctx):
-		if ctx.active_object:
-			if ctx.active_object.type == "CURVE":
-				if ctx.active_object.data.primitivedata.classname == "Profilo":
-					return True
-		return False
+		if not ctx.active_object:
+			return False
+
+		if ctx.active_object.type != "CURVE":
+			return False
+		
+		return ctx.active_object.data.primitivedata.classname == "Profilo"
 
 	def execute(self, ctx):
 		pd = ctx.active_object.data.primitivedata
@@ -511,16 +532,18 @@ class Create_OT_Set_Profilo_Pivot_Aligne(Operator):
 		return {'FINISHED'}
 
 
-
-classes = [Create_OT_Profilo, Create_OT_Set_Profilo_Pivot_Aligne]
+classes = (
+	Create_OT_Profilo,
+	Create_OT_Set_Profilo_Pivot_Aligne
+)
 
 def register_profilo():
 	for c in classes:
-		bpy.utils.register_class(c)
+		register_class(c)
 
 def unregister_profilo():
 	for c in classes:
-		bpy.utils.unregister_class(c)
+		unregister_class(c)
 
 if __name__ == '__main__':
 	register_profilo()

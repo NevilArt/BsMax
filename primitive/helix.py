@@ -12,10 +12,12 @@
 #	You should have received a copy of the GNU General Public License
 #	along with this program.  If not,see <https://www.gnu.org/licenses/>.
 ############################################################################
+# 2024/04/04
 
 import bpy
 from math import pi, sin, cos, ceil, tan
 from mathutils import Vector
+
 from primitive.primitive import Primitive_Curve_Class, Draw_Primitive
 from bsmax.math import get_bias
 
@@ -67,9 +69,7 @@ def bezier_helix(radius1, radius2, height, turns, segment, bias, ccw):
 	return [knots]
 
 
-
 def segment_helix(radius1, radius2, height, turns, segment, bias, ccw):
-
 	totalRot = turns * 2 * pi
 
 	if ccw:
@@ -100,12 +100,10 @@ def segment_helix(radius1, radius2, height, turns, segment, bias, ccw):
 	return [shape]
 
 
-
 def get_helix_shape(radius1, radius2, height, turns, segment, bias, ccw, bezSeg):
 	if bezSeg:
 		return bezier_helix(radius1, radius2, height, turns, segment, bias, ccw)
 	return segment_helix(radius1, radius2, height, turns, segment, bias, ccw)
-
 
 
 class Helix(Primitive_Curve_Class):
@@ -126,13 +124,12 @@ class Helix(Primitive_Curve_Class):
 	def update(self):
 		pd = self.data.primitivedata
 		# radius1, radius2, height, turns, segs, bias, ccw
-		shapes = get_helix_shape(pd.radius1, pd.radius2, pd.height,
-					pd.turns, pd.ssegs, pd.bias_np, pd.ccw, pd.bool1)
+		shapes = get_helix_shape(
+			pd.radius1, pd.radius2, pd.height,
+			pd.turns, pd.ssegs, pd.bias_np, pd.ccw, pd.bool1
+		)
+		
 		self.update_curve(shapes)
-
-	def abort(self):
-		bpy.ops.object.delete(confirm=False)
-
 
 
 class Create_OT_Helix(Draw_Primitive):

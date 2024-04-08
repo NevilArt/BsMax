@@ -12,11 +12,12 @@
 #	You should have received a copy of the GNU General Public License
 #	along with this program.  If not,see <https://www.gnu.org/licenses/>.
 ############################################################################
+# 2024/04/04
 
 import bpy
 from bpy.props import EnumProperty
-from primitive.primitive import Draw_Primitive, Primitive_Public_Class
 
+from primitive.primitive import Draw_Primitive, Primitive_Public_Class
 
 
 class GreacePencil(Primitive_Public_Class):
@@ -29,20 +30,22 @@ class GreacePencil(Primitive_Public_Class):
 		self.owner = ctx.active_object
 		self.data = self.owner.data
 
-	def abort(self):
-		bpy.ops.object.delete(confirm=False)
-	
-
 
 class Create_OT_GreacePencil(Draw_Primitive):
-	bl_idname="create.greacepencil"
-	bl_label="GreacePencil"
+	bl_idname = "create.greacepencil"
+	bl_label = "GreacePencil"
 	subclass = GreacePencil()
 	use_gride = True
 	use_single_click = True
 
-	gpencil_type: EnumProperty(name='Type',default='EMPTY',
-		items =[('EMPTY','Blank',''),('STROKE','Stroke',''),('MONKEY','Monkey','')])
+	gpencil_type: EnumProperty(
+		name='Type',default='EMPTY',
+		items =[
+			('EMPTY','Blank',''),
+			('STROKE','Stroke',''),
+			('MONKEY','Monkey','')
+		]
+	)
 
 	def create(self, ctx):
 		self.subclass.create(ctx, self.gpencil_type)
@@ -57,7 +60,6 @@ class Create_OT_GreacePencil(Draw_Primitive):
 			owner.location = dimension.center
 			r = dimension.radius/2
 			owner.scale = (r,r,r)
-
 
 
 def register_greacepencil():

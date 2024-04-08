@@ -98,6 +98,7 @@ class BsMax_OT_Set_Object_Mode(Operator):
 				except:
 					pass
 			# ignor this types {'EMPTY','LIGHT','LIGHT_PROBE','CAMERA','SPEAKER',}
+
 		return {"FINISHED"}
 
 

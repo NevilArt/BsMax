@@ -1,3 +1,8 @@
+# 0, 1, 2, 20240326
+* Some new tools added under Command Panel modifier list.
+* Make unique tool optimized (View3D/Object/Relation/Make unigue).
+* Basic Auto EXR connector added but need to more work on it 
+
 # 0, 1, 2, 20240314
 * Command Panel Modifier list updated.
 * Some more compatibility with Blender 4.1Beta

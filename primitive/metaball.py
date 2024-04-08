@@ -12,37 +12,24 @@
 #	You should have received a copy of the GNU General Public License
 #	along with this program.  If not,see <https://www.gnu.org/licenses/>.
 ############################################################################
+# 2024/04/04
 
 import bpy
 
 from mathutils import Vector
-
 from bpy.props import EnumProperty
-from primitive.primitive import Draw_Primitive
+
+from primitive.primitive import Draw_Primitive, Primitive_Public_Class
 
 
-
-class Metaball:
-	def __init__(self):
+class Metaball(Primitive_Public_Class):
+	def init(self):
 		self.finishon = 3
 		self.owner = None
-
-	def reset(self):
-		self.__init__()
 
 	def create(self, ctx, metaball_type):
 		bpy.ops.object.metaball_add(type=metaball_type)
 		self.owner = ctx.active_object
-
-	def update(self):
-		pass
-
-	def abort(self):
-		bpy.ops.object.delete(confirm=False)
-	
-	def finish(self):
-		pass
-
 
 
 class Create_OT_Metaball(Draw_Primitive):
@@ -50,12 +37,18 @@ class Create_OT_Metaball(Draw_Primitive):
 	bl_label="Metaball"
 	subclass = Metaball()
 
-	metaball_type: EnumProperty(name='Type', default='BALL',
-		items =[('BALL','Ball',''),
-				('CAPSULE','Capsule',''),
-				('PLANE','Plane',''),
-				('ELLIPSOID','Ellipsoid',''),
-				('CUBE','Cube','')])
+	metaball_type: EnumProperty(
+		name='Type',
+		items =[
+			('BALL','Ball',''),
+			('CAPSULE','Capsule',''),
+			('PLANE','Plane',''),
+			('ELLIPSOID','Ellipsoid',''),
+			('CUBE','Cube','')
+		],
+		default='BALL'
+	)
+
 	radius = 0
 	location = Vector((0,0,0))
 
@@ -66,6 +59,7 @@ class Create_OT_Metaball(Draw_Primitive):
 			self.subclass.finishon = 3
 		elif self.metaball_type == 'CUBE':
 			self.subclass.finishon = 4
+
 		self.subclass.create(ctx, self.metaball_type)
 		
 		self.subclass.owner.location = self.gride.location
@@ -130,12 +124,13 @@ class Create_OT_Metaball(Draw_Primitive):
 		#self.subclass.data.resolution = 1.33
 
 
-
 def register_metaball():
 	bpy.utils.register_class(Create_OT_Metaball)
 
+
 def unregister_metaball():
 	bpy.utils.unregister_class(Create_OT_Metaball)
+
 
 if __name__ == '__main__':
 	register_metaball()

@@ -12,7 +12,7 @@
 #	You should have received a copy of the GNU General Public License
 #	along with this program.  If not,see <https://www.gnu.org/licenses/>.
 ############################################################################
-# 2024/02/11
+# 2024/04/03
 
 import bpy
 
@@ -20,12 +20,13 @@ from mathutils import Vector
 from math import pi, sin, cos, radians
 from bpy.utils import register_class, unregister_class
 
-from primitive.primitive import(
-	Primitive_Geometry_Class, Draw_Primitive, set_smooth_by_angel
-)
+from primitive.primitive import Primitive_Geometry_Class, Draw_Primitive
 
 
-def get_cylinder_mesh(radius1, radius2, height, hsegs, csegs, ssegs, sliceon, sfrom, sto):
+def get_cylinder_mesh(
+		radius1, radius2, height,hsegs, csegs, ssegs,
+		sliceon, sfrom, sto):
+	
 	verts, edges, faces = [], [], []
 	sides, heights = [], []
 	sfrom, sto = radians(sfrom), radians(sto)
@@ -223,6 +224,7 @@ class Cylinder(Primitive_Geometry_Class):
 	def init(self):
 		self.classname = "Cylinder"
 		self.finishon = 3
+		self.shading = 'AUTO'
 		self.owner = None
 		self.data = None
 
@@ -232,14 +234,16 @@ class Cylinder(Primitive_Geometry_Class):
 		pd = self.data.primitivedata
 		pd.classname = self.classname
 		pd.hsegs, pd.csegs, pd.ssegs = 1, 1, 18
-		set_smooth_by_angel()
 
 	def update(self):
 		pd = self.data.primitivedata
 		radius = pd.radius1
-		mesh = get_cylinder_mesh(radius, radius, pd.height, 
-						pd.hsegs, pd.csegs, pd.ssegs,
-						pd.sliceon, pd.sfrom, pd.sto)
+		mesh = get_cylinder_mesh(
+			radius, radius, pd.height, 
+			pd.hsegs, pd.csegs, pd.ssegs,
+			pd.sliceon, pd.sfrom, pd.sto
+		)
+
 		self.update_mesh(mesh)
 
 	def abort(self):
@@ -250,6 +254,7 @@ class Cone(Primitive_Geometry_Class):
 	def init(self):
 		self.classname = "Cone"
 		self.finishon = 4
+		self.shading = 'AUTO'
 
 	def create(self, ctx):
 		mesh = get_cylinder_mesh(0, 0, 0, 1, 1, 18, False, 0, 360)
@@ -257,17 +262,16 @@ class Cone(Primitive_Geometry_Class):
 		pd = self.data.primitivedata
 		pd.classname = self.classname
 		pd.hsegs, pd.csegs, pd.ssegs = 1, 1, 18
-		set_smooth_by_angel()
 
 	def update(self):
 		pd = self.data.primitivedata
-		mesh = get_cylinder_mesh(pd.radius1, pd.radius2, pd.height,
-				pd.hsegs, pd.csegs, pd.ssegs,
-				pd.sliceon, pd.sfrom, pd.sto)
-		self.update_mesh(mesh)
+		mesh = get_cylinder_mesh(
+			pd.radius1, pd.radius2, pd.height,
+			pd.hsegs, pd.csegs, pd.ssegs,
+			pd.sliceon, pd.sfrom, pd.sto
+		)
 
-	def abort(self):
-		bpy.ops.object.delete(confirm=False)
+		self.update_mesh(mesh)
 
 
 class Create_OT_Cylinder(Draw_Primitive):

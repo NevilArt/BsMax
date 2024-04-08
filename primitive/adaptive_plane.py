@@ -83,10 +83,6 @@ class Adaptive_Plane(Primitive_Geometry_Class):
 			mesh = get_adaptive_plane_mesh(pd.width, pd.length, pd.thickness, pd.bias)
 		self.update_mesh(mesh)
 
-	def abort(self):
-		bpy.ops.object.delete(confirm=False)
-
-
 
 class Create_OT_Adaptive_Plane(Draw_Primitive):
 	bl_idname = "create.adaptive_plane"

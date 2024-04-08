@@ -12,20 +12,20 @@
 #	You should have received a copy of the GNU General Public License
 #	along with this program.  If not,see <https://www.gnu.org/licenses/>.
 ############################################################################
+# 2024/04/04
 
 import bpy
 from primitive.primitive import Primitive_Geometry_Class, Draw_Primitive
 
 
-
 def cylindersurface(radius, height):
-	bpy.context.object.data.splines[0].points[0].co[0] = 0
-	bpy.context.object.data.splines[0].points[0].co[1] = -0.99
-	bpy.context.object.data.splines[0].points[0].co[1] = -1
-	bpy.context.object.data.splines[0].points[0].co[3] = 1.01
-	bpy.context.object.data.splines[0].type = 'NURBS'
-	bpy.context.object.data.splines[0].use_smooth = True
-
+	data = bpy.context.object.data
+	data.splines[0].points[0].co[0] = 0
+	data.splines[0].points[0].co[1] = -0.99
+	data.splines[0].points[0].co[1] = -1
+	data.splines[0].points[0].co[3] = 1.01
+	data.splines[0].type = 'NURBS'
+	data.splines[0].use_smooth = True
 
 
 class Surface(Primitive_Geometry_Class):
@@ -50,7 +50,6 @@ class Surface(Primitive_Geometry_Class):
 		# self.reset()
 
 
-
 class Create_OT_Surface(Draw_Primitive):
 	bl_idname="create.surface"
 	bl_label="Surface (Create)"
@@ -66,9 +65,9 @@ class Create_OT_Surface(Draw_Primitive):
 		pass
 
 
-
 def register_surface():
 	bpy.utils.register_class(Create_OT_Surface)
+
 	
 def unregister_surface():
 	bpy.utils.unregister_class(Create_OT_Surface)

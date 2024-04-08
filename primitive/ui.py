@@ -12,30 +12,35 @@
 #	You should have received a copy of the GNU General Public License
 #	along with this program.  If not,see <https://www.gnu.org/licenses/>.
 ############################################################################
+# 2024/04/04
 
 import bpy
 
 from bpy.types import Operator
 
 
-
 # Act like Convert to in 3ds Max
+# TODO replace this with a smart convert tool
 class BsMax_OT_ClearPrimitiveData(Operator):
-	# TODO replace this with a smart convert tool
 	bl_idname="primitive.cleardata"
 	bl_label="Clear Primitive Data"
+
 	def execute(self, ctx):
 		for obj in ctx.selected_objects:
 			obj.data.primitivedata.classname = ""
+
 		return {"FINISHED"}
 
 
 def BsMax_MT_PrimitiveDataCleanerMenu(self, ctx):
-	self.layout.separator()
-	self.layout.operator("primitive.cleardata")
+	layout = self.layout
+	layout.separator()
+	layout.operator("primitive.cleardata")
+
 
 def register_ui():
 	bpy.utils.register_class(BsMax_OT_ClearPrimitiveData)
+
 
 def unregister_ui():
 	bpy.utils.unregister_class(BsMax_OT_ClearPrimitiveData)

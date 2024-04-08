@@ -12,13 +12,15 @@
 #	You should have received a copy of the GNU General Public License
 #	along with this program.  If not, see <https://www.gnu.org/licenses/>.
 ############################################################################
+# 2024/04/08
 
 import bpy
+
 from bpy.types import Operator
 from mathutils import Vector
+
 from bsmax.curve import Curve
 from bsmax.graphic import Rubber_Band, get_screen_pos
-
 
 
 def curve_tool_get_data(self, ctx):
@@ -26,21 +28,19 @@ def curve_tool_get_data(self, ctx):
 	self.curve = Curve(self.obj)
 
 
-
 def curve_tool_execute(self):
 	if self.canceled:
 		self.abort()
 	else:
 		self.apply()
-	return{'FINISHED'}
 
+	return{'FINISHED'}
 
 
 def curve_tool_check(self):
 	if not self.start:
 		self.start = True
 	self.apply()
-
 
 
 def curve_tool_modal(self, ctx, event):
@@ -78,7 +78,6 @@ def curve_tool_modal(self, ctx, event):
 	return {'RUNNING_MODAL'}
 
 
-
 def curve_tool_invoke(self, ctx):
 	self.get_data(ctx)
 	if self.typein:
@@ -87,7 +86,6 @@ def curve_tool_invoke(self, ctx):
 	else:
 		ctx.window_manager.modal_handler_add(self)
 		return {'RUNNING_MODAL'}
-
 
 
 def pick_operator_modal(self, ctx, event):
@@ -174,16 +172,16 @@ def pick_operator_modal(self, ctx, event):
 	return {'RUNNING_MODAL'}
 
 
-
 def get_objects_center(objs):
 	""" Return selected objects midil """
 	location = Vector((0,0,0))
 	for obj in objs:
 		location += obj.matrix_world.translation
+
 	if objs:
 		return location / len(objs)
-	return location
 
+	return location
 
 
 def pick_operator_get_bone(self, ctx, event, armature):
@@ -226,14 +224,12 @@ def pick_operator_setup(self, ctx, event):
 	######################################################
 
 
-
 def pick_operator_set_mode(ctx, mode):
 	if mode in {'OBJECT', 'POSE'}:
 		if ctx.mode != mode:
 			bpy.ops.object.mode_set(mode=mode, toggle=False)
 	else:
 		bpy.ops.object.mode_set(mode='EDIT', toggle=False)
-
 
 
 def pick_operator_restore_mode(self, ctx):
@@ -253,7 +249,6 @@ def pick_operator_restore_mode(self, ctx):
 			sub.select = True
 
 
-
 def pick_operator_finish(self, ctx, event, target):
 	subtarget = self.get_bone(ctx, event, target) \
 				if target.type == 'ARMATURE' else None
@@ -262,14 +257,12 @@ def pick_operator_finish(self, ctx, event, target):
 	self.picked(ctx, self.source, self.subsource, target, subtarget)
 
 
-
 def pick_operator_invoke(self, ctx, event):
 	self.pre_setup(ctx, event)
 	self.setup(ctx, event)
 	self.rb.register()
 	ctx.window_manager.modal_handler_add(self)
 	return {'RUNNING_MODAL'}
-
 
 
 class CurveTool(Operator):
@@ -358,7 +351,7 @@ class PickOperator(Operator):
 	
 	def picked(self, ctx, source, subsource, target, subtarget):
 		pass
-	
+
 	def invoke(self, ctx, event):
 		return pick_operator_invoke(self, ctx, event)
 

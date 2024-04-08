@@ -12,12 +12,15 @@
 #	You should have received a copy of the GNU General Public License
 #	along with this program.  If not,see <https://www.gnu.org/licenses/>.
 ############################################################################
+# 2024/04/07
 
 import bpy
+
 from mathutils import Vector
-from primitive.primitive import Primitive_Curve_Class, Draw_Primitive
 from math import hypot, atan2, sqrt, sin, cos, pi, degrees, radians
+
 from bsmax.bsmatrix import points_to_local_matrix, matrix_inverse
+from primitive.primitive import Primitive_Curve_Class, Draw_Primitive
 
 
 def circle_from_three_points(p1, p2, p3):
@@ -28,15 +31,14 @@ def circle_from_three_points(p1, p2, p3):
 	
 	a = x1*(y2-y3)-y1*(x2-x3)+x2*y3-x3*y2
 	a = 0.000001 if a == 0 else a # protect from devide by zero
-	b = (x1*x1+y1*y1)*(y3-y2)+(x2*x2+y2*y2)*(y1-y3)+(x3*x3+y3*y3)*(y2-y1)
-	c = (x1*x1+y1*y1)*(x2-x3)+(x2*x2+y2*y2)*(x3-x1)+(x3*x3+y3*y3)*(x1-x2)
+	b = (x1*x1 + y1*y1)*(y3-y2)+(x2*x2 + y2*y2)*(y1-y3)+(x3*x3 + y3*y3)*(y2-y1)
+	c = (x1*x1 + y1*y1)*(x2-x3)+(x2*x2 + y2*y2)*(x3-x1)+(x3*x3 + y3*y3)*(x1-x2)
 	
 	x = -b / (2 * a)
 	y = -c / (2 * a)
 	# z = ??
 
 	return Vector((x, y, 0)), hypot(x-x1, y-y1) # center, radius
-
 
 
 def angle_between(center, point):
@@ -46,14 +48,12 @@ def angle_between(center, point):
 	return degrees(atan2(y, x))
 
 
-
 def arc_from_three_points(p1, p2, p3):
 	"""  """
 	center, radius = circle_from_three_points(p1, p2, p3)
 	start = angle_between(center, p1)
 	end = angle_between(center, p2)
 	return center, radius, start, end
-
 
 
 def get_arc_shape(radius, start, end, pie):
@@ -91,13 +91,11 @@ def get_arc_shape(radius, start, end, pie):
 	return [Shape]
 
 
-
 def get_line_shape(p1, p2):
 	Shape = []
-	Shape.append([p1,p1,'FREE',p1,'FREE'])
-	Shape.append([p2,p2,'FREE',p2,'FREE'])
+	Shape.append([p1, p1, 'FREE', p1, 'FREE'])
+	Shape.append([p2, p2, 'FREE', p2, 'FREE'])
 	return [Shape]
-
 
 
 class Arc(Primitive_Curve_Class):
@@ -107,13 +105,13 @@ class Arc(Primitive_Curve_Class):
 		self.close = False
 
 		# Local space draw arc
-		self.point1 = Vector((0,0,0))
-		self.point2 = Vector((0,0,0))
+		self.point1 = Vector((0, 0, 0))
+		self.point2 = Vector((0, 0, 0))
 		self.point3 = None
 
 		# World space draw line
-		self.start = Vector((0,0,0))
-		self.end = Vector((0,0,0))
+		self.start = Vector((0, 0, 0))
+		self.end = Vector((0, 0, 0))
 
 		# Control stuff
 		self.drawing = False
@@ -153,10 +151,6 @@ class Arc(Primitive_Curve_Class):
 		self.close = pd.sliceon
 		shapes = get_arc_shape(pd.radius1, pd.sfrom, pd.sto, pd.sliceon)
 		self.update_curve(shapes)
-
-	def abort(self):
-		bpy.ops.object.delete(confirm=False)
-
 
 
 class Create_OT_Arc(Draw_Primitive):

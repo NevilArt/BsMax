@@ -12,12 +12,14 @@
 #	You should have received a copy of the GNU General Public License
 #	along with this program.  If not, see <https://www.gnu.org/licenses/>.
 ############################################################################
+# 2024/03/27
 
 import bpy
+
 from bpy.types import Operator
 from bpy.props import StringProperty
+from bpy.utils import register_class, unregister_class
 from bsmax.actions import set_as_active_object
-
 
 
 class CharacterSet:
@@ -25,7 +27,10 @@ class CharacterSet:
 		self.characters = []
 	
 	def get_scene_characters(self):
-		self.characters = [char for char in bpy.data.objects if char.type == 'ARMATURE']
+		self.characters = [
+			char for char in bpy.data.objects
+			if char.type == 'ARMATURE'
+		]
 	
 	def get_character_by_name(self, name):
 		for char in self.characters:
@@ -34,7 +39,6 @@ class CharacterSet:
 		return None
 
 cs = CharacterSet()
-
 
 
 class Armature_TO_Character_Hide(Operator):
@@ -51,8 +55,8 @@ class Armature_TO_Character_Hide(Operator):
 			character.hide_viewport = state
 			character.hide_render = False
 			character.hide_select = False
-		return{"FINISHED"}
 
+		return{"FINISHED"}
 
 
 class Armature_TO_Character_Isolate(Operator):
@@ -74,8 +78,8 @@ class Armature_TO_Character_Isolate(Operator):
 					char.hide_viewport = False
 					char.hide_render = False
 					char.hide_select = False
-		return{"FINISHED"}
 
+		return{"FINISHED"}
 
 
 class Armature_TO_Character_Rest(Operator):
@@ -91,8 +95,8 @@ class Armature_TO_Character_Rest(Operator):
 			state = character.data.pose_position
 			state = 'POSE' if state == 'REST' else 'REST'
 			character.data.pose_position = state
-		return{"FINISHED"}
 
+		return{"FINISHED"}
 
 
 class Anim_TO_Character_Lister(Operator):
@@ -130,7 +134,6 @@ class Anim_TO_Character_Lister(Operator):
 		return ctx.window_manager.invoke_props_dialog(self,width=200)
 
 
-
 class Object_TO_Make_Override_Library_plus(Operator):
 	""" Convert Multiple selection to library overide """
 	bl_idname = "object.make_override_library_multi"
@@ -158,10 +161,8 @@ class Object_TO_Make_Override_Library_plus(Operator):
 		return{"FINISHED"}
 
 
-
 def library_override_menu(self, ctx):
 	self.layout.operator('object.make_override_library_multi')
-
 
 
 classes = (
@@ -172,9 +173,10 @@ classes = (
 	Object_TO_Make_Override_Library_plus
 )
 
+
 def register_character_lister():
 	for c in classes:
-		bpy.utils.register_class(c)
+		register_class(c)
 
 	bpy.types.VIEW3D_MT_object_relations.prepend(library_override_menu)
 	
@@ -183,7 +185,7 @@ def unregister_character_lister():
 	bpy.types.VIEW3D_MT_object_relations.remove(library_override_menu)
 
 	for c in classes:
-		bpy.utils.unregister_class(c)
+		unregister_class(c)
 
 if __name__ == "__main__":
 	register_character_lister()

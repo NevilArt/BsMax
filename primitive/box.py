@@ -12,15 +12,12 @@
 #	You should have received a copy of the GNU General Public License
 #	along with this program.  If not,see <https://www.gnu.org/licenses/>.
 ############################################################################
-# 2024/02/11
+# 2024/04/03
 
 import bpy
 
-from primitive.primitive import(
-    Primitive_Geometry_Class, Draw_Primitive, set_smooth_by_angel
-)
-
 from bpy.app import version
+from primitive.primitive import Primitive_Geometry_Class, Draw_Primitive
 
 useGeonode = False
 
@@ -217,7 +214,9 @@ def get_box_mesh(width, length, height, wsegs, lsegs, hsegs):
 	w = width / wsegs
 	l = length / lsegs
 	h = height / hsegs
-	hw, hl = width / 2, length / 2
+	hw = width / 2
+	hl = length / 2
+
 	# Create vertexes
 	for he in (0.0, height):
 		for i in range(wsegs + 1):
@@ -226,27 +225,32 @@ def get_box_mesh(width, length, height, wsegs, lsegs, hsegs):
 				y = l * j - hl
 				z = he
 				verts.append((x, y, z))
+
 	for i in range(1,hsegs):
 		for j in range(lsegs + 1):
 			x = -hw
 			y = l * j - hl
 			z = h * i
 			verts.append((x, y, z))
+
 		for j in range(1, wsegs + 1):
 			x = w * j - hw
 			y = length - hl
 			z = h * i
 			verts.append((x, y, z))
+
 		for j in range(lsegs - 1, -1, -1):
 			x = width - hw
 			y = l * j - hl
 			z = h * i
 			verts.append((x , y, z))
+
 		for j in range(wsegs - 1, 0, -1):
 			x = w * j - hw
 			y = -hl 
 			z = h * i
 			verts.append((x, y, z))
+
 	# Create faces
 	# fill plates
 	for k in range(2):
@@ -261,6 +265,7 @@ def get_box_mesh(width, length, height, wsegs, lsegs, hsegs):
 					faces.append((a, b, c, d))
 				else:
 					faces.append((d, c, b, a))
+
 	# fill center
 	f = ((lsegs + 1) * 2) * (wsegs + 1)
 	l = (wsegs + lsegs) * 2
@@ -286,6 +291,7 @@ def get_box_mesh(width, length, height, wsegs, lsegs, hsegs):
 			c = f + i + 1
 			d = f + i
 			faces.append((d, c, b, a))
+
 		# silde lowr line 2
 		fl, fu = lsegs, f + lsegs
 		for i in range(wsegs):
@@ -294,6 +300,7 @@ def get_box_mesh(width, length, height, wsegs, lsegs, hsegs):
 			c = fu + i + 1
 			d = fu + i
 			faces.append((d, c, b, a))
+
 		# silde lowr line 3
 		fl = (wsegs + 1) * (lsegs + 1) - 1
 		fu = f + wsegs + lsegs
@@ -303,6 +310,7 @@ def get_box_mesh(width, length, height, wsegs, lsegs, hsegs):
 			c = fu + i + 1
 			d = fu + i
 			faces.append((d, c, b, a))
+
 		# silde lowr line  4
 		fl = (lsegs + 1) * wsegs
 		fu = (wsegs + 1) * (lsegs + 1) * 2 + (lsegs + 1) * 2 + (wsegs - 2)
@@ -315,6 +323,7 @@ def get_box_mesh(width, length, height, wsegs, lsegs, hsegs):
 				c = f
 			d = fu + i
 			faces.append((d, c, b, a))
+
 		# silde Uper line 1
 		fl = (wsegs + 1) * ((hsegs + lsegs - 1) * 2) + (lsegs - 1) * ((hsegs - 2) * 2)
 		fu = (wsegs + 1) * (lsegs + 1)
@@ -324,6 +333,7 @@ def get_box_mesh(width, length, height, wsegs, lsegs, hsegs):
 			c = fu + i + 1
 			d = fu + i
 			faces.append((d, c, b, a))
+
 		# silde Uper line 2
 		fl += lsegs
 		fu += lsegs
@@ -333,6 +343,7 @@ def get_box_mesh(width, length, height, wsegs, lsegs, hsegs):
 			c = fu + (i + 1) * (lsegs + 1)
 			d = fu + i * (lsegs + 1)
 			faces.append((d, c, b, a))
+
 		# silde Upper line 3
 		fl += wsegs
 		fu = ((wsegs + 1) * (lsegs + 1) * 2) - 1
@@ -342,6 +353,7 @@ def get_box_mesh(width, length, height, wsegs, lsegs, hsegs):
 			c = fu - (i + 1)
 			d = fu - i
 			faces.append((d, c, b, a))
+
 		# silde lowr line  4
 		fl += lsegs
 		fu -= lsegs
@@ -364,6 +376,7 @@ def get_box_mesh(width, length, height, wsegs, lsegs, hsegs):
 			c = fu + i + 1
 			d = fu + i
 			faces.append((d, c, b, a))
+
 		# silde lowr line 2
 		fl = lsegs
 		fu += lsegs
@@ -373,6 +386,7 @@ def get_box_mesh(width, length, height, wsegs, lsegs, hsegs):
 			c = fu + (i + 1) * (lsegs + 1)
 			d = fu + i * (lsegs + 1)
 			faces.append((d, c, b, a))
+
 		# silde lowr line 3
 		fl = (wsegs + 1) * (lsegs + 1) - 1
 		fu = ((wsegs + 1) * (lsegs + 1) * 2) - 1
@@ -382,6 +396,7 @@ def get_box_mesh(width, length, height, wsegs, lsegs, hsegs):
 			c = fu - (i + 1)
 			d = fu - i
 			faces.append((d, c, b, a))
+
 		# silde lowr line  4
 		fl = (lsegs + 1) * wsegs
 		fu -= lsegs
@@ -394,6 +409,7 @@ def get_box_mesh(width, length, height, wsegs, lsegs, hsegs):
 				c = (wsegs + 1) * (lsegs + 1)
 			d = fu - i * (lsegs + 1)
 			faces.append((d, c, b, a))
+
 	return verts, edges, faces
 
 
@@ -402,6 +418,7 @@ class Box(Primitive_Geometry_Class):
 	def init(self):
 		self.classname = "Box"
 		self.finishon = 3
+		self.shading = 'FLAT'
 
 	def create(self, ctx):
 		w, l, h = 1, 1, 1
@@ -413,16 +430,15 @@ class Box(Primitive_Geometry_Class):
 		pd = self.data.primitivedata
 		pd.classname = self.classname
 		pd.wsegs, pd.lsegs, pd.hsegs = w, l, h
-		set_smooth_by_angel()
 
 	def update(self):
 		pd = self.data.primitivedata
-		mesh = get_box_mesh(pd.width, pd.length, pd.height,
-					pd.wsegs, pd.lsegs, pd.hsegs)
+		mesh = get_box_mesh(
+			pd.width, pd.length, pd.height,
+			pd.wsegs, pd.lsegs, pd.hsegs
+		)
+		
 		self.update_mesh(mesh)
-
-	def abort(self):
-		bpy.ops.object.delete(confirm=False)
 
 
 class Create_OT_Box(Draw_Primitive):

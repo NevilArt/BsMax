@@ -12,42 +12,16 @@
 #	You should have received a copy of the GNU General Public License
 #	along with this program.  If not,see <https://www.gnu.org/licenses/>.
 ############################################################################
+# 2024/04/04
 
 import bpy
 from math import pi, sin, cos, radians
 from primitive.primitive import Primitive_Geometry_Class, Draw_Primitive
 
+def get_sphere_mesh(
+		radius, ssegs, hsegs, hemisphere,
+		chop, sliceon, sfrom, sto, base ):
 
-# def create_sphere(radius, segments):
-# 	vertices = []
-# 	faces = []
-
-# 	d_phi = math.pi / segments
-# 	d_theta = 2 * math.pi / segments
-
-# 	for i in range(segments + 1):
-# 		phi = i * d_phi
-# 		for j in range(segments + 1):
-# 			theta = j * d_theta
-# 			x = radius * math.sin(phi) * math.cos(theta)
-# 			y = radius * math.sin(phi) * math.sin(theta)
-# 			z = radius * math.cos(phi)
-# 			vertices.append((x, y, z))
-
-# 	for i in range(segments):
-# 		for j in range(segments):
-# 			base_index = i + j * (segments + 1)
-# 			vertex_indices = [base_index,
-# 								base_index + 1,
-# 								base_index + (segments + 1) + 1,
-# 								base_index + (segments + 1)]
-# 			faces.append(vertex_indices)
-
-# 	return vertices, faces
-
-
-
-def get_sphere_mesh(radius, ssegs, hsegs, hemisphere, chop, sliceon, sfrom, sto, base):
 	verts, edges, faces = [], [], []
 	sides = []
 
@@ -80,7 +54,7 @@ def get_sphere_mesh(radius, ssegs, hsegs, hemisphere, chop, sliceon, sfrom, sto,
 	ssegs += slicestep
 
 	# Create vertexes data
-	step = (pi*2) / ssegs
+	# step = (pi*2) / ssegs
 
 	# height offset
 	hoffset = 0
@@ -159,32 +133,31 @@ def get_sphere_mesh(radius, ssegs, hsegs, hemisphere, chop, sliceon, sfrom, sto,
 	return verts, edges, faces
 
 
-
 class Sphere(Primitive_Geometry_Class):
 	def init(self):
 		self.classname = "Sphere"
 		self.finishon = 2
+		self.shading = 'SMOOTH'
 
 	def create(self, ctx):
-		mesh = get_sphere_mesh(0,32,32,0,False,False,0,360,False)
+		mesh = get_sphere_mesh(0, 32, 32, 0, False, False, 0, 360, False)
 		self.create_mesh(ctx, mesh, self.classname)
 		pd = self.data.primitivedata
 		pd.classname = self.classname
-		pd.ssegs, pd.hsegs, pd.seglock = 32,30,True
+		pd.ssegs, pd.hsegs, pd.seglock = 32, 30, True
 
 	def update(self):
 		pd = self.data.primitivedata
 		hsegs = pd.hsegs if not pd.seglock else pd.ssegs - 2
 		#radius, ssegs, hsegs, hemisphere, chop, sliceon, sfrom, sto, base
-		mesh = get_sphere_mesh(pd.radius1, pd.ssegs, hsegs,
-				pd.bias, False, #hemisphere, chop
-				pd.sliceon, pd.sfrom, pd.sto,
-				pd.base)
+		mesh = get_sphere_mesh(
+			pd.radius1, pd.ssegs, hsegs,
+			pd.bias, False, #hemisphere, chop
+			pd.sliceon, pd.sfrom, pd.sto,
+			pd.base
+		)
+		
 		self.update_mesh(mesh)
-
-	def abort(self):
-		bpy.ops.object.delete(confirm=False)
-
 
 
 class Create_OT_Sphere(Draw_Primitive):
@@ -202,16 +175,18 @@ class Create_OT_Sphere(Draw_Primitive):
 	def update(self, ctx, clickcount, dimension):
 		if clickcount == 1:
 			self.params.radius1 = dimension.radius
+
 		if clickcount > 0:
 			self.subclass.update()
 
 
-
 def register_sphere():
 	bpy.utils.register_class(Create_OT_Sphere)
-	
+
+
 def unregister_sphere():	
 	bpy.utils.unregister_class(Create_OT_Sphere)
+
 
 if __name__ == "__main__":
 	register_sphere()

@@ -38,7 +38,7 @@ def create_target(ctx, location, radius, frame):
 	bpy.ops.object.empty_add(type='CIRCLE', location=location)
 	targ = ctx.active_object
 	targ.empty_display_size = radius
-	link_to(targ, frame)
+	link_to(targ, frame, False)
 	return targ
 
 

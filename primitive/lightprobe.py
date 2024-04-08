@@ -12,14 +12,15 @@
 #	You should have received a copy of the GNU General Public License
 #	along with this program.  If not,see <https://www.gnu.org/licenses/>.
 ############################################################################
+# 2024/04/04
 
 import bpy
 
 from mathutils import Vector
+from bpy.utils import register_class, unregister_class
 
 from primitive.primitive import Draw_Primitive, Primitive_Public_Class
 from bsmax.bsmatrix import transform_point_to_matrix
-
 
 
 class LightProbe(Primitive_Public_Class):
@@ -27,10 +28,6 @@ class LightProbe(Primitive_Public_Class):
 		self.finishon = 2
 		self.owner = None
 		self.data = None
-
-	def abort(self):
-		bpy.ops.object.delete(confirm=False)
-
 
 
 class Create_OT_Light_Probe_Grid(Draw_Primitive):
@@ -42,7 +39,10 @@ class Create_OT_Light_Probe_Grid(Draw_Primitive):
 
 	def create(self, ctx):
 		self.subclass.finishon = 4
-		bpy.ops.object.lightprobe_add(type='GRID', location=self.gride.location)
+		bpy.ops.object.lightprobe_add(
+			type='GRID', location=self.gride.location
+		)
+		
 		self.subclass.owner = ctx.active_object
 		self.subclass.owner.scale = (0, 0, 0)
 		self.subclass.owner.rotation_euler = self.gride.rotation
@@ -74,7 +74,6 @@ class Create_OT_Light_Probe_Grid(Draw_Primitive):
 		self.width, self.length, self.height, self.distance = 0, 0, 0, 0
 
 
-
 class Create_OT_Light_Probe_Planer(Draw_Primitive):
 	bl_idname="create.light_probe_planer"
 	bl_label="Reflection Plane"
@@ -101,7 +100,6 @@ class Create_OT_Light_Probe_Planer(Draw_Primitive):
 			self.subclass.owner.data.influence_distance = self.distance
 
 
-
 class Create_OT_Light_Probe_Cubemap(Draw_Primitive):
 	bl_idname = "create.light_probe_cubemap"
 	bl_label = "Reflection Cubemap"
@@ -119,20 +117,22 @@ class Create_OT_Light_Probe_Cubemap(Draw_Primitive):
 			self.subclass.owner.scale = (1, 1, 1)
 
 
-
 classes = (
 		Create_OT_Light_Probe_Grid,
 		Create_OT_Light_Probe_Planer,
 		Create_OT_Light_Probe_Cubemap
 )
 
+
 def register_lightprobe():
 	for c in classes:
-		bpy.utils.register_class(c)
+		register_class(c)
+
 
 def unregister_lightprobe():
 	for c in classes:
-		bpy.utils.unregister_class(c)
+		unregister_class(c)
+
 
 if __name__ == "__main__":
 	register_lightprobe()

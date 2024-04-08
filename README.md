@@ -36,9 +36,10 @@ If you found this product useful and want to support this project you can Donate
 * [Download Older Version (2.80-2.92)(2.93-3.2)](https://github.com/NevilArt/BsMax_2_80)
 
 ## Recent Updates and Changes
-* Some new tools added under Command Panel modifier list.
-* Make unique tool optimized (View3D/Object/Relation/Make unigue).
-* Basic Auto EXR connector added but need to more work on it (Compositor/Add/Tools/Auto EXR).
+* Primitive issue with new change of  blender 4.1 mostly fixed.
+* Link to operator has new option to keep hierarchy (Option appears only if selection has hierarchy).
+* In 3DsMax key maps in Blender 4.1+ additional key removed and uses Blender default "K".
+* And many code Cleaneng.
 * [Change log ...](https://github.com/NevilArt/BsMax/blob/master/CHANGELOG.md)
 
 ## License
