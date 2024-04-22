@@ -12,7 +12,7 @@
 #	You should have received a copy of the GNU General Public License
 #	along with this program.  If not, see <https://www.gnu.org/licenses/>.
 ############################################################################
-# 2024/03/27
+# 2024/04/19
 
 import bpy
 
@@ -22,9 +22,9 @@ class BsMax_MT_Animation_Tools(bpy.types.Menu):
 	bl_label = 'Animation'
 	# bl_context = 'objectmode'
 
-	# @classmethod
-	# def poll(self, ctx):
-	# 	return ctx.mode == 'OBJECT'
+	@classmethod
+	def poll(self, ctx):
+		return ctx.mode in ('OBJECT', 'POSE')
 
 	def draw(self, ctx):
 		layout=self.layout
@@ -67,11 +67,6 @@ class BsMax_MT_Animation_Tools(bpy.types.Menu):
 			)
 
 		layout.separator()
-		# layout.operator(
-		# 	'anim.driver_fixer', text='Fix Override Driver Issue',
-		# 	icon='GHOST_ENABLED'
-		# )
-		
 		layout.operator('anim.freeze_on', text='Freeze On', icon='TEMP')
 		
 
@@ -79,7 +74,9 @@ def animation_menu(self, ctx):
 	self.layout.menu('BSMAX_MT_animationtools')
 
 def key_menu(self, ctx):
-	self.layout.prop(ctx.preferences.edit,'keyframe_new_interpolation_type', text='')
+	self.layout.prop(
+		ctx.preferences.edit,'keyframe_new_interpolation_type', text=''
+	)
 
 def key_filter_menu(self, ctx):
 	self.layout.operator('anim.set_key_filters', text='', icon='KEYINGSET')

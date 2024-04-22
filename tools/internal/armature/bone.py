@@ -12,45 +12,54 @@
 #	You should have received a copy of the GNU General Public License
 #	along with this program.  If not, see <https://www.gnu.org/licenses/>.
 ############################################################################
+# 2024/04/15
 
 import bpy
 
 from bpy.types import Operator
 from bpy.props import IntProperty, EnumProperty, BoolProperty
+from bpy.utils import register_class, unregister_class
 
 from bsmax.state import is_active_object
 
 
-
-# Set Armatur bone type 
 class Armature_OT_Bone_Type(Operator):
-	bl_idname = "armature.bone_type"
+	bl_idname = 'armature.bone_type'
 	bl_label = "Bone Type"
+	bl_description = "Set Armatur Bone Type"
 	bl_options = {'REGISTER', 'UNDO'}
 	
-	mode: EnumProperty(name="Bone Draw type", default='BBONE',
-			description='Armature Bone Draw Type',
-			items=[('OCTAHEDRAL','Octahedral',''),('STICK','Stick',''),
-			('BBONE','BBone',''),('ENVELOPE','Envelope',''),('WIRE','Wire','')])
-	
+	mode: EnumProperty(
+		name="Bone Draw type",
+		items=[
+			('OCTAHEDRAL', "Octahedral", ""),
+			('STICK', "Stick", ""),
+			('BBONE', "BBone", ""),
+			('ENVELOPE', "Envelope", ""),
+			('WIRE', "Wire", "")
+		],
+		default='BBONE',
+		description="Armature Bone Draw Type"
+	)
+
 	@classmethod
 	def poll(self, ctx):
 		return is_active_object(ctx, 'ARMATURE')
 	
 	def execute(self, ctx):
 		ctx.object.data.display_type = self.mode
-		return{"FINISHED"}
+		return{'FINISHED'}
 
 
 #TODO rename the operator
-# Devide Bone by number dialog 
 class Armature_OT_Bone_Devide(Operator):
-	bl_idname = "armature.bone_devide"
+	bl_idname = 'armature.bone_devide'
 	bl_label = "Bone Devide"
+	bl_description = "Devide Bone by number dialog"
 	bl_options = {'REGISTER', 'UNDO'}
 
-	devides: IntProperty(name="Devides",default=1)
-	typein: BoolProperty(name="Type In:",default=False)
+	devides: IntProperty(name="Devides", default=1)
+	typein: BoolProperty(name="Type In:", default=False)
 
 	@classmethod
 	def poll(self, ctx):
@@ -58,7 +67,7 @@ class Armature_OT_Bone_Devide(Operator):
 	
 	def draw(self, ctx):
 		layout = self.layout
-		layout.prop(self,"devides",text="Devides")
+		layout.prop(self, 'devides', text="Devides")
 	
 	def execute(self, ctx):
 		bpy.ops.armature.subdivide(number_cuts=self.devides)
@@ -72,27 +81,27 @@ class Armature_OT_Bone_Devide(Operator):
 		if self.typein:
 			wm = ctx.window_manager
 			return wm.invoke_props_dialog(self, width=150)
-		else:
-			ctx.window_manager.modal_handler_add(self)
-			return {'RUNNING_MODAL'}
 
+		ctx.window_manager.modal_handler_add(self)
+		return {'RUNNING_MODAL'}
 
 
 class Armature_OT_Freeze(Operator):
 	""" Freeze / Unfreeze Bones """
-	bl_idname = "bone.freeze"
+	bl_idname = 'bone.freeze'
 	bl_label = "Freeze / Unfreeze"
 	bl_description = "Freeze / Unfreeze Bones"
 	bl_options = {'REGISTER', 'UNDO'}
 
-	mode: EnumProperty(default='selection',
-						items=[
-							('selection', 'Freeze Selection', ''),
-							('unselected', 'Freeze Unselected', ''),
-							('clear', 'Unfreezee All', '')
-						]
-			)
-	
+	mode: EnumProperty(
+		items=[
+			('selection', "Freeze Selection", ""),
+			('unselected', "Freeze Unselected", ""),
+			('clear', "Unfreezee All", "")
+		],
+		default='selection'
+	)
+
 	@classmethod
 	def poll(self, ctx):
 		return ctx.mode in {'POSE', 'EDIT_ARMATURE'}
@@ -120,12 +129,11 @@ class Armature_OT_Freeze(Operator):
 		else:
 			bpy.ops.object.mode_set(mode='EDIT', toggle=False)
 
-		return{"FINISHED"}
-
+		return{'FINISHED'}
 
 
 class Armature_OT_Select_Keyed_Bone(Operator):
-	bl_idname = "armature.select_keyed_bones"
+	bl_idname = 'armature.select_keyed_bones'
 	bl_label = "Select Keyed Bones"
 	bl_options = {'REGISTER', 'UNDO'}
 
@@ -139,8 +147,8 @@ class Armature_OT_Select_Keyed_Bone(Operator):
 	
 	def draw(self, ctx):
 		layout = self.layout
-		layout.prop(self,"invert",text="Invert")
-		layout.prop(self,"deselect",text="Deselect")
+		layout.prop(self, 'invert', text="Invert")
+		layout.prop(self, 'deselect', text="Deselect")
 	
 	def select(self, armature):
 		action = armature.animation_data.action
@@ -171,37 +179,33 @@ class Armature_OT_Select_Keyed_Bone(Operator):
 		return {'FINISHED'}
 
 
-
 def select_keyed_menu(self, ctx):
 	layout = self.layout
 	layout.separator()
 	layout.operator('armature.select_keyed_bones')
 
 
-classes = (
+classes = {
 	Armature_OT_Bone_Type,
 	Armature_OT_Bone_Devide,
 	Armature_OT_Freeze,
 	Armature_OT_Select_Keyed_Bone
-)
-
+}
 
 
 def register_bone():
 	for c in classes:
-		bpy.utils.register_class(c)
+		register_class(c)
 	
 	bpy.types.VIEW3D_MT_select_pose.append(select_keyed_menu)
-
 
 
 def unregister_bone():
 	bpy.types.VIEW3D_MT_select_pose.remove(select_keyed_menu)
 
 	for c in classes:
-		bpy.utils.unregister_class(c)
+		unregister_class(c)
 
 
-
-if __name__ == "__main__":
+if __name__ == '__main__':
 	register_bone()

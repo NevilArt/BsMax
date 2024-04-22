@@ -12,12 +12,12 @@
 #	You should have received a copy of the GNU General Public License
 #	along with this program.  If not, see <https://www.gnu.org/licenses/>.
 ############################################################################
+# 2024/04/19
 
 import bpy
 
 from mathutils import Vector
 from bpy.types import Operator
-
 
 
 # Add display object for control bones to scene
@@ -27,26 +27,26 @@ def add_custom_control_empty(ctx, armature):
 	# no need to add another custom control if it's already here
 	if control_obj_name in bpy.data.objects:
 		return False
-	else:
-		# switch to OBJECT mode to add empty
-		bpy.ops.object.mode_set(mode='OBJECT')
 
-		# add, name and hide empty object
-		bpy.ops.object.empty_add(type='SPHERE')
-		ctx.object.name = control_obj_name
-		ctx.object.hide_viewport = True
+	# switch to OBJECT mode to add empty
+	bpy.ops.object.mode_set(mode='OBJECT')
 
-		# select armature again
-		ctx.view_layer.objects.active = armature
+	# add, name and hide empty object
+	bpy.ops.object.empty_add(type='SPHERE')
+	ctx.object.name = control_obj_name
+	ctx.object.hide_viewport = True
 
-		# switch mode back to EDIT
-		bpy.ops.object.mode_set(mode='EDIT')
+	# select armature again
+	ctx.view_layer.objects.active = armature
 
+	# switch mode back to EDIT
+	bpy.ops.object.mode_set(mode='EDIT')
 
 
 # Connect control bones to active bone by parenting and constraints
-def setup_ctrl_bone_relationships(ctx, armature, bendy_bone,
-									start_bone, end_bone):
+def setup_ctrl_bone_relationships(
+		ctx, armature, bendy_bone, start_bone, end_bone
+	):
 
 	# parent active bone to start bone
 	bendy_bone.parent = start_bone
@@ -64,20 +64,21 @@ def setup_ctrl_bone_relationships(ctx, armature, bendy_bone,
 	start_name = start_bone.name
 	end_name = end_bone.name
 	
-	set_control_display_obj(ctx, armature,
-							bendy_bone_name, start_name, end_name)
-
+	set_control_display_obj(
+		ctx, armature, bendy_bone_name, start_name, end_name
+	)
 
 
 # Change display of control bones to empty object
-def set_control_display_obj(ctx, armature,
-							bendy_bone_name, start_name, end_name):
+def set_control_display_obj(
+		ctx, armature, bendy_bone_name, start_name, end_name
+	):
 
 	bpy.ops.object.mode_set(mode='POSE')
 	bendy_bone = ctx.object.pose.bones[bendy_bone_name]
 
 	# add stretchTo constraint to active bone using end bone as target
-	const = bendy_bone.constraints.new(type="STRETCH_TO")
+	const = bendy_bone.constraints.new(type='STRETCH_TO')
 	const.target = armature
 	const.subtarget = end_name
 
@@ -91,7 +92,7 @@ def set_control_display_obj(ctx, armature,
 
 # create and place control bones
 def create_control_bones(ctx, armature, bendy_bone_name):
-	bpy.ops.object.mode_set(mode = 'EDIT')
+	bpy.ops.object.mode_set(mode='EDIT')
 
 	bendy_bone = armature.data.edit_bones[bendy_bone_name]
 	
@@ -132,6 +133,7 @@ def create_control_bones(ctx, armature, bendy_bone_name):
 		head[1] + (v1[1] * startControllerSize),
 		head[2] + (v1[2] * startControllerSize)
 	)
+
 	start_bone.bbone_x = scale_x * start_scale_factor
 	start_bone.bbone_z = scale_z * end_scale_factor
 	start_bone.roll = roll
@@ -149,19 +151,20 @@ def create_control_bones(ctx, armature, bendy_bone_name):
 		tail[1] + (v1[1] * -endControllerSize),
 		tail[2] + (v1[2] * -endControllerSize)
 	)
+
 	end_bone.bbone_x = scale_x * start_scale_factor
 	end_bone.bbone_z = scale_z * end_scale_factor
 	end_bone.roll = roll
 
 	# link new bones to bendy bone
-	setup_ctrl_bone_relationships(ctx, armature, bendy_bone,
-									start_bone, end_bone)
-
+	setup_ctrl_bone_relationships(
+		ctx, armature, bendy_bone, start_bone, end_bone
+	)
 
 
 # performs action of adding controllers
 class BBone_Add_Controller(Operator):
-	bl_idname = "bone.add_bbone_controller"
+	bl_idname = 'bone.add_bbone_controller'
 	bl_label = "Add BBone Control"
 	bl_description = "Create Bendy Bones Control"
 	bl_options = { 'REGISTER', 'UNDO'}
@@ -193,16 +196,13 @@ class BBone_Add_Controller(Operator):
 		return {'FINISHED'}
 
 
-
 def register_bendy_bone():
 	bpy.utils.register_class(BBone_Add_Controller)
-
 
 
 def unregister_bendy_bone():
 	bpy.utils.unregister_class(BBone_Add_Controller)
 
 
-
-if __name__ == "__main__":
+if __name__ == '__main__':
 	register_bendy_bone()

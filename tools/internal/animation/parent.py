@@ -12,14 +12,15 @@
 #	You should have received a copy of the GNU General Public License
 #	along with this program.  If not, see <https://www.gnu.org/licenses/>.
 ############################################################################
+# 2024/04/15
 
 import bpy
 
 from bpy.types import Operator
 from mathutils import Vector
+from bpy.utils import register_class, unregister_class
 
 from bsmax.operator import PickOperator
-
 
 
 def insert_key_for_current_state(chanel, frame):
@@ -30,18 +31,18 @@ def insert_key_for_current_state(chanel, frame):
 	""" Sey key by rotation mode """
 	if chanel.rotation_mode == 'QUATERNION':
 		chanel.keyframe_insert(data_path='rotation_quaternion', frame=frame)
+
 	elif chanel.rotation_mode == 'AXIS_ANGLE':
 		chanel.keyframe_insert(data_path='rotation_axis_angle', frame=frame)
+
 	else:
 		chanel.keyframe_insert(data_path='rotation_euler', frame=frame)
-
 
 
 def set_last_key_type(chanel, key_type):
 	""" Find the newest added key and change the key type """
 	for fcurve in chanel.animation_data.action.fcurves:
 		fcurve.keyframe_points[-1].interpolation = key_type
-
 
 
 def get_object_pre_link(obj):
@@ -53,7 +54,6 @@ def get_object_pre_link(obj):
 	return None
 
 
-
 def get_bone_pre_link(armatur, bone):
 	""" Return the Child of constraint with influence == 1 (Active one) """
 	for constraint in armatur.pose.bones[bone.name].constraints:
@@ -63,51 +63,165 @@ def get_bone_pre_link(armatur, bone):
 	return None
 
 
-
-def set_object_free(self, obj, frame):
+def set_object_free(obj, frame):
 	""" Get active child of constraint """
 	const = get_object_pre_link(obj)
 	
-	if const != None:
-		""" Store the world position """
-		worldlocation = obj.matrix_world
-		
-		""" Insert key frame on frame Zero with value Zero """
-		const.influence = 0 # in time 0
-		const.keyframe_insert(data_path='influence', index=-1, frame=frame)
-		set_last_key_type(obj, 'CONSTANT')
-		
-		""" set key in previous frame for current position """
-		insert_key_for_current_state(obj, frame-1)
-		
-		""" Return to worl position and insert a new key """
-		obj.matrix_world = worldlocation
-		insert_key_for_current_state(obj, frame)
+	if not const:
+		return
+
+	""" Store the world position """
+	worldlocation = obj.matrix_world
+	
+	""" Insert key frame on frame Zero with value Zero """
+	const.influence = 0 # in time 0
+	const.keyframe_insert(data_path='influence', index=-1, frame=frame)
+	set_last_key_type(obj, 'CONSTANT')
+	
+	""" set key in previous frame for current position """
+	insert_key_for_current_state(obj, frame-1)
+	
+	""" Return to worl position and insert a new key """
+	obj.matrix_world = worldlocation
+	insert_key_for_current_state(obj, frame)
 
 
-
-def set_bone_free(self, armature, bone, frame):
+def set_bone_free(armature, bone, frame):
 	""" Get active child of constraint """
 	const = get_bone_pre_link(armature, bone)
 	bone = armature.pose.bones[bone.name] # get pose bone
 	
-	if const != None:
-		""" Store the world position """
-		matrix_world = armature.matrix_world @ bone.matrix
-	
-		""" Insert key frame on frame Zero with value Zero """
-		const.influence = 0 # in time 0
-		const.keyframe_insert(data_path='influence', index=-1, frame=frame)
-		
-		set_last_key_type(armature, 'CONSTANT')
-		
-		""" set key in previous frame for current position """
-		insert_key_for_current_state(bone, frame-1)
-		
-		""" Return to worl position and insert a new key """
-		bone.matrix = matrix_world
-		insert_key_for_current_state(bone, frame)
+	if not const:
+		return
 
+	""" Store the world position """
+	matrix_world = armature.matrix_world @ bone.matrix
+
+	""" Insert key frame on frame Zero with value Zero """
+	const.influence = 0 # in time 0
+	const.keyframe_insert(data_path='influence', index=-1, frame=frame)
+	
+	set_last_key_type(armature, 'CONSTANT')
+	
+	""" set key in previous frame for current position """
+	insert_key_for_current_state(bone, frame-1)
+	
+	""" Return to worl position and insert a new key """
+	bone.matrix = matrix_world
+	insert_key_for_current_state(bone, frame)
+
+
+def get_first_pint_position(curve):
+	if curve.data.splines:
+		spline = curve.data.splines[0]
+		if spline.bezier_points:
+			point = spline.bezier_points[0].co.copy()
+			return curve.location + point * curve.scale
+	return curve.location
+
+
+def link_constrain_set_link(obj, parent, subtarget, frame):
+	""" Create a new constraint modifier """
+	const = obj.constraints.new('CHILD_OF')
+	# const.show_expanded = False
+	
+	""" set constrant values """
+	const.target = parent
+	if subtarget != None:
+		const.subtarget = subtarget.name
+		const.set_inverse_pending = True
+
+	""" Set 0 value key in frame 0 """
+	const.influence = 0 # in time 0
+	const.keyframe_insert(data_path='influence', index=-1, frame=0)
+	set_last_key_type(obj, 'CONSTANT')
+	
+	""" set value 1 in current frame """
+	const.influence = 1 # in time current
+	const.keyframe_insert(data_path='influence', index=-1, frame=frame)
+	
+	set_last_key_type(obj, 'CONSTANT')
+	
+	const.inverse_matrix = const.target.matrix_world.inverted()
+
+	""" Fix loacation for Armatore Bone """
+	if subtarget:
+		bpy.ops.constraint.childof_set_inverse(
+			constraint=const.name, owner='OBJECT'
+		)
+	
+
+def link_constrain_set_bonelink(armature, bone, parent, subtarget, frame):
+	""" Create a new constraint modifier """
+	const = armature.pose.bones[bone.name].constraints.new('CHILD_OF')
+	# const.show_expanded = False
+	
+	""" set constrant values """
+	const.target = parent
+	if subtarget != None:
+		const.subtarget = subtarget.name
+		const.set_inverse_pending = True
+
+	""" Set 0 value key in frame 0 """
+	const.influence = 0 # in time 0
+	const.keyframe_insert(data_path='influence', index=-1, frame=0)
+	set_last_key_type(armature, 'CONSTANT')
+	
+	""" set value 1 in current frame """
+	const.influence = 1 # in time current
+	const.keyframe_insert(data_path='influence', index=-1, frame=frame)
+	set_last_key_type(armature, 'CONSTANT')
+
+	const.inverse_matrix = const.target.matrix_world.inverted()
+
+	""" Fix loacation for Armatore Bone """
+	if subtarget:
+		bpy.ops.constraint.childof_set_inverse(
+			constraint=const.name, owner='OBJECT'
+		)
+
+
+def set_path_constraint(ctx, obj, path):
+	const = obj.constraints.new('FOLLOW_PATH')
+	const.target = path
+	const.use_curve_follow = True
+	const.forward_axis = 'FORWARD_X'
+	path.data.use_path_follow = True
+	obj.location = Vector((0,0,0))
+
+	data_path = 'constraints["' + const.name + '"].offset'
+	start, end = ctx.scene.frame_start, ctx.scene.frame_end
+	const.offset = 0
+	obj.keyframe_insert(data_path=data_path, frame=start)
+	set_last_key_type(obj, 'LINEAR')
+	const.offset = -100
+	obj.keyframe_insert(data_path=data_path, frame=end)
+	set_last_key_type(obj, 'LINEAR')
+
+
+def set_lookat_constraint(obj, target, subtarget):
+	const = obj.constraints.new('TRACK_TO')
+	const.target = target
+	if subtarget:
+		const.subtarget = subtarget.name
+		const.target_space = 'POSE'
+	
+	const.track_axis = 'TRACK_X'
+	const.up_axis = 'UP_Z'
+
+
+def set_location_constraint(obj, target, subtarget):
+	const = obj.constraints.new('COPY_LOCATION')
+	const.target = target
+	if subtarget:
+		const.subtarget = subtarget.name
+
+
+def set_orient_constraint(obj, target, subtarget):
+	const = obj.constraints.new('COPY_ROTATION')
+	const.target = target
+	if subtarget:
+		const.subtarget = subtarget.name
 
 
 class Anim_OT_Link_Constraint(PickOperator):
@@ -121,73 +235,16 @@ class Anim_OT_Link_Constraint(PickOperator):
 			return ctx.selected_objects
 		return False
 	
-	def set_link(self, obj, parent, subtarget, frame):
-		""" Create a new constraint modifier """
-		const = obj.constraints.new('CHILD_OF')
-		# const.show_expanded = False
-		
-		""" set constrant values """
-		const.target = parent
-		if subtarget != None:
-			const.subtarget = subtarget.name
-			const.set_inverse_pending = True
-
-		""" Set 0 value key in frame 0 """
-		const.influence = 0 # in time 0
-		const.keyframe_insert(data_path='influence', index=-1, frame=0)
-		set_last_key_type(obj, 'CONSTANT')
-		
-		""" set value 1 in current frame """
-		const.influence = 1 # in time current
-		const.keyframe_insert(data_path='influence', index=-1, frame=frame)
-		
-		set_last_key_type(obj, 'CONSTANT')
-		
-		const.inverse_matrix = const.target.matrix_world.inverted()
-
-		""" Fix loacation for Armatore Bone """
-		if subtarget != None:
-			bpy.ops.constraint.childof_set_inverse(constraint=const.name, owner='OBJECT')
-	
-	def set_bonelink(self, armature, bone, parent, subtarget, frame):
-		""" Create a new constraint modifier """
-		const = armature.pose.bones[bone.name].constraints.new('CHILD_OF')
-		# const.show_expanded = False
-		
-		""" set constrant values """
-		const.target = parent
-		if subtarget != None:
-			const.subtarget = subtarget.name
-			const.set_inverse_pending = True
-
-		""" Set 0 value key in frame 0 """
-		const.influence = 0 # in time 0
-		const.keyframe_insert(data_path='influence', index=-1, frame=0)
-		set_last_key_type(armature, 'CONSTANT')
-		
-		""" set value 1 in current frame """
-		const.influence = 1 # in time current
-		const.keyframe_insert(data_path='influence', index=-1, frame=frame)
-		set_last_key_type(armature, 'CONSTANT')
-	
-		const.inverse_matrix = const.target.matrix_world.inverted()
-
-		""" Fix loacation for Armatore Bone """
-		if subtarget != None:
-			bpy.ops.constraint.childof_set_inverse(constraint=const.name, owner='OBJECT')
-	
 	def picked(self, ctx, source, subsource, target, subtarget):
 		frame = ctx.scene.frame_current
 		for obj in source:
 			if obj.type == 'ARMATURE' and subsource:
 				for bone in subsource:
-					set_bone_free(self, obj, bone, frame)
-					self.set_bonelink(obj, bone, target, subtarget, frame)
+					set_bone_free(obj, bone, frame)
+					link_constrain_set_bonelink(obj, bone, target, subtarget, frame)
 			else:
-				set_object_free(self, obj, frame)
-				self.set_link(obj, target, subtarget, frame)
-		# self.report({'OPERATOR'},'bpy.ops.anim.link_constraint()')
-
+				set_object_free(obj, frame)
+				link_constrain_set_link(obj, target, subtarget, frame)
 
 
 class Anim_OT_Link_To_World(Operator):
@@ -209,13 +266,11 @@ class Anim_OT_Link_To_World(Operator):
 		for obj in objs:
 			if obj.type == 'ARMATURE' and ctx.mode == 'POSE':
 				for bone in obj.data.bones:
-					set_bone_free(self, obj, bone, frame)
+					set_bone_free(obj, bone, frame)
 			else:
-				set_object_free(self, obj, frame)
+				set_object_free(obj, frame)
 		
-		# self.report({'OPERATOR'},'bpy.ops.anim.link_to_world()')
 		return{'FINISHED'}
-
 
 
 class Anim_OT_Path_Constraint(PickOperator):
@@ -232,36 +287,10 @@ class Anim_OT_Path_Constraint(PickOperator):
 			return ctx.selected_objects
 		return False
 	
-	def get_first_pint_position(self, curve):
-		if len(curve.data.splines) > 0:
-			if len(curve.data.splines[0].bezier_points) > 0:
-				point = curve.data.splines[0].bezier_points[0].co.copy()
-				return curve.location + point * curve.scale
-		return curve.location
-
-	def set_path_constraint(self, ctx, obj, path):
-		const = obj.constraints.new('FOLLOW_PATH')
-		const.target = path
-		const.use_curve_follow = True
-		const.forward_axis = 'FORWARD_X'
-		path.data.use_path_follow = True
-		obj.location = Vector((0,0,0))
-
-		data_path = 'constraints["' + const.name + '"].offset'
-		start, end = ctx.scene.frame_start, ctx.scene.frame_end
-		const.offset = 0
-		obj.keyframe_insert(data_path=data_path, frame=start)
-		set_last_key_type(obj, 'LINEAR')
-		const.offset = -100
-		obj.keyframe_insert(data_path=data_path, frame=end)
-		set_last_key_type(obj, 'LINEAR')
-
 	def picked(self, ctx, source, subsource, target, subtarget):
 		for obj in source:
 			if obj != target:
-				self.set_path_constraint(ctx, obj, target)
-		# self.report({'OPERATOR'},'bpy.ops.anim.path_constraint()')
-
+				set_path_constraint(ctx, obj, target)
 
 
 class Anim_OT_Lookat_Constraint(PickOperator):
@@ -275,20 +304,9 @@ class Anim_OT_Lookat_Constraint(PickOperator):
 			return ctx.selected_objects
 		return False
 
-	def set_lookat(self, obj, target, subtarget):
-		const = obj.constraints.new('TRACK_TO')
-		const.target = target
-		if subtarget != None:
-			const.subtarget = subtarget.name
-			const.target_space = 'POSE'
-		const.track_axis = 'TRACK_X'
-		const.up_axis = 'UP_Z'
-
 	def picked(self, ctx, source, subsource, target, subtarget):
 		for obj in source:
-			self.set_lookat(obj, target, subtarget)
-		# self.report({'OPERATOR'},'bpy.ops.anim.lookat_constraint()')
-
+			set_lookat_constraint(obj, target, subtarget)
 
 
 class Anim_OT_Location_Constraint(PickOperator):
@@ -302,17 +320,9 @@ class Anim_OT_Location_Constraint(PickOperator):
 			return ctx.selected_objects
 		return False
 
-	def set_location(self, obj, target, subtarget):
-		const = obj.constraints.new('COPY_LOCATION')
-		const.target = target
-		if subtarget != None:
-			const.subtarget = subtarget.name
-
 	def picked(self, ctx, source, subsource, target, subtarget):
 		for obj in source:
-			self.set_location(obj, target, subtarget)
-		# self.report({'OPERATOR'},'bpy.ops.anim.location_constraint()')
-
+			set_location_constraint(obj, target, subtarget)
 
 
 class Anim_OT_Orientation_Constraint(PickOperator):
@@ -326,17 +336,9 @@ class Anim_OT_Orientation_Constraint(PickOperator):
 			return ctx.selected_objects
 		return False
 
-	def set_orient(self, obj, target, subtarget):
-		const = obj.constraints.new('COPY_ROTATION')
-		const.target = target
-		if subtarget != None:
-			const.subtarget = subtarget.name
-
 	def picked(self, ctx, source, subsource, target, subtarget):
 		for obj in source:
-			self.set_orient(obj, target, subtarget)
-		# self.report({'OPERATOR'},'bpy.ops.anim.orientation_constraint()')
-
+			set_orient_constraint(obj, target, subtarget)
 
 
 classes = (
@@ -351,11 +353,13 @@ classes = (
 
 def register_parent():
 	for c in classes:
-		bpy.utils.register_class(c)
+		register_class(c)
+
 
 def unregister_parent():
 	for c in classes:
-		bpy.utils.unregister_class(c)
+		unregister_class(c)
+
 
 if __name__ == "__main__":
 	register_parent()

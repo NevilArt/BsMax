@@ -12,10 +12,12 @@
 #	You should have received a copy of the GNU General Public License
 #	along with this program.  If not, see <https://www.gnu.org/licenses/>.
 ############################################################################
+# 2024/04/15
+
 import bpy
 from bpy.types import Operator
 from bpy.props import BoolProperty, EnumProperty
-
+from bpy.utils import register_class, unregister_class
 
 
 class Anim_OT_Set_TimeLine_Range(Operator):
@@ -24,47 +26,64 @@ class Anim_OT_Set_TimeLine_Range(Operator):
 	
 	start = False
 	mouse_x = 0
-	mode: EnumProperty(name='Mode', default='Shift',
-		items =[('Shift','Shift',''), ('First','First',''), ('End','End','')])
+
+	mode: EnumProperty(
+		name='Mode',
+		items =[
+			('Shift','Shift',''),
+			('First','First',''),
+			('End','End','')
+		],
+		default='Shift'
+	)
 	
 	def modal(self, ctx, event):
 		if not self.start:
 			self.start = True
 			self.mouse_x = event.mouse_x
+
 		if event.type == 'MOUSEMOVE':
 			scene = ctx.scene
-			frame_start,frame_end = scene.frame_start, scene.frame_end
+			frame_start, frame_end = scene.frame_start, scene.frame_end
+
 			if self.start:
 				scale = (frame_end - frame_start) / 100
 				scale = 1 if scale < 1 else scale
 				step = int((event.mouse_x - self.mouse_x) / 10.0 * scale)
+
 				if self.mode == 'First':
 					scene.frame_start -= step
 					if frame_start == frame_end:
 						scene.frame_start = frame_end - 1
+
 				elif self.mode == 'End':
 					scene.frame_end -= step
 					if frame_end == frame_start:
 						scene.frame_end = frame_start + 1
+
 				else:
 					step = 0 if frame_start - step < 0 else step
 					scene.frame_start -= step
 					scene.frame_end -= step
+
 				if scene.frame_current < scene.frame_start:
 					scene.frame_current = scene.frame_start
+
 				if scene.frame_current > scene.frame_end:
 					scene.frame_current = scene.frame_end
+
 				self.mouse_x = event.mouse_x
 				bpy.ops.action.view_all()
+
 		if self.start and event.value == 'RELEASE':
 			self.start = False
 			return {'CANCELLED'}
+
 		return {'RUNNING_MODAL'}
 
 	def invoke(self, ctx, event):
 		ctx.window_manager.modal_handler_add(self)
 		return {'RUNNING_MODAL'}
-
 
 
 class Anim_OT_Keys_Range_Set(Operator):
@@ -111,17 +130,22 @@ classes = (
 	Anim_OT_Keys_Range_Set
 )
 
+
 def register_time():
 	for c in classes:
-		bpy.utils.register_class(c)
+		register_class(c)
+	
 	bpy.types.DOPESHEET_MT_context_menu.append(time_context_menu)
 	bpy.types.SEQUENCER_MT_context_menu.append(time_context_menu)
+
 
 def unregister_time():
 	bpy.types.DOPESHEET_MT_context_menu.remove(time_context_menu)
 	bpy.types.SEQUENCER_MT_context_menu.remove(time_context_menu)
+	
 	for c in classes:
-		bpy.utils.unregister_class(c)
+		unregister_class(c)
+
 
 if __name__ == "__main__":
 	register_time()

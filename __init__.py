@@ -19,9 +19,9 @@
 
 bl_info = {
 	'name': 'BsMax',
-	'description': 'BsMax UI simulations and Tool pack (Blender 3.3LTS ~ 4.1Beta)',
+	'description': 'BsMax UI simulations and Tool pack (Blender 3.3LTS ~ 4.1)',
 	'author': 'Naser Merati (Nevil)',
-	'version': (0, 1, 2, 20240408),
+	'version': (0, 1, 2, 20240422),
 	'blender': (3, 3, 0),
 	'location': 'Almost Everywhere in Blender',
 	'wiki_url': 'https://github.com/NevilArt/BsMax/wiki',

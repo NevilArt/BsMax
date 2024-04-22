@@ -12,7 +12,7 @@
 #	You should have received a copy of the GNU General Public License
 #	along with this program.  If not,see <https://www.gnu.org/licenses/>.
 ############################################################################
-# 2024/04/04
+# 2024/04/20
 
 import bpy
 
@@ -31,7 +31,7 @@ class LightProbe(Primitive_Public_Class):
 
 
 class Create_OT_Light_Probe_Grid(Draw_Primitive):
-	bl_idname="create.light_probe_grid"
+	bl_idname='create.light_probe_grid'
 	bl_label="Irradiance Volume"
 	subclass = LightProbe()
 	width, length, height, distance = 0, 0, 0, 0
@@ -75,7 +75,7 @@ class Create_OT_Light_Probe_Grid(Draw_Primitive):
 
 
 class Create_OT_Light_Probe_Planer(Draw_Primitive):
-	bl_idname="create.light_probe_planer"
+	bl_idname='create.light_probe_planer'
 	bl_label="Reflection Plane"
 	subclass = LightProbe()
 	width, length, distance = 0, 0, 0
@@ -101,7 +101,7 @@ class Create_OT_Light_Probe_Planer(Draw_Primitive):
 
 
 class Create_OT_Light_Probe_Cubemap(Draw_Primitive):
-	bl_idname = "create.light_probe_cubemap"
+	bl_idname = 'create.light_probe_cubemap'
 	bl_label = "Reflection Cubemap"
 	subclass = LightProbe()
 
@@ -117,11 +117,11 @@ class Create_OT_Light_Probe_Cubemap(Draw_Primitive):
 			self.subclass.owner.scale = (1, 1, 1)
 
 
-classes = (
-		Create_OT_Light_Probe_Grid,
-		Create_OT_Light_Probe_Planer,
-		Create_OT_Light_Probe_Cubemap
-)
+classes = {
+	Create_OT_Light_Probe_Grid,
+	Create_OT_Light_Probe_Planer,
+	Create_OT_Light_Probe_Cubemap
+}
 
 
 def register_lightprobe():
@@ -134,5 +134,5 @@ def unregister_lightprobe():
 		unregister_class(c)
 
 
-if __name__ == "__main__":
+if __name__ == '__main__':
 	register_lightprobe()

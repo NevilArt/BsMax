@@ -12,12 +12,13 @@
 #	You should have received a copy of the GNU General Public License
 #	along with this program.  If not, see <https://www.gnu.org/licenses/>.
 ############################################################################
+# 2024/04/15
 
 import bpy
 
 from bpy.types import Operator
 from bpy.props import BoolProperty, EnumProperty
-
+from bpy.utils import register_class, unregister_class
 
 
 def get_selected_bones(ctx, armature):
@@ -28,7 +29,6 @@ def get_selected_bones(ctx, armature):
 	return []
 
 
-
 def collect_children(bones):
 	children = []
 	for bone in bones:
@@ -37,7 +37,6 @@ def collect_children(bones):
 				children.append(child)
 				child.select = True
 	return children
-
 
 
 def select_children(selected, full, extend):
@@ -58,7 +57,6 @@ def select_children(selected, full, extend):
 				bone.select = False
 
 
-
 def select_parent(selected, extend):
 	child_less = []
 	for bone in selected:
@@ -76,7 +74,6 @@ def select_parent(selected, extend):
 			bone.select = False
 
 
-
 #TODO pose tool but works on edit_armature too
 # has to rename to armature tool
 class Pose_OT_Select_Hierarchy_Plus(Operator):
@@ -88,7 +85,7 @@ class Pose_OT_Select_Hierarchy_Plus(Operator):
 	full: BoolProperty(default=False)
 	extend: BoolProperty(default=False)
 	direction: EnumProperty(
-		name='Direction',  default='CHILDREN',
+		name='Direction',
 		items=[
 			(
 				'PARENT', 'Parent',
@@ -98,7 +95,8 @@ class Pose_OT_Select_Hierarchy_Plus(Operator):
 				'CHILDREN', 'Children',
 				'Select children of each selected Bone'
 			)
-		]
+		],
+		default='CHILDREN'
 	)
 
 	@classmethod
@@ -118,7 +116,6 @@ class Pose_OT_Select_Hierarchy_Plus(Operator):
 		return{"FINISHED"}
 
 
-
 def full_selected_armatures(ctx):
 	armatures = [obj for obj in ctx.selected_objects if obj.type == "ARMATURE"]
 	fullSelected = []
@@ -134,7 +131,6 @@ def full_selected_armatures(ctx):
 			fullSelected.append(armature)
 
 	return fullSelected
-
 
 
 class Pose_OT_Paste_Pose_Plus(Operator):
@@ -170,24 +166,20 @@ class Pose_OT_Paste_Pose_Plus(Operator):
 		return{"FINISHED"}
 
 
-
 classes = (
 	Pose_OT_Select_Hierarchy_Plus,
 	Pose_OT_Paste_Pose_Plus
 )
 
 
-
 def register_pose():
 	for c in classes:
-		bpy.utils.register_class(c)
-
+		register_class(c)
 
 
 def unregister_pose():
 	for c in classes:
-		bpy.utils.unregister_class(c)
-
+		unregister_class(c)
 
 
 if __name__ == "__main__":

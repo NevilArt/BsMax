@@ -12,7 +12,7 @@
 #	You should have received a copy of the GNU General Public License
 #	along with this program.  If not, see <https://www.gnu.org/licenses/>.
 ############################################################################
-# 2024/03/23
+# 2024/04/19
 
 from bpy.utils import register_class, unregister_class
 from bpy.types import Menu
@@ -21,12 +21,7 @@ from bpy.types import Menu
 class BsMax_MT_View3D_tools(Menu):
 	bl_idname = 'BSMAX_MT_view3dtools'
 	bl_label = 'Tools'
-	# bl_context = 'objectmode'
-
-	# @classmethod
-	# def poll(self,ctx):
-	# 	return ctx.mode == 'OBJECT'
-
+	
 	def draw(self, ctx):
 		pass
 

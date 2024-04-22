@@ -1,3 +1,9 @@
+# 0, 1, 2, 20240408
+* Primitive issue with new change of  blender 4.1 mostly fixed.
+* Link to operator has new option to keep hierarchy (Option appears only if selection has hierarchy).
+* In 3DsMax key maps in Blender 4.1+ additional key removed and uses Blender default "K" in 3D view and pose mode.
+* And many code Cleaneng.
+
 # 0, 1, 2, 20240326
 * Some new tools added under Command Panel modifier list.
 * Make unique tool optimized (View3D/Object/Relation/Make unigue).

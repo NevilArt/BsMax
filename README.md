@@ -15,7 +15,7 @@ Your Reports and Ideas will help me alot and don't forget the sharing. let more 
 
 If not have Github account use 'NevilArt@Gmail.Com' for bug report.
 
-## Support
+## Support and Contribute
 If you found this product useful and want to support this project you can Donate in [Gumroad](https://nevilart.gumroad.com/l/BsMax).
 
 ## Download / Installation
@@ -36,11 +36,12 @@ If you found this product useful and want to support this project you can Donate
 * [Download Older Version (2.80-2.92)(2.93-3.2)](https://github.com/NevilArt/BsMax_2_80)
 
 ## Recent Updates and Changes
-* Primitive issue with new change of  blender 4.1 mostly fixed.
-* Link to operator has new option to keep hierarchy (Option appears only if selection has hierarchy).
-* In 3DsMax key maps in Blender 4.1+ additional key removed and uses Blender default "K".
-* And many code Cleaneng.
+* Armature auto bone alignment tool (Tools/Rig/Auto Bone Alignment).
+* Code cleaning and some bug fixed.
 * [Change log ...](https://github.com/NevilArt/BsMax/blob/master/CHANGELOG.md)
+
+## Special Thanks
+* [Thanks you for Support and Contribute](https://github.com/NevilArt/BsMax/blob/master/CONTRIBUTORS.md)
 
 ## License
 This project is licensed under the GPL (GENERAL PUBLIC LICENSE) license. See [LICENSE](https://www.gnu.org/licenses/gpl-3.0.en.html) for more information.

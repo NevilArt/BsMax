@@ -12,6 +12,8 @@
 #	You should have received a copy of the GNU General Public License
 #	along with this program.  If not, see <https://www.gnu.org/licenses/>.
 ############################################################################
+# 2024/04/20
+
 import math
 import cmath
 from mathutils import Vector
@@ -32,7 +34,6 @@ from bsmax.math import (
 	get_point_on_spline,
 	get_bezier_tangent
 )
-
 
 
 ############################################################################################
@@ -244,7 +245,6 @@ def get_devide_range(a, b):
 	return [a, m], [m, b]
 
 
-
 def get_cros_time(start, end, ps, pe, cross):
 	f = get_distance(ps, pe)
 	c = get_distance(ps, cross)
@@ -252,13 +252,11 @@ def get_cros_time(start, end, ps, pe, cross):
 	return start + t*(c/f)
 
 
-
 def get_line_offset(p1, p2, val):
 	a,b = p1.y-p2.y, p2.x-p1.x
 	d = atan2(b,a)
 	x,y = cos(d),sin(d)
 	return Vector((x, y, 0)) * val
-
 
 
 def get_corner_position(p1, p2, p3, val):
@@ -281,7 +279,6 @@ def get_corner_position(p1, p2, p3, val):
 		position = o1 + p2
 	
 	return position
-
 
 
 def get_curve_selection_index(splines, mode):
@@ -352,7 +349,6 @@ def get_curve_selection_index(splines, mode):
 	return selection
 
 
-
 def get_boundingbox(points):
 	findmin = lambda l: min(l)
 	findmax = lambda l: max(l)
@@ -360,7 +356,6 @@ def get_boundingbox(points):
 	pmin = Vector([findmin(axis) for axis in [x,y,z]])
 	pmax = Vector([findmax(axis) for axis in [x,y,z]])
 	return BoundingBox(pmin, pmax)
-
 
 
 def get_curve_activespline_index(splines):
@@ -371,7 +366,6 @@ def get_curve_activespline_index(splines):
 			return i
 	
 	return None
-
 
 
 def scan(segment1, segment2, tollerance, section1, section2):
@@ -431,10 +425,8 @@ def scan(segment1, segment2, tollerance, section1, section2):
 	return retpoints
 
 
-
 def get_segments_intersection_points(segment1, segment2, tollerance):
 	return scan(segment1, segment2, tollerance, [[0,1]], [[0,1]])
-
 
 
 def get_spline_segments(spline):
@@ -448,7 +440,6 @@ def get_spline_segments(spline):
 	return segs
 
 
-
 def get_curves_intersection_points(spline1, spline2, tollerance):
 	intsecs = []
 	segs1 = spline1.get_as_segments()
@@ -459,7 +450,6 @@ def get_curves_intersection_points(spline1, spline2, tollerance):
 			intsecs += get_segments_intersection_points(s1, s2, tollerance)
 	
 	return intsecs
-
 
 
 def spline_offset(spline, value):
@@ -504,11 +494,9 @@ def spline_offset(spline, value):
 			point.co += get_line_offset(p1, p2, value)
 
 
-
 def bezier_point_normalized(left, co, right):
 	n = ((right - co).normalized() - (left - co).normalized()).normalized()
 	return Vector((-n[1], n[0], n[2]))
-
 
 
 def spline_chamfer(spline, indexs, value, tention):
@@ -591,7 +579,6 @@ def spline_chamfer(spline, indexs, value, tention):
 		spline.bezier_points.insert(i, NewPoint)
 
 
-
 def spline_reverse(spline):
 	bezier_points = deepcopy(spline.bezier_points)
 	spline.bezier_points.clear()
@@ -606,7 +593,6 @@ def spline_reverse(spline):
 		point.handle_left_type = ltype
 		point.handle_right_type = rtype
 		spline.bezier_points.append(point)
-
 
 
 def spline_divid(spline, index, time):
@@ -628,7 +614,6 @@ def spline_divid(spline, index, time):
 	pe.handle_left = p[5]
 	#pe.co = p[6]
 	spline.bezier_points.insert(index+1, pc)
-
 
 
 def spline_multi_division(spline, index, times, cos=[]):
@@ -690,7 +675,6 @@ def spline_multi_division(spline, index, times, cos=[]):
 		spline.bezier_points.insert(index+i+1, pc[i])
 
 
-
 def spline_merge_points_by_distance(spline, distance, selectedonly):
 	dellist = []
 
@@ -744,7 +728,6 @@ def spline_merge_points_by_distance(spline, distance, selectedonly):
 	spline.remove(delindex)
 
 
-
 def bezier_point_from_blender_bpoint(self, bpoint):
 	self.select_left_handle = bpoint.select_left_handle
 	self.select_right_handle = bpoint.select_right_handle
@@ -758,7 +741,6 @@ def bezier_point_from_blender_bpoint(self, bpoint):
 	self.tilt = bpoint.tilt
 	self.weight_softbody = bpoint.weight_softbody
 	self.radius = bpoint.radius
-
 
 
 #TODO  naming has to fixed
@@ -775,7 +757,6 @@ def bezier_point_get_bezier_point(self, bezier_point):
 	bezier_point.select_control_point = self.select_control_point
 	bezier_point.select_right_handle = self.select_right_handle
 	bezier_point.weight_softbody = self.weight_softbody
-
 
 
 def collect_splines_divisions(intersections):
@@ -823,7 +804,6 @@ def collect_splines_divisions(intersections):
 	return divisions
 
 
-
 def curve_boolean(self, index1, index2, mode, tollerance):
 	spline1, spline2 = self.splines[index1], self.splines[index2]
 	intersections = get_curves_intersection_points(spline1, spline2, tollerance)
@@ -849,7 +829,6 @@ def curve_boolean(self, index1, index2, mode, tollerance):
 		self.delete_segments(index2, outer2)
 
 	self.merge_gaps_by_distance(0.0001, False)
-
 
 
 def curve_merge_gaps_by_distance(self, distance, selectedonly):
@@ -921,7 +900,6 @@ def curve_merge_gaps_by_distance(self, distance, selectedonly):
 				break
 
 
-
 def curve_break_point(self, spline, points):
 	""" seprate spline from given point indexe
 			spline can be Spline class or index
@@ -961,7 +939,6 @@ def curve_break_point(self, spline, points):
 		self.append(newspline)
 
 	self.remove(spline)
-
 
 
 def curve_delete_segments(self, splineindex, indexes):
@@ -1006,7 +983,6 @@ def curve_delete_segments(self, splineindex, indexes):
 		self.splines.append(newspline)
 
 
-
 def curve_swap(self, index1, index2):
 	count = len(self.splines)
 
@@ -1019,12 +995,10 @@ def curve_swap(self, index1, index2):
 	return False
 
 
-
 def curve_clone(self, index):
 	if index < len(self.splines):
 		return deepcopy(self.splines[index])
 	return None
-
 
 
 def curve_remove(self, spline):
@@ -1038,19 +1012,16 @@ def curve_remove(self, spline):
 				break
 
 
-
 def curve_reset(self):
 	self.obj.data.splines.clear()
 	for spline in self.original:
 		spline.create(self.obj.data)
 
 
-
 def curve_update(self):
 	self.obj.data.splines.clear()
 	for spline in self.splines:
 		spline.create(self.obj.data)
-
 
 
 def segment_boundingbox(self, start, end, divid):
@@ -1060,12 +1031,10 @@ def segment_boundingbox(self, start, end, divid):
 	return get_boundingbox(cuts)
 
 
-
 def segment_get_section_line(self, start, end):
 	a = point_on_cubic_bezier_curve(self.a, self.b, self.c, self.d, start)
 	b = point_on_cubic_bezier_curve(self.a, self.b, self.c, self.d, end)
 	return Line(a, b)
-
 
 
 def segment_divisions_append(self, time, co):
@@ -1085,7 +1054,6 @@ def segment_divisions_sort(self, reverse):
 		self.cos.append(cos[times.index(time)])
 
 
-
 def spline_divisions_sort(self, reverse):
 	indexes = [sd.index for sd in self.segments]
 	indexes.sort(reverse=reverse)
@@ -1098,7 +1066,6 @@ def spline_divisions_sort(self, reverse):
 				break
 
 	self.segments = deepcopy(segments)
-
 
 
 def spline_get_next_index(self, index, riverce):
@@ -1121,7 +1088,6 @@ def spline_get_next_index(self, index, riverce):
 	return index + 1
 
 
-
 def spline_get_segment(self, index):
 	start, end = self.get_segment_indexes(index)
 	a = self.bezier_points[start].co
@@ -1129,7 +1095,6 @@ def spline_get_segment(self, index):
 	c = self.bezier_points[end].handle_left
 	d = self.bezier_points[end].co
 	return a, b, c, d
-
 
 
 def spline_get_segment_length(self, index, steps):
@@ -1140,12 +1105,10 @@ def spline_get_segment_length(self, index, steps):
 	return 0
 
 
-
 def spline_get_as_segments(self):
 	count = len(self.bezier_points) if self.use_cyclic_u else \
 										len(self.bezier_points)-1
 	return [Segment(self,i) for i in range(count)]
-
 
 
 def spline_set_free(self, full):
@@ -1170,7 +1133,6 @@ def spline_set_free(self, full):
 		pe.handle_right_type = 'VECTOR'
 
 
-
 def spline_join(self, spline):
 	# TODO add modes for join the last and first point
 	# keep both
@@ -1179,7 +1141,6 @@ def spline_join(self, spline):
 	# merge to center
 	for point in spline.bezier_points:
 		self.bezier_points.append(point)
-
 
 
 def spline_remove(self, index):
@@ -1192,7 +1153,6 @@ def spline_remove(self, index):
 			self.bezier_points.pop(i)
 
 
-
 def spline_make_first(self, index):
 	if self.use_cyclic_u:
 		spb = self.bezier_points.copy()
@@ -1203,13 +1163,11 @@ def spline_make_first(self, index):
 		self.reverse()
 
 
-
 def spline_select(self, select):
 	for point in self.bezier_points:
 		point.select_left_handle = select
 		point.select_right_handle = select
 		point.select_control_point = select
-
 
 
 def spline_create(self, data):
@@ -1240,13 +1198,11 @@ def spline_create(self, data):
 	#newspline.character_index = self.character_index
 
 
-
 def spline_get_point_index(self, point):
 	for index, bezier_point in enumerate(self.bezier_points):
 		if point == bezier_point:
 			return index
 	return None
-
 
 
 def spline_from_blender_spline(self, spline):
@@ -1273,7 +1229,6 @@ def spline_from_blender_spline(self, spline):
 	self.character_index = spline.character_index
 
 
-
 class SegmentDivisions:
 	def __init__(self, index, time, co):
 		self.index = index
@@ -1287,7 +1242,6 @@ class SegmentDivisions:
 		segment_divisions_sort(self, reverse)
 
 
-
 class SplineDivisions:
 	def __init__(self, spline, segsub):
 		self.spline = spline
@@ -1295,7 +1249,6 @@ class SplineDivisions:
 	
 	def sort(self, reverse=False):
 		spline_divisions_sort(self, reverse)
-
 
 
 class Line:
@@ -1314,7 +1267,6 @@ class Line:
 
 	def get_intersection_with(self, target):
 		return get_lines_intersection(self.a, self.b, target.a, target.b)
-
 
 
 class BoundingBox:
@@ -1336,7 +1288,6 @@ class BoundingBox:
 		return bounding_box_colide_with(self, target)
 
 
-
 class CurveIntersectionPoint:
 	def __init__(self, segment1, time1, segment2, time2, co):
 		self.segment1 = segment1
@@ -1344,7 +1295,6 @@ class CurveIntersectionPoint:
 		self.segment2 = segment2
 		self.time2 = time2
 		self.co = co
-
 
 
 class Bezier_point:
@@ -1367,7 +1317,6 @@ class Bezier_point:
 
 	def get_bezier_point(self, bezier_point):
 		bezier_point_get_bezier_point(self, bezier_point)	
-
 
 
 class Segment:
@@ -1393,7 +1342,6 @@ class Segment:
 	
 	def get_length(self, steps=100):
 		return get_cubic_bezier_curve_length(self.a, self.b, self.c, self.d, steps=steps)
-
 
 
 class Spline:
@@ -1502,7 +1450,6 @@ class Spline:
 
 	def merge_points_by_distance(self, distance, selectedonly):
 		spline_merge_points_by_distance(self, distance, selectedonly)
-
 
 
 class Curve:

@@ -12,13 +12,11 @@
 #	You should have received a copy of the GNU General Public License
 #	along with this program.  If not, see <https://www.gnu.org/licenses/>.
 ############################################################################
+# 2024/04/19
 
 import bpy
-
 from mathutils import Vector
-
 from bpy.types import Operator
-
 
 
 def get_bone_tail_location(bone):
@@ -29,8 +27,8 @@ def get_bone_tail_location(bone):
 	for child in bone.children:
 		location += child.head
 	location /= len(bone.children)
+	
 	return location
-
 
 
 def align_bone_to_parent(bone):
@@ -42,10 +40,9 @@ def align_bone_to_parent(bone):
 	bone.tail = bone.head + (bone.length * normalVector)
 
 
-
 class Armature_TO_auto_bone_alignment(Operator):
 	bl_idname = 'armature.auto_bone_align'
-	bl_label = 'Armature Auto Bone Alignment'
+	bl_label = 'Auto Bone Alignment'
 	bl_options = {'REGISTER', 'UNDO'}
 
 	@classmethod
@@ -60,17 +57,14 @@ class Armature_TO_auto_bone_alignment(Operator):
 				align_bone_to_parent(bone)
 
 		return{"FINISHED"}
-	
 
 
 def register_alignment():
 	bpy.utils.register_class(Armature_TO_auto_bone_alignment)
 
 
-
 def unregister_alignment():
 	bpy.utils.unregister_class(Armature_TO_auto_bone_alignment)
-
 
 
 if __name__ == "__main__":

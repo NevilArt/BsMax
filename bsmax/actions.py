@@ -161,8 +161,11 @@ def link_to(objects, target, keepHierarchy):
 		obj.matrix_parent_inverse = target.matrix_world.inverted()
 
 
-def get_object_target(obj):
-	"""TODO get objects lookat target"""
+def get_object_target(object):
+	"""get objects lookat target"""
+	for constraint in object.constraints:
+		if constraint.type == 'TRACK_TO':
+			return object.constraints["Track To"].target
 	return None
 
 
@@ -170,7 +173,7 @@ def set_origen(ctx, obj, location):
 	""" Set object origen in new location\n
 		TODO: Transform rather than locaion
 		TODO: free from bpy.ops and remove context
-		TODO: Objs rather than songel object
+		TODO: Objs rather than singel object
 
 		args:
 			ctx: bpy.context
