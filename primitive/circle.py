@@ -12,7 +12,7 @@
 #	You should have received a copy of the GNU General Public License
 #	along with this program.  If not,see <https://www.gnu.org/licenses/>.
 ############################################################################
-# 2024/04/04
+# 2024/05/02
 
 import bpy
 
@@ -29,15 +29,15 @@ def get_circle_shape(radius, ssegs):
 		theta = i * angle
 		co = (radius * cos(theta), radius * sin(theta), 0)
 		in_tangent = (
-					co[0] + distance * sin(theta),
-					co[1] - distance * cos(theta),
-					0
+			co[0] + distance * sin(theta),
+			co[1] - distance * cos(theta),
+			0
 		)
 
 		out_tangent = (
-					co[0] - distance * sin(theta),
-					co[1] + distance * cos(theta),
-					0
+			co[0] - distance * sin(theta),
+			co[1] + distance * cos(theta),
+			0
 		)
 
 		spline.append((co, in_tangent, 'FREE', out_tangent, 'FREE'))

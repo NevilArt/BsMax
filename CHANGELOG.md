@@ -1,3 +1,7 @@
+# 0, 1, 2, 20240422 
+* Armature auto bone alignment tool (Tools/Rig/Auto Bone Alignment).
+* Code cleaning and some bug fixed.
+
 # 0, 1, 2, 20240408
 * Primitive issue with new change of  blender 4.1 mostly fixed.
 * Link to operator has new option to keep hierarchy (Option appears only if selection has hierarchy).

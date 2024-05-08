@@ -12,193 +12,375 @@
 #	You should have received a copy of the GNU General Public License
 #	along with this program.  If not, see <https://www.gnu.org/licenses/>.
 ############################################################################
+# 2024/05/05
 
 from mathutils import Vector
-
-# local bounding box
-# world bounding box
-# selected mesh bounding box
-# selected curve bounding box
-# empty local bounding box
-# empty world bounding box
+from math import pi, cos, sin
 
 
-def calculate_center(self):
-	self.center.x = (self.min.x + self.max.x) / 2
-	self.center.y = (self.min.y + self.max.y) / 2
-	self.center.z = (self.min.z + self.max.z) / 2
-
-
-
-def get_bound_from_object_local(self):
-	b = [self.obj.matrix_world @ Vector(v) for v in self.obj.bound_box]
-
-	self.min.x = min(b[0][0], b[1][0], b[2][0], b[3][0], b[4][0], b[5][0], b[6][0])
-	self.max.x = max(b[0][0], b[1][0], b[2][0], b[3][0], b[4][0], b[5][0], b[6][0])
-	self.min.y = min(b[0][1], b[1][1], b[2][1], b[3][1], b[4][1], b[5][1], b[6][1])
-	self.max.y = max(b[0][1], b[1][1], b[2][1], b[3][1], b[4][1], b[5][1], b[6][1])
-	self.min.z = min(b[0][2], b[1][2], b[2][2], b[3][2], b[4][2], b[5][2], b[6][2])
-	self.max.z = max(b[0][2], b[1][2], b[2][2], b[3][2], b[4][2], b[5][2], b[6][2])
-	
-	calculate_center(self)
-
-
-
-def get_bound_from_verts(self, verts):
-	if not verts:
+def get_bound_from_points(cls, points):
+	if not points:
+		cls.min = Vector((0, 0, 0))
+		cls.max = Vector((0, 0, 0))
+		cls.center = Vector((0, 0, 0))
 		return
 	
-	self.min = verts[0].copy()
-	self.max = verts[0].copy()
+	cls.min = points[0].copy()
+	cls.max = points[0].copy()
 
-	for co in verts:
-		if self.min.x > co.x:
-			self.min.x = co.x
-
-		if self.min.y > co.y:
-			self.min.y = co.y
-
-		if self.min.z > co.z:
-			self.min.z = co.z
-
-		if self.max.x < co.x:
-			self.max.x = co.x
-
-		if self.max.y < co.y:
-			self.max.y = co.y
-
-		if self.max.z < co.z:
-			self.max.z = co.z
+	for co in points:
+		cls.min.x = min(cls.min.x, co.x)
+		cls.max.x = max(cls.max.x, co.x)
+		cls.min.y = min(cls.min.y, co.y)
+		cls.max.y = max(cls.max.y, co.y)
+		cls.min.z = min(cls.min.z, co.z)
+		cls.max.z = max(cls.max.z, co.z)
 	
-	calculate_center(self)
+	# Calculate Center
+	cls.center.x = (cls.min.x + cls.max.x) / 2
+	cls.center.y = (cls.min.y + cls.max.y) / 2
+	cls.center.z = (cls.min.z + cls.max.z) / 2
 
 
+def create_sphere_points(radius, segments):
+	points = []
 
-def get_empty_bound(self):
-	displayType = self.obj.empty_display_type
-	size = self.obj.empty_display_size
-	location = self.obj.matrix_world.translation
-
-	if displayType in ('PLAIN_AXES', 'SPHERE', 'CUBE'):
-		#TODO need to apply transfomr for cube and plane_axes
-		self.min.x = location.x - size
-		self.max.x = location.x + size
-		self.min.y = location.y - size
-		self.max.y = location.y + size
-		self.min.z = location.z - size
-		self.max.z = location.z + size
-		self.center = location
-
-	elif displayType == 'ARROWS':
-		#TODO need to apply transfomr
-		self.min.x = location.x
-		self.max.x = location.x + size
-		self.min.y = location.y
-		self.max.y = location.y + size
-		self.min.z = location.z
-		self.max.z = location.z + size
-		calculate_center(self)
-
-	elif displayType == 'SINGLE_ARROW':
-		#TODO need to aply transform
-		width = size * 0.07
-		self.min.x = location.x - width
-		self.max.x = location.x + width
-		self.min.y = location.y - width
-		self.max.y = location.y + width
-		self.min.z = location.z
-		self.max.z = location.z + size
-		calculate_center(self)
-
-	elif displayType == 'CIRCLE':
-		#TODO need to apply transfomr
-		self.min.x = location.x - size
-		self.max.x = location.x + size
-		self.min.y = location.y
-		self.max.y = location.y
-		self.min.z = location.z - size
-		self.max.z = location.z + size
-		self.center = location
-
-	elif displayType == 'CONE':
-		#TODO need to apply transfomr
-		self.min.x = location.x - size
-		self.max.x = location.x + size
-		self.min.y = location.y
-		self.max.y = location.y + size*2
-		self.min.z = location.z - size
-		self.max.z = location.z + size
-		calculate_center(self)
-
-	elif displayType == 'IMAGE':
-		#TODO need to calculate aspect ratio from image
-		# and apply to transform
-		self.min.x = location.x - size
-		self.max.x = location.x + size
-		self.min.y = location.y - size
-		self.max.y = location.y + size
-		self.min.z = location.z
-		self.max.z = location.z
-		calculate_center(self)
-
-
-
-def get_light_bound(self):
-	pass
-
-
-
-def bound_box_get_world_bound(self):
-	matrix_world = self.obj.matrix_world
+	for i in range(segments + 1):
+		theta = i * pi / segments
+		sin_theta = sin(theta)
+		cos_theta = cos(theta)
 		
-	if self.obj.type == "MESH":
-		vertices = self.obj.data.vertices
-		verts = [matrix_world @ vert.co for vert in vertices]
-		get_bound_from_verts(self, verts)
+		for j in range(segments + 1):
+			phi = j * 2 * pi / segments
+			sin_phi = sin(phi)
+			cos_phi = cos(phi)
 
-	elif self.obj.type == "CURVE":
-		verts = []
-		for spn in self.obj.data.splines:
-			verts += [matrix_world @ pts.co for pts in spn.bezier_points]
-		get_bound_from_verts(self, verts)
+			x_vertex = radius * sin_theta * cos_phi
+			y_vertex = radius * sin_theta * sin_phi
+			z_vertex = radius * cos_theta
 
-	elif self.obj.type == "EMPTY":
-		get_empty_bound(self)
+			points.append(Vector((x_vertex, y_vertex, z_vertex)))
 
-	elif self.obj.type == "LIGHT":
-		get_light_bound(self)
+	return points
 
 
+def create_ellipse_points(radius_x, radius_y, segments):
+	points = []
+	for i in range(segments):
+		angle = 2 * pi * i / segments
+		x = radius_x * cos(angle)
+		y = radius_y * sin(angle)
+		points.append(Vector((x, y, 0)))
 
-def bound_box_get_from_selection(self):
-	matrix_world = self.obj.matrix_world
+	return points
 
-	if self.obj.type == "MESH":
-		vertices = self.obj.data.vertices
-		verts = [matrix_world @ vert.co for vert in vertices if vert.select]
-		get_bound_from_verts(self, verts)
 
-	if self.obj.type == "CURVE":
-		verts = []
-		for spline in self.obj.data.splines:
-			verts += [matrix_world @ pts.co for pts in spline.bezier_points
-				if pts.select_control_point]
-		get_bound_from_verts(self, verts)
+def create_sphere_slice_points(radius, theta, segments):
+	points = []
+	
+	sin_theta = sin(theta)
+	cos_theta = cos(theta)
+	z_vertex = radius * cos_theta
 
+	for j in range(segments + 1):
+		phi = j * 2 * pi / segments
+
+		x_vertex = radius * sin_theta * cos(phi)
+		y_vertex = radius * sin_theta * sin(phi)
+
+		points.append(Vector((x_vertex, y_vertex, z_vertex)))
+
+	return points
+
+
+def get_light_points(obj):
+	matrix_world = obj.matrix_world
+
+	if obj.data.type == 'POINT':
+		size = obj.data.shadow_soft_size
+		return [
+			matrix_world @ point
+			for point in create_ellipse_points(size, size, 10)
+		]
+
+	if obj.data.type == 'SUN':
+		return [matrix_world @ Vector((0, 0, 0))]
+
+	if obj.data.type == 'SPOT':
+		size = obj.data.shadow_soft_size
+		points = create_ellipse_points(size, size, 10)
+		points += create_sphere_slice_points(size, obj.data.spot_size, 32)
+		return [matrix_world @ point for point in points]
+
+	if obj.data.type == 'AREA':
+		if obj.data.shape == 'SQUARE':
+			return [
+				matrix_world @ Vector((-size, -size, 0)),
+				matrix_world @ Vector((size, -size, 0)),
+				matrix_world @ Vector((size, size, 0)),
+				matrix_world @ Vector((-size, size, 0))
+			]
+
+		if obj.data.shape == 'RECTANGLE':
+			size = obj.data.size
+			size_y = obj.data.size_y
+			return [
+				matrix_world @ Vector((-size, -size_y, 0)),
+				matrix_world @ Vector((size, -size_y, 0)),
+				matrix_world @ Vector((size, size_y, 0)),
+				matrix_world @ Vector((-size, size_y, 0))
+			]
+
+		if obj.data.shape == 'DISK':
+			size = obj.data.size
+			return [
+				matrix_world @ point
+				for point in create_ellipse_points(size, size, 32)
+			]
+
+		if obj.data.shape == 'ELLIPSE':
+			size = obj.data.size
+			size_y = obj.data.size_y
+			return [
+				matrix_world @ point
+				for point in create_ellipse_points(size, size_y, 32)
+			]
+
+	return []
+
+
+def get_armature_points(obj, selection):
+	matrix_world = obj.matrix_world
+	# poseBones = obj.pose.bones
+	poseBones = obj.data.bones
+	points = []
+
+	if selection:
+		for poseBone in poseBones:
+			if poseBone.bone.select:
+				points.append(matrix_world @ bone.head_local)
+				if not bone.children:
+					points.append(matrix_world @ bone.tail_local)
+
+	else:
+		for bone in poseBones:
+			points.append(matrix_world @ bone.head_local)
+			if not bone.children:
+				points.append(matrix_world @ bone.tail_local)
+
+	return points
+
+
+def get_curve_points(obj, selection):
+	matrix_world = obj.matrix_world
+	splines = obj.data.splines
+	points = []
+
+	if selection:
+		for spline in splines:
+			points += [
+				matrix_world @ point.co
+				for point in spline.bezier_points
+				if point.select_control_point
+			]
+		return points
+
+	for spline in splines:
+		points += [
+			matrix_world @ point.co for point in spline.bezier_points
+		]
+	return points
+
+
+def get_lattice_points(obj, selection):
+	matrix_world = obj.matrix_world
+	points = obj.data.points
+
+	if not selection:
+		return [matrix_world @ point.co for point in points]
+	return [matrix_world @ point.co for point in points if point.select]
+
+
+def get_empty_points(obj):
+	matrix_world = obj.matrix_world
+	display_type = obj.empty_display_type
+	size = obj.empty_display_size
+
+	if display_type == 'PLAIN_AXES':
+		return [
+			matrix_world @ Vector((size, 0, 0)),
+			matrix_world @ Vector((-size, 0, 0)),
+			matrix_world @ Vector((0, size, 0)),
+			matrix_world @ Vector((0, -size, 0)),
+			matrix_world @ Vector((0, 0, size)),
+			matrix_world @ Vector((0, 0, -size))
+		]
+	
+	if display_type == 'ARROWS':
+		return [
+			matrix_world @ Vector((0, 0, 0)),
+			matrix_world @ Vector((size, 0, 0)),
+			matrix_world @ Vector((0, size, 0)),
+			matrix_world @ Vector((0, 0, size)),
+		]
+	
+	if display_type == 'SINGLE_ARROW':
+		width = size * 0.035
+		height = size * 0.75
+		return [
+			matrix_world @ Vector((0, 0, 0)),
+			matrix_world @ Vector((0, 0, size)),
+			matrix_world @ Vector((-width, -width, height)),
+			matrix_world @ Vector((width, -width, height)),
+			matrix_world @ Vector((width, width, height)),
+			matrix_world @ Vector((-width, width, height))
+		]
+	
+	if display_type == 'CIRCLE':
+		points = []
+		for i in range(100):
+			angle = 2 * pi * i / 100
+			x = size * cos(angle)
+			z = size * sin(angle)
+			points.append(matrix_world @ Vector((x, 0, z)))
+		return points
+	
+	if display_type == 'CUBE':
+		return [
+			matrix_world @ Vector((-size, -size, size)),
+			matrix_world @ Vector((size, -size, size)),
+			matrix_world @ Vector((size, size, size)),
+			matrix_world @ Vector((-size, size, size)),
+			matrix_world @ Vector((-size, -size, -size)),
+			matrix_world @ Vector((size, -size, -size)),
+			matrix_world @ Vector((size, size, -size)),
+			matrix_world @ Vector((-size, size, -size))
+		]
+
+	if display_type == 'SPHERE':
+		points = []
+		for i in range(100):
+			angle = 2 * pi * i / 100
+			a = size * cos(angle)
+			b = size * sin(angle)
+			points.append(matrix_world @ Vector((a, b, 0)))
+			points.append(matrix_world @ Vector((a, 0, b)))
+			points.append(matrix_world @ Vector((0, a, b)))
+		return points
+
+	if display_type == 'CONE':
+		points = [matrix_world @ Vector((0, -size*2, 0))]
+		for i in range(8):
+			angle = 2 * pi * i / 8
+			x = size * cos(angle)
+			z = size * sin(angle)
+			points.append(matrix_world @ Vector((x, 0, z)))
+		return points
+
+	elif display_type == 'IMAGE':
+		#TODO
+		return [
+			matrix_world @ Vector((-size/2, -size/2, 0)),
+			matrix_world @ Vector((size/2, -size/2, 0)),
+			matrix_world @ Vector((size/2, size/2, 0)),
+			matrix_world @ Vector((-size/2, size/2, 0))
+		]
+
+
+def get_font_points(obj):
+	splines = obj.data.splines
+	matrix_world = obj.matrix_world
+	points = []
+	for spline in splines:
+		points += [
+			matrix_world @ point.co for point in spline.bezier_points
+		]
+	return points
+
+
+def get_mesh_points(obj, selection):
+	matrix_world = obj.matrix_world
+	vertices = obj.data.vertices
+
+	if selection:
+		return [matrix_world @ vert.co for vert in vertices if vert.select]
+
+	return [matrix_world @ vert.co for vert in vertices]
+
+
+def get_surface_points(obj):
+	for spn in obj.data.splines:
+		cld += [obj.matrix_world @ pts.co for pts in spn.points]
+
+
+def get_points(obj, selection):
+	if obj.type == 'ARMATURE':
+		return get_armature_points(obj, selection)
+	
+	if obj.type == 'EMPTY':
+		return get_empty_points(obj)
+	
+	if obj.type == 'FONT':
+		return []
+	
+	if obj.type == 'CURVE':
+		return get_curve_points(obj, selection)
+	
+	if obj.type == 'LATTICE':
+		return get_lattice_points(obj, selection)
+	
+	if obj.type == 'LIGHT':
+		return get_light_points(obj)
+
+	if obj.type == 'MESH':
+		return get_mesh_points(obj, selection)
+	
+	if obj.type == 'SURFACE':
+		return []
+	
+	return []
 
 
 class BoundBox():
 	def __init__(self, obj):
 		self.obj = obj
-		self.min = Vector((0,0,0))
-		self.max = Vector((0,0,0))
-		self.center = Vector((0,0,0))
+		self.subtargte = None
+		self.min = Vector((0, 0, 0))
+		self.max = Vector((0, 0, 0))
+		self.center = Vector((0, 0, 0))
+
+		if self.obj:
+			self.calculate()
+
+	def get_center(self):
+		self.center.x = (self.min.x + self.max.x) / 2
+		self.center.y = (self.min.y + self.max.y) / 2
+		self.center.z = (self.min.z + self.max.z) / 2
 	
-	def get_local_bound(self):
-		get_bound_from_object_local(self)
+	def calculate(self, selection=False):
+		points = get_points(self.obj, selection)
+		get_bound_from_points(self, points)
+
+
+if __name__ == '__main__':
+	pass
+	# import bpy
+	# from primitive.primitive import Primitive_Geometry_Class
 	
-	def get_world_bound(self):
-		bound_box_get_world_bound(self)
-	
-	def get_from_selection(self):
-		bound_box_get_from_selection(self)
+	# class Mesh(Primitive_Geometry_Class):
+	# 	def init(self):
+	# 		self.classname = "NewMesh"
+
+	# 	def create(self, ctx):
+	# 		# verts = create_sphere_points(1, 32)
+	# 		# verts = create_ellipse_points(1, 2, 32)	
+	# 		verts = create_sphere_slice_points(1, pi/4, 32)
+	# 		mesh = verts, [], []
+	# 		self.create_mesh(ctx, mesh, self.classname)
+	# 		self.update_mesh(mesh)
+
+	# 	def update(self):
+	# 		pass
+
+	# newMesh = Mesh()
+	# newMesh.create(bpy.context)

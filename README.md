@@ -36,8 +36,9 @@ If you found this product useful and want to support this project you can Donate
 * [Download Older Version (2.80-2.92)(2.93-3.2)](https://github.com/NevilArt/BsMax_2_80)
 
 ## Recent Updates and Changes
-* Armature auto bone alignment tool (Tools/Rig/Auto Bone Alignment).
-* Code cleaning and some bug fixed.
+* A global Bound box calculator Created (for now only Align object use it).
+* Align Object updated and detects more object bound rather than only Mesh and Curve (develop continue till support all types).
+* "Image Crop" node group added to shader editor that lets tiling only cropped part of the image [watch Here](https://youtu.be/W9LHtzHNxWE).
 * [Change log ...](https://github.com/NevilArt/BsMax/blob/master/CHANGELOG.md)
 
 ## Special Thanks

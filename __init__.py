@@ -15,13 +15,13 @@
 #	You should have received a copy of the GNU General Public License
 #	along with this program.  If not, see <https://www.gnu.org/licenses/>.
 ############################################################################
-# 2024/02/06
+# 2024/05/07
 
 bl_info = {
 	'name': 'BsMax',
 	'description': 'BsMax UI simulations and Tool pack (Blender 3.3LTS ~ 4.1)',
 	'author': 'Naser Merati (Nevil)',
-	'version': (0, 1, 2, 20240422),
+	'version': (0, 1, 2, 20240508),
 	'blender': (3, 3, 0),
 	'location': 'Almost Everywhere in Blender',
 	'wiki_url': 'https://github.com/NevilArt/BsMax/wiki',
@@ -35,10 +35,10 @@ import bpy
 import sys
 import os
 
-from bpy.props import (EnumProperty, BoolProperty, FloatProperty)
+from bpy.props import EnumProperty, BoolProperty, FloatProperty
 from time import sleep
 from _thread import start_new_thread
-from bpy.utils import (register_class, unregister_class)
+from bpy.utils import register_class, unregister_class
 
 # Add public classes, variables and functions path if not in list.
 path = os.path.dirname(os.path.realpath(__file__))
@@ -346,7 +346,7 @@ class BsMax_AddonPreferences(bpy.types.AddonPreferences):
 	)
 
 	sculpt: EnumProperty(
-		name='Sculp / Paint',
+		name='Sculpt / Paint',
 		items=apps,
 		default='Blender',
 		update= lambda self,ctx: update_preferences(self, ctx, 'sculpt'),
