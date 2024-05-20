@@ -15,13 +15,14 @@
 #	You should have received a copy of the GNU General Public License
 #	along with this program.  If not, see <https://www.gnu.org/licenses/>.
 ############################################################################
-# 2024/05/07
+# 2024/05/20
+#TODO full review this file
 
 bl_info = {
 	'name': 'BsMax',
 	'description': 'BsMax UI simulations and Tool pack (Blender 3.3LTS ~ 4.1)',
 	'author': 'Naser Merati (Nevil)',
-	'version': (0, 1, 2, 20240508),
+	'version': (0, 1, 2, 20240520),
 	'blender': (3, 3, 0),
 	'location': 'Almost Everywhere in Blender',
 	'wiki_url': 'https://github.com/NevilArt/BsMax/wiki',
@@ -35,6 +36,7 @@ import bpy
 import sys
 import os
 
+from bpy.types import AddonPreferences
 from bpy.props import EnumProperty, BoolProperty, FloatProperty
 from time import sleep
 from _thread import start_new_thread
@@ -60,51 +62,51 @@ iniFileName = bpy.utils.user_resource('SCRIPTS') + '\\addons\\BsMax.ini'
 
 
 # Addon preferences
-def update_preferences(self, ctx, action):
+def update_preferences(cls, _, action):
 	""" Quick Selection """
-	if self.mode == 'QUICK' and action == 'aplication':
-		if self.aplication != 'Custom':
-			self.navigation = self.aplication
-			self.keymaps = self.aplication
-			self.toolpack = self.aplication
+	if cls.mode == 'QUICK' and action == 'aplication':
+		if cls.aplication != 'Custom':
+			cls.navigation = cls.aplication
+			cls.keymaps = cls.aplication
+			cls.toolpack = cls.aplication
 
-			self.navigation_3d = self.aplication
-			self.navigation_2d = self.aplication
-			self.viowport = self.aplication
-			self.sculpt = self.aplication
-			self.uv_editor = self.aplication
-			self.node_editor = self.aplication
-			self.graph_editor = self.aplication
-			self.clip_editor = self.aplication
-			self.video_sequencer = self.aplication
-			self.text_editor = self.aplication
-			self.file_browser = self.aplication
-			self.floatmenus = self.aplication
+			cls.navigation_3d = cls.aplication
+			cls.navigation_2d = cls.aplication
+			cls.viowport = cls.aplication
+			cls.sculpt = cls.aplication
+			cls.uv_editor = cls.aplication
+			cls.node_editor = cls.aplication
+			cls.graph_editor = cls.aplication
+			cls.clip_editor = cls.aplication
+			cls.video_sequencer = cls.aplication
+			cls.text_editor = cls.aplication
+			cls.file_browser = cls.aplication
+			cls.floatmenus = cls.aplication
 
-			if self.aplication == '3DsMax':
-				self.side_panel='3DsMax'
+			if cls.aplication == '3DsMax':
+				cls.side_panel='3DsMax'
 			else:
-				self.side_panel='None'
+				cls.side_panel='None'
 
 	""" Simple Selection """
-	if self.mode == 'SIMPLE':
+	if cls.mode == 'SIMPLE':
 		if action == 'navigation':
-			if self.navigation != 'Custom':
-				self.navigation_3d = self.navigation
-				self.navigation_2d = self.navigation
+			if cls.navigation != 'Custom':
+				cls.navigation_3d = cls.navigation
+				cls.navigation_2d = cls.navigation
 			return
 
 		elif action in {'keymaps', 'transform'}:
-			if self.keymaps != 'Custom':
-				self.viowport = self.keymaps
-				self.sculpt = self.keymaps
-				self.uv_editor = self.keymaps
-				self.node_editor = self.keymaps
-				self.graph_editor = self.keymaps
-				self.clip_editor = self.keymaps
-				self.video_sequencer = self.keymaps
-				self.text_editor = self.keymaps
-				self.file_browser = self.keymaps
+			if cls.keymaps != 'Custom':
+				cls.viowport = cls.keymaps
+				cls.sculpt = cls.keymaps
+				cls.uv_editor = cls.keymaps
+				cls.node_editor = cls.keymaps
+				cls.graph_editor = cls.keymaps
+				cls.clip_editor = cls.keymaps
+				cls.video_sequencer = cls.keymaps
+				cls.text_editor = cls.keymaps
+				cls.file_browser = cls.keymaps
 			return
 
 	""" Custom Selection """
@@ -119,162 +121,164 @@ def update_preferences(self, ctx, action):
 		register_keymaps(addons[__name__].preferences)
   
 
-def draw_simple_panel(self, layout):
+def draw_simple_panel(cls, layout):
 	row = layout.row()
 	col = row.column()
 	col.label(text='Select packages parts separately')
-	self.row_prop(col, 'navigation', 'Navigation')
-	self.row_prop(col, 'keymaps', 'Keymaps-' + self.keymaps)
-	self.row_prop(col, 'floatmenus', 'floatmenus-' + self.floatmenus)
+	cls.row_prop(col, 'navigation', 'Navigation')
+	cls.row_prop(col, 'keymaps', 'Keymaps-' + cls.keymaps)
+	cls.row_prop(col, 'floatmenus', 'floatmenus-' + cls.floatmenus)
 	#TODO update wiki page
-	self.row_prop(col, 'side_panel', 'SidePanel-' + self.floatmenus)
+	cls.row_prop(col, 'side_panel', 'SidePanel-' + cls.floatmenus)
 	col.label(text='Note: Sometimes need to restart Blender to addon work properly')
 
 
-def draw_custom_panel(self, layout):
+def draw_custom_panel(cls, layout):
 	row = layout.row()
 	col = row.column()
 	col.label(text='Select packages parts customly')
 
-	self.row_prop(col, 'navigation_3d', 'navigation_3d-' + self.navigation_3d)
-	self.row_prop(col, 'navigation_2d',	'navigation_2d-' + self.navigation_2d)
-	self.row_prop(col, 'viowport', 'viowport-' + self.viowport)
-	self.row_prop(col, 'sculpt', 'sculpt-' + self.sculpt)
-	self.row_prop(col, 'uv_editor','uv_editor-' + self.uv_editor)
-	self.row_prop(col, 'node_editor', 'node_editor-' + self.node_editor)
-	self.row_prop(col, 'text_editor', 'text_editor-' + self.text_editor)
-	self.row_prop(col, 'graph_editor', 'graph_editor-' + self.graph_editor)
-	self.row_prop(col, 'clip_editor', 'clip_editor-' + self.clip_editor)
-	self.row_prop(
-		col, 'video_sequencer','video_sequencer-' + self.video_sequencer
+	cls.row_prop(col, 'navigation_3d', 'navigation_3d-' + cls.navigation_3d)
+	cls.row_prop(col, 'navigation_2d',	'navigation_2d-' + cls.navigation_2d)
+	cls.row_prop(col, 'viowport', 'viowport-' + cls.viowport)
+	cls.row_prop(col, 'sculpt', 'sculpt-' + cls.sculpt)
+	cls.row_prop(col, 'uv_editor','uv_editor-' + cls.uv_editor)
+	cls.row_prop(col, 'node_editor', 'node_editor-' + cls.node_editor)
+	cls.row_prop(col, 'text_editor', 'text_editor-' + cls.text_editor)
+	cls.row_prop(col, 'graph_editor', 'graph_editor-' + cls.graph_editor)
+	cls.row_prop(col, 'clip_editor', 'clip_editor-' + cls.clip_editor)
+	cls.row_prop(
+		col, 'video_sequencer','video_sequencer-' + cls.video_sequencer
 	)
-	self.row_prop(col, 'file_browser', 'file_browser-' + self.file_browser)
-	self.row_prop(col, 'floatmenus', 'floatmenus-' + self.floatmenus)
-	self.row_prop(col, 'side_panel', 'SidePanel-' + self.floatmenus)
+	cls.row_prop(col, 'file_browser', 'file_browser-' + cls.file_browser)
+	cls.row_prop(col, 'floatmenus', 'floatmenus-' + cls.floatmenus)
+	cls.row_prop(col, 'side_panel', 'SidePanel-' + cls.floatmenus)
 	col.label(text='Note: Sometimes need to restart Blender to addon work properly')
 
 
-def draw_option_panel(self, layout):
+def draw_option_panel(cls, layout):
 	box = layout.box()
 	row = box.row()
-	row.prop(self, 'view_undo')
-	row.prop(self, 'menu_scale')
+	row.prop(cls, 'view_undo')
+	row.prop(cls, 'menu_scale')
 	row = box.row()
-	row.prop(self, 'blender_transform_type')
-	row.prop(self, 'nevil_stuff')
+	row.prop(cls, 'blender_transform_type')
+	row.prop(cls, 'nevil_stuff')
 	row = box.row()
-	row.prop(self, 'geonode_pirimitve')
-	row.prop(self, 'affect_theme')
+	row.prop(cls, 'geonode_pirimitve')
+	row.prop(cls, 'affect_theme')
 	row = box.row()
-	row.prop(self, 'experimental')
+	row.prop(cls, 'experimental')
 
 
-class BsMax_AddonPreferences(bpy.types.AddonPreferences):
+class BsMax_AddonPreferences(AddonPreferences):
 	bl_idname = __name__
 
 	mode: EnumProperty(
 		items=[
 			(
-				'SIMPLE', 'Simple',
-				'Select Package by main parts',
+				'SIMPLE',
+				"Simple",
+				"Select Package by main parts",
 				'MESH_UVSPHERE', 2
 			),
 			(
-				'CUSTOM', 'Custom',
-				'Select Package part by part',
+				'CUSTOM',
+				"Custom",
+				"Select Package part by part",
 				'MESH_ICOSPHERE', 3
 			)
 		],
 		default='SIMPLE',
-		update= lambda self,ctx: update_preferences(self, ctx, 'aplication'),
-		description='select a package'
+		update= lambda self, ctx: update_preferences(self, ctx, 'aplication'),
+		description="select a package"
 	)
 
-	active = BoolProperty(name='Active', default=False)
+	active = BoolProperty(name="Active", default=False)
 	
-	quick: BoolProperty(
-		name='Quick',
-		default=False,
-		update= lambda self,ctx: update_preferences(self,ctx,'quick')
-	)
+	# quick: BoolProperty(
+	# 	name="Quick"',
+	# 	default=False,
+	# 	update= lambda self, ctx: update_preferences(self, ctx, 'quick')
+	# )
 
-	simple: BoolProperty(
-		name='Simple',
-		default=True,
-		update= lambda self,ctx: update_preferences(self,ctx,'simple')
-	)
+	# simple: BoolProperty(
+	# 	name='Simple',
+	# 	default=True,
+	# 	update= lambda self,ctx: update_preferences(self,ctx,'simple')
+	# )
 
-	custom: BoolProperty(
-		name='Custom',
-		default=False,
-		update= lambda self,ctx: update_preferences(self,ctx,'custom')
-	)
+	# custom: BoolProperty(
+	# 	name='Custom',
+	# 	default=False,
+	# 	update= lambda self,ctx: update_preferences(self,ctx,'custom')
+	# )
 	
 	apps = [
 		(
 			'3DsMax',
-			'3DsMax',
-			'Try to simulate 3DsMax HotKeys and Menus'
+			"3DsMax",
+			"Try to simulate 3DsMax HotKeys and Menus"
 		),
 		
 		(
 			'Maya',
-			'Maya',
-			'Try to simulate Maya HotKeys'
+			"Maya",
+			"Try to simulate Maya HotKeys"
 		),
 		
 		(
 			'None',
-			'Blender (Default)',
-			'Do not makes any changes on Keymaps'
+			"Blender (Default)",
+			"Do not makes any changes on Keymaps"
 		),
 		
 		(
 			'Blender',
-			'Blender (Adapted)',
-			'Some Keymaps change to work with Bsmax'
+			"Blender (Adapted)",
+			"Some Keymaps change to work with Bsmax"
 		)
 	]
 
-	custom = [('Custom', 'Custom','')]
+	custom = [('Custom', "Custom", "")]
 
 	menus = [
 		(
 			'3DsMax',
-			'3DsMax (Quad Menu)',
-			'Simulate 3DsMax Quad menu'
+			"3DsMax (Quad Menu)",
+			"Simulate 3DsMax Quad menu"
 		),
 		
 		(	'PieMax',
-   			'3DsMax (Pie Menu) (Under Construction)',
-			'Simulate 3DsMax Quad menu as Pie Menu'
+   			"3DsMax (Pie Menu) (Under Construction)",
+			"Simulate 3DsMax Quad menu as Pie Menu"
 		),
 		
 		(
 			'Maya',
-			'Maya (Not ready yet)',
-			''
+			"Maya (Not ready yet)",
+			""
 		),
 		
 		(
 			'Blender',
-			'Blender (Default)',
-			'Do not make any changes.'
+			"Blender (Default)",
+			"Do not make any changes."
 		)
 	]
 
 	panels = [
-		('3DsMax', '3DsMax (Command Panel)', ''),
-		('None', 'None', '')
+		('3DsMax', "3DsMax (Command Panel)", ""),
+		('None', "None", "")
 	]
 	
 	""" Quick select mode """
 	aplication: EnumProperty(
-		name='Aplication',
+		name="Aplication",
 		items=apps+custom,
 		default='Blender',
-		update= lambda self,ctx: update_preferences(self, ctx, 'aplication'),
-		description='select a package'
+		update= lambda self, ctx: update_preferences(self, ctx, 'aplication'),
+		description="select a package"
 	)
 
 	""" Simple select mode """

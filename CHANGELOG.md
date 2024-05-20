@@ -1,4 +1,9 @@
-# 0, 1, 2, 20240422 
+# 0, 1, 2, 20240508
+* A global Bound box calculator Created (for now only Align object use it).
+* Align Object updated and detects more object bound rather than only Mesh and Curve (develop continue till support all types).
+* "Image Crop" node group added to shader editor that lets tiling only cropped part of the image [watch Here](https://youtu.be/W9LHtzHNxWE).
+
+# 0, 1, 2, 20240422
 * Armature auto bone alignment tool (Tools/Rig/Auto Bone Alignment).
 * Code cleaning and some bug fixed.
 

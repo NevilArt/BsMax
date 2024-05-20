@@ -24,6 +24,7 @@ from bsmax.keymaps import KeyMaps
 # hold D edit pivot
 # Timeline
 # [] Undo rido only camera
+# Right click up down move for zoom
 
 
 def add_search(km, space):

@@ -12,35 +12,13 @@
 #	You should have received a copy of the GNU General Public License
 #	along with this program.  If not, see <https://www.gnu.org/licenses/>.
 ############################################################################
-# 2024/02/25
+# 2024/05/17
 
 import bpy
 
 from bpy.types import Operator, PropertyGroup
 from bpy.props import EnumProperty, BoolProperty, PointerProperty
-
-
-class Mesh_Select_Option(PropertyGroup):
-	by_element: BoolProperty (default=False)
-	normal: BoolProperty (default=True)
-	material: BoolProperty (default=False)
-	seam: BoolProperty (default=True)
-	sharp: BoolProperty (default=True)
-	uv: BoolProperty (default=False)
-
-
-class Mesh_OT_Select_Element_Toggle(Operator):
-	bl_idname = "mesh.select_element_toggle"
-	bl_label = "Select Elemant Toggle"
-
-	@classmethod
-	def poll(self, ctx):
-		return ctx.mode in {'EDIT_MESH', 'EDIT_CURVE', 'PARTICLE'}
-	
-	def execute(self, ctx):
-		mso = ctx.scene.mesh_select_option
-		mso.by_element = not mso.by_element
-		return{"FINISHED"}
+from bpy.utils import register_class, unregister_class
 
 
 def view3d_select(mode, x, y):
@@ -101,8 +79,31 @@ def particle_select(mode):
 	bpy.ops.particle.select_linked_pick('INVOKE_DEFAULT', deselect=deselect)
 
 
+class Mesh_Select_Option(PropertyGroup):
+	by_element: BoolProperty (default=False)
+	normal: BoolProperty (default=True)
+	material: BoolProperty (default=False)
+	seam: BoolProperty (default=True)
+	sharp: BoolProperty (default=True)
+	uv: BoolProperty (default=False)
+
+
+class Mesh_OT_Select_Element_Toggle(Operator):
+	bl_idname = 'mesh.select_element_toggle'
+	bl_label = "Select Elemant Toggle"
+
+	@classmethod
+	def poll(self, ctx):
+		return ctx.mode in {'EDIT_MESH', 'EDIT_CURVE', 'PARTICLE'}
+	
+	def execute(self, ctx):
+		mso = ctx.scene.mesh_select_option
+		mso.by_element = not mso.by_element
+		return{'FINISHED'}
+
+
 class Mesh_OT_Select_Element_Setting(Operator):
-	bl_idname = "mesh.select_element_setting"
+	bl_idname = 'mesh.select_element_setting'
 	bl_label = "Select Elemant Setting"
 
 	active: BoolProperty(name="Active")
@@ -114,7 +115,7 @@ class Mesh_OT_Select_Element_Setting(Operator):
 
 	@classmethod
 	def poll(self, ctx):
-		return ctx.mode == "EDIT_MESH"
+		return ctx.mode == 'EDIT_MESH'
 
 	def draw(self,ctx):
 		layout = self.layout
@@ -137,15 +138,15 @@ class Mesh_OT_Select_Element_Setting(Operator):
 		msm.sharp = self.sharp
 		msm.uv = self.uv
 	
-	def execute(self, ctx):
+	def execute(self, _):
 		self.commit()
-		return{"FINISHED"}
+		return{'FINISHED'}
 	
-	def cancel(self,ctx):
+	def cancel(self, _):
 		self.commit()
 		return None
 
-	def invoke(self, ctx, event):
+	def invoke(self, ctx, _):
 		global msm
 		self.active = msm.active
 		self.normal = msm.normal
@@ -157,16 +158,16 @@ class Mesh_OT_Select_Element_Setting(Operator):
 
 
 class Mesh_OT_Select_Max(Operator):
-	bl_idname = "mesh.select_max"
+	bl_idname = 'mesh.select_max'
 	bl_label = "Select (3DsMax)"
 	bl_options = {'REGISTER', 'INTERNAL'}
 
 	mode: EnumProperty(
-		name='Mode',
+		name="Mode",
 		items=[
-			('SET', 'Set', ''),
-			('ADD', 'Add', ''),
-			('SUB', 'Sub', '')
+			('SET', "Set", ""),
+			('ADD', "Add", ""),
+			('SUB', "Sub", "")
 		],
 		 default='SET'
 	)
@@ -175,7 +176,7 @@ class Mesh_OT_Select_Max(Operator):
 
 	@classmethod
 	def poll(self, ctx):
-		return ctx.mode == "EDIT_MESH"
+		return ctx.mode == 'EDIT_MESH'
 
 	def execute(self, ctx):
 		if ctx.scene.mesh_select_option.by_element:
@@ -185,7 +186,7 @@ class Mesh_OT_Select_Max(Operator):
 			view3d_select(self.mode, self.x, self.y)
 
 		bpy.ops.ed.undo_push()
-		return{"FINISHED"}
+		return{'FINISHED'}
 	
 	def invoke(self, ctx, event):
 		self.x, self.y = event.mouse_region_x, event.mouse_region_y
@@ -193,16 +194,16 @@ class Mesh_OT_Select_Max(Operator):
 
 
 class Curve_OT_Select_Max(Operator):
-	bl_idname = "curve.select_max"
+	bl_idname = 'curve.select_max'
 	bl_label = "Select (3DsMax)"
 	bl_options = {'REGISTER', 'INTERNAL'}
 
 	mode: EnumProperty(
-		name='Mode',
+		name="Mode",
 		items=[
-			('SET', 'Set', ''),
-			('ADD', 'Add', ''),
-			('SUB', 'Sub', '')
+			('SET', "Set", ""),
+			('ADD', "Add", ""),
+			('SUB', "Sub", "")
 		],
 		default='SET'
 	)
@@ -211,7 +212,7 @@ class Curve_OT_Select_Max(Operator):
 
 	@classmethod
 	def poll(self, ctx):
-		return ctx.mode == "EDIT_CURVE"
+		return ctx.mode == 'EDIT_CURVE'
 
 	def execute(self, ctx):
 		if ctx.scene.mesh_select_option.by_element:
@@ -221,7 +222,7 @@ class Curve_OT_Select_Max(Operator):
 			view3d_select(self.mode, self.x, self.y)
 
 		bpy.ops.ed.undo_push()
-		return{"FINISHED"}
+		return{'FINISHED'}
 	
 	def invoke(self, ctx, event):
 		self.x, self.y = event.mouse_region_x, event.mouse_region_y
@@ -229,16 +230,16 @@ class Curve_OT_Select_Max(Operator):
 
 
 class Particle_OT_Select_Max(Operator):
-	bl_idname = "particle.select_max"
+	bl_idname = 'particle.select_max'
 	bl_label = "Select (3DsMax)"
 	bl_options = {'REGISTER', 'INTERNAL'}
 
 	mode: EnumProperty(
-		name='Mode',
+		name="Mode",
 		items=[
-			('SET', 'Set', ''),
-			('ADD', 'Add', ''),
-			('SUB', 'Sub', '')
+			('SET', "Set", ""),
+			('ADD', "Add", ""),
+			('SUB', "Sub", "")
 		],
 		default='SET'
 	)
@@ -247,7 +248,7 @@ class Particle_OT_Select_Max(Operator):
 
 	@classmethod
 	def poll(self, ctx):
-		return ctx.mode == "EDIT_CURVE"
+		return ctx.mode == 'EDIT_CURVE'
 
 	def execute(self, ctx):
 		if ctx.scene.mesh_select_option.by_element:
@@ -257,29 +258,29 @@ class Particle_OT_Select_Max(Operator):
 			view3d_select(self.mode, self.x, self.y)
 
 		bpy.ops.ed.undo_push()
-		return{"FINISHED"}
+		return{'FINISHED'}
 	
 	def invoke(self, ctx, event):
 		self.x, self.y = event.mouse_region_x, event.mouse_region_y
 		return self.execute(ctx)
 
 
-classes = (
+classes = {
 	Mesh_Select_Option,
 	Mesh_OT_Select_Element_Toggle,
 	Mesh_OT_Select_Element_Setting,
 	Mesh_OT_Select_Max,
 	Curve_OT_Select_Max,
 	Particle_OT_Select_Max
-)
+}
 
 
 def register_select():
 	for c in classes:
-		bpy.utils.register_class(c)
+		register_class(c)
 
 	bpy.types.Scene.mesh_select_option = PointerProperty(
-		type=Mesh_Select_Option, name='Mesh Select Option'
+		type=Mesh_Select_Option, name="Mesh Select Option"
 	)
 
 
@@ -287,8 +288,8 @@ def unregister_select():
 	del bpy.types.Scene.mesh_select_option
 
 	for c in classes:
-		bpy.utils.unregister_class(c)
+		unregister_class(c)
 
 
-if __name__ == "__main__":
+if __name__ == '__main__':
 	register_select()

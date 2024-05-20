@@ -12,9 +12,9 @@
 #	You should have received a copy of the GNU General Public License
 #	along with this program.  If not, see <https://www.gnu.org/licenses/>.
 ############################################################################
-# 2024/02/25
+# 2024/05/17
 
-from bpy.types import Panel, Menu
+from bpy.types import Panel
 from bpy.utils import register_class, unregister_class
 
 
@@ -45,6 +45,7 @@ def get_curve_rendering(layout, ctx):
 	else:
 		col.prop(curve, "bevel_depth", text="Depth")
 		col.prop(curve, "bevel_resolution", text="Resolution")
+
 	col.prop(curve, "use_fill_caps")
 
 	if curve.bevel_mode == 'PROFILE':

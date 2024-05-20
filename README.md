@@ -16,7 +16,7 @@ Your Reports and Ideas will help me alot and don't forget the sharing. let more 
 If not have Github account use 'NevilArt@Gmail.Com' for bug report.
 
 ## Support and Contribute
-If you found this product useful and want to support this project you can Donate in [Gumroad](https://nevilart.gumroad.com/l/BsMax).
+If you found this product useful and want to support this project you can Donate from [Gumroad](https://nevilart.gumroad.com/l/BsMax).
 
 ## Download / Installation
 * Download all the package as zip file.
@@ -36,9 +36,10 @@ If you found this product useful and want to support this project you can Donate
 * [Download Older Version (2.80-2.92)(2.93-3.2)](https://github.com/NevilArt/BsMax_2_80)
 
 ## Recent Updates and Changes
-* A global Bound box calculator Created (for now only Align object use it).
-* Align Object updated and detects more object bound rather than only Mesh and Curve (develop continue till support all types).
-* "Image Crop" node group added to shader editor that lets tiling only cropped part of the image [watch Here](https://youtu.be/W9LHtzHNxWE).
+* Align Object issues from last update fixed.
+* Mesh to hair guid pre setup operator added (tutorial and Geo Nodes will come soon).
+* Some update for Blender 4.2 compatibliti.
+* Menu and Operator search keymaps swaped. (X for menu, Ctrl+Shift+Alt+X for Operator)
 * [Change log ...](https://github.com/NevilArt/BsMax/blob/master/CHANGELOG.md)
 
 ## Special Thanks

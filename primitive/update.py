@@ -12,7 +12,7 @@
 #	You should have received a copy of the GNU General Public License
 #	along with this program.  If not,see <https://www.gnu.org/licenses/>.
 ############################################################################
-# 2024/04/04
+# 2024/05/17
 
 import bpy
 
@@ -120,13 +120,14 @@ def primitive_frame_update(_):
 
 class Primitive_Option(PropertyGroup):
 	draw_mode: EnumProperty(
-		name='Draw Mode', default='FLOOR',
+		name="Draw Mode",
 		update = primitive_update,
 		items =[
-			('FLOOR', 'Gride', 'Draw on Floor Gride', 'EVENT_F', 1),
-			('VIEW', 'View' ,'Draw on View', 'EVENT_V', 2),
-			('SURFACE', 'Surface', 'Draw on Surface', 'EVENT_S', 3)
-		]
+			('FLOOR', "Gride", "Draw on Floor Gride", 'EVENT_F', 1),
+			('VIEW', "View" ,"Draw on View", 'EVENT_V', 2),
+			('SURFACE', "Surface", "Draw on Surface", 'EVENT_S', 3)
+		],
+		 default='FLOOR'
 	)
 
 	#TODO countinu from here
@@ -197,30 +198,32 @@ class PrimitiveData(PropertyGroup):
 	# Profile ###############################################
 
 	profilo_mode: EnumProperty(
-		name='Shape', default='Angle',
+		name="Shape",
 		update = primitive_update,
 		items =[
-			('Angle', 'Angle', ''),
-			('Bar', 'Bar', ''),
-			('Channel', 'Channel', ''),
-			('Cylinder', 'Cylinder', ''),
-			('Pipe', 'Pipe', ''),
-			('Tee', 'Tee', ''),
-			('Tube', 'Tube', ''),
-			('Width_flange', 'Width_flange', ''),
-			('Elipse', 'Elipse', '')
-		]
+			('Angle', "Angle", ""),
+			('Bar', "Bar", ""),
+			('Channel', "Channel", ""),
+			('Cylinder', "Cylinder", ""),
+			('Pipe', "Pipe", ""),
+			('Tee', "Tee", ""),
+			('Tube', "Tube", ""),
+			('Width_flange', "Width_flange", ""),
+			('Elipse', "Elipse", "")
+		],
+		 default='Angle'
 	)
 
 	extrude_segmode: EnumProperty(
-		name='Segment Type', default='Curve',
+		name="Segment Type",
 		update = primitive_update,
 		items =[
-			('Curve', 'Curve', ''),
-			('Manual', 'Manual', ''),
-			('Optimized', 'Optimized', ''),
-			('Adaptive', 'Adaptive', '')
-		]
+			('Curve', "Curve", ""),
+			('Manual', "Manual", ""),
+			('Optimized', "Optimized", ""),
+			('Adaptive', "Adaptive", "")
+		],
+		default='Curve'
 	)
 
 	# BoltFactory #############################################
@@ -243,16 +246,17 @@ class PrimitiveData(PropertyGroup):
 
 	# Model Types
 	Model_Type_List = [
-		('bf_Model_Bolt', 'BOLT', 'Bolt Model'),
-		('bf_Model_Nut', 'NUT', 'Nut Model')
+		('bf_Model_Bolt', "BOLT", "Bolt Model"),
+		('bf_Model_Nut', "NUT", "Nut Model")
 	]
 
 	bf_Model_Type: EnumProperty(
 		attr='bf_Model_Type',
-		name='Model',
+		name="Model",
 		update = primitive_update,
-		description='Choose the type off model you would like',
-		items=Model_Type_List, default='bf_Model_Bolt'
+		description="Choose the type off model you would like",
+		items=Model_Type_List,
+		default='bf_Model_Bolt'
 	)
 
 	# Head Types
@@ -629,14 +633,14 @@ class BsMax_OT_Update_Primitive_Geometry(Operator):
 			# if subclass:
 			# 	subclass.data = ctx.object.data
 			# 	subclass.update()
-		return {"FINISHED"}
+		return {'FINISHED'}
 
 
-classes = (
+classes = {
 	PrimitiveData,
 	Primitive_Option,
 	BsMax_OT_Update_Primitive_Geometry
-)
+}
 
 
 def register_update():

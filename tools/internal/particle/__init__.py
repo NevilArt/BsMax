@@ -14,14 +14,17 @@
 ############################################################################
 from .hair_cache import register_hair_cache, unregister_hair_cache
 from .hair_guide import register_hair_guide, unregister_hair_guide
+from .mesh_to_hair import register_mesh_to_hair, unregister_mesh_to_hair
 from .paint import register_paint, unregister_paint
 
 def register_particle():
 	register_hair_cache()
 	register_hair_guide()
+	register_mesh_to_hair()
 	register_paint()
 
 def unregister_particle():
 	unregister_hair_cache()
 	unregister_hair_guide()
+	unregister_mesh_to_hair()
 	unregister_paint()

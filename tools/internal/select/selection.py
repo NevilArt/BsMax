@@ -12,18 +12,137 @@
 #	You should have received a copy of the GNU General Public License
 #	along with this program.  If not, see <https://www.gnu.org/licenses/>.
 ############################################################################
+# 2024/05/16
 
 import bpy
 
 from bpy.types import Operator, PropertyGroup
-from bpy.props import (EnumProperty, FloatProperty, FloatVectorProperty,
-						BoolProperty, PointerProperty)
+from bpy.utils import register_class, unregister_class
+from bpy.props import (
+	EnumProperty, FloatProperty, FloatVectorProperty,
+	BoolProperty, PointerProperty
+)
 
+
+def select_everything(ctx):
+	bpy.ops.object.select_all(action='SELECT')
+	for obj in ctx.selected_objects:
+		if obj.type == 'ARMATURE':
+			for bone in obj.data.bones:
+				bone.select = True
+
+
+def select_similar(ctx):
+	matt, clss, inst, subcls = [], [], [], []
+
+	if not (ctx.object and len(ctx.selected_objects)):
+		return
+
+	me = ctx.object
+	for obj in ctx.scene.objects:
+		if me != obj:
+			# Collect instances
+			if me.data == obj.data:
+				inst.append(obj)
+
+			# type and sub types
+			if me.type == obj.type:
+				clss.append(obj)
+
+				if me.type in ['MESH','CURVE']:
+					# check for primitive objects
+					if me.data.primitivedata.classname:
+						my_cls = me.data.primitivedata.classname
+						obj_cls = obj.data.primitivedata.classname
+						if my_cls == obj_cls:
+							subcls.append(obj)
+
+					# Material
+					if me.data.materials == obj.data.materials:
+						matt.append(obj)	
+
+				if me.type == 'EMPTY':
+					if me.empty_display_type == obj.empty_display_type:
+						subcls.append(obj)
+
+				if me.type == 'LIGHT':
+					if me.data.type == obj.data.type:
+						subcls.append(obj)
+
+	# Chose Selection type by preiroty 
+	if matt:
+		for obj in matt:
+			obj.select_set(True)
+
+	elif subcls:
+		for obj in subcls:
+			obj.select_set(True)
+
+	elif clss:
+		for obj in clss:
+			obj.select_set(True)
+
+	elif inst:
+		for obj in inst:
+			obj.select_set(True)
+
+
+def collect_children(objs):
+	children = []
+	for obj in objs:
+		for child in obj.children:
+			if not child in objs:
+				children.append(child)
+				child.select_set(state = True)
+	return children
+
+
+def select_children(cls, ctx):
+	bpy.ops.view3d.select(extend=True)
+	selected = [ctx.object] if cls.active_only else ctx.selected_objects
+
+	new_selected_count = len(selected)
+
+	if cls.full == True:
+		children = selected
+		while new_selected_count != 0:
+			children = collect_children(children)
+			new_selected_count = len(children)
+
+	else:
+		for obj in selected:
+			for child in obj.children:
+				child.select_set(state = True)
+
+
+def select_by_dimensions(cls):
+	cdim = cls.dimensions
+	if cls.by == 'GREATER':
+		for obj in bpy.data.objects:
+			odim = obj.dimensions
+			if odim.x > cdim.x or odim.y > cdim.y or odim.z > cdim.z:
+				obj.select_set(state=True)
+
+	elif cls.by == 'LESS':
+		for obj in bpy.data.objects:
+			odim = obj.dimensions
+			if odim.x < cdim.x or odim.y < cdim.y or odim.z < cdim.z:
+				obj.select_set(state=True)
+
+	elif cls.by == 'EQUAL':
+		tol = cls.tolerans/2
+		for obj in bpy.data.objects:
+			odim = obj.dimensions
+			if cdim.x-tol < odim.x < cdim.x+tol or \
+				cdim.y-tol < odim.y < cdim.y+tol or \
+				cdim.z-tol < odim.z < cdim.z+tol:
+
+				obj.select_set(state=True)
 
 
 class Object_OT_Select_All(Operator):
 	""" Select all Objects + Pose Bones """
-	bl_idname = "object.select_all_plus"
+	bl_idname = 'object.select_all_plus'
 	bl_label = "Select All (+Bones)"
 	bl_options = {'REGISTER', 'UNDO'}
 	
@@ -32,18 +151,13 @@ class Object_OT_Select_All(Operator):
 		return ctx.area.type == 'VIEW_3D'
 	
 	def execute(self, ctx):
-		bpy.ops.object.select_all(action='SELECT')
-		for obj in ctx.selected_objects:
-			if obj.type == "ARMATURE":
-				for bone in obj.data.bones:
-					bone.select = True
-		return{"FINISHED"}
-
+		select_everything(ctx)
+		return{'FINISHED'}
 
 
 class Object_OT_Select_Similar(Operator):
 	""" Select similar object to the currently selected object """
-	bl_idname = "object.select_similar"
+	bl_idname = 'object.select_similar'
 	bl_label = "Select Similar"
 	bl_options = {'REGISTER', 'UNDO'}
 	
@@ -54,66 +168,13 @@ class Object_OT_Select_Similar(Operator):
 		return False
 	
 	def execute(self, ctx):
-		matt, clss, inst, subcls = [], [], [], []
-
-		if not (ctx.active_object and len(ctx.selected_objects)):
-			return{"FINISHED"}
-
-		me = ctx.active_object
-		for obj in ctx.scene.objects:
-			if me != obj:
-				# Collect instances
-				if me.data == obj.data:
-					inst.append(obj)
-
-				# type and sub types
-				if me.type == obj.type:
-					clss.append(obj)
-
-					if me.type in ['MESH','CURVE']:
-						# check for primitive objects
-						if me.data.primitivedata.classname:
-							my_cls = me.data.primitivedata.classname
-							obj_cls = obj.data.primitivedata.classname
-							if my_cls == obj_cls:
-								subcls.append(obj)
-
-						# Material
-						if me.data.materials == obj.data.materials:
-							matt.append(obj)	
-
-					if me.type == 'EMPTY':
-						if me.empty_display_type == obj.empty_display_type:
-							subcls.append(obj)
-
-					if me.type == 'LIGHT':
-						if me.data.type == obj.data.type:
-							subcls.append(obj)
-
-		# Chose Selection type by preiroty 
-		if matt:
-			for obj in matt:
-				obj.select_set(True)
-
-		elif subcls:
-			for obj in subcls:
-				obj.select_set(True)
-
-		elif clss:
-			for obj in clss:
-				obj.select_set(True)
-
-		elif inst:
-			for obj in inst:
-				obj.select_set(True)
-
-		return{"FINISHED"}
-
+		select_similar(ctx)
+		return{'FINISHED'}
 
 
 class Object_OT_Select_Children(Operator):
 	""" Select selected objects children """
-	bl_idname = "object.select_children"
+	bl_idname = 'object.select_children'
 	bl_label = "Select Children"
 	bl_description = ""
 	bl_options = {'REGISTER', 'UNDO'}
@@ -128,106 +189,55 @@ class Object_OT_Select_Children(Operator):
 			return ctx.selected_objects
 		return False
 
-	def collect_children(self, objs):
-		children = []
-		for obj in objs:
-			for child in obj.children:
-				if not child in objs:
-					children.append(child)
-					child.select_set(state = True)
-
-		return children
-	
 	def execute(self, ctx):
-		bpy.ops.view3d.select(extend=True)
-		selected = [ctx.active_object] if self.active_only \
-		 								else ctx.selected_objects
-
-		nsc = len(selected) # New Selected Count
-
-		if self.full == True:
-			children = selected
-			while nsc != 0:
-				children = self.collect_children(children)
-				nsc = len(children)
-
-		else:
-			for obj in selected:
-				for child in obj.children:
-					child.select_set(state = True)
-
-		return{"FINISHED"}
-
+		select_children(self, ctx)
+		return{'FINISHED'}
 
 
 #TODO this operator re write the object dimention
 # maybe system undo couse that need to take control of it in report the bug
 class Object_OT_Select_by_Dimensions(Operator):
-	bl_idname = "object.select_by_dimensions"
+	bl_idname = 'object.select_by_dimensions'
 	bl_label = "Select by Dimensions"
 	bl_description = ""
 	bl_options = {'REGISTER', 'UNDO'}
 
-	by: EnumProperty(name='By', default='GREATER',
-					items=[
-							('GREATER', 'Greater then', ''),
-							('LESS', 'Less than', ''),
-							('EQUAL', 'Equal to', '')
-						]
-					)
+	by: EnumProperty(
+		name='By', default='GREATER',
+		items=[
+			('GREATER', "Greater then", ""),
+			('LESS', "Less than", ""),
+			('EQUAL', "Equal to", "")
+		]
+	)
 
-	dimensions: FloatVectorProperty(name='Dimension', subtype='TRANSLATION')
-	tolerans: FloatProperty(name='Tolerance', default=0)
+	dimensions: FloatVectorProperty(name="Dimension", subtype='TRANSLATION')
+	tolerans: FloatProperty(name="Tolerance", default=0)
 
 	@classmethod
 	def poll(self, ctx):
 		return ctx.mode == 'OBJECT'
 
-	def draw(self, ctx):
+	def draw(self, _):
 		layout = self.layout
 		row = layout.row()
-		row.prop(self, 'by', expand=True)
+		row.prop(self, "By", expand=True)
 		col = layout.column(align=True)
-		col.prop(self, 'dimensions')
+		col.prop(self, "Dimensions")
 		if self.by == 'EQUAL':
-			layout.prop(self, 'tolerans')
+			layout.prop(self, "Tolerans")
 	
-	def execute(self, ctx):
-		if self.by == 'GREATER':
-			for obj in bpy.data.objects:
-				if obj.dimensions.x > self.dimensions.x or \
-					obj.dimensions.y > self.dimensions.y or \
-					obj.dimensions.z > self.dimensions.z:
-
-					obj.select_set(state=True)
-
-		elif self.by == 'LESS':
-			for obj in bpy.data.objects:
-				if obj.dimensions.x < self.dimensions.x or \
-					obj.dimensions.y < self.dimensions.y or \
-					obj.dimensions.z < self.dimensions.z:
-
-					obj.select_set(state=True)
-
-		elif self.by == 'EQUAL':
-			tol = self.tolerans/2
-			for obj in bpy.data.objects:
-				odim = obj.dimensions.copy()
-				sdim = self.dimensions
-				if sdim.x - tol < odim.x < sdim.x + tol or \
-					sdim.y - tol < odim.y < sdim.y + tol or \
-					sdim.z - tol < odim.z < sdim.z + tol:
-
-					obj.select_set(state=True)
-
+	def execute(self, _):
+		select_by_dimensions(self)
 		return{'FINISHED'}
 
 
-
 class Selection_lock_Property(PropertyGroup):
-	locked: BoolProperty(name='Lock Selection', default=False,
-		description='Lock Selection')
-
+	locked: BoolProperty(
+		name="Lock Selection",
+		default=False,
+		description="Lock Selection"
+	)
 
 
 class Selection_Type_State:
@@ -311,10 +321,9 @@ class Selection_Type_State:
 selection_type_state = Selection_Type_State()
 
 
-
 class Object_OT_Lock_Selection_Toggle(Operator):
 	""" Lock Selection Toggle """
-	bl_idname = "object.lock_selection_toggle"
+	bl_idname = 'object.lock_selection_toggle'
 	bl_label = "Lock Selection Toggle"
 	bl_options = {'REGISTER'}
 	
@@ -332,47 +341,43 @@ class Object_OT_Lock_Selection_Toggle(Operator):
 			selection_type_state.store_state(ctx)
 			selection_type_state.set_lock(ctx)
 
-		return{"FINISHED"}
-
+		return{'FINISHED'}
 
 
 
 def prepend_select_menu(self, ctx):
 	layout = self.layout
 	layout.separator()
-	layout.operator("object.select_all_plus", text="All + Bones")
-
+	layout.operator('object.select_all_plus', text="All + Bones")
 
 
 def append_select_menu(self, ctx):
 	layout = self.layout
 	layout.separator()
-	layout.operator("object.select_similar")
-	layout.operator("object.select_children")
-	# layout.operator("object.select_by_dimensions")
+	layout.operator('object.select_similar')
+	layout.operator('object.select_children')
+	layout.operator('object.select_by_dimensions')
 
 
-
-classes = (
+classes = {
 	Object_OT_Select_All,
 	Selection_lock_Property,
 	Object_OT_Select_by_Dimensions,
 	Object_OT_Select_Similar,
 	Object_OT_Select_Children,
 	Object_OT_Lock_Selection_Toggle
-)
-
+}
 
 
 def register_selection():
 	for c in classes:
-		bpy.utils.register_class(c)
+		register_class(c)
 
 	bpy.types.VIEW3D_MT_select_object.prepend(prepend_select_menu)
 	bpy.types.VIEW3D_MT_select_object.append(append_select_menu)
-	
-	bpy.types.Scene.selection_lock = PointerProperty(type=Selection_lock_Property)
-
+	bpy.types.Scene.selection_lock = PointerProperty(
+		type=Selection_lock_Property
+	)
 
 
 def unregister_selection():
@@ -382,9 +387,8 @@ def unregister_selection():
 	del bpy.types.Scene.selection_lock
 
 	for c in classes:
-		bpy.utils.unregister_class(c)
+		unregister_class(c)
 
 
-
-if __name__ == "__main__":
+if __name__ == '__main__':
 	register_selection()

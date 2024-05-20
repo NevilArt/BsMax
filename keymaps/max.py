@@ -141,9 +141,9 @@ def add_side_panel(km, space):
 
 
 def add_search(km, space):
-	km.new(space, 'wm.search_operator_cover', 'X', 'PRESS', [])
+	km.new(space, 'wm.search_menu', 'X', 'PRESS', [])
 	km.new(
-		space, 'wm.search_menu', 'X', 'PRESS',
+		space, 'wm.search_operator_cover', 'X', 'PRESS',
 		[], ctrl=True, shift=True, alt=True
 	)
 

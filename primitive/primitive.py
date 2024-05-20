@@ -12,17 +12,17 @@
 #	You should have received a copy of the GNU General Public License
 #	along with this program.  If not,see <https://www.gnu.org/licenses/>.
 ############################################################################
-# 2024/04/07
+# 2024/05/19
 
 import bpy
-import bmesh
-import bgl
-import gpu
-import random
 
+from bmesh import new as bmesh_new
+from bgl import glEnable, glDisable, GL_BLEND
+from random import random
+from mathutils import Vector
+from gpu import shader as gshader
 from gpu_extras.batch import batch_for_shader
 from bpy.types import Operator
-from mathutils import Vector
 from bpy.app import version
 
 from bsmax.actions import link_to_scene, set_as_active_object
@@ -90,7 +90,7 @@ def primitive_geometry_class_update_mesh(cls, meshdata):
 		orgmesh = bpy.data.meshes[cls.data.name]
 		tmpmesh = bpy.data.meshes.new("_NewTempMesh_")
 		tmpmesh.from_pydata(verts, edges, faces)
-		bm = bmesh.new()
+		bm = bmesh_new()
 		bm.from_mesh(tmpmesh)
 		bm.to_mesh(orgmesh.id_data)
 		bm.free()
@@ -171,17 +171,17 @@ def ClearPrimitiveData(obj):
 
 def draw_cursur_override(cls):
 	if version < (4, 0, 0):
-		bgl.glEnable(bgl.GL_BLEND)
-		shader = gpu.shader.from_builtin(get_uniform_color(mode="2D"))
+		glEnable(GL_BLEND)
+		shader = gshader.from_builtin(get_uniform_color(mode="2D"))
 		v, f = GetCursurMesh(20, cls.mpos.x, cls.mpos.y)
 		batch = batch_for_shader(shader, 'TRIS', {"pos":v}, indices=f)
 		shader.bind()
 		shader.uniform_float("color",(0.8, 0.8, 0.8, 0.6))
 		batch.draw(shader)
-		bgl.glDisable(bgl.GL_BLEND)
+		glDisable(GL_BLEND)
 
 	else:
-		shader = gpu.shader.from_builtin(get_uniform_color(mode="2D"))
+		shader = gshader.from_builtin(get_uniform_color(mode="2D"))
 		v, f = GetCursurMesh(20, cls.mpos.x, cls.mpos.y)
 		batch = batch_for_shader(shader, 'TRIS', {"pos":v}, indices=f)
 		shader.bind()
@@ -276,9 +276,7 @@ def set_active_tool(cls, ctx):
 	primitive_setting = ctx.scene.primitive_setting
 	primitive_setting.active_tool = activeToolName
 	primitive_setting.next_name = activeToolName
-	r = random.random()
-	g = random.random()
-	b = random.random()
+	r, g, b = random(), random(), random()
 	primitive_setting.next_color = (r, g, b)
 
 

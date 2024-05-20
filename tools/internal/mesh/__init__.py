@@ -16,6 +16,7 @@
 from .attach import register_attach, unregister_attach
 from .meshs import register_meshs, unregister_meshs
 from .edit import register_edit, unregister_edit
+from .loop import register_loop, unregister_loop
 from .outline import register_outline, unregister_outline
 from .select import register_select, unregister_select
 from .weld import register_weld, unregister_weld
@@ -23,6 +24,7 @@ from .weld import register_weld, unregister_weld
 def register_mesh():
 	register_attach()
 	register_edit()
+	register_loop()
 	register_meshs()
 	register_outline()
 	register_select()
@@ -31,6 +33,7 @@ def register_mesh():
 def unregister_mesh():
 	unregister_attach()
 	unregister_edit()
+	unregister_loop()
 	unregister_meshs()
 	unregister_outline()
 	unregister_select()

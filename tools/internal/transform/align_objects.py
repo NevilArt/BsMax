@@ -12,7 +12,7 @@
 #	You should have received a copy of the GNU General Public License
 #	along with this program.  If not, see <https://www.gnu.org/licenses/>.
 ############################################################################
-# 2024/05/05
+# 2024/05/16
 
 import bpy
 
@@ -38,8 +38,8 @@ def scan_subobject(cls):
 		cls.location = Vector(head)
 		cls.bounding_box.min = Vector(head)
 		cls.bounding_box.max = Vector(tail)
-		cls.center = cls.bounding_box.get_center()
-		
+		cls.bounding_box.get_center()
+
 		# Combine bone and armature rotation
 		bone_rotation = cls.bone.matrix.to_euler()
 		armature_rotation = cls.matrix_world.to_euler()
@@ -56,19 +56,19 @@ def scan_subobject(cls):
 
 def get_object_matrix_as_target(cls):
 	global public_option
-	target_mode = public_option.target_mode
+	target = public_option.target
 	location = cls.matrix_world.translation
 
-	if target_mode == 'MIN':
+	if target == 'MIN':
 		location = cls.bounding_box.min.copy()
 
-	elif target_mode == 'CENTER':
-		location = cls.bounding_box.get_center()
+	elif target == 'CENTER':
+		location = cls.bounding_box.center.copy()
 
-	elif target_mode == 'MAX':
+	elif target == 'MAX':
 		location = cls.bounding_box.max.copy()
 
-	elif target_mode == 'CURSOR':
+	elif target == 'CURSOR':
 		location = bpy.context.scene.cursor.location.copy()
 	
 	ret_matrix = cls.matrix_world.copy()
@@ -78,19 +78,20 @@ def get_object_matrix_as_target(cls):
 
 
 def get_subobject_matrix_as_target(cls):
-	target_mode = public_option.target_mode
+	global public_option
+	target = public_option.target
 	location = cls.matrix_world.translation
 
-	if target_mode == 'MIN':
+	if target == 'MIN':
 		location = cls.bounding_box.min.copy()
 
-	elif target_mode == 'CENTER':
-		location = cls.bounding_box.get_center()
+	elif target == 'CENTER':
+		location = cls.bounding_box.center.copy()
 
-	elif target_mode == 'MAX':
+	elif target == 'MAX':
 		location = cls.bounding_box.max.copy()
 
-	elif target_mode == 'CURSOR':
+	elif target == 'CURSOR':
 		location = bpy.context.scene.cursor.location.copy()
 
 	rotation = cls.rotation
@@ -100,7 +101,7 @@ def get_subobject_matrix_as_target(cls):
 
 
 def combine_matrix(original , target):
-	option = public_option
+	global public_option
 
 	# seprate original transform matrix
 	location = original.translation.copy()
@@ -112,62 +113,68 @@ def combine_matrix(original , target):
 	trg_rotation = target.to_euler()
 	trg_scale = target.to_scale()
 
-	if option.location.x:
+	if public_option.location.x:
 		location.x = value_by_percent(
-			location.x, trg_location.x, option.percent
+			location.x, trg_location.x, public_option.percent
 		)
 
-	if option.location.y:
+	if public_option.location.y:
 		location.y = value_by_percent(
-			location.y, trg_location.y, option.percent
+			location.y, trg_location.y, public_option.percent
 		)
 
-	if option.location.z:
+	if public_option.location.z:
 		location.z = value_by_percent(
-			location.z, trg_location.z, option.percent
+			location.z, trg_location.z, public_option.percent
 		)
 	
-	if option.rotation.x:
+	if public_option.rotation.x:
 		rotation.x = value_by_percent(
-			rotation.x, trg_rotation.x, option.percent
+			rotation.x, trg_rotation.x, public_option.percent
 		)
 
-	if option.rotation.y:
+	if public_option.rotation.y:
 		rotation.y = value_by_percent(
-			rotation.y, trg_rotation.y, option.percent
+			rotation.y, trg_rotation.y, public_option.percent
 		)
 
-	if option.rotation.z:
+	if public_option.rotation.z:
 		rotation.z = value_by_percent(
-			rotation.z, trg_rotation.z, option.percent
+			rotation.z, trg_rotation.z, public_option.percent
 		)
 	
-	if option.scale.x:
-		scale.x = value_by_percent(scale.x, trg_scale.x, option.percent)
+	if public_option.scale.x:
+		scale.x = value_by_percent(
+			scale.x, trg_scale.x, public_option.percent
+		)
 
-	if option.scale.y:
-		scale.y = value_by_percent(scale.y, trg_scale.y, option.percent)
+	if public_option.scale.y:
+		scale.y = value_by_percent(
+			scale.y, trg_scale.y, public_option.percent
+		)
 
-	if option.scale.z:
-		scale.z = value_by_percent(scale.z, trg_scale.z, option.percent)
+	if public_option.scale.z:
+		scale.z = value_by_percent(
+			scale.z, trg_scale.z, public_option.percent
+		)
 
 	return matrix_from_elements(location, rotation, scale)
 
 
 def shift_matrix(cls, matrix):
 	""" Get target matrix and shift by bounding box info """
-	option = public_option
+	global public_option
 	location = matrix.translation.copy()
 	rotation = matrix.to_euler()
 	scale = matrix.to_scale()
 
-	if option.current_mode == 'min':
+	if public_option.current == 'MIN':
 		location += cls.location - cls.bounding_box.min
 
-	elif option.current_mode == 'center':
-		location += cls.location - cls.bounding_box.get_center()
+	elif public_option.current == 'CENTER':
+		location += cls.location - cls.bounding_box.center
 
-	elif option.current_mode == 'max':
+	elif public_option.current == 'MAX':
 		location += cls.location - cls.bounding_box.max
 
 	return matrix_from_elements(location, rotation, scale)
@@ -176,6 +183,25 @@ def shift_matrix(cls, matrix):
 def set_object_matrix(cls, targte_matrix):
 	targte_matrix = shift_matrix(cls, targte_matrix)
 	cls.owner.matrix_world = combine_matrix(cls.matrix_world , targte_matrix)
+
+
+def align_object_get_tartget(cls, obj, subobj):
+	""" Get target object ans sub target info """
+	cls.target = ObjectInfo(obj)
+	if subobj:
+		cls.subtarget = Subobject_info()
+		cls.subtarget.set(cls.target.owner, subobj)
+	else:
+		cls.subtarget = None
+		cls.use_subtarget = False
+
+
+def align_object_get_objects(cls, objs):
+	""" Collect objects will align """
+	cls.objects.clear()
+	for obj in objs:
+		if obj != cls.target.owner:
+			cls.objects.append(ObjectInfo(obj))
 
 
 def align_objects_ui_draw(cls):
@@ -218,13 +244,34 @@ def align_objects_ui_draw(cls):
 	layout.prop(cls, 'percent')
 
 
+def load_state(cls):
+	global public_option 
+	cls.pos_x = public_option.location.x
+	cls.pos_y = public_option.location.y
+	cls.pos_z = public_option.location.z
+
+	cls.current = public_option.current
+	cls.target = public_option.target
+
+	cls.rot_x = public_option.rotation.x
+	cls.rot_y = public_option.rotation.y
+	cls.rot_z = public_option.rotation.z
+
+	cls.scl_x = public_option.scale.x
+	cls.scl_y = public_option.scale.y
+	cls.scl_z = public_option.scale.z
+
+	cls.percent = public_option.percent
+	cls.ready = True
+
+
 class AlignObjectOption:
 	def __init__(self):
 		self.location = BoolVector()
 		self.rotation = BoolVector()
 		self.scale = BoolVector()
-		self.current_mode = 'PIVOT'
-		self.target_mode = 'PIVOT'
+		self.current = 'PIVOT'
+		self.target = 'PIVOT'
 		self.percent = 1.0
 
 public_option = AlignObjectOption()
@@ -270,7 +317,6 @@ class ObjectInfo:
 		self.rotation = obj.matrix_world.to_euler()
 		self.scale = obj.matrix_world.to_scale()
 		self.bounding_box = BoundBox(obj)
-		self.center = self.bounding_box.center
 
 	def reset(self):
 		self.owner.matrix_world = self.matrix_world
@@ -290,25 +336,8 @@ class AlignObject:
 
 	def set(self, objects, target, subtarget):
 		""" Take given info in row, set up the object """
-		self.get_tartget(target, subtarget)
-		self.get_objects(objects)
-	
-	def get_tartget(self, obj, subobj):
-		""" Get target object ans sub target info """
-		self.target = ObjectInfo(obj)
-		if subobj:
-			self.subtarget = Subobject_info()
-			self.subtarget.set(self.target.owner, subobj)
-		else:
-			self.subtarget = None
-			self.use_subtarget = False
-	
-	def get_objects(self, objs):
-		""" Collect objects will align """
-		self.objects.clear()
-		for obj in objs:
-			if obj != self.target.owner:
-				self.objects.append(ObjectInfo(obj))
+		align_object_get_tartget(self, target, subtarget)
+		align_object_get_objects(self, objects)
 	
 	def reset(self):
 		""" Reset all objects world matrix """
@@ -328,13 +357,16 @@ align_abject = AlignObject()
 
 
 def update(cls, _):
+	if not cls.ready:
+		return
+
 	global public_option
 	public_option.location.set(cls.pos_x, cls.pos_y, cls.pos_z)
 	public_option.rotation.set(cls.rot_x, cls.rot_y, cls.rot_z)
 	public_option.scale.set(cls.scl_x, cls.scl_y, cls.scl_z)
 	public_option.percent = cls.percent
-	public_option.current_mode = cls.current
-	public_option.target_mode = cls.target
+	public_option.current = cls.current
+	public_option.target = cls.target
 
 	if align_abject:
 		align_abject.set_matrix()
@@ -387,14 +419,24 @@ class Object_OT_Align_Objects(Operator):
 			('MAX', "Maximum", ""),
 			('CURSOR', "Cursor", "")
 		]
+	
+	ready: BoolProperty(default=False)
 
 	""" Props """
 	pos_x: BoolProperty(update=update)
 	pos_y: BoolProperty(update=update)
 	pos_z: BoolProperty(update=update)
 
-	current: EnumProperty(items= get_source_options, update=update)
-	target: EnumProperty(items= get_target_options, update=update)
+	current: EnumProperty(
+		items= get_source_options, update=update,
+		default=2
+	)
+
+	target: EnumProperty(
+		items= get_target_options, update=update,
+		default=2
+	)
+
 	target_type: EnumProperty(update=update, items=sub_target)
 
 	rot_x: BoolProperty(update=update)
@@ -424,9 +466,12 @@ class Object_OT_Align_Objects(Operator):
 		align_abject.reset()
 	
 	def invoke(self, ctx, _):
+		load_state(self)
+
 		if align_abject.subtarget:
 			self.target_type = 'SUB'
 			align_abject.use_subtarget = True
+
 		update(self, None)
 		return ctx.window_manager.invoke_props_dialog(self)
 
@@ -455,7 +500,7 @@ class Object_OT_Align_Selected_to_Target(PickOperator):
 	bl_options = {'REGISTER', 'UNDO'}
 
 	@classmethod
-	def poll(self, ctx):
+	def poll(self, _):
 		return True
 
 	def picked(self, ctx, source, subsource, target, subtarget):

@@ -12,45 +12,45 @@
 #	You should have received a copy of the GNU General Public License
 #	along with this program.  If not,see <https://www.gnu.org/licenses/>.
 ############################################################################
-# 2024/02/14
+# 2024/05/20
 
 import bpy
 
 
-def get_adaptive_plane_panel(self, layout):
+def get_adaptive_plane_panel(cls, layout):
 	layout.label(text="Adaptive Plane", icon='MOD_BEVEL')
 	col = layout.column(align=True)
-	col.prop(self, "width", text="width")
-	col.prop(self, "length", text="length")
-	col.prop(self, "thickness", text="Min Size")
-	col.prop(self, "bias", text="Bias")
+	col.prop(cls, 'width', text="width")
+	col.prop(cls, 'length', text="length")
+	col.prop(cls, 'thickness', text="Min Size")
+	col.prop(cls, 'bias', text="Bias")
 
 
-def get_plane_panel(self, layout):
+def get_plane_panel(cls, layout):
 	layout.label(text="Plane", icon='MESH_PLANE')
 	col = layout.column(align=True)
-	col.prop(self, "width", text="width")
-	col.prop(self, "length", text="length")
+	col.prop(cls, 'width', text="width")
+	col.prop(cls, 'length', text="length")
 
 	col = layout.column(align=True)
-	col.prop(self, "wsegs", text="WSegs")
-	col.prop(self, "lsegs", text="LSegs")
+	col.prop(cls, 'wsegs', text="WSegs")
+	col.prop(cls, 'lsegs', text="LSegs")
 
 
-def get_box_panel(self, layout):
+def get_box_panel(cls, layout):
 	layout.label(text="Box", icon='MESH_CUBE')
 	col = layout.column(align=True)
-	col.prop(self, "width", text="width")
-	col.prop(self, "length", text="length")
-	col.prop(self, "height", text="Height")
+	col.prop(cls, 'width', text="width")
+	col.prop(cls, 'length', text="length")
+	col.prop(cls, 'height', text="Height")
 
 	col = layout.column(align=True)
-	col.prop(self, "wsegs", text="WSegs")
-	col.prop(self, "lsegs", text="LSegs")
-	col.prop(self, "hsegs", text="HSegs")
+	col.prop(cls, 'wsegs', text="WSegs")
+	col.prop(cls, 'lsegs', text="LSegs")
+	col.prop(cls, 'hsegs', text="HSegs")
 
 
-def get_bolt_panel(self, layout):
+def get_bolt_panel(cls, layout):
 	layout.label(text="Bolt", icon='TOOL_SETTINGS')
 	# col = layout.column(align=True)
 	# this function copyed from bolt factory addon 
@@ -58,173 +58,167 @@ def get_bolt_panel(self, layout):
 	col = layout.column()
 
 	# ENUMS
-	col.prop(self, 'bf_Model_Type')
+	col.prop(cls, 'bf_Model_Type')
 	col.separator()
 
 	# Bit
-	if self.bf_Model_Type == 'bf_Model_Bolt':
-		col.prop(self, 'bf_Bit_Type')
-		if self.bf_Bit_Type == 'bf_Bit_None':
+	if cls.bf_Model_Type == 'bf_Model_Bolt':
+		col.prop(cls, 'bf_Bit_Type')
+		if cls.bf_Bit_Type == 'bf_Bit_None':
 			pass
 
-		elif self.bf_Bit_Type == 'bf_Bit_Allen':
-			col.prop(self, 'bf_Allen_Bit_Depth')
-			col.prop(self, 'bf_Allen_Bit_Flat_Distance')
+		elif cls.bf_Bit_Type == 'bf_Bit_Allen':
+			col.prop(cls, 'bf_Allen_Bit_Depth')
+			col.prop(cls, 'bf_Allen_Bit_Flat_Distance')
 
-		elif self.bf_Bit_Type == 'bf_Bit_Torx':
-			col.prop(self, 'bf_Torx_Bit_Depth')
-			col.prop(self, 'bf_Torx_Size_Type')
+		elif cls.bf_Bit_Type == 'bf_Bit_Torx':
+			col.prop(cls, 'bf_Torx_Bit_Depth')
+			col.prop(cls, 'bf_Torx_Size_Type')
 
-		elif self.bf_Bit_Type == 'bf_Bit_Philips':
-			col.prop(self, 'bf_Phillips_Bit_Depth')
-			col.prop(self, 'bf_Philips_Bit_Dia')
+		elif cls.bf_Bit_Type == 'bf_Bit_Philips':
+			col.prop(cls, 'bf_Phillips_Bit_Depth')
+			col.prop(cls, 'bf_Philips_Bit_Dia')
 
 		col.separator()
 
 	# Head
-	if self.bf_Model_Type == 'bf_Model_Bolt':
-		col.prop(self, 'bf_Head_Type')
-		if self.bf_Head_Type == 'bf_Head_Hex':
-			col.prop(self, 'bf_Hex_Head_Height')
-			col.prop(self, 'bf_Hex_Head_Flat_Distance')
+	if cls.bf_Model_Type == 'bf_Model_Bolt':
+		col.prop(cls, 'bf_Head_Type')
+		if cls.bf_Head_Type == 'bf_Head_Hex':
+			col.prop(cls, 'bf_Hex_Head_Height')
+			col.prop(cls, 'bf_Hex_Head_Flat_Distance')
 
-		elif self.bf_Head_Type == 'bf_Head_12Pnt':
-			col.prop(self, 'bf_12_Point_Head_Height')
-			col.prop(self, 'bf_12_Point_Head_Flat_Distance')
-			col.prop(self, 'bf_12_Point_Head_Flange_Dia')
+		elif cls.bf_Head_Type == 'bf_Head_12Pnt':
+			col.prop(cls, 'bf_12_Point_Head_Height')
+			col.prop(cls, 'bf_12_Point_Head_Flat_Distance')
+			col.prop(cls, 'bf_12_Point_Head_Flange_Dia')
 
-		elif self.bf_Head_Type == 'bf_Head_Cap':
-			col.prop(self, 'bf_Cap_Head_Height')
-			col.prop(self, 'bf_Cap_Head_Dia')
+		elif cls.bf_Head_Type == 'bf_Head_Cap':
+			col.prop(cls, 'bf_Cap_Head_Height')
+			col.prop(cls, 'bf_Cap_Head_Dia')
 
-		elif self.bf_Head_Type == 'bf_Head_Dome':
-			col.prop(self, 'bf_Dome_Head_Dia')
+		elif cls.bf_Head_Type == 'bf_Head_Dome':
+			col.prop(cls, 'bf_Dome_Head_Dia')
 
-		elif self.bf_Head_Type == 'bf_Head_Pan':
-			col.prop(self, 'bf_Pan_Head_Dia')
+		elif cls.bf_Head_Type == 'bf_Head_Pan':
+			col.prop(cls, 'bf_Pan_Head_Dia')
 
-		elif self.bf_Head_Type == 'bf_Head_CounterSink':
-			col.prop(self, 'bf_CounterSink_Head_Dia')
+		elif cls.bf_Head_Type == 'bf_Head_CounterSink':
+			col.prop(cls, 'bf_CounterSink_Head_Dia')
 
 		col.separator()
 	# Shank
-	if self.bf_Model_Type == 'bf_Model_Bolt':
+	if cls.bf_Model_Type == 'bf_Model_Bolt':
 		col.label(text='Shank')
-		col.prop(self, 'bf_Shank_Length')
-		col.prop(self, 'bf_Shank_Dia')
+		col.prop(cls, 'bf_Shank_Length')
+		col.prop(cls, 'bf_Shank_Dia')
 		col.separator()
 	# Nut
-	if self.bf_Model_Type == 'bf_Model_Nut':
-		col.prop(self, 'bf_Nut_Type')
-		if self.bf_Nut_Type == "bf_Nut_12Pnt":
-			col.prop(self, 'bf_12_Point_Nut_Height')
-			col.prop(self, 'bf_12_Point_Nut_Flat_Distance')
-			col.prop(self, 'bf_12_Point_Nut_Flange_Dia')
+	if cls.bf_Model_Type == 'bf_Model_Nut':
+		col.prop(cls, 'bf_Nut_Type')
+		if cls.bf_Nut_Type == "bf_Nut_12Pnt":
+			col.prop(cls, 'bf_12_Point_Nut_Height')
+			col.prop(cls, 'bf_12_Point_Nut_Flat_Distance')
+			col.prop(cls, 'bf_12_Point_Nut_Flange_Dia')
 
 		else:
-			col.prop(self, 'bf_Hex_Nut_Height')
-			col.prop(self, 'bf_Hex_Nut_Flat_Distance')
+			col.prop(cls, 'bf_Hex_Nut_Height')
+			col.prop(cls, 'bf_Hex_Nut_Flat_Distance')
 
 	# Thread
 	col.label(text='Thread')
-	if self.bf_Model_Type == 'bf_Model_Bolt':
-		col.prop(self, 'bf_Thread_Length')
+	if cls.bf_Model_Type == 'bf_Model_Bolt':
+		col.prop(cls, 'bf_Thread_Length')
 
-	col.prop(self, 'bf_Major_Dia')
-	col.prop(self, 'bf_Minor_Dia')
-	col.prop(self, 'bf_Pitch')
-	col.prop(self, 'bf_Crest_Percent')
-	col.prop(self, 'bf_Root_Percent')
-	col.prop(self, 'bf_Div_Count')
+	col.prop(cls, 'bf_Major_Dia')
+	col.prop(cls, 'bf_Minor_Dia')
+	col.prop(cls, 'bf_Pitch')
+	col.prop(cls, 'bf_Crest_Percent')
+	col.prop(cls, 'bf_Root_Percent')
+	col.prop(cls, 'bf_Div_Count')
 
-	if self.change == False:
-		# generic transform props
-		col.separator()
-		col.prop(self, 'align')
-		col.prop(self, 'location')
-		col.prop(self, 'rotation')
-	
-	col.prop(self, 'height', text='Scale')
+	col.separator()
+	col.prop(cls, 'height', text='Scale')
 
 
-def get_cone_panel(self, layout):
+def get_cone_panel(cls, layout):
 	layout.label(text="Cone",icon='MESH_CONE')
 	col = layout.column(align=True)
-	col.prop(self,"radius1", text="Radius1")
-	col.prop(self,"radius2", text="Radius2")
-	col.prop(self,"height", text="Height")
+	col.prop(cls,"radius1", text="Radius1")
+	col.prop(cls,"radius2", text="Radius2")
+	col.prop(cls,"height", text="Height")
 
 	col = layout.column(align=True)
-	col.prop(self,"hsegs", text="Height Segs")
-	col.prop(self,"csegs", text="Cap Segs")
-	col.prop(self,"ssegs", text="Side Segs")
+	col.prop(cls,"hsegs", text="Height Segs")
+	col.prop(cls,"csegs", text="Cap Segs")
+	col.prop(cls,"ssegs", text="Side Segs")
 
 	col = layout.column(align=True)
-	col.prop(self,"sliceon", text="Slice on")
+	col.prop(cls,"sliceon", text="Slice on")
 
-	if self.sliceon:
-		col.prop(self,"sfrom", text="From")
-		col.prop(self,"sto", text="To")
+	if cls.sliceon:
+		col.prop(cls,"sfrom", text="From")
+		col.prop(cls,"sto", text="To")
 
 
-def get_sphere_panel(self, layout):
+def get_sphere_panel(cls, layout):
 	layout.label(text="Sphere",icon='MESH_UVSPHERE')
 	col = layout.column(align=True)
-	col.prop(self,"radius1", text="Radius")
+	col.prop(cls,"radius1", text="Radius")
 
-	if not self.seglock:
-		col.prop(self,"ssegs", text="Side Segs")
-		col.prop(self,"hsegs", text="Height Segs")
+	if not cls.seglock:
+		col.prop(cls,"ssegs", text="Side Segs")
+		col.prop(cls,"hsegs", text="Height Segs")
 
 	else:
-		col.prop(self,"ssegs", text="Segments")
+		col.prop(cls,"ssegs", text="Segments")
 
-	col.prop(self,"seglock", text="Lock Segments")
-	col.prop(self,"bias", text="Hemisphere")
-	#Col.prop(self,"chop")
-	col.prop(self,"sliceon", text="Sliceon")
+	col.prop(cls,"seglock", text="Lock Segments")
+	col.prop(cls,"bias", text="Hemisphere")
+	#Col.prop(cls,"chop")
+	col.prop(cls,"sliceon", text="Sliceon")
 
-	if self.sliceon:
-		col.prop(self,"sfrom", text="From")
-		col.prop(self,"sto", text="To")
+	if cls.sliceon:
+		col.prop(cls,"sfrom", text="From")
+		col.prop(cls,"sto", text="To")
 
-	col.prop(self,"base", text="Base")
+	col.prop(cls,"base", text="Base")
 
 
-def get_icosphere_panel(self, layout):
-	layout.label(text="Icosphere",icon='MESH_ICOSPHERE')
+def get_icosphere_panel(cls, layout):
+	layout.label(text="Icosphere", icon='MESH_ICOSPHERE')
 	col = layout.column(align=True)
-	col.prop(self,"radius1", text="Radius")
-	col.prop(self,"wsegs", text="subdiv")
+	col.prop(cls, 'radius1', text="Radius")
+	col.prop(cls, 'wsegs', text="subdiv")
 
 
-def get_capsule_panel(self, layout):
+def get_capsule_panel(cls, layout):
 	layout.label(text="Capsule",icon='META_CAPSULE')
 	col = layout.column(align=True)
-	col.prop(self,"radius1", text="Radius")
-	col.prop(self,"height", text="Height")
+	col.prop(cls, 'radius1', text="Radius")
+	col.prop(cls, 'height', text="Height")
 
 	col = layout.column(align=True)
-	col.prop(self,"center", text="Center/Overall")
+	col.prop(cls, 'center', text="Center/Overall")
 
 	col = layout.column(align=True)
-	col.prop(self,"hsegs", text="Height segs")
-	col.prop(self,"ssegs", text="Side segs")
+	col.prop(cls, 'hsegs', text="Height segs")
+	col.prop(cls, 'ssegs', text="Side segs")
 
-	if not self.seglock:
-		col.prop(self,"csegs", text="Cap")
+	if not cls.seglock:
+		col.prop(cls,'csegs', text="Cap")
 
-	col.prop(self,"seglock", text="Segs Lock")
+	col.prop(cls, 'seglock', text="Segs Lock")
 	col = layout.column(align=True)
-	col.prop(self,"sliceon", text="Sliceon")
+	col.prop(cls, 'sliceon', text="Sliceon")
 
-	if self.sliceon:
-		col.prop(self,"sfrom", text="From")
-		col.prop(self,"sto", text="To")
+	if cls.sliceon:
+		col.prop(cls, 'sfrom', text="From")
+		col.prop(cls, 'sto', text="To")
 
 
 def get_oiltank_panel(self, layout):
-	layout.label(text="Capsule",icon='META_CAPSULE')
+	layout.label(text="Capsule", icon='META_CAPSULE')
 	col = layout.column(align=True)
 	col.prop(self,"radius1", text="Radius")
 	col.prop(self,"height", text="Height")
