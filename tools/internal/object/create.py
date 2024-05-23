@@ -172,6 +172,7 @@ def add_parametric_primitive(type, ctx):
 		pd = obj.owner.data.primitivedata
 		pd.radius1, pd.radius2 = 1, 0.5
 
+	obj.owner.name = obj.classname
 	obj.update()
 	ctx.active_object.location = ctx.scene.cursor.location
 
@@ -214,16 +215,16 @@ class Object_OT_Create(Operator):
 
 	@classmethod
 	def poll(self, ctx):
-		return True
+		return ctx.mode == 'OBJECT'
 	
-	def draw(self, ctx):
+	def draw(self, _):
 		self.layout.prop(self,"type", text="Type")
 
 	def execute(self, ctx):
 		add_parametric_primitive(self.type, ctx)
 		return {'FINISHED'}
 
-	def invoke(self, ctx, event):
+	def invoke(self, ctx, _):
 		wm = ctx.window_manager
 		return wm.invoke_props_dialog(self)
 
@@ -236,5 +237,5 @@ def unregister_create():
 	bpy.utils.unregister_class(Object_OT_Create)
 
 
-if __name__ == "__main__":
+if __name__ == '__main__':
 	register_create()

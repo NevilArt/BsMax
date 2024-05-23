@@ -15,6 +15,7 @@
 * kuroiluna@hotmail.com
 * solenekinkielele@yahoo.fr
 * revovl@gmail.com
+* shane@studiopiper.com.au
 
 # Note
 * Unfortunately, I don't have all the names. If you're reading this, please send me your name and webpage if you'd like to be added to the list.

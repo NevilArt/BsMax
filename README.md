@@ -36,10 +36,10 @@ If you found this product useful and want to support this project you can Donate
 * [Download Older Version (2.80-2.92)(2.93-3.2)](https://github.com/NevilArt/BsMax_2_80)
 
 ## Recent Updates and Changes
-* Align Object issues from last update fixed.
-* Mesh to hair guid pre setup operator added (tutorial and Geo Nodes will come soon).
-* Some update for Blender 4.2 compatibliti.
-* Menu and Operator search keymaps swaped. (X for menu, Ctrl+Shift+Alt+X for Operator)
+* Create Primitive naming issue fixed.
+* Smart loop bug fixed.
+* Batch rename issue fixed.
+* Instancer bug fixed.
 * [Change log ...](https://github.com/NevilArt/BsMax/blob/master/CHANGELOG.md)
 
 ## Special Thanks

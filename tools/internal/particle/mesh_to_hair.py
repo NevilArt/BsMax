@@ -104,6 +104,21 @@ def fix_root_uv(mesh, npolys):
 	bpy.ops.object.mode_set(mode='EDIT', toggle=False)
 	bpy.ops.uv.unwrap(method='ANGLE_BASED', margin=0.001)
 	bpy.ops.object.mode_set(mode='OBJECT', toggle=False)
+
+
+def modifier_check(obj):
+	for modifier in obj.modifiers:
+		if modifier.type == 'MESH_SEQUENCE_CACHE':
+			modifier.read_data = {'VERT'}
+
+
+def mesh_setting(obj):
+	# active rest position
+	obj.add_rest_position_attribute = True
+	# clear sharp edges
+	attributes = obj.data.attributes
+	if 'sharp_edge' in attributes:
+		attributes.remove(attributes['sharp_edge'])
 	
 
 def mesh_to_hair_guid(obj):
@@ -122,6 +137,8 @@ def mesh_to_hair_guid(obj):
 	set_material_id(mesh, npolys)
 	set_uv_chanel(mesh)
 	fix_root_uv(mesh, npolys)
+	modifier_check(obj)
+	mesh_setting(obj)
 
 
 class Particle_OT_mesh_to_Hair(Operator):

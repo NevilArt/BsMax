@@ -15,14 +15,13 @@
 #	You should have received a copy of the GNU General Public License
 #	along with this program.  If not, see <https://www.gnu.org/licenses/>.
 ############################################################################
-# 2024/05/20
-#TODO full review this file
+# 2024/05/23
 
 bl_info = {
 	'name': 'BsMax',
 	'description': 'BsMax UI simulations and Tool pack (Blender 3.3LTS ~ 4.1)',
 	'author': 'Naser Merati (Nevil)',
-	'version': (0, 1, 2, 20240520),
+	'version': (0, 1, 2, 20240523),
 	'blender': (3, 3, 0),
 	'location': 'Almost Everywhere in Blender',
 	'wiki_url': 'https://github.com/NevilArt/BsMax/wiki',
@@ -36,7 +35,7 @@ import bpy
 import sys
 import os
 
-from bpy.types import AddonPreferences
+from bpy.types import AddonPreferences, Operator
 from bpy.props import EnumProperty, BoolProperty, FloatProperty
 from time import sleep
 from _thread import start_new_thread
@@ -47,6 +46,7 @@ path = os.path.dirname(os.path.realpath(__file__))
 if path not in sys.path:
 	sys.path.append(path)
 
+from .bsmax.math import isfloat
 from .bsmax import register_bsmax, unregister_bsmax
 from .keymaps import register_keymaps, unregister_keymaps
 from .menu import register_menu, unregister_menu
@@ -119,18 +119,29 @@ def update_preferences(cls, _, action):
 		
 		global addons
 		register_keymaps(addons[__name__].preferences)
+
+
+def row_prop(cls, col, name, page):
+	global wiki
+	row = col.row()
+	row.prop(cls, name)
+	srow = row.row()
+	srow.scale_x = 1
+	srow.operator('wm.url_open', icon='HELP').url= wiki + page
   
 
 def draw_simple_panel(cls, layout):
 	row = layout.row()
 	col = row.column()
 	col.label(text='Select packages parts separately')
-	cls.row_prop(col, 'navigation', 'Navigation')
-	cls.row_prop(col, 'keymaps', 'Keymaps-' + cls.keymaps)
-	cls.row_prop(col, 'floatmenus', 'floatmenus-' + cls.floatmenus)
+	row_prop(cls, col, 'navigation', 'Navigation')
+	row_prop(cls, col, 'keymaps', 'Keymaps-' + cls.keymaps)
+	row_prop(cls, col, 'floatmenus', 'floatmenus-' + cls.floatmenus)
 	#TODO update wiki page
-	cls.row_prop(col, 'side_panel', 'SidePanel-' + cls.floatmenus)
-	col.label(text='Note: Sometimes need to restart Blender to addon work properly')
+	row_prop(cls, col, 'side_panel', 'SidePanel-' + cls.floatmenus)
+	col.label(
+		text='Note: Sometimes need to restart Blender to addon work properly'
+	)
 
 
 def draw_custom_panel(cls, layout):
@@ -138,22 +149,26 @@ def draw_custom_panel(cls, layout):
 	col = row.column()
 	col.label(text='Select packages parts customly')
 
-	cls.row_prop(col, 'navigation_3d', 'navigation_3d-' + cls.navigation_3d)
-	cls.row_prop(col, 'navigation_2d',	'navigation_2d-' + cls.navigation_2d)
-	cls.row_prop(col, 'viowport', 'viowport-' + cls.viowport)
-	cls.row_prop(col, 'sculpt', 'sculpt-' + cls.sculpt)
-	cls.row_prop(col, 'uv_editor','uv_editor-' + cls.uv_editor)
-	cls.row_prop(col, 'node_editor', 'node_editor-' + cls.node_editor)
-	cls.row_prop(col, 'text_editor', 'text_editor-' + cls.text_editor)
-	cls.row_prop(col, 'graph_editor', 'graph_editor-' + cls.graph_editor)
-	cls.row_prop(col, 'clip_editor', 'clip_editor-' + cls.clip_editor)
-	cls.row_prop(
+	row_prop(cls, col, 'navigation_3d', 'navigation_3d-' + cls.navigation_3d)
+	row_prop(cls, col, 'navigation_2d',	'navigation_2d-' + cls.navigation_2d)
+	row_prop(cls, col, 'viowport', 'viowport-' + cls.viowport)
+	row_prop(cls, col, 'sculpt', 'sculpt-' + cls.sculpt)
+	row_prop(cls, col, 'uv_editor','uv_editor-' + cls.uv_editor)
+	row_prop(cls, col, 'node_editor', 'node_editor-' + cls.node_editor)
+	row_prop(cls, col, 'text_editor', 'text_editor-' + cls.text_editor)
+	row_prop(cls, col, 'graph_editor', 'graph_editor-' + cls.graph_editor)
+	row_prop(cls, col, 'clip_editor', 'clip_editor-' + cls.clip_editor)
+	row_prop(cls, 
 		col, 'video_sequencer','video_sequencer-' + cls.video_sequencer
 	)
-	cls.row_prop(col, 'file_browser', 'file_browser-' + cls.file_browser)
-	cls.row_prop(col, 'floatmenus', 'floatmenus-' + cls.floatmenus)
-	cls.row_prop(col, 'side_panel', 'SidePanel-' + cls.floatmenus)
-	col.label(text='Note: Sometimes need to restart Blender to addon work properly')
+
+	row_prop(cls, col, 'file_browser', 'file_browser-' + cls.file_browser)
+	row_prop(cls, col, 'floatmenus', 'floatmenus-' + cls.floatmenus)
+	row_prop(cls, col, 'side_panel', 'SidePanel-' + cls.floatmenus)
+
+	col.label(
+		text='Note: Sometimes need to restart Blender to addon work properly'
+	)
 
 
 def draw_option_panel(cls, layout):
@@ -169,6 +184,61 @@ def draw_option_panel(cls, layout):
 	row.prop(cls, 'affect_theme')
 	row = box.row()
 	row.prop(cls, 'experimental')
+
+
+def save_preferences(preferences):
+	global iniFileName
+	string = ''
+
+	for prop in preferences.bl_rna.properties:
+		if not prop.is_readonly:
+			key = prop.identifier
+			if key != 'bl_idname':
+				val = str(getattr(preferences, key))
+				string += key + '=' + val + os.linesep
+
+	ini = open(iniFileName, 'w')
+	ini.write(string)
+	ini.close()
+
+
+# def isfloat(value):
+# 	try:
+# 		float(value)
+# 		return True
+
+# 	except ValueError:
+# 		return False
+
+
+def load_preferences(preferences):
+	global iniFileName
+
+	if not os.path.exists(iniFileName):
+		return
+
+	string = open(iniFileName).read()
+	props = string.splitlines()
+
+	for prop in props:
+		key = prop.split('=')
+
+		if len(key) != 2:
+			continue
+
+		if isfloat(key[1]):
+			value = float(key[1])
+		elif key[1] in {'True', 'False'}:
+			value = key[1] == 'True'
+		else:
+			value = key[1]
+
+		try:
+			if hasattr(preferences, key[0]):
+				setattr(preferences, key[0], value)
+		except:
+			# ignore if there is not the attribute
+			pass
 
 
 class BsMax_AddonPreferences(AddonPreferences):
@@ -192,27 +262,9 @@ class BsMax_AddonPreferences(AddonPreferences):
 		default='SIMPLE',
 		update= lambda self, ctx: update_preferences(self, ctx, 'aplication'),
 		description="select a package"
-	)
+	) # type: ignore
 
 	active = BoolProperty(name="Active", default=False)
-	
-	# quick: BoolProperty(
-	# 	name="Quick"',
-	# 	default=False,
-	# 	update= lambda self, ctx: update_preferences(self, ctx, 'quick')
-	# )
-
-	# simple: BoolProperty(
-	# 	name='Simple',
-	# 	default=True,
-	# 	update= lambda self,ctx: update_preferences(self,ctx,'simple')
-	# )
-
-	# custom: BoolProperty(
-	# 	name='Custom',
-	# 	default=False,
-	# 	update= lambda self,ctx: update_preferences(self,ctx,'custom')
-	# )
 	
 	apps = [
 		(
@@ -279,190 +331,205 @@ class BsMax_AddonPreferences(AddonPreferences):
 		default='Blender',
 		update= lambda self, ctx: update_preferences(self, ctx, 'aplication'),
 		description="select a package"
-	)
+	) # type: ignore
 
 	""" Simple select mode """
 	navigation: EnumProperty(
-		name='Navigation',
+		name="Navigation",
 		items=apps+custom,
 		default='Blender',
-		update= lambda self,ctx: update_preferences(self, ctx, 'navigation'),
-		description='select overide navigation mode'
-	)
+		update= lambda self, ctx: update_preferences(self, ctx, 'navigation'),
+		description="select overide navigation mode"
+	) # type: ignore
 
 	toolpack: EnumProperty(
-		name='Tools Pack',
+		name="Tools Pack",
 		items=apps,
 		default='Blender',
-		update= lambda self,ctx: update_preferences(self, ctx, 'toolpack'),
-		description='Extera Overide Tools'
-	)
+		update= lambda self, ctx: update_preferences(self, ctx, 'toolpack'),
+		description="Extera Overide Tools"
+	) # type: ignore
 
 	keymaps: EnumProperty(
-		name='Keymap',
+		name="Keymap",
 		items=apps+custom,
 		default='Blender',
-		update= lambda self,ctx: update_preferences(self, ctx, 'keymaps'),
-		description='Overide Full Keymap'
-	)
+		update= lambda self, ctx: update_preferences(self, ctx, 'keymaps'),
+		description="Overide Full Keymap"
+	) # type: ignore
 
 	floatmenus: EnumProperty(
-		name='Float Menu',
+		name="Float Menu",
 		items=menus,
 		default='Blender',
-		update= lambda self,ctx: update_preferences(self, ctx, 'floatmenus'),
-		description='Float menus type'
-	)
+		update= lambda self, ctx: update_preferences(self, ctx, 'floatmenus'),
+		description="Float menus type"
+	) # type: ignore
 
 
 	side_panel: EnumProperty(
-		name='Side Panel',
+		name="Side Panel",
 		items=panels,
 		default='None',
-		# upadate= lambda self,ctx: update_preferences(self, ctx, 'panel'),
-		description='panel in right side of target software'
-	)
+		# upadate= lambda self, ctx: update_preferences(self, ctx, 'panel'),
+		description="panel in right side of target software"
+	) # type: ignore
 	
 	
 	""" Custom select mode """
 	navigation_3d: EnumProperty(
-		name='Navigation 3D',
+		name="Navigation 3D",
 		items=apps,
 		default='Blender',
-		update= lambda self,ctx: update_preferences(self, ctx, 'navigation_3d'),
-		description='Overide navigation on 3D View'
-	)
+		update= lambda self, ctx: update_preferences(
+			self, ctx, 'navigation_3d'
+		),
+
+		description="Overide navigation on 3D View"
+	) # type: ignore
 
 	navigation_2d: EnumProperty(
-		name='Navigation 2D',
+		name="Navigation 2D",
 		items=apps,
 		default='Blender',
-		update= lambda self,ctx: update_preferences(self, ctx, 'navigation_2d'),
-		description='Overide navigation in 2D Views'
-	)
+		update= lambda self, ctx: update_preferences(
+			self, ctx, 'navigation_2d'
+		),
+
+		description="Overide navigation in 2D Views"
+	) # type: ignore
 
 	viowport: EnumProperty(
-		name='View 3D',
+		name="View 3D",
 		items=apps,
 		default='Blender',
-		update= lambda self,ctx: update_preferences(self, ctx, 'viowport'),
-		description='Overide keymaps in 3D view'
-	)
+		update= lambda self, ctx: update_preferences(self, ctx, 'viowport'),
+		description="Overide keymaps in 3D view"
+	) # type: ignore
 
 	sculpt: EnumProperty(
-		name='Sculpt / Paint',
+		name="Sculpt / Paint",
 		items=apps,
 		default='Blender',
-		update= lambda self,ctx: update_preferences(self, ctx, 'sculpt'),
-		description='Overide keymaps in sculpt and paint mode'
-	)
+		update= lambda self, ctx: update_preferences(self, ctx, 'sculpt'),
+		description="Overide keymaps in sculpt and paint mode"
+	) # type: ignore
 
 	uv_editor: EnumProperty(
-		name='UV Editor',
+		name="UV Editor",
 		items=apps,
 		default='Blender',
-		update= lambda self,ctx: update_preferences(self, ctx, 'uv_editor'),
-		description='Overide keymaps in UV editor'
-	)
+		update= lambda self, ctx: update_preferences(self, ctx, 'uv_editor'),
+		description="Overide keymaps in UV editor"
+	) # type: ignore
 
 	node_editor: EnumProperty(
-		name='Node Editor',
+		name="Node Editor",
 		items=apps,
 		default='Blender',
-		update= lambda self,ctx: update_preferences(self, ctx, 'node_editor'),
-		description='Overide keymaps in Node editors'
-	)
+		update= lambda self, ctx: update_preferences(self, ctx, 'node_editor'),
+		description="Overide keymaps in Node editors"
+	) # type: ignore
 
 	graph_editor: EnumProperty(
-		name='Graph Editor',
+		name="Graph Editor",
 		items=apps,
 		default='Blender',
-		update= lambda self,ctx: update_preferences(self, ctx, 'graph_editor'),
-		description='Overide keymaps in Time ediotrs'
-	)
+		update= lambda self, ctx: update_preferences(
+			self, ctx, 'graph_editor'
+		),
+		description="Overide keymaps in Time ediotrs"
+	) # type: ignore
 
 	clip_editor: EnumProperty(
-		name='Clip Editor',
+		name="Clip Editor",
 		items=apps,
 		default='Blender',
-		update= lambda self,ctx: update_preferences(self, ctx, 'clip_editor'),
-		description='Overide keymaps in Clip editor'
-	)
+		update= lambda self, ctx: update_preferences(self, ctx, 'clip_editor'),
+		description="Overide keymaps in Clip editor"
+	) # type: ignore
 	
 	video_sequencer: EnumProperty(
-		name='Video Sequencer',
-		items=apps + [('Premiere','Premiere','')],
+		name="Video Sequencer",
+		items=apps + [('Premiere', "Premiere", "")],
 		default='Blender',
-		update= lambda self,ctx: update_preferences(self, ctx, 'video_sequencer'),
-		description='Overide keymaps in Video sequencer'
-	)
+		update= lambda self, ctx: update_preferences(
+			self, ctx, 'video_sequencer'
+		),
+		description="Overide keymaps in Video sequencer"
+	) # type: ignore
 
 	text_editor: EnumProperty(
-		name='Text Editor',
+		name="Text Editor",
 		items=apps,
 		default='Blender',
-		update= lambda self,ctx: update_preferences(self, ctx, 'text_editopr'),
-		description='Overide keymaps in text editor'
-	)
+		update= lambda self, ctx: update_preferences(
+			self, ctx, 'text_editopr'
+		),
+		description="Overide keymaps in text editor"
+	) # type: ignore
 
 	file_browser: EnumProperty(
-		name='File Browser',
+		name="File Browser",
 		items=apps,
 		default='Blender',
-		update= lambda self,ctx: update_preferences(self, ctx, 'file_browser'),
-		description='Overide keymaps in File Browser'
-	)
+		update= lambda self, ctx: update_preferences(
+			self, ctx, 'file_browser'
+		),
+		description="Overide keymaps in File Browser"
+	) # type: ignore
 
 	""" Global options """
-	options: BoolProperty(default=False)
+	options: BoolProperty(default=False) # type: ignore
 
 	view_undo: BoolProperty(
-		name='View Undo',
+		name="View Undo",
 		default=False,
 		update= lambda self, ctx: update_preferences(self, ctx, 'view_undo'),
-		description='undo the only view angle'
-	)
+		description="undo the only view angle"
+	) # type: ignore
 
 	menu_scale: FloatProperty(
-		name='Float Menu Scale', min=1, max=3, description=''
-	)
+		name="Float Menu Scale", min=1, max=3,
+		description=""
+	) # type: ignore
 
 	menu_auto_scale: BoolProperty(
-		name='Auto',
+		name="Auto",
 		default=False,
-		description='Link float menu size to thema scale value'
-	)
+		description="Link float menu size to thema scale value"
+	) # type: ignore
 
 	blender_transform_type: BoolProperty(
-		name='Blender Transform Type',
+		name="Blender Transform Type",
 		default=False,
-		update= lambda self,ctx: update_preferences(self, ctx, 'transform'),
-		description='Make "W E R" work as "G R S", Need to restart to See effect'
-	)
+		update= lambda self, ctx: update_preferences(self, ctx, 'transform'),
+		description="Make 'W E R' work as 'G R S', Need to restart to See effect"
+	) # type: ignore
 
 	nevil_stuff: BoolProperty(
-		name='Developer Exteras',
+		name="Developer Exteras",
 		default=False,
-		description='This tools may not usefull for theres, just keep it off'
-	)
+		description="This tools may not usefull for theres, just keep it off"
+	) # type: ignore
 
 	affect_theme: BoolProperty(
-		name='Affect Theme',
+		name="Affect Theme",
 		default=True,
-		description='Let addon change some part of theme'
-	)
+		description="Let addon change some part of theme"
+	) # type: ignore
 
 	experimental: BoolProperty(
-		name='Experimental',
+		name="Experimental",
 		default=False,
-		description='Enable unfinished tools too'
-	)
+		description="Enable unfinished tools too"
+	) # type: ignore
 
 	geonode_pirimitve: BoolProperty(
-		name='GeoNode primitive',
+		name="GeoNode primitive",
 		default=False,
-		description='Convert Primitives to geometry node modfier'
-	)
+		description="Convert Primitives to geometry node modfier"
+	) # type: ignore
 
 	def refine(self):
 		""" Disactive keymap update """
@@ -501,15 +568,7 @@ class BsMax_AddonPreferences(AddonPreferences):
 		""" Reactive keymap update """
 		self.active = True
 
-	def row_prop(self, col, name, page):
-		global wiki
-		row = col.row()
-		row.prop(self,name)
-		srow = row.row()
-		srow.scale_x = 1
-		srow.operator('wm.url_open', icon='HELP').url= wiki + page
-
-	def draw(self, ctx):
+	def draw(self, _):
 		layout = self.layout
 
 		box = layout.box()
@@ -540,63 +599,12 @@ class BsMax_AddonPreferences(AddonPreferences):
 			self.menu_scale = 1
 
 
-def save_preferences(preferences):
-	global iniFileName
-	string = ''
-
-	for prop in preferences.bl_rna.properties:
-		if not prop.is_readonly:
-			key = prop.identifier
-			if key != 'bl_idname':
-				val = str(getattr(preferences, key))
-				string += key + '=' + val + os.linesep
-
-	ini = open(iniFileName, 'w')
-	ini.write(string)
-	ini.close()
-
-
-def isfloat(value):
-	try:
-		float(value)
-		return True
-
-	except ValueError:
-		return False
-
-
-def load_preferences(preferences):
-	global iniFileName
-
-	if os.path.exists(iniFileName):
-		string = open(iniFileName).read()
-		props = string.splitlines()
-
-		for prop in props:
-			key = prop.split('=')
-
-			if len(key) == 2:
-				if isfloat(key[1]):
-					value = float(key[1])
-				elif key[1] in {'True', 'False'}:
-					value = key[1] == 'True'
-				else:
-					value = key[1]
-
-				try:
-					if hasattr(preferences, key[0]):
-						setattr(preferences, key[0], value)
-				except:
-					# ignore if there is not the attribute
-					pass
-
-
-class BsMax_OT_Save_Preferences(bpy.types.Operator):
+class BsMax_OT_Save_Preferences(Operator):
 	bl_idname = 'bsmax.save_preferences'
-	bl_label = 'Save BsMax Preferences'
+	bl_label = "Save BsMax Preferences"
 	bl_options = {'REGISTER', 'INTERNAL'}
 
-	def execute(self, ctx):
+	def execute(self, _):
 		global addons
 		save_preferences(addons[__name__].preferences)
 		return{'FINISHED'}
@@ -608,17 +616,17 @@ def register_delay(preferences):
 	register_startup(preferences)
 
 
-classes = (
+classes = {
 	BsMax_OT_Save_Preferences,
 	BsMax_AddonPreferences
-)
+}
 
 
 def register():
+	global classes, addons
 	for c in classes:
 		register_class(c)
 
-	global addons
 	preferences = addons[__name__].preferences
 	load_preferences(preferences)
 	preferences.active = True
@@ -633,7 +641,7 @@ def register():
 	
 
 def unregister():
-	global addons
+	global classes, addons
 	save_preferences(addons[__name__].preferences)
 
 	unregister_keymaps()

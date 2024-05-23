@@ -12,10 +12,10 @@
 #	You should have received a copy of the GNU General Public License
 #	along with this program.  If not, see <https://www.gnu.org/licenses/>.
 ############################################################################
+# 2024/05/20
 
 from math import sqrt, acos, atan2
 from mathutils import Vector
-
 
 
 class BoolVector:
@@ -28,7 +28,6 @@ class BoolVector:
 		self.x = x
 		self.y = y
 		self.z = z
-
 
 
 class BitArray:
@@ -66,7 +65,6 @@ class BitArray:
 		return ""
 
 
-
 def point_on_line(start, end, time):
 	""" Get point coordinate on line by time
 
@@ -78,7 +76,6 @@ def point_on_line(start, end, time):
 			Same as start argument
 	"""
 	return start + (end - start) * time
-
 
 
 def point_on_cubic_bezier_curve(a, b, c, d, t):
@@ -100,7 +97,6 @@ def point_on_cubic_bezier_curve(a, b, c, d, t):
 	return C1*t**3 + C2*t*t + C3*t + C4
 
 
-
 def point_rotation_on_segment(a, b, c, d, time):
 	# Get segment and time return direction
 	# Tamprary solution but its work for now
@@ -116,7 +112,6 @@ def point_rotation_on_segment(a, b, c, d, time):
 	y = atan2(lz, lx)
 	z = atan2(ly, lx)
 	return Vector((x, y, z))
-
 
 
 def point_on_spline(spline, time):
@@ -196,7 +191,6 @@ def point_on_spline(spline, time):
 	return location, rotaion, scale
 
 
-
 def point_on_curve(curve, index, time):
 	""" get point on curve by time
 		
@@ -214,11 +208,9 @@ def point_on_curve(curve, index, time):
 	return point_on_spline(curve.data.splines[index], time)
 
 
-
 def get_bezier_tangent(a, b, c, d, t):
 	s = 1-t
 	return s*s*(b-a) + 2*s*t*(c-b) + t*t*(d-c)
-
 
 
 def split_segment(p1, p2, p3, p4, t):
@@ -232,7 +224,6 @@ def split_segment(p1, p2, p3, p4, t):
 	p1234 = (p234 - p123) * t + p123
 	# start.co start.out center.in center.co center.out end.in end.co
 	return [p1, p12, p123, p1234, p234, p34, p4]
-
 
 
 def get_distance(a, b):
@@ -258,6 +249,13 @@ def scale_vector_to_float(scale):
 	return ((scale.x + scale.y + scale.z) / 3)
 
 
+def isfloat(value):
+	try:
+		float(value)
+		return True
+	except ValueError:
+		return False
+
 
 def get_2_pont_size(pmin, pmax):
 	""" Get min max point return Bounding box dimansions """
@@ -267,13 +265,11 @@ def get_2_pont_size(pmin, pmax):
 	return Vector((w, l, h))
 
 
-
 def get_2_point_center(sp, ep):
 	x = sp.x + ((ep.x - sp.x) / 2)
 	y = sp.y + ((ep.y - sp.y) / 2)
 	z = sp.z + ((ep.z - sp.z) / 2)
 	return Vector((x, y, z))
-
 
 
 def get_segment_length(a, b, c, d, steps):
@@ -290,15 +286,12 @@ def get_segment_length(a, b, c, d, steps):
 	return lenght
 
 
-
 def get_2_points_angel_2d(p1, p2):
 	return atan2(p2.x - p1.x, p1.y - p2.y)
 
 
-
 def get_3_points_angle_2d(a, b, c):
 	return atan2(c.y - b.y, c.x - b.x) - atan2(a.y - b.y, a.x - b.x)
-
 
 
 def get_3_points_angle_3d(a, b, c):
@@ -314,7 +307,6 @@ def get_3_points_angle_3d(a, b, c):
 	res = 1 if res > 1 else res
 	res = -1 if res < -1 else res
 	return acos(res)
-
 
 
 def get_lines_intersection(p1, p2, p3, p4):
@@ -343,7 +335,6 @@ def get_lines_intersection(p1, p2, p3, p4):
 	return Vector((x, y, 0))
 
 
-
 def get_axis_constraint(oring, current):
 	# Keep bigger axis and set the other zero
 	delta_x = abs(oring.x - current.x)
@@ -359,7 +350,6 @@ def get_axis_constraint(oring, current):
 	return current
 
 
-
 def get_bias(bias, time):
 	if bias > 0:
 		return 1 - pow(1 - time, 9*bias + 1)
@@ -367,7 +357,6 @@ def get_bias(bias, time):
 		return pow(time, 1 - 9*bias)
 	else:
 		return time
-
 
 
 def shift_number(number, value, minimum, maximum):
@@ -379,7 +368,6 @@ def shift_number(number, value, minimum, maximum):
 	return number
 
 
-
 def get_index_str(count, index):
 	length = len(str(index))
 	string = ""
@@ -387,7 +375,6 @@ def get_index_str(count, index):
 		for i in range(length, count):
 			string += "0"
 	return (string + str(index))
-
 
 
 def dot(v1, v2):
@@ -401,7 +388,6 @@ def dot(v1, v2):
 			Float
 	"""
 	return v1.x*v2.x + v1.y*v2.y + v1.z*v2.z
-
 
 
 def bounding_box_colide_with(box_a, box_b, ignore_z=False):
@@ -445,7 +431,6 @@ def bounding_box_colide_with(box_a, box_b, ignore_z=False):
 		return (xin and yin and zin)
 
 
-
 def get_cubic_bezier_curve_length(a, b, c, d, steps=100):
 	""" calculate cubic bezier curve length
 
@@ -471,7 +456,6 @@ def get_cubic_bezier_curve_length(a, b, c, d, steps=100):
 		lenght += get_distance(points[i], points[i - 1])
 
 	return lenght
-
 
 
 def get_point_on_spline(spline, time, devide_steps=100):

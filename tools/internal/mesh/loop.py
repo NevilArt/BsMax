@@ -408,7 +408,7 @@ def smart_loop(ctx, ring=False):
 				)
 				bpy.ops.mesh.loop_multi_select(ring=ring)
 
-		final_selection += get_selected(mode, item=False)
+		final_selection += get_selected(ctx, mode, item=False)
 
 	select(
 		ctx, final_selection, mode, item=False,
@@ -423,7 +423,7 @@ class SmartSelectLoop(Operator):
 	 *Sometimes top and bottom is ignored on loops of spheres, investigate
 	 *Complete step selection only works in one direction
 	"""
-	bl_idname = "mesh.smart_select_loop"
+	bl_idname = 'mesh.smart_select_loop'
 	bl_label = "Smart Select Loop"
 	bl_description = "Context sensitive smart loop selection"
 	bl_options = {'REGISTER', 'UNDO'}
@@ -432,13 +432,14 @@ class SmartSelectLoop(Operator):
 		smart_loop(ctx)
 		return{'FINISHED'}
 
-
+# TODO combine both operator and add selection method
+# set, add, remove 
 class SmartSelectRing(Operator):
 	"""
 	BUGS:
 	 *Step Face Loop only goes in one direction for faces
 	"""
-	bl_idname = "mesh.smart_select_ring"
+	bl_idname = 'mesh.smart_select_ring'
 	bl_label = "Smart Select Ring"
 	bl_description = "Context sensitive smart ring selection"
 	bl_options = {'REGISTER', 'UNDO'}

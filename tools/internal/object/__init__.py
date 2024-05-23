@@ -16,7 +16,7 @@
 from .arrange import register_arrange, unregister_arrange
 from .attach import register_attach, unregister_attach
 # from .bake import register_bake, unregister_bake
-from .batchrename import register_batchrename, unregister_batchrename
+from .batch_rename import register_batchrename, unregister_batchrename
 from .clone_array_objects import register_clone_object, unregister_clone_object
 from .collection import register_collection, unregister_collection
 from .convert import register_convert, unregister_convert

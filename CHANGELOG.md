@@ -1,3 +1,9 @@
+# 0, 1, 2, 20240520
+* Align Object issues from last update fixed.
+* Mesh to hair guid pre setup operator added 
+* Some update for Blender 4.2 compatibliti.
+* Menu and Operator search keymaps swaped. (X for menu, Ctrl+Shift+Alt+X for Operator)
+
 # 0, 1, 2, 20240508
 * A global Bound box calculator Created (for now only Align object use it).
 * Align Object updated and detects more object bound rather than only Mesh and Curve (develop continue till support all types).

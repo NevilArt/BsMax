@@ -12,11 +12,13 @@
 #	You should have received a copy of the GNU General Public License
 #	along with this program.  If not, see <https://www.gnu.org/licenses/>.
 ############################################################################
+# 2024/05/21
 
 import bpy
 
 from bpy.types import Operator
 from bpy.props import BoolProperty, EnumProperty
+from bpy.utils import register_class, unregister_class
 
 # TODO Make unique Add realize instance to geometry node before apply
 # in quad menu conver to Gpencil and curves not working
@@ -32,7 +34,6 @@ def geometrynode_solve(obj):
 	pass
 
 
-
 def select_objects(objects):
 	for obj in objects:
 		obj.select_set(True)
@@ -44,22 +45,20 @@ def set_as_active_object(ctx, obj):
 		ctx.view_layer.objects.active = obj
 
 
-
 def rename_uvs(name, objects):
 	for obj in objects:
 		if len(obj.data.uv_layers) == 1:
 			obj.data.uv_layers[0].name = name
 
 
-
-def convert_to_execute(self, ctx):
-	activeObject = ctx.active_object
-	selectedObjects = ctx.selected_objects.copy()
+def convert_to_execute(cls, ctx):
+	active_object = ctx.active_object
+	selected_objects = ctx.selected_objects.copy()
 	bpy.ops.object.select_all(action='DESELECT')
 
-	for obj in selectedObjects:
+	for obj in selected_objects:
 		""" Clear primitive data """
-		if obj.type in {'MESH','CURVE'}:
+		if obj.type in {'MESH', 'CURVE'}:
 			obj.data.primitivedata.classname = ""
 
 		""" Make unique """
@@ -69,15 +68,14 @@ def convert_to_execute(self, ctx):
 		geometrynode_solve(obj)
 		
 		""" Set the target mode """
-		if obj.type != self.target:
+		if obj.type != cls.target:
 			set_as_active_object(ctx, obj)
-			bpy.ops.object.convert(target=self.target)
+			bpy.ops.object.convert(target=cls.target)
 
 	# convert to graspancel delete the old object an genarate new one
-	if self.target != 'GPENCIL':
-		select_objects(selectedObjects)
-		set_as_active_object(ctx, activeObject)
-
+	if cls.target != 'GPENCIL':
+		select_objects(selected_objects)
+		set_as_active_object(ctx, active_object)
 
 
 def uv_name_fixer(active, objs):
@@ -87,9 +85,8 @@ def uv_name_fixer(active, objs):
 			for i in range(len(names)):
 				obj.data.uv_layers[i].name = names[i]
 
-
-
-def join_plus_execute(self, ctx):
+#TODO make instance real befor convert
+def join_plus_execute(cls, ctx):
 	target = ctx.active_object
 		
 	""" if active object not selected ignore it and pick first object """
@@ -100,24 +97,27 @@ def join_plus_execute(self, ctx):
 		target = ctx.view_layer.objects.active = ctx.selected_objects[0]
 
 	""" """
-	if self.convert:
+	if cls.convert:
 		
-		selectedObjects = ctx.selected_objects.copy()
+		selected_objects = ctx.selected_objects.copy()
 		bpy.ops.object.select_all(action='DESELECT')
 
 		""" filter selection """
 		leagles = ('MESH','CURVE','FONT','GPENCIL')
-		selectedObjects = [obj for obj in selectedObjects if obj.type in leagles]
+		selected_objects = [
+			obj for obj in selected_objects if obj.type in leagles
+		]
 
-		""" if both object active and target has only one UV chanel make the name same """
-		if self.renameUVs:
-			uv_name_fixer(target, selectedObjects)
+		""" if both object active and target has only one UV chanel
+			make the name same """
+		if cls.renameUVs:
+			uv_name_fixer(target, selected_objects)
 		
 		""" clear primitive data """
 		if target.type in {'MESH','CURVE'}:
 			target.data.primitivedata.classname = ""
 		
-		for obj in selectedObjects:
+		for obj in selected_objects:
 
 			""" Make same type as possible """
 			if obj.type != target.type:
@@ -135,14 +135,13 @@ def join_plus_execute(self, ctx):
 			obj.select_set(False)
 
 		""" Refine selection """
-		select_objects(selectedObjects)
+		select_objects(selected_objects)
 		set_as_active_object(ctx, target)
 
 	bpy.ops.object.join()	
 
 
-
-def join_plus_draw(self, ctx):
+def join_plus_draw(self, _):
 	layout = self.layout
 
 	row = layout.row()
@@ -150,78 +149,76 @@ def join_plus_draw(self, ctx):
 	row.prop(self, 'renameUVs')
 
 	if self.convert:
-		layout.label(text="Apply Modifiers and make objects Unique befor joine")
+		layout.label(
+			text="Apply Modifiers and make objects Unique befor joine"
+		)
+
 	else:
-		layout.label(text="Don`t make any change and just call Join Operator")
-
-
+		layout.label(
+			text="Don`t make any change and just call Join Operator"
+		)
 
 
 class Object_OT_Convert_TO(Operator):
-	bl_idname = "object.convert_to"
+	bl_idname = 'object.convert_to'
 	bl_label = "Convert to (BsMax)"
 	bl_description = "Simulate 3DsMax Convert To operator"
 	bl_options = {'REGISTER', 'UNDO'}
 
 	target: EnumProperty(
-		default='MESH',
 		items=[
-			('MESH','Mesh',''),
-	 		('CURVE','Curve',''),
-			('GPENCIL','Grease Pencil',''),
-			('CURVES', 'Curves (Hair)', '')
-		]
-	)
+			('MESH', "Mesh", ""),
+	 		('CURVE', "Curve", ""),
+			('GPENCIL', "Grease Pencil", ""),
+			('CURVES', "Curves (Hair)", "")
+		],
+		default='MESH'
+	) # type: ignore
 
 	def execute(self, ctx):
 		convert_to_execute(self, ctx)
 		return{"FINISHED"}
 
 
-
 class Object_OT_Join_Plus(Operator):
 	""" Join selected objects to active object if are in same type """
-	bl_idname = "object.join_plus"
+	bl_idname = 'object.join_plus'
 	bl_label = "Join (Plus)"
-	# bl_description = ""
+	bl_description = "attach selected object to active one"
 	bl_options = {'REGISTER', 'UNDO'}
 
-	convert: BoolProperty(name='Apply befor Join', default=True)
-	renameUVs: BoolProperty(default=True)
+	convert: BoolProperty(name="Apply befor Join", default=True) # type: ignore
+	renameUVs: BoolProperty(default=True) # type: ignore
 
 	@classmethod
 	def poll(self, ctx):
 		return len(ctx.selected_objects) > 1
 	
-	def draw(self,ctx):
+	def draw(self, ctx):
 		join_plus_draw(self, ctx)
 
 	def execute(self, ctx):
 		join_plus_execute(self, ctx)
 		return{"FINISHED"}
 
-	def invoke(self,ctx,event):
+	def invoke(self, ctx, _):
 		return ctx.window_manager.invoke_props_dialog(self)
 
 
-
-classes = (
+classes = {
 	Object_OT_Convert_TO,
 	Object_OT_Join_Plus
-)
-
+}
 
 
 def register_convert():
 	for c in classes:
-		bpy.utils.register_class(c)
-
+		register_class(c)
 
 
 def unregister_convert():
 	for c in classes:
-		bpy.utils.unregister_class(c)
-
+		unregister_class(c)
 
 
 if __name__ == "__main__":

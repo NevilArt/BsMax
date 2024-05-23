@@ -173,7 +173,6 @@ def set_origen(ctx, obj, location):
 	""" Set object origen in new location\n
 		TODO: Transform rather than locaion
 		TODO: free from bpy.ops and remove context
-		TODO: Objs rather than singel object
 
 		args:
 			ctx: bpy.context

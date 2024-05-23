@@ -12,7 +12,7 @@
 #	You should have received a copy of the GNU General Public License
 #	along with this program.  If not, see <https://www.gnu.org/licenses/>.
 ############################################################################
-# 2024/04/08
+# 2024/05/22
 
 import bpy
 
@@ -57,8 +57,17 @@ class Object_TO_Make_Unique(Operator):
 			return ctx.object.data.users > 1
 		return False
 	
-	def draw(self, ctx):
-		self.layout.prop(self, 'group')
+	def draw(self, _):
+		layout = self.layout
+		layout.prop(self, 'group')
+		if self.group:
+			layout.label(
+				text="Keep Instance with each other"
+			)
+		else:
+			layout.label(
+				text="Convert to all unique objects"
+			)
 	
 	def execute(self, ctx):
 		newData = ctx.object.data.copy()
@@ -72,21 +81,22 @@ class Object_TO_Make_Unique(Operator):
 		
 		return{"FINISHED"}
 	
-	def invoke(self, ctx, event):
+	def invoke(self, ctx, _):
 		if len(ctx.selected_objects) > 1:
 			return ctx.window_manager.invoke_props_dialog(self)
 
 		self.execute(ctx)
+		return{"FINISHED"}
 	
 
-def make_unique_menu(self, ctx):
+def make_unique_menu(self, _):
 	self.layout.operator('object.make_unique')
 
 
-classes = (
+classes = {
 	OBJECT_TO_Data_Auto_Rename,
 	Object_TO_Make_Unique
-)
+}
 
 
 def register_instancer():
@@ -96,7 +106,6 @@ def register_instancer():
 	bpy.types.VIEW3D_MT_object_relations.append(make_unique_menu)
 
 
-
 def unregister_instancer():
 	for c in classes:
 		unregister_class(c)
@@ -104,5 +113,5 @@ def unregister_instancer():
 	bpy.types.VIEW3D_MT_object_relations.remove(make_unique_menu)
 
 
-if __name__ == "__main__":
+if __name__ == '__main__':
 	register_instancer()
