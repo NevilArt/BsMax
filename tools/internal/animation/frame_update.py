@@ -12,7 +12,7 @@
 #	You should have received a copy of the GNU General Public License
 #	along with this program.  If not, see <https://www.gnu.org/licenses/>.
 ############################################################################
-# 2024/03/27
+# 2024/05/26
 
 import bpy
 
@@ -23,18 +23,18 @@ from bpy.utils import register_class, unregister_class
 from bsmax.graphic import get_header_color
 
 
-def mode_updated(self, ctx):
-	if self.active_auto_use_select_pick_depth:
+def mode_updated(cls, ctx):
+	if cls.active_auto_use_select_pick_depth:
 		""" uspds use_select_pick_depth State """
-		uspds = False if (ctx.mode == 'POSE') else self.use_select_pick_depth
+		uspds = False if (ctx.mode == 'POSE') else cls.use_select_pick_depth
 		ctx.preferences.system.use_select_pick_depth = uspds
 
 
-def autokey_state_updated(self, ctx):
+def autokey_state_updated(cls, ctx):
 	autoKey = ctx.scene.tool_settings.use_keyframe_insert_auto
 	color = (0.5, 0.0, 0.0, 1.0) if autoKey else get_header_color()
 	# allow to update if affect_theme active in preference
-	if color and self.preferences.affect_theme:
+	if color and cls.preferences.affect_theme:
 		ctx.preferences.themes['Default'].dopesheet_editor.space.header = color
 
 
@@ -100,7 +100,7 @@ def depsgraph_update(scene):
 # this operator need to see scene_state class #
 class Anim_OT_Auto_Key_Toggle(Operator):
 	bl_idname = 'anim.auto_key_toggle'
-	bl_label = 'Auto Key Toggle'
+	bl_label = "Auto Key Toggle"
 	bl_options = {'REGISTER', 'INTERNAL'}
 
 	def execute(self, ctx):
@@ -114,24 +114,25 @@ class Anim_OT_Auto_Key_Toggle(Operator):
 # this operator need to see scene_state class #
 class Anim_OT_Auto_Use_Select_Pick_Depth_Toggle(Operator):
 	bl_idname = 'anim.auto_use_select_pick_depth_toggle'
-	bl_label = 'Auto Use Select Pick Depth Toggle'
+	bl_label = "Auto Use Select Pick Depth Toggle"
 	bl_options = {'REGISTER'}
 
 	def execute(self, ctx):
 		global scene_state
-		scene_state.active_auto_use_select_pick_depth = not scene_state.active_auto_use_select_pick_depth
+		scene_state.active_auto_use_select_pick_depth = \
+			not scene_state.active_auto_use_select_pick_depth
 		return{'FINISHED'}
 
 
-classes = (
+classes = {
 	Anim_OT_Auto_Key_Toggle,
 	Anim_OT_Auto_Use_Select_Pick_Depth_Toggle
-)
+}
 
 
 def register_frame_update(preferences):
-	for c in classes:
-		register_class(c)
+	for cls in classes:
+		register_class(cls)
 
 	scene_state.store(bpy.context, preferences)
 	# bpy.app.handlers.render_init.append(render_init)
@@ -143,8 +144,8 @@ def unregister_frame_update():
 	# bpy.app.handlers.render_init.remove(render_init)
 	bpy.app.handlers.depsgraph_update_pre.remove(depsgraph_update)
 
-	for c in classes:
-		unregister_class(c)
+	for cls in classes:
+		unregister_class(cls)
 
 
 if __name__ == '__main__':

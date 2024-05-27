@@ -15,19 +15,19 @@
 #	You should have received a copy of the GNU General Public License
 #	along with this program.  If not, see <https://www.gnu.org/licenses/>.
 ############################################################################
-# 2024/05/23
+# 2024/05/27
 
 bl_info = {
-	'name': 'BsMax',
-	'description': 'BsMax UI simulations and Tool pack (Blender 3.3LTS ~ 4.1)',
-	'author': 'Naser Merati (Nevil)',
-	'version': (0, 1, 2, 20240523),
+	'name': "BsMax",
+	'description': "BsMax UI simulations and Tool pack (Blender 3.3LTS ~ 4.1)",
+	'author': "Naser Merati (Nevil)",
+	'version': (0, 1, 2, 20240527),
 	'blender': (3, 3, 0),
-	'location': 'Almost Everywhere in Blender',
+	'location': "Almost Everywhere in Blender",
 	'wiki_url': 'https://github.com/NevilArt/BsMax/wiki',
 	'doc_url': 'https://github.com/NevilArt/BsMax/wiki',
 	'tracker_url': 'https://github.com/NevilArt/BsMax/issues',
-	'category': 'Interface'
+	'category': "Interface"
 }
 
 
@@ -133,21 +133,21 @@ def row_prop(cls, col, name, page):
 def draw_simple_panel(cls, layout):
 	row = layout.row()
 	col = row.column()
-	col.label(text='Select packages parts separately')
+	col.label(text="Select packages parts separately")
 	row_prop(cls, col, 'navigation', 'Navigation')
 	row_prop(cls, col, 'keymaps', 'Keymaps-' + cls.keymaps)
 	row_prop(cls, col, 'floatmenus', 'floatmenus-' + cls.floatmenus)
 	#TODO update wiki page
 	row_prop(cls, col, 'side_panel', 'SidePanel-' + cls.floatmenus)
 	col.label(
-		text='Note: Sometimes need to restart Blender to addon work properly'
+		text="Note: Sometimes need to restart Blender to addon work properly"
 	)
 
 
 def draw_custom_panel(cls, layout):
 	row = layout.row()
 	col = row.column()
-	col.label(text='Select packages parts customly')
+	col.label(text="Select packages parts customly")
 
 	row_prop(cls, col, 'navigation_3d', 'navigation_3d-' + cls.navigation_3d)
 	row_prop(cls, col, 'navigation_2d',	'navigation_2d-' + cls.navigation_2d)
@@ -159,7 +159,7 @@ def draw_custom_panel(cls, layout):
 	row_prop(cls, col, 'graph_editor', 'graph_editor-' + cls.graph_editor)
 	row_prop(cls, col, 'clip_editor', 'clip_editor-' + cls.clip_editor)
 	row_prop(cls, 
-		col, 'video_sequencer','video_sequencer-' + cls.video_sequencer
+		col, 'video_sequencer', 'video_sequencer-' + cls.video_sequencer
 	)
 
 	row_prop(cls, col, 'file_browser', 'file_browser-' + cls.file_browser)
@@ -167,7 +167,7 @@ def draw_custom_panel(cls, layout):
 	row_prop(cls, col, 'side_panel', 'SidePanel-' + cls.floatmenus)
 
 	col.label(
-		text='Note: Sometimes need to restart Blender to addon work properly'
+		text="Note: Sometimes need to restart Blender to addon work properly"
 	)
 
 
@@ -584,11 +584,11 @@ class BsMax_AddonPreferences(AddonPreferences):
 		box = layout.box()
 		row = box.row()
 		icon = 'DOWNARROW_HLT' if self.options else 'RIGHTARROW'
-		row.prop(self, 'options', text='Options', icon=icon)
+		row.prop(self, 'options', text="Options", icon=icon)
 
 		row.operator(
 			'bsmax.save_preferences',
-			text='Save Preferences Setting',
+			text="Save Preferences Setting",
 			icon='FILE_TICK'
 		)
 		
@@ -624,8 +624,8 @@ classes = {
 
 def register():
 	global classes, addons
-	for c in classes:
-		register_class(c)
+	for cls in classes:
+		register_class(cls)
 
 	preferences = addons[__name__].preferences
 	load_preferences(preferences)
@@ -651,8 +651,8 @@ def unregister():
 	unregister_startup()
 	unregister_bsmax()
 
-	for c in classes:
-		unregister_class(c)
+	for cls in classes:
+		unregister_class(cls)
 
 	# templates.unregister()
 	if path in sys.path:

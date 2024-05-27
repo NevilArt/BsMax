@@ -36,10 +36,13 @@ If you found this product useful and want to support this project you can Donate
 * [Download Older Version (2.80-2.92)(2.93-3.2)](https://github.com/NevilArt/BsMax_2_80)
 
 ## Recent Updates and Changes
-* Create Primitive naming issue fixed.
-* Smart loop bug fixed.
-* Batch rename issue fixed.
-* Instancer bug fixed.
+* Backburner submiter has some updates
+* 1. custom Repository directory option.
+* 2. Incremental number to repository file rather than random number.
+* 3. Use jobname as repository file name optional.
+* 4. Automaticaly add scene and viewlayer name to jobname if was more then one.
+* Geometry data clean stuff add that work on multiple object rather then only active object.(View3D/Object/Clean Up/ ...)
+* "Freeze on" repeat calculation issue fixed. (Tools/Animation/...)
 * [Change log ...](https://github.com/NevilArt/BsMax/blob/master/CHANGELOG.md)
 
 ## Special Thanks

@@ -1,3 +1,9 @@
+# 0, 1, 2, 20240523
+* Create Primitive naming issue fixed.
+* Smart loop bug fixed.
+* Batch rename issue fixed.
+* Instancer bug fixed.
+
 # 0, 1, 2, 20240520
 * Align Object issues from last update fixed.
 * Mesh to hair guid pre setup operator added 

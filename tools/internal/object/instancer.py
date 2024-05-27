@@ -12,7 +12,7 @@
 #	You should have received a copy of the GNU General Public License
 #	along with this program.  If not, see <https://www.gnu.org/licenses/>.
 ############################################################################
-# 2024/05/22
+# 2024/05/26
 
 import bpy
 
@@ -49,7 +49,7 @@ class Object_TO_Make_Unique(Operator):
 	group: BoolProperty(
 		name="Keep In group with each other", default=True,
 		description="Keep selected groupe with each others"
-	)
+	) # type: ignore
 
 	@classmethod
 	def poll(self, ctx):

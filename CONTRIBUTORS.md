@@ -3,6 +3,7 @@
 
 # Thanks for Support
 * Stephen Lebed
+
 * jonas grigonis
 * nildo essa
 * gary jay smith
@@ -14,8 +15,10 @@
 * d_phantom70@hotmail.com
 * kuroiluna@hotmail.com
 * solenekinkielele@yahoo.fr
+
 * revovl@gmail.com
 * shane@studiopiper.com.au
+* tmdals1825@gmail.com
 
 # Note
 * Unfortunately, I don't have all the names. If you're reading this, please send me your name and webpage if you'd like to be added to the list.

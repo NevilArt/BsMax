@@ -12,7 +12,7 @@
 #	You should have received a copy of the GNU General Public License
 #	along with this program.  If not, see <https://www.gnu.org/licenses/>.
 ############################################################################
-# 2024/03/27
+# 2024/05/26
 
 import bpy
 
@@ -38,38 +38,42 @@ class CharacterSet:
 				return char
 		return None
 
-cs = CharacterSet()
+character_set = CharacterSet()
 
 
 class Armature_TO_Character_Hide(Operator):
 	""" Hide/Unhide Character (for now only Armature) """
-	bl_idname = "anim.character_hide"
+	bl_idname = 'anim.character_hide'
 	bl_label = "Character Hide"
+	bl_description = ""
 	bl_options={'REGISTER', 'INTERNAL'}
-	name: StringProperty(default="")
 
-	def execute(self,ctx):
-		character = cs.get_character_by_name(self.name)
+	name: StringProperty(default="") # type: ignore
+
+	def execute(self, _):
+		character = character_set.get_character_by_name(self.name)
 		if character:
 			state = not character.hide_viewport
 			character.hide_viewport = state
 			character.hide_render = False
 			character.hide_select = False
 
-		return{"FINISHED"}
+		return{'FINISHED'}
 
 
 class Armature_TO_Character_Isolate(Operator):
 	""" Isolate only this Character (for now only Armature) """
-	bl_idname = "anim.character_isolate"
+	bl_idname = 'anim.character_isolate'
 	bl_label = "Character Isolate"
+	bl_description = ""
 	bl_options={'REGISTER', 'INTERNAL'}
-	name: StringProperty(default="")
 
-	def execute(self,ctx):
-		character = cs.get_character_by_name(self.name)
+	name: StringProperty(default="") # type: ignore
+
+	def execute(self, _):
+		character = character_set.get_character_by_name(self.name)
 		if character:
-			for char in cs.characters:
+			for char in character_set.characters:
 				if char != character:
 					char.hide_viewport = True
 					char.hide_render = True
@@ -79,72 +83,87 @@ class Armature_TO_Character_Isolate(Operator):
 					char.hide_render = False
 					char.hide_select = False
 
-		return{"FINISHED"}
+		return{'FINISHED'}
 
 
 class Armature_TO_Character_Rest(Operator):
 	""" Rest/Pose Switch """
-	bl_idname = "anim.character_rest"
+	bl_idname = 'anim.character_rest'
 	bl_label = "Character Rest/Pose"
+	bl_description = ""
 	bl_options={'REGISTER', 'INTERNAL'}
-	name: StringProperty(default="")
 
-	def execute(self,ctx):
-		character = cs.get_character_by_name(self.name)
+	name: StringProperty(default="") # type: ignore
+
+	def execute(self, _):
+		character = character_set.get_character_by_name(self.name)
 		if character:
 			state = character.data.pose_position
 			state = 'POSE' if state == 'REST' else 'REST'
 			character.data.pose_position = state
 
-		return{"FINISHED"}
+		return{'FINISHED'}
 
 
 class Anim_TO_Character_Lister(Operator):
 	""" List of Character for quick managment """
-	bl_idname = "anim.character_lister"
+	bl_idname = 'anim.character_lister'
 	bl_label = "Character lister"
+	bl_description = ""
+	bl_options={'REGISTER'}
 
-	def get_field(self,row,character):
+	def get_field(self, row, character):
 		name = character.name
-		row.operator("object.select_by_name", icon='ARMATURE_DATA', text=character.name).name = name
-		
-		hide_icon = 'HIDE_ON' if character.hide_viewport else 'HIDE_OFF'
-		row.operator("anim.character_hide", icon=hide_icon, text='').name = name
-		
-		isolate_icon = 'RADIOBUT_OFF' if character.hide_viewport else 'RADIOBUT_ON'
-		row.operator("anim.character_isolate", icon=isolate_icon, text='').name = name
-		
-		rest_icon = 'ARMATURE_DATA' if character.data.pose_position == 'REST' else 'EVENT_T'
-		row.operator("anim.character_rest", icon=rest_icon, text='').name = name
+		row.operator(
+			'object.select_by_name', icon='ARMATURE_DATA', text=character.name
+		).name = name
 
-	def draw(self,ctx):
+		hide_icon = 'HIDE_ON' if character.hide_viewport else 'HIDE_OFF'
+		row.operator(
+			'anim.character_hide', icon=hide_icon, text=""
+		).name = name
+
+		hide_viewport = character.hide_viewport
+		isolate_icon = 'RADIOBUT_OFF' if hide_viewport else 'RADIOBUT_ON'
+		row.operator(
+			'anim.character_isolate', icon=isolate_icon, text=""
+		).name = name
+
+		pose_position = character.data.pose_position
+		rest_icon = 'ARMATURE_DATA' if pose_position == 'REST' else 'EVENT_T'
+		row.operator(
+			'anim.character_rest', icon=rest_icon, text=""
+		).name = name
+
+	def draw(self, _):
 		box = self.layout.box()
 		col = box.column()
 		row = col.row()
-		row.label(text='')
-		for character in cs.characters:
+		row.label(text="")
+		for character in character_set.characters:
 			self.get_field(col.row(align=True), character)
 	
-	def execute(self,ctx):
-		return{"FINISHED"}
+	def execute(self, _):
+		return{'FINISHED'}
 
-	def invoke(self,ctx,event):
+	def invoke(self, ctx, _):
 		""" collect armature objects in scene """
-		cs.get_scene_characters()
+		character_set.get_scene_characters()
 		return ctx.window_manager.invoke_props_dialog(self,width=200)
 
 
 class Object_TO_Make_Override_Library_plus(Operator):
 	""" Convert Multiple selection to library overide """
-	bl_idname = "object.make_override_library_multi"
+	bl_idname = 'object.make_override_library_multi'
 	bl_label = "Make Library Override (Multi)"
+	bl_description = ""
 	bl_options={'REGISTER'}
 
 	@classmethod
-	def poll(self, ctx):
+	def poll(self, _):
 		return bpy.ops.object.make_override_library.poll()
 	
-	def execute(self,ctx):
+	def execute(self, ctx):
 		objs = []
 		for obj in ctx.selected_objects:
 			if obj.type == 'EMPTY':
@@ -158,25 +177,25 @@ class Object_TO_Make_Override_Library_plus(Operator):
 			if bpy.ops.object.make_override_library.poll():
 				bpy.ops.object.make_override_library()
 
-		return{"FINISHED"}
+		return{'FINISHED'}
 
 
-def library_override_menu(self, ctx):
+def library_override_menu(self, _):
 	self.layout.operator('object.make_override_library_multi')
 
 
-classes = (
+classes = {
 	Armature_TO_Character_Hide,
 	Armature_TO_Character_Isolate,
 	Armature_TO_Character_Rest,
 	Anim_TO_Character_Lister,
 	Object_TO_Make_Override_Library_plus
-)
+}
 
 
 def register_character_lister():
-	for c in classes:
-		register_class(c)
+	for cls in classes:
+		register_class(cls)
 
 	bpy.types.VIEW3D_MT_object_relations.prepend(library_override_menu)
 	
@@ -184,8 +203,8 @@ def register_character_lister():
 def unregister_character_lister():
 	bpy.types.VIEW3D_MT_object_relations.remove(library_override_menu)
 
-	for c in classes:
-		unregister_class(c)
+	for cls in classes:
+		unregister_class(cls)
 
 if __name__ == "__main__":
 	register_character_lister()

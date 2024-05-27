@@ -12,7 +12,7 @@
 #	You should have received a copy of the GNU General Public License
 #	along with this program.  If not, see <https://www.gnu.org/licenses/>.
 ############################################################################
-# 2024/04/15
+# 2024/05/27
 
 import bpy
 from bpy.types import Operator
@@ -22,20 +22,21 @@ from bpy.utils import register_class, unregister_class
 
 class Anim_OT_Set_TimeLine_Range(Operator):
 	bl_idname = 'anim.set_timeline_range'
-	bl_label = 'Set TimeLine Range'
+	bl_label = "Set TimeLine Range"
+	bl_description = ""
 	
 	start = False
 	mouse_x = 0
-
+	#TODO change keys to upper case
 	mode: EnumProperty(
-		name='Mode',
+		name="Mode",
 		items =[
-			('Shift','Shift',''),
-			('First','First',''),
-			('End','End','')
+			('Shift', "Shift", ""),
+			('First', "First", ""),
+			('End', "End", "")
 		],
 		default='Shift'
-	)
+	) # type: ignore
 	
 	def modal(self, ctx, event):
 		if not self.start:
@@ -81,17 +82,18 @@ class Anim_OT_Set_TimeLine_Range(Operator):
 
 		return {'RUNNING_MODAL'}
 
-	def invoke(self, ctx, event):
+	def invoke(self, ctx, _):
 		ctx.window_manager.modal_handler_add(self)
 		return {'RUNNING_MODAL'}
 
 
 class Anim_OT_Keys_Range_Set(Operator):
 	bl_idname = 'anim.keys_range_set'
-	bl_label = 'Set Keys Time Raneg'
+	bl_label = "Set Keys Time Raneg"
+	bl_description = ""
 	bl_options = {'REGISTER', 'INTERNAL'}
 
-	selection: BoolProperty(name='Selection', default=True)
+	selection: BoolProperty(name='Selection', default=True) # type: ignore
 
 	# @classmethod
 	# def poll(self, ctx):
@@ -116,7 +118,7 @@ class Anim_OT_Keys_Range_Set(Operator):
 
 
 
-def time_context_menu(self, ctx):
+def time_context_menu(self, _):
 	layout = self.layout
 	layout.separator()
 	layout.operator('anim.start_frame_set')
@@ -124,16 +126,15 @@ def time_context_menu(self, ctx):
 	# layout.operator('anim.keys_range_set')
 
 
-
-classes = (
+classes = {
 	Anim_OT_Set_TimeLine_Range,
 	Anim_OT_Keys_Range_Set
-)
+}
 
 
 def register_time():
-	for c in classes:
-		register_class(c)
+	for cls in classes:
+		register_class(cls)
 	
 	bpy.types.DOPESHEET_MT_context_menu.append(time_context_menu)
 	bpy.types.SEQUENCER_MT_context_menu.append(time_context_menu)
@@ -143,9 +144,9 @@ def unregister_time():
 	bpy.types.DOPESHEET_MT_context_menu.remove(time_context_menu)
 	bpy.types.SEQUENCER_MT_context_menu.remove(time_context_menu)
 	
-	for c in classes:
-		unregister_class(c)
+	for cls in classes:
+		unregister_class(cls)
 
 
-if __name__ == "__main__":
+if __name__ == '__main__':
 	register_time()

@@ -12,7 +12,7 @@
 #	You should have received a copy of the GNU General Public License
 #	along with this program.  If not, see <https://www.gnu.org/licenses/>.
 ############################################################################
-# 2024/03/27
+# 2024/05/26
 
 import bpy
 
@@ -39,291 +39,29 @@ class KeyData:
 key_data = KeyData()
 
 
-class Anim_OT_Set_Key_Filters(Operator):
-	bl_idname = 'anim.set_key_filters'
-	bl_label = 'Set Key Filters'
-	bl_description = 'Set Key Filter'
-
-	available: BoolProperty(name='Avalable')
-	location: BoolProperty(name='Location')
-	rotation: BoolProperty(name='Rotation')
-	scale: BoolProperty(name='Scale')
-	visual_location: BoolProperty(name='Visual Location')
-	visual_rotation: BoolProperty(name='Visual Rotation')
-	visual_scale: BoolProperty(name='Viasual Scale')
-	bbone_shape: BoolProperty(name='BBone Shape')
-	whole_character: BoolProperty(name='Whole Character')
-	
-	whole_character_selected: BoolProperty(
-		name='Whole Character (Selected only)'
-	)
-
-	def draw(self, ctx):
-		layout = self.layout
-		box = layout.box()
-		box.prop(self, 'available')
-		box.prop(self, 'location')
-		box.prop(self, 'rotation')
-		box.prop(self, 'scale')
-
-		box = layout.box()
-		box.prop(self, 'visual_location')
-		box.prop(self, 'visual_rotation')
-		box.prop(self, 'visual_scale')
-
-		box = layout.box()
-		box.prop(self, 'bbone_shape')
-		box.prop(self, 'whole_character')
-		box.prop(self, 'whole_character_selected')
-		
-	def set(self):
-		global key_data
-		key_data.available = self.available
-		key_data.location = self.location
-		key_data.rotation = self.rotation
-		key_data.scale = self.scale
-		key_data.visual_location = self.visual_location
-		key_data.visual_rotation = self.visual_rotation
-		key_data.visual_scale = self.visual_scale
-		key_data.bbone_shape = self.bbone_shape
-		key_data.whole_character = self.whole_character
-		key_data.whole_character_selected = self.whole_character_selected
-	
-	def execute(self, ctx):
-		self.set()
-		return {'FINISHED'}
-	
-	def cancel(self, ctx):
-		self.set()
-
-	def invoke(self, ctx, event):
-		global key_data
-		self.available = key_data.available
-		self.location = key_data.location
-		self.rotation = key_data.rotation
-		self.scale = key_data.scale
-		self.visual_location = key_data.visual_location
-		self.visual_rotation = key_data.visual_rotation
-		self.visual_scale = key_data.visual_scale
-		self.bbone_shape = key_data.bbone_shape
-		self.whole_character = key_data.whole_character
-		self.whole_character_selected = key_data.whole_character
-		return ctx.window_manager.invoke_props_dialog(self, width=200)
-
-
-
-class Anim_OT_Set_Key(Operator):
-	""" Set keyframe on selected objects specific chanels """
-	bl_idname = "anim.set_key"
-	bl_label = "Set Keys"
-
-	@classmethod
-	def poll(self, ctx):
-		return ctx.mode in ['OBJECT', 'POSE']
-
-	def execute(self, ctx):
-		global key_data
-
-		if ctx.mode == 'POSE' and len(ctx.selected_pose_bones) == 0:
-			return{'FINISHED'}
-
-		if ctx.mode == 'OBJECT' and len(ctx.selected_objects) == 0:
-			return{'FINISHED'}
-		
-		anim = bpy.ops.anim
-
-		if key_data.available:
-			try:
-				anim.keyframe_insert_menu(type='Available')
-			except:
-				pass
-		
-		if key_data.location:
-			anim.keyframe_insert_menu(type='Location')
-		if key_data.rotation:
-			anim.keyframe_insert_menu(type='Rotation')
-		if key_data.scale:
-			anim.keyframe_insert_menu(type='Scaling')
-		
-		if key_data.visual_location:
-			anim.keyframe_insert_menu(type='BUILTIN_KSI_VisualLoc')
-		if key_data.visual_rotation:
-			anim.keyframe_insert_menu(type='BUILTIN_KSI_VisualRot')
-		if key_data.visual_scale:
-			anim.keyframe_insert_menu(type='BUILTIN_KSI_VisualScaling')
-
-		if key_data.bbone_shape:
-			anim.keyframe_insert_menu(type='BUILTIN_KSI_VisualScaling')
-		if key_data.whole_character:
-			anim.keyframe_insert_menu(type='WholeCharacter')
-		if key_data.whole_character_selected:
-			anim.keyframe_insert_menu(type='WholeCharacterSelected')
-
-		return{'FINISHED'}
-
-
-class Anim_OT_Frame_Set(Operator):
-	""" Set time slider curent time value """
-	bl_idname = 'anim.frame_set'
-	bl_label = 'Set Frame'
-
-	frame: EnumProperty(
-		name='Frame', default='Next',
-		items =[
-			('Next', 'Next', ''),
-			('Previous', 'Previous', ''),
-			('First', 'First', ''),
-			('Last', 'Last', '')
-		]
-	)
-	
-	def execute(self, ctx):
-		scene = ctx.scene
-		current = scene.frame_current
-		first, last = scene.frame_start, scene.frame_end
-
-		if self.frame == 'Next':
-			current += 1
-			current = first if current > last else current
-
-		elif self.frame == 'Previous':
-			current -= 1
-			current = last if current < first else current
-
-		elif self.frame == 'First':
-			current = first
-
-		else:
-			current = last
-
-		scene.frame_current = current
-		return{'FINISHED'}
-
-
-class Dopesheet_OT_Zoom_Extended(Operator):
-	""" Zoom on selected or all keys """
-	bl_idname = 'action.zoom_extended'
-	bl_label = 'Zoom Extended'
-
-	@classmethod
-	def poll(self, ctx):
-		return ctx.area.type == 'DOPESHEET_EDITOR'
-
-	def execute(self, ctx):
-		bpy.ops.action.view_selected('INVOKE_DEFAULT')
-		# bpy.ops.action.view_all('INVOKE_DEFAULT')
-		return{'FINISHED'}
-
-
-class Anim_OT_Delete_Key(Operator):
-	""" Delete key withotu permisions """
-	bl_idname = 'anim.delete_key'
-	bl_label = 'Delete Key'
-	bl_options={'REGISTER', 'UNDO'}
-
-	@classmethod
-	def poll(self, ctx):
-		return ctx.area.type in {'DOPESHEET_EDITOR', 'GRAPH_EDITOR'}
-
-	def execute(self, ctx):
-		if ctx.area.type == 'DOPESHEET_EDITOR':
-			bpy.ops.action.delete()
-
-		elif ctx.area.type == 'GRAPH_EDITOR':
-			bpy.ops.graph.delete()
-
-		return{'FINISHED'}
-
-
-def update_freeze_on(self, ctx):
+def update_freeze_on(cls, _):
 	""" Get from calculate fields """
-	self.frames = self.relase - self.push
-	self.next_step = self.next_push - self.push + 1
-	self.repeat = (self.end - self.push) / self.next_step
+	cls.frames = cls.relase - cls.push
+	cls.next_step = cls.next_push - cls.push + 1
+	cls.repeat = int((cls.end - cls.push) / cls.next_step)
 
 
-def update_freeze_on_option(self, ctx):
+def update_freeze_on_option(cls, _):
 	""" Reset extera infor if hide """
-	if not self.more:
-		self.next_step = 1
-		self.repeat = 1
+	if not cls.more:
+		cls.next_step = 1
+		cls.repeat = 1
 
 
-class Freeze_on_Property(PropertyGroup):
-	""" Data method """
-	frames: IntProperty(
-		name='Fix', min=1, default=1,
-		description='Number of frames object has to fixed'
-	)
-	
-	next_step: IntProperty(
-		name='Cycle', min=1, default=1,
-		description='Length of walk/run cycle'
-	)
-	
-	repeat: IntProperty(
-		name='Repeat', min=1, default=1,
-		description='Repeat same action for next steps'
-	)
-	
-	""" Key chanels """
-	key_location: BoolProperty(
-		name='Key Location', default=True,
-		description='Set Key for Location'
-	)
-	
-	key_rotation: BoolProperty(
-		name='Key Rotation', default=True,
-		description='Set key for Rotation'
-	)
-	
-	key_scale: BoolProperty(
-		name='Key Scale', default=False,
-		description='Set key for Scale'
-	)
-	
-	""" Calculator """
-	calculator: BoolProperty(name='Calculator', default=False)
-	
-	push: IntProperty(
-		name='Frame that first time foot touch the floor',
-		min=0, default=1, update=update_freeze_on
-	)
-	
-	relase: IntProperty(
-		name='Frame that foot untouch floor',
-		min=0, default=1, update=update_freeze_on
-	)
-
-	next_push: IntProperty(
-		name='Second time foot touch floor',
-		min=0, default=1, update=update_freeze_on
-	)
-	
-	end: IntProperty(
-		name='End of Walk/Run cycle',
-		min=0, default=1, update=update_freeze_on
-	)
-
-	""" Simple """
-	more: BoolProperty(
-		name='More Option', default=False,
-		update=update_freeze_on_option
-	)
-	
-	panel: BoolProperty(name='On Panel', default=False)
-
-
-
-def draw_freeze_on_panel(self, ctx):
-	layout = self.layout
+def draw_freeze_on_panel(cls, ctx):
+	layout = cls.layout
 	freeze_on = ctx.scene.freeze_on
 
 	box = layout.box()
 	box.enabled = not freeze_on.calculator # disable if calc is on
 	
 	row = box.row()
-	row.label(text='Fix position')
+	row.label(text="Fix position")
 	row.prop(freeze_on, 'more', icon='HAND')
 	row.prop(freeze_on, 'panel', icon='NODE_SEL')
 	
@@ -336,11 +74,11 @@ def draw_freeze_on_panel(self, ctx):
 		row.prop(freeze_on, 'repeat', icon='FILE_REFRESH')
 
 		box = layout.box()
-		box.label(text='Set Key For')
+		box.label(text="Set Key For")
 		row = box.row(align=True)
-		row.prop(freeze_on, 'key_location', text='Location', icon='BLANK1')
-		row.prop(freeze_on, 'key_rotation', text='Rotation', icon='BLANK1')
-		row.prop(freeze_on, 'key_scale', text='Scale',icon='BLANK1')
+		row.prop(freeze_on, 'key_location', text="Location", icon='BLANK1')
+		row.prop(freeze_on, 'key_rotation', text="Rotation", icon='BLANK1')
+		row.prop(freeze_on, 'key_scale', text="Scale",icon='BLANK1')
 
 		box = layout.box()
 		box.prop(freeze_on, 'calculator', icon='ALIGN_TOP')
@@ -352,7 +90,6 @@ def draw_freeze_on_panel(self, ctx):
 	# else:
 	# 	freeze_on.next_step = 1
 	# 	freeze_on.repeat = 1
-
 
 
 def fix_object_in_location(ctx, frame_current):
@@ -370,7 +107,6 @@ def fix_object_in_location(ctx, frame_current):
 				freeze_on.key_rotation,
 				freeze_on.key_scale
 			)
-
 
 
 def fix_bone_in_location(ctx, frame_current):
@@ -407,9 +143,294 @@ def apply_freeze_on(ctx):
 	pass
 
 
+class Freeze_on_Property(PropertyGroup):
+	""" Data method """
+	frames: IntProperty(
+		name="Fix",
+		min=1,
+		default=1,
+		description="Number of frames object has to fixed"
+	) # type: ignore
+	
+	next_step: IntProperty(
+		name="Cycle",
+		min=1,
+		default=1,
+		description="Length of walk/run cycle"
+	) # type: ignore
+	
+	repeat: IntProperty(
+		name="Repeat",
+		min=1,
+		default=1,
+		description="Repeat same action for next steps"
+	) # type: ignore
+	
+	""" Key chanels """
+	key_location: BoolProperty(
+		name="Key Location",
+		default=True,
+		description="Set Key for Location"
+	) # type: ignore
+	
+	key_rotation: BoolProperty(
+		name="Key Rotation",
+		default=True,
+		description="Set key for Rotation"
+	) # type: ignore
+	
+	key_scale: BoolProperty(
+		name="Key Scale",
+		default=False,
+		description="Set key for Scale"
+	) # type: ignore
+	
+	""" Calculator """
+	calculator: BoolProperty(name="Calculator", default=False) # type: ignore
+	
+	push: IntProperty(
+		name="Frame that first time foot touch the floor",
+		min=0,
+		default=1,
+		update=update_freeze_on
+	) # type: ignore
+	
+	relase: IntProperty(
+		name="Frame that foot untouch floor",
+		min=0, default=1,
+		update=update_freeze_on
+	) # type: ignore
+
+	next_push: IntProperty(
+		name="Second time foot touch floor",
+		min=0, default=1,
+		update=update_freeze_on
+	) # type: ignore
+	
+	end: IntProperty(
+		name="End of Walk/Run cycle",
+		min=0, default=1,
+		update=update_freeze_on
+	) # type: ignore
+
+	""" Simple """
+	more: BoolProperty(
+		name="More Option", default=False,
+		update=update_freeze_on_option
+	) # type: ignore
+	
+	panel: BoolProperty(name="On Panel", default=False) # type: ignore
+
+
+class Anim_OT_Set_Key_Filters(Operator):
+	bl_idname = 'anim.set_key_filters'
+	bl_label = "Set Key Filters"
+	bl_description = "Set Key Filter"
+
+	available: BoolProperty(name="Avalable") # type: ignore
+	location: BoolProperty(name="Location") # type: ignore
+	rotation: BoolProperty(name="Rotation") # type: ignore
+	scale: BoolProperty(name="Scale") # type: ignore
+	visual_location: BoolProperty(name="Visual Location") # type: ignore
+	visual_rotation: BoolProperty(name="Visual Rotation") # type: ignore
+	visual_scale: BoolProperty(name="Viasual Scale") # type: ignore
+	bbone_shape: BoolProperty(name="BBone Shape") # type: ignore
+	whole_character: BoolProperty(name="Whole Character") # type: ignore
+	
+	whole_character_selected: BoolProperty(
+		name="Whole Character (Selected only)"
+	) # type: ignore
+
+	def draw(self, _):
+		layout = self.layout
+		box = layout.box()
+		box.prop(self, 'available')
+		box.prop(self, 'location')
+		box.prop(self, 'rotation')
+		box.prop(self, 'scale')
+
+		box = layout.box()
+		box.prop(self, 'visual_location')
+		box.prop(self, 'visual_rotation')
+		box.prop(self, 'visual_scale')
+
+		box = layout.box()
+		box.prop(self, 'bbone_shape')
+		box.prop(self, 'whole_character')
+		box.prop(self, 'whole_character_selected')
+		
+	def set(self):
+		global key_data
+		key_data.available = self.available
+		key_data.location = self.location
+		key_data.rotation = self.rotation
+		key_data.scale = self.scale
+		key_data.visual_location = self.visual_location
+		key_data.visual_rotation = self.visual_rotation
+		key_data.visual_scale = self.visual_scale
+		key_data.bbone_shape = self.bbone_shape
+		key_data.whole_character = self.whole_character
+		key_data.whole_character_selected = self.whole_character_selected
+	
+	def execute(self, _):
+		self.set()
+		return {'FINISHED'}
+	
+	def cancel(self, _):
+		self.set()
+
+	def invoke(self, ctx, _):
+		global key_data
+		self.available = key_data.available
+		self.location = key_data.location
+		self.rotation = key_data.rotation
+		self.scale = key_data.scale
+		self.visual_location = key_data.visual_location
+		self.visual_rotation = key_data.visual_rotation
+		self.visual_scale = key_data.visual_scale
+		self.bbone_shape = key_data.bbone_shape
+		self.whole_character = key_data.whole_character
+		self.whole_character_selected = key_data.whole_character
+		return ctx.window_manager.invoke_props_dialog(self, width=200)
+
+
+class Anim_OT_Set_Key(Operator):
+	""" Set keyframe on selected objects specific chanels """
+	bl_idname = 'anim.set_key'
+	bl_label = "Set Keys"
+
+	@classmethod
+	def poll(self, ctx):
+		return ctx.mode in {'OBJECT', 'POSE'}
+
+	def execute(self, ctx):
+		global key_data
+
+		if ctx.mode == 'POSE' and len(ctx.selected_pose_bones) == 0:
+			return{'FINISHED'}
+
+		if ctx.mode == 'OBJECT' and len(ctx.selected_objects) == 0:
+			return{'FINISHED'}
+		
+		anim = bpy.ops.anim
+
+		if key_data.available:
+			try:
+				anim.keyframe_insert_menu(type='Available')
+			except:
+				pass
+		
+		if key_data.location:
+			anim.keyframe_insert_menu(type='Location')
+
+		if key_data.rotation:
+			anim.keyframe_insert_menu(type='Rotation')
+
+		if key_data.scale:
+			anim.keyframe_insert_menu(type='Scaling')
+		
+		if key_data.visual_location:
+			anim.keyframe_insert_menu(type='BUILTIN_KSI_VisualLoc')
+
+		if key_data.visual_rotation:
+			anim.keyframe_insert_menu(type='BUILTIN_KSI_VisualRot')
+
+		if key_data.visual_scale:
+			anim.keyframe_insert_menu(type='BUILTIN_KSI_VisualScaling')
+
+		if key_data.bbone_shape:
+			anim.keyframe_insert_menu(type='BUILTIN_KSI_VisualScaling')
+
+		if key_data.whole_character:
+			anim.keyframe_insert_menu(type='WholeCharacter')
+
+		if key_data.whole_character_selected:
+			anim.keyframe_insert_menu(type='WholeCharacterSelected')
+
+		return{'FINISHED'}
+
+
+class Anim_OT_Frame_Set(Operator):
+	""" Set time slider curent time value """
+	bl_idname = 'anim.frame_set'
+	bl_label = 'Set Frame'
+	bl_description = ""
+
+	frame: EnumProperty(
+		name="Frame",
+		items =[
+			('Next', "Next", ""),
+			('Previous', "Previous", ""),
+			('First', "First", ""),
+			('Last', "Last", "")
+		],
+		default='Next'
+	) # type: ignore
+	
+	def execute(self, ctx):
+		scene = ctx.scene
+		current = scene.frame_current
+		first, last = scene.frame_start, scene.frame_end
+
+		if self.frame == 'Next':
+			current += 1
+			current = first if current > last else current
+
+		elif self.frame == 'Previous':
+			current -= 1
+			current = last if current < first else current
+
+		elif self.frame == 'First':
+			current = first
+
+		else:
+			current = last
+
+		scene.frame_current = current
+		return{'FINISHED'}
+
+
+class Dopesheet_OT_Zoom_Extended(Operator):
+	""" Zoom on selected or all keys """
+	bl_idname = 'action.zoom_extended'
+	bl_label = "Zoom Extended"
+	bl_description = ""
+
+	@classmethod
+	def poll(self, ctx):
+		return ctx.area.type == 'DOPESHEET_EDITOR'
+
+	def execute(self, ctx):
+		bpy.ops.action.view_selected('INVOKE_DEFAULT')
+		# bpy.ops.action.view_all('INVOKE_DEFAULT')
+		return{'FINISHED'}
+
+
+class Anim_OT_Delete_Key(Operator):
+	""" Delete key withotu permisions """
+	bl_idname = 'anim.delete_key'
+	bl_label = "Delete Key"
+	bl_description = ""
+	bl_options={'REGISTER', 'UNDO'}
+
+	@classmethod
+	def poll(self, ctx):
+		return ctx.area.type in {'DOPESHEET_EDITOR', 'GRAPH_EDITOR'}
+
+	def execute(self, ctx):
+		if ctx.area.type == 'DOPESHEET_EDITOR':
+			bpy.ops.action.delete()
+
+		elif ctx.area.type == 'GRAPH_EDITOR':
+			bpy.ops.graph.delete()
+
+		return{'FINISHED'}
+
+
 class Anim_OT_Freeze_on(Operator):
 	bl_idname = 'anim.freeze_on'
-	bl_label = 'Freeze On'
+	bl_label = "Freeze On"
+	bl_description = ""
 	bl_options={'REGISTER', 'UNDO'}
 
 	@classmethod
@@ -448,17 +469,17 @@ class Anim_OT_Freeze_on(Operator):
 		ctx.scene.frame_current = start_time
 		return{'FINISHED'}
 	
-	def invoke(self, ctx, event):
+	def invoke(self, ctx, _):
 		return ctx.window_manager.invoke_props_dialog(self)
 
 
-
 class Anim_OP_Freeze_on(Panel):
+	bl_idname = 'VIEW3D_PT_freeze_on'
 	bl_space_type = 'VIEW_3D'
 	bl_region_type = 'UI'
-	bl_label = 'Freeze On'
-	bl_idname = 'VIEW3D_PT_freeze_on'
-	bl_category = 'Tool'
+	bl_label = "Freeze On"
+	bl_category = "Tool"
+	bl_description = ""
 
 	@classmethod
 	def poll(self, ctx):
@@ -466,7 +487,7 @@ class Anim_OP_Freeze_on(Panel):
 	
 	def draw(self, ctx):
 		self.layout.operator_context = 'EXEC_DEFAULT'
-		self.layout.operator('anim.freeze_on', text='Apply')
+		self.layout.operator('anim.freeze_on', text="Apply")
 		draw_freeze_on_panel(self, ctx)
 
 
@@ -474,7 +495,7 @@ class Anim_OP_Freeze_on(Panel):
 # 		graph.select_linked
 
 
-classes = (
+classes = {
 	Freeze_on_Property,
 	Anim_OT_Set_Key_Filters,
 	Anim_OT_Set_Key,
@@ -483,23 +504,23 @@ classes = (
 	Anim_OT_Freeze_on,
 	Anim_OP_Freeze_on,
 	Dopesheet_OT_Zoom_Extended
-)
+}
 
 
 def register_animation_key():
-	for c in classes:
-		register_class(c)
+	for cls in classes:
+		register_class(cls)
 
 	bpy.types.Scene.freeze_on = PointerProperty(
-		type=Freeze_on_Property, name='Freeze On'
+		type=Freeze_on_Property, name="Freeze On"
 	)
 
 
 def unregister_animation_key():
 	del bpy.types.Scene.freeze_on
 
-	for c in classes:
-		unregister_class(c)
+	for cls in classes:
+		unregister_class(cls)
 
 
 if __name__ == '__main__':

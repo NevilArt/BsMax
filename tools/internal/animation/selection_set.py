@@ -51,7 +51,7 @@ def get_names_from_armature_ss(self, armature, reload=False):
 		
 		""" Create name for new ganarated buttons """
 		if len(names) < buttons_count:
-			for i in range(len(names), buttons_count):
+			for _ in range(len(names), buttons_count):
 				names.append('')
 		
 		self.button_names = names
@@ -198,18 +198,18 @@ class Selection_Set_Scene(PropertyGroup):
 			('SET', 'Set', 'Set Selection groups'),
 			('EDIT', 'Edit', 'Edit buttons layout')
 		]
-	)
+	) # type: ignore
 
-	autohide: BoolProperty(name='Auto hide Non selected', default=False)
-	unselect: BoolProperty(name='Remove From Selection', default=False)
-	name: StringProperty(name="", update=rename_selection_set)
-	active: IntProperty(name="", default=0)
+	autohide: BoolProperty(name='Auto hide Non selected', default=False) # type: ignore
+	unselect: BoolProperty(name='Remove From Selection', default=False) # type: ignore
+	name: StringProperty(name="", update=rename_selection_set) # type: ignore
+	active: IntProperty(name="", default=0) # type: ignore
 
 
 class Selection_Set_Armature(PropertyGroup):
-	columns: IntProperty(name='columns', min=1, max=100, default=3)
-	rows: IntProperty(name='row', min=1, max=100, default=10)
-	names: StringProperty(name='')
+	columns: IntProperty(name='columns', min=1, max=100, default=3) # type: ignore
+	rows: IntProperty(name='row', min=1, max=100, default=10) # type: ignore
+	names: StringProperty(name='') # type: ignore
 
 
 class ARMATURE_OT_Selection_Set_Transfer(Operator):
@@ -218,7 +218,7 @@ class ARMATURE_OT_Selection_Set_Transfer(Operator):
 	bl_description = 'Copy/Past Selection setting from a Armature/Blender to other one'
 	bl_options = {'REGISTER', 'UNDO', 'INTERNAL'}
 
-	action: StringProperty()
+	action: StringProperty() # type: ignore
 	
 	def execute(self, ctx):
 		if self.action == 'COPY':
@@ -234,7 +234,7 @@ class ARMATURE_OT_Selection_Set_Dimension_Resize(Operator):
 	bl_label = 'Selection set Dimension Resize'
 	# bl_description = ''
 	bl_options = {'REGISTER', 'UNDO', 'INTERNAL'}
-	action: StringProperty()
+	action: StringProperty() # type: ignore
 	
 	def execute(self, ctx):
 		selection_set = ctx.active_object.data.selection_set
@@ -276,7 +276,7 @@ class ARMATURE_OT_Selection_Set(Operator):
 	# bl_description = ''
 	bl_options = {'REGISTER', 'UNDO', 'INTERNAL'}
 
-	index: IntProperty(name='index')
+	index: IntProperty(name='index') # type: ignore
 
 	ctrl, shift, alt = False, False, False
 
@@ -452,34 +452,40 @@ class Armature_OP_Selection_Set(Panel):
 						row.operator('pose.selection_set', text=name).index=index				
 
 
-classes = (
+classes = {
 	Selection_Set_Scene,
 	Selection_Set_Armature,
 	Armature_OP_Selection_Set,
 	ARMATURE_OT_Selection_Set,
 	ARMATURE_OT_Selection_Set_Transfer,
 	ARMATURE_OT_Selection_Set_Dimension_Resize
-)
+}
 
 
 def register_selection_set():
-	for c in classes:
-		register_class(c)
+	for cls in classes:
+		register_class(cls)
 
 	bpy.types.Scene.selection_set = PointerProperty(type=Selection_Set_Scene)
-	bpy.types.Armature.selection_set = PointerProperty(type=Selection_Set_Armature)
-	bpy.types.PoseBone.selection_groups = StringProperty(name='Selection Groups', default='')
+	
+	bpy.types.Armature.selection_set = PointerProperty(
+		type=Selection_Set_Armature
+	)
+	
+	bpy.types.PoseBone.selection_groups = StringProperty(
+		name="Selection Groups", default=""
+	)
 
 
 def unregister_selection_set():
-	for c in classes:
-		unregister_class(c)
+	for cls in classes:
+		unregister_class(cls)
 
 	del bpy.types.Scene.selection_set
 	del bpy.types.Armature.selection_set
 	del bpy.types.PoseBone.selection_groups
 
 
-if __name__ == "__main__":
+if __name__ == '__main__':
 	# unregister_selection_set()
 	register_selection_set()

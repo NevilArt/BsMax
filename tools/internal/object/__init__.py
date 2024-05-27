@@ -20,6 +20,7 @@ from .batch_rename import register_batchrename, unregister_batchrename
 from .clone_array_objects import register_clone_object, unregister_clone_object
 from .collection import register_collection, unregister_collection
 from .convert import register_convert, unregister_convert
+from .cleanup import register_cleanup, unregister_cleanup
 from .create import register_create, unregister_create
 from .display import register_display, unregister_dispaly
 from .instancer import register_instancer, unregister_instancer
@@ -39,6 +40,7 @@ def register_object(preferences):
 	register_clone_object()
 	register_collection()
 	register_convert()
+	register_cleanup()
 	register_create()
 	register_display()
 	register_instancer()
@@ -58,6 +60,7 @@ def unregister_object():
 	unregister_clone_object()
 	unregister_collection()
 	unregister_convert()
+	unregister_cleanup()
 	unregister_create()
 	unregister_dispaly()
 	unregister_instancer()

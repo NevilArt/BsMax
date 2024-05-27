@@ -12,7 +12,7 @@
 #	You should have received a copy of the GNU General Public License
 #	along with this program.  If not, see <https://www.gnu.org/licenses/>.
 ############################################################################
-# 2024/02/07
+# 2024/05/26
 
 import bpy
 
@@ -32,28 +32,28 @@ def get_light_field(col, light):
 	""" Create Icone name from type name """
 	icon = 'LIGHT_' + data.type
 	row.operator(
-		'object.select_by_name', text='', icon=icon
+		'object.select_by_name', text="", icon=icon
 	).name = light.name
 
-	row.prop(light, 'name', text='')
-	row.prop(data, 'type', text='')
-	row.prop(data, 'color', text='', icon='BLANK1')
-	row.prop(data, 'energy', text='')
+	row.prop(light, 'name', text="")
+	row.prop(data, 'type', text="")
+	row.prop(data, 'color', text="", icon='BLANK1')
+	row.prop(data, 'energy', text="")
 
 	if data.type == 'POINT':
-		row.prop(data, 'shadow_soft_size', text='')
+		row.prop(data, 'shadow_soft_size', text="")
 
 	elif data.type == 'SUN':
-		row.prop(data, 'angle', text='')
+		row.prop(data, 'angle', text="")
 
 	elif data.type == 'SPOT':
-		row.prop(data, 'shadow_soft_size', text='')
+		row.prop(data, 'shadow_soft_size', text="")
 
 	elif data.type == 'AREA':
 		# row.prop(data, 'shape', text='')
-		row.prop(data, 'size', text='')
+		row.prop(data, 'size', text="")
 	
-	row.prop(data, 'use_shadow', text='', icon='COMMUNITY')
+	row.prop(data, 'use_shadow', text="", icon='COMMUNITY')
 
 
 def get_active_light_field(col, light):
@@ -65,109 +65,109 @@ def get_active_light_field(col, light):
 
 	if data.type == 'POINT':
 		row = col.row()
-		row.prop(data, 'use_custom_distance', text='Custom Distance')
+		row.prop(data, 'use_custom_distance', text="Custom Distance")
 		if data.use_custom_distance:
-			row.prop(data, 'cutoff_distance', text='')
-			row.label(text='')
-			row.label(text='')
+			row.prop(data, 'cutoff_distance', text="")
+			row.label(text="")
+			row.label(text="")
 		
 		row = col.row()
-		row.prop(data, 'use_shadow', text='Shadow')
+		row.prop(data, 'use_shadow', text="Shadow")
 		if data.use_shadow:
-			row.prop(data, 'shadow_buffer_clip_start', text='Clip Start')
-			row.prop(data, 'shadow_buffer_bias', text='Bias')
-			row.label(text='')
+			row.prop(data, 'shadow_buffer_clip_start', text="Clip Start")
+			row.prop(data, 'shadow_buffer_bias', text="Bias")
+			row.label(text="")
 		
 			row = col.row()
-			row.prop(data, 'use_contact_shadow', text='Contact Shadow')
+			row.prop(data, 'use_contact_shadow', text="Contact Shadow")
 			if data.use_contact_shadow:
-				row.prop(data, 'contact_shadow_distance', text='Distance')
-				row.prop(data, 'contact_shadow_bias', text='Bias')
-				row.prop(data, 'contact_shadow_thickness', text='Thickness')
+				row.prop(data, 'contact_shadow_distance', text="Distance")
+				row.prop(data, 'contact_shadow_bias', text="Bias")
+				row.prop(data, 'contact_shadow_thickness', text="Thickness")
 
 	if data.type == 'SUN':
 		row = col.row()
-		row.prop(data, 'use_shadow', text='Shadow')
+		row.prop(data, 'use_shadow', text="Shadow")
 		if data.use_shadow:
-			row.prop(data, 'shadow_buffer_bias', text='Bias')
+			row.prop(data, 'shadow_buffer_bias', text="Bias")
 			row.label(text='')
 			row.label(text='')
 		
 		row = col.row()
-		row.prop(data, 'shadow_cascade_count', text='Count')
-		row.prop(data, 'shadow_cascade_fade', text='Fade')
-		row.prop(data, 'shadow_cascade_max_distance', text='Max Distance')
-		row.prop(data, 'shadow_cascade_exponent', text='Distribution')
+		row.prop(data, 'shadow_cascade_count', text="Count")
+		row.prop(data, 'shadow_cascade_fade', text="Fade")
+		row.prop(data, 'shadow_cascade_max_distance', text="Max Distance")
+		row.prop(data, 'shadow_cascade_exponent', text="Distribution")
 		
 		row = col.row()
 		if data.use_shadow:
-			row.prop(data, 'use_contact_shadow', text='Contact Shadow')
+			row.prop(data, 'use_contact_shadow', text="Contact Shadow")
 			if data.use_contact_shadow:
-				row.prop(data, 'contact_shadow_distance', text='Distance')
-				row.prop(data, 'contact_shadow_bias', text='Bias')
-				row.prop(data, 'contact_shadow_thickness', text='Thikness')
+				row.prop(data, 'contact_shadow_distance', text="Distance")
+				row.prop(data, 'contact_shadow_bias', text="Bias")
+				row.prop(data, 'contact_shadow_thickness', text="Thikness")
 
 	if data.type == 'SPOT':
 		row = col.row()
-		row.prop(data, 'use_custom_distance', text='Custom Distance')
+		row.prop(data, 'use_custom_distance', text="Custom Distance")
 		if data.use_custom_distance:
-			row.prop(data, 'cutoff_distance', text='Distance')
+			row.prop(data, 'cutoff_distance', text="Distance")
 			row.label(text='')
 			row.label(text='')
 		
 		row = col.row()
-		row.prop(data, 'show_cone', text='Show Cone')
-		row.prop(data, 'spot_size', text='Size')
-		row.prop(data, 'spot_blend', text='Blend')
+		row.prop(data, 'show_cone', text="Show Cone")
+		row.prop(data, 'spot_size', text="Size")
+		row.prop(data, 'spot_blend', text="Blend")
 		row.label(text='')
 
 		row = col.row()
-		row.prop(data, 'use_shadow', text='Shadow')
+		row.prop(data, 'use_shadow', text="Shadow")
 		if data.use_shadow:
-			row.prop(data, 'shadow_buffer_clip_start', text='Clip Start')
-			row.prop(data, 'shadow_buffer_bias', text='Bias')
+			row.prop(data, 'shadow_buffer_clip_start', text="Clip Start")
+			row.prop(data, 'shadow_buffer_bias', text="Bias")
 			row.label(text='')
 		
 			row = col.row()
-			row.prop(data, 'use_contact_shadow', text='Contact Shadow')
+			row.prop(data, 'use_contact_shadow', text="Contact Shadow")
 			if data.use_contact_shadow:
-				row.prop(data, 'contact_shadow_distance', text='Distance')
-				row.prop(data, 'contact_shadow_bias', text='Bias')
-				row.prop(data, 'contact_shadow_thickness', text='Thikness')
+				row.prop(data, 'contact_shadow_distance', text="Distance")
+				row.prop(data, 'contact_shadow_bias', text="Bias")
+				row.prop(data, 'contact_shadow_thickness', text="Thikness")
 
 	if data.type == 'AREA':
 		row = col.row()
 		row.prop(data, 'shape', text='')
 		if data.shape in {'SQUARE', 'DISK'}:
-			row.prop(data, 'size', text='Size')
+			row.prop(data, 'size', text="Size")
 			row.label(text='')
 
 		if data.shape in {'RECTANGLE', 'ELLIPSE'}:
-			row.prop(data, 'size', text='Size X')
-			row.prop(data, 'size_y', text='Size')
+			row.prop(data, 'size', text="Size X")
+			row.prop(data, 'size_y', text="Size")
 
-		row.label(text='')
+		row.label(text="")
 
 		row = col.row()
-		row.prop(data, 'use_custom_distance', text='Custom Distance')
+		row.prop(data, 'use_custom_distance', text="Custom Distance")
 		if data.use_custom_distance:
-			row.prop(data, 'cutoff_distance', text='Distance')
-			row.label(text='')
-			row.label(text='')
+			row.prop(data, 'cutoff_distance', text="Distance")
+			row.label(text="")
+			row.label(text="")
 
 		row = col.row()
-		row.prop(data, 'use_shadow', text='Shadow')
+		row.prop(data, 'use_shadow', text="Shadow")
 		if data.use_shadow:
-			row.prop(data, 'shadow_buffer_clip_start', text='Clip Start')
-			row.prop(data, 'shadow_buffer_bias', text='Bias')
-			row.label(text='')
+			row.prop(data, 'shadow_buffer_clip_start', text="Clip Start")
+			row.prop(data, 'shadow_buffer_bias', text="Bias")
+			row.label(text="")
 
 		row = col.row()
-		row.prop(data, 'use_contact_shadow', text='Contact Shadow')
+		row.prop(data, 'use_contact_shadow', text="Contact Shadow")
 		if data.use_contact_shadow:
-			row.prop(data, 'contact_shadow_distance', text='Distance')
-			row.prop(data, 'contact_shadow_bias', text='Bias')
-			row.prop(data, 'contact_shadow_thickness', text='Thikness')
+			row.prop(data, 'contact_shadow_distance', text="Distance")
+			row.prop(data, 'contact_shadow_bias', text="Bias")
+			row.prop(data, 'contact_shadow_thickness', text="Thikness")
 
 
 def get_material_field(col, material, node):
@@ -177,43 +177,43 @@ def get_material_field(col, material, node):
 		
 		color_slot = node.inputs['Color']
 		if is_free_node_input(color_slot):
-			row.prop(color_slot, 'default_value', text='', icon='BLANK1')
+			row.prop(color_slot, 'default_value', text="", icon='BLANK1')
 
 		else:
-			row.label(text='', icon='LOCKED')
+			row.label(text="", icon='LOCKED')
 		
 		strength_slot = node.inputs['Strength']
 		if is_free_node_input(strength_slot):
-			row.prop(strength_slot, 'default_value', text='Strength')
+			row.prop(strength_slot, 'default_value', text="Strength")
 
 		else:
-			row.label(text=' ', icon='LOCKED')
+			row.label(text=" ", icon='LOCKED')
 	
 	if node.type == 'BSDF_PRINCIPLED':
 		
 		emission_slot = node.inputs['Emission']
 		if is_free_node_input(emission_slot):
-			row.prop(emission_slot, 'default_value', text='', icon='BLANK1')
+			row.prop(emission_slot, 'default_value', text="", icon='BLANK1')
 
 		else:
 			row.label(text='', icon='LOCKED')
 		
 		strength_slot = node.inputs['Emission Strength']
 		if is_free_node_input(strength_slot):
-			row.prop(strength_slot, 'default_value', text='Strength')
+			row.prop(strength_slot, 'default_value', text="Strength")
 
 		else:
-			row.label(text=' ', icon='LOCKED')
+			row.label(text=" ", icon='LOCKED')
 	
-	row.label(text='')
-	row.label(text='')
+	row.label(text="")
+	row.label(text="")
 
 
 def get_camera_field(row, camera, active):
 	srow = row.row(align=True)
 	icon = 'OUTLINER_OB_CAMERA' if active else 'CAMERA_DATA'
 	srow.operator(
-		'camera.active_by_name', icon=icon, text=''
+		'camera.active_by_name', icon=icon, text=""
 	).name = camera.name
 	
 	srow.operator(
@@ -222,21 +222,21 @@ def get_camera_field(row, camera, active):
 	
 	srow = row.row(align=True)
 	srow.label(text='', icon='DRIVER_ROTATIONAL_DIFFERENCE')
-	srow.prop(camera.data, 'type', text='')
-	srow.prop(camera.data, 'lens', text='')
+	srow.prop(camera.data, 'type', text="")
+	srow.prop(camera.data, 'lens', text="")
 
 	srow = row.row(align=True)
 	srow.label(text='', icon='CURVE_PATH')
-	srow.prop(camera.data, 'clip_start', text='')
-	srow.prop(camera.data, 'clip_end', text='')
+	srow.prop(camera.data, 'clip_start', text="")
+	srow.prop(camera.data, 'clip_end', text="")
 	
 	srow = row.row(align=True)
 	srow.label(text='', icon='ZOOM_SELECTED')
-	srow.prop(camera.data.dof, 'use_dof', text='')
-	srow.prop(camera.data.dof, 'focus_distance', text='')
+	srow.prop(camera.data.dof, 'use_dof', text="")
+	srow.prop(camera.data.dof, 'focus_distance', text="")
 
 	srow = row.row(align=True)
-	srow.prop(camera.data, 'display_size', text='')
+	srow.prop(camera.data, 'display_size', text="")
 
 
 def get_lights():
@@ -306,7 +306,8 @@ def get_emission_matts():
 
 class Render_OT_Light_Lister(Operator):
 	bl_idname = 'render.light_lister'
-	bl_label = 'Light lister'
+	bl_label = "Light lister"
+	bl_description = ""
 	bl_options = {'REGISTER', 'INTERNAL'}
 	
 	lights, materials = [], []
@@ -334,11 +335,10 @@ class Render_OT_Light_Lister(Operator):
 		for material, node in self.materials:
 			get_material_field(col, material, node)
 
-	def execute(self, ctx):
-		# self.report({'OPERATOR'}, 'bpy.ops.render.light_lister()')
+	def execute(self, _):
 		return{'FINISHED'}
 	
-	def invoke(self, ctx, event):
+	def invoke(self, ctx, _):
 		self.lights = get_lights()
 		self.materials = get_emission_matts()
 		return ctx.window_manager.invoke_props_dialog(self, width=500)
@@ -347,16 +347,17 @@ class Render_OT_Light_Lister(Operator):
 class Camera_OT_Actve_By_Name(Operator):
 	""" Set as active camera  """
 	bl_idname = 'camera.active_by_name'
-	bl_label = 'Active Camera by name'
+	bl_label = "Active Camera by name"
+	bl_description = ""
 	bl_options = {'REGISTER', 'UNDO', 'INTERNAL'}
 	
-	name: bpy.props.StringProperty(default='')
+	name: bpy.props.StringProperty(default="") # type: ignore
 	
 	@classmethod
 	def poll(self, ctx):
 		return ctx.mode == 'OBJECT'
 	
-	def execute(self,ctx):
+	def execute(self, ctx):
 		bpy.ops.object.select_all(action='DESELECT')
 
 		if self.name != '':
@@ -368,7 +369,8 @@ class Camera_OT_Actve_By_Name(Operator):
 
 class Render_OT_Camera_Lister(Operator):
 	bl_idname = 'render.camera_lister'
-	bl_label = 'Camera lister'
+	bl_label = "Camera lister"
+	bl_description = ""
 	bl_options = {'REGISTER', 'INTERNAL'}
 	
 	lights = []
@@ -381,36 +383,36 @@ class Render_OT_Camera_Lister(Operator):
 			is_active = (cam == ctx.scene.camera)
 			get_camera_field(col.row(align=False), cam, is_active)
 	
-	def execute(self, ctx):
+	def execute(self, _):
 		return{'FINISHED'}
 	
-	def invoke(self, ctx, event):
+	def invoke(self, ctx, _):
 		self.cameras = get_cameras() 
 		return ctx.window_manager.invoke_props_dialog(self, width=700)
 
 
-def render_menu(self, ctx):
+def render_menu(self, _):
 	layout = self.layout
 	layout.separator()
 	layout.operator(
-		'render.light_lister', text='Light Lister', icon='LIGHT_SUN'
+		'render.light_lister', text="Light Lister", icon='LIGHT_SUN'
 	)
 
 	layout.operator(
-		'render.camera_lister', text='Camera Lister', icon='CAMERA_DATA'
+		'render.camera_lister', text="Camera Lister", icon='CAMERA_DATA'
 	)
 
 
-classes = (
+classes = {
 	Render_OT_Light_Lister, 
 	Camera_OT_Actve_By_Name,
 	Render_OT_Camera_Lister
-)
+}
 
 
 def register_light_lister():
-	for c in classes:
-		register_class(c)
+	for cls in classes:
+		register_class(cls)
 
 	bpy.types.TOPBAR_MT_render.append(render_menu)
 
@@ -418,8 +420,8 @@ def register_light_lister():
 def unregister_light_lister():
 	bpy.types.TOPBAR_MT_render.remove(render_menu)
 
-	for c in classes:
-		unregister_class(c)
+	for cls in classes:
+		unregister_class(cls)
 
 
 if __name__ == '__main__':
