@@ -40,7 +40,7 @@ class Armature_OT_Bone_Type(Operator):
 		],
 		default='BBONE',
 		description="Armature Bone Draw Type"
-	)
+	) # type: ignore
 
 	@classmethod
 	def poll(self, ctx):
@@ -58,8 +58,8 @@ class Armature_OT_Bone_Devide(Operator):
 	bl_description = "Devide Bone by number dialog"
 	bl_options = {'REGISTER', 'UNDO'}
 
-	devides: IntProperty(name="Devides", default=1)
-	typein: BoolProperty(name="Type In:", default=False)
+	devides: IntProperty(name="Devides", default=1) # type: ignore
+	typein: BoolProperty(name="Type In:", default=False) # type: ignore
 
 	@classmethod
 	def poll(self, ctx):
@@ -100,7 +100,7 @@ class Armature_OT_Freeze(Operator):
 			('clear', "Unfreezee All", "")
 		],
 		default='selection'
-	)
+	) # type: ignore
 
 	@classmethod
 	def poll(self, ctx):
@@ -137,9 +137,9 @@ class Armature_OT_Select_Keyed_Bone(Operator):
 	bl_label = "Select Keyed Bones"
 	bl_options = {'REGISTER', 'UNDO'}
 
-	invert: BoolProperty()
-	deselect: BoolProperty()
-	current_frame: BoolProperty()
+	invert: BoolProperty() # type: ignore
+	deselect: BoolProperty() # type: ignore
+	current_frame: BoolProperty() # type: ignore
 
 	@classmethod
 	def poll(self, ctx):

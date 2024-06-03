@@ -14,6 +14,8 @@
 ############################################################################
 # 2024/03/03
 
+import bpy
+
 from bpy.types import Panel
 from bpy.utils import register_class, unregister_class
 
@@ -524,9 +526,9 @@ def get_create_panel(layout, ctx):
 class SCENE_OP_BsMax_Create_Panel(Panel):
 	bl_space_type = 'VIEW_3D'
 	bl_region_type = 'UI'
-	bl_label = 'Create'
+	bl_label = "Create"
 	bl_idname = 'VIEW3D_PT_BsMax_create'
-	bl_category = 'BsMax'
+	bl_category = "BsMax"
 
 	@classmethod
 	def poll(self, ctx):
@@ -541,8 +543,9 @@ def register_create_panel():
 
 
 def unregister_create_panel():
-	unregister_class(SCENE_OP_BsMax_Create_Panel)
+	if SCENE_OP_BsMax_Create_Panel.is_registered:
+		unregister_class(SCENE_OP_BsMax_Create_Panel)
 
 
-if __name__ == "__main__":
+if __name__ == '__main__':
 	register_create_panel()

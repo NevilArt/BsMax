@@ -26,9 +26,9 @@ def get_motion_panel(layout, ctx):
 class SCENE_OP_BsMax_Motion_Panel(Panel):
 	bl_space_type = 'VIEW_3D'
 	bl_region_type = 'UI'
-	bl_label = 'Motion'
+	bl_label = "Motion"
 	bl_idname = 'VIEW3D_PT_BsMax_motion'
-	bl_category = 'BsMax'
+	bl_category = "BsMax"
 
 	@classmethod
 	def poll(self, ctx):
@@ -43,8 +43,9 @@ def register_motion_panel():
 
 
 def unregister_motion_panel():
-	unregister_class(SCENE_OP_BsMax_Motion_Panel)
+	if SCENE_OP_BsMax_Motion_Panel.is_registered:
+		unregister_class(SCENE_OP_BsMax_Motion_Panel)
 
 
-if __name__ == "__main__":
+if __name__ == '__main__':
 	register_motion_panel()

@@ -29,13 +29,11 @@ def autokey_state_updated(preferences):
 		ctx.preferences.themes['Default'].dopesheet_editor.space.header = color
 
 
-
 def read_original_theme(self):
 	theme = bpy.context.preferences.themes['Default']
 	self.v3camera = theme.view_3d.camera
 	self.v3empty = theme.view_3d.empty
 	self.v3light = theme.view_3d.light
-
 
 
 def to_string(color):
@@ -50,7 +48,6 @@ def to_string(color):
 	string += ")"
 
 	return string
-
 
 
 def save_original_theme_to_file(self):
@@ -70,7 +67,6 @@ def save_original_theme_to_file(self):
 		ini.close()
 
 
-
 def load_original_theme_from_file(self):
 	if os.path.exists(self.fileName):
 		string = "view_3d = bpy.context.preferences.themes[0].view_3d\n"
@@ -78,17 +74,17 @@ def load_original_theme_from_file(self):
 		exec(string)
 
 
-
 def restore_original_theme_from_file(self):
 	load_original_theme_from_file(self)
 	view_3d = self.theme.view_3d
 	if self.v3camera:
 		view_3d.camera = self.v3camera
+
 	if self.v3empty:
 		view_3d.empty = self.v3empty
+
 	if self.v3light:
 		view_3d.light = self.v3light
-
 
 
 def set_3dsmax_theme(self, preferences):
@@ -103,7 +99,8 @@ def set_3dsmax_theme(self, preferences):
 class ThemaData():
 	def __init__(self):
 		self.theme = bpy.context.preferences.themes[0]
-		self.fileName = bpy.utils.user_resource('SCRIPTS') + '\\addons\\BsMaxTheme.ini'
+		script_path =  bpy.utils.user_resource('SCRIPTS')
+		self.fileName = script_path + '\\addons\\BsMaxTheme.ini'
 		self.v3camera = None
 		self.v3empty = None
 		self.v3light = None
@@ -116,11 +113,10 @@ class ThemaData():
 
 	def apply(self, preferences):
 		if preferences.affect_theme:
-			if preferences.keymaps == '3DsMax':
+			if preferences.keymaps == '3DSMAX':
 				set_3dsmax_theme(self, preferences)
 
 themaData = ThemaData()
-
 
 
 def register_theme(preferences):
@@ -128,7 +124,6 @@ def register_theme(preferences):
 	themaData.save()
 	themaData.apply(preferences)
 	autokey_state_updated(preferences)
-
 
 
 def unregister_theme():

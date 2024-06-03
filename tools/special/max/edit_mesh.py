@@ -553,7 +553,7 @@ class MESH_MT_Extrude_Tools(Menu):
 		).name="builtin.extrude_to_cursor"
 
 
-classes = (
+classes = {
 	BsMax_PT_CP_EditMesh_Selection,
 	BsMax_PT_CP_EditMesh_Soft_Selection,
 	BsMax_PT_CP_EditMesh_Edit,
@@ -567,17 +567,18 @@ classes = (
 	# BsMax_PT_CP_EditMesh_Paint_Deform,
 
 	MESH_MT_Extrude_Tools
-)
+}
 
 
 def register_edit_mesh():
-	for c in classes:
-		register_class(c)
+	for cls in classes:
+		register_class(cls)
 
 
 def unregister_edit_mesh():
-	for c in classes:
-		unregister_class(c)
+	for cls in classes:
+		if cls.is_registered:
+			unregister_class(cls)
 
 
 if __name__ == "__main__":

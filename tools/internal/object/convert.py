@@ -79,13 +79,24 @@ def convert_to_execute(cls, ctx):
 
 
 def uv_name_fixer(active, objs):
+	# filter non mesh objects
+	mesh_objects = [obj for obj in objs if obj.type == 'MESH']
+
+	# make sure active object is mesh
+	if active.type != 'MESH' and mesh_objects:
+		active = mesh_objects[0]
+
 	names = [uvLayer.name for uvLayer in active.data.uv_layers]
-	for obj in objs:
+
+	for obj in mesh_objects:
 		if len(names) == len(obj.data.uv_layers):
 			for i in range(len(names)):
 				obj.data.uv_layers[i].name = names[i]
 
+
 #TODO make instance real befor convert
+#TODO on multiple selectiongroup the object types and join by groups
+#TODO apply modifiers befor convert
 def join_plus_execute(cls, ctx):
 	target = ctx.active_object
 		
@@ -199,7 +210,7 @@ class Object_OT_Join_Plus(Operator):
 
 	def execute(self, ctx):
 		join_plus_execute(self, ctx)
-		return{"FINISHED"}
+		return{'FINISHED'}
 
 	def invoke(self, ctx, _):
 		return ctx.window_manager.invoke_props_dialog(self)
@@ -212,14 +223,14 @@ classes = {
 
 
 def register_convert():
-	for c in classes:
-		register_class(c)
+	for cls in classes:
+		register_class(cls)
 
 
 def unregister_convert():
-	for c in classes:
-		unregister_class(c)
+	for cls in classes:
+		unregister_class(cls)
 
 
-if __name__ == "__main__":
+if __name__ == '__main__':
 	register_convert()

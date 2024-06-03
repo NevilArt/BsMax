@@ -25,7 +25,7 @@ def screen(km):
 def view2d(km):
 	pass
 
-def view2d_navigation(km,preferences):
+def view2d_navigation(km, preferences):
 	pass
 
 def view3d(km):
@@ -34,13 +34,13 @@ def view3d(km):
 def view3d_navigation(km,preferences):
 	space = km.space('3D View','VIEW_3D','WINDOW')
 	if preferences.view_undo:
-		km.new(space,"view3d.movecover","MIDDLEMOUSE","PRESS",[],alt=True)
-		km.new(space,"view3d.rotatecover","LEFTMOUSE","PRESS",[],alt=True)
-		km.new(space,"view3d.zoomcover","RIGHTMOUSE","PRESS",[],alt=True)
+		km.new(space, 'view3d.movecover', 'MIDDLEMOUSE', 'PRESS', [], alt=True)
+		km.new(space, 'view3d.rotatecover', 'LEFTMOUSE', 'PRESS', [], alt=True)
+		km.new(space, 'view3d.zoomcover', 'RIGHTMOUSE', 'PRESS', [], alt=True)
 	else:
-		km.new(space,"view3d.move","MIDDLEMOUSE","PRESS",[],alt=True)
-		km.new(space,"view3d.rotate","LEFTMOUSE","PRESS",[],alt=True)
-		km.new(space,"view3d.zoom","RIGHTMOUSE","PRESS",[],alt=True)
+		km.new(space, 'view3d.move', 'MIDDLEMOUSE', 'PRESS', [], alt=True)
+		km.new(space, 'view3d.rotate', 'LEFTMOUSE', 'PRESS', [], alt=True)
+		km.new(space, 'view3d.zoom', 'RIGHTMOUSE', 'PRESS', [], alt=True)
 
 		# because of some API limitation not possble for now but planed 
 		# lmb + twaak up move forward
@@ -175,19 +175,19 @@ km_file_browser = KeyMaps()
 
 def register_unreal(preferences):
 	if bpy.context.window_manager.keyconfigs.addon:
-		if preferences.navigation_3d == "unreal":
+		if preferences.navigation_3d == 'UNREAL':
 			view3d_navigation(km_navigation_3d,preferences)
 			km_navigation_3d.register()
 		else:
 			km_navigation_3d.unregister()
 
-		if preferences.navigation_2d == "unreal":
+		if preferences.navigation_2d == 'UNREAL':
 			view2d_navigation(km_navigation_2d,preferences)
 			km_navigation_2d.register()
 		else:
 			km_navigation_2d.unregister()
 
-		if preferences.viowport == "unreal":
+		if preferences.viowport == 'UNREAL':
 			window(km_viowport)
 			screen(km_viowport)
 			view3d(km_viowport)
@@ -214,7 +214,7 @@ def register_unreal(preferences):
 		else:
 			km_viowport.unregister()
 
-		if preferences.sculpt == "unreal":
+		if preferences.sculpt == 'UNREAL':
 			vertex_paint(km_sculpt)
 			weight_paint(km_sculpt)
 			image_paint(km_sculpt)
@@ -223,19 +223,19 @@ def register_unreal(preferences):
 		else:
 			km_sculpt.unregister()
 
-		if preferences.uv_editor == "unreal":
+		if preferences.uv_editor == 'UNREAL':
 			uv_editor(km_uv_editor)
 			km_uv_editor.register()
 		else:
 			km_uv_editor.unregister()
 
-		if preferences.node_editor == "unreal":
+		if preferences.node_editor == 'UNREAL':
 			node_editor(km_node_editor)
 			km_node_editor.register()
 		else:
 			km_node_editor.unregister()
 
-		if preferences.graph_editor == "unreal":
+		if preferences.graph_editor == 'UNREAL':
 			graph_editor(km_graph_editor)
 			dopesheet_editor(km_graph_editor)
 			nla_editor(km_graph_editor)
@@ -243,25 +243,25 @@ def register_unreal(preferences):
 		else:
 			km_graph_editor.unregister()
 			
-		if preferences.clip_editor == "unreal":
+		if preferences.clip_editor == 'UNREAL':
 			km_clip_editor.register()
 		else:
 			km_clip_editor.unregister()
 
-		if preferences.video_sequencer == "unreal":
+		if preferences.video_sequencer == 'UNREAL':
 			sequence_editor(km_video_sequencer)
 			km_video_sequencer.register()
 		else:
 			km_video_sequencer.unregister()
 
-		if preferences.text_editor == "unreal":
+		if preferences.text_editor == 'UNREAL':
 			# console(km_text_editor)
 			text(km_text_editor)
 			km_text_editor.register()
 		else:
 			km_text_editor.unregister()
 		
-		if preferences.file_browser == "unreal":
+		if preferences.file_browser == 'UNREAL':
 			file_browser(km_file_browser)
 			km_file_browser.register()
 		else:

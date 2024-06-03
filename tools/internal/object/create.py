@@ -12,7 +12,7 @@
 #	You should have received a copy of the GNU General Public License
 #	along with this program.  If not, see <https://www.gnu.org/licenses/>.
 ############################################################################
-# 2024/03/03
+# 2024/05/29
 
 import bpy
 from bpy.types import Operator
@@ -176,49 +176,49 @@ def add_parametric_primitive(type, ctx):
 	obj.update()
 	ctx.active_object.location = ctx.scene.cursor.location
 
-
+#TODO fix tyoe methodes
 class Object_OT_Create(Operator):
-	bl_idname = "object.create"
+	bl_idname = 'object.create'
 	bl_label = "Create (Primitive object)"
 	bl_description = "Create Primitive Object"
 	bl_options = {'REGISTER', 'UNDO'}
 
 	prims = [
-		('BOX','Box',''),
-		('BOLT','Bolt',''),
-		('CAPSULE','Capsule',''),
-		('CYLINDER','Cylinder',''),
-		('CONE','Cone',''),
-		('ICOSPHERE','Icosphere',''),
-		('MONKEY','Monkey',''),
-		('OILTANK','OilTank',''),
-		('PLANE','Plane',''),
-		('PYRAMID','Pyramid',''),
-		('QUADSPHERE','QuadSphere',''),
-		('SPHERE','Sphere',''),
-		('TEAPOT','Teapot',''),
-		('TORUS','Torus',''),
-		('TORUSKNOT','TorusKnot',''),
-		('TUBE','Tube',''),
-		('ARC','Arc',''),
-		('CIRCLE','Circle',''),
-		('DONUT','Donut',''),
-		('ELLIPSE','Ellipse',''),
-		('HELIX','Helix',''),
-		('NGON','NGon',''),
-		('PROFILO','Profilo',''),
-		('RECTANGLE','Rectangle',''),
-		('STAR','Star','')
+		('BOX', 'Box', ''),
+		('BOLT', 'Bolt', ''),
+		('CAPSULE', 'Capsule', ''),
+		('CYLINDER', 'Cylinder', ''),
+		('CONE', 'Cone', ''),
+		('ICOSPHERE', 'Icosphere', ''),
+		('MONKEY', 'Monkey', ''),
+		('OILTANK', 'OilTank', ''),
+		('PLANE', 'Plane', ''),
+		('PYRAMID', 'Pyramid', ''),
+		('QUADSPHERE', 'QuadSphere', ''),
+		('SPHERE', 'Sphere', ''),
+		('TEAPOT', 'Teapot', ''),
+		('TORUS', 'Torus', ''),
+		('TORUSKNOT', 'TorusKnot', ''),
+		('TUBE', 'Tube', ''),
+		('ARC', 'Arc', ''),
+		('CIRCLE', 'Circle', ''),
+		('DONUT', 'Donut', ''),
+		('ELLIPSE', 'Ellipse', ''),
+		('HELIX', 'Helix', ''),
+		('NGON', 'NGon', ''),
+		('PROFILO', 'Profilo', ''),
+		('RECTANGLE', 'Rectangle', ''),
+		('STAR', 'Star', '')
 	]
 
-	type: EnumProperty(name='Object Type', items=prims, default='BOX')
+	type: EnumProperty(name='Object Type', items=prims, default='BOX') # type: ignore
 
 	@classmethod
 	def poll(self, ctx):
 		return ctx.mode == 'OBJECT'
 	
 	def draw(self, _):
-		self.layout.prop(self,"type", text="Type")
+		self.layout.prop(self, 'type', text="Type")
 
 	def execute(self, ctx):
 		add_parametric_primitive(self.type, ctx)

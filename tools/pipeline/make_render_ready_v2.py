@@ -509,7 +509,7 @@ def setup_render_setting(ctx):
 
 
 class Render_OT_Make_Ready_Render_v2(Operator):
-	bl_idname = "nevil.make_ready_render_v2"
+	bl_idname = 'nevil.make_ready_render_v2'
 	bl_label = "Make Ready Render V2 (Nevil)"
 	bl_description = ""
 	bl_options = {'REGISTER', 'UNDO'}
@@ -521,18 +521,13 @@ class Render_OT_Make_Ready_Render_v2(Operator):
 
 
 def register_make_ready_render_v2():
-	try:
 		bpy.utils.register_class(Render_OT_Make_Ready_Render_v2)
-	except:
-		pass
-
 
 
 def unregister_make_ready_render_v2():
-	if hasattr(bpy.types, Render_OT_Make_Ready_Render_v2.bl_idname):
+	if Render_OT_Make_Ready_Render_v2.is_registered:
 		bpy.utils.unregister_class(Render_OT_Make_Ready_Render_v2)
 
 
-
-if __name__ == "__main__":
+if __name__ == '__main__':
 	setup_render_setting(bpy.context)

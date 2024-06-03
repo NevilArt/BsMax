@@ -12,7 +12,7 @@
 #	You should have received a copy of the GNU General Public License
 #	along with this program.  If not, see <https://www.gnu.org/licenses/>.
 ############################################################################
-# 2024/04/15
+# 2024/05/30
 
 import bpy
 
@@ -24,8 +24,10 @@ from bpy.utils import register_class, unregister_class
 def get_selected_bones(ctx, armature):
 	if ctx.mode == 'POSE':
 		return [bone for bone in armature.data.bones if bone.select]
+
 	elif ctx.mode == 'EDIT_ARMATURE':
 		return [bone for bone in armature.data.edit_bones if bone.select]
+
 	return []
 
 
@@ -76,14 +78,15 @@ def select_parent(selected, extend):
 
 #TODO pose tool but works on edit_armature too
 # has to rename to armature tool
+#TODO in edit armature mode do not select some bone heads has to fix
 class Pose_OT_Select_Hierarchy_Plus(Operator):
 	bl_idname = "pose.select_hierarchy_plus"
 	bl_label = "Select Hierarchy (Plus)"
 	bl_description = "Select Parent/Children of selected Bones"
 	bl_options = {'REGISTER', 'UNDO'}
 	
-	full: BoolProperty(default=False)
-	extend: BoolProperty(default=False)
+	full: BoolProperty(default=False) # type: ignore
+	extend: BoolProperty(default=False) # type: ignore
 	direction: EnumProperty(
 		name='Direction',
 		items=[
@@ -97,7 +100,7 @@ class Pose_OT_Select_Hierarchy_Plus(Operator):
 			)
 		],
 		default='CHILDREN'
-	)
+	) # type: ignore
 
 	@classmethod
 	def poll(self, ctx):
@@ -105,6 +108,9 @@ class Pose_OT_Select_Hierarchy_Plus(Operator):
 	
 	def execute(self, ctx):
 		for armature in ctx.selected_objects:
+			if armature.type != 'ARMATURE':
+				continue
+
 			selected = get_selected_bones(ctx, armature)
 
 			if self.direction == 'CHILDREN':
@@ -113,11 +119,11 @@ class Pose_OT_Select_Hierarchy_Plus(Operator):
 			elif self.direction == 'PARENT':
 				select_parent(selected, self.extend)
 
-		return{"FINISHED"}
+		return{'FINISHED'}
 
 
 def full_selected_armatures(ctx):
-	armatures = [obj for obj in ctx.selected_objects if obj.type == "ARMATURE"]
+	armatures = [obj for obj in ctx.selected_objects if obj.type == 'ARMATURE']
 	fullSelected = []
 
 	for armature in armatures:
@@ -134,13 +140,13 @@ def full_selected_armatures(ctx):
 
 
 class Pose_OT_Paste_Pose_Plus(Operator):
-	bl_idname = "pose.paste_plus"
+	bl_idname = 'pose.paste_plus'
 	bl_label = "Paste Pose (Plus)"
 	bl_description = "Paste Pose on multiply selected Armatures"
 	bl_options = {'REGISTER', 'UNDO'}
 
-	flipped: BoolProperty(default=False)
-	selected_mask: BoolProperty(default=False)
+	flipped: BoolProperty(default=False) # type: ignore
+	selected_mask: BoolProperty(default=False) # type: ignore
 
 	@classmethod
 	def poll(self, ctx):
@@ -160,27 +166,27 @@ class Pose_OT_Paste_Pose_Plus(Operator):
 				)
 
 			ctx.view_layer.objects.active = currentActiveObject
-			return{"FINISHED"}
+			return{'FINISHED'}
 
 		bpy.ops.pose.paste(flipped=self.flipped, selected_mask=self.selected_mask)
-		return{"FINISHED"}
+		return{'FINISHED'}
 
 
-classes = (
+classes = {
 	Pose_OT_Select_Hierarchy_Plus,
 	Pose_OT_Paste_Pose_Plus
-)
+}
 
 
 def register_pose():
-	for c in classes:
-		register_class(c)
+	for cls in classes:
+		register_class(cls)
 
 
 def unregister_pose():
-	for c in classes:
-		unregister_class(c)
+	for cls in classes:
+		unregister_class(cls)
 
 
-if __name__ == "__main__":
+if __name__ == '__main__':
 	register_pose()

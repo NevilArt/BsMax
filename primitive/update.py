@@ -128,72 +128,72 @@ class Primitive_Option(PropertyGroup):
 			('SURFACE', "Surface", "Draw on Surface", 'EVENT_S', 3)
 		],
 		 default='FLOOR'
-	)
+	) # type: ignore
 
 	#TODO countinu from here
-	active_tool: StringProperty()
-	next_name: StringProperty()
+	active_tool: StringProperty() # type: ignore
+	next_name: StringProperty() # type: ignore
 	next_color: FloatVectorProperty(
 		name='Color', subtype='COLOR', default=[0.5, 0.5, 0.5]
-	)
+	) # type: ignore
 
 
 class PrimitiveData(PropertyGroup):
-	classname: StringProperty()
-	animatable: BoolProperty(update=primitive_update)
+	classname: StringProperty() # type: ignore
+	animatable: BoolProperty(update=primitive_update) # type: ignore
 
-	width: FloatProperty(unit='LENGTH', update=primitive_update, min= 0)
-	length: FloatProperty(unit='LENGTH', update=primitive_update, min= 0)
-	height: FloatProperty(unit='LENGTH', update=primitive_update, min= 0)
-	radius1: FloatProperty(unit='LENGTH', update=primitive_update, min= 0)
-	radius2: FloatProperty(unit='LENGTH', update=primitive_update, min= 0)
-	chamfer1: FloatProperty(unit='LENGTH', update=primitive_update, min= 0)
-	chamfer2: FloatProperty(unit='LENGTH', update=primitive_update, min= 0)
-	chamfer3: FloatProperty(unit='LENGTH', update=primitive_update, min= 0)
+	width: FloatProperty(unit='LENGTH', update=primitive_update, min= 0) # type: ignore
+	length: FloatProperty(unit='LENGTH', update=primitive_update, min= 0) # type: ignore
+	height: FloatProperty(unit='LENGTH', update=primitive_update, min= 0) # type: ignore
+	radius1: FloatProperty(unit='LENGTH', update=primitive_update, min= 0) # type: ignore
+	radius2: FloatProperty(unit='LENGTH', update=primitive_update, min= 0) # type: ignore
+	chamfer1: FloatProperty(unit='LENGTH', update=primitive_update, min= 0) # type: ignore
+	chamfer2: FloatProperty(unit='LENGTH', update=primitive_update, min= 0) # type: ignore
+	chamfer3: FloatProperty(unit='LENGTH', update=primitive_update, min= 0) # type: ignore
 	
-	sliceon: BoolProperty(update=primitive_update)
-	sfrom: FloatProperty(update=primitive_update)
-	sto: FloatProperty(update=primitive_update, default= 360)
+	sliceon: BoolProperty(update=primitive_update) # type: ignore
+	sfrom: FloatProperty(update=primitive_update) # type: ignore
+	sto: FloatProperty(update=primitive_update, default= 360) # type: ignore
 
-	rotation: FloatProperty(update=primitive_update)
-	twist: FloatProperty(update=primitive_update)
-	turns: FloatProperty(update=primitive_update, min= 0)
+	rotation: FloatProperty(update=primitive_update) # type: ignore
+	twist: FloatProperty(update=primitive_update) # type: ignore
+	turns: FloatProperty(update=primitive_update, min= 0) # type: ignore
 
-	offset_x: FloatProperty(update=primitive_update)
-	offset_y: FloatProperty(update=primitive_update)
+	offset_x: FloatProperty(update=primitive_update) # type: ignore
+	offset_y: FloatProperty(update=primitive_update) # type: ignore
 
-	bias: FloatProperty(update=primitive_update, min= 0, max= 1, step= 4)
-	bias_np: FloatProperty(update=primitive_update, min= -1, max= 1, step= 4)
-	thickness: FloatProperty(unit='LENGTH', update=primitive_update)
+	bias: FloatProperty(update=primitive_update, min= 0, max= 1, step= 4) # type: ignore
+	bias_np: FloatProperty(update=primitive_update, min= -1, max= 1, step= 4) # type: ignore
+	thickness: FloatProperty(unit='LENGTH', update=primitive_update) # type: ignore
 
-	seed: IntProperty(update=primitive_update, min= 0, default= 0)
-	random: FloatProperty(update=primitive_update)
+	seed: IntProperty(update=primitive_update, min= 0, default= 0) # type: ignore
+	random: FloatProperty(update=primitive_update) # type: ignore
 
-	wsegs: IntProperty(update=primitive_update, min= 1, max= 1000, default= 1)
-	lsegs: IntProperty(update=primitive_update, min= 1, max= 1000, default= 1)
-	hsegs: IntProperty(update=primitive_update, min= 1, max= 1000, default= 1)
-	csegs: IntProperty(update=primitive_update, min= 1, max= 1000, default= 1)
-	ssegs: IntProperty(update=primitive_update, min= 3, max= 1000, default= 3)
-	ssegs_b: IntProperty(update=primitive_update, min= 3, max= 1000, default= 3)
-	pivotaligne: IntProperty(update=primitive_update, min= 1, max= 9, default= 5)
+	wsegs: IntProperty(update=primitive_update, min= 1, max= 1000, default= 1) # type: ignore
+	lsegs: IntProperty(update=primitive_update, min= 1, max= 1000, default= 1) # type: ignore
+	hsegs: IntProperty(update=primitive_update, min= 1, max= 1000, default= 1) # type: ignore
+	csegs: IntProperty(update=primitive_update, min= 1, max= 1000, default= 1) # type: ignore
+	ssegs: IntProperty(update=primitive_update, min= 3, max= 1000, default= 3) # type: ignore
+	ssegs_b: IntProperty(update=primitive_update, min= 3, max= 1000, default= 3) # type: ignore
+	pivotaligne: IntProperty(update=primitive_update, min= 1, max= 9, default= 5) # type: ignore
 
-	center: BoolProperty(update=primitive_update)
-	seglock: BoolProperty(update=primitive_update, default=True)
-	base: BoolProperty(update=primitive_update)
-	outline: BoolProperty(update=primitive_update)
-	smooth: BoolProperty(update=primitive_update)
-	ccw: BoolProperty(update=primitive_update)
-	corner: BoolProperty(update=primitive_update)
-	mirror_x: BoolProperty(update=primitive_update)
-	mirror_y: BoolProperty(update=primitive_update)
+	center: BoolProperty(update=primitive_update) # type: ignore
+	seglock: BoolProperty(update=primitive_update, default=True) # type: ignore
+	base: BoolProperty(update=primitive_update) # type: ignore
+	outline: BoolProperty(update=primitive_update) # type: ignore
+	smooth: BoolProperty(update=primitive_update) # type: ignore
+	ccw: BoolProperty(update=primitive_update) # type: ignore
+	corner: BoolProperty(update=primitive_update) # type: ignore
+	mirror_x: BoolProperty(update=primitive_update) # type: ignore
+	mirror_y: BoolProperty(update=primitive_update) # type: ignore
 
-	bool1:BoolProperty(update=primitive_update)
-	bool2:BoolProperty(update=primitive_update)
-	bool3:BoolProperty(update=primitive_update)
-	bool4:BoolProperty(update=primitive_update)
+	bool1:BoolProperty(update=primitive_update) # type: ignore
+	bool2:BoolProperty(update=primitive_update) # type: ignore
+	bool3:BoolProperty(update=primitive_update) # type: ignore
+	bool4:BoolProperty(update=primitive_update) # type: ignore
 
-	mode: StringProperty(update=primitive_update)
-	target: StringProperty(update=primitive_update)
+	mode: StringProperty(update=primitive_update) # type: ignore
+	target: StringProperty(update=primitive_update) # type: ignore
 
 	# Profile ###############################################
 
@@ -212,7 +212,7 @@ class PrimitiveData(PropertyGroup):
 			('Elipse', "Elipse", "")
 		],
 		 default='Angle'
-	)
+	) # type: ignore
 
 	extrude_segmode: EnumProperty(
 		name="Segment Type",
@@ -224,7 +224,7 @@ class PrimitiveData(PropertyGroup):
 			('Adaptive', "Adaptive", "")
 		],
 		default='Curve'
-	)
+	) # type: ignore
 
 	# BoltFactory #############################################
 
@@ -235,14 +235,14 @@ class PrimitiveData(PropertyGroup):
 		update = primitive_update,
 		default=True,
 		description="Bolt"
-	)
+	) # type: ignore
 	
 	change : BoolProperty(
 		name = "Change",
 		update = primitive_update,
 		default = False,
 		description = "change Bolt"
-	)
+	) # type: ignore
 
 	# Model Types
 	Model_Type_List = [
@@ -257,7 +257,7 @@ class PrimitiveData(PropertyGroup):
 		description="Choose the type off model you would like",
 		items=Model_Type_List,
 		default='bf_Model_Bolt'
-	)
+	) # type: ignore
 
 	# Head Types
 	Model_Type_List = [
@@ -275,7 +275,7 @@ class PrimitiveData(PropertyGroup):
 		update = primitive_update,
 		description='Choose the type off Head you would like',
 		items=Model_Type_List, default='bf_Head_Hex'
-	)
+	) # type: ignore
 
 	# Bit Types
 	Bit_Type_List = [
@@ -291,7 +291,7 @@ class PrimitiveData(PropertyGroup):
 		update = primitive_update,
 		description='Choose the type of bit to you would like',
 		items=Bit_Type_List, default='bf_Bit_None'
-	)
+	) # type: ignore
 
 	# Nut Types
 	Nut_Type_List = [
@@ -307,7 +307,7 @@ class PrimitiveData(PropertyGroup):
 		description='Choose the type of nut you would like',
 		items=Nut_Type_List,
 		default='bf_Nut_Hex'
-	)
+	) # type: ignore
 
 	# Shank Types
 	bf_Shank_Length: FloatProperty(
@@ -317,7 +317,7 @@ class PrimitiveData(PropertyGroup):
 		min=0, soft_min=0, max=MAX_INPUT_NUMBER,
 		description='Length of the unthreaded shank',
 		unit='LENGTH'
-	)
+	) # type: ignore
 
 	bf_Shank_Dia: FloatProperty(
 		attr='bf_Shank_Dia',
@@ -327,7 +327,7 @@ class PrimitiveData(PropertyGroup):
 		update = primitive_update,
 		description='Diameter of the shank',
 		unit='LENGTH'
-	)
+	) # type: ignore
 
 	bf_Phillips_Bit_Depth: FloatProperty(
 		attr='bf_Phillips_Bit_Depth',
@@ -337,7 +337,7 @@ class PrimitiveData(PropertyGroup):
 		update = primitive_update,
 		description='Depth of the Phillips Bit',
 		unit='LENGTH'
-	)
+	) # type: ignore
 
 	bf_Allen_Bit_Depth: FloatProperty(
 		attr='bf_Allen_Bit_Depth',
@@ -347,7 +347,7 @@ class PrimitiveData(PropertyGroup):
 		update = primitive_update,
 		description='Depth of the Allen Bit',
 		unit='LENGTH'
-	)
+	) # type: ignore
 
 	bf_Allen_Bit_Flat_Distance: FloatProperty(
 		attr='bf_Allen_Bit_Flat_Distance',
@@ -357,7 +357,7 @@ class PrimitiveData(PropertyGroup):
 		update = primitive_update,
 		description='Flat Distance of the Allen Bit',
 		unit='LENGTH'
-	)
+	) # type: ignore
 
 	# Torx Size Types
 	Torx_Size_Type_List = [
@@ -377,7 +377,7 @@ class PrimitiveData(PropertyGroup):
 		description='Size of the Torx Bit',
 		items=Torx_Size_Type_List,
 		default='bf_Torx_T20'
-	)
+	) # type: ignore
 
 	bf_Torx_Bit_Depth: FloatProperty(
 		attr='bf_Torx_Bit_Depth',
@@ -387,7 +387,7 @@ class PrimitiveData(PropertyGroup):
 		max=MAX_INPUT_NUMBER,
 		description='Depth of the Torx Bit',
 		unit='LENGTH'
-	)
+	) # type: ignore
 
 	bf_Hex_Head_Height: FloatProperty(
 		attr='bf_Hex_Head_Height',
@@ -396,7 +396,7 @@ class PrimitiveData(PropertyGroup):
 		min=0, soft_min=0, max=MAX_INPUT_NUMBER,
 		description='Height of the Hex Head',
 		unit='LENGTH'
-	)
+	) # type: ignore
 
 	bf_Hex_Head_Flat_Distance: FloatProperty(
 		attr='bf_Hex_Head_Flat_Distance',
@@ -406,7 +406,7 @@ class PrimitiveData(PropertyGroup):
 		max=MAX_INPUT_NUMBER,
 		description='Flat Distance of the Hex Head',
 		unit='LENGTH'
-	)
+	) # type: ignore
 
 	bf_12_Point_Head_Height: FloatProperty(
 		attr='bf_12_Point_Head_Height',
@@ -415,7 +415,7 @@ class PrimitiveData(PropertyGroup):
 		min=0, soft_min=0, max=MAX_INPUT_NUMBER,
 		description='Height of the 12 Point Head',
 		unit='LENGTH'
-	)
+	) # type: ignore
 
 	bf_12_Point_Head_Flat_Distance: FloatProperty(
 		attr='bf_12_Point_Head_Flat_Distance',
@@ -425,7 +425,7 @@ class PrimitiveData(PropertyGroup):
 		max=MAX_INPUT_NUMBER,
 		description='Flat Distance of the 12 Point Head',
 		unit='LENGTH'
-	)
+	) # type: ignore
 
 	bf_12_Point_Head_Flange_Dia: FloatProperty(
 		attr='bf_12_Point_Head_Flange_Dia',
@@ -435,7 +435,7 @@ class PrimitiveData(PropertyGroup):
 		max=MAX_INPUT_NUMBER,
 		description='Flange diameter of the 12 point Head',
 		unit='LENGTH'
-	)
+	) # type: ignore
 
 	bf_CounterSink_Head_Dia: FloatProperty(
 		attr='bf_CounterSink_Head_Dia',
@@ -445,7 +445,7 @@ class PrimitiveData(PropertyGroup):
 		max=MAX_INPUT_NUMBER,
 		description='Diameter of the Counter Sink Head',
 		unit='LENGTH'
-	)
+	) # type: ignore
 
 	bf_Cap_Head_Height: FloatProperty(
 		attr='bf_Cap_Head_Height',
@@ -455,7 +455,7 @@ class PrimitiveData(PropertyGroup):
 		max=MAX_INPUT_NUMBER,
 		description='Height of the Cap Head',
 		unit='LENGTH'
-	)
+	) # type: ignore
 
 	bf_Cap_Head_Dia: FloatProperty(
 		attr='bf_Cap_Head_Dia',
@@ -465,7 +465,7 @@ class PrimitiveData(PropertyGroup):
 		max=MAX_INPUT_NUMBER,
 		description='Diameter of the Cap Head',
 		unit='LENGTH'
-	)
+	) # type: ignore
 
 	bf_Dome_Head_Dia: FloatProperty(
 		attr='bf_Dome_Head_Dia',
@@ -475,7 +475,7 @@ class PrimitiveData(PropertyGroup):
 		max=MAX_INPUT_NUMBER,
 		description='Length of the unthreaded shank',
 		unit='LENGTH'
-	)
+	) # type: ignore
 
 	bf_Pan_Head_Dia: FloatProperty(
 		attr='bf_Pan_Head_Dia',
@@ -485,7 +485,7 @@ class PrimitiveData(PropertyGroup):
 		max=MAX_INPUT_NUMBER,
 		description='Diameter of the Pan Head',
 		unit='LENGTH'
-	)
+	) # type: ignore
 
 	bf_Philips_Bit_Dia: FloatProperty(
 		attr='bf_Philips_Bit_Dia',
@@ -495,7 +495,7 @@ class PrimitiveData(PropertyGroup):
 		max=MAX_INPUT_NUMBER,
 		description='Diameter of the Philips Bit',
 		unit='LENGTH'
-	)
+	) # type: ignore
 
 	bf_Thread_Length: FloatProperty(
 		attr='bf_Thread_Length',
@@ -505,7 +505,7 @@ class PrimitiveData(PropertyGroup):
 		max=MAX_INPUT_NUMBER,
 		description='Length of the Thread',
 		unit='LENGTH'
-	)
+	) # type: ignore
 
 	bf_Major_Dia: FloatProperty(
 		attr='bf_Major_Dia',
@@ -515,7 +515,7 @@ class PrimitiveData(PropertyGroup):
 		max=MAX_INPUT_NUMBER,
 		description='Outside diameter of the Thread',
 		unit='LENGTH'
-	)
+	) # type: ignore
 
 	bf_Pitch: FloatProperty(
 		attr='bf_Pitch',
@@ -525,7 +525,7 @@ class PrimitiveData(PropertyGroup):
 		max=7.0,
 		description='Pitch if the thread',
 		unit='LENGTH'
-	)
+	) # type: ignore
 
 	bf_Minor_Dia: FloatProperty(
 		attr='bf_Minor_Dia',
@@ -535,7 +535,7 @@ class PrimitiveData(PropertyGroup):
 		max=MAX_INPUT_NUMBER,
 		description='Inside diameter of the Thread',
 		unit='LENGTH'
-	)
+	) # type: ignore
 
 	bf_Crest_Percent: IntProperty(
 		attr='bf_Crest_Percent',
@@ -544,7 +544,7 @@ class PrimitiveData(PropertyGroup):
 		min=1, soft_min=1,
 		max=90,
 		description='Percent of the pitch that makes up the Crest'
-	)
+	) # type: ignore
 
 	bf_Root_Percent: IntProperty(
 		attr='bf_Root_Percent',
@@ -553,7 +553,7 @@ class PrimitiveData(PropertyGroup):
 		min=1, soft_min=1,
 		max=90,
 		description='Percent of the pitch that makes up the Root'
-	)
+	) # type: ignore
 
 	bf_Div_Count: IntProperty(
 		attr='bf_Div_Count',
@@ -562,7 +562,7 @@ class PrimitiveData(PropertyGroup):
 		min=4, soft_min=4,
 		max=4096,
 		description='Div count determine circle resolution'
-	)
+	) # type: ignore
 
 	bf_Hex_Nut_Height: FloatProperty(
 		attr='bf_Hex_Nut_Height',
@@ -572,7 +572,7 @@ class PrimitiveData(PropertyGroup):
 		max=MAX_INPUT_NUMBER,
 		description='Height of the Hex Nut',
 		unit='LENGTH'
-	)
+	) # type: ignore
 
 	bf_Hex_Nut_Flat_Distance: FloatProperty(
 		attr='bf_Hex_Nut_Flat_Distance',
@@ -582,7 +582,7 @@ class PrimitiveData(PropertyGroup):
 		max=MAX_INPUT_NUMBER,
 		description='Flat distance of the Hex Nut',
 		unit='LENGTH'
-	)
+	) # type: ignore
 
 	bf_12_Point_Nut_Height: FloatProperty(
 		attr='bf_12_Point_Nut_Height',
@@ -592,7 +592,7 @@ class PrimitiveData(PropertyGroup):
 		max=MAX_INPUT_NUMBER,
 		description='Height of the 12 Point Nut',
 		unit='LENGTH'
-	)
+	) # type: ignore
 
 	bf_12_Point_Nut_Flat_Distance: FloatProperty(
 		attr='bf_12_Point_Nut_Flat_Distance',
@@ -602,7 +602,7 @@ class PrimitiveData(PropertyGroup):
 		max=MAX_INPUT_NUMBER,
 		description='Flat distance of the 12 point Nut',
 		unit='LENGTH'
-	)
+	) # type: ignore
 
 	bf_12_Point_Nut_Flange_Dia: FloatProperty(
 		attr='bf_12_Point_Nut_Flange_Dia',
@@ -612,7 +612,7 @@ class PrimitiveData(PropertyGroup):
 		max=MAX_INPUT_NUMBER,
 		description='Flange diameter of the 12 point Nut',
 		unit='LENGTH'
-	)
+	) # type: ignore
 	
 	# End of Bolt factory ###################################################
 
@@ -644,8 +644,8 @@ classes = {
 
 
 def register_update():
-	for c in classes:
-		register_class(c)
+	for cls in classes:
+		register_class(cls)
 
 	bpy.types.Scene.primitive_setting = PointerProperty(
 		type=Primitive_Option,
@@ -658,8 +658,8 @@ def register_update():
 
 
 def unregister_update():
-	for c in classes:
-		unregister_class(c)
+	for cls in classes:
+		unregister_class(cls)
 
 	del bpy.types.Mesh.primitivedata
 	del bpy.types.Curve.primitivedata

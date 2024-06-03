@@ -161,19 +161,19 @@ km_file_browser = KeyMaps()
 
 def register_modo(preferences):
 	if bpy.context.window_manager.keyconfigs.addon:
-		if preferences.navigation_3d == "Modo":
+		if preferences.navigation_3d == 'MODO':
 			view3d_navigation(km_navigation_3d,preferences)
 			km_navigation_3d.register()
 		else:
 			km_navigation_3d.unregister()
 
-		if preferences.navigation_2d == "Modo":
+		if preferences.navigation_2d == 'MODO':
 			view2d_navigation(km_navigation_2d,preferences)
 			km_navigation_2d.register()
 		else:
 			km_navigation_2d.unregister()
 
-		if preferences.viowport == "Modo":
+		if preferences.viowport == 'MODO':
 			window(km_viowport)
 			screen(km_viowport)
 			view3d(km_viowport)
@@ -200,7 +200,7 @@ def register_modo(preferences):
 		else:
 			km_viowport.unregister()
 
-		if preferences.sculpt == "Modo":
+		if preferences.sculpt == 'MODO':
 			vertex_paint(km_sculpt)
 			weight_paint(km_sculpt)
 			image_paint(km_sculpt)
@@ -209,19 +209,19 @@ def register_modo(preferences):
 		else:
 			km_sculpt.unregister()
 
-		if preferences.uv_editor == "Modo":
+		if preferences.uv_editor == 'MODO':
 			uv_editor(km_uv_editor)
 			km_uv_editor.register()
 		else:
 			km_uv_editor.unregister()
 
-		if preferences.node_editor == "Modo":
+		if preferences.node_editor == 'MODO':
 			node_editor(km_node_editor)
 			km_node_editor.register()
 		else:
 			km_node_editor.unregister()
 
-		if preferences.graph_editor == "Modo":
+		if preferences.graph_editor == 'MODO':
 			graph_editor(km_graph_editor)
 			dopesheet_editor(km_graph_editor)
 			nla_editor(km_graph_editor)
@@ -229,25 +229,25 @@ def register_modo(preferences):
 		else:
 			km_graph_editor.unregister()
 			
-		if preferences.clip_editor == "Modo":
+		if preferences.clip_editor == 'MODO':
 			km_clip_editor.register()
 		else:
 			km_clip_editor.unregister()
 
-		if preferences.video_sequencer == "Modo":
+		if preferences.video_sequencer == 'MODO':
 			sequence_editor(km_video_sequencer)
 			km_video_sequencer.register()
 		else:
 			km_video_sequencer.unregister()
 
-		if preferences.text_editor == "Modo":
+		if preferences.text_editor == 'MODO':
 			# console(km_text_editor)
 			text(km_text_editor)
 			km_text_editor.register()
 		else:
 			km_text_editor.unregister()
 		
-		if preferences.file_browser == "Modo":
+		if preferences.file_browser == 'MODO':
 			file_browser(km_file_browser)
 			km_file_browser.register()
 		else:

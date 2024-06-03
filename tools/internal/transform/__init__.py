@@ -22,13 +22,13 @@ from .transforms import register_transforms, unregister_transforms
 from .transform_type_in import register_transform_type_in, unregister_transform_type_in
 from .zoom_extended import register_zoom_extended, unregister_zoom_extended
 
-def register_transform(preferences):
+def register_transform():
 	register_align_objects()
 	register_coordinate()
 	register_mirror()
 	register_snap()
 	register_transform_control()
-	register_transforms(preferences)
+	register_transforms()
 	register_transform_type_in()
 	register_zoom_extended()
 

@@ -12,9 +12,7 @@
 #	You should have received a copy of the GNU General Public License
 #	along with this program.  If not, see <https://www.gnu.org/licenses/>.
 ############################################################################
-# 2024/02/25
-
-import bpy
+# 2024/06/02
 
 from bpy.types import Operator
 from bpy.utils import register_class, unregister_class
@@ -203,7 +201,7 @@ def check_materials(obj):
 
 
 class Material_OT_FBX_Cleaner(Operator):
-	bl_idname = "material.fbx_cleaner"
+	bl_idname = 'material.fbx_cleaner'
 	bl_label = "FBX Cleaner"
 	bl_description = ""
 	bl_options = {'REGISTER', 'UNDO'}
@@ -216,23 +214,17 @@ class Material_OT_FBX_Cleaner(Operator):
 		for obj in ctx.selected_objects:
 			check_materials(obj)
 
-		return{"FINISHED"}
-
-
-classes = (
-	Material_OT_FBX_Cleaner,
-)
+		return{'FINISHED'}
 
 
 def register_fbx_refiner():
-	for c in classes:
-		register_class(c)
+	register_class(Material_OT_FBX_Cleaner)
 
 
 def unregister_fbx_refiner():
-	for c in classes:
-		unregister_class(c)
+	if Material_OT_FBX_Cleaner.is_registered:
+		unregister_class(Material_OT_FBX_Cleaner)
 
 
-if __name__ == "__main__":
+if __name__ == '__main__':
 	register_fbx_refiner()

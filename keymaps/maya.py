@@ -371,20 +371,20 @@ km_file_browser = KeyMaps()
 
 def register_maya(preferences):
 	if bpy.context.window_manager.keyconfigs.addon:
-		if preferences.navigation_3d == "Maya":
+		if preferences.navigation_3d == 'MAYA':
 			view3d_navigation(km_navigation_3d, preferences)
 			km_navigation_3d.register()
 			bpy.context.preferences.inputs.view_zoom_axis = 'HORIZONTAL'
 		else:
 			km_navigation_3d.unregister()
 
-		if preferences.navigation_2d == "Maya":
+		if preferences.navigation_2d == 'MAYA':
 			view2d_navigation(km_navigation_2d, preferences)
 			km_navigation_2d.register()
 		else:
 			km_navigation_2d.unregister()
 
-		if preferences.viowport == "Maya":
+		if preferences.viowport == 'MAYA':
 			window(km_viewport)
 			user_interface(km_viewport)
 			screen(km_viewport)
@@ -414,7 +414,7 @@ def register_maya(preferences):
 		else:
 			km_viewport.unregister()
 
-		if preferences.sculpt == "Maya":
+		if preferences.sculpt == 'MAYA':
 			vertex_paint(km_sculpt)
 			weight_paint(km_sculpt)
 			image_paint(km_sculpt)
@@ -424,19 +424,19 @@ def register_maya(preferences):
 		else:
 			km_sculpt.unregister()
 
-		if preferences.uv_editor == "Maya":
+		if preferences.uv_editor == 'MAYA':
 			uv_editor(km_uv_editor)
 			km_uv_editor.register()
 		else:
 			km_uv_editor.unregister()
 
-		if preferences.node_editor == "Maya":
+		if preferences.node_editor == 'MAYA':
 			node_editor(km_node_editor)
 			km_node_editor.register()
 		else:
 			km_node_editor.unregister()
 
-		if preferences.graph_editor == "Maya":
+		if preferences.graph_editor == 'MAYA':
 			graph_editor(km_graph_editor)
 			dopesheet_editor(km_graph_editor)
 			nla_editor(km_graph_editor)
@@ -444,25 +444,25 @@ def register_maya(preferences):
 		else:
 			km_graph_editor.unregister()
 			
-		if preferences.clip_editor == "Maya":
+		if preferences.clip_editor == 'MAYA':
 			km_clip_editor.register()
 		else:
 			km_clip_editor.unregister()
 
-		if preferences.video_sequencer == "Maya":
+		if preferences.video_sequencer == 'MAYA':
 			sequence_editor(km_video_sequencer)
 			km_video_sequencer.register()
 		else:
 			km_video_sequencer.unregister()
 
-		if preferences.text_editor == "Maya":
+		if preferences.text_editor == 'MAYA':
 			# console(km_text_editor)
 			text(km_text_editor)
 			km_text_editor.register()
 		else:
 			km_text_editor.unregister()
 		
-		if preferences.file_browser == "Maya":
+		if preferences.file_browser == 'MAYA':
 			file_browser(km_file_browser)
 			km_file_browser.register()
 		else:

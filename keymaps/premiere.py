@@ -24,8 +24,10 @@ def add_time(km, space):
 	km.new(space, 'anim.frame_set', 'PERIOD', 'PRESS', [('frame', 'Next')])
 	km.new(space, 'anim.frame_set', 'COMMA', 'PRESS', [('frame', 'Previous')])
 	km.new(space, 'anim.set_key', 'K', 'PRESS', [])
-	km.new(space, 'anim.set_key_filters', 'K', 'PRESS',
-			[], ctrl=True, shift=True)
+	km.new(
+		space, 'anim.set_key_filters', 'K', 'PRESS',
+		[], ctrl=True, shift=True
+	)
 
 	km.new(space, 'anim.keyframe_insert_menu', 'K', 'PRESS', [], ctrl=True)
 	km.new(space, 'anim.keyframe_delete_v3d', 'K', 'PRESS', [], alt=True)
@@ -34,17 +36,23 @@ def add_time(km, space):
 
 
 def add_side_panel(km, space):
-	km.new(space, 'wm.context_toggle', 'LEFT_BRACKET', 'PRESS',
-			[('data_path', 'space_data.show_region_toolbar')])
+	km.new(
+		space, 'wm.context_toggle', 'LEFT_BRACKET', 'PRESS',
+		[('data_path', 'space_data.show_region_toolbar')]
+	)
 
-	km.new(space, 'wm.context_toggle', 'RIGHT_BRACKET', 'PRESS',
-			[('data_path', 'space_data.show_region_ui')])
+	km.new(
+		space, 'wm.context_toggle', 'RIGHT_BRACKET', 'PRESS',
+		[('data_path', 'space_data.show_region_ui')]
+	)
 
 
 
 def add_search(km, space):
-	km.new(space, 'wm.search_menu', 'X', 'PRESS',
-			[], ctrl=True, shift=True, alt=True)
+	km.new(
+		space, 'wm.search_menu', 'X', 'PRESS',
+		[], ctrl=True, shift=True, alt=True
+	)
 
 	km.new(space, 'wm.search_operator', 'X', 'PRESS', [])
 
@@ -59,23 +67,35 @@ def sequence_editor(km):
 
 	km.new(space, 'sequencer.zoom_extended', 'Z', 'PRESS', [])
 	km.new(space, 'sequencer.mute_toggle', 'H', 'PRESS', [])
-	km.new(space, 'sequencer.shift', 'UP_ARROW', 'PRESS',
-			[('direction', 'UP')], alt=True)
+	km.new(
+		space, 'sequencer.shift', 'UP_ARROW', 'PRESS',
+		[('direction', 'UP')], alt=True
+	)
 
-	km.new(space, 'sequencer.shift', 'DOWN_ARROW', 'PRESS',
-			[('direction', 'DOWN')], alt=True)
+	km.new(
+		space, 'sequencer.shift', 'DOWN_ARROW', 'PRESS',
+		[('direction', 'DOWN')], alt=True
+	)
 
-	km.new(space, 'sequencer.shift', 'RIGHT_ARROW', 'PRESS',
-			[('direction', 'RIGHT')], alt=True)
+	km.new(
+		space, 'sequencer.shift', 'RIGHT_ARROW', 'PRESS',
+		[('direction', 'RIGHT')], alt=True
+	)
 
-	km.new(space, 'sequencer.shift', 'LEFT_ARROW', 'PRESS',
-			[('direction', 'LEFT')], alt=True)
+	km.new(
+		space, 'sequencer.shift', 'LEFT_ARROW', 'PRESS',
+		[('direction', 'LEFT')], alt=True
+	)
 
-	km.new(space, 'sequencer.select_all', 'A', 'PRESS',
-			[('action', 'SELECT')], ctrl=True)
+	km.new(
+		space, 'sequencer.select_all', 'A', 'PRESS',
+		[('action', 'SELECT')], ctrl=True
+	)
 
-	km.new(space, 'sequencer.select_all', 'D', 'PRESS',
-			[('action', 'DESELECT')], ctrl=True)
+	km.new(
+		space, 'sequencer.select_all', 'D', 'PRESS',
+		[('action', 'DESELECT')], ctrl=True
+	)
 
 	km.new(space, 'anim.frame_set', 'HOME', 'PRESS', [('frame', 'First')])
 	km.new(space, 'anim.frame_set', 'END', 'PRESS', [('frame', 'Last')])
@@ -88,7 +108,7 @@ km_video_sequencer = KeyMaps()
 
 def register_premiere(preferences):
 	if bpy.context.window_manager.keyconfigs.addon:
-		if preferences.video_sequencer == 'Premiere':
+		if preferences.video_sequencer == 'PREMIERE':
 			sequence_editor(km_video_sequencer)
 			km_video_sequencer.register()
 		else:

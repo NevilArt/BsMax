@@ -252,24 +252,25 @@ class BsMax_PT_CP_EditCurve_Geometry(Panel):
 # 		layout = self.layout
 
 
-classes = (
+classes = {
 	BsMax_PT_CP_EditCurve_Rendering,
 	BsMax_PT_CP_EditCurve_Surface_Properties,
 	BsMax_PT_CP_EditCurve_Interpolation,
 	BsMax_PT_CP_EditCurve_Selection,
 	BsMax_PT_CP_EditCurve_Soft_Selection,
 	BsMax_PT_CP_EditCurve_Geometry
-)
+}
 
 
 def register_edit_curve():
-	for c in classes:
-		register_class(c)
+	for cls in classes:
+		register_class(cls)
 
 
 def unregister_edit_curve():
-	for c in classes:
-		unregister_class(c)
+	for cls in classes:
+		if cls.is_registered:
+			unregister_class(cls)
 
 
 if __name__ == "__main__":

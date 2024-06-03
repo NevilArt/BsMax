@@ -12,7 +12,7 @@
 #	You should have received a copy of the GNU General Public License
 #	along with this program.  If not, see <https://www.gnu.org/licenses/>.
 ############################################################################
-# 2024/03/04
+# 2024/05/29
 
 import bpy
 
@@ -207,48 +207,6 @@ def add_float_editors(km, space):
 	)
 	# km.new(space, 'editor.float', 'H', 'PRESS',
 	# 		[('ui_type', 'OUTLINER'), ('multiple', False)])
-
-
-# def add_float_menu(km, space, preferences):
-# 	if preferences.floatmenus == '3DsMax':
-# 		km.new(space, 'bsmax.view3dquadmenue', 'V', 'PRESS',
-# 			[('menu', 'viewport'), ('space', 'View3D')])
-
-# 		""" This not needed drop tool can call this """
-# 		# km.new(space,"bsmax.view3dquadmenue","RIGHTMOUSE","PRESS",
-# 		# 		[('menu', 'default'),('space', 'View3D')])
-
-# 		""" Ignore Alt + RMB in Maya navigation enabled """
-# 		if preferences.navigation_3d != 'Maya':
-# 			km.new(space, 'bsmax.view3dquadmenue', 'RIGHTMOUSE', 'PRESS',
-# 					[('menu', 'coordinate'), ('space', 'View3D')], alt=True)
-
-# 		km.new(space, 'bsmax.view3dquadmenue', 'RIGHTMOUSE', 'PRESS',
-# 				[('menu', 'create'), ('space', 'View3D')], ctrl=True)
-
-# 		km.new(space, 'bsmax.view3dquadmenue', 'RIGHTMOUSE', 'PRESS',
-# 				[('menu', 'snap'), ('space', 'View3D')], shift=True)
-
-# 		km.new(space, 'bsmax.view3dquadmenue', 'RIGHTMOUSE', 'PRESS',
-# 				[('menu', 'render'), ('space', 'View3D')], alt=True, ctrl=True)
-
-# 		km.new(space, 'bsmax.view3dquadmenue', 'RIGHTMOUSE', 'PRESS',
-# 				[('menu', 'fx'), ('space', 'View3D')], alt=True, shift=True)
-
-# 		km.new(space, 'bsmax.view3dquadmenue', 'RIGHTMOUSE', 'PRESS',
-# 				[('menu', 'Selection'), ('space', 'View3D')],
-# 				ctrl=True, shift=True)
-
-# 		km.new(space, 'bsmax.view3dquadmenue', 'RIGHTMOUSE', 'PRESS',
-# 				[('menu', 'custom'), ('space', 'View3D')],
-# 				alt=True, ctrl=True, shift=True)
-	
-# 	if preferences.floatmenus == 'PieMax':
-# 		km.new(space, 'wm.call_menu_pie', 'RIGHTMOUSE', 'PRESS', 
-# 				[('name', 'BSMAX_MT_default_pi')])
-
-# 		km.new(space, 'wm.call_menu_pie', 'RIGHTMOUSE', 'PRESS', 
-# 				[('name', 'BSMAX_MT_create_pi')], ctrl=True)
 
 
 def window(km):
@@ -1000,6 +958,16 @@ def curve(km, preferences):
 		[], ctrl=True, repeat=True
 	)
 
+	km.new(
+		space, 'mesh.select_more', 'WHEELUPMOUSE', 'PRESS',
+		[('mode', 'SET')], ctrl=True
+	)
+
+	km.new(
+		space, 'mesh.select_less', 'WHEELDOWNMOUSE', 'PRESS',
+		[('mode', 'SUB')], alt=True
+	)
+
 	km.new(space, 'curve.select_similar', 'Q', 'PRESS', [], ctrl=True)
 	km.new(space, 'screen.screen_full_area', 'X', 'PRESS', [], ctrl=True)
 
@@ -1255,20 +1223,30 @@ def pos(km, preferences):
 
 	km.new(space, 'view3d.drop_tool', 'RIGHTMOUSE', 'PRESS', [])
 	km.new(space, 'screen.screen_full_area', 'X', 'PRESS', [], ctrl=True)
-	km.new(space, 'pose.select_all', 'A', 'PRESS',
-			[('action', 'SELECT')], ctrl=True)
+	km.new(
+		space, 'pose.select_all', 'A', 'PRESS',
+		[('action', 'SELECT')], ctrl=True
+	)
 
-	km.new(space, 'pose.select_all', 'D', 'PRESS',
-			[('action', 'DESELECT')], ctrl=True)
+	km.new(
+		space, 'pose.select_all', 'D', 'PRESS',
+		[('action', 'DESELECT')], ctrl=True
+	)
 
-	km.new(space, 'pose.select_all', 'I', 'PRESS',
-			[('action', 'INVERT')], ctrl=True)
+	km.new(
+		space, 'pose.select_all', 'I', 'PRESS',
+		[('action', 'INVERT')], ctrl=True
+	)
 
-	km.new(space, 'pose.select_more', 'PAGE_UP', 'PRESS',
-			[], ctrl=True, shift=True, repeat=True)
+	km.new(
+		space, 'pose.select_more', 'PAGE_UP', 'PRESS',
+		[], ctrl=True, shift=True, repeat=True
+	)
 
-	km.new(space, 'pose.select_less', 'PAGE_DOWN', 'PRESS',
-			[], ctrl=True, shift=True, repeat=True)
+	km.new(
+		space, 'pose.select_less', 'PAGE_DOWN', 'PRESS',
+		[], ctrl=True, shift=True, repeat=True
+	)
 
 	km.new(space, 'camera.select', 'C', 'PRESS', [])
 	km.new(space, 'view3d.localview', 'Q', 'PRESS', [], alt=True)
@@ -1279,8 +1257,10 @@ def pos(km, preferences):
 	km.new(space, 'pose.paste_plus', 'INSERT', 'PRESS', [], shift=True)
 	km.new(space, 'pose.paste_plus', 'V', 'PRESS', [], ctrl=True)
 
-	km.new(space, 'wm.call_menu', 'INSERT', 'PRESS',
-			[('name', 'VIEW3D_MT_snap')], ctrl=True)
+	km.new(
+		space, 'wm.call_menu', 'INSERT', 'PRESS',
+		[('name', 'VIEW3D_MT_snap')], ctrl=True
+	)
 
 
 def font(km):
@@ -2163,20 +2143,20 @@ def register_max(preferences):
 	global km_file_browser
 
 	if bpy.context.window_manager.keyconfigs.addon:
-		if preferences.navigation_3d == '3DsMax':
+		if preferences.navigation_3d == '3DSMAX':
 			view3d_navigation(km_navigation_3d, preferences)
 			km_navigation_3d.register()
 			bpy.context.preferences.inputs.view_zoom_axis = 'VERTICAL'
 		else:
 			km_navigation_3d.unregister()
 
-		if preferences.navigation_2d == '3DsMax':
+		if preferences.navigation_2d == '3DSMAX':
 			view2d_navigation(km_navigation_2d, preferences)
 			km_navigation_2d.register()
 		else:
 			km_navigation_2d.unregister()
 
-		if preferences.viowport == '3DsMax':
+		if preferences.viowport == '3DSMAX':
 			window(km_viewport)
 			user_interface(km_viewport)
 			screen(km_viewport)
@@ -2210,7 +2190,7 @@ def register_max(preferences):
 		else:
 			km_viewport.unregister()
 
-		if preferences.sculpt == '3DsMax':
+		if preferences.sculpt == '3DSMAX':
 			vertex_paint(km_sculpt)
 			weight_paint(km_sculpt)
 			image_paint(km_sculpt)
@@ -2220,21 +2200,21 @@ def register_max(preferences):
 		else:
 			km_sculpt.unregister()
 
-		if preferences.uv_editor == '3DsMax':
+		if preferences.uv_editor == '3DSMAX':
 			image_editor(km_uv_editor)
 			uv_editor(km_uv_editor, preferences)
 			km_uv_editor.register()
 		else:
 			km_uv_editor.unregister()
 
-		if preferences.node_editor == '3DsMax':
+		if preferences.node_editor == '3DSMAX':
 			node_editor(km_node_editor)
 			node_editor_fallback(km_node_editor)
 			km_node_editor.register()
 		else:
 			km_node_editor.unregister()
 
-		if preferences.graph_editor == '3DsMax':
+		if preferences.graph_editor == '3DSMAX':
 			graph_editor(km_graph_editor)
 			dopesheet_editor(km_graph_editor)
 			nla_editor(km_graph_editor)
@@ -2242,20 +2222,20 @@ def register_max(preferences):
 		else:
 			km_graph_editor.unregister()
 			
-		if preferences.clip_editor == '3DsMax':
+		if preferences.clip_editor == '3DSMAX':
 			clip_editor(km_clip_editor)
 			mask_editor(km_clip_editor)
 			km_clip_editor.register()
 		else:
 			km_clip_editor.unregister()
 
-		if preferences.video_sequencer == '3DsMax':
+		if preferences.video_sequencer == '3DSMAX':
 			sequence_editor(km_video_sequencer)
 			km_video_sequencer.register()
 		else:
 			km_video_sequencer.unregister()
 
-		if preferences.text_editor == '3DsMax':
+		if preferences.text_editor == '3DSMAX':
 			console(km_text_editor)
 			text(km_text_editor)
 			info(km_text_editor)
@@ -2263,7 +2243,7 @@ def register_max(preferences):
 		else:
 			km_text_editor.unregister()
 		
-		if preferences.file_browser == '3DsMax':
+		if preferences.file_browser == '3DSMAX':
 			file_browser(km_file_browser)
 			km_file_browser.register()
 		else:

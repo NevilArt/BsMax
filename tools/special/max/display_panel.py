@@ -22,9 +22,12 @@ def get_display_color_panel(layout, ctx):
 	box = layout.box()
 	box.label(text="Coming soon")
 
+
 def get_display_hide_category_panel(layout, ctx):
 	space_data = ctx.space_data
-	layout.prop(space_data.overlay, 'show_overlays', text="Show Renderable Only")
+	layout.prop(
+		space_data.overlay, 'show_overlays', text="Show Renderable Only"
+	)
 
 	box = layout.box()
 	col = box.column()
@@ -46,9 +49,9 @@ def get_display_hide_category_panel(layout, ctx):
 	col.prop(space_data, 'show_object_viewport_mesh')
 
 	row = layout.row()
-	row.operator("bsmax.reserved", text="All")
-	row.operator("bsmax.reserved", text="None")
-	row.operator("bsmax.reserved", text="Invert")
+	row.operator('bsmax.reserved', text="All")
+	row.operator('bsmax.reserved', text="None")
+	row.operator('bsmax.reserved', text="Invert")
 
 
 def get_display_hide_panel(layout, ctx):
@@ -56,14 +59,14 @@ def get_display_hide_panel(layout, ctx):
 	col = box.column()
 	col.operator("object.hide", text="Hide Selected").mode='SELECTION'
 	col.operator("object.hide", text="Hide Unselected").mode='UNSELECTED'
-	col.operator("bsmax.reserved", text="Hide By Name")
-	col.operator("bsmax.reserved", text="Hide by Hit")
+	col.operator('bsmax.reserved', text="Hide By Name")
+	col.operator('bsmax.reserved', text="Hide by Hit")
 
 	col = box.column()
 	col.operator("object.hide", text="Unhide all").mode='CLEAR'
-	col.operator("bsmax.reserved", text="Unhide by name")
+	col.operator('bsmax.reserved', text="Unhide by name")
 
-	layout.operator("bsmax.reserved", text="Hide Frozen Objects")
+	layout.operator('bsmax.reserved', text="Hide Frozen Objects")
 
 
 def get_display_freeze_panel(layout, ctx):
@@ -88,27 +91,27 @@ def get_display_freeze_panel(layout, ctx):
 	col.prop(space_data, 'show_object_select_speaker')
 
 	row = layout.row()
-	row.operator("bsmax.reserved", text="All")
-	row.operator("bsmax.reserved", text="None")
-	row.operator("bsmax.reserved", text="Invert")
+	row.operator('bsmax.reserved', text="All")
+	row.operator('bsmax.reserved', text="None")
+	row.operator('bsmax.reserved', text="Invert")
 
 
 def get_display_properties_panel(layout, ctx):
 	space_data = ctx.space_data
 	box = layout.box()
 	col = box.column()
-	col.operator("bsmax.reserved", text="Display as Box")
+	col.operator('bsmax.reserved', text="Display as Box")
 	col.prop(
 		space_data.shading, 'show_backface_culling', text="Backfacec Cull"
 	)
 
-	col.operator("bsmax.reserved", text="Edge Only")
-	col.operator("bsmax.reserved", text="Vertex Ticks")
+	col.operator('bsmax.reserved', text="Edge Only")
+	col.operator('bsmax.reserved', text="Vertex Ticks")
 	col.prop(space_data.overlay,  'show_motion_paths', text="Motion Path")
 	col.prop(space_data.shading,  'show_xray', text="See-Through")
-	col.operator("bsmax.reserved", text="Ignore Extents")
-	col.operator("bsmax.reserved", text="Show Frozen in Gray")
-	col.operator("bsmax.reserved", text="Never Degrade")
+	col.operator('bsmax.reserved', text="Ignore Extents")
+	col.operator('bsmax.reserved', text="Show Frozen in Gray")
+	col.operator('bsmax.reserved', text="Never Degrade")
 
 
 
@@ -117,15 +120,15 @@ def get_display_links_panel(layout, ctx):
 	col.prop(
 		ctx.space_data.overlay, 'show_relationship_lines', text="Display Links"
 	)
-	col.operator("bsmax.reserved", text="Link Replace Objects")
+	col.operator('bsmax.reserved', text="Link Replace Objects")
 	
 
 class SCENE_OP_BsMax_Display_Color_Panel(Panel):
 	bl_space_type = 'VIEW_3D'
 	bl_region_type = 'UI'
-	bl_label = 'Display Color'
+	bl_label = "Display Color"
 	bl_idname = 'VIEW3D_PT_BsMax_display_color'
-	bl_category = 'BsMax'
+	bl_category = "BsMax"
 
 	@classmethod
 	def poll(self, ctx):
@@ -138,9 +141,9 @@ class SCENE_OP_BsMax_Display_Color_Panel(Panel):
 class SCENE_OP_BsMax_Display_Hide_category_Panel(Panel):
 	bl_space_type = 'VIEW_3D'
 	bl_region_type = 'UI'
-	bl_label = 'Hide by Category'
+	bl_label = "Hide by Category"
 	bl_idname = 'VIEW3D_PT_BsMax_display_hide_category'
-	bl_category = 'BsMax'
+	bl_category = "BsMax"
 
 	@classmethod
 	def poll(self, ctx):
@@ -153,9 +156,9 @@ class SCENE_OP_BsMax_Display_Hide_category_Panel(Panel):
 class SCENE_OP_BsMax_Display_Hide_Panel(Panel):
 	bl_space_type = 'VIEW_3D'
 	bl_region_type = 'UI'
-	bl_label = 'Hide'
+	bl_label = "Hide"
 	bl_idname = 'VIEW3D_PT_BsMax_display_hide'
-	bl_category = 'BsMax'
+	bl_category = "BsMax"
 
 	@classmethod
 	def poll(self, ctx):
@@ -168,9 +171,9 @@ class SCENE_OP_BsMax_Display_Hide_Panel(Panel):
 class SCENE_OP_BsMax_Display_Freeze_Panel(Panel):
 	bl_space_type = 'VIEW_3D'
 	bl_region_type = 'UI'
-	bl_label = 'Freeze'
+	bl_label = "Freeze"
 	bl_idname = 'VIEW3D_PT_BsMax_display_freeze'
-	bl_category = 'BsMax'
+	bl_category = "BsMax"
 
 	@classmethod
 	def poll(self, ctx):
@@ -183,9 +186,9 @@ class SCENE_OP_BsMax_Display_Freeze_Panel(Panel):
 class SCENE_OP_BsMax_Display_Properties_Panel(Panel):
 	bl_space_type = 'VIEW_3D'
 	bl_region_type = 'UI'
-	bl_label = 'Display Properties'
+	bl_label = "Display Properties"
 	bl_idname = 'VIEW3D_PT_BsMax_display_properties'
-	bl_category = 'BsMax'
+	bl_category = "BsMax"
 
 	@classmethod
 	def poll(self, ctx):
@@ -198,9 +201,9 @@ class SCENE_OP_BsMax_Display_Properties_Panel(Panel):
 class SCENE_OP_BsMax_Display_Links_Panel(Panel):
 	bl_space_type = 'VIEW_3D'
 	bl_region_type = 'UI'
-	bl_label = 'Display Properties'
+	bl_label = "Display Properties"
 	bl_idname = 'VIEW3D_PT_BsMax_display_links'
-	bl_category = 'BsMax'
+	bl_category = "BsMax"
 
 	@classmethod
 	def poll(self, ctx):
@@ -210,25 +213,26 @@ class SCENE_OP_BsMax_Display_Links_Panel(Panel):
 		get_display_links_panel(self.layout, ctx)
 
 
-classes = (
+classes = {
 	SCENE_OP_BsMax_Display_Color_Panel,
 	SCENE_OP_BsMax_Display_Hide_category_Panel,
 	SCENE_OP_BsMax_Display_Hide_Panel,
 	SCENE_OP_BsMax_Display_Freeze_Panel,
 	SCENE_OP_BsMax_Display_Properties_Panel,
 	SCENE_OP_BsMax_Display_Links_Panel
-)
+}
 
 
 def register_display_panel():
-	for c in classes:
-	    register_class(c)
+	for cls in classes:
+	    register_class(cls)
 
 
 def unregister_display_panel():
-	for c in classes:
-	    unregister_class()
+	for cls in classes:
+		if cls.is_registered:
+			unregister_class(cls)
 
 
-if __name__ == "__main__":
+if __name__ == '__main__':
 	register_display_panel()

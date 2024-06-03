@@ -130,7 +130,7 @@ def unregister_frames():
 
 
 
-if __name__ == "__main__":
+if __name__ == '__main__':
 	try:
 		unregister_frames()
 	except:

@@ -467,17 +467,17 @@ def post_render(scene):
 				pass
 
 
-classes = (
+classes = {
 	Render_PrePostScript,
 	Render_OT_Preset,
 	RENDER_PT_Preset,
 	RENDER_PT_Script
-)
+}
 
 
 def register_preset():
-	for c in classes:
-		register_class(c)
+	for cls in classes:
+		register_class(cls)
 
 	bpy.types.Scene.render_prepost_script = PointerProperty(
 		type=Render_PrePostScript,
@@ -489,8 +489,8 @@ def register_preset():
 
 
 def unregister_preset():
-	for c in classes:
-		unregister_class(c)
+	for cls in classes:
+		unregister_class(cls)
 
 	bpy.app.handlers.render_init.remove(pre_render)
 	bpy.app.handlers.render_complete.remove(post_render)

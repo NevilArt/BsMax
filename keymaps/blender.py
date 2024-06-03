@@ -12,6 +12,7 @@
 #	You should have received a copy of the GNU General Public License
 #	along with this program.  If not,see <https://www.gnu.org/licenses/>.
 ############################################################################
+# 2024/05/29
 
 import bpy
 from bsmax.keymaps import KeyMaps
@@ -29,10 +30,8 @@ class Blender_State():
 blender_state = Blender_State()
 
 
-
 def window(km):
 	pass
-
 
 
 def screen(km):
@@ -44,23 +43,21 @@ def screen(km):
 			[("next", False)], ctrl=True)
 
 
-
 def view2d(km):
 	pass
 
 
-
-def view2d_navigation(km,preferences):
+def view2d_navigation(km, preferences):
 	pass
-
 
 
 def view3d(km):
 	space = km.space('3D View', 'VIEW_3D', 'WINDOW')
 	km.new(space, "wm.multi_item_rename", "F2", "PRESS", [])
-	km.new(space, "wm.call_menu", "A", "PRESS",
-			[('name', "BsMax_MT_Create")], ctrl=True, shift=True)
-
+	km.new(
+		space, "wm.call_menu", "A", "PRESS",
+		[('name', "BsMax_MT_Create")], ctrl=True, shift=True
+	)
 
 
 def view3d_navigation(km,preferences):
@@ -84,55 +81,44 @@ def view3d_navigation(km,preferences):
 		km.new(space, "view3d.zoomoutcover", "WHEELOUTMOUSE", "PRESS", [])
 
 
-
 def view3d_generic(km):
 	pass
-
 
 
 def view3d_select(km):
 	pass
 
 
-
 def view3d_transform(km):
 	pass
-
 
 
 def view3d_move(km):
 	pass
 
 
-
 def view3d_rotate(km):
 	pass
-
 
 
 def view3d_scale(km):
 	pass
 
 
-
 def view3d_select_box(km):
 	pass
-
 
 
 def view3d_select_circle(km):
 	pass
 
 
-
 def view3d_select_lasso(km):
 	pass
 
 
-
 def transform(km):
 	pass
-
 
 
 def object_mode(km):
@@ -158,7 +144,6 @@ def object_mode(km):
 	km.new(space, 'object.delete_plus', 'DEL', 'PRESS', [])
 
 
-
 def mesh(km):
 	space = km.space('Mesh', 'EMPTY', 'WINDOW')
 
@@ -167,6 +152,15 @@ def mesh(km):
 	km.new(space, 'mesh.copy', 'C', 'PRESS', [], ctrl=True)
 	km.new(space, 'mesh.paste', 'V', 'PRESS', [], ctrl=True)
 
+	km.new(
+		space, 'mesh.select_more', 'WHEELUPMOUSE', 'PRESS',
+		[('mode', 'SET')], ctr=True
+	)
+
+	km.new(
+		space, 'mesh.select_less', 'WHEELDOWNMOUSE', 'PRESS',
+		[('mode', 'SUB')], alt=True
+	)
 
 
 def curve(km):
@@ -174,7 +168,6 @@ def curve(km):
 
 	if blender_state.select_mouse == 'LEFT':
 		km.new(space, "view3d.drop_tool", "RIGHTMOUSE", "PRESS", [])
-
 
 
 def armature(km):
@@ -186,13 +179,11 @@ def armature(km):
 	km.new(space, "wm.multi_item_rename", "F2", "PRESS", [])
 
 
-
 def metaball(km):
 	space = km.space('Metaball', 'EMPTY', 'WINDOW')
 
 	if blender_state.select_mouse == 'LEFT':
 		km.new(space, "view3d.drop_tool", "RIGHTMOUSE", "PRESS", [])
-
 
 
 def lattice(km):
@@ -201,10 +192,8 @@ def lattice(km):
 		km.new(space, "view3d.drop_tool", "RIGHTMOUSE", "PRESS", [])
 
 
-
 def grease_pencil(km):
 	pass
-
 
 
 def pos(km):
@@ -214,42 +203,47 @@ def pos(km):
 		km.new(space, "view3d.drop_tool", "RIGHTMOUSE", "PRESS",
 		[])
 
-	km.new(space, 'pose.select_hierarchy_plus', 'LEFT_BRACKET', 'PRESS',
-			[('direction', 'PARENT'), ('extend', False)])
+	km.new(
+		space, 'pose.select_hierarchy_plus', 'LEFT_BRACKET', 'PRESS',
+		[('direction', 'PARENT'), ('extend', False)]
+	)
 
-	km.new(space, 'pose.select_hierarchy_plus', 'LEFT_BRACKET', 'PRESS',
-			[('direction', 'PARENT'),('extend', True)], shift=True)
+	km.new(
+		space, 'pose.select_hierarchy_plus', 'LEFT_BRACKET', 'PRESS',
+		[('direction', 'PARENT'),('extend', True)], shift=True
+	)
 
-	km.new(space, 'pose.select_hierarchy_plus', 'RIGHT_BRACKET', 'PRESS',
-			[('direction', 'CHILDREN'), ('full', False), ('extend', False)])
+	km.new(
+		space, 'pose.select_hierarchy_plus', 'RIGHT_BRACKET', 'PRESS',
+		[('direction', 'CHILDREN'), ('full', False), ('extend', False)]
+	)
 
-	km.new(space, 'pose.select_hierarchy_plus', 'RIGHT_BRACKET', 'PRESS',
-			[('direction', 'CHILDREN'), ('full', False), ('extend', True)],
-			shift=True)
+	km.new(
+		space, 'pose.select_hierarchy_plus', 'RIGHT_BRACKET', 'PRESS',
+		[('direction', 'CHILDREN'), ('full', False), ('extend', True)],
+		shift=True
+	)
 
-	km.new(space, 'pose.select_hierarchy_plus', 'LEFTMOUSE', 'DOUBLE_CLICK',
-			[('direction', 'CHILDREN'), ('full', True), ('extend', True)])
-
+	km.new(
+		space, 'pose.select_hierarchy_plus', 'LEFTMOUSE', 'DOUBLE_CLICK',
+		[('direction', 'CHILDREN'), ('full', True), ('extend', True)]
+	)
 
 
 def vertex_paint(km):
 	pass
 
 
-
 def weight_paint(km):
 	pass
-
 
 
 def image_paint(km):
 	pass
 
 
-
 def sculpt(km):
 	pass
-
 
 
 def node_editor(km):
@@ -257,25 +251,20 @@ def node_editor(km):
 	km.new(space,"wm.multi_item_rename", "F2", "PRESS", [])
 
 
-
 def graph_editor(km):
 	pass
-
 
 
 def dopesheet_editor(km):
 	pass
 
 
-
 def nla_editor(km):
 	pass
 
 
-
 def uv_editor(km):
 	pass
-			
 
 
 def sequence_editor(km):
@@ -283,10 +272,8 @@ def sequence_editor(km):
 	km.new(space, "wm.multi_item_rename", "F2", "PRESS", [])
 
 
-
 def text(km):
 	pass
-
 
 
 def console(km):
@@ -303,10 +290,8 @@ def console(km):
 	km.new(space, 'console.clear', 'D', 'PRESS', [], shift=True)
 
 
-
 def file_browser(km):
 	pass
-
 
 
 km_navigation_3d = KeyMaps()
@@ -324,20 +309,20 @@ km_file_browser = KeyMaps()
 def register_blender(preferences):
 	ctx = bpy.context
 	if ctx.window_manager.keyconfigs.addon:
-		if preferences.navigation_3d == "Blender":
+		if preferences.navigation_3d == 'Blender':
 			view3d_navigation(km_navigation_3d,preferences)
 			km_navigation_3d.register()
 			ctx.preferences.inputs.view_zoom_axis = 'VERTICAL'
 		else:
 			km_navigation_3d.unregister()
 
-		if preferences.navigation_2d == "Blender":
+		if preferences.navigation_2d == 'Blender':
 			view2d_navigation(km_navigation_2d,preferences)
 			km_navigation_2d.register()
 		else:
 			km_navigation_2d.unregister()
 
-		if preferences.viowport == "Blender":
+		if preferences.viowport == 'Blender':
 			window(km_viowport)
 			screen(km_viowport)
 			view3d(km_viowport)

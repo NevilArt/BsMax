@@ -12,73 +12,82 @@
 #	You should have received a copy of the GNU General Public License
 #	along with this program.  If not, see <https://www.gnu.org/licenses/>.
 ############################################################################
+# 2024/06/02
 
 import bpy
 
 from bsmax.keymaps import KeyMaps
 
 
-
-
 def add_3dsmax_quad_menu(km, space, preferences):
 
-	if preferences.floatmenus == '3DsMax':
-		km.new(space, 'bsmax.view3dquadmenue', 'V', 'PRESS',
-	 			[('menu', 'viewport')]
+	if preferences.floatmenus == '3DSMAX':
+		km.new(
+			space, 'bsmax.view3dquadmenue', 'V', 'PRESS',
+	 		[('menu', 'viewport')]
 		)
 
 		""" This not needed drop tool can call this """
-		# km.new(space,"bsmax.view3dquadmenue","RIGHTMOUSE","PRESS",
-		# 		[('menu', 'default')]
+		# km.new(
+		#	space,"bsmax.view3dquadmenue","RIGHTMOUSE","PRESS",
+		# 	[('menu', 'default')]
 		# )
 
-		km.new(space, 'bsmax.view3dquadmenue', 'RIGHTMOUSE', 'PRESS',
-				[('menu', 'create')], ctrl=True
+		km.new(
+			space, 'bsmax.view3dquadmenue', 'RIGHTMOUSE', 'PRESS',
+			[('menu', 'create')], ctrl=True
 		)
 
-		km.new(space, 'bsmax.view3dquadmenue', 'RIGHTMOUSE', 'PRESS',
-				[('menu', 'snap')], shift=True
+		km.new(
+			space, 'bsmax.view3dquadmenue', 'RIGHTMOUSE', 'PRESS',
+			[('menu', 'snap')], shift=True
 		)
 
-		km.new(space, 'bsmax.view3dquadmenue', 'RIGHTMOUSE', 'PRESS',
-				[('menu', 'render')], alt=True, ctrl=True
+		km.new(
+			space, 'bsmax.view3dquadmenue', 'RIGHTMOUSE', 'PRESS',
+			[('menu', 'render')], alt=True, ctrl=True
 		)
 
-		km.new(space, 'bsmax.view3dquadmenue', 'RIGHTMOUSE', 'PRESS',
-				[('menu', 'fx')], alt=True, shift=True
+		km.new(
+			space, 'bsmax.view3dquadmenue', 'RIGHTMOUSE', 'PRESS',
+			[('menu', 'fx')], alt=True, shift=True
 		)
 
-		km.new(space, 'bsmax.view3dquadmenue', 'RIGHTMOUSE', 'PRESS',
-				[('menu', 'Selection')],
-				ctrl=True, shift=True
+		km.new(
+			space, 'bsmax.view3dquadmenue', 'RIGHTMOUSE', 'PRESS',
+			[('menu', 'Selection')], ctrl=True, shift=True
 		)
 
-		km.new(space, 'bsmax.view3dquadmenue', 'RIGHTMOUSE', 'PRESS',
-				[('menu', 'custom')],
-				alt=True, ctrl=True, shift=True
+		km.new(
+			space, 'bsmax.view3dquadmenue', 'RIGHTMOUSE', 'PRESS',
+			[('menu', 'custom')], alt=True, ctrl=True, shift=True
 		)
 
 		""" Ignore Alt + RMB in Maya navigation enabled """
 		if preferences.navigation_3d != 'Maya':
-			km.new(space, 'bsmax.view3dquadmenue', 'RIGHTMOUSE', 'PRESS',
-					[('menu', 'coordinate')], alt=True
+			km.new(
+				space, 'bsmax.view3dquadmenue', 'RIGHTMOUSE', 'PRESS',
+				[('menu', 'coordinate')], alt=True
 			)
 
-	if preferences.floatmenus == 'PieMax':
-		km.new(space, 'wm.call_menu_pie', 'RIGHTMOUSE', 'PRESS', 
-				[('name', 'BSMAX_MT_default_pi')])
+	if preferences.floatmenus == 'PIEMAX':
+		km.new(
+			space, 'wm.call_menu_pie', 'RIGHTMOUSE', 'PRESS', 
+			[('name', 'BSMAX_MT_default_pi')]
+		)
 
-		km.new(space, 'wm.call_menu_pie', 'RIGHTMOUSE', 'PRESS', 
-				[('name', 'BSMAX_MT_create_pi')], ctrl=True)
+		km.new(
+			space, 'wm.call_menu_pie', 'RIGHTMOUSE', 'PRESS', 
+			[('name', 'BSMAX_MT_create_pi')], ctrl=True
+		)
 		
-
 
 floatMenuKaymaps = KeyMaps()
 
 def add_float_menu(km, preferences):
 	if bpy.context.window_manager.keyconfigs.addon:
 		
-		if preferences.floatmenus == '3DsMax':
+		if preferences.floatmenus == '3DSMAX':
 			spaces = []
 			spaces.append(km.space('3D View', 'VIEW_3D', 'WINDOW'))
 			spaces.append(km.space('Object Mode', 'EMPTY', 'WINDOW'))
@@ -97,6 +106,7 @@ def register_float_menu(preferences):
 	global floatMenuKaymaps
 	add_float_menu(floatMenuKaymaps, preferences)
 	floatMenuKaymaps.register()
+
 
 def unregister_float_menu():
 	global floatMenuKaymaps

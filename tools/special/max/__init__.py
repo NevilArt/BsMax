@@ -27,7 +27,7 @@ from .edit_curve import register_edit_curve, unregister_edit_curve
 from .edit_mesh import register_edit_mesh, unregister_edit_mesh
 
 def register_max(preferences):
-	if preferences.side_panel == '3DsMax':
+	if preferences.side_panel == '3DSMAX':
 		register_command_panel()
 		register_create_panel()
 		register_modifier_panel()
@@ -38,7 +38,7 @@ def register_max(preferences):
 
 		register_edit_curve()
 		register_edit_mesh()
-		
+
 
 def unregister_max():
 	unregister_command_panel()

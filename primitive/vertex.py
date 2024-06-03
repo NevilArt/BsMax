@@ -12,15 +12,15 @@
 #	You should have received a copy of the GNU General Public License
 #	along with this program.  If not,see <https://www.gnu.org/licenses/>.
 ############################################################################
+# 2024/05/29
 
 import bpy
 from bpy.props import EnumProperty
 from primitive.primitive import Primitive_Geometry_Class, Draw_Primitive
 
 
-
 def get_vertex_mesh(verts, mode):
-	edges,faces = [],[]
+	edges, faces = [], []
 	if mode == "EDGE" and len(verts) > 1 or len(verts) == 2:
 		for i in range(len(verts) - 1):
 			edges.append([i, i+1])
@@ -31,16 +31,15 @@ def get_vertex_mesh(verts, mode):
 				face.append(i)
 			faces.append(face)
 		elif len(verts) == 2:
-			edges.append([0,1])
+			edges.append([0, 1])
 	return verts, edges, faces
-
 
 
 class Vertex(Primitive_Geometry_Class):
 	def __init__(self):
 		self.classname = "Vertex"
 		self.finishon = 0 # infinit
-		self.mode = "NONE"#'VERT' 'EDGE' 'FACE'
+		self.mode = 'NONE' # 'VERT' 'EDGE' 'FACE'
 		self.verts = []
 
 	def reset(self):
@@ -57,7 +56,7 @@ class Vertex(Primitive_Geometry_Class):
 		self.update_mesh(mesh)
 
 	def abort(self):
-		if self.owner != None:
+		if self.owner:
 			bpy.ops.object.origin_set(type='ORIGIN_GEOMETRY', center='MEDIAN')
 
 
@@ -67,12 +66,18 @@ class Create_OT_Vertex(Draw_Primitive):
 	bl_label="Vertex"
 	subclass = Vertex()
 	lastclick = 1
-	fill_type: EnumProperty(name='Fill Mode',default='NONE',
-		items =[('NONE','None',''),('VERT','Vertex Only',''),
-				('EDGE','Connect Edges',''),('FACE','Create Face','')])
+	fill_type: EnumProperty(
+		name='Fill Mode',default='NONE',
+		items =[
+			('NONE', "None", ""),
+			('VERT', "Vertex Only", ""),
+			('EDGE', "Connect Edges", ""),
+			('FACE', "Create Face", "")
+		]
+	) # type: ignore
 
 	def create(self, ctx):
-		if self.fill_type == "NONE":
+		if self.fill_type == 'NONE':
 			self.subclass.finishon = 2
 		self.subclass.mode = self.fill_type
 		self.subclass.verts.append(self.point_current.location)
@@ -100,5 +105,5 @@ def register_vertex():
 def unregister_vertex():
 	bpy.utils.unregister_class(Create_OT_Vertex)
 
-if __name__ == "__main__":
+if __name__ == '__main__':
 	register_vertex()

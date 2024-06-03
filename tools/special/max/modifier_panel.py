@@ -480,7 +480,7 @@ class SCENE_OP_BsMax_Modifier_Panel(Panel):
 		get_modifier_panel(self.layout, ctx)
 
 
-classes = (
+classes = {
 	Modifier_OT_Clipboard_Copy,
 	Modifier_OT_Clipboard_Past,
 	Object_OT_Modifier_Create,
@@ -492,20 +492,20 @@ classes = (
 
 	OBJECT_UL_modifier_list,
 	SCENE_OP_BsMax_Modifier_Panel
-)
+}
 
 
 def register_modifier_panel():
-	for c in classes:
-		register_class(c)
+	for cls in classes:
+		register_class(cls)
 
 
 def unregister_modifier_panel():
-	for c in classes:
-		if hasattr(bpy.types, c.bl_idname):
-			unregister_class(c)
+	for cls in classes:
+		if cls.is_registered:
+			unregister_class(cls)
 
 
-if __name__ == "__main__":
+if __name__ == '__main__':
 	# unregister_modifier_panel()
 	register_modifier_panel()

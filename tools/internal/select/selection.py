@@ -12,7 +12,7 @@
 #	You should have received a copy of the GNU General Public License
 #	along with this program.  If not, see <https://www.gnu.org/licenses/>.
 ############################################################################
-# 2024/05/16
+# 2024/05/27
 
 import bpy
 
@@ -141,9 +141,9 @@ def select_by_dimensions(cls):
 
 
 class Object_OT_Select_All(Operator):
-	""" Select all Objects + Pose Bones """
 	bl_idname = 'object.select_all_plus'
 	bl_label = "Select All (+Bones)"
+	bl_description = "Select all Objects + Pose Bones"
 	bl_options = {'REGISTER', 'UNDO'}
 	
 	@classmethod
@@ -156,9 +156,9 @@ class Object_OT_Select_All(Operator):
 
 
 class Object_OT_Select_Similar(Operator):
-	""" Select similar object to the currently selected object """
 	bl_idname = 'object.select_similar'
 	bl_label = "Select Similar"
+	bl_description = "Select similar object to the currently selected object"
 	bl_options = {'REGISTER', 'UNDO'}
 	
 	@classmethod
@@ -173,15 +173,16 @@ class Object_OT_Select_Similar(Operator):
 
 
 class Object_OT_Select_Children(Operator):
-	""" Select selected objects children """
 	bl_idname = 'object.select_children'
 	bl_label = "Select Children"
-	bl_description = ""
+	bl_description = "Select selected objects children"
 	bl_options = {'REGISTER', 'UNDO'}
 	
-	full: BoolProperty(name="Select all subtrees")
-	extend: BoolProperty(name="Select Extended")
-	active_only: BoolProperty(name="Only active object subtrees", default=True)
+	full: BoolProperty(name="Select all subtrees") # type: ignore
+	extend: BoolProperty(name="Select Extended") # type: ignore
+	active_only: BoolProperty(
+		name="Only active object subtrees", default=True
+	) # type: ignore
 
 	@classmethod
 	def poll(self, ctx):
@@ -199,7 +200,7 @@ class Object_OT_Select_Children(Operator):
 class Object_OT_Select_by_Dimensions(Operator):
 	bl_idname = 'object.select_by_dimensions'
 	bl_label = "Select by Dimensions"
-	bl_description = ""
+	bl_description = "Select by object Dimantion"
 	bl_options = {'REGISTER', 'UNDO'}
 
 	by: EnumProperty(
@@ -209,10 +210,13 @@ class Object_OT_Select_by_Dimensions(Operator):
 			('LESS', "Less than", ""),
 			('EQUAL', "Equal to", "")
 		]
-	)
+	) # type: ignore
 
-	dimensions: FloatVectorProperty(name="Dimension", subtype='TRANSLATION')
-	tolerans: FloatProperty(name="Tolerance", default=0)
+	dimensions: FloatVectorProperty(
+		name="Dimension", subtype='TRANSLATION'
+	) # type: ignore
+	
+	tolerans: FloatProperty(name="Tolerance", default=0) # type: ignore
 
 	@classmethod
 	def poll(self, ctx):
@@ -237,7 +241,7 @@ class Selection_lock_Property(PropertyGroup):
 		name="Lock Selection",
 		default=False,
 		description="Lock Selection"
-	)
+	) # type: ignore
 
 
 class Selection_Type_State:
@@ -322,9 +326,9 @@ selection_type_state = Selection_Type_State()
 
 
 class Object_OT_Lock_Selection_Toggle(Operator):
-	""" Lock Selection Toggle """
 	bl_idname = 'object.lock_selection_toggle'
 	bl_label = "Lock Selection Toggle"
+	bl_description = "Lock Selection Toggle"
 	bl_options = {'REGISTER'}
 	
 	@classmethod
@@ -345,13 +349,13 @@ class Object_OT_Lock_Selection_Toggle(Operator):
 
 
 
-def prepend_select_menu(self, ctx):
+def prepend_select_menu(self, _):
 	layout = self.layout
 	layout.separator()
 	layout.operator('object.select_all_plus', text="All + Bones")
 
 
-def append_select_menu(self, ctx):
+def append_select_menu(self, _):
 	layout = self.layout
 	layout.separator()
 	layout.operator('object.select_similar')
@@ -360,8 +364,9 @@ def append_select_menu(self, ctx):
 
 
 classes = {
-	Object_OT_Select_All,
 	Selection_lock_Property,
+
+	Object_OT_Select_All,
 	Object_OT_Select_by_Dimensions,
 	Object_OT_Select_Similar,
 	Object_OT_Select_Children,
@@ -370,8 +375,8 @@ classes = {
 
 
 def register_selection():
-	for c in classes:
-		register_class(c)
+	for cls in classes:
+		register_class(cls)
 
 	bpy.types.VIEW3D_MT_select_object.prepend(prepend_select_menu)
 	bpy.types.VIEW3D_MT_select_object.append(append_select_menu)
@@ -386,8 +391,8 @@ def unregister_selection():
 	
 	del bpy.types.Scene.selection_lock
 
-	for c in classes:
-		unregister_class(c)
+	for cls in classes:
+		unregister_class(cls)
 
 
 if __name__ == '__main__':

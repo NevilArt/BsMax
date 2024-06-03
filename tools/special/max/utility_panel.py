@@ -14,7 +14,7 @@
 ############################################################################
 # 2024/03/03
 
-from bpy.types import Operator, Panel
+from bpy.types import Panel
 from bpy.utils import register_class, unregister_class
 
 
@@ -43,7 +43,8 @@ def register_utility_panel():
 
 
 def unregister_utility_panel():
-	unregister_class(SCENE_OP_BsMax_Utilities_Panel)
+	if SCENE_OP_BsMax_Utilities_Panel.is_registered:
+		unregister_class(SCENE_OP_BsMax_Utilities_Panel)
 
 
 if __name__ == "__main__":

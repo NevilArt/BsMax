@@ -203,28 +203,25 @@ class SCENE_OP_BsMax_Side_Panel(Panel):
 		layout.prop(cPanel, 'main_tab', expand=True)
 
 
-classes = (
+classes = {
 	BsMax_OT_Reserved,
 	BsMax_Command_Panel,
 	SCENE_OP_BsMax_Side_Panel
-)
+}
 
 
 def register_command_panel():
-	for c in classes:
-		register_class(c)
+	for cls in classes:
+		register_class(cls)
 	
 	bpy.types.Scene.command_panel = PointerProperty(type=BsMax_Command_Panel)
 
 
 def unregister_command_panel():
-	#TODO check is class exist before remove
-	for c in classes:
-		try:
-			unregister_class(c)
-		except:
-			pass
+	for cls in classes:
+		if cls.is_registered:
+			unregister_class(cls)
 
 
-if __name__ == "__main__":
+if __name__ == '__main__':
 	register_command_panel()

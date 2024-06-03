@@ -588,19 +588,13 @@ class Render_OT_Make_Ready_Render(Operator):
 		return{"FINISHED"}
 
 
-
 def register_make_ready_render_v1():
-	try:
-		bpy.utils.register_class(Render_OT_Make_Ready_Render)
-	except:
-		pass
-
+	bpy.utils.register_class(Render_OT_Make_Ready_Render)
 
 
 def unregister_make_ready_render_v1():
-	if hasattr(bpy.types, Render_OT_Make_Ready_Render.bl_idname):
+	if Render_OT_Make_Ready_Render.is_registered:
 		bpy.utils.unregister_class(Render_OT_Make_Ready_Render)
-
 
 
 if __name__ == '__main__':

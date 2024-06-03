@@ -12,18 +12,19 @@
 #	You should have received a copy of the GNU General Public License
 #	along with this program.  If not, see <https://www.gnu.org/licenses/>.
 ############################################################################
+# 2024/06/02
 
 import bpy
 
-from bpy.types import Operator
-
+from bpy.types import Operator, Menu
+from bpy.utils import register_class, unregister_class
 
 
 class View3D_OT_perespective(Operator):
 	bl_idname = 'view3d.perespective'
-	bl_label = 'Perespective'
+	bl_label = "Perespective"
 
-	mode: bpy.props.StringProperty(default='Toggle')
+	mode: bpy.props.StringProperty(default='Toggle') # type: ignore
 	
 	@classmethod
 	def poll(self, ctx):
@@ -52,60 +53,81 @@ class View3D_OT_perespective(Operator):
 		return{'FINISHED'}
 
 
-
 class Object_OT_Viewport_Display(Operator):
-	bl_idname = "object.viewoport_display"
+	bl_idname = 'object.viewoport_display'
 	bl_label = "Object Viewport Dispaly"
 
 	@classmethod
-	def poll(self,ctx):
-		return ctx.active_object != None
+	def poll(self, ctx):
+		return ctx.object
 
-	def draw(self,ctx):
-		layout =self.layout
-		layout.prop(ctx.object,'show_name',text='Name')
-		layout.prop(ctx.object,'show_axis',text='Axix')
-		layout.prop(ctx.object,'show_wire',text='Wireframe')
-		layout.prop(ctx.object,'show_all_edges',text='All Edges')
-		layout.prop(ctx.object,'show_texture_space',text='Texture Space')
-		layout.prop(ctx.object.display,'show_shadows',text='Shadow')
-		layout.prop(ctx.object,'show_in_front',text='In Front')
-		layout.prop(ctx.object,'color',text='Color')
-		layout.prop(ctx.object,'display_type',text='Display As')
+	def draw(self, ctx):
+		layout = self.layout
+		layout.prop(ctx.object, 'show_name', text="Name")
+		layout.prop(ctx.object, 'show_axis', text="Axix")
+		layout.prop(ctx.object, 'show_wire', text="Wireframe")
+		layout.prop(ctx.object, 'show_all_edges', text="All Edges")
+		layout.prop(ctx.object, 'show_texture_space', text="Texture Space")
+		layout.prop(ctx.object.display, 'show_shadows', text="Shadow")
+		layout.prop(ctx.object, 'show_in_front', text="In Front")
+		layout.prop(ctx.object, 'color', text="Color")
+		layout.prop(ctx.object, 'display_type', text="Display As")
+
 		row = layout.row()
-		row.prop(ctx.object,'show_bounds',text='Bounds')
-		row.prop(ctx.object,'display_bounds_type',text='')
+		row.prop(ctx.object, 'show_bounds', text="Bounds")
+		row.prop(ctx.object, 'display_bounds_type', text="")
 		layout.label(text="'Hold Alt for Apply Selection'")
 
-	def execute(self,ctx):
+	def execute(self, _):
 		return {'FINISHED'}
 
-	def cancel(self,ctx):
+	def cancel(self, _):
 		return None
 	
-	def invoke(self,ctx,event):
+	def invoke(self, ctx, _):
 		return ctx.window_manager.invoke_props_dialog(self, width=150)
+	
+
+class View3D_MT_Import_Float(Menu):
+	bl_idname = 'VIEW3D_MT_import_float'
+	bl_label = "Import"
+
+	def draw(self, ctx):
+		layout = self.layout
+		layout.operator('wm.link', text="Link", icon='LINK_BLEND')
+		layout.operator(
+			'wm.append', text="Append", icon='APPEND_BLEND'
+		)
+		if ctx.mode == 'OBJECT':
+			layout.menu('TOPBAR_MT_file_import', icon='IMPORT')
 
 
+def import_menu(self, ctx):
+	layout = self.layout
+	layout.separator()
+	layout.menu('VIEW3D_MT_import_float', text="Import", icon='IMPORT')
 
-classes = (
+
+classes = {
 	View3D_OT_perespective,
-	Object_OT_Viewport_Display
-)
-
+	Object_OT_Viewport_Display,
+	View3D_MT_Import_Float
+}
 
 
 def register_view3d():
-	for c in classes:
-		bpy.utils.register_class(c)
+	for cls in classes:
+		register_class(cls)
 
+	bpy.types.VIEW3D_MT_add.append(import_menu)
 
 
 def unregister_view3d():
-	for c in classes:
-		bpy.utils.unregister_class(c)
+	bpy.types.VIEW3D_MT_add.remove(import_menu)
+
+	for cls in classes:
+		unregister_class(cls)
 
 
-
-if __name__ == "__main__":
+if __name__ == '__main__':
 	register_view3d()

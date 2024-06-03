@@ -16,7 +16,7 @@
 import bpy
 
 def register_default(preferences):
-	if preferences.keymaps == '3DsMax':
+	if preferences.keymaps == '3DSMAX':
 		try:
 			for area in bpy.context.screen.areas:
 				if area.type == 'VIEW_3D':

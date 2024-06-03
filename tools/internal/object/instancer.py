@@ -21,11 +21,11 @@ from bpy.props import BoolProperty
 from bpy.utils import register_class, unregister_class
 
 
+# Object.Data.Name = Object.Name in selection
 class OBJECT_TO_Data_Auto_Rename(Operator):
-	""" Object.Data.Name = Object.Name in selection """
 	bl_idname = 'object.data_auto_rename'
-	bl_label = 'Data Auto Rename'
-	bl_description = 'Copy Object Name to Data Name much as possible'
+	bl_label = "Data Auto Rename"
+	bl_description = "Copy Object Name to Data Name much as possible"
 	bl_options = {'REGISTER', 'UNDO'}
 
 	@classmethod
@@ -36,15 +36,15 @@ class OBJECT_TO_Data_Auto_Rename(Operator):
 		for obj in ctx.selected_objects:
 			obj.data.name = obj.name
 		
-		return{"FINISHED"}
+		return{'FINISHED'}
 
 
+# Unlink selected objects data, keep in group relation
 class Object_TO_Make_Unique(Operator):
-	""" Unlink selected objects data, keep in group relation """
 	bl_idname = 'object.make_unique'
-	bl_label = 'Make Unique'
-	bl_options = {'REGISTER', 'UNDO'}
+	bl_label = "Make Unique"
 	bl_description = "Make Unique Selected Instance Object"
+	bl_options = {'REGISTER', 'UNDO'}
 
 	group: BoolProperty(
 		name="Keep In group with each other", default=True,
@@ -61,13 +61,9 @@ class Object_TO_Make_Unique(Operator):
 		layout = self.layout
 		layout.prop(self, 'group')
 		if self.group:
-			layout.label(
-				text="Keep Instance with each other"
-			)
+			layout.label(text="Keep Instance with each other")
 		else:
-			layout.label(
-				text="Convert to all unique objects"
-			)
+			layout.label(text="Convert to all unique objects")
 	
 	def execute(self, ctx):
 		newData = ctx.object.data.copy()
@@ -79,14 +75,14 @@ class Object_TO_Make_Unique(Operator):
 		for obj in instances:
 			obj.data = newData if self.group else obj.data.copy()
 		
-		return{"FINISHED"}
+		return{'FINISHED'}
 	
 	def invoke(self, ctx, _):
 		if len(ctx.selected_objects) > 1:
 			return ctx.window_manager.invoke_props_dialog(self)
 
 		self.execute(ctx)
-		return{"FINISHED"}
+		return{'FINISHED'}
 	
 
 def make_unique_menu(self, _):
@@ -100,15 +96,15 @@ classes = {
 
 
 def register_instancer():
-	for c in classes: 
-		register_class(c)
+	for cls in classes: 
+		register_class(cls)
 	
 	bpy.types.VIEW3D_MT_object_relations.append(make_unique_menu)
 
 
 def unregister_instancer():
-	for c in classes:
-		unregister_class(c)
+	for cls in classes:
+		unregister_class(cls)
 	
 	bpy.types.VIEW3D_MT_object_relations.remove(make_unique_menu)
 

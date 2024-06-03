@@ -36,13 +36,12 @@ If you found this product useful and want to support this project you can Donate
 * [Download Older Version (2.80-2.92)(2.93-3.2)](https://github.com/NevilArt/BsMax_2_80)
 
 ## Recent Updates and Changes
-* Backburner submiter has some updates
-* 1. custom Repository directory option.
-* 2. Incremental number to repository file rather than random number.
-* 3. Use jobname as repository file name optional.
-* 4. Automaticaly add scene and viewlayer name to jobname if was more then one.
-* Geometry data clean stuff add that work on multiple object rather then only active object.(View3D/Object/Clean Up/ ...)
-* "Freeze on" repeat calculation issue fixed. (Tools/Animation/...)
+* Join plus issue with None mesh object fixed.
+* Mouse Weel up/down in edit mode select more and less (3DsMax & Blender adapted).
+* Bone Hierarchy selection tool error on None Armatour selected in pose mode fixed.
+* Link/Append/Import added to Add menu for speed up work flow (Shift+A).
+* Cylinder pirimitive issue with bevel modifier when slice is on fixed.
+* Code cleaning and some other minor bug fixed.
 * [Change log ...](https://github.com/NevilArt/BsMax/blob/master/CHANGELOG.md)
 
 ## Special Thanks

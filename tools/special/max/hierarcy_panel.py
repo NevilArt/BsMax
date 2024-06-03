@@ -12,7 +12,7 @@
 #	You should have received a copy of the GNU General Public License
 #	along with this program.  If not, see <https://www.gnu.org/licenses/>.
 ############################################################################
-# 2024/03/03
+# 2024/06/02
 
 from bpy.types import Panel
 from bpy.utils import register_class, unregister_class
@@ -108,8 +108,9 @@ def register_hierarchy_panel():
 
 
 def unregister_hierarchy_panel():
-	unregister_class(SCENE_OP_BsMax_Hierarchy_Panel)
+	if SCENE_OP_BsMax_Hierarchy_Panel.is_registered:
+		unregister_class(SCENE_OP_BsMax_Hierarchy_Panel)
 
 
-if __name__ == "__main__":
+if __name__ == '__main__':
 	register_hierarchy_panel()

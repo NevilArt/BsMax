@@ -96,8 +96,9 @@ def get_cylinder_mesh(
 		faces.append(cap)
 	else:
 		# First line
-		for i in range(ssegs):
+		for i in range(1, ssegs):
 			faces.append([0,i, i + 1])
+
 		if not sliceon:
 			faces.append([0, ssegs, 1])
 
@@ -106,6 +107,7 @@ def get_cylinder_mesh(
 		s = ssegs * i
 		if csegs > 1 or sliceon:
 			s += 1
+
 		for j in range(ssegs):
 			a = s + j
 			b = a + 1
@@ -113,10 +115,12 @@ def get_cylinder_mesh(
 			d = c - 1
 			if j < ssegs - 1:
 				faces.append((d, c, b, a))
+
 			elif not sliceon:
 				b = a - ssegs + 1
 				c = d - ssegs + 1
 				faces.append((d, c, b, a))
+
 	# fill body
 	f = (csegs - 1) * ssegs
 	if csegs > 1 or sliceon:
@@ -138,6 +142,7 @@ def get_cylinder_mesh(
 				b = a - ssegs + 1
 				c = d - ssegs + 1
 				faces.append((d, c, b, a))
+
 	# fill upper cap
 	# find firs vertex of upper cap
 	f = hsegs * ssegs
@@ -190,33 +195,41 @@ def get_cylinder_mesh(
 		cap = [0]
 		for i in range(csegs + 1):
 			cap.append(i * ssegs + 1)
+
 		s = cap[-1]
 		for i in range(1, hsegs):
 			cap.append(s + i * (ssegs + 1))
+
 		s = cap[-1]
 		for i in range(1, csegs):
 			cap.append(s + i * ssegs)
 		cap.append(len(verts) - 1)
+
 		s = csegs * ssegs + (hsegs - 1) * (ssegs + 1)
 		for i in range(hsegs - 1):
 			cap.append(s - i * (ssegs + 1))
 		cap.reverse()
 		faces.append(cap)
+
 		# Plate two
 		cap = [0]
 		for i in range(csegs + 1):
 			cap.append((i + 1) * ssegs)
+
 		s = cap[-1]
 		for i in range(1, hsegs):
 			cap.append(s + i * (ssegs + 1))
+
 		s = cap[-1]
 		for i in range(1, csegs):
 			cap.append(s + i * ssegs)
 		cap.append(len(verts) - 1)
+
 		s = csegs * ssegs + (hsegs - 1) * (ssegs + 1)
 		for i in range(hsegs - 1):
 			cap.append(s - i * (ssegs + 1))
 		faces.append(cap)
+
 	return verts, edges, faces
 
 
@@ -345,21 +358,33 @@ class Create_OT_Cone(Draw_Primitive):
 		self.gride_updated = False
 
 
-classes = (
+classes = {
 	Create_OT_Cylinder,
 	Create_OT_Cone
-)
+}
 
 
 def register_cylinder():
-	for c in classes:
-		register_class(c)
+	for cls in classes:
+		register_class(cls)
 
 
 def unregister_cylinder():
-	for c in classes:
-		unregister_class(c)
+	for cls in classes:
+		unregister_class(cls)
 
 
-if __name__ == "__main__":
+if __name__ == '__main__':
 	register_cylinder()
+	# newMesh = Cylinder()
+	# newMesh.create(bpy.context)
+	# pd = newMesh.data.primitivedata
+	# pd.radius1 = pd.radius2 = 1
+	# pd.height = 1
+	# pd.hsegs = pd.csegs = 3
+	# pd.ssegs = 18
+	# pd.sliceon = True
+	# pd.sfrom = 90
+	# pd.sto = 360
+	# newMesh.update()
+	# bpy.ops.object.convert_to(target='MESH')
