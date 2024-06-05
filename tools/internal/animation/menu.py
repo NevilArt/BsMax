@@ -18,7 +18,7 @@ import bpy
 
 
 class BsMax_MT_Animation_Tools(bpy.types.Menu):
-	bl_idname = 'BSMAX_MT_animationtools'
+	bl_idname = 'BSMAX_MT_animation_tools'
 	bl_label = 'Animation'
 	# bl_context = 'objectmode'
 
@@ -71,7 +71,7 @@ class BsMax_MT_Animation_Tools(bpy.types.Menu):
 		
 
 def animation_menu(self, ctx):
-	self.layout.menu('BSMAX_MT_animationtools')
+	self.layout.menu('BSMAX_MT_animation_tools')
 
 def key_menu(self, ctx):
 	self.layout.prop(

@@ -36,12 +36,10 @@ If you found this product useful and want to support this project you can Donate
 * [Download Older Version (2.80-2.92)(2.93-3.2)](https://github.com/NevilArt/BsMax_2_80)
 
 ## Recent Updates and Changes
-* Join plus issue with None mesh object fixed.
-* Mouse Weel up/down in edit mode select more and less (3DsMax & Blender adapted).
-* Bone Hierarchy selection tool error on None Armatour selected in pose mode fixed.
-* Link/Append/Import added to Add menu for speed up work flow (Shift+A).
-* Cylinder pirimitive issue with bevel modifier when slice is on fixed.
-* Code cleaning and some other minor bug fixed.
+* Kemap issues from last update fixed.
+* GraphEditor select chanels auto hide unselected chanels (3DsMax Mode).
+* Copy Camera animation to other softwares (Alpha version yet).
+*    Export Camera via Alembic do not transfer FOV animation. this tool helps to port fov and other animations to 3DsMax scene (Maya option is on the way too).
 * [Change log ...](https://github.com/NevilArt/BsMax/blob/master/CHANGELOG.md)
 
 ## Special Thanks

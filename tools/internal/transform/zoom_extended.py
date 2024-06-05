@@ -12,60 +12,71 @@
 #	You should have received a copy of the GNU General Public License
 #	along with this program.  If not, see <https://www.gnu.org/licenses/>.
 ############################################################################
+# 2024/06/04
 
 import bpy
-
 from mathutils import Matrix
-
 from bpy.types import Operator
+from bpy.utils import register_class, unregister_class
 
 
 class View3d_OT_HomeView(Operator):
 	bl_idname = 'view3d.homeview'
-	bl_label = 'Home View'
+	bl_label = "Home View"
+	bl_description = "Home View"
+	bl_options = {'REGISTER', 'INTERNAL'}
 	
 	@classmethod
 	def poll(self, ctx):
 		return ctx.area.type == 'VIEW_3D'
 	
 	def execute(self, ctx):
-		homeview = (( 0.4100,0.9120,-0.0133,0),(-0.4017,0.1936,0.8950,-1.9045),
-					( 0.8188,-0.3617,0.4458,-17.9866),( 0,0,0,1))
+		homeview = (
+			(0.4100, 0.9120, -0.0133, 0),
+			(-0.4017, 0.1936, 0.8950, -1.9045),
+			(0.8188, -0.3617, 0.4458, -17.9866),
+			(0, 0, 0, 1)
+		)
 		ctx.area.spaces.active.region_3d.view_matrix = Matrix(homeview)
-		# self.report({'OPERATOR'},'bpy.ops.view3d.homeview()')
 		return{'FINISHED'}
-
 
 
 class View3d_OT_Zoom_Extended(Operator):
 	bl_idname = 'view3d.zoom_extended'
-	bl_label = 'Zoom Extended'
+	bl_label = "Zoom Extended"
+	bl_description = "Zoom Extended"
+	bl_options = {'REGISTER', 'INTERNAL'}
 
 	@classmethod
 	def poll(self, ctx):
 		return ctx.area.type == 'VIEW_3D'
 
 	def execute(self, ctx):
+		view3d = bpy.ops.view3d
+		ops_obj = bpy.ops.object
 		if ctx.mode == 'OBJECT':
-			if len(ctx.scene.objects) == 0:
-				bpy.ops.view3d.homeview('INVOKE_DEFAULT')
-			elif len(ctx.selected_objects) == 0:
-				bpy.ops.view3d.view_all(use_all_regions=False,center=False)
+			if not ctx.scene.objects:
+				view3d.homeview('INVOKE_DEFAULT')
+
+			elif not ctx.selected_objects:
+				view3d.view_all(use_all_regions=False,center=False)
+
 			else:
-				bpy.ops.view3d.view_selected(use_all_regions=False)
+				view3d.view_selected(use_all_regions=False)
+
 		elif ctx.mode == 'EDIT_ARMATURE':
-			if len(ctx.selected_bones) == 0:
-				bpy.ops.object.mode_set(mode='OBJECT')
-				bpy.ops.view3d.view_selected(use_all_regions=False)
-				bpy.ops.object.mode_set(mode='EDIT')
+			if not ctx.selected_bones:
+				ops_obj.mode_set(mode='OBJECT')
+				view3d.view_selected(use_all_regions=False)
+				ops_obj.mode_set(mode='EDIT')
+
 			else:
-				bpy.ops.view3d.view_selected(use_all_regions=False)
+				view3d.view_selected(use_all_regions=False)
+
 		else:
-			bpy.ops.view3d.view_selected(use_all_regions=False)
+			view3d.view_selected(use_all_regions=False)
 
-		# self.report({'OPERATOR'},'bpy.ops.view3d.zoom_extended()')
 		return{'FINISHED'}
-
 
 
 class Node_OT_Zoom_Extended(Operator):
@@ -77,35 +88,33 @@ class Node_OT_Zoom_Extended(Operator):
 		return ctx.area.type == 'NODE_EDITOR'
 
 	def execute(self, ctx):
-		if len(ctx.selected_nodes) > 0:
-			bpy.ops.node.view_selected('INVOKE_DEFAULT')
+		node = bpy.ops.node
+		if ctx.selected_nodes:
+			node.view_selected('INVOKE_DEFAULT')
 		else:
 			try:
-				bpy.ops.node.view_all('INVOKE_DEFAULT')
+				node.view_all('INVOKE_DEFAULT')
 			except:
 				pass
+
 		return{'FINISHED'}
 
 
-
-classes = (
+classes = {
 	View3d_OT_HomeView,
 	View3d_OT_Zoom_Extended,
 	Node_OT_Zoom_Extended
-)
-
+}
 
 
 def register_zoom_extended():
-	for c in classes:
-		bpy.utils.register_class(c)
-
+	for cls in classes:
+		register_class(cls)
 
 
 def unregister_zoom_extended():
-	for c in classes:
-		bpy.utils.unregister_class(c)
-
+	for cls in classes:
+		unregister_class(cls)
 
 
 if __name__ == '__main__':

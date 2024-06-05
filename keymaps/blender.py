@@ -25,7 +25,7 @@ class Blender_State():
 	
 	def get_select_mouse(self):
 		keyconfig = bpy.context.window_manager.keyconfigs.active
-		return getattr(keyconfig.preferences, "select_mouse", "LEFT")
+		return getattr(keyconfig.preferences, 'select_mouse', 'LEFT')
 
 blender_state = Blender_State()
 
@@ -36,11 +36,15 @@ def window(km):
 
 def screen(km):
 	space = km.space('Screen', 'EMPTY', 'WINDOW')
-	km.new(space, 'screen.marker_jump', 'RIGHT_ARROW', 'PRESS',
-			[("next", True)], ctrl=True)
+	km.new(
+		space, 'screen.marker_jump', 'RIGHT_ARROW', 'PRESS',
+		[('next', True)], ctrl=True
+	)
 
-	km.new(space, 'screen.marker_jump', 'LEFT_ARROW', 'PRESS',
-			[("next", False)], ctrl=True)
+	km.new(
+		space, 'screen.marker_jump', 'LEFT_ARROW', 'PRESS',
+		[('next', False)], ctrl=True
+	)
 
 
 def view2d(km):
@@ -53,10 +57,10 @@ def view2d_navigation(km, preferences):
 
 def view3d(km):
 	space = km.space('3D View', 'VIEW_3D', 'WINDOW')
-	km.new(space, "wm.multi_item_rename", "F2", "PRESS", [])
+	km.new(space, 'wm.multi_item_rename', 'F2', 'PRESS', [])
 	km.new(
-		space, "wm.call_menu", "A", "PRESS",
-		[('name', "BsMax_MT_Create")], ctrl=True, shift=True
+		space, 'wm.call_menu', 'A', 'PRESS',
+		[('name', 'BsMax_MT_Create')], ctrl=True, shift=True
 	)
 
 
@@ -64,21 +68,27 @@ def view3d_navigation(km,preferences):
 	space = km.space('3D View', 'VIEW_3D', 'WINDOW')
 
 	if blender_state.select_mouse == 'LEFT':
-		km.new(space,"view3d.drop_tool", "RIGHTMOUSE", "PRESS",[])
+		km.new(space,'view3d.drop_tool', 'RIGHTMOUSE', 'PRESS',[])
 
 	if preferences.view_undo:
-		km.new(space, "view3d.movecover", "MIDDLEMOUSE", "PRESS",
-				[], shift=True)
+		km.new(
+			space, 'view3d.movecover', 'MIDDLEMOUSE', 'PRESS',
+			[], shift=True
+		)
 
-		km.new(space, "view3d.rotatecover", "MIDDLEMOUSE", "PRESS", [])
-		km.new(space, "view3d.zoomcover", "MIDDLEMOUSE", "PRESS",
-				[], ctrl=True)
+		km.new(space, 'view3d.rotatecover', 'MIDDLEMOUSE', 'PRESS', [])
+		km.new(
+			space, 'view3d.zoomcover', 'MIDDLEMOUSE', 'PRESS',
+			[], ctrl=True
+		)
 
-		km.new(space, "view3d.dollycover", "MIDDLEMOUSE", "PRESS",
-				[], ctrl=True, shift=True)
+		km.new(
+			space, 'view3d.dollycover', 'MIDDLEMOUSE', 'PRESS',
+			[], ctrl=True, shift=True
+		)
 
-		km.new(space, "view3d.zoomincover", "WHEELINMOUSE", "PRESS", [])
-		km.new(space, "view3d.zoomoutcover", "WHEELOUTMOUSE", "PRESS", [])
+		km.new(space, 'view3d.zoomincover', 'WHEELINMOUSE', 'PRESS', [])
+		km.new(space, 'view3d.zoomoutcover', 'WHEELOUTMOUSE', 'PRESS', [])
 
 
 def view3d_generic(km):
@@ -125,19 +135,25 @@ def object_mode(km):
 	space = km.space('Object Non-modal', 'EMPTY', 'WINDOW')
 
 	if blender_state.select_mouse == 'LEFT':
-		km.new(space,"view3d.drop_tool", "RIGHTMOUSE", "PRESS", [])
+		km.new(space,'view3d.drop_tool', 'RIGHTMOUSE', 'PRESS', [])
 
-	km.new(space, "bsmax.mode_set", 'F9', "PRESS", [])
-	km.new(space, 'wm.call_menu', 'A', 'PRESS',
-			[('name', 'BSMAX_MT_create_menu')], ctrl=True, shift=True)
+	km.new(space, 'bsmax.mode_set', 'F9', 'PRESS', [])
+	km.new(
+		space, 'wm.call_menu', 'A', 'PRESS',
+		[('name', 'BSMAX_MT_create_menu')], ctrl=True, shift=True
+	)
 
 	km.new(space, 'object.join_plus', 'J', 'PRESS', [], ctrl=True)
 
-	km.new(space, 'wm.call_menu', 'C', 'PRESS',
-			[('name', 'OBJECT_MT_object_copy')], ctrl=True)
+	km.new(
+		space, 'wm.call_menu', 'C', 'PRESS',
+		[('name', 'BSMAX_MT_view3d_copy')], ctrl=True
+	)
 	
-	km.new(space, 'wm.call_menu', 'V', 'PRESS',
-			[('name', 'OBJECT_MT_object_paste')], ctrl=True)
+	km.new(
+		space, 'wm.call_menu', 'V', 'PRESS',
+		[('name', 'BSMAX_MT_view3d_paste')], ctrl=True
+	)
 	
 	km.new(space, 'object.link_to', 'P', 'PRESS', [], shift=True, ctrl=True)
 
@@ -148,13 +164,14 @@ def mesh(km):
 	space = km.space('Mesh', 'EMPTY', 'WINDOW')
 
 	if blender_state.select_mouse == 'LEFT':
-		km.new(space, "view3d.drop_tool", "RIGHTMOUSE", "PRESS", [])
+		km.new(space, 'view3d.drop_tool', 'RIGHTMOUSE', 'PRESS', [])
+
 	km.new(space, 'mesh.copy', 'C', 'PRESS', [], ctrl=True)
 	km.new(space, 'mesh.paste', 'V', 'PRESS', [], ctrl=True)
 
 	km.new(
 		space, 'mesh.select_more', 'WHEELUPMOUSE', 'PRESS',
-		[('mode', 'SET')], ctr=True
+		[('mode', 'SET')], ctrl=True
 	)
 
 	km.new(
@@ -167,29 +184,29 @@ def curve(km):
 	space = km.space('Curve', 'EMPTY', 'WINDOW')
 
 	if blender_state.select_mouse == 'LEFT':
-		km.new(space, "view3d.drop_tool", "RIGHTMOUSE", "PRESS", [])
+		km.new(space, 'view3d.drop_tool', 'RIGHTMOUSE', 'PRESS', [])
 
 
 def armature(km):
 	space = km.space('Armature', 'EMPTY', 'WINDOW')
 
 	if blender_state.select_mouse == 'LEFT':
-		km.new(space, "view3d.drop_tool", "RIGHTMOUSE", "PRESS", [])
+		km.new(space, 'view3d.drop_tool', 'RIGHTMOUSE', 'PRESS', [])
 
-	km.new(space, "wm.multi_item_rename", "F2", "PRESS", [])
+	km.new(space, 'wm.multi_item_rename', 'F2', 'PRESS', [])
 
 
 def metaball(km):
 	space = km.space('Metaball', 'EMPTY', 'WINDOW')
 
 	if blender_state.select_mouse == 'LEFT':
-		km.new(space, "view3d.drop_tool", "RIGHTMOUSE", "PRESS", [])
+		km.new(space, 'view3d.drop_tool', 'RIGHTMOUSE', 'PRESS', [])
 
 
 def lattice(km):
 	space = km.space('Lattice', 'EMPTY', 'WINDOW')
 	if blender_state.select_mouse == 'LEFT':
-		km.new(space, "view3d.drop_tool", "RIGHTMOUSE", "PRESS", [])
+		km.new(space, 'view3d.drop_tool', 'RIGHTMOUSE', 'PRESS', [])
 
 
 def grease_pencil(km):
@@ -200,8 +217,7 @@ def pos(km):
 	space = km.space('Pose', 'EMPTY', 'WINDOW')
 
 	if blender_state.select_mouse == 'LEFT':
-		km.new(space, "view3d.drop_tool", "RIGHTMOUSE", "PRESS",
-		[])
+		km.new(space, 'view3d.drop_tool', 'RIGHTMOUSE', 'PRESS',[])
 
 	km.new(
 		space, 'pose.select_hierarchy_plus', 'LEFT_BRACKET', 'PRESS',
@@ -247,8 +263,8 @@ def sculpt(km):
 
 
 def node_editor(km):
-	space = km.space("Node Editor", "NODE_EDITOR", 'WINDOW')
-	km.new(space,"wm.multi_item_rename", "F2", "PRESS", [])
+	space = km.space('Node Editor', 'NODE_EDITOR', 'WINDOW')
+	km.new(space,'wm.multi_item_rename', 'F2', 'PRESS', [])
 
 
 def graph_editor(km):
@@ -269,7 +285,7 @@ def uv_editor(km):
 
 def sequence_editor(km):
 	space = km.space('Sequencer', 'SEQUENCE_EDITOR', 'WINDOW')
-	km.new(space, "wm.multi_item_rename", "F2", "PRESS", [])
+	km.new(space, 'wm.multi_item_rename', 'F2', 'PRESS', [])
 
 
 def text(km):
@@ -309,20 +325,20 @@ km_file_browser = KeyMaps()
 def register_blender(preferences):
 	ctx = bpy.context
 	if ctx.window_manager.keyconfigs.addon:
-		if preferences.navigation_3d == 'Blender':
+		if preferences.navigation_3d == 'BLENDER':
 			view3d_navigation(km_navigation_3d,preferences)
 			km_navigation_3d.register()
 			ctx.preferences.inputs.view_zoom_axis = 'VERTICAL'
 		else:
 			km_navigation_3d.unregister()
 
-		if preferences.navigation_2d == 'Blender':
+		if preferences.navigation_2d == 'BLENDER':
 			view2d_navigation(km_navigation_2d,preferences)
 			km_navigation_2d.register()
 		else:
 			km_navigation_2d.unregister()
 
-		if preferences.viowport == 'Blender':
+		if preferences.viowport == 'BLENDER':
 			window(km_viowport)
 			screen(km_viowport)
 			view3d(km_viowport)
@@ -349,7 +365,7 @@ def register_blender(preferences):
 		else:
 			km_viowport.unregister()
 
-		if preferences.sculpt == "Blender":
+		if preferences.sculpt == 'BLENDER':
 			vertex_paint(km_sculpt)
 			weight_paint(km_sculpt)
 			image_paint(km_sculpt)
@@ -358,19 +374,19 @@ def register_blender(preferences):
 		else:
 			km_sculpt.unregister()
 
-		if preferences.uv_editor == "Blender":
+		if preferences.uv_editor == 'BLENDER':
 			uv_editor(km_uv_editor)
 			km_uv_editor.register()
 		else:
 			km_uv_editor.unregister()
 
-		if preferences.node_editor == "Blender":
+		if preferences.node_editor == 'BLENDER':
 			node_editor(km_node_editor)
 			km_node_editor.register()
 		else:
 			km_node_editor.unregister()
 
-		if preferences.graph_editor == "Blender":
+		if preferences.graph_editor == 'BLENDER':
 			graph_editor(km_graph_editor)
 			dopesheet_editor(km_graph_editor)
 			nla_editor(km_graph_editor)
@@ -378,25 +394,25 @@ def register_blender(preferences):
 		else:
 			km_graph_editor.unregister()
 			
-		if preferences.clip_editor == "Blender":
+		if preferences.clip_editor == 'BLENDER':
 			km_clip_editor.register()
 		else:
 			km_clip_editor.unregister()
 
-		if preferences.video_sequencer == "Blender":
+		if preferences.video_sequencer == 'BLENDER':
 			sequence_editor(km_video_sequencer)
 			km_video_sequencer.register()
 		else:
 			km_video_sequencer.unregister()
 
-		if preferences.text_editor == "Blender":
+		if preferences.text_editor == 'BLENDER':
 			console(km_text_editor)
 			text(km_text_editor)
 			km_text_editor.register()
 		else:
 			km_text_editor.unregister()
 		
-		if preferences.file_browser == "Blender":
+		if preferences.file_browser == 'BLENDER':
 			file_browser(km_file_browser)
 			km_file_browser.register()
 		else:

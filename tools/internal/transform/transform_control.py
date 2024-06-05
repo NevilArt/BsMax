@@ -12,83 +12,81 @@
 #	You should have received a copy of the GNU General Public License
 #	along with this program.  If not, see <https://www.gnu.org/licenses/>.
 ############################################################################
+# 2024/06/04
 
 import bpy
 
 from mathutils import Vector
 
-from bpy.types import Operator, Menu
+from bpy.types import Operator
 from bpy.props import BoolProperty
+from bpy.utils import register_class, unregister_class
 
 from bsmax.bsmatrix import (
-				    matrix_from_elements,
-					matrix_to_array,
-					array_to_matrix
-					)
-from bsmax.actions import (
-					freeze_transform,
-					copy_array_to_clipboard,
-					paste_array_from_clipboard
-					)
+	matrix_from_elements, matrix_to_array, array_to_matrix
+)
 
+from bsmax.actions import (
+	freeze_transform, copy_array_to_clipboard, paste_array_from_clipboard
+)
 
 
 class Object_OT_Freeze_Transform(Operator):
-	""" Copy selected objects transform to Delta transform and
-		reset transform values
-	"""
-	bl_idname = "object.freeze_transform"
+	bl_idname = 'object.freeze_transform'
 	bl_label = "Freeze Transform"
+	bl_description = "Copy selected objects transform to Delta transform and reset transform values"
 	bl_options = {'REGISTER', 'UNDO', 'INTERNAL'}
 
-	location: BoolProperty(name="Location", default=True)
-	rotation: BoolProperty(name="Rotation", default=True)
-	scale: BoolProperty(name="Scale", default=True)
+	location: BoolProperty(name="Location", default=True) # type: ignore
+	rotation: BoolProperty(name="Rotation", default=True) # type: ignore
+	scale: BoolProperty(name="Scale", default=True) # type: ignore
 	
 	def execute(self, ctx):
 		freeze_transform(ctx.selected_objects,
 			location=self.location,
 			rotation=self.rotation,
 			scale=self.scale)
-		return{"FINISHED"}
-
+		return{'FINISHED'}
 
 
 class Object_OT_Transform_To_Zero(Operator):
-	""" Clare transform """
-	bl_idname = "object.transform_to_zero"
+	bl_idname = 'object.transform_to_zero'
 	bl_label = "Transform To Zero"
+	bl_description = "Clare transform"
 	bl_options = {'REGISTER', 'UNDO', 'INTERNAL'}
 
-	location: BoolProperty(name="Location", default=True)
-	rotation: BoolProperty(name="Rotation", default=True)
-	scale: BoolProperty(name="Scale", default=True)
+	location: BoolProperty(name="Location", default=True) # type: ignore
+	rotation: BoolProperty(name="Rotation", default=True) # type: ignore
+	scale: BoolProperty(name="Scale", default=True) # type: ignore
 	
 	def execute(self, ctx):
 		if ctx.mode == 'OBJECT':
 			if self.location:
 				bpy.ops.object.location_clear(clear_delta=False)
+
 			if self.rotation:
 				bpy.ops.object.rotation_clear(clear_delta=False)
+
 			if self.scale:
 				bpy.ops.object.scale_clear(clear_delta=False)
 
 		elif ctx.mode == 'POSE':
 			if self.location:
 				bpy.ops.pose.loc_clear()
+
 			if self.rotation:
 				bpy.ops.pose.rot_clear()
+
 			if self.scale:
 				bpy.ops.pose.scale_clear()
 
-		return{"FINISHED"}
-
+		return{'FINISHED'}
 
 
 class Object_OT_Transform_Copy(Operator):
-	""" Copy Transform to buffer """
-	bl_idname = "object.transform_copy"
+	bl_idname = 'object.transform_copy'
 	bl_label = "Copy Transform"
+	bl_description = "Copy Transform to buffer"
 	bl_options = {'REGISTER'}
 
 	@classmethod
@@ -96,10 +94,11 @@ class Object_OT_Transform_Copy(Operator):
 		return ctx.mode == 'OBJECT' and ctx.active_object
 
 	def execute(self, ctx):
-		copy_array_to_clipboard('BSMAXTRANSFORMCLIPBOARD',
-								matrix_to_array(ctx.object.matrix_world))
-		return{"FINISHED"}
-
+		copy_array_to_clipboard(
+			'BSMAXTRANSFORMCLIPBOARD',
+			matrix_to_array(ctx.object.matrix_world)
+		)
+		return{'FINISHED'}
 
 
 def get_clipboard_key():
@@ -110,11 +109,10 @@ def get_clipboard_key():
 	return None
 
 
-
 class Object_OT_Transform_Paste(Operator):
-	""" Paste transform from buffer """
-	bl_idname = "object.transform_paste"
+	bl_idname = 'object.transform_paste'
 	bl_label = "Paste Transform"
+	bl_description = "Paste transform from buffer."
 	bl_options = {'REGISTER', 'UNDO'}
 
 	@classmethod
@@ -134,70 +132,58 @@ class Object_OT_Transform_Paste(Operator):
 					ctx.object.matrix_world = matrix_world
 		
 		elif key == "BSMAXTRANSFORMCLIPBOARDV2":
-			lines = (bpy.context.window_manager.clipboard).splitlines()
-			cbData = [float(f) for f in lines[1].split(",")]
+			lines = (ctx.window_manager.clipboard).splitlines()
+			cb_data = [float(f) for f in lines[1].split(',')]
 
-			location = Vector((cbData[0], cbData[1], cbData[2]))
-			rotation = Vector((cbData[3], cbData[4], cbData[5]))
-			scale = Vector((cbData[6], cbData[7], cbData[8]))
+			location = Vector((cb_data[0], cb_data[1], cb_data[2]))
+			rotation = Vector((cb_data[3], cb_data[4], cb_data[5]))
+			scale = Vector((cb_data[6], cb_data[7], cb_data[8]))
 			
 			matrix = matrix_from_elements(
-							location=location,
-							euler_rotation=rotation,
-							scale=scale
+				location=location, euler_rotation=rotation, scale=scale
 			)
+
 			ctx.object.matrix_world = matrix
-			# print(matrix)
-		
-		return{"FINISHED"}
+	
+		return{'FINISHED'}
 
 
 
-#TODO for now is ok but need to move to better place if add more items
-class Object_MT_Object_Copy(Menu):
-	bl_idname = "OBJECT_MT_object_copy"
-	bl_label = "Copy"
-
-	def draw(self, ctx):
-		layout=self.layout
-		layout.operator("view3d.copybuffer", text="Object")
-		layout.operator("object.transform_copy", text="Transform")
+def transform_copy_menu(self, _):
+	self.layout.operator(
+		'object.transform_copy', text="Transform", icon='OBJECT_ORIGIN'
+	)
 
 
-
-class Object_MT_Object_Paste(Menu):
-	bl_idname = "OBJECT_MT_object_paste"
-	bl_label = "Paste"
-
-	def draw(self, ctx):
-		layout=self.layout
-		layout.operator("view3d.pastebuffer", text="Object")
-		layout.operator("object.transform_paste", text="Transform")
+def transform_paste_menu(self, _):
+	self.layout.operator(
+		"object.transform_paste", text="Transform", icon='OBJECT_ORIGIN'
+	)
 
 
-
-classes = (
+classes = {
 	Object_OT_Freeze_Transform,
 	Object_OT_Transform_To_Zero, 
 	Object_OT_Transform_Copy,
-	Object_OT_Transform_Paste,
-	Object_MT_Object_Copy,
-	Object_MT_Object_Paste
-)
-
+	Object_OT_Transform_Paste
+}
 
 
 def register_transform_control():
-	for c in classes:
-		bpy.utils.register_class(c)
-
+	for cls in classes:
+		register_class(cls)
+	
+	bpy.types.BSMAX_MT_view3d_copy.append(transform_copy_menu)
+	bpy.types.BSMAX_MT_view3d_paste.append(transform_paste_menu)
 
 
 def unregister_transform_control():
-	for c in classes:
-		bpy.utils.unregister_class(c)
+	bpy.types.BSMAX_MT_view3d_copy.remove(transform_copy_menu)
+	bpy.types.BSMAX_MT_view3d_paste.remove(transform_paste_menu)
+
+	for cls in classes:
+		unregister_class(cls)
 
 
-
-if __name__ == "__main__":
+if __name__ == '__main__':
 	register_transform_control()

@@ -12,127 +12,149 @@
 #	You should have received a copy of the GNU General Public License
 #	along with this program.  If not, see <https://www.gnu.org/licenses/>.
 ############################################################################
+# 2024/06/04
 
 import bpy
 
+import math
+
 from bpy.types import Operator
+from bpy.props import EnumProperty, BoolProperty
+from bpy.utils import register_class, unregister_class
 
 
+def copy_to_clipboard(ctx, text):
+	ctx.window_manager.clipboard = text
 
-class FloatKey:
-	def __init__(self):
-		self.frame = 0
-		self.value = 0
-		self.type = None
+
+def keys_to_array_string(keys, mode, decimal=0):
+	if mode == '3DSMAX':
+		script = "#("
+		for index, key in enumerate(keys):
+			script += "#("
+			script += str(int(key[0]))
+			script += ","
+			script += str(key[1]) if decimal == 0 else str(round(key[1], decimal))
+			script += ")"
+			script += "," if index < len(keys)-1 else ""
+		script += ")"
+		return script
 	
-	def from_string(self, string, pick):
-		field = string.split(',')
-		self.frame = int(field[0])
-		self.value = float(field[pick])
+	if mode == "PYTHON":
+		script = "[]"
+		return script
 
-	def to_string(self):
-		return ""
-	
+	if mode == "MEL":
+		script = "{}"
+		return script
 
-
-class TransformKey:
-	def __init__(self):
-		self.frame = 0
-
-		self.px = 0
-		self.py = 0
-		self.pz = 0
-
-		self.rx = 0
-		self.ry = 0
-		self.rz = 0
-
-		# scale has no use for camera
-		self.sx = 1
-		self.sy = 1
-		self.sz = 1
-	
-	def from_string(self, string):
-		field = string.split(',')
-
-		self.frame = int(field[0])
-
-		self.px = float(field[1])
-		self.py = float(field[2])
-		self.pz = float(field[3])
-
-		self.rx = float(field[4])
-		self.ry = float(field[5])
-		self.rz = float(field[6])
-
-	def to_string(self):
-		return ""
+	return ""
 
 
+def for_loop_script_for_chanel(chanel, mode):
+	if mode == '3DSMAX':
+		script = "for key in keys do at time key[1] "
+		script += "cam." + chanel +" = key[2]"
+		return script
+	return ""
 
-"""
-# Field format
-# line0 = identefyKey
-# line1 = camera name
-# line2 = scene name
-#             0           1         2
-# line3 = startFrame, endFrame, frameRate
-# line4+ data fields
-#   0     1   2   3   4   5   6   7    8
-# frame, px, py, pz, rx, ry, rz, fov, lens
-"""
-class ClipboardCameraAnimation:
-	def __init__(self):
-		self.identefyKey = "3DSMAXTOCLIPBOARNEVILDCAMERACOPYPASTDATAVERSION02"
-		self.cameraName = "Camera"
-		self.sequenceName = "Sequence"
-		self.startFrame = 0
-		self.endFrame = 250
-		self.frameRate = 25
-		self.fov = []
-		self.lens = []
-		self.transform = []
 
-	def read_clipboard(self):
-		cb = bpy.context.window_manager.clipboard
-		text = cb.get_clipboard_text()
-		lines = text.splitlines()
+def chanel_to_maxscript_field(chanel, target, decimal=0):
+	script = " keys = "
+	script += keys_to_array_string(chanel, '3DSMAX', decimal) + "\n"
+	script += " " + for_loop_script_for_chanel(target, '3DSMAX') + "\n"
+	script += "\n"
+	return script
 
-		# ignore if data not detected
-		if not lines:
-			return False
 
-		# ignore if ID key not detcted
-		if lines[0] != self.identefyKey:
-			return False
-		
-		# read camera and sequence name
-		self.cameraName = lines[1]
-		self.sequenceName = lines[2]
-		
-		# read sequence settings
-		field = lines[3].split(',')
-		self.startFrame = int(field[0])
-		self.endFrame = int(field[1])
-		self.frameRate = int(field[2])
-		
-		# read keyframes
-		for line in lines[4:]:
-			newLens = FloatKey()
-			newLens.from_string(line, 7)
-			self.lens.append(newLens)
-			
-			newFov = FloatKey()
-			newFov.from_string(line, 8)
-			self.fov.append(newFov)
-					
-			newTransformKey = TransformKey()
-			newTransformKey.from_string(line)
-			self.transform.append(newTransformKey)
-		
-		# return True if camera succesfully created
-		return True
+def data_to_maxscript(cls, data):
+	""" cls : Camera_OT_Copy \n
+		animation_data : CameraAnimationData
+	"""
+	script = "-- Camera paste Script Start from here --\n" 
+	if cls.create:
+		script += "cam = Freecamera isSelected:on\n"
+		script += "cam.name = \"" + data.owner.name + "\"\n"
+	else:
+		script += "cam = $\n"
 
+	script += "on animate on (\n"
+
+	if cls.transform:
+		script += ""
+
+	if cls.fov:
+		script += chanel_to_maxscript_field(data.lens_keys, "fov", 3)
+
+	if cls.clip:
+		script += " $.clipManually = True \n"
+		script += chanel_to_maxscript_field(data.clip_start_keys, "nearclip")
+		script += chanel_to_maxscript_field(data.clip_end_keys, "farclip")
+
+	script += ")\n" #end of animate on
+	script += "-- Camera paste Script end here --" 
+	return script
+
+
+#TODO check is camera selected
+def data_to_script(cls, data, target):
+	script = ""
+	if target == '3DSMAX':
+		return data_to_maxscript(cls, data)
+
+	return script
+
+
+def get_datapath(action, chanel):
+	for fcurve in action.fcurves:
+		if fcurve.data_path == chanel:
+			return fcurve
+	return None
+
+
+def get_sensor_width_value(camera, fcurve, frame):
+	if fcurve:
+		return fcurve.evaluate(frame)
+	return camera.data.sensor_width
+
+
+def get_fcurve_keys(fcurve):
+	keys = []
+	if fcurve:
+		for keyframe in fcurve.keyframe_points:
+			frame, value = keyframe.co
+			keys.append((frame, value))
+	return keys
+
+
+def get_transform_animation(cls):
+	action = cls.owner.animation_data.action
+
+
+def get_fov_animation(cls):
+	camera_data = bpy.data.cameras[cls.data.name]
+	action = camera_data.animation_data.action
+	lens_fcurve = get_datapath(action, 'lens')
+	sensor_width_fcurve = get_datapath(action, 'sensor_width')
+
+	if lens_fcurve:
+		for keyframe in lens_fcurve.keyframe_points:
+			frame, lens = keyframe.co
+			sensor_width = get_sensor_width_value(
+				cls.owner, sensor_width_fcurve, frame
+			)
+
+			fov = math.degrees(2 * math.atan(sensor_width / (2 * lens)))
+			cls.lens_keys.append((frame, fov))
+
+
+def get_clip_animation(cls):
+	camera_data = bpy.data.cameras[cls.data.name]
+	action = camera_data.animation_data.action
+	start_clip_fcurve = get_datapath(action, 'clip_start')
+	end_clip_fcurve = get_datapath(action, 'clip_end')
+	cls.clip_start_keys = get_fcurve_keys(start_clip_fcurve)
+	cls.clip_end_keys = get_fcurve_keys(end_clip_fcurve)
 
 
 def create_camera(cameraData):
@@ -146,30 +168,159 @@ def create_camera(cameraData):
 	return camera_object
 
 
-def paste_camera_from_clipboard():
-	cameraData = ClipboardCameraAnimation()
-	cameraData.read_clipboard()
-	create_camera(cameraData)
+class Key:
+	def __init__(self):
+		self.frame = 0
+		self.value = 0
+		self.type = None
+	
+
+class CameraAnimationData:
+	def __init__(self, camera):
+		self.owner = camera
+		self.data = camera.data
+
+		self.transform_keys = []
+
+		self.type_keys = []
+		self.lens_keys = []#done
+		self.lens_unit_keys = []
+		self.shift_x_keys = []
+		self.shift_y_keys = []
+		self.clip_start_keys = []#done
+		self.clip_end_keys = []#done
+		self.clip_end_keys = []
+		self.dof_focus_distance_keys = []
+		self.dof_aperture_fstop_keys = []
+		self.dof_aperture_blades_keys = []
+		self.dof_aperture_rotation_keys = []
+		self.dof_aperture_ratio_keys = []
+		self.sensor_fit_keys = []
+		self.sensor_width_keys = []
+		self.show_safe_areas_keys = []
+		self.show_safe_center_keys = []
+		self.display_size_keys = []
+		self.show_limits_keys = []
+		self.show_mist_keys = []
+		self.show_sensor_keys = []
+		self.show_name_keys = []
+		self.passepartout_alpha_keys = []
+		self.show_sensor_keys = []
+		self.show_composition_thirds_keys = []
+		self.show_composition_center_keys = []
+		self.show_composition_center_diagonal_keys = []
+		self.show_composition_golden_keys = []
+		self.show_composition_golden_tria_a_keys = []
+		self.show_composition_golden_tria_b_keys = []
+		self.show_composition_harmony_tri_a_keys = []
+		self.show_composition_harmony_tri_b_keys = []
+
+
+#TODO check does camera has action or not
+def get_camera_animation_data(cls, camera_object):
+	if camera_object.type != 'CAMERA':
+		return []
+	
+	animation_data = CameraAnimationData(camera_object)
+
+	if cls.transform: 
+		get_transform_animation(animation_data)
+
+	if cls.fov:
+		get_fov_animation(animation_data)
+
+	if cls.clip:
+		get_clip_animation(animation_data)
+
+	return animation_data
+
+
+def copy_camera_draw(cls):
+	layout = cls.layout
+	box = layout.box()
+	box.prop(cls, 'create', text="Create New Camera")
+	
+	if cls.has_transform_animation:
+		box.prop(cls, 'transform', text="Transform (Not Ready Yet)")
+	else:
+		box.label(text="There is no transform animation.")
+
+	if cls.has_data_animation:
+		box.prop(cls, 'fov', text="F.O.V.")
+		box.prop(cls, 'clip', text="Near/Far Cliping")
+	else:
+		box.label(text="There is no attribute animation.")
+
+	box = layout.box()
+	box.prop(cls, 'target', text="Target App")
 
 
 class Camera_OT_Copy(Operator):
-	bl_idname = "camera.copy"
-	bl_label = "Copy Camera"
-	bl_options = {'REGISTER'}
+	bl_idname = 'camera.copy_animation'
+	bl_label = "Copy Camera Animation (Alpha Version)"
+	bl_description = "Copy Camera Animation as executable Script for external softwares"
+	bl_options = {'REGISTER', 'UNDO'}
+
+	target: EnumProperty(
+		name="Targte",
+		items=[
+			('3DSMAX', "Autodesk 3DsMax", "")
+		],
+		default='3DSMAX'
+	) # type: ignore
+
+	create: BoolProperty(
+		name="Create New Camera", default=False,
+		description="Create a new camera in target software"
+	) # type: ignore
+	
+	transform: BoolProperty(name="Transform", default=False,
+		description="Copy Camera Transform or Animation"
+	) # type: ignore
+	
+	fov: BoolProperty(name="FOV", default=True,
+		description="Copy Camrea FOV value or Animation"
+	) # type: ignore
+
+	clip: BoolProperty(name="Clip", default=True,
+		description="Copy Camrea Cliping value or Animation"
+	) # type: ignore
+
+	has_transform_animation = False
+	has_data_animation = False
 
 	@classmethod
 	def poll(self, ctx):
-		return ctx.mode == "OBJECT"
+		if ctx.object:
+			return ctx.object.type == 'CAMERA'
+		return False
+	
+	def draw(self, _):
+		copy_camera_draw(self)
 	
 	def execute(self, ctx):
+		animation_data = get_camera_animation_data(self, ctx.object)
+		script = data_to_script(self, animation_data, self.target)
+		copy_to_clipboard(ctx, script)
+		return{'FINISHED'}
+	
+	def invoke(self, ctx, event):
+		self.has_transform_animation = hasattr(
+			ctx.object.animation_data.action, 'fcurves'
+		)
 		
-		return{"FINISHED"}
+		self.has_data_animation = hasattr(
+			ctx.object.data.animation_data, 'action'
+		)
 
+		ctx.window_manager.invoke_props_dialog(self)
+		return {'RUNNING_MODAL'}
 
 
 class Camera_OT_Paste(Operator):
-	bl_idname = "camera.paste"
+	bl_idname = 'camera.paste'
 	bl_label = "Paste Camera"
+	bl_description = "under development for now do nothing"
 	bl_options = {'REGISTER', 'UNDO'}
 
 	@classmethod
@@ -177,23 +328,39 @@ class Camera_OT_Paste(Operator):
 		return ctx.mode == "OBJECT"
 	
 	def execute(self, ctx):
-		
-		return{"FINISHED"}
+		return{'FINISHED'}
 
 
+def camera_copy_manu(self, ctx):
+	layout = self.layout
+	if ctx.object:
+		if ctx.object.type == 'CAMERA':
+			layout.operator_context = 'INVOKE_DEFAULT'
+			layout.operator(
+				'camera.copy_animation', text="Camera Animation",
+				icon='CAMERA_DATA'
+			)
 
-classes = (
+
+classes = {
     Camera_OT_Copy,
     Camera_OT_Paste
-)
+}
+
 
 def register_copy_past():
-	for c in classes:
-		bpy.utils.register_class(c)
+	for cls in classes:
+		register_class(cls)
+
+	bpy.types.BSMAX_MT_view3d_copy.append(camera_copy_manu)
+
 
 def unregister_copy_past():
-	for c in classes:
-		bpy.utils.unregister_class(c)
+	bpy.types.BSMAX_MT_view3d_copy.remove(camera_copy_manu)
 
-if __name__ == "__main__":
+	for cls in classes:
+		unregister_class(cls)
+
+
+if __name__ == '__main__':
 	register_copy_past()

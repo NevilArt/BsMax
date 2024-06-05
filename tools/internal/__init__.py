@@ -20,7 +20,7 @@ from .camera import register_camera, unregister_camera
 from .clip_editor import register_clip_editor, unregister_clip_editor
 from .curve import register_curve, unregister_curve
 from .file import register_file, unregister_file
-# from .graph_editor import register_graph_editor, unregister_graph_editor
+from .graph_editor import register_graph_editor, unregister_graph_editor
 from .ligth import register_light, unregister_light
 from .material import register_material, unregister_material
 from .nodes import register_nodes, unregister_nodes
@@ -47,7 +47,7 @@ def register_internal(preferences):
 	register_clip_editor()
 	register_curve()
 	register_file(preferences)
-	# register_graph_editor()
+	register_graph_editor()
 	register_light()
 	register_material(preferences)
 	register_mesh()
@@ -73,7 +73,7 @@ def unregister_internal():
 	unregister_clip_editor()
 	unregister_curve()
 	unregister_file()
-	# unregister_graph_editor()
+	unregister_graph_editor()
 	unregister_light()
 	unregister_material()
 	unregister_mesh()

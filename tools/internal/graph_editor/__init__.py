@@ -13,12 +13,15 @@
 #	along with this program.  If not,see <https://www.gnu.org/licenses/>.
 ############################################################################
 
-from tool_bar import register_tool_bar, unregister_tool_bar
+from .selection import register_selection, unregister_selection
+# from .tool_bar import register_tool_bar, unregister_tool_bar
 
 
 def register_graph_editor():
-    register_tool_bar()
+    register_selection()
+    # register_tool_bar()
 
 
 def unregister_graph_editor():
-    unregister_tool_bar()
+    unregister_selection()
+    # unregister_tool_bar()

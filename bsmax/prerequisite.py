@@ -19,23 +19,31 @@ from bpy.types import Menu
 
 
 class BsMax_MT_View3D_tools(Menu):
-	bl_idname = 'BSMAX_MT_view3dtools'
-	bl_label = 'Tools'
+	bl_idname = 'BSMAX_MT_view3d_tools'
+	bl_label = "Tools"
+
+	# @classmethod
+	# def poll(self, ctx):
+	# 	return ctx.mode == 'OBJECT'
 	
-	def draw(self, ctx):
+	def draw(self, _):
 		pass
 
 
 class BsMax_MT_Compositor_tools(Menu):
 	bl_idname = 'BSMAX_MT_compositor_tools'
-	bl_label = 'Tools'
+	bl_label = "Tools"
 
-	def draw(self, ctx):
+	# @classmethod
+	# def poll(self, ctx):
+	# 	return ctx.mode == 'OBJECT'
+
+	def draw(self, _):
 		pass
 
 
 class BsMax_MT_View3D_Create(Menu):
-	bl_idname = "BSMAX_MT_create_menu"
+	bl_idname = 'BSMAX_MT_create_menu'
 	bl_label = "Create"
 	bl_context = "objectmode"
 
@@ -43,22 +51,53 @@ class BsMax_MT_View3D_Create(Menu):
 	def poll(self, ctx):
 		return ctx.mode == 'OBJECT'
 
-	def draw(self, ctx):
+	def draw(self, _):
 		pass
 
+class BsMax_MT_View3D_Copy(Menu):
+	bl_idname = 'BSMAX_MT_view3d_copy'
+	bl_label = "Copy"
+	bl_description = "Copy"
 
-classes = (
+	# @classmethod
+	# def poll(self, ctx):
+	# 	return ctx.mode == 'OBJECT'
+
+	def draw(self, _):
+		self.layout.operator(
+			'view3d.copybuffer', text="Object", icon='OBJECT_DATA'
+		)
+
+
+class BsMax_MT_View3D_Paste(Menu):
+	bl_idname = 'BSMAX_MT_view3d_paste'
+	bl_label = "Paste"
+	bl_description = "Paste"
+
+	# @classmethod
+	# def poll(self, ctx):
+	# 	return ctx.mode == 'OBJECT'
+
+	def draw(self, _):
+		self.layout.operator(
+			'view3d.pastebuffer', text="Object", icon='OBJECT_DATA'
+		)
+
+
+classes = {
 	BsMax_MT_View3D_tools,
 	BsMax_MT_Compositor_tools,
-	BsMax_MT_View3D_Create
-)
+	BsMax_MT_View3D_Create,
+	BsMax_MT_View3D_Copy,
+	BsMax_MT_View3D_Paste
+}
 
 
 def register_prerequisite():
-	for c in classes:
-		register_class(c)
+	for cls in classes:
+		register_class(cls)
 
 
 def unregister_prerequisite():
-	for c in classes:
-		unregister_class(c)
+	for cls in classes:
+		unregister_class(cls)

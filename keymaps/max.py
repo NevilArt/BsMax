@@ -717,12 +717,12 @@ def object_mode(km, preferences):
 
 	km.new(
 		space, 'wm.call_menu', 'C', 'PRESS',
-		[('name', 'OBJECT_MT_object_copy')], ctrl=True
+		[('name', 'BSMAX_MT_view3d_copy')], ctrl=True
 	)
 	
 	km.new(
 		space, 'wm.call_menu', 'V', 'PRESS',
-		[('name', 'OBJECT_MT_object_paste')], ctrl=True
+		[('name', 'BSMAX_MT_view3d_paste')], ctrl=True
 	)
 
 	km.new(
@@ -1631,6 +1631,42 @@ def info(km):
 # 	space = km.space('Frames', 'EMPTY', 'WINDOW')
 
 
+def animation_chanel(km):
+	# km.mute(
+	# 	'Node Tool: Select Box (fallback)',
+	# 	'node.select_box', 'LEFTMOUSE', 'CLICK_DRAG', ctrl=True
+	# )
+	space = km.space('Animation Channels', 'EMPTY', 'WINDOW')
+
+	km.new(space, 'anim.channels_click_plus', 'LEFTMOUSE', 'PRESS',
+		[('extend', False), ('extend_range', False)]
+	)
+
+	km.new(
+		space, 'anim.channels_click_plus', 'LEFTMOUSE', 'PRESS',
+		[('extend', True), ('extend_range', False)],
+		ctrl=True
+	)
+
+	km.new(
+		space, 'anim.channels_click_plus', 'LEFTMOUSE', 'PRESS',
+		[('extend', False), ('extend_range', True)],
+		shift=True
+	)
+
+	km.new(
+		space, 'anim.channels_click_plus', 'LEFTMOUSE', 'PRESS',
+		[('extend', True), ('extend_range', True)],
+		ctrl=True, shift=True
+	)
+
+	# km.new(
+	# 	space, 'anim.channels_click_plus', 'LEFTMOUSE', 'PRESS',
+	# 	[('extend', True), ('extend_range', True)],
+	# 	alt=True
+	# )
+
+
 def graph_editor(km):
 	space = km.space('Graph Editor', 'GRAPH_EDITOR', 'WINDOW')
 
@@ -2218,10 +2254,11 @@ def register_max(preferences):
 			graph_editor(km_graph_editor)
 			dopesheet_editor(km_graph_editor)
 			nla_editor(km_graph_editor)
+			animation_chanel(km_graph_editor)
 			km_graph_editor.register()
 		else:
 			km_graph_editor.unregister()
-			
+
 		if preferences.clip_editor == '3DSMAX':
 			clip_editor(km_clip_editor)
 			mask_editor(km_clip_editor)

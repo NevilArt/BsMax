@@ -12,7 +12,7 @@
 #	You should have received a copy of the GNU General Public License
 #	along with this program.  If not, see <https://www.gnu.org/licenses/>.
 ############################################################################
-# 2024/02/13
+# 2024/06/04
 
 import bpy
 
@@ -338,59 +338,58 @@ def stuff_variation(self, ctx):
 
 class Crowds_TO_Clone_Refrenses(Operator):
 	bl_idname = 'crowds.clone_refrenses'
-	bl_label = 'Clone Refrences (Crowds)'
+	bl_label = "Clone Refrences (Crowds)"
 	bl_options = {'REGISTER', 'UNDO'}
 
 	target: EnumProperty(
 		items=[
 			(
 				'COLLECTION',
-				'Collection',
-				'Clone active collection if contain object with Alembic'
+				"Collection",
+				"Clone active collection if contain object with Alembic"
 			),
 			(
 				'OBJECT',
-				'Object',
-				'Clone active object if contain Alembic data'
+				"Object",
+				"Clone active object if contain Alembic data"
 			)
 		],
 		default = 'COLLECTION'
-	)
+	) # type: ignore
 
 	method: EnumProperty(
 		items=[
 			(
 				'ABC',
-				'Alembic',
-				'Use Alembic clone and loop method'
+				"Alembic",
+				"Use Alembic clone and loop method"
 			)
 		],
 		default='ABC'
-	)
+	) # type: ignore
 
 	count: IntProperty(
 		default=3, min=0,
 		description="Number if clones want to create"
-	)
+	) # type: ignore
 
 	length: IntProperty(
 		default=100, min=1,
 		description="Length of Alembic cache file"
-	)
+	) # type: ignore
 
 	speedVariation: FloatProperty(
 		default=0.1, min=0,
 		description="Variation of Alembic play faster 0 => 1x speed"
-	)
+	) # type: ignore
 	
-
 	# @classmethod
 	# def poll(self, ctx):
 	# 	if ctx.area.type == 'VIEW_3D':
 	# 		return ctx.active_object
 	# 	return False
 
-	def draw(self, ctx):
+	def draw(self, _):
 		layout = self.layout
 		layout.prop(self, 'target')
 		layout.prop(self, 'method')
@@ -400,54 +399,52 @@ class Crowds_TO_Clone_Refrenses(Operator):
 	
 	def execute(self, ctx):
 		clone_refrences(self, ctx)
-		return{"FINISHED"}
+		return{'FINISHED'}
 
-	def invoke(self, ctx, event):
+	def invoke(self, ctx, _):
 		return ctx.window_manager.invoke_props_dialog(self)
 
 
 class Crowds_TO_Loop_Refrenses(Operator):
 	bl_idname = 'crowds.loop_refrenses'
-	bl_label = 'Loop Refrences (Crowds)'
+	bl_label = "Loop Refrences (Crowds)"
 	bl_options = {'REGISTER', 'UNDO'}
 
 	target: EnumProperty(
 		items=[
 			(
 				'COLLECTION',
-				'Collection',
-				'Loop and random time offset grouped collection children'
+				"Collection",
+				"Loop and random time offset grouped collection children"
 			),
 			(
 				'OBJECT',
-				'Object',
-				'Loop and random time offset selected objects sepratly'
+				"Object",
+				"Loop and random time offset selected objects sepratly"
 			)
 		],
 		default = 'COLLECTION'
-	)
+	) # type: ignore
 
 	method: EnumProperty(
-		items=[
-			('ABC', 'Alembic', '')
-		],
+		items=[('ABC', "Alembic", "Alembic")],
 		default='ABC'
-	)
+	) # type: ignore
 
 	length: IntProperty(
 		default=100, min=1,
 		description=""
-	)
+	) # type: ignore
 	
 	startVariation: FloatProperty(
 		default=1, min=0,
 		description=""
-	)
+	) # type: ignore
 	
 	speedVariation: FloatProperty(
 		default=0.1, min=0,
 		description=""
-	)
+	) # type: ignore
 
 	# @classmethod
 	# def poll(self, ctx):
@@ -473,29 +470,29 @@ class Crowds_TO_Loop_Refrenses(Operator):
 
 class Crowds_TO_Stuff_Variation(Operator):
 	bl_idname = 'crowds.stuff_variation'
-	bl_label = 'Stuff Variation (Crowds)'
+	bl_label = "Stuff Variation (Crowds)"
 	bl_options = {'REGISTER', 'UNDO'}
 
 	method: EnumProperty(
 		items=[
 			(
 				'HIDE',
-				'Hide',
-				'Randomly hide unhide parts of sub collection'
+				"Hide",
+				"Randomly hide unhide parts of sub collection"
 			),
 			(
 				'UNHIDE',
-				'Unhide',
-				'Unhide all objects under active colection'
+				"Unhide",
+				"Unhide all objects under active colection"
 			),
 			(
 				'DELETE',
-				'Delete',
-				'Delete all hiden object under active colection children'
+				"Delete",
+				"Delete all hiden object under active colection children"
 			)
 		],
 		default='HIDE'
-	)
+	) # type: ignore
 
 	# @classmethod
 	# def poll(self, ctx):
@@ -545,31 +542,31 @@ class BsMax_MT_Crowds_Tools(Menu):
 		)
 
 
-def crowds_menu(self, ctx):
+def crowds_menu(self, _):
 	self.layout.menu('BSMAX_MT_crowdstools', icon='COMMUNITY')
 
 
-classes = (
+classes = {
 	Crowds_TO_Clone_Refrenses,
 	Crowds_TO_Loop_Refrenses,
 	Crowds_TO_Stuff_Variation,
 	BsMax_MT_Crowds_Tools
-)
+}
 
 
 def register_crowds():
-	for c in classes:
-		register_class(c)
+	for cls in classes:
+		register_class(cls)
 	
-	bpy.types.BSMAX_MT_view3dtools.append(crowds_menu)
+	bpy.types.BSMAX_MT_view3d_tools.append(crowds_menu)
 
 
 def unregister_crowds():
-	bpy.types.BSMAX_MT_view3dtools.remove(crowds_menu)
+	bpy.types.BSMAX_MT_view3d_tools.remove(crowds_menu)
 
-	for c in classes:
-		unregister_class(c)
+	for cls in classes:
+		unregister_class(cls)
 
 
-if __name__ == "__main__":
+if __name__ == '__main__':
 	register_crowds()

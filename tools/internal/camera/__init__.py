@@ -12,17 +12,19 @@
 #	You should have received a copy of the GNU General Public License
 #	along with this program.  If not, see <https://www.gnu.org/licenses/>.
 ############################################################################
-from .cameras import register_cameras, unregister_cameras
-from .target_camera import register_terget_camera, unregister_terget_camera
 
+from .cameras import register_cameras, unregister_cameras
+from .copy_paste import register_copy_past, unregister_copy_past
+from .target_camera import register_terget_camera, unregister_terget_camera
 
 
 def register_camera():
 	register_cameras()
+	register_copy_past()
 	register_terget_camera()
-
 
 
 def unregister_camera():
 	unregister_cameras()
+	unregister_copy_past()
 	unregister_terget_camera()

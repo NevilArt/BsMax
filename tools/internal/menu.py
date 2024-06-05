@@ -16,25 +16,25 @@
 import bpy
 
 
-def bsmax_tool_menu(self, ctx):
+def bsmax_tool_menu(self, _):
 	layout=self.layout
-	layout.menu('BSMAX_MT_animationtools', icon='ARMATURE_DATA')
-	layout.menu('BSMAX_MT_riggtools', icon='TOOL_SETTINGS')
-	layout.menu('BSMAX_MT_particletools', icon='MOD_PARTICLES')
+	layout.menu('BSMAX_MT_animation_tools', icon='ARMATURE_DATA')
+	layout.menu('BSMAX_MT_rigg_tools', icon='TOOL_SETTINGS')
+	layout.menu('BSMAX_MT_particle_tools', icon='MOD_PARTICLES')
 
 
-def tools_menu(self, ctx):
-	self.layout.menu('BSMAX_MT_view3dtools')
+def tools_menu(self, _):
+	self.layout.menu('BSMAX_MT_view3d_tools')
 
 
 def register_menu():
-	bpy.types.BSMAX_MT_view3dtools.append(bsmax_tool_menu)
+	bpy.types.BSMAX_MT_view3d_tools.append(bsmax_tool_menu)
 	bpy.types.VIEW3D_MT_editor_menus.append(tools_menu)
 
 
 def unregister_menu():
 	bpy.types.VIEW3D_MT_editor_menus.remove(tools_menu)
-	bpy.types.BSMAX_MT_view3dtools.remove(bsmax_tool_menu)
+	bpy.types.BSMAX_MT_view3d_tools.remove(bsmax_tool_menu)
 	
 
 if __name__ == '__main__':

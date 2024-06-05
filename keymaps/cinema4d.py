@@ -146,19 +146,19 @@ km_file_browser = KeyMaps()
 
 def register_cinema4d(preferences):
 	if bpy.context.window_manager.keyconfigs.addon:
-		if preferences.navigation_3d == "Cinema4D":
+		if preferences.navigation_3d == 'CINEEMA4D':
 			view3d_navigation(km_navigation_3d,preferences)
 			km_navigation_3d.register()
 		else:
 			km_navigation_3d.unregister()
 
-		if preferences.navigation_2d == "Cinema4D":
+		if preferences.navigation_2d == 'CINEEMA4D':
 			view2d_navigation(km_navigation_2d,preferences)
 			km_navigation_2d.register()
 		else:
 			km_navigation_2d.unregister()
 
-		if preferences.viowport == "Cinema4D":
+		if preferences.viowport == 'CINEEMA4D':
 			window(km_viowport)
 			screen(km_viowport)
 			view3d(km_viowport,preferences)
@@ -185,7 +185,7 @@ def register_cinema4d(preferences):
 		else:
 			km_viowport.unregister()
 
-		if preferences.sculpt == "Cinema4D":
+		if preferences.sculpt == 'CINEEMA4D':
 			vertex_paint(km_sculpt)
 			weight_paint(km_sculpt)
 			image_paint(km_sculpt)
@@ -194,19 +194,19 @@ def register_cinema4d(preferences):
 		else:
 			km_sculpt.unregister()
 
-		if preferences.uv_editor == "Cinema4D":
+		if preferences.uv_editor == 'CINEEMA4D':
 			uv_editor(km_uv_editor)
 			km_uv_editor.register()
 		else:
 			km_uv_editor.unregister()
 
-		if preferences.node_editor == "Cinema4D":
+		if preferences.node_editor == 'CINEEMA4D':
 			node_editor(km_node_editor)
 			km_node_editor.register()
 		else:
 			km_node_editor.unregister()
 
-		if preferences.graph_editor == "Cinema4D":
+		if preferences.graph_editor == 'CINEEMA4D':
 			graph_editor(km_graph_editor)
 			dopesheet_editor(km_graph_editor)
 			nla_editor(km_graph_editor)
@@ -214,25 +214,25 @@ def register_cinema4d(preferences):
 		else:
 			km_graph_editor.unregister()
 			
-		if preferences.clip_editor == "Cinema4D":
+		if preferences.clip_editor == 'CINEEMA4D':
 			km_clip_editor.register()
 		else:
 			km_clip_editor.unregister()
 
-		if preferences.video_sequencer == "Cinema4D":
+		if preferences.video_sequencer == 'CINEEMA4D':
 			sequence_editor(km_video_sequencer)
 			km_video_sequencer.register()
 		else:
 			km_video_sequencer.unregister()
 
-		if preferences.text_editor == "Cinema4D":
+		if preferences.text_editor == 'CINEEMA4D':
 			# console(km_text_editor)
 			text(km_text_editor)
 			km_text_editor.register()
 		else:
 			km_text_editor.unregister()
 		
-		if preferences.file_browser == "Cinema4D":
+		if preferences.file_browser == 'CINEEMA4D':
 			file_browser(km_file_browser)
 			km_file_browser.register()
 		else:

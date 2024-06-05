@@ -1,3 +1,11 @@
+# 0, 1, 2, 20240603
+* Join plus issue with None mesh object fixed.
+* Mouse Weel up/down in edit mode select more and less (3DsMax & Blender adapted).
+* Bone Hierarchy selection tool error on None Armatour selected in pose mode fixed.
+* Link/Append/Import added to Add menu for speed up work flow (Shift+A).
+* Cylinder pirimitive issue with bevel modifier when slice is on fixed.
+* Code cleaning and some other minor bug fixed.
+
 # 0, 1, 2, 20240527
 * Backburner submiter has some updates
 * 1. custom Repository directory option.

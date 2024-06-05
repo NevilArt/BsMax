@@ -231,7 +231,7 @@ class Particle_OT_Hair_Grap_Style(Operator):
 
 
 class BsMax_MT_particle_tools(Menu):
-	bl_idname = "BSMAX_MT_particletools"
+	bl_idname = "BSMAX_MT_particle_tools"
 	bl_label = "Particle"
 	bl_context = "objectmode"
 
@@ -247,13 +247,12 @@ class BsMax_MT_particle_tools(Menu):
 
 
 
-classes = (
+classes = {
 	Particle_OT_Hair_Guides_From_Curve,
 	Particle_OT_Hair_Guides_To_Curve,
 	Particle_OT_Hair_Grap_Style,
 	BsMax_MT_particle_tools
-)
-
+}
 
 
 def register_hair_guide():
@@ -261,11 +260,9 @@ def register_hair_guide():
 		bpy.utils.register_class(c)
 
 
-
 def unregister_hair_guide():
 	for c in classes:
 		bpy.utils.unregister_class(c)
-
 
 
 if __name__ == "__main__":

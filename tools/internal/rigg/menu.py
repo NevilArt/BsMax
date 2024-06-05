@@ -18,7 +18,7 @@ import bpy
 
 class BsMax_MT_rigg_tools(bpy.types.Menu):
 	bl_label = "Rigg"
-	bl_idname = 'BSMAX_MT_riggtools'
+	bl_idname = 'BSMAX_MT_rigg_tools'
 
 	def draw(self, ctx):
 		layout=self.layout
@@ -37,7 +37,7 @@ class BsMax_MT_rigg_tools(bpy.types.Menu):
 
 
 def rigg_menu(self, ctx):
-	self.layout.menu('BSMAX_MT_riggtools')
+	self.layout.menu('BSMAX_MT_rigg_tools')
 
 
 def register_menu():

@@ -64,7 +64,7 @@ def add_3dsmax_quad_menu(km, space, preferences):
 		)
 
 		""" Ignore Alt + RMB in Maya navigation enabled """
-		if preferences.navigation_3d != 'Maya':
+		if preferences.navigation_3d != 'MAYA':
 			km.new(
 				space, 'bsmax.view3dquadmenue', 'RIGHTMOUSE', 'PRESS',
 				[('menu', 'coordinate')], alt=True
