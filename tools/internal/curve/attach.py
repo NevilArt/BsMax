@@ -12,25 +12,23 @@
 #	You should have received a copy of the GNU General Public License
 #	along with this program.  If not, see <https://www.gnu.org/licenses/>.
 ############################################################################
+# 2024/06/20
 
 import bpy
 
 from bsmax.operator import PickOperator
 
 
-
 class Curve_OT_Attach(PickOperator):
 	bl_idname = 'curve.attach'
-	bl_label = 'Attach'
+	bl_label = "Attach"
 
 	filters = ['CURVE']
 
 	@classmethod
 	def poll(self, ctx):
 		if ctx.area.type == 'VIEW_3D':
-			if len(ctx.scene.objects) > 0:
-				if ctx.object != None:
-					return ctx.mode == 'EDIT_CURVE'
+			return ctx.mode == 'EDIT_CURVE'
 		return False
 
 	def picked(self, ctx, source, subsource, target, subtarget):
@@ -40,19 +38,15 @@ class Curve_OT_Attach(PickOperator):
 		bpy.ops.object.mode_set(mode='EDIT', toggle=False)
 		bpy.ops.ed.undo_push()
 		bpy.ops.curve.attach('INVOKE_DEFAULT')
-		# self.report({'OPERATOR'},'bpy.ops.curve.attach()')
-
 
 
 def register_attach():
 	bpy.utils.register_class(Curve_OT_Attach)
 
 
-
 def unregister_attach():
 	bpy.utils.unregister_class(Curve_OT_Attach)
 
 
-
-if __name__ == "__main__":
+if __name__ == '__main__':
 	register_attach()

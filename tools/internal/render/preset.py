@@ -12,13 +12,17 @@
 #	You should have received a copy of the GNU General Public License
 #	along with this program.  If not, see <https://www.gnu.org/licenses/>.
 ############################################################################
-# 2024/02/29
+# 2024/06/09
 
 import bpy
+import os
+import subprocess
+import platform
 
 from bpy.types import Panel, Operator, PropertyGroup
 from bpy.utils import register_class, unregister_class
 from bpy.app.handlers import persistent
+from bpy.app import version
 from bpy.props import (
 	PointerProperty, StringProperty, EnumProperty, BoolProperty
 )
@@ -44,71 +48,92 @@ def refine_value(value):
 	return None
 
 
-def pystr_attribute(ctx, space, attribute):
-	if not hasattr(space, attribute):
+# not a good method but for now is trusted
+def str_data_path(ctx, data_path):
+	scene = ctx.scene
+	if data_path == scene:
+		return 'bpy.context.scene.'
+	if data_path == scene.render:
+		return 'bpy.context.scene.render.'
+	if data_path == scene.cycles:
+		return 'bpy.context.scene.cycles.'
+	if data_path == scene.eevee:
+		return 'bpy.context.scene.eevee.'
+	if data_path == scene.world.light_settings:
+		return 'bpy.context.scene.world.light_settings.'
+	if data_path == scene.view_settings:
+		return 'bpy.context.scene.view_settings.'
+	if data_path == scene.display_settings:
+		return 'bpy.context.scene.display_settings.'
+	if data_path == scene.sequencer_colorspace_settings:
+		return 'bpy.context.scene.sequencer_colorspace_settings.'
+	if data_path == scene.grease_pencil_settings:
+		return 'bpy.context.scene.grease_pencil_settings.'
+	if data_path == scene.cycles_curves:
+		return 'bpy.context.scene.cycles_curves.'
+	return ''
+
+
+def pystr_attribute(ctx, data_path, attribute):
+	if not hasattr(data_path, attribute):
 		return ""
 
-	script = 'bpy.context.scene.'
-
-	if space == ctx.scene.render:
-		script += 'render.'
-
-	elif space == ctx.scene.cycles:
-		script += 'cycles.'
-
-	elif space == ctx.scene.eevee:
-		script += 'eevee.'
-
-	script += attribute + " = "
-	value = getattr(space, attribute)
+	script = str_data_path(ctx, data_path) + attribute + " = "
+	value = getattr(data_path, attribute)
 	script += '"' + value + '"' if type(value) == str else str(value)
 	script += '\n'
 	return script
 
 
 def get_manual_part(ctx, engin_name):
-	""" the mising parametes inside the bl_rna.properties adding here manualy """
+	""" the mising parametes inside the
+		bl_rna.properties adding manualy
+	"""
 	script = ""
 
-	if engin_name == 'render':
-		render = ctx.scene.render
-		attributes = (
+	if engin_name == 'RENDER':
+		attributes = [
 			"use_high_quality_normals",
-			"hair_type",
 			"hair_subdiv",
 			"film_transparent",
 			"use_simplify",
-			"simplify_subdivision",
-			"simplify_child_particles",
-			"simplify_volumes",
-			"simplify_subdivision_render",
-			"simplify_child_particles_render",
 			"simplify_gpencil",
 			"simplify_gpencil_onplay",
-			"simplify_gpencil_view_fill",
-			"simplify_gpencil_modifier",
-			"simplify_gpencil_shader_fx",
-			"simplify_gpencil_tint",
-			"simplify_gpencil_antialiasing",
 			"use_freestyle",
-			"line_thickness_mode",
-			"line_thickness",
 			"use_persistent_data",
 			"use_motion_blur"
-		)
+		]
 
+		if version >= (4, 2, 0):
+			attributes += [
+			"use_simplify_normals"
+		]
+
+		if version < (3, 6, 0):
+			attributes += [
+				"hair_type",
+				"simplify_subdivision",
+				"simplify_child_particles",
+				"simplify_volumes",
+				"simplify_subdivision_render",
+				"simplify_child_particles_render",
+				"simplify_gpencil_view_fill",
+				"simplify_gpencil_modifier",
+				"simplify_gpencil_shader_fx",
+				"simplify_gpencil_tint",
+				"simplify_gpencil_antialiasing",
+				"line_thickness_mode",
+				"line_thickness"
+			]
+
+		render = ctx.scene.render
 		for attribute in attributes:
 			script += pystr_attribute(ctx, render, attribute)
-		
-		# script += bcs + 'use_save_buffers = ' + str(render.use_save_buffers) + '\n'
-		# TODO find new alternative
-	
-	if engin_name == 'eevee':
-		eevee = ctx.scene.eevee
-		attributes = (
+
+	if engin_name == 'EEVEE':
+		attributes = [
 			"volumetric_light_clamp",
 			"use_shadow_high_bitdepth",
-			"use_soft_shadows",
 			"gi_auto_bake",
 			"gi_glossy_clamp",
 			"gi_show_cubemaps",
@@ -119,96 +144,90 @@ def get_manual_part(ctx, engin_name):
 			"use_ssr",
 			"use_motion_blur",
 			"use_volumetric_shadows"
-		)
+		]
 
+		if version < (3, 6, 0):
+			attributes += [
+				"use_soft_shadows"
+			]
+
+		eevee = ctx.scene.eevee
 		for attribute in attributes:
 			script += pystr_attribute(ctx, eevee, attribute)
-	
-	if engin_name == 'cycles':
-		cycles = ctx.scene.cycles
-		
-		attributes = (
-			"aa_samples",
-			"ao_samples",
-			"use_adaptive_sampling",
-			"adaptive_min_samples",
-			"use_denoising",
-			"seed",
-			"use_square_samples",
-			"min_light_bounces",
-			"min_transparent_bounces",
-			"volume_bounces",
-			"sample_clamp_direct",
-			"use_preview_denoising",
-			"use_animated_seed",
-			"ao_bounces_render",
+
+	if engin_name == 'EEVEENEXT':
+		# TODO check this list again after 4.2LTS releasee
+		attributes = [
+			"use_shadow_jitter_viewport",
+			"use_shadow_jitter_viewport",
+			"clamp_surface_direct",
+			"clamp_volume_direct",
+			"use_raytracing",
+			"ray_tracing_options.resolution_scale",
+			"ray_tracing_options.trace_max_roughness",
+			"ray_tracing_options.screen_trace_quality",
+			"ray_tracing_options.screen_trace_thickness",
+			"ray_tracing_options.use_denoise",
+			"ray_tracing_options.denoise_bilateral",
+			"ray_tracing_options.denoise_temporal",
+			"ray_tracing_options.denoise_spatial",
+			"fast_gi_distance",
+			"use_bokeh_jittered",
+			"use_overscan"
+		]
+
+		eevee = ctx.scene.eevee
+		for attribute in attributes:
+			script += pystr_attribute(ctx, eevee, attribute)
+
+	if engin_name == 'CYCLES':
+		attributes = [
 			"use_camera_cull",
 			"use_distance_cull",
-			"use_progressive_refine",
 			"debug_use_spatial_splits",
-			"debug_bvh_time_steps "
-		)
+			"debug_bvh_time_steps",
+			"film_transparent_glass",
 
-		bcs = 'bpy.context.scene.cycles'
-		script += bcs + 'denoiser = "' + cycles.denoiser + '"\n'
-		script += bcs + 'curves.shape = "' + ctx.scene.cycles_curves.shape + '"\n'
-		script += bcs + 'shading_system = ' + str(cycles.shading_system) + '\n'
-		script += bcs + '_curves.subdivisions = ' + str(ctx.scene.cycles_curves.subdivisions) + '\n'
+			"shading_system",
+			"preview_adaptive_min_samples",
+			"use_preview_denoising",
+			"denoising_use_gpu",
+			"use_guiding",
+			"use_guiding",
+			"use_animated_seed",
+			"sample_offset",
+			"auto_scrambling_distance",
+			"preview_scrambling_distance",
+			"min_light_bounces",
+			"min_transparent_bounces",
+			"sample_clamp_direct",
+			"debug_use_compact_bvh"
+		]
 
+		cycles = ctx.scene.cycles
 		for attribute in attributes:
 			script += pystr_attribute(ctx, cycles, attribute)
 
-	
-	if engin_name == 'cycles_x':
+	if engin_name == 'SCENE':
 		scene = ctx.scene
-		cycles = scene.cycles
-		world = scene.world
-		view_settings = scene.view_settings
-		display_settings = scene.display_settings
-		sequencer_colorspace_settings = scene.sequencer_colorspace_settings
-		grease_pencil_settings = scene.grease_pencil_settings
-		
-		bcs = 'bpy.context.scene.cycles'
-		bcw = 'bpy.context.scene.world'
-		bcv = 'bpy.context.scene.view_settings'
-		bcd = 'bpy.context.scene.display_settings'
-		bcq = 'bpy.context.scene.sequencer_colorspace_settings'
-		bcg = 'bpy.context.scene.grease_pencil_settings'
+		attributes = [
+			[scene.world.light_settings, "ao_factor"],
+			[scene.world.light_settings, "distance"],
+			[scene.view_settings, "view_transform"],
+			[scene.view_settings, "look"],
+			[scene.view_settings, "exposure"],
+			[scene.view_settings, "gamma"],
+			[scene.view_settings, "use_curve_mapping"],
+			[scene.display_settings, "display_device"],
+			[scene.sequencer_colorspace_settings, "name"],
+			[scene.grease_pencil_settings, "antialias_threshold"],
+			[scene.cycles_curves, "shape"],
+			[scene.cycles_curves, "subdivisions"]
+		]
 
-		script += bcs + '.use_preview_adaptive_sampling = ' + \
-					 str(cycles.use_preview_adaptive_sampling) + '\n'
-		script += bcs + '.use_camera_cull = ' + str(cycles.use_camera_cull) + '\n'
-		script += bcs + '.use_distance_cull = ' + str(cycles.use_distance_cull) + '\n'
-		script += bcs + '.debug_use_spatial_splits = ' + str(cycles.debug_use_spatial_splits) + '\n'
-		script += bcs + '.debug_bvh_time_steps = ' + str(cycles.debug_bvh_time_steps) + '\n'
-		script += bcs + '.film_transparent_glass = ' + str(cycles.film_transparent_glass) + '\n'
-		script += bcs + '_curves.shape = "' + scene.cycles_curves.shape + '"\n'
-		script += bcs + '_curves.subdivisions = ' + str(scene.cycles_curves.subdivisions) + '\n'
+		for data_path, attribute in attributes:
+			script += pystr_attribute(ctx, data_path, attribute)
 
-		script += bcw + '.light_settings.ao_factor = ' + \
-				str(world.light_settings.ao_factor) + '\n'
-
-		script += bcw + '.light_settings.distance = ' + \
-				str(world.light_settings.distance) + '\n'
-
-		script += bcv + '.view_transform = "' + \
-				str(view_settings.view_transform) + '"\n'
-
-		script += bcv + '.look = "' + str(view_settings.look) + '"\n'
-		script += bcv + '.exposure = ' + str(view_settings.exposure) + '\n'
-		script += bcv + '.gamma = ' + str(view_settings.gamma) + '\n'
-
-		script += bcv + '.use_curve_mapping = ' + \
-				str(view_settings.use_curve_mapping) + '\n'
-
-		script += bcd + '.display_device = "' + \
-				str(display_settings.display_device) + '"\n'
-
-		script += bcq + '.name = "' + str(sequencer_colorspace_settings.name) + '"\n'
-
-		script += bcg + '.antialias_threshold = ' + \
-				 str(grease_pencil_settings.antialias_threshold) + '\n'
-	
 	return script
 
 
@@ -236,19 +255,27 @@ def get_script(engin, engin_name):
 	script = ""
 	for name in dir(engin):
 		""" filter none relateds """
+		if name in illegals:
+			continue
 
-		if not (name.startswith('__') and name.endswith('__') or name in illegals) :
-			""" check is name avlible in properti list """
+		if (name.startswith('__') and name.endswith('__')) :
+			continue
 
-			if name in engin.bl_rna.properties:
-				""" filter read onlys """
+		""" check is name avlible in properti list """
+		if not name in engin.bl_rna.properties:
+			continue
 
-				if not engin.bl_rna.properties[name].is_readonly:
-					value = getattr(engin, name)
-					value = refine_value(value)
+		""" filter read onlys """
+		if engin.bl_rna.properties[name].is_readonly:
+			continue
 
-					if value:
-						script += 'bpy.context.scene.' + engin_name + '.' + name + ' = ' + str(value) + '\n'
+		value = getattr(engin, name)
+		value = refine_value(value)
+
+		if value:
+			script += 'bpy.context.scene.'
+			script += engin_name + '.' + name 
+			script += ' = ' + str(value) + '\n'
 
 	return script
 
@@ -258,19 +285,26 @@ def create_preset_script(ctx):
 	script = preset_kay + '\n'
 	script += 'import bpy \n'
 	script += get_script(ctx.scene.render, 'render')
-	script += get_manual_part(ctx, 'render')
+	script += get_manual_part(ctx, 'RENDER')
 
-	if ctx.scene.render.engine == 'BLENDER_EEVEE':
+	engine = ctx.scene.render.engine
+
+	if engine == 'BLENDER_EEVEE':
 		script += get_script(ctx.scene.eevee, 'eevee')
-		script += get_manual_part(ctx, 'eevee')
+		script += get_manual_part(ctx, 'EEVEE')
+	
+	if engine == 'BLENDER_EEVEE_NEXT':
+		script += get_script(ctx.scene.eevee, 'eevee')
+		script += get_manual_part(ctx, 'EEVEENEXT')
 
-	elif ctx.scene.render.engine == 'CYCLES':
+	elif engine == 'CYCLES':
 		script += get_script(ctx.scene.cycles, 'cycles')
-		script += get_manual_part(ctx, 'cycles_x')
-
-	elif ctx.scene.render.engine == 'BLENDER_WORKBENCH':
+		script += get_manual_part(ctx, 'CYCLES')
+		
+	elif engine == 'BLENDER_WORKBENCH':
 		script += get_script(ctx.scene, 'scene')
-		script += get_manual_part(ctx, 'scene')
+	
+	script += get_manual_part(ctx, 'SCENE')
 
 	#TODO other render engined has to add here
 	return script
@@ -292,6 +326,20 @@ def execute_is_python(script):
 		exec(script)
 
 
+def open_folder_in_explorer(path):
+	if not os.path.isdir(path):
+		return
+
+	if platform.system() == "Windows":
+		os.startfile(path)
+	
+	elif platform.system() == "Darwin":
+		subprocess.call(["open", path])
+	
+	elif platform.system() == "Linux":
+		subprocess.call(["xdg-open", path])
+
+
 def save_file(presetName, string):
 	presetPath = get_preset_path()
 	if not path.exists(presetPath):
@@ -310,7 +358,7 @@ def get_presets_list():
 		path.splitext(path.basename(f))[0]
 			for f in glob(preset_path+"/*.py")
 	]
-	return [(pl, pl,'') for pl in preset_list]
+	return [(pl, pl, "") for pl in preset_list]
 
 
 def read_preset_file(presetName):
@@ -319,16 +367,22 @@ def read_preset_file(presetName):
 
 
 class Render_OT_Preset(Operator):
-	""" Save/Load or Copy/Past render settings """
 	bl_idname = "render.preset"
-	bl_label = "Copy Preset"
+	bl_label = "Render Preset"
+	bl_description = "Save/Load or Copy/Past render settings"
 	bl_options = {'REGISTER', 'INTERNAL'}
 
-	def get_presets(self, ctx):
+	def get_presets(self, _):
 		return get_presets_list()
 
-	name: StringProperty(name='Preset Name', default='New Preset')
-	names: EnumProperty(name='Preset Name', items=get_presets)
+	name: StringProperty(
+		name='Preset Name', default='New Preset'
+	) # type: ignore
+	
+	names: EnumProperty(
+		name='Preset Name', items=get_presets
+	) # type: ignore
+	
 	action: EnumProperty(
 		items=[
 			('COPY', 'Copy', 'Copy Render Setting to Clipboard'),
@@ -338,7 +392,7 @@ class Render_OT_Preset(Operator):
 			('REVEAL', 'Reveal', 'Reveal Render Presets Folder')
 		],
 		default='SAVE'
-	)
+	) # type: ignore
 
 	def draw(self, ctx):
 		layout = self.layout
@@ -361,7 +415,7 @@ class Render_OT_Preset(Operator):
 			exec(read_preset_file(self.names))
 
 		elif self.action == 'REVEAL':
-			pass
+			open_folder_in_explorer(get_preset_path())
 
 		return{"FINISHED"}
 	
@@ -398,36 +452,40 @@ class RENDER_PT_Preset(Panel):
 			'render.preset', text='', icon='PASTEDOWN'
 		).action='PASTE'
 
+		row.operator(
+			'render.preset', text='', icon='FILEBROWSER'
+		).action='REVEAL'
+
 
 class Render_PrePostScript(PropertyGroup):
 	pre_render_active: BoolProperty(
-		name='Active', default=False,
+		name="Active", default=False,
 		description='Run the Script befor render start'
-	)
+	) # type: ignore
 	
 	description = "The script has to run befor render start\n"
 	description += "Just write the name of script on text editor"
 	pre_render_script: StringProperty(
-		name='Pre', default='', description=description
-	)
+		name="Pre", default="", description=description
+	) # type: ignore
 	
 	post_render_active: BoolProperty(
-		name='Active', default=False,
+		name="Active", default=False,
 		description='Run the Script after render finished'
-	)
+	) # type: ignore
 	
 	description = "The script has to run after render finish\n"
 	description += "Just write the name of script on text editor"
 	post_render_script: StringProperty(
-		name='Post', default='', description=description
-	)
+		name="Post", default="", description=description
+	) # type: ignore
 
 
 class RENDER_PT_Script(Panel):
 	bl_space_type = 'PROPERTIES'
 	bl_region_type = 'WINDOW'
 	bl_context = 'render'
-	bl_label = 'Script'
+	bl_label = "Script"
 	bl_options = {'DEFAULT_CLOSED'}
 
 	def draw(self, ctx):
@@ -435,11 +493,11 @@ class RENDER_PT_Script(Panel):
 		rpps = ctx.scene.render_prepost_script
 
 		row = layout.row()
-		row.prop(rpps, 'pre_render_active', text='', icon='PLAY')
+		row.prop(rpps, 'pre_render_active', text="", icon='PLAY')
 		row.prop(rpps, 'pre_render_script')
 		
 		row = layout.row()
-		row.prop(rpps, 'post_render_active', text='', icon='PLAY')
+		row.prop(rpps, 'post_render_active', text="", icon='PLAY')
 		row.prop(rpps, 'post_render_script')
 
 
@@ -481,7 +539,7 @@ def register_preset():
 
 	bpy.types.Scene.render_prepost_script = PointerProperty(
 		type=Render_PrePostScript,
-		name='Pre/Post Render Script'
+		name="Pre/Post Render Script"
 	)
 	
 	bpy.app.handlers.render_init.append(pre_render)

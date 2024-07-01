@@ -12,222 +12,236 @@
 #	You should have received a copy of the GNU General Public License
 #	along with this program.  If not, see <https://www.gnu.org/licenses/>.
 ############################################################################
-# 2024/04/08
-# TODO combine all curve selection operators to one operator with dynamic UI
+# 2024/06/20
 
 import bpy
 
 from bpy.types import Operator
-from bpy.props import EnumProperty, FloatProperty, IntProperty, BoolProperty
+from bpy.props import EnumProperty, FloatProperty, IntProperty
+from bpy.utils import register_class, unregister_class
 
 
-def select_spline(spline, deselect=False):
-	state = not deselect
+def set_spline_select(spline, state):
 	for bezier_points in spline.bezier_points:
 		bezier_points.select_left_handle = state
 		bezier_points.select_control_point = state
 		bezier_points.select_right_handle = state
 
 
-def check_lenght(cls, obj):
-	for spline in obj.data.splines:
+def deselect_all_splines(curve):
+	for spline in curve.data.splines:
+			set_spline_select(spline, False)
+
+
+def select_curve_by_length(cls, curve):
+	if curve.type != 'CURVE':
+		return
+	
+	if cls.mode == 'SET':
+		deselect_all_splines(curve)
+
+	state = cls.mode != 'SUB' #{'SET', 'EXTEND'}
+
+	for spline in curve.data.splines:
 		length = spline.calc_length()
+
 		if cls.by == 'GREATER':
 			if length > cls.length:
-				select_spline(spline)
-			else:
-				select_spline(spline, deselect=True)
-		
+				set_spline_select(spline, state)
+
 		elif cls.by == 'LESS':
 			if length < cls.length:
-				select_spline(spline)
-			else:
-				select_spline(spline, deselect=True)
-		
+				set_spline_select(spline, state)
+
 		elif cls.by == 'EQUAL':
-			if cls.length - cls.tolerans < length <= cls.length + cls.tolerans:
-				select_spline(spline)
-			else:
-				select_spline(spline, deselect=True)
+			min_length = cls.length - cls.length_tolerans
+			max_length = cls.length + cls.length_tolerans
+			if min_length < length <= max_length:
+				set_spline_select(spline, state)
 
 
-def check_count(cls, obj):
-	for spline in obj.data.splines:
+def select_splines_by_points_count(cls, curve):
+	if curve.type != 'CURVE':
+		return
+	
+	if cls.mode == 'SET':
+		deselect_all_splines(curve)
+
+	state = cls.mode != 'SUB' #{'SET', 'EXTEND'}
+
+	for spline in curve.data.splines:
 		count = len(spline.bezier_points)
+		state = False
 		if cls.by == 'GREATER':
 			if count > cls.count:
-				select_spline(spline)
-			else:
-				select_spline(spline, deselect=True)
+				set_spline_select(spline, state)
 		
 		elif cls.by == 'LESS':
 			if count < cls.count:
-				select_spline(spline)
-			else:
-				select_spline(spline, deselect=True)
+				set_spline_select(spline, state)
 		
 		elif cls.by == 'EQUAL':
-			if cls.count - cls.tolerans < count < cls.count + cls.tolerans:
-				select_spline(spline)
-			else:
-				select_spline(spline, deselect=True)
+			min_count = cls.count - cls.count_tolerans
+			max_count = cls.count + cls.count_tolerans
+			if min_count < count < max_count:
+				set_spline_select(spline, state)
 
 
-class Curve_OT_Select_By_Length(Operator):
-	bl_idname = 'curve.select_by_length'
-	bl_label = 'Select By Length'
-	bl_options = {'REGISTER', 'UNDO'}
-
-	by: EnumProperty(
-		name = 'By',
-		items=[
-			('GREATER', 'Greater then', ''),
-			('LESS', 'LESS than', ''),
-			('EQUAL', 'Equal to', '')
-		],
-		 default='GREATER'
-	)
-
-	length: FloatProperty(unit='LENGTH', default=1.0, min=0)
-
-	tolerans: FloatProperty(unit='LENGTH', default=0.01, min=0)
-
-	@classmethod
-	def poll(self, ctx):
-		if ctx.area.type == 'VIEW_3D':
-			if ctx.scene.objects:
-				if ctx.object:
-					return ctx.mode == 'EDIT_CURVE'
-		return False
+def select_splines_by_close(cls, curve):
+	if curve.type != 'CURVE':
+		return
 	
-	def draw(self, ctx):
-		layout = self.layout
-		layout.prop(self, 'by')
-		layout.prop(self, 'length')
+	if cls.mode == 'SET':
+		for spline in curve.data.splines:
+			set_spline_select(spline, False)
 
-		if self.by == 'EQUAL':
-			layout.prop(self, 'tolerans')
+	state = cls.mode != 'SUB' #{'SET', 'EXTEND'}
+	
+	for spline in curve.data.splines:
+		if cls.collect == 'OPEN':
+			if not spline.use_cyclic_u:
+				set_spline_select(spline, state)
+		
+		elif cls.collect == 'CLOSE':
+			if spline.use_cyclic_u:
+				set_spline_select(spline, state)
 
-	def execute(self, ctx):
-		for obj in ctx.selected_objects:
-			if obj.type == 'CURVE':
-				check_lenght(self, obj)
-		return{'FINISHED'}
+
+def draw_curve_select_by_ui(cls):
+	layout = cls.layout
+
+	if cls.method == 'LENGTH':
+		row = layout.row()
+		row.prop(cls, 'by', expand=True)
+
+		row = layout.row()
+		row.prop(cls, 'length')
+
+		if cls.by == 'EQUAL':
+			row.prop(cls, 'length_tolerans')
+
+	elif cls.method == 'COUNT':
+		row = layout.row()
+		row.prop(cls, 'by', expand=True)
+		
+		row = layout.row()
+		row.prop(cls, 'count')
+
+		if cls.by == 'EQUAL':
+			row.prop(cls, 'count_tolerans')
+
+	if cls.method == 'CLOSE':
+		row = layout.row()
+		row.prop(cls, 'collect', expand=True)
+		
+	row = layout.row()
+	row.prop(cls, 'mode', expand=True)
 
 
-class Curve_OT_Select_By_Segment_Count(Operator):
-	bl_idname = 'curve.select_by_segment_count'
-	bl_label = 'Select By Segment Count'
+class Curve_OT_Select_By(Operator):
+	bl_idname = 'curve.select_by'
+	bl_label = "Select By"
+	bl_description = "Select splines by Length, Count or Close"
 	bl_options = {'REGISTER', 'UNDO'}
+
+	method: EnumProperty(
+		name = 'Method',
+		items=[
+			('LENGTH', "Length", "By Spline Length"),
+			('COUNT', "Count", "By Segment Count"),
+			('CLOSE', "Colse", "Close or Open")
+		],
+		default='LENGTH'
+	) # type: ignore
+
+	mode: EnumProperty(
+		name = 'Mode',
+		items=[
+			('SET', "Set", "Set selection", 'SELECT_SET', 1),
+			('EXTEND', "Extend", "Extend to selection", 'SELECT_EXTEND', 2),
+			('SUB', "Subtract", "Subtract From Selection", 'SELECT_SUBTRACT', 3)
+		],
+		default='SET'
+	) # type: ignore
 
 	by: EnumProperty(
 		name = 'By',
 		items=[
-			('GREATER', 'Greater then', ''),
-			('LESS', 'Less than', ''),
-			('EQUAL', 'Equal to', '')
+			('GREATER', "Greater then", "Greater then", 'ALIGN_RIGHT', 1),
+			('EQUAL', "Equal to", "Equal to", 'ALIGN_JUSTIFY', 2),
+			('LESS', "Less than", "Less than", 'ALIGN_CENTER', 3)
 		],
 		default='GREATER'
-	)
-
-	count: IntProperty(name="Count", min= 2, default=3)
-	tolerans: IntProperty(default=0, min=1)
-
-	@classmethod
-	def poll(self, ctx):
-		if ctx.area.type == 'VIEW_3D':
-			if ctx.scene.objects:
-				if ctx.object:
-					return ctx.mode == 'EDIT_CURVE'
-		return False
-	
-	def draw(self, ctx):
-		layout = self.layout
-		layout.prop(self, 'by')
-		layout.prop(self, 'count')
-
-		if self.by == 'EQUAL':
-			layout.prop(self, 'tolerans')
-
-	def execute(self, ctx):
-		for obj in ctx.selected_objects:
-			if obj.type == 'CURVE':
-				check_count(self, obj)
-		return{'FINISHED'}
+	) # type: ignore
 
 
+	count: IntProperty(name="Count", min= 2, default=3) # type: ignore
+	count_tolerans: IntProperty(default=1, min=1) # type: ignore
 
-class Curve_OT_Select_Close(Operator):
-	bl_idname = 'curve.select_close'
-	bl_label = 'Select Close'
-	bl_options = {'REGISTER', 'UNDO'}
+	length: FloatProperty(unit='LENGTH', default=1.0, min=0) # type: ignore
+	length_tolerans: FloatProperty(
+		unit='LENGTH', default=0.01, min=0
+	) # type: ignore
 
-	invert: BoolProperty(default=False)
-	deselect: BoolProperty(default=False)
+	collect: EnumProperty(
+		name = 'Collect',
+		items=[
+			('OPEN', "Open", "Collect Open Splines", 'OUTLINER_DATA_CURVE', 1),
+			('CLOSE', "Close", "Collect Close Splines", 'OUTLINER_DATA_MESH', 2)
+		],
+		default='CLOSE'
+	) # type: ignore
 
 	@classmethod
 	def poll(self, ctx):
 		if ctx.area.type == 'VIEW_3D':
-			if ctx.scene.objects:
-				if ctx.object:
-					return ctx.mode == 'EDIT_CURVE'
+			return ctx.mode == 'EDIT_CURVE'
 		return False
 	
-	def draw(self, ctx):
-		layout = self.layout
-		layout.prop(self, 'invert', text="Invert")
-		layout.prop(self, 'deselect', text="Deselect")
+	def draw(self, _):
+		draw_curve_select_by_ui(self)
 
 	def execute(self, ctx):
-		state = not self.deselect
-		for obj in ctx.selected_objects:
-			if obj.type == 'CURVE':
-				for spline in obj.data.splines:
-					if self.invert:
-						# select open splines
-						if not spline.use_cyclic_u:
-							for point in spline.bezier_points:
-								point.select_left_handle = state
-								point.select_control_point = state
-								point.select_right_handle = state
-					else:
-						# select closer splines
-						if spline.use_cyclic_u:
-							for point in spline.bezier_points:
-								point.select_left_handle = state
-								point.select_control_point = state
-								point.select_right_handle = state
+		if self.method == 'LENGTH':
+			for curve in ctx.selected_objects:
+				select_curve_by_length(self, curve)
+
+		elif self.method == 'COUNT':
+			for curve in ctx.selected_objects:
+				select_splines_by_points_count(self, curve)
+
+		elif self.method == 'CLOSE':
+			for curve in ctx.selected_objects:
+				select_splines_by_close(self, curve)
+
 		return{'FINISHED'}
 
 
-def selection_menu(self, ctx):
+def selection_menu(self, _):
 	layout = self.layout
 	layout.separator()
-	layout.operator('curve.select_by_length')
-	layout.operator('curve.select_close')
-	layout.operator('curve.select_by_segment_count')
+	layout.operator(
+		'curve.select_by', text="Select By Length"
+	).method='LENGTH'
+	
+	layout.operator(
+		'curve.select_by', text="Select By Segment Count"
+	).method='COUNT'
 
-
-classes = (
-	Curve_OT_Select_By_Length,
-	Curve_OT_Select_By_Segment_Count,
-	Curve_OT_Select_Close
-)
+	layout.operator(
+		'curve.select_by', text="Selecy Close"
+	).method='CLOSE'
 
 
 def register_selection():
-	for c in classes:
-		bpy.utils.register_class(c)
-
+	register_class(Curve_OT_Select_By)
 	bpy.types.VIEW3D_MT_select_edit_curve.append(selection_menu)
 
 
 def unregister_selection():
 	bpy.types.VIEW3D_MT_select_edit_curve.remove(selection_menu)
-
-	for c in classes:
-		bpy.utils.unregister_class(c)
+	unregister_class(Curve_OT_Select_By)
 
 
-if __name__ == "__main__":
+if __name__ == '__main__':
 	register_selection()

@@ -12,13 +12,13 @@
 #	You should have received a copy of the GNU General Public License
 #	along with this program.  If not, see <https://www.gnu.org/licenses/>.
 ############################################################################
-from .classes import Vector2,Colors
+from .classes import Vector2, Colors
 
 class Icon:
 	def __init__(self,name):
 		self.name = name
 		self.scale = 1
-		self.mirror = Vector2(False,False)
+		self.mirror = Vector2(False, False)
 		self.offset = Vector2(0,0)
 		self.color = Colors()
 		self.vertices = []

@@ -65,20 +65,12 @@ class BitArray:
 		return ""
 
 
-def point_on_line(start, end, time):
-	""" Get point coordinate on line by time
-
-		args:
-			start: Point2 or Point3
-			end: Point2 or Point3
-			time: float 0 to 1.0
-		return:
-			Same as start argument
-	"""
+def point_on_line(start:Vector, end:Vector, time:float) -> Vector:
 	return start + (end - start) * time
 
 
-def point_on_cubic_bezier_curve(a, b, c, d, t):
+def point_on_cubic_bezier_curve(
+		a:Vector, b:Vector, c:Vector, d:Vector, t:float):
 	""" get point coordinate on cubic bezier curve
 
 		args:
@@ -214,7 +206,10 @@ def get_bezier_tangent(a, b, c, d, t):
 
 
 def split_segment(p1, p2, p3, p4, t):
-	""" Split Cubic bezier on given time """
+	""" Split Cubic bezier on given time \n
+	return\n
+	[left_co, left_out, center_in, center_co, center_out, right_in, right_co]
+	"""
 	# start.co start.out end.in end.co
 	p12 = (p2 - p1) * t + p1
 	p23 = (p3 - p2) * t + p2

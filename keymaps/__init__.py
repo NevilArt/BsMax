@@ -24,7 +24,6 @@ from .softimage import register_softimage, unregister_softimage
 from .unrealengin import register_unreal, unregister_unreal
 
 
-
 def register_keymaps(preferences):
 	register_max(preferences)
 	register_maya(preferences)
@@ -35,7 +34,6 @@ def register_keymaps(preferences):
 	register_float_menu(preferences)
 	register_softimage(preferences)
 	register_unreal(preferences)
-
 
 
 def unregister_keymaps():

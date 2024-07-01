@@ -11,6 +11,7 @@
 * thorn@neverwake.com
 
 # Thanks for Donate
+* Pamela Okoro
 * bikekefeli@gmail.com
 * d_phantom70@hotmail.com
 * kuroiluna@hotmail.com

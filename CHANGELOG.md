@@ -1,3 +1,9 @@
+# 0, 1, 2, 20240605
+* Kemap issues from last update fixed.
+* GraphEditor select chanels auto hide unselected chanels (3DsMax Mode).
+* Copy Camera animation to other softwares (Alpha version yet).
+* Export Camera via Alembic do not transfer FOV animation. this tool helps to port fov and other animations to 3DsMax scene (Maya option is on the way too).
+
 # 0, 1, 2, 20240603
 * Join plus issue with None mesh object fixed.
 * Mouse Weel up/down in edit mode select more and less (3DsMax & Blender adapted).

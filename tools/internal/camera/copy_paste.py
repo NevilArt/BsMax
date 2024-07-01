@@ -12,14 +12,14 @@
 #	You should have received a copy of the GNU General Public License
 #	along with this program.  If not, see <https://www.gnu.org/licenses/>.
 ############################################################################
-# 2024/06/04
+# 2024/06/06
 
 import bpy
 
 import math
 
 from bpy.types import Operator
-from bpy.props import EnumProperty, BoolProperty
+from bpy.props import EnumProperty, BoolProperty, FloatProperty
 from bpy.utils import register_class, unregister_class
 
 
@@ -27,24 +27,28 @@ def copy_to_clipboard(ctx, text):
 	ctx.window_manager.clipboard = text
 
 
-def keys_to_array_string(keys, mode, decimal=0):
+def keys_to_array_string(keys, mode, decimal=0, scale=1):
 	if mode == '3DSMAX':
 		script = "#("
 		for index, key in enumerate(keys):
+			frame = key[0]
+			value = key[1]*scale
+
 			script += "#("
-			script += str(int(key[0]))
+			script += str(int(frame))
 			script += ","
-			script += str(key[1]) if decimal == 0 else str(round(key[1], decimal))
+			script += str(value) if decimal == 0 else str(round(value, decimal))
 			script += ")"
 			script += "," if index < len(keys)-1 else ""
+
 		script += ")"
 		return script
-	
-	if mode == "PYTHON":
+
+	if mode == 'PYTHON':
 		script = "[]"
 		return script
 
-	if mode == "MEL":
+	if mode == 'MEL':
 		script = "{}"
 		return script
 
@@ -59,9 +63,9 @@ def for_loop_script_for_chanel(chanel, mode):
 	return ""
 
 
-def chanel_to_maxscript_field(chanel, target, decimal=0):
+def chanel_to_maxscript_field(chanel, target, decimal=0, scale=1):
 	script = " keys = "
-	script += keys_to_array_string(chanel, '3DSMAX', decimal) + "\n"
+	script += keys_to_array_string(chanel, '3DSMAX', decimal, scale) + "\n"
 	script += " " + for_loop_script_for_chanel(target, '3DSMAX') + "\n"
 	script += "\n"
 	return script
@@ -77,22 +81,53 @@ def data_to_maxscript(cls, data):
 		script += "cam.name = \"" + data.owner.name + "\"\n"
 	else:
 		script += "cam = $\n"
+	
+	"if classof cam != Camera do return"
+	
+	if cls.clip:
+		script += "cam.clipManually = True \n"
 
 	script += "on animate on (\n"
 
 	if cls.transform:
-		script += ""
+		script += chanel_to_maxscript_field(
+			data.location_x_keys, "position.x", 0, cls.scale
+		)
+		script += chanel_to_maxscript_field(
+			data.location_y_keys, "position.y", 0, cls.scale
+		)
+		script += chanel_to_maxscript_field(
+			data.location_z_keys, "position.z", 0, cls.scale
+		)
+
+		script += chanel_to_maxscript_field(
+			data.rotation_euler_x_keys, "rotation.x"
+		)
+		script += chanel_to_maxscript_field(
+			data.rotation_euler_y_keys, "rotation.y"
+		)
+		script += chanel_to_maxscript_field(
+			data.rotation_euler_z_keys, "rotation.z"
+		)
+
+		script += chanel_to_maxscript_field(data.scale_x_keys, "scale.x")
+		script += chanel_to_maxscript_field(data.scale_y_keys, "scale.y")
+		script += chanel_to_maxscript_field(data.scale_z_keys, "scale.z")
 
 	if cls.fov:
 		script += chanel_to_maxscript_field(data.lens_keys, "fov", 3)
 
 	if cls.clip:
-		script += " $.clipManually = True \n"
-		script += chanel_to_maxscript_field(data.clip_start_keys, "nearclip")
-		script += chanel_to_maxscript_field(data.clip_end_keys, "farclip")
+		script += chanel_to_maxscript_field(
+			data.clip_start_keys, "nearclip", 3, cls.scale
+		)
+		
+		script += chanel_to_maxscript_field(
+			data.clip_end_keys, "farclip", 3, cls.scale
+		)
 
 	script += ")\n" #end of animate on
-	script += "-- Camera paste Script end here --" 
+	script += "-- Camera paste Script end here --\n" 
 	return script
 
 
@@ -129,7 +164,40 @@ def get_fcurve_keys(fcurve):
 
 def get_transform_animation(cls):
 	action = cls.owner.animation_data.action
+	if not action:
+		return
+	
+	for fcurve in action.fcurves:
+		if fcurve.data_path == 'location':
+			if fcurve.array_index == 0:
+				cls.location_x_keys = get_fcurve_keys(fcurve)
+			
+			if fcurve.array_index == 1:
+				cls.location_y_keys = get_fcurve_keys(fcurve)
 
+			if fcurve.array_index == 2:
+				cls.location_z_keys = get_fcurve_keys(fcurve)
+
+		if fcurve.data_path == 'rotation_euler':
+			if fcurve.array_index == 0:
+				cls.rotation_euler_x_keys = get_fcurve_keys(fcurve)
+			
+			if fcurve.array_index == 1:
+				cls.rotation_euler_y_keys = get_fcurve_keys(fcurve)
+
+			if fcurve.array_index == 2:
+				cls.rotation_euler_z_keys = get_fcurve_keys(fcurve)
+		
+		if fcurve.data_path == 'scale':
+			if fcurve.array_index == 0:
+				cls.scale_x_keys = get_fcurve_keys(fcurve)
+			
+			if fcurve.array_index == 1:
+				cls.scale_y_keys = get_fcurve_keys(fcurve)
+
+			if fcurve.array_index == 2:
+				cls.scale_z_keys = get_fcurve_keys(fcurve)
+		
 
 def get_fov_animation(cls):
 	camera_data = bpy.data.cameras[cls.data.name]
@@ -180,7 +248,15 @@ class CameraAnimationData:
 		self.owner = camera
 		self.data = camera.data
 
-		self.transform_keys = []
+		self.location_x_keys = []
+		self.location_y_keys = []
+		self.location_z_keys = []
+		self.rotation_euler_x_keys = []
+		self.rotation_euler_y_keys = []
+		self.rotation_euler_z_keys = []
+		self.scale_x_keys = []
+		self.scale_y_keys = []
+		self.scale_z_keys = []
 
 		self.type_keys = []
 		self.lens_keys = []#done
@@ -241,7 +317,7 @@ def copy_camera_draw(cls):
 	box.prop(cls, 'create', text="Create New Camera")
 	
 	if cls.has_transform_animation:
-		box.prop(cls, 'transform', text="Transform (Not Ready Yet)")
+		box.prop(cls, 'transform', text="Transform")
 	else:
 		box.label(text="There is no transform animation.")
 
@@ -253,6 +329,7 @@ def copy_camera_draw(cls):
 
 	box = layout.box()
 	box.prop(cls, 'target', text="Target App")
+	box.prop(cls, 'scale', text="Scale")
 
 
 class Camera_OT_Copy(Operator):
@@ -267,6 +344,11 @@ class Camera_OT_Copy(Operator):
 			('3DSMAX', "Autodesk 3DsMax", "")
 		],
 		default='3DSMAX'
+	) # type: ignore
+
+	scale: FloatProperty(
+		name="Unit Scale:", min=0, default=1,
+		description="Scale for match the unit scale"
 	) # type: ignore
 
 	create: BoolProperty(
@@ -348,11 +430,12 @@ classes = {
 }
 
 
-def register_copy_past():
+def register_copy_past(developmode=False):
 	for cls in classes:
 		register_class(cls)
 
-	bpy.types.BSMAX_MT_view3d_copy.append(camera_copy_manu)
+	if not developmode:
+		bpy.types.BSMAX_MT_view3d_copy.append(camera_copy_manu)
 
 
 def unregister_copy_past():
@@ -363,4 +446,4 @@ def unregister_copy_past():
 
 
 if __name__ == '__main__':
-	register_copy_past()
+	register_copy_past(developmode=True)

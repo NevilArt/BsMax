@@ -28,17 +28,17 @@ from bsmax.keymaps import KeyMaps
 
 
 def add_search(km, space):
-	km.new(space, 'wm.search_operator', 'X', 'PRESS', [])
+	km.new(space, 'wm.search_menu', 'X', 'PRESS', [])
 	km.new(
-		space, 'wm.search_menu', 'X', 'PRESS', [],
+		space, 'wm.search_operator', 'X', 'PRESS', [],
 		ctrl=True, shift=True, alt=True
 	)
 
 
 def add_undo(km, space):
-	km.new(space, "ed.undo", "Z", "PRESS", [])
-	km.new(space, "ed.undo", "Z", "PRESS", [], ctrl=True)
-	km.new(space, "ed.redo", "Z", "PRESS", [], shift=True)
+	km.new(space, 'ed.undo', 'Z', 'PRESS', [])
+	km.new(space, 'ed.undo', 'Z', 'PRESS', [], ctrl=True)
+	km.new(space, 'ed.redo', 'Z', 'PRESS', [], shift=True)
 
 
 def add_transform_tool(km, space, preferences):
@@ -68,9 +68,9 @@ def user_interface(km):
 def screen(km):
 	space = km.space('Screen', 'EMPTY', 'WINDOW')
 	add_undo(km, space)
-	km.new(space, "screen.repeat_last", "G", "PRESS", [])
-	# km.new(space, "render.render", "F9", "PRESS", [('use_viewport', True)])
-	# km.new(space, "render.render", "Q", "PRESS", [('use_viewport', True), ('animation', True)], shift=True)
+	km.new(space, 'screen.repeat_last', 'G', 'PRESS', [])
+	# km.new(space, 'render.render', 'F9', 'PRESS', [('use_viewport', True)])
+	# km.new(space, 'render.render', 'Q', 'PRESS', [('use_viewport', True), ('animation', True)], shift=True)
 
 
 def view2d(km):
@@ -87,29 +87,63 @@ def view3d(km, preferences):
 	add_undo(km, space)
 	add_transform_tool(km, space, preferences)
 
-	km.new(space, "view3d.select", "LEFTMOUSE", "CLICK", [])
+	km.new(space, 'screen.region_quadview', 'SPACE', 'PRESS', [])
+
+	km.new(space, 'view3d.maya_display_presets', 'ZERO', 'PRESS', 
+		[('mode', 'DEFAULT')]
+	)
+
+	km.new(space, 'view3d.maya_display_presets', 'ONE', 'PRESS',
+		[('mode', 'ROUGH')]
+	)
+
+	km.new(space, 'view3d.maya_display_presets', 'TWO', 'PRESS',
+		[('mode', 'MEDIUM')]
+	)
+
+	km.new(space, 'view3d.maya_display_presets', 'THREE', 'PRESS',
+		[('mode', 'SMOOTH')]
+	)
+
+	km.new(space, 'view3d.maya_display_presets', 'FOUR', 'PRESS',
+		[('mode', 'WIREFRAME')]
+	)
+
+	km.new(space, 'view3d.maya_display_presets', 'FIVE', 'PRESS',
+		[('mode', 'SHADED')]
+	)
+
+	km.new(space, 'view3d.maya_display_presets', 'SIX', 'PRESS',
+		[('mode', 'TEXTURE')]
+	)
+
+	km.new(space, 'view3d.maya_display_presets', 'SEVEN', 'PRESS',
+		[('mode', 'RENDER')]
+	)
+
+	km.new(space, 'view3d.select', 'LEFTMOUSE', 'CLICK', [])
 	km.new(
-		space, "view3d.select", "LEFTMOUSE", "CLICK",
+		space, 'view3d.select', 'LEFTMOUSE', 'CLICK',
 		[('extend', True)], ctrl=True
 	)
 
 	km.new(
-		space, "view3d.select", "LEFTMOUSE", "CLICK",
+		space, 'view3d.select', 'LEFTMOUSE', 'CLICK',
 		[('deselect', True)], alt=True
 	)
 
 	km.new(
-		space, "wm.tool_set_by_id", "Q", "PRESS",
-		[('name', "builtin.select_box"), ('cycle', True)]
+		space, 'wm.tool_set_by_id', 'Q', 'PRESS',
+		[('name', 'builtin.select_box'), ('cycle', True)]
 	)
 
 	km.new(
-		space, "view3d.view_selected", "F", "PRESS",
+		space, 'view3d.view_selected', 'F', 'PRESS',
 		[('use_all_regions', False)]
 	)
 
 	km.new(
-		space, "view3d.view_all", "A", "PRESS",
+		space, 'view3d.view_all', 'A', 'PRESS',
 		[('use_all_regions', False), ('center', False)]
 	)
 
@@ -127,13 +161,13 @@ def view3d(km, preferences):
 def view3d_navigation(km, preferences):
 	space = km.space('3D View', 'VIEW_3D', 'WINDOW')
 	if preferences.view_undo:
-		km.new(space, "view3d.movecover", "MIDDLEMOUSE", "PRESS", [], alt=True)
-		km.new(space, "view3d.rotatecover", "LEFTMOUSE", "PRESS", [], alt=True)
-		km.new(space, "view3d.zoomcover", "RIGHTMOUSE", "PRESS", [], alt=True)
+		km.new(space, 'view3d.movecover', 'MIDDLEMOUSE', 'PRESS', [], alt=True)
+		km.new(space, 'view3d.rotatecover', 'LEFTMOUSE', 'PRESS', [], alt=True)
+		km.new(space, 'view3d.zoomcover', 'RIGHTMOUSE', 'PRESS', [], alt=True)
 	else:
-		km.new(space, "view3d.move", "MIDDLEMOUSE", "PRESS", [], alt=True)
-		km.new(space, "view3d.rotate", "LEFTMOUSE", "PRESS", [], alt=True)
-		km.new(space, "view3d.zoom", "RIGHTMOUSE", "PRESS", [], alt=True)
+		km.new(space, 'view3d.move', 'MIDDLEMOUSE', 'PRESS', [], alt=True)
+		km.new(space, 'view3d.rotate', 'LEFTMOUSE', 'PRESS', [], alt=True)
+		km.new(space, 'view3d.zoom', 'RIGHTMOUSE', 'PRESS', [], alt=True)
 
 
 def view3d_generic(km):
@@ -178,32 +212,32 @@ def transform(km):
 
 def object_mode(km, preferences):
 	space = km.space( 'Object Non-modal', 'EMPTY', 'WINDOW')
-	km.new(space, "bsmax.mode_set", 'TAB', "PRESS", [])
+	km.new(space, 'bsmax.mode_set', 'TAB', 'PRESS', [])
 
 	space = km.space( 'Object Mode', 'EMPTY', 'WINDOW')
 	add_search(km, space)
 	add_undo(km, space)
 	add_transform_tool(km, space, preferences)
 
-	km.new(space, "object.hide_view_set", "H", "PRESS", [], ctrl=True)
+	km.new(space, 'object.hide_view_set', 'H', 'PRESS', [], ctrl=True)
 	km.new(
-		space, "object.hide_view_set", "H", "PRESS",
+		space, 'object.hide_view_set', 'H', 'PRESS',
 		[('unselected', True)], alt=True
 	)
 
 	km.new(
-		space, "object.hide_view_clear", "H", "PRESS",
+		space, 'object.hide_view_clear', 'H', 'PRESS',
 		[], ctrl=True, shift=True
 	)
 
-	km.new(space, "object.hide_view_clear", "S", "PRESS", [])
-	# km.new(space, "anim.keyframe_insert_menu", "W", "PRESS", [('type', 'Location')], shift=True)
-	# km.new(space, "anim.keyframe_insert_menu", "E", "PRESS", [('type', 'Rotation')], shift=True)
-	# km.new(space, "anim.keyframe_insert_menu", "R", "PRESS", [('type', 'Scaling')], shift=True)
-	km.new(space, "object.modify_pivotpoint", "INSERT", "PRESS", [])
+	km.new(space, 'object.hide_view_clear', 'S', 'PRESS', [])
+	# km.new(space, 'anim.keyframe_insert_menu', 'W', 'PRESS', [('type', 'Location')], shift=True)
+	# km.new(space, 'anim.keyframe_insert_menu', 'E', 'PRESS', [('type', 'Rotation')], shift=True)
+	# km.new(space, 'anim.keyframe_insert_menu', 'R', 'PRESS', [('type', 'Scaling')], shift=True)
+	km.new(space, 'object.modify_pivotpoint', 'INSERT', 'PRESS', [])
 	km.new(
-		space, "wm.call_menu", "INSERT", "PRESS",
-		[('name', "BSMAX_MT_SetPivotPoint")], ctrl=True
+		space, 'wm.call_menu', 'INSERT', 'PRESS',
+		[('name', 'BSMAX_MT_SetPivotPoint')], ctrl=True
 	)
 
 
@@ -314,9 +348,14 @@ def node_editor(km):
 	# - 	Toggle Zoom Out
 	# , 	Up Stream
 
+def frames(km):
+	km.mute('Frames', 'screen.animation_play', 'SPACE', 'PRESS')
+	space = km.space('Frames', 'EMPTY', 'WINDOW')
+	km.new(space, 'screen.animation_play', 'V', 'PRESS', [], alt=True)
+
 
 def graph_editor(km):
-	# space = km.space("Dopesheet", "DOPESHEET_EDITOR, 'WINDOW'")
+	# space = km.space('Dopesheet', 'DOPESHEET_EDITOR, 'WINDOW'')
 	# Graph Editor ------------------------
 	# 1 	Absolute View
 	# A 	Frame All
@@ -410,6 +449,7 @@ def register_maya(preferences):
 			pos(km_viewport, preferences)
 			font(km_viewport)
 			outliner(km_viewport)
+			frames(km_viewport)
 			km_viewport.register()
 		else:
 			km_viewport.unregister()
@@ -482,7 +522,7 @@ def unregister_maya():
 	km_video_sequencer.unregister()
 	km_file_browser.unregister()
 
-"""
+'''
 2D Pan/Zoom
 #\\ + Middle mouse button 	2D Pan tool
 #\\ + Right mouse button 	2D Zoom tool
@@ -747,4 +787,4 @@ N 	Toggle Solo Selected Tracks
 K 	Toggle Time Cursor Press
 K 	Toggle Time Cursor Release
 
-"""
+'''

@@ -19,7 +19,6 @@ import bpy
 from bpy.types import WorkSpaceTool
 
 
-
 class CurveFilletTool(WorkSpaceTool):
 	bl_space_type='VIEW_3D'
 	bl_context_mode='EDIT_CURVE'
@@ -34,7 +33,6 @@ class CurveFilletTool(WorkSpaceTool):
 
 	def draw_settings(ctx, layout, tool):
 		props = tool.operator_properties("curve.chamfer")
-
 
 
 class CurveChamferTool(WorkSpaceTool):
@@ -53,14 +51,12 @@ class CurveChamferTool(WorkSpaceTool):
 		pass
 
 
-
 def register_panel():
 	bpy.utils.register_tool(CurveFilletTool,
 			after={"builtin.randomize"}, separator=True, group=True
 	)
 	
 	bpy.utils.register_tool(CurveChamferTool, after={CurveFilletTool.bl_idname})
-
 
 
 def unregister_panel():

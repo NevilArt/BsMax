@@ -12,6 +12,7 @@
 #	You should have received a copy of the GNU General Public License
 #	along with this program.  If not, see <https://www.gnu.org/licenses/>.
 ############################################################################
+# 2024/06/10
 
 import bpy
 
@@ -23,7 +24,6 @@ from bpy.props import EnumProperty, BoolProperty
 
 #TODO Open ViewLayer as float dialog for Set State in quad menu
 
-
 class View3DData:
 	def __init__(self):
 		self._shading_type = 'SOLID'
@@ -31,12 +31,11 @@ class View3DData:
 v3dd = View3DData()
 
 
-
 # new one will cretae for NewStyle mode
 class View3D_OT_Wireframe_Toggle(Operator):
-	""" Wire Frame toggle """
 	bl_idname = "view3d.wireframe_toggle"
 	bl_label = "Wireframe Toggle"
+	bl_description = "Wire Frame toggle"
 	bl_options = {'REGISTER', 'INTERNAL'}
 
 	@classmethod
@@ -47,10 +46,12 @@ class View3D_OT_Wireframe_Toggle(Operator):
 		global v3dd
 		shading = ctx.area.spaces[0].shading
 		if shading.type == 'WIREFRAME':
-			shading.type = v3dd._shading_type #'SOLID''MATERIAL''RENDERED'
+			#'SOLID''MATERIAL''RENDERED'
+			shading.type = v3dd._shading_type
 		else:
 			v3dd._shading_type = shading.type
 			shading.type = 'WIREFRAME'
+
 		return{"FINISHED"}
 
 
@@ -61,11 +62,10 @@ class Lighting_type:
 lst = Lighting_type()
 
 
-
 class View3D_OT_Lighting_Toggle(Operator):
-	""" Lighting toggle """
-	bl_idname = "view3d.lighting_toggle"
+	bl_idname = 'view3d.lighting_toggle'
 	bl_label = "Lighting Toggle / Attribute Link"
+	bl_description = "Lighting toggle"
 	bl_options = {'REGISTER', 'INTERNAL'}
 
 	@classmethod
@@ -76,6 +76,7 @@ class View3D_OT_Lighting_Toggle(Operator):
 		global lst
 		if len(ctx.selected_objects) and ctx.active_object != None:
 			bpy.ops.wm.call_menu(name='VIEW3D_MT_make_links')
+
 		else:
 			shading = ctx.area.spaces[0].shading
 			if shading.type == 'RENDERED':
@@ -83,14 +84,14 @@ class View3D_OT_Lighting_Toggle(Operator):
 			else:
 				lst.shading_type = shading.type
 				shading.type = 'RENDERED'
-		return{"FINISHED"}
 
+		return{'FINISHED'}
 
 
 class View3D_OT_Edge_Face_Toggle(Operator):
-	""" Edge Face Toggle """
-	bl_idname = "view3d.edge_faces_toggle"
+	bl_idname = 'view3d.edge_faces_toggle'
 	bl_label = "Edge Shaded Toggle"
+	bl_description = "Edge Face Toggle"
 	bl_options = {'REGISTER', 'INTERNAL'}
 
 	@classmethod
@@ -105,14 +106,13 @@ class View3D_OT_Edge_Face_Toggle(Operator):
 		else:
 			overlay.show_wireframes = True
 			overlay.wireframe_threshold = 1
-		return{"FINISHED"}
-
+		return{'FINISHED'}
 
 
 class View3D_OT_Shade_Selected_Faces(Operator):
-	""" Highlight selected faces color toggle """
-	bl_idname = "view3d.shade_selected_faces"
+	bl_idname = 'view3d.shade_selected_faces'
 	bl_label = "Shade Selected Faces"
+	bl_description = "Highlight selected faces color toggle"
 	bl_options = {'REGISTER', 'INTERNAL'}
 
 	@classmethod
@@ -125,14 +125,14 @@ class View3D_OT_Shade_Selected_Faces(Operator):
 			FaceShade.face_select = (0.0, 0.0, 0.0, 0.0)
 		else:
 			FaceShade.face_select = (0.8156, 0.0, 0.0, 0.5)
-		return{"FINISHED"}
 
+		return{'FINISHED'}
 
 
 class View3D_OT_Show_Statistics(Operator):
-	""" Display Statistic Toggle """
-	bl_idname = "view3d.show_statistics"
+	bl_idname = 'view3d.show_statistics'
 	bl_label = "Show Statistics Toggle"
+	bl_description = "Display Statistic Toggle"
 	bl_options = {'REGISTER', 'INTERNAL'}
 
 	@classmethod
@@ -156,26 +156,27 @@ class View3D_OT_Show_Statistics(Operator):
 		else:
 			overlay.show_text = False
 			overlay.show_stats = False
-		return{"FINISHED"}
 
+		return{'FINISHED'}
 
 
 class View3D_OT_Show_Types_Toggle(Operator):
-	bl_idname = "view3d.show_types_toggle"
+	bl_idname = 'view3d.show_types_toggle'
 	bl_label = "Show Types Toggle"
 	bl_options = {'REGISTER', 'INTERNAL'}
 
 	mode: EnumProperty(
-		name='Type', default='GEOMETRY', 
+		name='Type', 
 		items=[
-			('GEOMETRY', 'Geometry', ""),
-			('EMPTY', 'Empty', ""),
-			('CURVE', 'Curve', ""),
-			('LIGHT', 'Light', ""),
-			('ARMATURE', 'Armature', ''),
-			('CAMERA', 'Camera', ''),
-		]
-	)
+			('GEOMETRY', "Geometry", ""),
+			('EMPTY', "Empty", ""),
+			('CURVE', "Curve", ""),
+			('LIGHT', "Light", ""),
+			('ARMATURE', "Armature", ''),
+			('CAMERA', "Camera", '')
+		],
+		default='GEOMETRY',
+	) # type: ignore
 
 	@classmethod
 	def poll(self, ctx):
@@ -232,24 +233,24 @@ class View3D_OT_Show_Types_Toggle(Operator):
 		elif self.mode == 'CAMERA':
 			self.camera_toggle(ctx)
 
-		return{"FINISHED"}
-
+		return{'FINISHED'}
 
 
 class View3D_OT_Random_Object_Color(Operator):
-	""" Give a random objectt color to selected/all mesh objects """
-	bl_idname = "view3d.random_object_color"
+	bl_idname = 'view3d.random_object_color'
 	bl_label = "Random Object Color"
+	bl_description = "Give a random objectt color to selected/all mesh objects"
 	bl_options = {'REGISTER', 'UNDO'}
 
-	selected: BoolProperty(name="Selected only", default=False)
+	selected: BoolProperty(name="Selected only", default=False) # type: ignore
 	mode: EnumProperty(
-		name="Mode", default="RAND", 
+		name="Mode",
 		items=[
-			('RAND', 'Random', ''),
-			('UNIQ', 'Unique', '')
-		]
-	)
+			('RAND', "Random", ""),
+			('UNIQ', "Unique", "")
+		],
+		default='RAND'
+	) # type: ignore
 
 	@classmethod
 	def poll(self, ctx):
@@ -258,7 +259,10 @@ class View3D_OT_Random_Object_Color(Operator):
 	def get_objects(self, ctx):
 		types = {'MESH', 'CURVE', 'SURFACE', 'META', 'FONT'}
 		if self.selected:
-			return [obj for obj in ctx.selected_objects if obj.type in types]
+			return [obj for obj in ctx.selected_objects
+			   if obj.type in types
+			]
+		
 		return [obj for obj in bpy.data.objects if obj.type in types]
 
 	def execute(self, ctx):
@@ -273,13 +277,13 @@ class View3D_OT_Random_Object_Color(Operator):
 			for obj in self.get_objects(ctx):
 				obj.color = (1, 1, 1, 1)
 
-		return{"FINISHED"}
-
+		return{'FINISHED'}
 
 
 class View3D_OT_Setting(Operator):
 	bl_idname = 'view3d.setting'
-	bl_label = 'Setting'
+	bl_label = "Setting"
+	bl_description = "Display Setting"
 	bl_options = {'REGISTER', 'UNDO', 'INTERNAL'}
 
 	name: EnumProperty(
@@ -304,7 +308,7 @@ class View3D_OT_Setting(Operator):
 			('use_scene_lights_render', 'Use scene lights render',''),
 			('use_scene_world_render', 'Use scene world render','')
 		]
-	)
+	) # type: ignore
 
 	def execute(self, ctx):
 		shading = ctx.space_data.shading
@@ -330,7 +334,6 @@ class View3D_OT_Setting(Operator):
 		return {'FINISHED'}
 
 
-
 class VIEW3D_MT_Preview(Menu):
 	bl_idname = "VIEW3D_MT_preview"
 	bl_label = "Preview"
@@ -339,28 +342,23 @@ class VIEW3D_MT_Preview(Menu):
 		layout=self.layout
 		layout.operator_context = 'INVOKE_REGION_WIN'
 		layout.operator(
-			"render.opengl",
-			text="Viewport Render Image",
+			'render.opengl', text="Viewport Render Image",
 			icon='RENDER_STILL'
 		)
 
-		layout.operator("render.opengl",
-			text="Viewport Render Animation",
+		layout.operator(
+			'render.opengl', text="Viewport Render Animation",
 			icon='RENDER_ANIMATION'
 		).animation = True
 
 		props = layout.operator(
-			"render.opengl",
-			text="Viewport Render Keyframes",
+			'render.opengl', text="Viewport Render Keyframes",
 			icon='RENDER_ANIMATION'
 		).animation = True
 
-		props.render_keyed_only = True
-
-
 
 class VIEW3D_MT_ViewLayer(Menu):
-	bl_idname = "VIEW3D_MT_viewlayer"
+	bl_idname = 'VIEW3D_MT_viewlayer'
 	bl_label = "View Layer"
 
 	def draw(self, ctx):
@@ -375,14 +373,12 @@ class VIEW3D_MT_ViewLayer(Menu):
 		)
 
 
-
 def random_object_color_menu(self, ctx):
 	self.layout.separator()
 	self.layout.operator('view3d.random_object_color')
 
 
-
-classes = (
+classes = {
 	View3D_OT_Edge_Face_Toggle,
 	View3D_OT_Lighting_Toggle,
 	View3D_OT_Random_Object_Color,
@@ -394,25 +390,21 @@ classes = (
 
 	VIEW3D_MT_Preview,
 	VIEW3D_MT_ViewLayer	
-)
-
+}
 
 
 def register_viewport():
-	for c in classes:
-		bpy.utils.register_class(c)
+	for cls in classes:
+		bpy.utils.register_class(cls)
 
 	bpy.types.VIEW3D_MT_object_showhide.append(random_object_color_menu)
-
 
 
 def unregister_viewport():
 	bpy.types.VIEW3D_MT_object_showhide.remove(random_object_color_menu)
 
-	for c in classes:
-		bpy.utils.unregister_class(c)
+	for cls in classes:
+		bpy.utils.unregister_class(cls)
 
-
-
-if __name__ == "__main__":
+if __name__ == '__main__':
 	register_viewport()

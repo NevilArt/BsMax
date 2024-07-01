@@ -12,46 +12,58 @@
 #	You should have received a copy of the GNU General Public License
 #	along with this program.  If not, see <https://www.gnu.org/licenses/>.
 ############################################################################
-from .classes import Vector2,Border,Edge
+# 2024/06/12
+
+from .classes import Vector2, Border, Edge
 
 def get_area(self):
-	if self.owner != None:
-		lenght,size,border = self.owner.size,self.size,self.owner.border
+	if self.owner:
+		lenght,size,border = self.owner.size, self.size, self.owner.border
 		sx = border.left
 		sy = border.bottom
-		lx = lenght.x-(border.left+border.right+size.x)
-		ly = lenght.y-(border.bottom+border.top+size.y)
+		lx = lenght.x - (border.left + border.right + size.x)
+		ly = lenght.y - (border.bottom + border.top + size.y)
+
 	else:
-		sx,sy = 0,0
-		lx,ly = 7680,4320
+		sx, sy = 0, 0
+		lx, ly = 7680, 4320
+
 	""" return start, end, lenght """
-	return Vector2(sx,sy),Vector2(sx+lx,sy+ly),Vector2(lx,ly)
+	return Vector2(sx, sy), Vector2(sx+lx, sy+ly), Vector2(lx, ly)
+
 
 class Cell:
 	def __init__(self):
 		self.controllers = []
-		self.size = Vector2(0,0)
-		self.pos = Vector2(0,0)
+		self.size = Vector2(0, 0)
+		self.pos = Vector2(0, 0)
+
 	def get_max_size(self):
-		x,y = 0,0
-		for c in self.controllers:
-			if c.enabled:
-				x,y = max(c.size.x,x),max(c.size.y,y)
-		return Vector2(x,y)
+		x, y = 0, 0
+		for controller in self.controllers:
+			if controller.enabled:
+				x, y = max(controller.size.x, x), max(controller.size.y, y)
+
+		return Vector2(x, y)
+
 	def set_owner_pos(self):
-		for c in self.controllers:
-			if c.enabled:
-				s,e,l = get_area(c)
-				if c.pos.auto:
-					if c.align.any():
-						p = c.align.get_location(c,c.owner)
-						c.pos.set(p.x,p.y)
+		for controller in self.controllers:
+			if controller.enabled:
+				s, e, l = get_area(controller)
+				if controller.pos.auto:
+					if controller.align.any():
+						pos = controller.align.get_location(
+							controller, controller.owner
+						)
+						controller.pos.set(pos.x, pos.y)
+
 					else:
-						c.pos.set(self.pos.x,self.pos.y)
+						controller.pos.set(self.pos.x, self.pos.y)
 				else:
-					if c.owner != None and not c.table.ignore:
-						c.pos.min.set(s.x,s.y)	
-						c.pos.max.set(e.x,e.y)
+					if controller.owner and not controller.table.ignore:
+						controller.pos.min.set(s.x, s.y)	
+						controller.pos.max.set(e.x, e.y)
+
 
 class Table:
 	def __init__(self, owner):
@@ -59,27 +71,30 @@ class Table:
 		self.auto = owner.size.auto
 		self.controllers = owner.controllers
 		self.cells = [] # 2D rows X columns
-		self._size = Vector2(0,0)
-		self.gap = Vector2(0,0)
-		self.border = Border(0,0,0,0)
+		self._size = Vector2(0, 0)
+		self.gap = Vector2(0, 0)
+		self.border = Border(0, 0, 0, 0)
 		self.ignore = False
 
 	def create(self):
-		self._size.set(0,0)
+		self._size.set(0, 0)
 		""" get biget number in each direction """
-		rows = [c.row for c in self.controllers]
+		rows = [controller.row for controller in self.controllers]
 		lastrow = max(rows) if len(rows) > 0 else 0
-		cols = [c.column for c in self.controllers]
+
+		cols = [controller.column for controller in self.controllers]
 		lastcol = max(cols) if len(cols) > 0 else 0
 
 		""" create a 2d variable sheet """
 		self.cells = [[Cell() for x in range(lastcol+1)] for y in range(lastrow+1)]
 		
 		""" put controllers inside the sheet """
-		for c in self.controllers:
-			self.cells[c.row][c.column].controllers.append(c)
+		for controller in self.controllers:
+			row = controller.row
+			column = controller.column
+			self.cells[row][column].controllers.append(controller)
 
-	def get_column(self,index):
+	def get_column(self, index):
 		column = []
 		if len(self.cells) > 0:
 			if index < len(self.cells[0]):
@@ -87,14 +102,14 @@ class Table:
 					column.append(row[index])
 		return column
 
-	def get_row(self,index):
+	def get_row(self, index):
 		row = []
 		if index < len(self.cells):
-			for r in self.cells[index]:
-				row.append(r)
+			for cell in self.cells[index]:
+				row.append(cell)
 		return row
 
-	def get_cell(self,column,row):
+	def get_cell(self, column, row):
 		if row < len(self.cells) > 0:
 			if column < len(self.cells[0]) > 0:
 				return self.cells[row][column]
@@ -106,24 +121,29 @@ class Table:
 		return columns,rows
 
 	def arrange_sizes(self):
-		cols,rows = self.get_table_dimension()
-		for i in range(cols):
-			maxwidth,column = 0,self.get_column(i)
+		cols, rows = self.get_table_dimension()
+		for index in range(cols):
+			maxwidth = 0 
+			column = self.get_column(index)
 			for cell in column:
-				maxwidth = max(maxwidth,cell.get_max_size().x)
+				maxwidth = max(maxwidth, cell.get_max_size().x)
+
 			for cell in column:
 				cell.size.x = maxwidth
-		for i in range(rows):
-			maxheight,row = 0,self.get_row(i)
+
+		for index in range(rows):
+			maxheight = 0
+			row = self.get_row(index)
 			for cell in row:
-				maxheight = max(maxheight,cell.get_max_size().y)
+				maxheight = max(maxheight, cell.get_max_size().y)
+
 			for cell in row:
 				cell.size.y = maxheight
 
 	def fit_owner(self):
 		if len(self.cells) > 0:
 			if self.owner.size.auto:
-				self.owner.size.set(self._size.x,self._size.y)
+				self.owner.size.set(self._size.x, self._size.y)
 
 	def fit_children(self):
 		for row in self.cells:
@@ -134,29 +154,35 @@ class Table:
 		""" update sub cells first """
 		for row in self.cells:
 			for cell in row:
-				for c in cell.controllers:
-					c.table.update()
+				for controller in cell.controllers:
+					controller.table.update()
 
 		self.arrange_sizes()
 		cols,rows = self.get_table_dimension()
-		x,y = 0,0
+		x, y = 0, 0
 
-		border = Edge(0,0,0,0) if self.owner.border.ignore else self.border
+		border = Edge(0, 0, 0, 0) if self.owner.border.ignore else self.border
 
-		for i in range(cols):
+		for index in range(cols):
 			y = border.bottom #+self.gap.y
-			for cell in self.get_column(i):
+	
+			for cell in self.get_column(index):
 				cell.pos.y = y
-				y += cell.size.y+self.gap.y
+				y += cell.size.y + self.gap.y
+	
 			y += border.top
+
 		self._size.y = y
 
-		for i in range(rows):
+		for index in range(rows):
 			x = border.left #+self.gap.x
-			for cell in self.get_row(i):
+
+			for cell in self.get_row(index):
 				cell.pos.x = x
-				x += cell.size.x+self.gap.x
+				x += cell.size.x + self.gap.x
+
 			x += border.right
+
 		self._size.x = x
 
 		self.fit_owner()
@@ -170,9 +196,7 @@ class Table:
 
 	@size.setter
 	def size(self, newsize):
-		self._size.set(newsize.x,newsize.y)
+		self._size.set(newsize.x, newsize.y)
 
-	def set(self,x,y):
-		self._size.x.set(x,y)
-
-__all__ = ["Table"]
+	def set(self, x, y):
+		self._size.x.set(x, y)

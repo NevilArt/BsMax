@@ -12,69 +12,133 @@
 #	You should have received a copy of the GNU General Public License
 #	along with this program.  If not, see <https://www.gnu.org/licenses/>.
 ############################################################################
+# 2024/06/20
 
 import bpy
-from bpy.props import (BoolProperty, FloatProperty, EnumProperty)
-from bsmax.curve import Curve
-from bsmax.operator import CurveTool
+
+from bpy.types import Operator
+from bpy.props import FloatProperty, EnumProperty
+from bsmax.curve import (
+	get_curve_object_selection,
+	get_splines_intersection_points,
+	collect_splines_divisions,
+	get_inout_segments,
+	curve_delete_segments,
+	curve_merge_gaps_by_distance
+)
 
 
+def curve_boolean(curve, spline1, spline2, mode, tollerance):
 
-class Curve_OT_Boolean(CurveTool):
-	bl_idname = "curve.boolean"
+	intersections = get_splines_intersection_points(spline1, spline2, tollerance)
+	divisions = collect_splines_divisions(intersections)
+
+	for division in divisions:
+		for division_segment in division.segments:
+			division.spline.multi_division(
+				division_segment.index,
+				division_segment.times,
+				cos=division_segment.cos
+			)
+
+	inner1, outer1 = get_inout_segments(spline1, spline2)
+	inner2, outer2 = get_inout_segments(spline2, spline1)
+
+	if mode == 'UNION':
+		curve_delete_segments(curve, spline1, inner1)
+		curve_delete_segments(curve, spline2, inner2)
+
+	elif mode == 'INTERSECTION':
+		curve_delete_segments(curve, spline1, outer1)
+		curve_delete_segments(curve, spline2, outer2)
+
+	elif mode == 'DIFFERENCE':
+		curve_delete_segments(curve, spline1, inner1)
+		curve_delete_segments(curve, spline2, outer2)
+	
+	elif mode == 'CUT':
+		pass
+
+	curve_merge_gaps_by_distance(curve, 0.0001, False)
+
+
+def apply_curve_boolean(curve, mode, tollerance):
+	selected_splines = get_curve_object_selection(curve, 'close')
+	active_spline = curve.data.splines.active
+
+	if len(selected_splines) < 2 or not active_spline:
+		return
+	
+	if active_spline in selected_splines:
+		selected_splines.remove(active_spline)
+
+	for spline in selected_splines:
+		curve_boolean(curve, active_spline, spline, mode, tollerance)
+
+
+class Curve_OT_Boolean(Operator):
+	bl_idname = 'curve.boolean'
 	bl_label = "Boolean"
+	bl_description = "Curve Boolean tool"
 	bl_options = {'REGISTER', 'UNDO'}
 	
-	singleaction = True
-	typein: BoolProperty(name="Type In:",default=False)
-	advance: BoolProperty(name="advance:",default=False)
-	value: FloatProperty(name="tollerance:",unit='LENGTH',default=0.000001, min=0.0000000000001, max=1)
-	mode: EnumProperty(name='Type',default='UNION',
-		items=[('UNION','Union',''),
-		('INTERSECTION','Intersection',''),
-		('DIFFERENCE','Difference',''),
-		('CUT','Cut','') ])
+	mode: EnumProperty(
+		name="Mode",
+		items=[
+			(
+				'UNION', "Union", "Make Union",
+				'SELECT_EXTEND', 1
+			),
+			(
+				'SUBTRACT', "Subtract", "Subtract",
+				'SELECT_SUBTRACT', 2
+			),
+			(
+				'INTERSECTION', "Intersection", "Keep Intersection",
+				'SELECT_INTERSECT', 3
+			),
+			(
+				'DIFFERENCE', "Difference", "Keep Difrence",
+				'SELECT_DIFFERENCE', 4
+			),
+			(
+				'CUT', "Cut", "Only Cut on collision point",
+				'SELECT_SET', 5
+			) 
+		],
+		default='UNION'
+	) # type: ignore
 
-	def get_data(self, ctx):
-		self.obj = ctx.active_object
-		self.curve = Curve(self.obj)
+	tollerance: FloatProperty(
+		name="tollerance:", unit='LENGTH',
+		min=0.0000000000001, max=1,
+		default=0.000001
+	) # type: ignore
 
-	def apply(self):
-		curve = self.curve
-		curve.restore()
+	@classmethod
+	def poll(self, ctx):
+		if ctx.area.type == 'VIEW_3D':
+			return ctx.mode == 'EDIT_CURVE'
+		return False
 
-		# splines = curve.splines
-		indexes = curve.selection('close')
-		active = curve.active()
-		index1, index2 = None, None
-		if active != None and len(indexes) == 2:
-			index1 = active
-			index2 = indexes[0] if indexes[0] != active else indexes[1]
-		elif len(indexes) == 2:
-			index1 = indexes[0]
-			index2 = indexes[1]
-		if len(indexes) == 2:
-			curve.boolean(index1, index2, self.mode, self.value)
-		curve.update()
-
-	def draw(self, ctx):
+	def draw(self, _):
 		layout = self.layout
 		col = layout.column()
-		col.prop(self,"mode")
-		col.prop(self,"advance")
-		if self.advance:
-			col = layout.column(align=True)
-			col.prop(self,"value")
-	
-	def self_report(self):
-		self.report({'OPERATOR'},'bpy.ops.curve.boolean()')
+		col.prop(self, 'mode', expand=True)
+		layout.prop(self, 'tollerance')
 
+	def execute(self, ctx):
+		for curve in ctx.selected_objects:
+			apply_curve_boolean(curve, self.mode, self.tollerance)
+		return{'FINISHED'}
 
 
 def register_boolean():
 	bpy.utils.register_class(Curve_OT_Boolean)
 
 
-
 def unregister_boolean():
 	bpy.utils.unregister_class(Curve_OT_Boolean)
+
+if __name__ == '__main__':
+	register_boolean()

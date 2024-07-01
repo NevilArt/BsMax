@@ -12,14 +12,13 @@
 #	You should have received a copy of the GNU General Public License
 #	along with this program.  If not, see <https://www.gnu.org/licenses/>.
 ############################################################################
+# 2024/06/20
 
 import bpy
 
 from bpy.utils import register_class, unregister_class
 from bpy.types import Operator
 from bpy.props import EnumProperty
-
-#TODO add mesh validate operator too
 
 
 def clear_sculp_mask_data(ctx, objects):
@@ -65,21 +64,34 @@ def clear_skin_data(ctx, objects):
 def clear_custom_split_normals_data(ctx, objects):
 	active_object = ctx.active_object
 	bpy.ops.object.select_all(action='DESELECT')
+
 	for object in objects:
+		if not hasattr(object.data, 'has_custom_normals'):
+			continue
+
 		if object.data.has_custom_normals:
 			object.select_set(state=True)
 			ctx.view_layer.objects.active = object
 			bpy.ops.mesh.customdata_custom_splitnormals_clear()
+
 		object.select_set(state=False)
 
 	for object in objects:
 		object.select_set(state=True)
+
 	ctx.view_layer.objects.active = active_object
 
 
+def validate_mesh_data(objects):
+	for object in objects:
+		if hasattr(object.data, 'validate'):
+			object.data.validate()
+
+
 class Mesh_OT_Clear(Operator):
-	bl_idname = "mesh.clear"
+	bl_idname = 'mesh.clear'
 	bl_label = "Clear"
+	bl_description = "Clear Mesh Data"
 	bl_options = {'REGISTER', 'UNDO'}
 
 	action: EnumProperty(
@@ -87,7 +99,8 @@ class Mesh_OT_Clear(Operator):
 		items=[
 			('MASK', "Scalpt Mask Data", ""),
 			('SKIN', "Skin Data", ""),
-			('NORMAL', "Custom Split Normals Data", "")
+			('NORMAL', "Custom Split Normals Data", ""),
+			('VALIDATE', "Validate Mesh Data", "")
 		]
 	) # type: ignore
 
@@ -96,7 +109,7 @@ class Mesh_OT_Clear(Operator):
 		if ctx.area.type == 'VIEW_3D':
 			return ctx.mode == 'OBJECT'
 		return False
-
+	
 	def execute(self, ctx):
 		if self.action == 'MASK':
 			clear_sculp_mask_data(ctx, ctx.selected_objects)
@@ -106,8 +119,11 @@ class Mesh_OT_Clear(Operator):
 
 		elif self.action == 'NORMAL':
 			clear_custom_split_normals_data(ctx, ctx.selected_objects)
+		
+		elif self.action == 'VALIDATE':
+			validate_mesh_data(ctx.selected_objects)
 
-		return{"FINISHED"}
+		return{'FINISHED'}
 
 
 def cleanup_additional_menu(self, _):
@@ -124,6 +140,10 @@ def cleanup_additional_menu(self, _):
 	layout.operator(
 		'mesh.clear', text="Clear Custom Split Normals Data"
 	).action='NORMAL'
+
+	layout.operator(
+		'mesh.clear', text="Validate Mesh Data"
+	).action='VALIDATE'
 
 
 classes = {

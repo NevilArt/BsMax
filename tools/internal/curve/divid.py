@@ -12,19 +12,131 @@
 #	You should have received a copy of the GNU General Public License
 #	along with this program.  If not, see <https://www.gnu.org/licenses/>.
 ############################################################################
+# 2024/06/20
 
 import bpy
-\
+
 from bpy.types import Operator
 from bpy.props import BoolProperty, IntProperty, FloatProperty
+from bpy.utils import register_class, unregister_class
 
 from mathutils.geometry import intersect_point_line
 from bpy_extras.view3d_utils import region_2d_to_location_3d, location_3d_to_region_2d
 
 from bsmax.math import get_bias, get_distance
-from bsmax.curve import Curve
-from bsmax.operator import CurveTool
+from bsmax.curve import (
+    get_curve_object_selection,
+	get_spline_as_segments,
+	spline_multi_division,
+	spline_divid
+)
 
+
+def get_nearest_point_on_line(line, point):
+	intersect = intersect_point_line(point, line[0], line[1])
+	return intersect[0]
+
+
+def get_nearest_point(points):
+	if not points:
+		return
+
+	nearest_point = points[0]
+	for point in points:
+		if point.distance < nearest_point.distance:
+			nearest_point = point
+
+	return nearest_point
+
+
+def divide_segment(curve, ctx, segment, statr_time, end_time, count, coord):
+	statr_time = 0 if statr_time < 0 else statr_time
+	end_time = 1 if end_time > 1 else end_time
+	step = (end_time - statr_time) / count
+
+	points = []
+	for i in range(count):
+		time = statr_time + i * step
+		point_on_curve = curve.matrix_world @ segment.get_point_on(time)
+		point_on_view = region_2d_to_location_3d(
+			ctx.region, ctx.space_data.region_3d, coord, point_on_curve
+		)
+
+		distance = get_distance(point_on_curve, point_on_view)
+		points.append(Point(segment, time, distance, point_on_view))
+
+	return points
+
+
+def curve_refinde_modal(cls, ctx, event):
+	ctx.area.tag_redraw()
+	x, y = event.mouse_region_x, event.mouse_region_y
+	curve = cls.curve
+
+	if ctx.mode != 'EDIT_CURVE':
+		return {'CANCELLED'}
+
+	if not event.type in {'LEFTMOUSE', 'RIGHTMOUSE', 'MOUSEMOVE', 'ESC'}:
+		return {'PASS_THROUGH'}
+	
+	if event.type == 'MOUSEMOVE':
+		# if vert created:
+		# 	slide on the segment or spline
+		# else:
+		# 	pass
+		pass
+
+	if event.type in {'RIGHTMOUSE', 'ESC'}:
+		return {'CANCELLED'}
+
+	if event.type != 'LEFTMOUSE':
+		return {'RUNNING_MODAL'}
+
+	if event.value == 'PRESS':
+		cls.new_point_added = False
+
+		# Divide each segment to 10 part and collect distance from click point
+		points = []
+		for spline in curve.data.splines:
+			for segment in get_spline_as_segments(spline):
+				points += divide_segment(curve, ctx, segment, 0, 1, 10, (x,y))
+
+		nearest_point = get_nearest_point(points)
+
+		# Second division steps
+		for step in {0.1, 0.01, 0.001}:
+			points.clear()
+			start_time = nearest_point.time - step
+			end_time = nearest_point.time + step
+			points = divide_segment(
+				curve, ctx, nearest_point.segment, start_time, end_time, 10, (x,y)
+			)
+			nearest_point = get_nearest_point(points)
+
+		# Get nearest point of curve on 2d screen
+		point_on_segment = nearest_point.segment.get_point_on(nearest_point.time)
+		nearest_point_on_curve = curve.matrix_world @ point_on_segment
+		point_location = location_3d_to_region_2d(
+			ctx.region, ctx.space_data.region_3d, nearest_point_on_curve
+		)
+
+		# Insert if distance les than 10 pixel
+		if abs(x - point_location.x) < 10 and abs(y - point_location.y) < 10:
+			spline_divid(
+				nearest_point.segment.spline,
+				nearest_point.segment.index,
+				nearest_point.time
+			)
+			# nearest_point.segment.spline.divid(
+			# 	nearest_point.segment.index, nearest_point.time
+			# )
+			cls.new_point_added = True
+
+	# Update and Get new genarated curve data
+	if event.value =='RELEASE' and cls.new_point_added:
+		bpy.ops.ed.undo_push()
+	
+	return {'RUNNING_MODAL'}
 
 
 class Point:
@@ -35,169 +147,95 @@ class Point:
 		self.point_on_view = point_on_view
 
 
-
-class Curve_OT_divid_plus(CurveTool):
-	bl_idname = "curve.divid_plus"
+class Curve_OT_divid_plus(Operator):
+	bl_idname = 'curve.divid_plus'
 	bl_label = "Divid plus"
+	bl_description = ""
 	bl_options = {'REGISTER', 'UNDO'}
 	
-	typein: BoolProperty(name="Type In:",default=True)
-	count: IntProperty(name="Count",min=0,default=0)
-	squeeze: FloatProperty(name="Squeeze",min=0,max=1,default=0)
-	bias: FloatProperty(name="Bias",min=-1,max=1,default=0)
-	shift: FloatProperty(name="Shift",min=-1,max=1,default=0)
+	typein: BoolProperty(name="Type In:", default=True) # type: ignore
+	count: IntProperty(name="Count", min=0, default=0) # type: ignore
+	squeeze: FloatProperty(
+		name="Squeeze", min=0, max=1, default=0
+	) # type: ignore
+	
+	bias: FloatProperty(name="Bias", min=-1, max=1, default=0) # type: ignore
+	shift: FloatProperty(name="Shift", min=-1, max=1, default=0) # type: ignore
 
-	def apply(self):
-		curve = self.curve
-		curve.restore()
-
-		for selection in curve.selection('segment'):
-			spline = curve.splines[selection[0]]
-			selection[1].sort(reverse=True)
-			count = self.count+1
-			scale = 1-self.squeeze
-			offset = self.squeeze/2 + self.shift
-			for index in selection[1]:
-				times = [offset+get_bias(self.bias,t/count)*scale for t in range(1,count)]
-				spline.multi_division(index, times)
-
-		self.canceled = (self.count == 0)
-		curve.update()
-
-	def draw(self, ctx):
+	@classmethod
+	def poll(self, ctx):
+		if ctx.area.type == 'VIEW_3D':
+			return ctx.mode == 'EDIT_CURVE'
+		return False
+	
+	def draw(self, _):
 		layout = self.layout
 		col = layout.column(align=True)
-		col.prop(self,"count")
-		col.prop(self,"squeeze")
-		col.prop(self,"bias")
-		col.prop(self,"shift")
-	
-	def self_report(self):
-		self.report({'OPERATOR'},'bpy.ops.curve.divid_plus()')
+		col.prop(self, 'count')
+		col.prop(self, 'squeeze')
+		col.prop(self, 'bias')
+		col.prop(self, 'shift')
 
+	def execute(self, ctx):
+		curve = ctx.object
+		count = self.count + 1
+		selected_segments = get_curve_object_selection(curve, 'segment')
+
+		for selection in selected_segments:
+			spline = curve.data.splines[selection[0]]
+			selection[1].sort(reverse=True)
+			# count = self.count + 1
+			scale = 1 - self.squeeze
+			offset = self.squeeze/2 + self.shift
+			for index in selection[1]:
+				times = [
+					offset + get_bias(self.bias, t/count) \
+						* scale for t in range(1, count)
+				]
+				spline_multi_division(spline, index, times)
+
+		return{'FINISHED'}
 
 
 class Curve_OT_Refine(Operator):
 	bl_idname = "curve.refine"
 	bl_label = "Refine"
-	obj, curve = None, None
+	bl_description = ""
+	bl_options = {'REGISTER', 'UNDO'}
+
+	curve = None
 	new_point_added = False
 
 	@classmethod
 	def poll(self, ctx):
 		if ctx.area.type == 'VIEW_3D':
-			if len(ctx.scene.objects) > 0:
-				if ctx.object != None:
-					return ctx.mode == 'EDIT_CURVE'
+			return ctx.mode == 'EDIT_CURVE'
 		return False
-
-	def get_nearest_point_on_line(self, line, point):
-		intersect = intersect_point_line(point, line[0], line[1])
-		return intersect[0]
-
-	def get_nearest_point(self, points):
-		if points:
-			nearest_point = points[0]
-			for point in points:
-				if point.distance < nearest_point.distance:
-					nearest_point = point
-		return nearest_point
-	
-	def divide_segment(self, ctx, segment, statr_time, end_time, count, coord):
-		statr_time = 0 if statr_time < 0 else statr_time
-		end_time = 1 if end_time > 1 else end_time
-		step = (end_time - statr_time) / count
-		points = []
-		for i in range(count):
-			time = statr_time + i * step
-			point_on_curve = self.obj.matrix_world @ segment.get_point_on(time)
-			point_on_view = region_2d_to_location_3d(ctx.region, ctx.space_data.region_3d, coord, point_on_curve)
-			distance = get_distance(point_on_curve, point_on_view)
-			points.append(Point(segment, time, distance, point_on_view))
-		return points
 	
 	def modal(self, ctx, event):
-		ctx.area.tag_redraw()
-		x,y = event.mouse_region_x, event.mouse_region_y
+		return curve_refinde_modal(self, ctx, event)
 	
-		if ctx.mode != 'EDIT_CURVE':
-			return {'CANCELLED'}
-
-		if not event.type in {'LEFTMOUSE', 'RIGHTMOUSE', 'MOUSEMOVE', 'ESC'}:
-			return {'PASS_THROUGH'}
-		
-		elif event.type == 'MOUSEMOVE':
-			# if vert created:
-			# 	slide on the segment or spline
-			# else:
-			# 	pass
-			pass
-
-		elif event.type == 'LEFTMOUSE':
-			if event.value == 'PRESS':
-				self.new_point_added = False
-				self.curve = Curve(self.obj)
-				""" Divide each segment to 10 part and collect distance from click point """
-				points = []
-				for spline in self.curve.splines:
-					for segment in spline.get_as_segments():
-						points += self.divide_segment(ctx, segment, 0, 1, 10, (x,y))
-
-				nearest_point = self.get_nearest_point(points)
-
-				""" second division steps """
-				for step in {0.1, 0.01, 0.001}:
-					points.clear()
-					start_time, end_time = nearest_point.time - step, nearest_point.time + step
-					points = self.divide_segment(ctx, nearest_point.segment, start_time, end_time, 10, (x,y))
-					nearest_point = self.get_nearest_point(points)
-
-				""" get nearest point of curve on 2d screen """
-				nearest_point_on_curve = self.obj.matrix_world @ nearest_point.segment.get_point_on(nearest_point.time)
-				pl = location_3d_to_region_2d(ctx.region, ctx.space_data.region_3d, nearest_point_on_curve)
-
-				""" insert if distance les than 10 pixel """
-				if abs(x-pl.x) < 10 and abs(y-pl.y) < 10:
-					nearest_point.segment.spline.divid(nearest_point.segment.index, nearest_point.time)
-					self.new_point_added = True
-
-			if event.value =='RELEASE' and self.new_point_added:
-				""" Update and Get new genarated curve data """
-				self.curve.update()
-				bpy.ops.ed.undo_push()
-			
-			return {'RUNNING_MODAL'}
-
-		elif event.type in {'RIGHTMOUSE','ESC'}:
-			return {'CANCELLED'}
-
-		return {'RUNNING_MODAL'}
-	
-	def invoke(self, ctx, event):
-		self.obj = ctx.active_object
-		self.curve = Curve(self.obj)
+	def invoke(self, ctx, _):
+		self.curve = ctx.object
 		ctx.window_manager.modal_handler_add(self)
 		return {'RUNNING_MODAL'}
 
 
-classes = (
+classes = {
 	Curve_OT_divid_plus,
 	Curve_OT_Refine
-)
-
+}
 
 
 def register_divid():
-	for c in classes:
-		bpy.utils.register_class(c)
-
+	for cls in classes:
+		register_class(cls)
 
 
 def unregister_divid():
-	for c in classes:	
-		bpy.utils.unregister_class(c)
+	for cls in classes:
+		unregister_class(cls)
 
 
-
-if __name__ == "__main__":
+if __name__ == '__main__':
 	register_divid()

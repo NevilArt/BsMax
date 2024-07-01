@@ -373,19 +373,19 @@ class BsMax_MT_LightProbsCreate(Menu):
 
 	def draw(self, ctx):
 		layout = self.layout
-		icon = 'LIGHTPROBE_CUBEMAP' if version < (4, 0, 0) else 'LIGHTPROBE_SPHERE'
+		icon = 'LIGHTPROBE_CUBEMAP' if version < (4, 1, 0) else 'LIGHTPROBE_SPHERE'
 		layout.operator(
 			'create.light_probe_cubemap',
 			text="Reflection Cubemap", icon=icon
 		)
 		
-		icon = 'LIGHTPROBE_PLANAR' if version < (4, 0, 0) else 'LIGHTPROBE_PLANE'
+		icon = 'LIGHTPROBE_PLANAR' if version < (4, 1, 0) else 'LIGHTPROBE_PLANE'
 		layout.operator(
 			'create.light_probe_planer',
 			text="Reflection Plane", icon=icon
 		)
 		
-		icon = 'LIGHTPROBE_GRID' if version < (4, 0, 0) else 'LIGHTPROBE_VOLUME'
+		icon = 'LIGHTPROBE_GRID' if version < (4, 1, 0) else 'LIGHTPROBE_VOLUME'
 		layout.operator(
 			'create.light_probe_grid',
 			text="Irradiance Volume", icon=icon

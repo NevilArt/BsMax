@@ -19,63 +19,7 @@ import bpy
 from bpy.types import Operator
 from mathutils import Vector
 
-from bsmax.curve import Curve
 from bsmax.graphic import Rubber_Band, get_screen_pos
-
-
-def curve_tool_get_data(self, ctx):
-	self.obj = ctx.active_object
-	self.curve = Curve(self.obj)
-
-
-def curve_tool_execute(self):
-	if self.canceled:
-		self.abort()
-	else:
-		self.apply()
-
-	return{'FINISHED'}
-
-
-def curve_tool_check(self):
-	if not self.start:
-		self.start = True
-	self.apply()
-
-
-def curve_tool_modal(self, ctx, event):
-	if self.singleaction:
-		self.apply()
-		return{'FINISHED'}
-
-	if event.type == 'LEFTMOUSE':
-		if not self.start:
-			self.start = True
-			self.start_x = event.mouse_x
-			self.start_y = event.mouse_y
-			self.get_data(ctx)
-
-	if event.type == 'MOUSEMOVE':
-		if self.start:
-			self.value_x = (event.mouse_x - self.start_x) / 200
-			self.value_y = (event.mouse_y - self.start_y) / 200
-			self.apply()
-
-	if self.start and event.value =='RELEASE':
-		self.finish = True
-
-	#TODO mouse weel changes self.value_w
-	if self.finish:
-		if self.value_x + self.value_y == 0:
-			self.abort()
-		self.apply()
-		return{'FINISHED'}
-
-	if event.type in {'RIGHTMOUSE', 'ESC'}:
-		self.abort()
-		return {'CANCELLED'}
-
-	return {'RUNNING_MODAL'}
 
 
 def curve_tool_invoke(self, ctx):
@@ -263,45 +207,6 @@ def pick_operator_invoke(self, ctx, event):
 	self.rb.register()
 	ctx.window_manager.modal_handler_add(self)
 	return {'RUNNING_MODAL'}
-
-
-class CurveTool(Operator):
-	bl_options = {'REGISTER', 'UNDO'}
-	curve, obj = None, None
-	start, finish = False, False
-	start_x, start_y = 0, 0
-	value_x, value_y,value_w = 0, 0, 0
-	canceled, singleaction = False, False
-	typein = False
-
-	@classmethod
-	def poll(self, ctx):
-		return ctx.mode == 'EDIT_CURVE'
-
-	def get_data(self, ctx):
-		curve_tool_get_data(self, ctx)
-
-	def apply(self):
-		pass
-
-	def draw(self, ctx):
-		pass
-
-	def abort(self):
-		self.curve.reset()
-
-	def execute(self, ctx):
-		return curve_tool_execute(self)
-
-	def check(self, ctx):
-		curve_tool_check(self)
-
-	def modal(self, ctx, event):
-		return curve_tool_modal(self, ctx, event)
-
-	def invoke(self, ctx, event):
-		return curve_tool_invoke(self, ctx)
-
 
 #TODO preview the object name under the cursure befor pick
 #TODO convert to raycast picker rathr than select base operator

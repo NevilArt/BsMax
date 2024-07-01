@@ -25,9 +25,14 @@ from bpy_extras.view3d_utils import (
 def get_view_orientation(ctx):
 	r = lambda x: round(x, 2)
 	
-	orientation_dict = {(0, 0, 0):'TOP', (r(pi), 0, 0):'BOTTOM',
-				(r(-pi/2), 0, 0):'FRONT', (r(pi/2), 0, r(-pi)):'BACK',
-				(r(-pi/2), r(pi/2), 0):'LEFT', (r(-pi/2), r(-pi/2), 0):'RIGHT'}
+	orientation_dict = {
+		(0, 0, 0):'TOP',
+		(r(pi), 0, 0):'BOTTOM',
+		(r(-pi/2), 0, 0):'FRONT',
+		(r(pi/2), 0, r(-pi)):'BACK',
+		(r(-pi/2), r(pi/2), 0):'LEFT',
+		(r(-pi/2), r(-pi/2), 0):'RIGHT'
+	}
 	
 	r3d = ctx.area.spaces.active.region_3d
 	view_rot = r3d.view_matrix.to_euler()

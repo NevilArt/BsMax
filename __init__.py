@@ -19,9 +19,9 @@
 
 bl_info = {
 	'name': "BsMax",
-	'description': "BsMax UI simulations and Tool pack (Blender 3.3LTS ~ 4.1)",
+	'description': "BsMax UI simulations and Tool pack (Blender 3.3LTS ~ 4.2Beta)",
 	'author': "Naser Merati (Nevil)",
-	'version': (0, 1, 2, 20240605),
+	'version': (0, 1, 2, 20240701),
 	'blender': (3, 3, 0),
 	'location': "Almost Everywhere in Blender",
 	'wiki_url': 'https://github.com/NevilArt/BsMax/wiki',
@@ -70,7 +70,7 @@ def update_preferences(cls, _, action):
 		if cls.aplication != 'CUSTOM':
 			cls.navigation = cls.aplication
 			cls.keymaps = cls.aplication
-			cls.toolpack = cls.aplication
+			# cls.toolpack = cls.aplication
 
 			cls.navigation_3d = cls.aplication
 			cls.navigation_2d = cls.aplication
@@ -346,13 +346,13 @@ class BsMax_AddonPreferences(AddonPreferences):
 		description="select overide navigation mode"
 	) # type: ignore
 
-	toolpack: EnumProperty(
-		name="Tools Pack",
-		items=apps,
-		default='BLENDER',
-		update= lambda self, ctx: update_preferences(self, ctx, 'TOOLPACK'),
-		description="Extera Overide Tools"
-	) # type: ignore
+	# toolpack: EnumProperty(
+	# 	name="Tools Pack",
+	# 	items=apps,
+	# 	default='BLENDER',
+	# 	update= lambda self, ctx: update_preferences(self, ctx, 'TOOLPACK'),
+	# 	description="Extera Overide Tools"
+	# ) # type: ignore
 
 	keymaps: EnumProperty(
 		name="Keymap",

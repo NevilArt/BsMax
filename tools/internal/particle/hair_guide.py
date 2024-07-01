@@ -157,6 +157,8 @@ class Hair_Guide:
 def poll_check(ctx):
 	""" Return true if Hair particle Avalible and Active """
 	if ctx.area.type == 'VIEW_3D':
+		if not ctx.object:
+			return False
 		active_particle = ctx.object.particle_systems.active
 		if active_particle:
 			return active_particle.particles.data.settings.type == 'HAIR'

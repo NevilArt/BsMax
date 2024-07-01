@@ -284,19 +284,19 @@ def snap_menu(self, ctx):
 
 
 
-classes = (
+classes = {
 	Object_OT_Pivot_To_First_Point,
 	Object_OT_Modify_Pivot,
 	Object_OT_Pivot_To_Buttom_Center,
 	OBJECT_MT_Set_Pivot_Object_Base,
 	OBJECT_MT_Set_Pivot_Point
-)
+}
 
 
 
 def register_pivot_point():
-	for c in classes:
-		bpy.utils.register_class(c)
+	for cls in classes:
+		bpy.utils.register_class(cls)
 
 	bpy.types.VIEW3D_MT_snap.append(snap_menu)
 
@@ -305,8 +305,8 @@ def register_pivot_point():
 def unregister_pivot_point():
 	bpy.types.VIEW3D_MT_snap.remove(snap_menu)
 
-	for c in classes:
-		bpy.utils.unregister_class(c)
+	for cls in classes:
+		bpy.utils.unregister_class(cls)
 
 
 

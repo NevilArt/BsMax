@@ -19,9 +19,11 @@ import bpy
 from mathutils import Vector
 from math import sin, cos, pi
 
-from bsmax.curve import Spline, Bezier_point
 from bsmax.math import point_on_cubic_bezier_curve
 from primitive.primitive import Primitive_Geometry_Class, Draw_Primitive
+from bsmax.curve import (
+    Spline, BezierPoint, get_spline_segment
+)
 
 
 def get_path(part):
@@ -86,7 +88,7 @@ def get_path(part):
 		)
 
 	for p in points:
-		newbp = Bezier_point(None)
+		newbp = BezierPoint(None)
 		newbp.handle_left = Vector((p[0]))
 		newbp.co = Vector((p[1]))
 		newbp.handle_right = Vector((p[2]))
@@ -98,8 +100,8 @@ def get_path(part):
 def get_ring(point1, point2, scale):
 	ring = Spline(None)
 	d = Vector((0,scale*1.25,0))
-	p1 = Bezier_point(None)
-	p2 = Bezier_point(None)
+	p1 = BezierPoint(None)
+	p2 = BezierPoint(None)
 	p1.handle_left = point1+d
 	p1.co = point1
 	p1.handle_right = point1-d
@@ -116,7 +118,7 @@ def get_ring(point1, point2, scale):
 def get_verts_body(spline, ssegs, scale):
 	verts = []
 	for index in range(len(spline.bezier_points)):
-		a, b, c, d = spline.get_segment(index)
+		a, b, c, d = get_spline_segment(spline, index)
 		for j in range(ssegs):
 			t = (1/ssegs)*j
 			newvert = point_on_cubic_bezier_curve(a, b, c, d, t)
@@ -129,7 +131,7 @@ def get_verts_pipe(spline, ssegs, scale):
 	verts = []
 	if spline.use_cyclic_u:
 		for index in range(len(spline.bezier_points)):
-			a, b, c, d = spline.get_segment(index)
+			a, b, c, d = get_spline_segment(spline, index)
 			for j in range(ssegs):
 				t = (1/ssegs)*j
 				newvert = point_on_cubic_bezier_curve(a,b,c,d,t)
@@ -137,7 +139,7 @@ def get_verts_pipe(spline, ssegs, scale):
 
 	else:
 		for index in range(len(spline.bezier_points)-1):
-			a, b, c, d = spline.get_segment(index)
+			a, b, c, d = get_spline_segment(spline, index)
 			for j in range(ssegs):
 				t = (1/ssegs)*j
 				newvert = point_on_cubic_bezier_curve(a,b,c,d,t)

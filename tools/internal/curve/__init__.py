@@ -12,35 +12,34 @@
 #	You should have received a copy of the GNU General Public License
 #	along with this program.  If not, see <https://www.gnu.org/licenses/>.
 ############################################################################
+
 from .attach import register_attach, unregister_attach
-from .chamfer import register_chamfer, unregister_chamfer
-from .outline import register_outline, unregister_outline
 from .boolean import register_boolean, unregister_boolean
+from .chamfer import register_chamfer, unregister_chamfer
 from .divid import register_divid, unregister_divid
 from .menu import register_menu, unregister_menu
+from .outline import register_outline, unregister_outline
 from .selection import register_selection, unregister_selection
 from .weld import register_weld, unregister_weld
 
 
-
 def register_curve():
-	register_attach()
-	register_chamfer()
-	register_outline()
+	register_attach() #Done
 	register_boolean()
-	register_divid()
+	register_chamfer()
+	register_divid() #<<
 	register_menu()
+	register_outline() #DONE but need to refactor
 	register_selection()
 	register_weld()
 
 
-
 def unregister_curve():
 	unregister_attach()
-	unregister_chamfer()
-	unregister_outline()
 	unregister_boolean()
+	unregister_chamfer()
 	unregister_divid()
 	unregister_menu()
+	unregister_outline()
 	unregister_selection()
 	unregister_weld()

@@ -13,11 +13,15 @@
 #	along with this program.  If not, see <https://www.gnu.org/licenses/>.
 ############################################################################
 
-from .modifier import register_modifier,unregister_modifier
 # from .menu import register_menu,unregister_menu
+from .modifier import register_modifier,unregister_modifier
+from .tools import register_tools, unregister_tools
 
-def register_maya():
+def register_maya(preferences):
+	if preferences.viowport == "MAYA":
+		register_tools()
 	register_modifier()
 
 def unregister_maya():
+	unregister_tools()
 	unregister_modifier()

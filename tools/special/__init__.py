@@ -46,26 +46,26 @@ def get_active_apps(preferences):
 
 def register_special(preferences):
 	unregister_special()
-	
+
 	if not reg.pack_max:
 		register_max(preferences)
 		reg.pack_max = True
-	
+
 	if not reg.pack_blender:
 		register_blender()
 		reg.pack_blender = True
-	
+
 	if not reg.pack_maya:
-		register_maya()
+		register_maya(preferences)
 		reg.pack_maya = True
 
 
 def unregister_special():
 	if reg.pack_blender:
 		unregister_blender()
-	
+
 	if reg.pack_max:
 		unregister_max()
-	
+
 	if reg.pack_maya:
 		unregister_maya()

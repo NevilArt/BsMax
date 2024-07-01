@@ -12,48 +12,35 @@
 #	You should have received a copy of the GNU General Public License
 #	along with this program.  If not, see <https://www.gnu.org/licenses/>.
 ############################################################################
+# 2024/06/20
 
 import bpy
 
 
-
-def controlpoints_menu(self, ctx):
+def controlpoints_menu(self, _):
 	layout = self.layout
 	layout.separator()
-	layout.operator("curve.merge_by_distance",text="Merge by Distance").typein=True
-	layout.operator("curve.break",text="Break")
-	layout.operator("curve.make_first",text="Make First")
-	layout.operator("curve.chamfer",text="Chamfer/Fillet").typein=True
+	layout.operator('curve.merge_by_distance', text="Merge by Distance")
+	layout.operator('curve.break', text="Break")
+	layout.operator('curve.make_first', text="Make First")
+	layout.operator('curve.chamfer', text="Chamfer/Fillet")
 
 
-
-def segments_menu(self, ctx):
+def segments_menu(self, _):
 	layout = self.layout
-	layout.operator("curve.divid_plus",text="Divid plus").typein=True
-	layout.operator("curve.refine",text="Refine")
-	layout.separator()
-	layout.operator("curve.outline",text="Outline").typein=True
-	layout.separator()
-	layout.operator("curve.boolean",text="Boolean").typein=True
-	bu = layout.operator("curve.boolean",text="Boolean (Union)")
-	bu.typein = False
-	bu.mode = 'UNION'
-	bi = layout.operator("curve.boolean",text="Boolean (Intersection)")
-	bi.typein = False
-	bi.mode = 'INTERSECTION'
-	bd = layout.operator("curve.boolean",text="Boolean (Diffrence)")
-	bd.typein = False
-	bd.mode = 'DIFFERENCE'
-	bc = layout.operator("curve.boolean",text="Boolean (Cut)")
-	bc.typein = False
-	bc.mode = 'CUT'
+	layout.operator('curve.divid_plus', text="Divid plus")
+	layout.operator('curve.refine', text="Refine")
 
+	layout.separator()
+	layout.operator('curve.outline', text="Outline")
+
+	layout.separator()
+	layout.operator('curve.boolean', text="Boolean").mode='UNION'
 
 
 def register_menu():
 	bpy.types.VIEW3D_MT_edit_curve_ctrlpoints.append(controlpoints_menu)
 	bpy.types.VIEW3D_MT_edit_curve_segments.append(segments_menu)
-
 
 
 def unregister_menu():

@@ -12,116 +12,122 @@
 #	You should have received a copy of the GNU General Public License
 #	along with this program.  If not, see <https://www.gnu.org/licenses/>.
 ############################################################################
-
-import bpy
+# 2024/06/22
 
 from bpy.types import Operator
 from bpy.props import BoolProperty, FloatProperty
+from bpy.utils import register_class, unregister_class
 
-from bsmax.curve import Curve#, Spline
-from bsmax.operator import CurveTool
-
-
-
-class Curve_OT_Break(Operator):
-	bl_idname = "curve.break"
-	bl_label = "Break"
-	bl_options = {'REGISTER', 'UNDO'}
-
-	@classmethod
-	def poll(self, ctx):
-		if ctx.area.type == 'VIEW_3D':
-			if len(ctx.scene.objects) > 0:
-				if ctx.object != None:
-					return ctx.mode == 'EDIT_CURVE'
-		return False
-
-	def execute(self, ctx):
-		curve = Curve(ctx.active_object)
-		for spline, points in curve.selection("point"):
-			curve.break_point(spline, points)
-		curve.update()
-
-		self.report({'OPERATOR'},'bpy.ops.curve.break()')
-		return{"FINISHED"}
-
-
-
-class Curve_OT_Make_First(Operator):
-	bl_idname = "curve.make_first"
-	bl_label = "Make First"
-	bl_options = {'REGISTER', 'UNDO'}
-
-	@classmethod
-	def poll(self, ctx):
-		if ctx.area.type == 'VIEW_3D':
-			if len(ctx.scene.objects) > 0:
-				if ctx.object != None:
-					return ctx.mode == 'EDIT_CURVE'
-		return False
-
-	def execute(self, ctx):
-		curve = Curve(ctx.active_object)
-		for splineindex, points in curve.selection("point"):
-			if len(points) == 1:
-				spline = curve.splines[splineindex]
-				spline.make_first(points[0])
-		curve.update()
-		
-		self.report({'OPERATOR'},'bpy.ops.curve.make_first()')
-		return{"FINISHED"}
-
-
-
-class Curve_OT_Merge_By_Distance(CurveTool):
-	bl_idname = "curve.merge_by_distance"
-	bl_label = "Merge by distance"
-	bl_options = {'REGISTER', 'UNDO'}
-	
-	singleaction = True
-	typein: BoolProperty(name="Type In:",default=True)
-	value: FloatProperty(name="distance:",unit='LENGTH',default=0.0001,min=0.0)
-	selectedonly: BoolProperty(name="Selected only:",default=True)
-	gapsonly: BoolProperty(name="Gaps only:",default=True)
-
-	def get_data(self, ctx):
-		self.obj = ctx.active_object
-		self.curve = Curve(self.obj)
-
-	def apply(self):
-		curve = self.curve
-		curve.restore()
-		curve.merge_gaps_by_distance(self.value, self.selectedonly)
-		if not self.gapsonly:
-			for spline in curve.splines:
-				spline.merge_points_by_distance(self.value, self.selectedonly)
-		curve.update()
-
-	def draw(self, ctx):
-		col = self.layout.column()
-		col.prop(self,"value")
-		col.prop(self,"selectedonly")
-		col.prop(self,"gapsonly")
-	
-	def self_report(self):
-		self.report({'OPERATOR'},'bpy.ops.curve.merge_by_distance()')
-
-
-
-classes = (
-	Curve_OT_Merge_By_Distance,
-	Curve_OT_Break,
-	Curve_OT_Make_First
+from bsmax.curve import (
+	get_curve_object_selection,
+	curve_merge_gaps_by_distance,
+	spline_merge_bezier_points_by_distance,
+	spline_make_first,
+	curve_break_point
 )
 
 
+class Curve_OT_Break(Operator):
+	bl_idname = 'curve.break'
+	bl_label = "Break"
+	bl_description = ""
+	bl_options = {'REGISTER', 'UNDO'}
+
+	@classmethod
+	def poll(self, ctx):
+		if ctx.area.type == 'VIEW_3D':
+			return ctx.mode == 'EDIT_CURVE'
+		return False
+
+	def execute(self, ctx):
+		curve = ctx.object
+		selection = get_curve_object_selection(curve, 'point')
+		for spline, points in selection:
+			curve_break_point(curve, spline, points)
+		return{'FINISHED'}
+
+
+class Curve_OT_Make_First(Operator):
+	bl_idname = 'curve.make_first'
+	bl_label = "Make First"
+	bl_description = "Make selected point First point of curve"
+	bl_options = {'REGISTER', 'UNDO'}
+
+	@classmethod
+	def poll(self, ctx):
+		if ctx.area.type == 'VIEW_3D':
+			return ctx.mode == 'EDIT_CURVE'
+		return False
+
+	def execute(self, ctx):
+		curve = ctx.object
+		selection = get_curve_object_selection(curve, 'point')
+		for spline_index, points in selection:
+			if len(points) != 1:
+				continue
+			spline = curve.data.splines[spline_index]
+			spline_make_first(spline, points[0])
+		return{'FINISHED'}
+
+
+class Curve_OT_Merge_By_Distance(Operator):
+	bl_idname = 'curve.merge_by_distance'
+	bl_label = "Merge by distance"
+	bl_description = ""
+	bl_options = {'REGISTER', 'UNDO'}
+	
+	value: FloatProperty(
+		name="distance:", unit='LENGTH', min=0.0, default=0.0001
+	) # type: ignore
+
+	selected_only: BoolProperty(name="Selected only", default=True) # type: ignore
+	gaps_only: BoolProperty(name="Gaps only", default=True) # type: ignore
+
+	@classmethod
+	def poll(self, ctx):
+		if ctx.area.type == 'VIEW_3D':
+			return ctx.mode == 'EDIT_CURVE'
+		return False
+
+	def draw(self, _):
+		col = self.layout.column()
+		col.prop(self, 'value')
+		col.prop(self, 'selected_only')
+		col.prop(self, 'gaps_only')
+
+	def execute(self, ctx):
+		curve = ctx.object
+		curve_merge_gaps_by_distance(
+			curve, self.value, self.selected_only
+		)
+
+		if self.gaps_only:
+			return{'FINISHED'}
+		
+		for spline in curve.data.splines:
+			spline_merge_bezier_points_by_distance(
+				spline, self.value, self.selected_only
+			)
+
+		return{'FINISHED'}
+
+
+classes = {
+	Curve_OT_Merge_By_Distance,
+	Curve_OT_Break,
+	Curve_OT_Make_First
+}
+
 
 def register_weld():
-	for c in classes:
-		bpy.utils.register_class(c)
-
+	for cls in classes:
+		register_class(cls)
 
 
 def unregister_weld():
-	for c in classes:
-		bpy.utils.unregister_class(c)
+	for cls in classes:
+		unregister_class(cls)
+
+
+if __name__ == '__main__':
+	register_weld()

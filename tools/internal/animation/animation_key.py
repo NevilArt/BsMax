@@ -391,10 +391,9 @@ class Anim_OT_Frame_Set(Operator):
 
 
 class Dopesheet_OT_Zoom_Extended(Operator):
-	""" Zoom on selected or all keys """
 	bl_idname = 'action.zoom_extended'
 	bl_label = "Zoom Extended"
-	bl_description = ""
+	bl_description = "Zoom on selected or all keys."
 
 	@classmethod
 	def poll(self, ctx):
@@ -473,6 +472,34 @@ class Anim_OT_Freeze_on(Operator):
 		return ctx.window_manager.invoke_props_dialog(self)
 
 
+class Anim_OT_Keyframe_Clear(Operator):
+	bl_idname = 'anim.keyframe_clear_v3d_plus'
+	bl_label = "Clear Keyframes (BsMax)"
+	bl_description = "Delete All Animation Data"
+	bl_options = {'REGISTER', 'UNDO'}
+
+	@classmethod
+	def poll(self, ctx):
+		return ctx.selected_objects
+
+	def execute(self, ctx):
+		for object in ctx.selected_objects:
+			object.animation_data_clear()
+
+			if not object.data:
+				continue
+			
+			object.data.animation_data_clear()
+
+			if hasattr(object.data, 'shape_keys'):
+				object.data.shape_keys.animation_data_clear()
+
+		for area in ctx.screen.areas:
+			area.tag_redraw()
+
+		return{'FINISHED'}
+
+
 class Anim_OP_Freeze_on(Panel):
 	bl_idname = 'VIEW3D_PT_freeze_on'
 	bl_space_type = 'VIEW_3D'
@@ -491,8 +518,10 @@ class Anim_OP_Freeze_on(Panel):
 		draw_freeze_on_panel(self, ctx)
 
 
-# class Graph_Editor_OT_Hide(Operator):
-# 		graph.select_linked
+def animation_clear_menu(self, _):
+	layout = self.layout
+	layout.separator()
+	layout.operator('anim.keyframe_clear_v3d_plus', text="Delete Animation")
 
 
 classes = {
@@ -502,6 +531,7 @@ classes = {
 	Anim_OT_Frame_Set,
 	Anim_OT_Delete_Key,
 	Anim_OT_Freeze_on,
+	Anim_OT_Keyframe_Clear,
 	Anim_OP_Freeze_on,
 	Dopesheet_OT_Zoom_Extended
 }
@@ -515,9 +545,13 @@ def register_animation_key():
 		type=Freeze_on_Property, name="Freeze On"
 	)
 
+	bpy.types.VIEW3D_MT_object_animation.append(animation_clear_menu)
+
 
 def unregister_animation_key():
 	del bpy.types.Scene.freeze_on
+	
+	bpy.types.VIEW3D_MT_object_animation.remove(animation_clear_menu)
 
 	for cls in classes:
 		unregister_class(cls)
