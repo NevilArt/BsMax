@@ -45,7 +45,7 @@ class Create_OT_Text(Draw_Primitive):
 			('BOTH', 'Both', '')
 		],
 		default = 'NONE'
-	)
+	) # type: ignore
 
 	def create(self, ctx):
 		self.subclass.create(ctx)

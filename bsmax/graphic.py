@@ -13,14 +13,13 @@
 #	You should have received a copy of the GNU General Public License
 #	along with this program.  If not, see <https://www.gnu.org/licenses/>.
 ############################################################################
+# 2024/07/11
 
 import bpy
 import gpu
 
 from gpu_extras.batch import batch_for_shader
 from bpy_extras.view3d_utils import location_3d_to_region_2d
-from bpy.app import version
-
 
 
 def get_header_color():
@@ -28,21 +27,10 @@ def get_header_color():
 	return theme.text_editor.space.header
 
 
-
-def get_uniform_color(mode="2D"):
-	if version < (3, 6, 0):
-		if mode == "2D":
-			return "2D_UNIFORM_COLOR"
-		return "3D_UNIFORM_COLOR"
-	return "UNIFORM_COLOR"
-
-
-
 def get_screen_pos(ctx,coord):
 	region = ctx.region
 	rv3d = ctx.space_data.region_3d
 	return location_3d_to_region_2d(region, rv3d, coord, default=None)
-
 
 
 def rubber_band_create(self, sx, sy, ex, ey):
@@ -52,7 +40,6 @@ def rubber_band_create(self, sx, sy, ex, ey):
 	self.vertices.append((ex, ey))
 	self.colors.append(self.color_a)
 	self.colors.append(self.color_b)
-
 
 
 def rubber_band_draw(self):
@@ -66,7 +53,6 @@ def rubber_band_draw(self):
 		batch.draw(self.shader)
 
 
-
 class Rubber_Band:
 	def __init__(self):
 		self.start = (0, 0, 0)
@@ -78,7 +64,7 @@ class Rubber_Band:
 		self.colors = []
 		self.color_a = (0.0, 0.75, 0.75, 1.0)
 		self.color_b = (0.2, 0.0, 0.0, 1.0)
-		self.shader = gpu.shader.from_builtin(get_uniform_color(mode="2D"))
+		self.shader = gpu.shader.from_builtin('UNIFORM_COLOR')
 		
 	def create(self, sx, sy, ex, ey):
 		rubber_band_create(self, sx, sy, ex, ey)

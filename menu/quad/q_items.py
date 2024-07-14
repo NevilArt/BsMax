@@ -17,21 +17,7 @@ import gpu
 import blf
 
 from gpu_extras.batch import batch_for_shader
-
-from bpy.app import version
-
 from .q_refrence import quadmenuref
-
-
-
-def get_uniform_color(mode="2D"):
-	if version < (3, 6, 0):
-		if mode == "2D":
-			return "2D_UNIFORM_COLOR"
-		else:
-			return "3D_UNIFORM_COLOR"
-	return "UNIFORM_COLOR"
-
 
 
 class QuadItem:
@@ -50,7 +36,6 @@ class QuadItem:
 	def OpenSetting(self):
 		global quadmenuref
 		quadmenuref.action = self.setting
-
 
 
 class ItemShape:
@@ -72,11 +57,10 @@ class ItemShape:
 		pass
 
 	def create(self):
-		self.shader = gpu.shader.from_builtin(get_uniform_color(mode="2D"))
+		self.shader = gpu.shader.from_builtin('UNIFORM_COLOR')
 
 	def mousehover(self, x, y, clicked):
 		return False
-
 
 
 class ItemText:
@@ -96,11 +80,7 @@ class ItemText:
 
 	def update_lbl(self):
 		global quadmenuref
-		if version < (3, 6, 0):
-			blf.size(0, self.size, 72)
-		else:
-			blf.size(0, self.size)
-
+		blf.size(0, self.size)
 		# w, h = blf.dimensions(0, self.text)
 		w = blf.dimensions(0, self.text)[0]
 		x = self.x + quadmenuref.size

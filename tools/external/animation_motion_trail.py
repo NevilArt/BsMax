@@ -41,16 +41,6 @@ from bpy.types import Operator, Panel ,PropertyGroup
 from bpy.app import version
 
 
-
-def get_uniform_color(mode="2D"):
-	if version < (3, 6, 0):
-		if mode == "2D":
-			return "2D_UNIFORM_COLOR"
-		else:
-			return "3D_UNIFORM_COLOR"
-	return "UNIFORM_COLOR"
-
-
 # fake fcurve class, used if no fcurve is found for a path
 class fake_fcurve():
 	def __init__(self, object, index, rotation=False, scale=False):
@@ -559,7 +549,7 @@ def draw_callback(self, context):
 	bgl.glLineWidth(context.window_manager.motion_trail.path_width)
 	alpha = 1.0 - (context.window_manager.motion_trail.path_transparency / 100.0)
 
-	self.shader = gpu.shader.from_builtin(get_uniform_color(mode="2D"))
+	self.shader = gpu.shader.from_builtin('UNIFORM_COLOR')
 	self.shader.bind()
 
 	self.vertices = []
@@ -748,11 +738,7 @@ def draw_callback(self, context):
 
 	# draw keyframe-numbers
 	if context.window_manager.motion_trail.keyframe_numbers:
-		if version < (3, 6, 0):
-			blf.size(0, 12, 72)
-		else:
-			blf.size(0, 12)
-
+		blf.size(0, 12)
 		blf.color(0, 1.0, 1.0, 0.0, 1.0)
 		for objectname, values in self.keyframes.items():
 			for frame, coords in values.items():

@@ -27,15 +27,6 @@ if version < (4, 0, 0):
 from bsmax.bsmatrix import BsMatrix, transform_point_to_matrix
 
 
-def get_uniform_color(mode="2D"):
-	if version < (3, 6, 0):
-		if mode == "2D":
-			return "2D_UNIFORM_COLOR"
-		else:
-			return "3D_UNIFORM_COLOR"
-	return "UNIFORM_COLOR"
-
-
 def local_gride_set(self, size, segments, matrix):
 	self.size = size
 	self.segments = segments
@@ -100,7 +91,7 @@ def local_gride_draw(self):
 	if version < (4, 0, 0):
 		glEnable(GL_BLEND)
 		glLineWidth(1)
-		shader = gpu.shader.from_builtin(get_uniform_color(mode="3D"))
+		shader = gpu.shader.from_builtin('UNIFORM_COLOR')
 
 		# draw gride
 		self.draw_shader(shader, self.gride, 'LINES', self.gride_color)
@@ -127,7 +118,7 @@ def local_gride_draw(self):
 		glDisable(GL_BLEND)
 
 	else:
-		shader = gpu.shader.from_builtin(get_uniform_color(mode="3D"))
+		shader = gpu.shader.from_builtin('UNIFORM_COLOR')
 
 		# draw gride
 		self.draw_shader(shader, self.gride, 'LINES', self.gride_color)

@@ -12,7 +12,7 @@
 #	You should have received a copy of the GNU General Public License
 #	along with this program.  If not, see <https://www.gnu.org/licenses/>.
 ############################################################################
-# 2024/02/06
+# 2024/07/14
 
 import bpy
 
@@ -22,7 +22,6 @@ from bpy.props import StringProperty
 from bpy.utils import register_class, unregister_class
 
 from bpy.app import version
-
 
 
 def get_root_path():
@@ -42,16 +41,15 @@ def get_root_path():
 presetsRootPath = get_root_path()
 
 
-
 class Scene_OT_Import_Node_Group(Operator):
-	bl_idname = "scene.import_node_groupe"
+	bl_idname = 'scene.import_node_groupe'
 	bl_label = "Import Node Groupe Preset"
 	bl_description = "Import Node Groupe Presets"
 	bl_options = {'REGISTER', 'INTERNAL'}
 
-	name: StringProperty()
+	name: StringProperty() # type: ignore
 
-	def execute(self, ctx):
+	def execute(self, _):
 		global presetsRootPath
 		# Check for exist
 		if not self.name in bpy.data.node_groups:
@@ -60,17 +58,16 @@ class Scene_OT_Import_Node_Group(Operator):
 				filename=self.name,
 				directory=presetsRootPath
 			)
-		return{"FINISHED"}
-
+		return{'FINISHED'}
 
 
 class NodeGroupe_OT_Import(Operator):
-	bl_idname = "nodes.import_node_group"
+	bl_idname = 'nodes.import_node_group'
 	bl_label = "Import Node Group"
 	bl_description = "Import Node Group"
 	bl_options = {'REGISTER', 'INTERNAL'}
 
-	name: StringProperty()
+	name: StringProperty() # type: ignore
 
 	def execute(self, ctx):
 		global presetsRootPath
@@ -96,29 +93,24 @@ class NodeGroupe_OT_Import(Operator):
 		
 		bpy.ops.node.translate_attach('INVOKE_DEFAULT')
 		
-		return{"FINISHED"}
+		return{'FINISHED'}
 
 
-
-
-classes = (
+classes = {
 	Scene_OT_Import_Node_Group,
 	NodeGroupe_OT_Import
-)
-
+}
 
 
 def register_presets():
-	for c in classes:
-		register_class(c)
-
+	for cls in classes:
+		register_class(cls)
 
 
 def unregister_presets():
-	for c in classes:
-		unregister_class(c)
+	for cls in classes:
+		unregister_class(cls)
 
 
-
-if __name__ == "__main__":
+if __name__ == '__main__':
 	register_presets()

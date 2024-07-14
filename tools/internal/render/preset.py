@@ -109,23 +109,6 @@ def get_manual_part(ctx, engin_name):
 			"use_simplify_normals"
 		]
 
-		if version < (3, 6, 0):
-			attributes += [
-				"hair_type",
-				"simplify_subdivision",
-				"simplify_child_particles",
-				"simplify_volumes",
-				"simplify_subdivision_render",
-				"simplify_child_particles_render",
-				"simplify_gpencil_view_fill",
-				"simplify_gpencil_modifier",
-				"simplify_gpencil_shader_fx",
-				"simplify_gpencil_tint",
-				"simplify_gpencil_antialiasing",
-				"line_thickness_mode",
-				"line_thickness"
-			]
-
 		render = ctx.scene.render
 		for attribute in attributes:
 			script += pystr_attribute(ctx, render, attribute)
@@ -145,11 +128,6 @@ def get_manual_part(ctx, engin_name):
 			"use_motion_blur",
 			"use_volumetric_shadows"
 		]
-
-		if version < (3, 6, 0):
-			attributes += [
-				"use_soft_shadows"
-			]
 
 		eevee = ctx.scene.eevee
 		for attribute in attributes:

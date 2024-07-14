@@ -12,7 +12,7 @@
 #	You should have received a copy of the GNU General Public License
 #	along with this program.  If not, see <https://www.gnu.org/licenses/>.
 ############################################################################
-# 2024/05/26
+# 2024/07/11
 
 import bpy
 
@@ -492,7 +492,8 @@ class Anim_OT_Keyframe_Clear(Operator):
 			object.data.animation_data_clear()
 
 			if hasattr(object.data, 'shape_keys'):
-				object.data.shape_keys.animation_data_clear()
+				if object.data.shape_keys:
+					object.data.shape_keys.animation_data_clear()
 
 		for area in ctx.screen.areas:
 			area.tag_redraw()

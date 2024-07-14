@@ -30,16 +30,6 @@ from .gride import Gride, Dimension, Click_Point
 from bsmax.gride import LocalGride
 
 
-def get_uniform_color(mode="2D"):
-	if version < (3, 6, 0):
-		if mode == "2D":
-			return "2D_UNIFORM_COLOR"
-		else:
-			return "3D_UNIFORM_COLOR"
-
-	return "UNIFORM_COLOR"
-
-
 def set_smooth_by_angel(cls):
 	if version < (4, 1, 0):
 		cls.data.use_auto_smooth = True
@@ -172,7 +162,7 @@ def ClearPrimitiveData(obj):
 def draw_cursur_override(cls):
 	if version < (4, 0, 0):
 		glEnable(GL_BLEND)
-		shader = gshader.from_builtin(get_uniform_color(mode="2D"))
+		shader = gshader.from_builtin('UNIFORM_COLOR')
 		v, f = GetCursurMesh(20, cls.mpos.x, cls.mpos.y)
 		batch = batch_for_shader(shader, 'TRIS', {"pos":v}, indices=f)
 		shader.bind()
@@ -181,7 +171,7 @@ def draw_cursur_override(cls):
 		glDisable(GL_BLEND)
 
 	else:
-		shader = gshader.from_builtin(get_uniform_color(mode="2D"))
+		shader = gshader.from_builtin('UNIFORM_COLOR')
 		v, f = GetCursurMesh(20, cls.mpos.x, cls.mpos.y)
 		batch = batch_for_shader(shader, 'TRIS', {"pos":v}, indices=f)
 		shader.bind()

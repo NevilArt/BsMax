@@ -18,7 +18,6 @@ import bpy
 from bpy.types import Operator
 
 
-
 class Console_OT_Cut(Operator):
 	bl_idname = "console.cut"
 	bl_label = "Cut"
@@ -28,10 +27,8 @@ class Console_OT_Cut(Operator):
 		return {'FINISHED'}
 
 
-
 def register_console():
 	bpy.utils.register_class(Console_OT_Cut)
-
 
 
 def unregister_console():

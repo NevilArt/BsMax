@@ -30,17 +30,6 @@ from .master.classes import Vector2
 from .titlebar import TitleBar
 
 
-
-def get_uniform_color(mode="2D"):
-	if version < (3, 6, 0):
-		if mode == "2D":
-			return "2D_UNIFORM_COLOR"
-		else:
-			return "3D_UNIFORM_COLOR"
-	return "UNIFORM_COLOR"
-
-
-
 class DlgBox(BUI):
 	def __init__(self,owner):
 		super().__init__()
@@ -51,13 +40,12 @@ class DlgBox(BUI):
 		owner._append(self)
 
 
-
 class Dialog(Operator,BUI):
 	def __init__(self):
 		super().__init__(background=True)
 		self.handler = None
 		self.active_space = None
-		self.shader = gpu.shader.from_builtin(get_uniform_color(mode="2D"))
+		self.shader = gpu.shader.from_builtin('UNIFORM_COLOR')
 		self.escape = False
 		self.size.auto = True
 
@@ -90,11 +78,7 @@ class Dialog(Operator,BUI):
 
 		for caption in self.get_captions():
 			if not caption.hide:
-				if version < (3, 6, 0):
-					blf.size(0, caption.font_size, 72)
-				else:
-					blf.size(0, caption.font_size)
-				
+				blf.size(0, caption.font_size)
 				location = caption.location()
 				blf.position(0,location.x,location.y,0)
 				blf.color(0,1,1,1,1)

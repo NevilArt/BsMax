@@ -167,11 +167,7 @@ def get_mesh_modifier_list():
 		('B-WELDER', 'Welder', 'WELD', 'AUTOMERGE_ON', 124),
 		# ('XFORM', 'Xform', '')125
 	]
-
-	if version >= (3, 6, 0):
-		return modifierList
-
-	return get_internals_only(modifierList)
+	return modifierList
 
 
 def get_curve_modifier_list():
@@ -180,11 +176,7 @@ def get_curve_modifier_list():
 		('B-CACHE', 'Mesh Cache', 'MESH_CACHE', 'MOD_MESHDEFORM', 2),
 		('B-SEQUENCECACHE', 'Mesh Sequence Cache', 'MESH_SEQUENCE_CACHE', 'MOD_MESHDEFORM', 3)
 	]
-
-	if version >= (3, 6, 0):
-		return modifierList
-
-	return get_internals_only(modifierList)
+	return modifierList
 	
 
 def get_modifier_list(_, ctx):

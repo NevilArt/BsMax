@@ -13,8 +13,6 @@
 #	along with this program.  If not, see <https://www.gnu.org/licenses/>.
 ############################################################################
 
-from bpy.app import version
-
 from bsmax.state import is_primitive, get_active_type
 
 from .commands import * # all "c0000" are from here
@@ -32,7 +30,6 @@ def seprator():
 	return QuadItem(n, f, f, n, n, n)
 
 
-
 def get_view3d_transform_convert_to_sub(ctx): #Submenu
 	items = []
 	#  text,  check,  enabled, menu, action, setting
@@ -42,7 +39,6 @@ def get_view3d_transform_convert_to_sub(ctx): #Submenu
 	items.append(QuadItem("Convert To Curves", f, t, n, c0213, n))
 	# NOTE Sub menus do not return text and index
 	return items
-
 
 
 def get_view3d_transform(ctx):
@@ -77,7 +73,6 @@ def get_view3d_transform(ctx):
 	return "Transform", items, 1
 
 
-
 def get_view3d_lighting_sub(ctx):
 	items = []
 	#  text,  check,  enabled, menu, action, setting
@@ -108,7 +103,6 @@ def get_view3d_lighting_sub(ctx):
 	items.append(QuadItem("Normal", f, t, n, c0190, n))
 	items.append(QuadItem("Mist", f, t, n, c0191, n))
 	return items
-
 
 
 def get_view3d_display(ctx):
@@ -156,7 +150,6 @@ def get_view3d_display(ctx):
 	submenu = get_view3d_lighting_sub(ctx)
 	items.append(QuadItem("Viewport Lighting", f, t, submenu, n, n))
 	return "Display",  items,  2
-
 
 
 def get_view3d_tool1(ctx):
@@ -233,7 +226,6 @@ def get_view3d_tool1(ctx):
 		else:
 			items.append(QuadItem("Attach", f, t, n, c0210, n))
 	return "Tool1", items, 3
-
 
 
 def get_view3d_tool2(ctx):
@@ -366,7 +358,6 @@ def get_view3d_tool2(ctx):
 	return "Tool2", items, 4
 
 
-
 def get_view3D_create(ctx):
 	items = []
 	enabled = ctx.mode == 'OBJECT'
@@ -381,7 +372,6 @@ def get_view3D_create(ctx):
 	items.append(QuadItem("Rectangle", f, enabled, n, c0068, n))
 	items.append(QuadItem("Arc", f, t, n, c0069, n))
 	return "Primitives", items, 2
-
 
 
 def get_view3D_viewport(ctx):
@@ -402,7 +392,6 @@ def get_view3D_viewport(ctx):
 	return "Viewports", items, 1
 
 
-
 def get_view3d_camera(ctx):
 	items = []
 	lock = ctx.space_data.lock_camera
@@ -412,7 +401,6 @@ def get_view3d_camera(ctx):
 	items.append(QuadItem("Select Active Cameras target ", f, t, n, c0139, n))
 	items.append(QuadItem("Select Active Camera and target", f, t, n, c0140, n))
 	return "Camera", items, 2
-
 
 
 def get_view3d_set(ctx):
@@ -431,7 +419,6 @@ def get_view3d_set(ctx):
 	return "Set", items, 1
 
 
-
 def get_view3d_coordinates(ctx):
 	items = []
 	items.append(QuadItem("Cursor", f, t, n, c0082, n))
@@ -440,28 +427,22 @@ def get_view3d_coordinates(ctx):
 	if ctx.mode == 'OBJECT':
 		items.append(QuadItem("Local", f, t, n, c0083, n))
 		items.append(QuadItem("Normal", f, t, n, c0084, n))
-		if version >= (3, 6, 0):
-			items.append(QuadItem("Parent", f, t, n, c0241, n))
+		items.append(QuadItem("Parent", f, t, n, c0241, n))
 
 	# Pose Mode
 	if ctx.mode == 'POSE':
 		items.append(QuadItem("Local", f, t, n, c0136, n))
-		if version >= (3, 6, 0):
-			items.append(QuadItem("Parent", f, t, n, c0241, n))
+		items.append(QuadItem("Parent", f, t, n, c0241, n))
 
 	# Edit Mode
 	if 'EDIT' in ctx.mode:
 		items.append(QuadItem("Local", f, t, n, c0084, n))
-		if version >= (3, 6, 0):
-			items.append(QuadItem("Parent", f, t, n, c0241, n))
-		else:
-			items.append(QuadItem("Parent", f, t, n, c0083, n))
+		items.append(QuadItem("Parent", f, t, n, c0241, n))
 
 	items.append(QuadItem("Gimbal", f, t, n, c0085, n))
 	items.append(QuadItem("Screen", f, t, n, c0086, n))
 	items.append(QuadItem("World", f, t, n, c0087, n))
 	return "Coordinates", items, 2
-
 
 
 def get_view3d_transform2(ctx):
@@ -486,7 +467,6 @@ def get_view3d_transform2(ctx):
 	return "Transform", items, 3
 
 
-
 def get_view3d_pose(ctx):
 	items = []
 	#  text,  check,  enabled, menu, action, setting
@@ -496,7 +476,6 @@ def get_view3d_pose(ctx):
 	items.append(QuadItem("Set as Skin Pose", f, t, n, c0228, n))
 	items.append(QuadItem("Assume Skin Pose", f, t, n, c0229, n))
 	return "Pose", items, 4
-
 
 
 def get_view3d_snap_toggles(ctx):
@@ -525,7 +504,6 @@ def get_view3d_snap_toggles(ctx):
 	return "Snap Toggles",  items,  1
 
 
-
 def get_view3d_snap_override(ctx):
 	items = []
 	items.append(QuadItem("Pivot to Geometry", f, t, n, c0108, n))
@@ -544,7 +522,6 @@ def get_view3d_snap_override(ctx):
 	return "Snap Override",  items,  2
 
 
-
 def get_view3d_snap_options(ctx):
 	items = []
 	items.append(QuadItem("Enable Axis Constrants in Snap", f, f, n, "", n))
@@ -552,7 +529,6 @@ def get_view3d_snap_options(ctx):
 	items.append(seprator())
 	items.append(QuadItem("Gride and Snap Setting...", f, t, n, c0230, n))
 	return "Snap Options",  items,  3
-
 
 
 def get_view3d_rendering_properties(ctx):
@@ -611,7 +587,6 @@ def get_view3d_rendering_properties(ctx):
 	return "Rendering Properties", items, 1
 
 
-
 def get_view3d_render(ctx):
 	items = []
 	items.append(QuadItem("Render", f, t, n, c0097, n))
@@ -624,7 +599,6 @@ def get_view3d_render(ctx):
 	items.append(QuadItem("Workbench", engine == 'BLENDER_WORKBENCH', t, n, c0114, n))
 	items.append(QuadItem("Cycles", engine == 'CYCLES', t, n, c0115, n))
 	return "Render", items, 2
-
 
 
 def get_view3d_rendering_tools(ctx):
@@ -643,7 +617,6 @@ def get_view3d_rendering_tools(ctx):
 	return "Rendering Tools", items, 3
 
 
-
 def get_view3d_selection1(ctx):
 	items = []
 	items.append(QuadItem("Select Instance", f, f, n, "", n))
@@ -652,11 +625,9 @@ def get_view3d_selection1(ctx):
 	return "Selection", items, 1
 
 
-
 def get_view3d_selection2(ctx):
 	items = []
 	return "Selection", items, 2
-
 
 
 def get_view3d_selection3(ctx):
@@ -664,11 +635,9 @@ def get_view3d_selection3(ctx):
 	return "Selection", items, 3
 
 
-
 def get_view3d_selection4(ctx):
 	items = []
 	return "Selection", items, 4
-
 
 
 def get_view3d_fx_tools(ctx):
@@ -681,13 +650,11 @@ def get_view3d_fx_tools(ctx):
 	return "FX Tools", items, 1
 
 
-
 def get_view3d_fx_objects(ctx):
 	items = []
 	items.append(QuadItem("FXObjects", f, f, n, "", n))
 	items.append(seprator())
 	return "FX Objects", items, 2
-
 
 
 def get_view3d_fx_simulation(ctx):
@@ -697,13 +664,11 @@ def get_view3d_fx_simulation(ctx):
 	return "FX Simulation", items, 3
 
 
-
 def get_view3d_fx_constraints(ctx):
 	items = []
 	items.append(QuadItem("FXConstraints", f, f, n, "", n))
 	items.append(seprator())
 	return "FX Constraints", items, 4
-
 
 
 def get_grapheditor_trackview(ctx):
@@ -722,7 +687,6 @@ def get_grapheditor_trackview(ctx):
 	return "Track View", items, 1
 
 
-
 def get_uv_editor_transform(ctx):
 	items = []
 	items.append(QuadItem("Move", f, f, n, "", n))
@@ -738,7 +702,6 @@ def get_uv_editor_transform(ctx):
 	return "Track View", items, 1
 
 
-
 def get_uv_editor_display(ctx):
 	items = []
 	items.append(QuadItem("Hide Selected", f, f, n, "", n))
@@ -747,7 +710,6 @@ def get_uv_editor_display(ctx):
 	items.append(QuadItem("Freeze Selected", f, f, n, "", n))
 	items.append(QuadItem("Unfreeze All", f, f, n, "", n))
 	return "Track View", items, 2
-
 
 
 def get_uv_editor_tools1(ctx):
@@ -765,7 +727,6 @@ def get_uv_editor_tools1(ctx):
 	items.append(seprator())
 	items.append(QuadItem("Render UVW Template...", f, f, n, "", n))
 	return "Track View", items, 3
-
 
 
 def get_uv_editor_tools2(ctx):

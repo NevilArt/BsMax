@@ -1,3 +1,14 @@
+# 0, 1, 2, 20240701
+* BsMax on Blender 4.2 is not shown as legesy any more.
+* Render preset Save/Load update, bugfix and adapted for new EEVEE.
+* Add object Validate to Cleanup tools list too and bug fixed.
+* In outliner rightclick menu link collection to other scene Operator added.
+* Qaudmenu Delete Animation operator improved and can clear all animation data rather than only key frames of Object itself and ignor all subchanels.
+* New Delete Animation operator (View3D/Object/Animation/Delete Animation).
+* All Curve edit tools Has written again (Some not complete yet).
+* Curve Select by Length, Count and Close has Set, Extend and Substract mode.
+* Divide plus, Refine, Breake, Make first are ready but there is some issues on Merg by distance and Boolean yet and trying fo fix.
+
 # 0, 1, 2, 20240605
 * Kemap issues from last update fixed.
 * GraphEditor select chanels auto hide unselected chanels (3DsMax Mode).

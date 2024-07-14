@@ -16,6 +16,7 @@
 import bpy
 
 from bpy.types import Operator
+from bpy.utils import register_class, unregister_class
 from bpy.app import version
 
 
@@ -64,6 +65,27 @@ def get_material(name, color):
 	
 	new_material = materials.new(name)
 	new_material.diffuse_color = color
+
+
+def get_open_geometry_node_editor():
+	for screen in bpy.data.screens:
+		for area in screen.areas:
+			if not area.type == 'NODE_EDITOR':
+				continue
+
+			for space in area.spaces:
+				if space.type == 'NODE_EDITOR' and \
+					space.tree_type == 'GeometryNodeTree':
+
+					return area
+	return None
+
+def get_active_node(area):
+	if area:
+		space = area.spaces.active
+		if space.node_tree:
+			return space.node_tree.nodes.active
+	return None
 
 
 def set_material(obj):
@@ -143,7 +165,7 @@ def mesh_to_hair_guid(obj):
 
 class Particle_OT_mesh_to_Hair(Operator):
 	bl_idname = 'particle.mesh_to_hair'
-	bl_label = 'Mesh to hair'
+	bl_label = "Mesh to hair"
 	bl_options = {'REGISTER', 'UNDO'}
 	
 	@classmethod
@@ -165,15 +187,50 @@ class Particle_OT_mesh_to_Hair(Operator):
 		for obj in selection:
 			obj.select_set(state=True)
 
-		return{"FINISHED"}
+		return{'FINISHED'}
+
+
+class Node_OT_multi_object_picker(Operator):
+	bl_idname = 'node.auto_object_picker'
+	bl_label = "Auto object picker"
+	bl_options = {'REGISTER', 'UNDO'}
+	
+	@classmethod
+	def poll(self, ctx):
+		active_space = ctx.area.spaces.active
+		if active_space.type == 'NODE_EDITOR':
+			return active_space.tree_type == 'GeometryNodeTree'
+		return False
+	
+	def execute(self, ctx):
+		objects = ctx.selected_objects
+		obj_count = len(objects)
+		active_space = ctx.area.spaces.active
+		active_node = active_space.node_tree.nodes.active
+		obj_inputs = [input 
+			for input in active_node.inputs if input.type == 'OBJECT'
+		]
+		min_count = min(obj_count, len(obj_inputs))
+		for index in range(min_count):
+			obj_inputs[index].default_value = objects[index]
+
+		return{'FINISHED'}
+
+
+classes = {
+	Particle_OT_mesh_to_Hair,
+	Node_OT_multi_object_picker
+}
 
 
 def register_mesh_to_hair():
-	bpy.utils.register_class(Particle_OT_mesh_to_Hair)
+	for cls in classes:
+		register_class(cls)
 
 
 def unregister_mesh_to_hair():
-	bpy.utils.unregister_class(Particle_OT_mesh_to_Hair)
+	for cls in classes:
+		unregister_class(cls)
 
 
 if __name__ =="__main__":

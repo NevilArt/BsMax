@@ -12,16 +12,20 @@
 #	You should have received a copy of the GNU General Public License
 #	along with this program.  If not,see <https://www.gnu.org/licenses/>.
 ############################################################################
+# 2024/07/10
 
+from .marker import register_marker, unregister_marker
 from .selection import register_selection, unregister_selection
 # from .tool_bar import register_tool_bar, unregister_tool_bar
 
 
 def register_graph_editor():
+    register_marker()
     register_selection()
     # register_tool_bar()
 
 
 def unregister_graph_editor():
+    unregister_marker()
     unregister_selection()
     # unregister_tool_bar()

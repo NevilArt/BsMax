@@ -12,7 +12,7 @@
 #	You should have received a copy of the GNU General Public License
 #	along with this program.  If not,see <https://www.gnu.org/licenses/>.
 ############################################################################
-# 2024/03/16
+# 2024/07/11
 
 import bpy
 import gpu
@@ -21,16 +21,7 @@ from mathutils import Vector
 
 from bpy.types import Operator
 from gpu_extras.batch import batch_for_shader
-from bpy_extras.view3d_utils import location_3d_to_region_2d
-from bpy.app import version
-
-
-def get_uniform_color(mode="2D"):
-	if version < (3, 6, 0):
-		if mode == "2D":
-			return "2D_UNIFORM_COLOR"
-		return "3D_UNIFORM_COLOR"
-	return "UNIFORM_COLOR"
+# from bpy_extras.view3d_utils import location_3d_to_region_2d
 
 
 def create_gizmo(sx, sy, sz, ex, ey, ez):
