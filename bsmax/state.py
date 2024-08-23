@@ -36,8 +36,8 @@ def is_primitive(ctx):
 
 def has_constraint(obj, constrainttype):
 	""" Find that given object has asked constraint or not """
-	for c in obj.constraints:
-		if c.type == constrainttype:
+	for constraint in obj.constraints:
+		if constraint.type == constrainttype:
 			return True
 	return False
 

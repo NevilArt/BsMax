@@ -12,6 +12,7 @@
 
 # Thanks for Donate
 * Pamela Okoro
+* Libor D.
 * bikekefeli@gmail.com
 * d_phantom70@hotmail.com
 * kuroiluna@hotmail.com
@@ -21,6 +22,7 @@
 * revovl@gmail.com
 * shane@studiopiper.com.au
 * tmdals1825@gmail.com
+* ddr3653@gmail.com
 
 # Note
 * Unfortunately, I don't have all the names. If you're reading this, please send me your name and webpage if you'd like to be added to the list.

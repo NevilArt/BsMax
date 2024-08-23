@@ -12,7 +12,7 @@
 #	You should have received a copy of the GNU General Public License
 #	along with this program.  If not, see <https://www.gnu.org/licenses/>.
 ############################################################################
-# 2024/05/21
+# 2024/08/23
 
 import bpy
 
@@ -171,9 +171,8 @@ def multi_item_rename_invoke(self, ctx):
 		selected = ctx.selected_nodes
 
 	elif mode == 'SEQUENCE_EDITOR':
-		selected_sequences = ctx.selected_sequences
-		active = selected_sequences if selected_sequences else None
-		selected = selected_sequences
+		active = ctx.active_sequence_strip
+		selected = ctx.selected_editable_sequences
 
 	elif mode == 'OUTLINER':
 		active = ctx.collection

@@ -176,6 +176,8 @@ class Text_OT_Farsi_Arabic_Corrector(Operator):
 		layout = self.layout
 		layout.label(text=arabic_text_correction(self.text))
 		layout.prop(self, 'text', text="")
+		layout.label(text="(Click on emtry space of this dialog to see preview)")
+		layout.label(text="(Press ok then past text anywhere)")
 
 	def execute(self, ctx):
 		ctx.window_manager.clipboard = arabic_text_correction(self.text)
@@ -185,11 +187,22 @@ class Text_OT_Farsi_Arabic_Corrector(Operator):
 		return ctx.window_manager.invoke_props_dialog(self, width=600)
 
 
+def arabic_type_menu(self, ctx):
+	self.layout.operator(
+		'text.farsi_arabic_corrector', text="Farsi & Arabic Type Corrector",
+		icon='OUTLINER_DATA_GP_LAYER'
+	)
+
+
 def register_arabic():
 	bpy.utils.register_class(Text_OT_Farsi_Arabic_Corrector)
+	bpy.types.DATA_PT_font.prepend(arabic_type_menu)
+	bpy.types.SEQUENCER_PT_effect_text_style.prepend(arabic_type_menu)
 
 
 def unregister_arabic():
+	bpy.types.SEQUENCER_PT_effect_text_style.remove(arabic_type_menu)
+	bpy.types.DATA_PT_font.remove(arabic_type_menu)
 	bpy.utils.unregister_class(Text_OT_Farsi_Arabic_Corrector)
 
 

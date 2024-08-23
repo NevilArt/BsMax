@@ -13,139 +13,109 @@
 #	along with this program.  If not, see <https://www.gnu.org/licenses/>.
 ############################################################################
 
-import bpy, bmesh
+import bpy
 from bpy.types import Operator
+from bpy.props import EnumProperty, BoolProperty
 
 
+def mesh_select(mesh, axis, direction):
+	bpy.ops.object.mode_set(mode='EDIT')
+	bpy.ops.mesh.select_all(action='DESELECT')
+	bpy.ops.object.mode_set(mode='OBJECT')
 
-class Vertex:
-	def __init__(self):
-		self.index = 0
-		self.edges = []
-		self.faces = []
+	axis_index = {'X': 0, 'Y': 1, 'Z': 2}.get(axis.upper())
 
+	if direction.upper() == 'POSITIVE':
+		comparison = lambda coord: coord >= 0
+	elif direction.upper() == 'NEGATIVE':
+		comparison = lambda coord: coord < 0
 
+	for vert in mesh.vertices:
+		if comparison(vert.co[axis_index]):
+			vert.select = True
+		
+		vert.select = comparison(vert.co[axis_index])
 
-class Edge:
-	def __init__(self):
-		self.index = 0
-		self.verts = []
-		self.faces = []
+	bpy.ops.object.mode_set(mode='EDIT')
 
-
-
-class Face:
-	def __init__(self):
-		self.index = 0
-		self.verts = []
-		self.edges = []
-
-
-
-class Mesh:
-	def __init__(self, data):
-		self.data = data
-		self.vertices = []
-		self.edges = []
-		self.polygons = []
-		self.read_data(data)
-	
-	def is_unique_ege(self,v1,v2):
-		return True
-
-	def read_data(self, data):
-		""" read faces """
-		for index, poly in enumerate(data.polygons):
-			face = Face()
-			face.index = index
-			face.verts = [v.index for v in poly.vertices]
-			for i,v in enumerate(face.verts):
-				pass
-			self.polygons.append(face)
-
-
-
-class Fast_Mesh:
-	def __init__(self, owner):
-		self.owner = owner
-		self.vertices = []
-		self.edges = []
-		self.polygons = []
-		self.read_deata()
-	
-	def get_faces(self, index, source):
-		if source == 'vertics':
-			pass
-		if source == 'edge':
-			pass
-		if source == 'face':
-			polygons = self.owner.data.polygons
-			if index < len(polygons):
-				return [v for v in polygons[index].vertices]
-		return []
-	
-	def read_deata(self):
-		data = self.owner.data
-		self.vertices = data.vertices
-		self.polygons = data.polygons
-	
-	def get_center_loop(self, method):
-		if method == 1:
-			""" fast method no analyze """
-			return [v for v in self.vertices if v.co.x == 0]
-		else:
-			return []
-	
-	def select_verts(self, indexes):
-		data = self.owner.data
-		bm = bmesh.from_edit_mesh(data)
-		for v in bm.verts:
-			v.select_set(False)
-		for i in indexes:
-			bm.verts[i].select_set(True)
-		bm.select_mode = {'VERT'}
-		bm.select_flush_mode()
-		bmesh.update_edit_mesh(data)
-
+def set_shape_key_active(obj, shape_key_name):
+	shape_key = obj.data.shape_keys.key_blocks.get(shape_key_name)
+	if shape_key:
+		obj.active_shape_key_index = obj.data.shape_keys.key_blocks.keys().index(shape_key_name)
 
 
 class Mesh_OT_Topo_Symmetry(Operator):
-	bl_idname = "mesh.topo_symmetry"
-	bl_label = "Topo Symmetry"
+	bl_idname = 'mesh.topo_symmetrize'
+	bl_label = "Topo Symmetrize"
+	bl_options = {'REGISTER', 'UNDO'}
 
-	mesh = None
+	axis: EnumProperty(
+		name="Axis", 
+		items=[
+			('X', "X", "", 'EVENT_X', 1),
+			('Y', "Y", "", 'EVENT_Y', 2),
+			('Z', "Z", "", 'EVENT_Z', 3)
+		],
+		default='X',
+		description=""
+	) # type: ignore
+
+	direction:BoolProperty(default=False) # type: ignore
 
 	@classmethod
 	def poll(self, ctx):
 		return ctx.mode == "EDIT_MESH"
 
-	# def draw(self,ctx):
-	# 	self.layout
+	def draw(self,ctx):
+		row = self.layout.row()
+		row.prop(self, 'axis', text="", expand=True)
+		text = self.axis + ' - < +' if self.direction else self.axis +' - > +'
+		row.prop(self, 'direction', text=text, icon='BLANK1')
 
 	def execute(self, ctx):
-		fm = Fast_Mesh(ctx.active_object)
-		indexes = fm.get_center_loop(1)
-		print(indexes)
-		fm.select_verts(indexes)
-		return{"FINISHED"}
-	
-	# def cancel(self,ctx):
-	# 	return None
+		shape_key_name = 'SYMETRYCORRECTIONKEY'
+		obj = ctx.object
+		bpy.ops.object.mode_set(mode='OBJECT', toggle=False)
 
-	# def invoke(self,ctx,event):
-	# 	return ctx.window_manager.invoke_props_dialog(self)
+		if not ctx.object.data.shape_keys:
+			obj.shape_key_add(name="Basis", from_mix=False)
 
+		obj.shape_key_add(name=shape_key_name, from_mix=False)
+		
+		set_shape_key_active(obj, shape_key_name)
+		bpy.ops.object.shape_key_mirror(use_topology=True)
+		set_shape_key_active(obj, "Basis")
+
+		side = 'NEGATIVE' if self.direction else 'POSITIVE'
+		mesh_select(obj.data, self.axis, side)
+		
+		bpy.ops.mesh.blend_from_shape(shape=shape_key_name, add=False)
+		bpy.ops.object.mode_set(mode='OBJECT', toggle=False)
+		
+		set_shape_key_active(obj, shape_key_name)
+		bpy.ops.object.shape_key_remove(all=False)
+		bpy.ops.object.mode_set(mode='EDIT')
+		return{'FINISHED'}
+
+	def invoke(self, ctx, event):
+		return ctx.window_manager.invoke_props_dialog(self)
+
+
+def topo_symmetrize_menu(self, context):
+	layout = self.layout
+	layout.separator()
+	layout.operator('mesh.topo_symmetrize')
 
 
 def register_topo():
 	bpy.utils.register_class(Mesh_OT_Topo_Symmetry)
-
+	bpy.types.VIEW3D_MT_edit_mesh.append(topo_symmetrize_menu)
 
 
 def unregister_topo():
 	bpy.utils.unregister_class(Mesh_OT_Topo_Symmetry)
+	bpy.types.VIEW3D_MT_edit_mesh.remove(topo_symmetrize_menu)
 
 
-
-if __name__ == "__main__":
+if __name__ == '__main__':
 	register_topo()

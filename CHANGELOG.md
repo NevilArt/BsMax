@@ -1,3 +1,11 @@
+# 0, 1, 2, 20240714
+* Multi object Connector for geometry node (select objects in viewport in node editor active node that has object input sokets and run Auto object picker).
+* Farsi and Arabic typing tool (only apears in seach menu "Farsi & Arabic Corrector") (type text press OK and paste your text any where you need).
+* Auto rename shifted markers to frame number (timeline marker/auto rename).
+* "Delete Animation" operator shapekey bug fixed.
+* Codes for older than Blender 3.6 removed.
+* blender_manifest.toml file removed from github version and became a normal addon again. 
+
 # 0, 1, 2, 20240701
 * BsMax on Blender 4.2 is not shown as legesy any more.
 * Render preset Save/Load update, bugfix and adapted for new EEVEE.

@@ -15,21 +15,7 @@
 #	You should have received a copy of the GNU General Public License
 #	along with this program.  If not, see <https://www.gnu.org/licenses/>.
 ############################################################################
-# 2024/06/02
-
-bl_info = {
-	'name': "BsMax",
-	'description': "BsMax UI simulations and Tool pack (Blender 3.6LTS ~ 4.2LTS)",
-	'author': "Naser Merati (Nevil)",
-	'version': (0, 1, 3, 20240714),
-	'blender': (3, 6, 0), # Minimum Version
-	'location': "Almost Everywhere in Blender",
-	'wiki_url': 'https://github.com/NevilArt/BsMax/wiki',
-	'doc_url': 'https://github.com/NevilArt/BsMax/wiki',
-	'tracker_url': 'https://github.com/NevilArt/BsMax/issues',
-	'category': "Interface"
-}
-
+# 2024/07/21
 
 import bpy
 import sys
@@ -40,6 +26,19 @@ from bpy.props import EnumProperty, BoolProperty, FloatProperty
 from time import sleep
 from _thread import start_new_thread
 from bpy.utils import register_class, unregister_class
+
+bl_info = {
+	'name': "BsMax",
+	'description': "BsMax UI simulations and Tool pack (Blender 3.6LTS ~ 4.2LTS)",
+	'author': "Naser Merati (Nevil)",
+	'version': (0, 1, 3, 20240823),
+	'blender': (3, 6, 0), # Minimum Version
+	'location': "Almost Everywhere in Blender",
+	'wiki_url': 'https://github.com/NevilArt/BsMax/wiki',
+	'doc_url': 'https://github.com/NevilArt/BsMax/wiki',
+	'tracker_url': 'https://github.com/NevilArt/BsMax/issues',
+	'category': "Interface"
+}
 
 # Add public classes, variables and functions path if not in list.
 path = os.path.dirname(os.path.realpath(__file__))
@@ -70,7 +69,6 @@ def update_preferences(cls, _, action):
 		if cls.aplication != 'CUSTOM':
 			cls.navigation = cls.aplication
 			cls.keymaps = cls.aplication
-			# cls.toolpack = cls.aplication
 
 			cls.navigation_3d = cls.aplication
 			cls.navigation_2d = cls.aplication
@@ -206,15 +204,6 @@ def save_preferences(preferences):
 	ini.close()
 
 
-# def isfloat(value):
-# 	try:
-# 		float(value)
-# 		return True
-
-# 	except ValueError:
-# 		return False
-
-
 def load_preferences(preferences):
 	global iniFileName
 
@@ -232,17 +221,17 @@ def load_preferences(preferences):
 
 		if isfloat(key[1]):
 			value = float(key[1])
+
 		elif key[1] in {'True', 'False'}:
 			value = key[1] == 'True'
+
 		else:
 			value = key[1].upper()
 
-		try:
-			if hasattr(preferences, key[0]):
+		if hasattr(preferences, key[0]):
+			current_value = getattr(preferences, key[0])
+			if value != current_value:
 				setattr(preferences, key[0], value)
-		except:
-			# ignore if there is not the attribute
-			pass
 
 
 class BsMax_AddonPreferences(AddonPreferences):
@@ -267,8 +256,6 @@ class BsMax_AddonPreferences(AddonPreferences):
 		update= lambda self, ctx: update_preferences(self, ctx, 'aplication'),
 		description="select a package"
 	) # type: ignore
-
-	active = BoolProperty(name="Active", default=False)
 	
 	apps = [
 		(
@@ -345,14 +332,6 @@ class BsMax_AddonPreferences(AddonPreferences):
 		update= lambda self, ctx: update_preferences(self, ctx, 'NAVIGATION'),
 		description="select overide navigation mode"
 	) # type: ignore
-
-	# toolpack: EnumProperty(
-	# 	name="Tools Pack",
-	# 	items=apps,
-	# 	default='BLENDER',
-	# 	update= lambda self, ctx: update_preferences(self, ctx, 'TOOLPACK'),
-	# 	description="Extera Overide Tools"
-	# ) # type: ignore
 
 	keymaps: EnumProperty(
 		name="Keymap",
@@ -535,43 +514,6 @@ class BsMax_AddonPreferences(AddonPreferences):
 		description="Convert Primitives to geometry node modfier"
 	) # type: ignore
 
-	def refine(self):
-		""" Disactive keymap update """
-		self.active = False
-
-		""" Simple mode navigation """
-		if self.navigation_3d == self.navigation_2d:
-			if self.navigation == 'CUSTOM':
-				self.navigation = self.navigation_3d
-
-		elif self.navigation != 'CUSTOM':
-			self.navigation = 'CUSTOM'
-
-		""" Simple mode keymap """
-		if self.viowport == self.sculpt and\
-			self.viowport == self.uv_editor and\
-			self.viowport == self.node_editor and\
-			self.viowport == self.text_editor and\
-			self.viowport == self.graph_editor and\
-			self.viowport == self.clip_editor and\
-			self.viowport == self.video_sequencer and\
-			self.viowport == self.file_browser:
-			if self.keymaps == 'CUSTOM':
-				self.keymaps = self.viowport
-		elif self.keymaps != 'CUSTOM':
-			self.keymaps = 'CUSTOM'
-
-		""" Quick select mode """
-		if self.navigation == self.keymaps and\
-			self.navigation == self.floatmenus:
-			if self.aplication == 'CUSTOM':
-				self.aplication = self.navigation
-		elif self.aplication != 'CUSTOM':
-			self.aplication = 'CUSTOM'
-
-		""" Reactive keymap update """
-		self.active = True
-
 	def draw(self, _):
 		layout = self.layout
 
@@ -633,7 +575,6 @@ def register():
 
 	preferences = addons[__name__].preferences
 	load_preferences(preferences)
-	preferences.active = True
 
 	register_bsmax()
 	register_primitives(preferences)

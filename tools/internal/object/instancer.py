@@ -12,7 +12,7 @@
 #	You should have received a copy of the GNU General Public License
 #	along with this program.  If not, see <https://www.gnu.org/licenses/>.
 ############################################################################
-# 2024/05/26
+# 2024/07/17
 
 import bpy
 
@@ -54,9 +54,10 @@ class Object_TO_Make_Unique(Operator):
 	@classmethod
 	def poll(self, ctx):
 		if ctx.object:
-			return ctx.object.data.users > 1
+			if ctx.object.type != 'EMPTY':
+				return ctx.object.data.users > 1
 		return False
-	
+
 	def draw(self, _):
 		layout = self.layout
 		layout.prop(self, 'group')

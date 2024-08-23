@@ -19,6 +19,7 @@ from .edit import register_edit, unregister_edit
 from .loop import register_loop, unregister_loop
 from .outline import register_outline, unregister_outline
 from .select import register_select, unregister_select
+from .topo_symmetry import register_topo, unregister_topo
 from .weld import register_weld, unregister_weld
 
 def register_mesh():
@@ -28,6 +29,7 @@ def register_mesh():
 	register_meshs()
 	register_outline()
 	register_select()
+	register_topo()
 	register_weld()
 
 def unregister_mesh():
@@ -37,4 +39,5 @@ def unregister_mesh():
 	unregister_meshs()
 	unregister_outline()
 	unregister_select()
+	unregister_topo()
 	unregister_weld()

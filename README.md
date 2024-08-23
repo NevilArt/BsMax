@@ -36,12 +36,12 @@ If you found this product useful and want to support this project you can Donate
 * [Download Older Version for Blender 2.80 ~ 3.5](https://github.com/NevilArt/BsMax_2_80)
 
 ## Recent Updates and Changes
-* Multi object Connector for geometry node (select objects in viewport in node editor active node that has object input sokets and run Auto object picker).
-* Farsi and Arabic typing tool (only apears in seach menu "Farsi & Arabic Corrector") (type text press OK and paste your text any where you need).
-* Auto rename shifted markers to frame number (timeline marker/auto rename).
-* "Delete Animation" operator shapekey bug fixed.
-* Codes for older than Blender 3.6 removed.
-* blender_manifest.toml file removed from github version and became a normal addon again. 
+* Topo Symmetrize tool that keep UV data (under the EditMesh/Mesh menu)
+* Camera target select search from last constraint and ignore disable ones this makes better result.
+* Alingt Target to camera matchs the target to camera direction (Camera/Target/Align).
+* Command panel Instancer warning issue fixed.
+* Batch Rename for VSE issue fixed.
+* Place for Farsi arabic type corrector.
 * [Change log ...](https://github.com/NevilArt/BsMax/blob/master/CHANGELOG.md)
 
 ## Special Thanks
