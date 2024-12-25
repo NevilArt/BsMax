@@ -12,12 +12,12 @@
 #	You should have received a copy of the GNU General Public License
 #	along with this program.  If not, see <https://www.gnu.org/licenses/>.
 ############################################################################
+# 2024/09/10
 
 import bpy
 
 from bpy.types import Operator
 from bpy.props import EnumProperty, FloatProperty
-
 
 
 def create_obj_driver(obj, chanel, subchanel, start, end):
@@ -44,36 +44,34 @@ def create_obj_driver(obj, chanel, subchanel, start, end):
 	return ""
 
 
-
 def create_bone_driver(bone, chanel, subchanel, start, end):
 	return ""
 
 
-
 class Rigg_TO_Wire_Parameter(Operator):
 	bl_idname = 'rigg.wire_parameter'
-	bl_label = 'Wire Parameter'
-	bl_description = ''
+	bl_label = "Wire Parameter"
+	bl_description = ""
 	bl_options = {'REGISTER', 'UNDO'}
 
 	chanel: EnumProperty(
 		items=[
-			("LOCATION", "Location", ""),
-			("ROTATION", "Rotation", ""),
-			("SCALE", "Scale", "")
+			('LOCATION', "Location", ""),
+			('ROTATION', "Rotation", ""),
+			('SCALE', "Scale", "")
 		]
-	)
+	) # type: ignore
 	
 	axis: EnumProperty(
 		items=[
-			("X", "X", ""),
-			("Y", "Y", ""),
-			("Z", "Z", "")
+			('X', "X", ""),
+			('Y', "Y", ""),
+			('Z', "Z", "")
 		]
-	)
+	) # type: ignore
 	
-	start: FloatProperty()
-	end: FloatProperty()
+	start: FloatProperty() # type: ignore
+	end: FloatProperty() # type: ignore
 
 	@classmethod
 	def poll(self, ctx):
@@ -102,15 +100,12 @@ class Rigg_TO_Wire_Parameter(Operator):
 		return ctx.window_manager.invoke_props_dialog(self)
 
 
-
 def register_wire_parameter():
 	bpy.utils.register_class(Rigg_TO_Wire_Parameter)
 
 
-
 def unregister_wire_parameter():
 	bpy.utils.unregister_class(Rigg_TO_Wire_Parameter)
-
 
 
 if __name__ == '__main__':

@@ -12,10 +12,13 @@
 #	You should have received a copy of the GNU General Public License
 #	along with this program.  If not, see <https://www.gnu.org/licenses/>.
 ############################################################################
+# 2024/08/27
+
 import bpy
 
 from bpy.props import EnumProperty, BoolProperty
 from bpy.types import Operator
+
 from bsmax.state import has_constraint
 
 
@@ -24,14 +27,15 @@ def get_view3d(ctx):
 		return ctx.area.spaces.active
 
 	areas = [area for area in ctx.screen.areas if area.type == 'VIEW_3D']
-	spaces = [space for area in areas
-					for space in area.spaces
-						if space.type == 'VIEW_3D']
+	spaces = [
+		space for area in areas for space in area.spaces
+			if space.type == 'VIEW_3D'
+	]
+	
 	#TODO try to find biggest view 3d
 	if spaces:
 		return spaces[0]
 	return None
-
 
 
 def get_cameras(ctx):
@@ -40,15 +44,18 @@ def get_cameras(ctx):
 			if ctx.active_object.select_get():
 				return [ctx.active_object]
 			else:
-				return [obj for obj in bpy.data.objects if obj.type == 'CAMERA']
+				return [
+					obj for obj in bpy.data.objects if obj.type == 'CAMERA'
+				]
 		else:
 			return [obj for obj in bpy.data.objects if obj.type == 'CAMERA']
 	else:
 		if ctx.selected_objects:
-			return [obj for obj in ctx.selected_objects if obj.type == 'CAMERA']
+			return [
+				obj for obj in ctx.selected_objects if obj.type == 'CAMERA'
+			]
 		else:
 			return [obj for obj in bpy.data.objects if obj.type == 'CAMERA']
-
 
 
 def set_camera(ctx, camera, view3d):
@@ -59,13 +66,10 @@ def set_camera(ctx, camera, view3d):
 		bpy.ops.view3d.view_center_camera('INVOKE_DEFAULT')	
 
 
-
-# create a camera from view 
 class Camera_OT_Create_From_View(Operator):
-	""" Create a new camera and align it to view """
 	bl_idname = 'camera.create_from_view'
 	bl_label = 'Create Camera From View'
-	bl_description = 'Create New Camera From View'
+	bl_description = "Create a new camera and align it to view"
 	bl_options = {'REGISTER', 'UNDO'}
 
 	@classmethod
@@ -95,45 +99,52 @@ class Camera_OT_Create_From_View(Operator):
 		return{'FINISHED'}
 
 
-
 class Camera_OT_Set_Active(Operator):
 	bl_idname = 'camera.set_active'
 	bl_label = 'Set as Active Camera'
-	bl_description = 'Set Selected Camera As Active Camera'
+	bl_description = "Set Selected Camera As Active Camera"
 	bl_options = {'REGISTER', 'UNDO'}
-	
-	def execute(self, ctx):
-		if ctx.active_object != None:
-			if ctx.active_object.type == 'CAMERA':
-				ctx.scene.camera = ctx.active_object
-				""" If Autokey on, Bind Marker To Active Camera """
-				if ctx.scene.tool_settings.use_keyframe_insert_auto:
-					cur_frame = ctx.scene.frame_current
-					name = 'F_' + str(cur_frame)
-					marker = ctx.scene.timeline_markers.new(name, frame = cur_frame)
-					marker.camera = ctx.active_object
-		return{'FINISHED'}
-
-
-
-class Camera_OT_Select(Operator):
-	""" List camera and make active picked one """
-	bl_idname = 'camera.select'
-	bl_label = 'Select Camera'
-	bl_property = 'search'
-	bl_description = ''
 
 	@classmethod
 	def poll(self, ctx):
-		return ctx.area.type in {'VIEW_3D', 'DOPESHEET_EDITOR',
-								'GRAPH_EDITOR', 'NLA_EDITOR'}
+		if ctx.active_object:
+			return ctx.active_object.type == 'CAMERA'
+		return False
+
+	def execute(self, ctx):
+		ctx.scene.camera = ctx.active_object
+
+		""" If Autokey on, Bind Marker To Active Camera """
+		if ctx.scene.tool_settings.use_keyframe_insert_auto:
+			cur_frame = ctx.scene.frame_current
+			name = 'F_' + str(cur_frame)
+			marker = ctx.scene.timeline_markers.new(name, frame = cur_frame)
+			marker.camera = ctx.active_object
+
+		return{'FINISHED'}
+
+
+class Camera_OT_Select(Operator):
+	bl_idname = 'camera.select'
+	bl_label = "Select Camera"
+	bl_description = "List camera and make active picked one"
+	bl_property = 'search'
+
+	@classmethod
+	def poll(self, ctx):
+		return ctx.area.type in {
+			'VIEW_3D', 'DOPESHEET_EDITOR', 'GRAPH_EDITOR', 'NLA_EDITOR'
+		}
 	
 	def scene_cameras(self, ctx):
-		return [(cam.name, cam.name, '') for cam in bpy.data.objects
-											if cam.type == 'CAMERA']
+		return [
+			(cam.name, cam.name, '')
+			for cam in bpy.data.objects if cam.type == 'CAMERA'
+		]
 
-	search: EnumProperty(name='Select Camera', items=scene_cameras)
-	
+	search: EnumProperty(
+		name='Select Camera', items=scene_cameras
+	) # type: ignore
 	
 	def execute(self, ctx):
 		camera = bpy.data.objects[self.search]
@@ -152,7 +163,6 @@ class Camera_OT_Select(Operator):
 		return{'RUNNING_MODAL'}
 
 
-
 class Camera_OT_Lock_To_View_Toggle(Operator):
 	bl_idname = 'camera.lock_to_view_toggle'
 	bl_label = 'Lock Camera to view (Toggle)'
@@ -167,11 +177,10 @@ class Camera_OT_Lock_To_View_Toggle(Operator):
 		return {'FINISHED'}
 
 
-
 class Camera_OT_Lock_Transform(Operator):
 	bl_idname = 'camera.lock_transform'
-	bl_label = 'Lock Camera Transform'
-	bl_description = 'Lock active cameras transform'
+	bl_label = "Lock Camera Transform"
+	bl_description = "Lock active cameras transform"
 	bl_options = {'REGISTER', 'UNDO'}
 
 	@classmethod
@@ -188,14 +197,14 @@ class Camera_OT_Lock_Transform(Operator):
 		return {'FINISHED'}
 
 
-
 class Camera_OT_Select_Active_Camera(Operator):
 	bl_idname = 'camera.select_active_camera'
-	bl_label = 'Select Active Camera/Target'
-	bl_description = 'Select Acitve Camera/Target'
+	bl_label = "Select Active Camera/Target"
+	bl_description = "Select Acitve Camera/Target"
+	bl_options = {'REGISTER', 'UNDO'}
 
-	selcam: BoolProperty(name='Select Camera')
-	seltrg: BoolProperty(name='Select Target')
+	selcam: BoolProperty(name='Select Camera') # type: ignore
+	seltrg: BoolProperty(name='Select Target') # type: ignore
 
 	@classmethod
 	def poll(self, ctx):
@@ -203,23 +212,25 @@ class Camera_OT_Select_Active_Camera(Operator):
 
 	def execute(self, ctx):
 		cam = ctx.scene.camera
-		if cam != None:
-			bpy.ops.object.select_all(action='DESELECT')
-			if self.selcam:
-				cam.select_set(state=True)
-			if self.seltrg:
-				if has_constraint(cam, 'TRACK_TO'):
-					targ = cam.constraints["Track To"].target
-					targ.select_set(state=True)
+		if not cam:
+			return {'FINISHED'}
+
+		bpy.ops.object.select_all(action='DESELECT')
+		if self.selcam:
+			cam.select_set(state=True)
+
+		if self.seltrg:
+			if has_constraint(cam, 'TRACK_TO'):
+				targ = cam.constraints["Track To"].target
+				targ.select_set(state=True)
 
 		return {'FINISHED'}
 
 
-
 class Camera_OT_Show_Safe_Area(Operator):
 	bl_idname = 'camera.show_safe_areas'
-	bl_label = 'Show Safe Area'
-	bl_description = 'Show Safe Area'
+	bl_label = "Show Safe Area"
+	bl_description = "Show Safe Area"
 
 	@classmethod
 	def poll(self, ctx):
@@ -227,21 +238,29 @@ class Camera_OT_Show_Safe_Area(Operator):
 
 	def execute(self, ctx):
 		camera = ctx.scene.camera
-		if camera:
-			camera.data.show_safe_areas = not camera.data.show_safe_areas
-			camera.data.show_passepartout = True
-			camera.data.passepartout_alpha = 1
-		return {'FINISHED'}
+		if not camera:
+			return {'FINISHED'}
 
+		camera.data.show_safe_areas = not camera.data.show_safe_areas
+		camera.data.show_passepartout = True
+		camera.data.passepartout_alpha = 1
+
+		return {'FINISHED'}
 
 
 class Camera_OT_Lock_Toggle(Operator):
 	bl_idname = 'camera.lock_toggle'
-	bl_label = 'Show Safe Area'
-	bl_description = 'Show Safe Area'
+	bl_label = "Show Safe Area"
+	bl_description = "Show Safe Area"
 
-	name: EnumProperty(name='Name', default='CAMERA',
-		items=[('CAMERA', 'Camera',''), ('CURSOR', 'Cursor','')])
+	name: EnumProperty(
+		name='Name',
+		items=[
+			('CAMERA', "Camera", ""),
+			('CURSOR', "Cursor", "")
+		],
+		 default='CAMERA'
+	) # type: ignore
 
 	@classmethod
 	def poll(self, ctx):
@@ -250,21 +269,21 @@ class Camera_OT_Lock_Toggle(Operator):
 	def execute(self, ctx):
 		if self.name == 'CAMERA':
 			ctx.space_data.lock_camera = not ctx.space_data.lock_camera
+
 		elif self.name == 'CURSOR':
 			ctx.space_data.lock_cursor = not ctx.space_data.lock_cursor
+
 		return {'FINISHED'}
 
 
-
-def camera_menu(self, ctx):
+def camera_menu(self, _):
 	layout = self.layout
 	layout.separator()
 	layout.operator('camera.create_from_view')
 	layout.operator('camera.select')
 
 
-
-classes = (
+classes = {
 	Camera_OT_Set_Active,
 	Camera_OT_Create_From_View,
 	Camera_OT_Select,
@@ -273,22 +292,21 @@ classes = (
 	Camera_OT_Select_Active_Camera,
 	Camera_OT_Show_Safe_Area,
 	Camera_OT_Lock_Toggle
-)
-
+}
 
 
 def register_cameras():
-	for c in classes:
-		bpy.utils.register_class(c)
-	bpy.types.VIEW3D_MT_view_cameras.append(camera_menu)
+	for cls in classes:
+		bpy.utils.register_class(cls)
 
+	bpy.types.VIEW3D_MT_view_cameras.append(camera_menu)
 
 
 def unregister_cameras():
 	bpy.types.VIEW3D_MT_view_cameras.remove(camera_menu)	
-	for c in classes:
-		bpy.utils.unregister_class(c)
 
+	for cls in classes:
+		bpy.utils.unregister_class(cls)
 
 
 if __name__ == '__main__':

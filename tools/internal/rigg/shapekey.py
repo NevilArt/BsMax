@@ -12,26 +12,26 @@
 #	You should have received a copy of the GNU General Public License
 #	along with this program.  If not, see <https://www.gnu.org/licenses/>.
 ############################################################################
-
+# 2024/09/10
 
 """ This file can be instaled as an stand alone add-on too """
 bl_info = {
 	"name": "BsMax-Shapekey",
-	"description": "Drive multiple Shapekey (Blender 2.93LTS ~ 3.6LTS)",
+	"description": "Drive multiple Shapekey (Blender 2.93LTS ~ 4.2LTS)",
 	"author": "Matt Ebb | Blaize | Anthony Hunt | Spirou4D | Nevil",
 	"version": (0, 1, 0, 2),# 2023-06-11
 	"blender": (2, 93, 0),# to 3.6
-	"location": "Properties/ Output/ Backbrner",
+	"location": "Properties/ Data/ Shape Key",
 	"wiki_url": "https://github.com/NevilArt/BsMax_2_80/wiki",
 	"doc_url": "https://github.com/NevilArt/BsMax_2_80/wiki",
 	"tracker_url": "https://github.com/NevilArt/BsMax_2_80/issues",
 	"category": "Render"
 }
 
-
 import bpy
 
 from bpy.types import Operator
+from bpy.utils import register_class, unregister_class
 
 # a-----------v----------b----------v------c
 # p = (v-a)/(b-a) if v < b else (c-v)/(c-b) #zerout
@@ -51,11 +51,10 @@ class MultiShapeKey:
 		self.values.sort()
 
 
-
 class Mesh_TO_Shapekeys_Sort_by_name(Operator):
-	""" Sort shape key by name order """
-	bl_idname = "mesh.shapekeys_sort_by_name"
+	bl_idname = 'mesh.shapekeys_sort_by_name'
 	bl_label = "Sort By Name"
+	bl_description = "Sort shape key by name order"
 	bl_options = {'REGISTER', 'UNDO', 'INTERNAL'}
 	
 	@classmethod
@@ -83,18 +82,18 @@ class Mesh_TO_Shapekeys_Sort_by_name(Operator):
 			step_count = current_index - index -1
 			ctx.object.active_shape_key_index = current_index
 			for i in range(step_count):
-				bpy.ops.object.shape_key_move(type="UP")		
+				bpy.ops.object.shape_key_move(type='UP')		
 
-		return{"FINISHED"}
+		return{'FINISHED'}
 
 
 def has_integer_sufix(string, key):
-	""" get underline position """
+	# get underline position
 	index = string.rfind(key)
-	""" seprate name from sufix """
+	# seprate name from sufix """
 	integer = string[index + 1:]
 	name = string[:index]
-	""" check if sufix integer and in range 0~100 """
+	# check if sufix integer and in range 0~100
 
 	if integer.isdigit():
 		val = int(integer)
@@ -104,12 +103,10 @@ def has_integer_sufix(string, key):
 	return None
 
 
-
 def remove_shapekey_by_name(obj, shapekey_name):
 	key_blocks = obj.data.shape_keys.key_blocks
 	obj.active_shape_key_index = key_blocks.keys().index(shapekey_name)
 	bpy.ops.object.shape_key_remove()
-
 
 
 def get_shapekeys(ctx):
@@ -124,7 +121,6 @@ def get_shapekeys(ctx):
 			allowedShapekeys.append(n.name)
 
 	return allowedShapekeys
-
 
 
 def get_groups_by(shapekeys, key):
@@ -151,38 +147,46 @@ def devide_numeric_shapekeys_to_sub_groups(shapekeys, seprator):
 	return groups
 
 
-
 def create_multi_shapekey_driver(ctx):
-	""" Collect names whit underline """
+	# Collect names whit underline
 	shapekeys = get_shapekeys(ctx)
 
-	""" Groupe the shape keys """
-	groups = devide_numeric_shapekeys_to_sub_groups(get_groups_by(shapekeys, '_'), '_')
-	groups += devide_numeric_shapekeys_to_sub_groups(get_groups_by(shapekeys, '%'), '%')
-	groups += devide_numeric_shapekeys_to_sub_groups(get_groups_by(shapekeys, '+'), '+')
+	# Groupe the shape keys
+	groups = devide_numeric_shapekeys_to_sub_groups(
+		get_groups_by(shapekeys, '_'), '_'
+	)
+	
+	groups += devide_numeric_shapekeys_to_sub_groups(
+		get_groups_by(shapekeys, '%'), '%'
+	)
+	
+	groups += devide_numeric_shapekeys_to_sub_groups(
+		get_groups_by(shapekeys, '+'), '+'
+	)
 
 
-	""" remove groups with single value """
+	# remove groups with single value
 	for group in groups:
 		if len(group.values) < 2:
 			groups.remove(group)
 
-	""" sort all group values """
+	# sort all group values
 	for group in groups:
 		group.sort()
 
-	""" setup drivers """
+	# setup drivers
 	shell =  ctx.object		
-	names = [n.name for n in shell.data.shape_keys.key_blocks
-										if n.name != 'Basis']
+	names = [
+		n.name for n in shell.data.shape_keys.key_blocks if n.name != 'Basis'
+	]
 
 	for group in groups:
-		""" Create empty shapekey for driving """
+		# Create empty shapekey for driving
 		if not group.name in names:
 			shell.shape_key_add(name=group.name, from_mix=False)
 
 		for index, val in enumerate(group.values):
-			""" Set up driver to shape keys """
+			# Set up driver to shape keys
 			shape_key = group.name + group.seprator + str(val)
 			key_block = shell.data.shape_keys.key_blocks[shape_key]
 			key_block.driver_remove('value')
@@ -197,7 +201,7 @@ def create_multi_shapekey_driver(ctx):
 			target.id = shell.data.shape_keys
 			target.data_path = 'key_blocks["' + group.name + '"].value'
 
-			""" Create driver script """
+			### Create driver script ###
 			# previes shapekey start value
 			start = 0 if index == 0 else float(group.values[index-1]) / 100.0
 			# current shapkey satrt value
@@ -249,7 +253,7 @@ class Mesh_TO_Create_Multi_Target_Shapekeys(Operator):
 	target_75\n
 	The digit are percentage of the each target complet on
 	"""
-	bl_idname = "mesh.create_multi_target_shapekeys"
+	bl_idname = 'mesh.create_multi_target_shapekeys'
 	bl_label = "Create Multi Target Shapekeys"
 	bl_options = {'REGISTER', 'UNDO', 'INTERNAL'}
 
@@ -259,8 +263,7 @@ class Mesh_TO_Create_Multi_Target_Shapekeys(Operator):
 	
 	def execute(self, ctx):
 		create_multi_shapekey_driver(ctx)
-		return{"FINISHED"}
-
+		return{'FINISHED'}
 
 
 def shapekey_tools(self, ctx):
@@ -272,37 +275,33 @@ def shapekey_tools(self, ctx):
 		row.operator('mesh.shapekeys_sort_by_name')
 
 
-
-classes = (
+classes = {
 	Mesh_TO_Shapekeys_Sort_by_name,
 	Mesh_TO_Create_Multi_Target_Shapekeys
-)
-
+}
 
 
 def register_shapekey():
-	for c in classes:
-		bpy.utils.register_class(c)
-	bpy.types.DATA_PT_shape_keys.append(shapekey_tools)
+	for cls in classes:
+		register_class(cls)
 
+	bpy.types.DATA_PT_shape_keys.append(shapekey_tools)
 
 
 def unregister_shapekey():
 	bpy.types.DATA_PT_shape_keys.remove(shapekey_tools)
-	for c in classes:
-		bpy.utils.unregister_class(c)
 
+	for cls in classes:
+		unregister_class(cls)
 
 
 def register():
 	register_shapekey()
 
 
-
 def unregister():
 	unregister_shapekey()
 
 
-
-if __name__ == "__main__":
+if __name__ == '__main__':
 	register_shapekey()

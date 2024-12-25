@@ -194,8 +194,8 @@ classes = {
 
 
 def register_bone():
-	for c in classes:
-		register_class(c)
+	for cls in classes:
+		register_class(cls)
 	
 	bpy.types.VIEW3D_MT_select_pose.append(select_keyed_menu)
 
@@ -203,8 +203,8 @@ def register_bone():
 def unregister_bone():
 	bpy.types.VIEW3D_MT_select_pose.remove(select_keyed_menu)
 
-	for c in classes:
-		unregister_class(c)
+	for cls in classes:
+		unregister_class(cls)
 
 
 if __name__ == '__main__':

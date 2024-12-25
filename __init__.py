@@ -31,15 +31,15 @@ bl_info = {
 	'name': "BsMax",
 	'description': "BsMax UI simulations and Tool pack (Blender 3.6LTS ~ 4.2LTS)",
 	'author': "Naser Merati (Nevil)",
-	'version': (0, 1, 3, 20240823),
+	'version': (0, 1, 3, 20241225),
 	'blender': (3, 6, 0), # Minimum Version
 	'location': "Almost Everywhere in Blender",
-	'wiki_url': 'https://github.com/NevilArt/BsMax/wiki',
 	'doc_url': 'https://github.com/NevilArt/BsMax/wiki',
 	'tracker_url': 'https://github.com/NevilArt/BsMax/issues',
 	'category': "Interface"
 }
 
+# TODO switch prefrence saving data to jason
 # Add public classes, variables and functions path if not in list.
 path = os.path.dirname(os.path.realpath(__file__))
 if path not in sys.path:

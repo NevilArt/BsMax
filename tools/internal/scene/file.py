@@ -22,9 +22,10 @@ from bpy.app import version
 
 
 class File_OT_Scale_Icons(Operator):
-	bl_idname = "filebrowser.scaleicons"
+	bl_idname = 'filebrowser.scaleicons'
 	bl_label = "Scale Icons"
-	up: bpy.props.BoolProperty(name="scaleup", default=True)
+	bl_description = ""
+	up: bpy.props.BoolProperty(name="scaleup", default=True) # type: ignore
 	
 	@classmethod
 	def poll(self, ctx):
@@ -35,6 +36,7 @@ class File_OT_Scale_Icons(Operator):
 		small = 'LIST_VERTICAL'
 		medium = 'LIST_HORIZONTAL'
 		large = 'THUMBNAIL'
+
 		if self.up:
 			if params.display_type == large:
 				params.display_type = small
@@ -51,12 +53,13 @@ class File_OT_Scale_Icons(Operator):
 			elif params.display_type == small:
 				params.display_type = large
 
-		return{"FINISHED"}
+		return{'FINISHED'}
 
 
 class File_OT_Version(Operator):
-	bl_idname = "file.version"
+	bl_idname = 'file.version'
 	bl_label = "Version"
+	bl_description = ""
 
 	@classmethod
 	def poll(self, ctx):
@@ -67,7 +70,7 @@ class File_OT_Version(Operator):
 		self.layout.label(text="App: " + self.app_version)
 
 	def execute(self, ctx):
-		return{"FINISHED"}
+		return{'FINISHED'}
 	
 	def invoke(self, ctx, event):
 		self.date_version = str(bpy.data.version)
@@ -76,8 +79,9 @@ class File_OT_Version(Operator):
 
 
 class File_OT_Save_Check(Operator):
-	bl_idname = "file.save_check"
+	bl_idname = 'file.save_check'
 	bl_label = "Save Check"
+	bl_description = ""
 
 	def compar_versions(self, file_ver, app_ver):
 		print(file_ver[0], app_ver[0], file_ver[1], app_ver[1])
@@ -90,7 +94,7 @@ class File_OT_Save_Check(Operator):
 
 	def execute(self, ctx):
 		bpy.ops.wm.save_mainfile()
-		return{"FINISHED"}
+		return{'FINISHED'}
 	
 	def invoke(self, ctx, event):
 		# check if file already saved
@@ -98,7 +102,7 @@ class File_OT_Save_Check(Operator):
 			# save normaly if file and blender version are same
 			if self.compar_versions(bpy.data.version, bpy.app.version):
 				bpy.ops.wm.save_mainfile()
-				return{"FINISHED"}
+				return{'FINISHED'}
 
 			# open dialog if versions not same
 			self.date_version = str(bpy.data.version)
@@ -107,12 +111,14 @@ class File_OT_Save_Check(Operator):
 
 		# just saved unsaved files
 		bpy.ops.wm.save_as_mainfile('INVOKE_DEFAULT')
-		return{"FINISHED"}
+
+		return{'FINISHED'}
 
 
 class Scene_OT_Reset(Operator):
-	bl_idname = "scene.reset"
+	bl_idname = 'scene.reset'
 	bl_label = "Reset"
+	bl_description = ""
 	bl_options = {'REGISTER', 'INTERNAL'}
 
 	def draw(self, ctx):
@@ -137,36 +143,37 @@ class Scene_OT_Reset(Operator):
 		else:
 			pass
 
-		return{"FINISHED"}
+		return{'FINISHED'}
 
 	
 	def invoke(self, ctx, event):
 		if bpy.data.is_dirty:
 			return ctx.window_manager.invoke_props_dialog(self)
+
 		return self.execute(ctx)
 
 
 def version_menu(self, ctx):
 	layout = self.layout
 	layout.separator()
-	layout.operator("file.version", text='File Version', icon='BLENDER')
+	layout.operator('file.version', text="File Version", icon='BLENDER')
 
 
 def reset_menu(self, ctx):
-	self.layout.operator("scene.reset", text='Reset', icon='FILE')
+	self.layout.operator('scene.reset', text="Reset", icon='FILE')
 
 
-classes = (
+classes = {
 	File_OT_Scale_Icons,
 	File_OT_Version,
 	File_OT_Save_Check,
 	Scene_OT_Reset
-)
+}
 
 
 def register_file():
-	for c in classes:
-		register_class(c)
+	for cls in classes:
+		register_class(cls)
 
 	bpy.types.TOPBAR_MT_file.prepend(reset_menu)	
 	bpy.types.TOPBAR_MT_file.append(version_menu)
@@ -176,9 +183,9 @@ def unregister_file():
 	bpy.types.TOPBAR_MT_file.remove(reset_menu)
 	bpy.types.TOPBAR_MT_file.remove(version_menu)
 
-	for c in classes:
-		unregister_class(c)
+	for cls in classes:
+		unregister_class(cls)
 
 
-if __name__ == "__main__":
+if __name__ == '__main__':
 	register_file()

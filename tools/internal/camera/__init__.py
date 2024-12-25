@@ -15,16 +15,19 @@
 
 from .cameras import register_cameras, unregister_cameras
 from .copy_paste import register_copy_past, unregister_copy_past
+from .motion_blur import register_motion_blur, unregister_motion_blur
 from .target_camera import register_terget_camera, unregister_terget_camera
 
 
 def register_camera():
 	register_cameras()
 	register_copy_past()
+	register_motion_blur()
 	register_terget_camera()
 
 
 def unregister_camera():
 	unregister_cameras()
 	unregister_copy_past()
+	unregister_motion_blur()
 	unregister_terget_camera()

@@ -12,6 +12,7 @@
 #	You should have received a copy of the GNU General Public License
 #	along with this program.  If not, see <https://www.gnu.org/licenses/>.
 ############################################################################
+# 2024/08/30
 
 import bpy
 
@@ -19,20 +20,24 @@ from mathutils import Vector
 
 from bpy.types import Operator
 from bpy.props import BoolProperty, EnumProperty
-
+from bpy.utils import register_class, unregister_class
 
 
 # this operator works smoother then the original one in panel 
 class UV_OT_Mirror_Cover(Operator):
-	""" Mirror the selected UV """
-	bl_idname = "uv.mirror_cover"
+	bl_idname = 'uv.mirror_cover'
 	bl_label = "Mirror (Cover)"
+	bl_description = "Mirror the selected UV"
 	bl_options = {'REGISTER', 'UNDO', 'INTERNAL'}
 	
 	axis: EnumProperty(
-		name="Axis",  default='X', 
-		items=[('X', 'X', ''), ('Y', 'Y', '')]
-	)
+		name="Axis",
+		items=[
+			('X', "X", "X Axis"),
+			('Y', "Y", "Y Axis")
+		],
+		default='X'
+	) # type: ignore
 
 	@classmethod
 	def poll(self, ctx):
@@ -45,17 +50,16 @@ class UV_OT_Mirror_Cover(Operator):
 		if self.axis == 'Y':
 			bpy.ops.transform.mirror(constraint_axis=(False, True, False))
 
-		return{"FINISHED"}
-
+		return{'FINISHED'}
 
 
 class UV_OT_Turn(Operator):
-	""" Rotate Selected UV by given degere """
-	bl_idname = "uv.turn"
+	bl_idname = 'uv.turn'
 	bl_label = "Turn"
+	bl_description = "Rotate Selected UV by given degere"
 	bl_options = {'REGISTER', 'UNDO', 'INTERNAL'}
 	
-	ccw: BoolProperty(name="CCW")
+	ccw: BoolProperty(name="CCW") # type: ignore
 
 	@classmethod
 	def poll(self, ctx):
@@ -72,14 +76,13 @@ class UV_OT_Turn(Operator):
 			orient_matrix_type='VIEW'
 		)
 		
-		return{"FINISHED"}
-
+		return{'FINISHED'}
 
 
 class UV_OT_Snap_Toggle(Operator):
-	""" Rotate Selected UV by given degere """
-	bl_idname = "uv.snap_toggle"
+	bl_idname = 'uv.snap_toggle'
 	bl_label = "Snap Toggle"
+	bl_description = "Rotate Selected UV by Given Degere"
 	bl_options = {'REGISTER', 'INTERNAL'}
 	
 	@classmethod
@@ -89,14 +92,13 @@ class UV_OT_Snap_Toggle(Operator):
 	def execute(self, ctx):
 		tool_settings = ctx.scene.tool_settings
 		tool_settings.use_snap_uv = not tool_settings.use_snap_uv
-		return{"FINISHED"}
-
+		return{'FINISHED'}
 
 
 class UV_OT_Split_To_Island(Operator):
-	""" Split Selected to Island with seam border """
-	bl_idname = "uv.split_to_island"
+	bl_idname = 'uv.split_to_island'
 	bl_label = "Split to Island"
+	bl_description = "Split Selected to Island with seam border"
 	bl_options = {'REGISTER', 'UNDO', 'INTERNAL'}
 	
 	@classmethod
@@ -114,69 +116,84 @@ class UV_OT_Split_To_Island(Operator):
 		bpy.ops.uv.select_split()
 
 		# scale down to seprate from rest to let next operator works
-		bpy.ops.transform.resize(value=(0.5, 0.5, 0.5),
-								orient_type='GLOBAL',
-								orient_matrix=((1, 0, 0), (0, 1, 0), (0, 0, 1)),
-								orient_matrix_type='GLOBAL'
-							)
+		bpy.ops.transform.resize(
+			value=(0.5, 0.5, 0.5),
+			orient_type='GLOBAL',
+			orient_matrix=((1, 0, 0), (0, 1, 0), (0, 0, 1)),
+			orient_matrix_type='GLOBAL'
+		)
 		# conver edges to seam
 		bpy.ops.uv.seams_from_islands()
 
 		# reset scale to original size
-		bpy.ops.transform.resize(value=(2, 2, 2),
-						orient_type='GLOBAL',
-						orient_matrix=((1, 0, 0), (0, 1, 0), (0, 0, 1)),
-						orient_matrix_type='GLOBAL'
-					)
+		bpy.ops.transform.resize(
+			value=(2, 2, 2),
+			orient_type='GLOBAL',
+			orient_matrix=((1, 0, 0), (0, 1, 0), (0, 0, 1)),
+			orient_matrix_type='GLOBAL'
+		)
 
 		# reset sync mode
 		ctx.scene.tool_settings.use_uv_select_sync = use_uv_select_sync
-		return{"FINISHED"}
+		return{'FINISHED'}
 
+
+########################################################################
+
+# def get_active_uv_face(mesh):
+# 	uv_layer = mesh.uv_layers.active
+# 	if not uv_layer:
+# 		return None
+
+# 	uv_data = uv_layer.data
+# 	selected_faces = []
+
+# 	# Find the selected UV face in the UV Editor
+# 	for poly in mesh.polygons:
+# 		face_uv = [uv_data[loop_index].uv for loop_index in poly.loop_indices]
+# 		if all(uv_data[loop_index].select for loop_index in poly.loop_indices):
+# 			selected_faces.append(face_uv)
+
+# 	if len(selected_faces) == 0:
+# 		return None
+
+# 	if len(selected_faces) > 1:
+# 		return None
+
+# 	return selected_faces[0]
 
 
 
 class UV_OT_Rectangulate_Active_Face(Operator):
-	""" Make active face perfect rectangle """
-	bl_idname = "uv.rectangulate_active_face"
+	bl_idname = 'uv.rectangulate_active_face'
 	bl_label = "Rectangulate Active Face"
+	bl_description = "Make active face perfect rectangle"
 	bl_options = {'REGISTER', 'UNDO'}
 	
 	@classmethod
 	def poll(self, ctx):
 		return ctx.scene.tool_settings.uv_select_mode == 'FACE'
 
-
 	def execute(self, ctx):
-		# uv = ctx.object.data.uv_layers.active
+		# face = get_active_uv_face(ctx.object.data)
+		# print(">>>", face)
+		return{'FINISHED'}
 
-		# bm = bmesh.from_edit_mesh(ctx.object.data)
-		# uv_layer = bm.verts.layers.uv.verify()
-
-		# for face in bm.faces:
-		# 	print(face.index)
-
-		# 	for loop in face.loops:
-		# 		uv = loop[uv_layer]
-		# 		print(uv.co, uv.select, loop.vert.index)
-		# 		#TODO --- 
-		return{"FINISHED"}
+########################################################################
 
 
+# Original Author 'Simon Lusenc'
+# Algorithm stands on the thesis that order of polygon loop is defining direction of face normal
+# and that same loop order is used in uv data.
+# With this knowladge we can easily say that cross product:
+# (v2.uv-v1.uv)x(v3.uv-v2.uv) gives us uv normal direction of part of the polygon. Further
+# this normal has to be used in dot product with up vector (0,0,1) and result smaller than zero
+# means uv normal is pointed in opposite direction than it should be (partial polygon v1,v2,v3 is flipped).
 
-""" Original Author 'Simon Lusenc' """
 class UV_OT_Select_Flipped_UVs(Operator):
-	"""Select polygons with flipped UV mapping."""
-
-	# Algorithm stands on the thesis that order of polygon loop is defining direction of face normal
-	# and that same loop order is used in uv data.
-	# With this knowladge we can easily say that cross product:
-	# (v2.uv-v1.uv)x(v3.uv-v2.uv) gives us uv normal direction of part of the polygon. Further
-	# this normal has to be used in dot product with up vector (0,0,1) and result smaller than zero
-	# means uv normal is pointed in opposite direction than it should be (partial polygon v1,v2,v3 is flipped).
-
-	bl_idname = "uv.select_flipped"
+	bl_idname = 'uv.select_flipped'
 	bl_label = "Select Flipped UVs"
+	bl_description = "Select polygons with flipped UV Mapping"
 
 	@classmethod
 	def poll(self, ctx):
@@ -185,11 +202,10 @@ class UV_OT_Select_Flipped_UVs(Operator):
 	def execute(self, ctx):
 		obj = ctx.object
 		
-		bpy.ops.mesh.select_all(action="DESELECT")
-		bpy.ops.object.mode_set(mode="OBJECT")
+		bpy.ops.mesh.select_all(action='DESELECT')
+		bpy.ops.object.mode_set(mode='OBJECT')
 		
 		for poly in obj.data.polygons:
-			
 			# calculate uv differences between current and next face vertex for
 			# whole polygon	  
 			diffs = []
@@ -212,7 +228,8 @@ class UV_OT_Select_Flipped_UVs(Operator):
 				if i == len(diffs)-1:
 					break
 				
-				# as soon as we find partial flipped polygon we select it and finish search
+				# as soon as we find partial flipped polygon we
+				# select it and finish search
 				if diffs[i].cross(diffs[i+1]) @ Vector((0,0,1)) <= 0:
 					poly.select = True
 					break
@@ -222,37 +239,34 @@ class UV_OT_Select_Flipped_UVs(Operator):
 		return {'FINISHED'}
 
 
-
 def uv_select_menu(self, ctx):
 	self.layout.operator("uv.select_flipped")
 
 
-
-classes = (
+classes = {
 	UV_OT_Mirror_Cover,
 	UV_OT_Turn,
 	UV_OT_Select_Flipped_UVs,
 	UV_OT_Snap_Toggle,
 	UV_OT_Split_To_Island,
 	UV_OT_Rectangulate_Active_Face
-)
+}
 
 
 def register_edit():
-	for c in classes:
-		bpy.utils.register_class(c)
+	for cls in classes:
+		register_class(cls)
 	
 	bpy.types.IMAGE_MT_select.append(uv_select_menu)
-
 
 
 def unregister_edit():
 	bpy.types.IMAGE_MT_select.remove(uv_select_menu)
 
-	for c in classes:
-		bpy.utils.unregister_class(c)
-
+	for cls in classes:
+		unregister_class(cls)
 
 
 if __name__ == '__main__':
-	register_edit()
+	# register_edit()
+	register_class(UV_OT_Rectangulate_Active_Face)

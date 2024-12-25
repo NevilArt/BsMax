@@ -12,36 +12,36 @@
 #	You should have received a copy of the GNU General Public License
 #	along with this program.  If not, see <https://www.gnu.org/licenses/>.
 ############################################################################
+# 2024/09/10
 
 import bpy
 
 from bpy.types import Operator
 
 
-
 class Text_OT_Smart_Save(Operator):
-	bl_idname = "text.smart_save"
+	bl_idname = 'text.smart_save'
 	bl_label = "Smart Save"
 	bl_description = "Save Text if external Save Blend file if internal"
+
 	def execute(self, ctx):
 		name = ctx.area.spaces.active.text.name
+
 		if bpy.data.texts[name].filepath == '':
 			bpy.ops.wm.save_mainfile('INVOKE_DEFAULT')
 		else:
 			bpy.ops.text.save('INVOKE_DEFAULT')
-		return {'FINISHED'}
 
+		return {'FINISHED'}
 
 
 def register_text_editor():
 	bpy.utils.register_class(Text_OT_Smart_Save)
 
 
-
 def unregister_text_editor():
 	bpy.utils.unregister_class(Text_OT_Smart_Save)
 
 
-
-if __name__ == "__main__":
+if __name__ == '__main__':
 	register_text_editor()

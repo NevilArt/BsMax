@@ -92,9 +92,10 @@ def picked_target(ctx, source, subsource, target, subtarget):
 
 
 class Armature_OT_Attach(PickOperator):
-	bl_idname = "armature.attach"
+	bl_idname = 'armature.attach'
 	bl_label = "Attach"
 	bl_options = {'REGISTER', 'UNDO'}
+
 	filters = ['ARMATURE', 'MESH', 'FONT', 'CURVE']
 	
 	@classmethod
@@ -115,5 +116,5 @@ def unregister_attach():
 	bpy.utils.unregister_class(Armature_OT_Attach)
 
 
-if __name__ == "__main__":
+if __name__ == '__main__':
 	register_attach()

@@ -19,9 +19,8 @@ from bpy.types import Operator
 from bpy.props import EnumProperty
 
 
-
 class Modifier_OT_Copy_Selected(Operator):
-	bl_idname = "modifier.copy_selected"
+	bl_idname = 'modifier.copy_selected'
 	bl_label = "Copy Selected Modifiers"
 	bl_options = {'REGISTER'}
 
@@ -34,10 +33,10 @@ class Modifier_OT_Copy_Selected(Operator):
 
 	modifiers: EnumProperty(
 		name='Modifiers',
-		description='List of modifiers to copy', 
+		description="List of modifiers to copy",
 		items=get_modifiers,
-		options={"ENUM_FLAG"}
-	)
+		options={'ENUM_FLAG'}
+	) # type: ignore
 
 	def draw(self,ctx):
 		layout = self.layout
@@ -67,22 +66,19 @@ class Modifier_OT_Copy_Selected(Operator):
 	def execute(self, ctx):
 		for name in self.modifiers:
 			self.copy_modifier(ctx, name)
-		return{"FINISHED"}
+		return{'FINISHED'}
 
-	def invoke(self,ctx,event):
+	def invoke(self, ctx, event):
 		return ctx.window_manager.invoke_props_dialog(self)
-
 
 
 def register_modifier():
 	bpy.utils.register_class(Modifier_OT_Copy_Selected)
 
 
-
 def unregister_modifier():
 	bpy.utils.unregister_class(Modifier_OT_Copy_Selected)
 
 
-
-if __name__ == "__main__":
+if __name__ == '__main__':
 	register_modifier()

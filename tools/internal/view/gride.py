@@ -19,12 +19,10 @@ from bsmax.mouse import get_view_orientation
 from bsmax.gride import LocalGride
 
 
-
 localGride = LocalGride()
 localGride.set(2, 20, None)
 localGride.cross_on = True
 localGride.genarate_gride_lines()
-
 
 
 def blender_gride(ctx, state):
@@ -36,14 +34,12 @@ def blender_gride(ctx, state):
 	overlay.show_axis_z = False
 
 
-
 def max_gride(ctx, stata):
 	global localGride
 	if stata:
 		localGride.register(ctx)
 	else:
 		localGride.unregister()
-
 
 
 def toggle_view_gride_mode(ctx):
@@ -71,9 +67,8 @@ def toggle_view_gride_mode(ctx):
 		blender_gride(ctx, not bg)
 
 
-
 class View3D_OT_Show_Hide_Gride(bpy.types.Operator):
-	bl_idname = "view3d.show_hide_gride"
+	bl_idname = 'view3d.show_hide_gride'
 	bl_label = "Show Hide Gride"
 
 	@classmethod
@@ -87,16 +82,13 @@ class View3D_OT_Show_Hide_Gride(bpy.types.Operator):
 		return{"FINISHED"}
 
 
-
 def register_gride():
 	bpy.utils.register_class(View3D_OT_Show_Hide_Gride)
-
 
 
 def unregister_gride():
 	bpy.utils.unregister_class(View3D_OT_Show_Hide_Gride)
 
 
-
-if __name__ == "__main__":
+if __name__ == '__main__':
 	register_gride()

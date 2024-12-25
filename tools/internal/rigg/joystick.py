@@ -12,19 +12,22 @@
 #	You should have received a copy of the GNU General Public License
 #	along with this program.  If not, see <https://www.gnu.org/licenses/>.
 ############################################################################
+#2024/09/11
+
+#TODO need to mode simplify and cleanup
 
 import bpy
 
 from bpy.types import Operator
 from bpy.props import IntProperty, EnumProperty
 from mathutils import Vector
+from bpy.utils import register_class, unregister_class
 
 from bsmax.state import get_obj_class
 
 from bsmax.actions import (
 	set_origen, set_as_active_object, catche_collection, move_to_collection
 )
-
 
 
 def get_joystic_class(obj):
@@ -44,21 +47,22 @@ def get_joystic_class(obj):
 	if obj_class == 'Circle':
 		return 'CIRCLE_JOYSTICK'
 	
-	return ""
-
+	return ''
 
 
 def get_handle_radius(obj, joy_type):
 	width = obj.data.primitivedata.width
 	length = obj.data.primitivedata.length
 	radius = obj.data.primitivedata.radius1
+
 	if joy_type == 'RECTANGLE_JOYSTICK': 
 		return (width + length) / 15.0
+
 	elif joy_type in {'VERTICAL_SLIDER', 'HORIZONTAL_SLIDER'}:
 		return (min(width, length) / 2)
+
 	elif joy_type == 'CIRCLE_JOYSTICK':
 		return radius / 5
-
 
 
 def create_rectangle_frame_Mesh(ctx, mode, rectangle):
@@ -75,17 +79,17 @@ def create_rectangle_frame_Mesh(ctx, mode, rectangle):
 	
 	rectangle.name = name
 
-	""" fix orient """
+	# fix orient
 	bpy.ops.transform.rotate(
 		value=-1.5708,
 		orient_axis='X',
 		orient_type='LOCAL',
 		orient_matrix=((1, 0, 0), (0, 1, 0), (0, 0, 1)),
 		orient_matrix_type='LOCAL',
-		constraint_axis=(True, False, False),
+		constraint_axis=(True, False, False)
 	)
 
-	""" convert (curve) frame to mesh """
+	# convert (curve) frame to mesh
 	bpy.ops.object.mode_set(mode='OBJECT', toggle=False)
 	bpy.ops.object.select_all(action='DESELECT')
 	rectangle.select_set(state=True)
@@ -95,7 +99,6 @@ def create_rectangle_frame_Mesh(ctx, mode, rectangle):
 	rectangle.location = [0, 0, 0]
 
 	return rectangle
-
 
 
 def catch_circilar_frame(ctx):
@@ -115,8 +118,8 @@ def catch_circilar_frame(ctx):
 	joy_mesh.name = name
 	collection = catche_collection(ctx, "Joystick_Meshes")
 	move_to_collection(joy_mesh, collection)
-	return joy_mesh
 
+	return joy_mesh
 
 
 def catche_joy_mesh(ctx):
@@ -147,11 +150,10 @@ def catche_joy_mesh(ctx):
 	return joy_mesh
 
 
+def create_armature(
+		ctx, name, frame_mesh, joy_mesh, frame_radius, joy_radius):
 
-def create_armature(ctx, name, frame_mesh, joy_mesh,
-					frame_radius, joy_radius):
-	""" Create armature 
-	"""
+	# Create armature 
 	bpy.ops.object.armature_add(location=(0, 0, 0))
 	joystick = ctx.active_object
 	joystick.name = name
@@ -188,14 +190,12 @@ def create_armature(ctx, name, frame_mesh, joy_mesh,
 	return joystick
 
 
-
 def match_transform(source, target):
-	""" Set Transform """
+	# Set Transform
 	source.scale = target.scale
 	source.rotation_euler.x = target.rotation_euler.x
 	source.rotation_euler.y = target.rotation_euler.y
 	source.rotation_euler.z = target.rotation_euler.z
-
 
 
 def create_circle_joystick(ctx, circle, joy_type):
@@ -221,7 +221,7 @@ def create_circle_joystick(ctx, circle, joy_type):
 	
 	match_transform(joystick, circle)
 
-	""" setup constraints """
+	# setup constraints
 	bpy.ops.object.mode_set(mode='POSE', toggle=False)
 
 	distance = frame_radius - joy_radius
@@ -248,7 +248,6 @@ def create_circle_joystick(ctx, circle, joy_type):
 	bpy.ops.object.mode_set(mode='OBJECT', toggle=False)
 
 
-
 def create_rectangle_joystick(ctx, rectangle, joy_type):
 	global joystick_data
 	mode = joystick_data.mode
@@ -260,14 +259,19 @@ def create_rectangle_joystick(ctx, rectangle, joy_type):
 
 	if mode in [1,4,7]:
 		x_offset = width / 2 - radius
+
 	elif mode in [3,6,9]:
 		x_offset = -(width / 2 - radius)
+
 	else:
 		x_offset = 0
+
 	if mode in [1,2,3]:
 		y_offset = -(length / 2 - radius)
+
 	elif mode in [7,8,9]:
 		y_offset = length / 2 - radius
+
 	else:
 		y_offset = 0
 	
@@ -286,7 +290,7 @@ def create_rectangle_joystick(ctx, rectangle, joy_type):
 	if mode == 10:
 		return
 
-	""" setup constraints """
+	# setup constraints
 	bpy.ops.object.mode_set(mode='POSE', toggle=False)
 	
 	cons = joystick.pose.bones['Joy'].constraints.new('LIMIT_LOCATION')
@@ -300,12 +304,12 @@ def create_rectangle_joystick(ctx, rectangle, joy_type):
 	if joy_type in ['RECTANGLE_JOYSTICK','HORIZONTAL_SLIDER']:
 		cons.min_x = -(width / 2 - radius) + x_offset
 		cons.max_x = width / 2 - radius + x_offset
+
 	if joy_type in ['RECTANGLE_JOYSTICK','VERTICAL_SLIDER']:
 		cons.min_y = -(length / 2 - radius) + y_offset
 		cons.max_y = length / 2 - radius + y_offset
 	
 	bpy.ops.object.mode_set(mode='OBJECT', toggle=False)
-
 
 
 class Joystick_Creator_Data:
@@ -382,14 +386,13 @@ def get_arrow_panel(op, self):
 	col.label(text=text)
 
 
-
 class Rigg_TO_Joystick_Creator(Operator):
 	bl_idname = 'rigg.joystick_creator'
-	bl_label = 'Joystick Creator'
-	bl_description = 'Convert Selected Rectangle or Circle to Joystick'
+	bl_label = "Joystick Creator"
+	bl_description = "Convert Selected Rectangle or Circle to Joystick"
 	bl_options = {'REGISTER', 'UNDO'}
 
-	mode: IntProperty()
+	mode: IntProperty() # type: ignore
 	type = ''
 
 	@classmethod
@@ -424,9 +427,8 @@ class Rigg_TO_Joystick_Creator(Operator):
 		elif self.mode > 0:
 			global joystick_data
 			joystick_data.mode = self.mode
+
 		return {'CANCELLED'}
-
-
 
 
 class Rigg_TO_Joystick_Shapekey_Connector(Operator):
@@ -434,8 +436,8 @@ class Rigg_TO_Joystick_Shapekey_Connector(Operator):
 		Shape keys and run this operator
 	"""
 	bl_idname = 'rigg.joystick_shapekey_connector'
-	bl_label = 'Joystick Connecotr'
-	bl_description = 'Connect Joystick to Shapekey'
+	bl_label = "Joystick Connecotr"
+	bl_description = "Connect Joystick to Shapekey"
 	bl_options = {'REGISTER', 'UNDO'}
 
 	@classmethod
@@ -474,7 +476,7 @@ class Rigg_TO_Joystick_Shapekey_Connector(Operator):
 		else:
 			return [('None', 'None', '')]
 
-	joystick: EnumProperty(items=coolect_joys)
+	joystick: EnumProperty(items=coolect_joys) # type: ignore
 	
 	items = []
 	def collect_shapekeys(self, ctx):
@@ -483,20 +485,25 @@ class Rigg_TO_Joystick_Shapekey_Connector(Operator):
 			if obj.type in {'MESH', 'CURVE'}:
 				shell = obj
 		items = [('None', '', '')]
+
 		if shell != None:
-			names = [n.name for n in shell.data.shape_keys.key_blocks
-												if n.name != 'Basis']
+			names = [
+				n.name for n in shell.data.shape_keys.key_blocks
+					if n.name != 'Basis'
+			]
+			
 			items += [(n, n, '') for n in names]
+
 		return items
 
-	up: EnumProperty(items=collect_shapekeys)
-	upright: EnumProperty(items=collect_shapekeys)
-	right: EnumProperty(items=collect_shapekeys)
-	downright: EnumProperty(items=collect_shapekeys)
-	down: EnumProperty(items=collect_shapekeys)
-	downleft: EnumProperty(items=collect_shapekeys)
-	left: EnumProperty(items=collect_shapekeys)
-	upleft: EnumProperty(items=collect_shapekeys)
+	up: EnumProperty(items=collect_shapekeys) # type: ignore
+	upright: EnumProperty(items=collect_shapekeys) # type: ignore
+	right: EnumProperty(items=collect_shapekeys) # type: ignore
+	downright: EnumProperty(items=collect_shapekeys) # type: ignore
+	down: EnumProperty(items=collect_shapekeys) # type: ignore
+	downleft: EnumProperty(items=collect_shapekeys) # type: ignore
+	left: EnumProperty(items=collect_shapekeys) # type: ignore
+	upleft: EnumProperty(items=collect_shapekeys) # type: ignore
 
 	def get_expration(self, direction, joy):
 		# rectangular joystic
@@ -650,7 +657,6 @@ class Rigg_TO_Joystick_Shapekey_Connector(Operator):
 		return ctx.window_manager.invoke_props_dialog(self, width=400)
 
 
-
 def joystick_connectore_menu(self, ctx):
 	layout = self.layout
 	layout.separator()
@@ -659,26 +665,22 @@ def joystick_connectore_menu(self, ctx):
 	# layout.operator('modifier.copy_selected')
 
 
-
-classes = (
+classes = {
 	Rigg_TO_Joystick_Creator,
 	Rigg_TO_Joystick_Shapekey_Connector
-)
-
+}
 
 
 def register_joystic():
-	for c in classes:
-		bpy.utils.register_class(c)
+	for cls in classes:
+		register_class(cls)
 	bpy.types.VIEW3D_MT_make_links.append(joystick_connectore_menu)
-
 
 
 def unregister_joystic():
 	bpy.types.VIEW3D_MT_make_links.remove(joystick_connectore_menu)
-	for c in classes:
-		bpy.utils.unregister_class(c)
-
+	for cls in classes:
+		unregister_class(cls)
 
 
 if __name__ == '__main__':

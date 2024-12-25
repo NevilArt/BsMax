@@ -23,7 +23,6 @@ from .viewport import register_viewport, unregister_viewport
 from .viewportbg import register_viewportbg, unregister_viewportbg
 
 
-
 def register_view(preferences):
 	register_droptool(preferences)
 	register_float_editor()
@@ -32,7 +31,6 @@ def register_view(preferences):
 	register_view3d()
 	register_viewport()
 	register_viewportbg()
-
 
 
 def unregister_view():

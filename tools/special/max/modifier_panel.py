@@ -307,21 +307,24 @@ modifierClipboard = ModifierClipboard()
 
 class OBJECT_UL_modifier_list(UIList):
 
-	def draw_item(self, context, layout, data, item, icon, active_data, active_propname):
-		scene = data
-		ob = item
+	def draw_item(self, context, layout, data, item, icon,
+			active_data, active_propname):
 
 		if self.layout_type in {'DEFAULT', 'COMPACT'}:
-			layout.prop(ob, "name", text="", emboss=False, icon_value=layout.icon(ob))
+			layout.prop(item, "name", text="", emboss=False,
+			   icon_value=layout.icon(item)
+			)
 
 
 class Object_OT_Modifier_Create(Operator):
 	bl_idname = 'object.modifier_create'
-	bl_label = 'Create Modifier'
+	bl_label = "Create Modifier"
 	bl_property = 'search'
-	bl_description = ''
+	bl_description = ""
 
-	search: EnumProperty(name='Select Modifier', items=get_modifier_list)
+	search: EnumProperty(
+		name="Select Modifier", items=get_modifier_list
+	) # type: ignore
 	
 	def execute(self, ctx):
 		modifierList = get_modifier_list(None, ctx) 
@@ -408,7 +411,7 @@ class Object_OT_Active_Modifier(Operator):
 	bl_label = 'Active Modifier'
 	bl_options = {'REGISTER', 'INTERNAL'}
 
-	index: IntProperty()
+	index: IntProperty() # type: ignore
 	
 	def execute(self, ctx):
 		if self.index < len(ctx.object.modifiers):
@@ -432,7 +435,7 @@ class Modifier_OT_Add_Geodifier(Operator):
 	bl_label = "ADD Geodifier"
 	bl_options = {'REGISTER', 'UNDO', 'INTERNAL'}
 
-	idname: StringProperty()
+	idname: StringProperty() # type: ignore
 
 	def execute(self, ctx):
 		return{"FINISHED"}

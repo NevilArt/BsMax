@@ -18,13 +18,14 @@ import bpy
 
 from bpy.types import Operator
 from bpy.props import EnumProperty
+from bpy.utils import register_class, unregister_class
 
 
 # This Operator makes free 'X' button in EDIT_TEXT mode
 class WM_OT_Search_Operator_Cover(Operator):
-	""" Call the regular search operator """
 	bl_idname = 'wm.search_operator_cover'
 	bl_label = "Search Operator Cover"
+	bl_description = "Call the regular search operator"
 	bl_options = {'REGISTER', 'INTERNAL'}
 
 	@classmethod
@@ -38,9 +39,9 @@ class WM_OT_Search_Operator_Cover(Operator):
 
 # This Operator makes free '[' ']' buttons in EDIT_TEXT mode
 class WM_OT_Side_Toolbar_Toggle(Operator):
-	""" Call the regular search operator """
-	bl_idname = "wm.side_toolbar_toggle"
+	bl_idname = 'wm.side_toolbar_toggle'
 	bl_label = "Side Toolbar Toggle"
+	bl_description = "Call the regular search operator"
 	bl_options = {'REGISTER', 'INTERNAL'}
 
 	side: EnumProperty(
@@ -169,9 +170,9 @@ def register_droptool(preferences):
 	View3D_OT_Drop_Tool.preferences = preferences
 
 	for cls in classes:
-		bpy.utils.register_class(cls)
+		register_class(cls)
 
 
 def unregister_droptool():
 	for cls in classes:
-		bpy.utils.unregister_class(cls)
+		unregister_class(cls)

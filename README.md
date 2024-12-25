@@ -1,5 +1,5 @@
 
-# BsMax Blender Addon 3.6LTS ~ 4.2LTS
+# BsMax Blender Addon 3.6LTS ~ 4.3
 
 BsMax is package of Modeling, Rig & Animation, Render tools and UI mimic for [Blender 3D](https://www.blender.org/).
 
@@ -36,12 +36,8 @@ If you found this product useful and want to support this project you can Donate
 * [Download Older Version for Blender 2.80 ~ 3.5](https://github.com/NevilArt/BsMax_2_80)
 
 ## Recent Updates and Changes
-* Topo Symmetrize tool that keep UV data (under the EditMesh/Mesh menu)
-* Camera target select search from last constraint and ignore disable ones this makes better result.
-* Alingt Target to camera matchs the target to camera direction (Camera/Target/Align).
-* Command panel Instancer warning issue fixed.
-* Batch Rename for VSE issue fixed.
-* Place for Farsi arabic type corrector.
+* Marker Copy/Paste added.
+* Render preset tool updated.
 * [Change log ...](https://github.com/NevilArt/BsMax/blob/master/CHANGELOG.md)
 
 ## Special Thanks

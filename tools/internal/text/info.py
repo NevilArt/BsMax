@@ -12,26 +12,28 @@
 #	You should have received a copy of the GNU General Public License
 #	along with this program.  If not, see <https://www.gnu.org/licenses/>.
 ############################################################################
+# 2024/09/10
 
 import bpy
 
 from bpy.types import Operator
 
 
-
 class Info_OT_Clear(Operator):
-	bl_idname = "info.clear"
+	bl_idname = 'info.clear'
 	bl_label = "Clear"
+	bl_description = ""
+
 	def execute(self, ctx):
 		bpy.ops.info.select_all(action='SELECT')
 		bpy.ops.info.report_delete('INVOKE_DEFAULT')
 		return {'FINISHED'}
 
 
-
 class Info_OT_NewScript(Operator):
-	bl_idname = "info.new_script"
+	bl_idname = 'info.new_script'
 	bl_label = "New Script"
+
 	def execute(self, ctx):
 		# bpy.ops.info.report_copy()
 		# ctx.area.type = 'TEXT_EDITOR'
@@ -44,13 +46,12 @@ class Info_OT_NewScript(Operator):
 		# 		bpy.ops.text.new()
 		# 		bpy.data.texts[-1].name = "New Script"
 		# 		bpy.ops.text.paste()
-		return {'FINISHED'}
 
+		return {'FINISHED'}
 
 
 def register_info():
 	bpy.utils.register_class(Info_OT_Clear)
-
 
 
 def unregister_info():

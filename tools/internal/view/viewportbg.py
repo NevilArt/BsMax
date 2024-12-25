@@ -21,13 +21,12 @@ from bpy.props import IntProperty
 # Edit by Nevil July 2019
 
 
-
 class View3D_OT_Background(Operator):
-	bl_idname = "view3d.background"
+	bl_idname = 'view3d.background'
 	bl_label = "3D View Color"
-	bl_description = "Cycle 3D view background colors"
+	bl_description = "Cycle 3D view background Colors"
 
-	index: IntProperty(default = 1)
+	index: IntProperty(default = 1) # type: ignore
 
 	def execute(self, ctx):
 		grad = ctx.preferences.themes[0].view_3d.space.gradients
@@ -38,16 +37,19 @@ class View3D_OT_Background(Operator):
 			grad.high_gradient[0] = 0.0
 			grad.high_gradient[1] = 0.0
 			grad.high_gradient[2] = 0.0
+
 		elif self.index == 2:
 			#7f7f7f - XSI
 			grad.high_gradient[0] = 0.498
 			grad.high_gradient[1] = 0.498
 			grad.high_gradient[2] = 0.498
+
 		elif self.index == 3:
 			#a2a2a2 - maya light
 			grad.high_gradient[0] = 0.635
 			grad.high_gradient[1] = 0.635
 			grad.high_gradient[2] = 0.635
+
 		elif self.index == 4:
 			#697b8f - maya gradient
 			show_grad = True
@@ -57,6 +59,7 @@ class View3D_OT_Background(Operator):
 			grad.high_gradient[0] = 0.412
 			grad.high_gradient[1] = 0.482
 			grad.high_gradient[2] = 0.561
+
 		elif self.index == 5:
 			#dark blue gradient
 			show_grad = True
@@ -66,6 +69,7 @@ class View3D_OT_Background(Operator):
 			grad.high_gradient[0] = 0.267
 			grad.high_gradient[1] = 0.302
 			grad.high_gradient[2] = 0.341
+
 		else:
 			#4b4b4b
 			grad.high_gradient[0] = 0.294
@@ -81,7 +85,6 @@ class View3D_OT_Background(Operator):
 		else:
 			self.index += 1
 		return {'FINISHED'}
-
 
 
 # selection menu
@@ -100,10 +103,8 @@ class BMAX_PickViewportBackground_MT(Menu):
 		ui.operator(vbg, text="Grey Blue Gradient").index = 5
 
 
-
 def register_viewportbg():
 	bpy.utils.register_class(View3D_OT_Background)
-
 
 
 def unregister_viewportbg():

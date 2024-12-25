@@ -14,6 +14,8 @@
 ############################################################################
 # 2024/07/14
 
+#TODO seprator like dot makes pereview character apear as Initial or Medial
+
 import bpy
 
 from bpy.types import Operator

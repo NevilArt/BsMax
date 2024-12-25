@@ -20,6 +20,7 @@ from random import random
 
 from bpy.types import Operator, Menu
 from bpy.props import EnumProperty, BoolProperty
+from bpy.utils import register_class, unregister_class
 
 
 #TODO Open ViewLayer as float dialog for Set State in quad menu
@@ -395,7 +396,7 @@ classes = {
 
 def register_viewport():
 	for cls in classes:
-		bpy.utils.register_class(cls)
+		register_class(cls)
 
 	bpy.types.VIEW3D_MT_object_showhide.append(random_object_color_menu)
 
@@ -404,7 +405,7 @@ def unregister_viewport():
 	bpy.types.VIEW3D_MT_object_showhide.remove(random_object_color_menu)
 
 	for cls in classes:
-		bpy.utils.unregister_class(cls)
+		unregister_class(cls)
 
 if __name__ == '__main__':
 	register_viewport()

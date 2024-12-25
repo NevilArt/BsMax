@@ -12,6 +12,7 @@
 #	You should have received a copy of the GNU General Public License
 #	along with this program.  If not, see <https://www.gnu.org/licenses/>.
 ############################################################################
+# 2024/09/10
 
 import bpy
 
@@ -19,8 +20,10 @@ from bpy.types import Operator
 
 
 class Console_OT_Cut(Operator):
-	bl_idname = "console.cut"
+	bl_idname = 'console.cut'
 	bl_label = "Cut"
+	bl_description = ""
+
 	def execute(self, ctx):
 		bpy.ops.console.copy('INVOKE_DEFAULT')
 		bpy.ops.console.delete('INVOKE_DEFAULT')

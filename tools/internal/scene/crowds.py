@@ -462,7 +462,7 @@ class Crowds_TO_Loop_Refrenses(Operator):
 	
 	def execute(self, ctx):
 		random_and_loop_refrenses(self, ctx)
-		return{"FINISHED"}
+		return{'FINISHED'}
 
 	def invoke(self, ctx, event):
 		return ctx.window_manager.invoke_props_dialog(self)
@@ -505,7 +505,7 @@ class Crowds_TO_Stuff_Variation(Operator):
 	
 	def execute(self, ctx):
 		stuff_variation(self, ctx)
-		return{"FINISHED"}
+		return{'FINISHED'}
 
 	def invoke(self, ctx, event):
 		return ctx.window_manager.invoke_props_dialog(self)
@@ -513,7 +513,8 @@ class Crowds_TO_Stuff_Variation(Operator):
 
 class BsMax_MT_Crowds_Tools(Menu):
 	bl_idname = 'BSMAX_MT_crowdstools'
-	bl_label = 'Crowds'
+	bl_label = "Crowds"
+	bl_description = ""
 	# bl_context = 'objectmode'
 
 	@classmethod
@@ -525,19 +526,19 @@ class BsMax_MT_Crowds_Tools(Menu):
 		icon='LIGHTPROBE_GRID' if version < (4, 1, 0) else 'LIGHTPROBE_VOLUME'
 		layout.operator(
 			'crowds.clone_refrenses',
-			text='Clone Instanses',
+			text="Clone Instanses",
 			icon=icon
 		)
 
 		layout.operator(
 			'crowds.loop_refrenses',
-			text='Loop Instanses',
+			text="Loop Instanses",
 			icon='ORIENTATION_GIMBAL'
 		)
 
 		layout.operator(
 			'crowds.stuff_variation',
-			text='Variate Instanses',
+			text="Variate Instanses",
 			icon='GEOMETRY_NODES'
 		)
 

@@ -12,13 +12,14 @@
 #	You should have received a copy of the GNU General Public License
 #	along with this program.  If not, see <https://www.gnu.org/licenses/>.
 ############################################################################
-from .videp_sequence_ediotor import register_video_sequence_ediotor, unregister_video_sequence_ediotor
 
+from .videp_sequence_ediotor import (
+    register_video_sequence_ediotor, unregister_video_sequence_ediotor
+)
 
 
 def register_vse():
 	register_video_sequence_ediotor()
-
 
 
 def unregister_vse():

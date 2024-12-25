@@ -420,37 +420,37 @@ class Object_OT_Align_Objects(Operator):
 			('CURSOR', "Cursor", "")
 		]
 	
-	ready: BoolProperty(default=False)
+	ready: BoolProperty(default=False) # type: ignore
 
 	""" Props """
-	pos_x: BoolProperty(update=update)
-	pos_y: BoolProperty(update=update)
-	pos_z: BoolProperty(update=update)
+	pos_x: BoolProperty(update=update) # type: ignore
+	pos_y: BoolProperty(update=update) # type: ignore
+	pos_z: BoolProperty(update=update) # type: ignore
 
 	current: EnumProperty(
 		items= get_source_options, update=update,
 		default=2
-	)
+	) # type: ignore
 
 	target: EnumProperty(
 		items= get_target_options, update=update,
 		default=2
-	)
+	) # type: ignore
 
-	target_type: EnumProperty(update=update, items=sub_target)
+	target_type: EnumProperty(update=update, items=sub_target) # type: ignore
 
-	rot_x: BoolProperty(update=update)
-	rot_y: BoolProperty(update=update)
-	rot_z: BoolProperty(update=update)
+	rot_x: BoolProperty(update=update) # type: ignore
+	rot_y: BoolProperty(update=update) # type: ignore
+	rot_z: BoolProperty(update=update) # type: ignore
 	
-	scl_x: BoolProperty(update=update)
-	scl_y: BoolProperty(update=update)
-	scl_z: BoolProperty(update=update)
+	scl_x: BoolProperty(update=update) # type: ignore
+	scl_y: BoolProperty(update=update) # type: ignore
+	scl_z: BoolProperty(update=update) # type: ignore
 	
 	percent: FloatProperty(
 		name="Percent", update=update,
 		soft_min=0, soft_max=1, default=1, step=0.1
-	)
+	) # type: ignore
 
 	@classmethod
 	def poll(self, ctx):
@@ -477,7 +477,7 @@ class Object_OT_Align_Objects(Operator):
 
 
 class Object_OT_Align_Selected_to_Active(Operator):
-	bl_idname = "object.align_selected_to_active"
+	bl_idname = 'object.align_selected_to_active'
 	bl_label = "Align Selected to Active object"
 	bl_options = {'REGISTER', 'UNDO'}
 
@@ -495,7 +495,7 @@ class Object_OT_Align_Selected_to_Active(Operator):
 
 
 class Object_OT_Align_Selected_to_Target(PickOperator):
-	bl_idname = "object.align_selected_to_target"
+	bl_idname = 'object.align_selected_to_target'
 	bl_label = "Align Selected to Target"
 	bl_options = {'REGISTER', 'UNDO'}
 
@@ -516,14 +516,14 @@ classes = {
 
 
 def register_align_objects():
-	for c in classes:
-		register_class(c)
+	for cls in classes:
+		register_class(cls)
 
 
 def unregister_align_objects():
-	for c in classes:
-		unregister_class(c)
+	for cls in classes:
+		unregister_class(cls)
 
 
-if __name__ == "__main__":
+if __name__ == '__main__':
 	register_align_objects()

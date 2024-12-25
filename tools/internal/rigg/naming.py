@@ -12,18 +12,17 @@
 #	You should have received a copy of the GNU General Public License
 #	along with this program.  If not, see <https://www.gnu.org/licenses/>.
 ############################################################################
+#2024/09/11
 
 import bpy
 
 from bpy.types import Operator
 
 
-
 def is_blender_name(name):
 	if len(name) < 2:
 		return False
 	return name[-2] == '.' and name[-1].lower() in ('r', 'l')
-
 
 
 def is_daz3d_name(name):
@@ -38,20 +37,16 @@ def is_daz3d_name(name):
 		return True
 
 
-
 def is_unnamed(name):
 	return False
-
 
 
 def get_blender_bone_name_direction(name):
 	return name[-1]
 
 
-
 def get_blender_bone_name_base(name):
 	return name[:-2]
-
 
 
 def get_daz3d_bone_name_direction(name):
@@ -68,7 +63,6 @@ def get_daz3d_bone_name_direction(name):
 	return ""
 
 
-
 def get_das3d_bone_name_base(name):
 	if name[0] in ('r', 'l') and name[-2] != '.':
 		return name[1:]
@@ -82,7 +76,6 @@ def get_das3d_bone_name_base(name):
 		return retName
 	
 	return ""
-
 
 
 class BoneName:
@@ -113,10 +106,10 @@ class BoneName:
 		return self.name
 
 
-
 class Armature_TO_auto_side_rename(Operator):
 	bl_idname = 'armature.auto_direction_rename'
-	bl_label = 'Armature Auto Rename'
+	bl_label = "Armature Auto Rename"
+	bl_description = ""
 	bl_options = {'REGISTER', 'UNDO'}
 
 	@classmethod
@@ -127,19 +120,16 @@ class Armature_TO_auto_side_rename(Operator):
 		for bone in ctx.object.data.bones:
 			boneName = BoneName(name=bone.name)
 			bone.name = boneName.get_blender_name()
-		return{"FINISHED"}
-
+		return{'FINISHED'}
 
 
 def register_naming():
 	bpy.utils.register_class(Armature_TO_auto_side_rename)
 
 
-
 def unregister_naming():
 	bpy.utils.unregister_class(Armature_TO_auto_side_rename)
 
 
-
-if __name__ == "__main__":
+if __name__ == '__main__':
 	register_naming()

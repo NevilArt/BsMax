@@ -12,51 +12,46 @@
 #	You should have received a copy of the GNU General Public License
 #	along with this program.  If not, see <https://www.gnu.org/licenses/>.
 ############################################################################
-
-import bpy
+# 2024/09/10
 
 from bpy.types import Operator
 from bpy.props import StringProperty
-
+from bpy.utils import register_class, unregister_class
 
 
 # Coordinate
 class Object_OT_Coord_System(Operator):
-	bl_idname = "object.coordinate_system"
+	bl_idname = 'object.coordinate_system'
 	bl_label = "Coordinate System"
-	coordsys: StringProperty(default = 'GLOBAL')
+	coordsys: StringProperty(default = 'GLOBAL') # type: ignore
 
 	def execute(self, ctx):
 		# NORMAL, GIMBAL, LOCAL, VIEW, GLOBAL, CURSOR
 		ctx.window.scene.transform_orientation_slots[0].type = self.coordsys
-		return{"FINISHED"}
-
+		return{'FINISHED'}
 
 
 class Object_OT_Set_Local_Coord_in_Pose_Mode(Operator):
-	bl_idname = "object.set_local_coord_in_pose_mode"
+	bl_idname = 'object.set_local_coord_in_pose_mode'
 	bl_label = "Local (Pose)"
 
 	def execute(self, ctx):
 		ctx.window.scene.transform_orientation_slots[0].type = 'LOCAL'
 		ctx.scene.tool_settings.transform_pivot_point = 'INDIVIDUAL_ORIGINS'
-		return{"FINISHED"} 
+		return{'FINISHED'}
 
 
-
-classes = (
+classes = {
 	Object_OT_Coord_System,
 	Object_OT_Set_Local_Coord_in_Pose_Mode
-)
-
+}
 
 
 def register_coordinate():
-	for c in classes:
-		bpy.utils.register_class(c)
-
+	for cls in classes:
+		register_class(cls)
 
 
 def unregister_coordinate():
-	for c in classes:
-		bpy.utils.unregister_class(c)
+	for cls in classes:
+		unregister_class(cls)
