@@ -49,7 +49,6 @@ import bpy
 import os
 import subprocess
 import platform
-import json
 
 from bpy.props import (
 	PointerProperty, StringProperty,
@@ -65,18 +64,22 @@ last_acceptable_repository_path = ""
 def backburner_path():
 	os_name = platform.system()
 	if os_name == 'Windows':
-		return 'C:/Program Files (x86)/Autodesk/Backburner/cmdjob.exe'
+		return '"C:/Program Files (x86)/Autodesk/Backburner/cmdjob.exe"'
 
 	if os_name == 'Linux':
-		return '/opt/Autodesk/backburner/cmdjob'
+		return '"/opt/Autodesk/backburner/cmdjob"'
 
 	if os_name == 'Darwin':
-		return '/opt/Autodesk/backburner/cmdjob'
+		return '"/opt/Autodesk/backburner/cmdjob"'
 
-	return ''
+	return '""'
 
 
-def get_job_name(ctx):
+def blender_path():
+	return bpy.app.binary_path
+
+
+def get_blender_file_name(ctx):
 	name = bpy.path.basename(bpy.data.filepath)
 	name = (name.split('.'))[0]
 
@@ -159,23 +162,23 @@ def create_new_unigue_file_name(ctx):
 
 	# create a file name
 	file_name = backburner.job_name \
-		if backburner.use_job_name else	get_job_name(ctx)
+		if backburner.use_job_name else	get_blender_file_name(ctx)
 	
 	file_name += "_BACKBURNERTEMPFILE_"
 	number = get_max_file_name_digit(file_path, file_name, '.blend')
-	full_name = file_path + os.sep + file_name + str(number) + '.blend'
+	full_name = file_path + '\\' + file_name + str(number) + '.blend'
 	return full_name
 
 
 def check_start_frame(_, ctx):
-	""" Make sure start frame always smaller than end frame """
+	""" Make sure star frame allways smaller then end frame """
 	backburner = ctx.scene.backburner
 	if backburner.frame_start > backburner.frame_end:
 		backburner.frame_end = backburner.frame_start
 
 
 def check_end_frame(_, ctx):
-	""" Make sure end frame always bigger than start frame """
+	""" Make sure end frame allways bigger then start frame """
 	backburner = ctx.scene.backburner
 	if backburner.frame_end < backburner.frame_start:
 		backburner.frame_start = backburner.frame_end
@@ -293,8 +296,7 @@ def create_cmd_command(ctx):
 	bpy.ops.wm.save_as_mainfile(filepath=file_name, copy=True)
 	task_list_file = create_task_list_file(ctx, file_name)
 
-	# cmdjob.exe
-	# -jobname "testJob"
+	# cmdjob.exe -jobname "testJob"
 	# -description "job de test"
 	# -timeout 6000
 	# -manager "192.168.73.91"
@@ -308,111 +310,113 @@ def create_cmd_command(ctx):
 	# -servers "n091-a" "C:/Program Files/Autodesk/3ds Max 2016/3dsmax.exe"
 	# -q -mip -silent -U MAXScript %tp2
 
-	""" Create Backburner CMD Command """
-	cmd = [backburner.path_backburner]
-	cmd += ['-jobName:', backburner.job_name]
-	cmd += ['-manager:', backburner.manager]
+	""" Create Backburner CMD Text """
+	cmd = backburner.path_backburner
+	cmd += ' -jobName:"' + backburner.job_name + '"'
+	cmd += ' -manager: ' + backburner.manager
 
 	if backburner.port != 3234:
-		cmd += ['-port:', str(backburner.port)]
+		cmd += ' -port: '+ str(backburner.port)
 
 	if backburner.group != '':
-		cmd += ['-group:', backburner.group]
+		cmd += ' -group:"' + backburner.group + '"'
 
 	if backburner.job_details != '':
-		cmd += ['-description:', backburner.job_details]
+		cmd += ' -description:"' + backburner.job_details + '"'
 
-	cmd += ['-priority:', str(backburner.priority)]
-	cmd += ['-timeout:', str(backburner.timeout)]
+	cmd += ' -priority:' + str(backburner.priority)
+	cmd += ' -timeout:' + str(backburner.timeout)
 
 	if backburner.suspended:
-		cmd += ['-suspended']
+		cmd += ' -suspended'
 
-	cmd += ['-taskList:', task_list_file]
-	cmd += ['-taskName:', '1']
+	cmd += ' -taskList:"' + task_list_file + '"'
+	cmd += ' -taskName: 1'
 
 	if backburner.use_custom_path:
-		cmd += [backburner.blender_path]
+		cmd += ' "' + backburner.blender_path + '"'
 	else:
-		cmd += [bpy.app.binary_path]
-	# cmd += ['-submit:', bpy.data.filepath]
+		cmd += ' "' + blender_path() + '"'
+	# cmd += ' -submit: "'+ bpy.data.filepath + '"'
 
 	if backburner.background_render:
-		cmd += ['--background']
+		cmd += ' --background'
 
-	cmd += [file_name]
-	cmd += ['--frame-start', '%tp2']
-	cmd += ['--frame-end', '%tp3']
-	cmd += ['--render-anim']
+	cmd += ' "' + file_name + '"'
+	cmd += ' --frame-start %tp2'
+	cmd += ' --frame-end %tp3'
+	cmd += ' --render-anim'
 	
 	return task_list_file, cmd
 
 
 def submit(ctx):
 	task_list_file, cmd = create_cmd_command(ctx)
+	succeed = True
 	""" Try to Submit job to backburner """
 	try:
 		subprocess.check_output(cmd, shell=True)
-		os.remove(task_list_file)
-		return True
-
 	except:
-		os.remove(task_list_file)
-		return False
+		succeed = False
+		
+	""" Delete the Task list text file """
+	os.remove(task_list_file)
+
+	return succeed
 
 
-def get_datafiles_path():
-	""" return datafile path and create if not exist """
-	datafiles_path = bpy.utils.user_resource("SCRIPTS", path="addons")
+def get_preset_file_path():
+	""" Return the pathand file name of preset file """
+	preset_path = bpy.utils.user_resource('CONFIG') + '/BsMax/'
+	
+	""" Creat preset directory if not exist """
+	if not os.path.isdir(preset_path):
+		os.mkdir(preset_path)
 
-	datafiles_path += os.sep + 'BsMax-datafiles'
+	file_name = 'Backburner.ini'
 
-	if not os.path.isdir(datafiles_path):
-		os.mkdir(datafiles_path)
+	""" if Backburner.ini file not exist create an empty one """
+	backburner_file = preset_path + file_name
+	
+	if not os.path.exists(backburner_file):
+		if os.access(backburner_file, os.W_OK):
+			file = open(backburner_file, 'w')
+			file.write('')
+			file.close()
+	
+	return preset_path, file_name
 
-	return datafiles_path
 
-
-def get_preset_file_name():
-	# preset_directory = bpy.utils.extension_path_user(__package__, path="", create=True)
-	return get_datafiles_path() + os.sep + 'Backburner.json'
-
-
-def backburner_state_as_dictionary(ctx):
+def create_script_text(ctx):
 	backburner = ctx.scene.backburner
-	return {
-		'timeout': backburner.timeout,
-		'priority': backburner.priority,
-		'suspended': backburner.suspended,
-		'frames_per_task': backburner.frames_per_task,
-		'manager': backburner.manager,
-		'port': backburner.port,
-		'group': backburner.group,
-		'background_render:': backburner.background_render,
-		'use_job_name': backburner.use_job_name,
-		'use_custom_path': backburner.use_custom_path,
-		'blender_path': backburner.blender_path,
-		'use_repository': backburner.use_repository,
-		'repository_path': backburner.repository_path
-	}
 
+	text = 'import bpy\n'
+	text += 'backburner = bpy.context.scene.backburner\n'
+	text += 'backburner.timeout = ' + str(backburner.timeout) + '\n'
+	text += 'backburner.priority = ' + str(backburner.priority) + '\n'
+	text += 'backburner.suspended = ' + str(backburner.suspended) + '\n'
 
-def write_dictionary_to_json_file(data, file_path):
-	try:
-		with open(file_path, 'w', encoding='utf-8') as json_file:
-			json.dump(data, json_file, ensure_ascii=False, indent=4)
-		return True
-	except:
-		return False
+	text += 'backburner.frames_per_task = ' 
+	text += str(backburner.frames_per_task) + '\n'
 
+	text += 'backburner.manager = "' + backburner.manager + '"\n'
+	text += 'backburner.port = ' + str(backburner.port) + '\n'
+	text += 'backburner.group = "' + backburner.group + '"\n'
 
-def read_json_file_to_dictionary(file_path):
-	try:
-		with open(file_path, 'r', encoding='utf-8') as json_file:
-			data = json.load(json_file)
-		return data
-	except:
-		return {}
+	text += 'backburner.background_render = '
+	text += str(backburner.background_render) + '\n'
+
+	text += 'backburner.use_job_name = ' + str(backburner.use_job_name) +'\n'
+
+	text += 'backburner.use_custom_path = '
+	text += str(backburner.use_custom_path) + '\n'
+
+	text += 'backburner.blender_path = r"' + backburner.blender_path +'"\n'
+	text += 'backburner.use_repository = ' + str(backburner.use_repository) +'\n'
+	text += 'backburner.repository_path = r"' + backburner.repository_path + '"'
+	
+
+	return text
 
 
 def draw_backburner_panel(cls, ctx):
@@ -507,30 +511,37 @@ def subcation_get_name(ctx):
 	job_name = "New Job"
 	
 	if bpy.data.filepath:
-		job_name = get_job_name(ctx)
+		job_name = get_blender_file_name(ctx)
 
 	ctx.scene.backburner.job_name = job_name
 
 
 def subaction_save(ctx):
-	file_name = get_preset_file_name()
-	backburner_state = backburner_state_as_dictionary(ctx)
-	write_dictionary_to_json_file(backburner_state, file_name)
+	preset_path, file_name = get_preset_file_path()
+	string = create_script_text(ctx)
+
+	if not os.path.exists(preset_path):
+		if os.access(preset_path, os.W_OK):
+			os.mkdir(preset_path)
+
+	preset_file = open(preset_path + file_name, "w")
+	preset_file.write(string)
+	preset_file.close()
 
 
 def subaction_load(ctx):
-	backburner = ctx.scene.backburner
-	file_name = get_preset_file_name()
-	backburner_state = read_json_file_to_dictionary(file_name)
+	preset_path, file_name = get_preset_file_path()
+	preset_file = preset_path + file_name
 
-	for key, value in backburner_state.items():
-		if hasattr(backburner, key):
-			setattr(backburner, key, value)
+	if os.path.isfile(preset_file):
+		script = open(preset_file).read()
+		exec(script)
 
 
 def subaction_refine_frames(ctx):
 	frames = string_to_integer_array("")
 	integer_array_to_bitarray_string(frames)
+	pass
 
 
 def subaction_riverce_frames(ctx):
@@ -541,7 +552,7 @@ def repository_path_check(cls, _):
 	global last_acceptable_repository_path
 	repository_path = cls.repository_path
 	if os.access(repository_path, os.W_OK):
-		if repository_path[-1] == os.sep:
+		if repository_path[-1] == '\\':
 			cls.repository_path = repository_path[:-1]
 			last_acceptable_repository_path = cls.repository_path
 	else:
@@ -572,8 +583,7 @@ def subaction_submit(self, ctx):
 		self.report(
 			{'WARNING'}, "Backburner manager not found. Failed to submission."
 		)
-
-	#TODO delete repository render file if fails
+	#TODO delete temp render file if fails
 
 
 class Backburner_Property(PropertyGroup):
@@ -704,7 +714,7 @@ class Backburner_Property(PropertyGroup):
 		name="Blender Path",
 		maxlen=400,
 		subtype='FILE_PATH',
-		default=bpy.app.binary_path,
+		default=blender_path(),
 		description="Path of blender.exe"
 	) # type: ignore
 	
@@ -774,16 +784,16 @@ class Render_OT_Backburner_Action(Operator):
 class Render_OT_Backburner(Operator):
 	""" Submit scene to Backburner as render job. """
 	bl_idname = 'render.backburner'
-	bl_label = "Backburner"
+	bl_label = "Backburner V0.2.2.0"
 	bl_options = {'REGISTER'}
 
 	def draw(self, ctx):
 		draw_backburner_panel(self, ctx)
 	
-	def execute(self, _):
+	def execute(self, ctx):
 		return{'FINISHED'}
 	
-	def invoke(self, ctx, _):
+	def invoke(self, ctx, event):
 		return ctx.window_manager.invoke_props_dialog(self, width=500)
 
 
@@ -832,6 +842,15 @@ def unregister_backburner():
 
 	for cls in classes:
 		unregister_class(cls)
+
+
+""" Calls when installed as stand alone add-on """
+def register():
+	register_backburner()
+
+
+def unregister():
+	unregister_backburner()
 
 
 if __name__ == '__main__':

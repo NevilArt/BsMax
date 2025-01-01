@@ -17,6 +17,16 @@ import bpy
 import os
 
 from bsmax.graphic import get_header_color
+from bsmax.data_file import(
+	get_datafiles_path,
+	write_dictionary_to_json_file,
+	read_json_file_to_dictionary
+)
+#TODO need to rewrite all
+
+
+def get_theam_data_file_path():
+	return get_datafiles_path() + os.sep + 'BsMax_theme.ini'
 
 
 #TODO need to refresh on file open too
@@ -99,8 +109,7 @@ def set_3dsmax_theme(self, preferences):
 class ThemaData():
 	def __init__(self):
 		self.theme = bpy.context.preferences.themes[0]
-		script_path =  bpy.utils.user_resource('SCRIPTS')
-		self.fileName = script_path + '\\addons\\BsMaxTheme.ini'
+		self.fileName = get_theam_data_file_path()
 		self.v3camera = None
 		self.v3empty = None
 		self.v3light = None

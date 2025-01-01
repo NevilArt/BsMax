@@ -12,13 +12,12 @@
 #	You should have received a copy of the GNU General Public License
 #	along with this program.  If not, see <https://www.gnu.org/licenses/>.
 ############################################################################
-# 2024/12/10
+# 2024/12/26
 
 import bpy
 import os
 import subprocess
 import platform
-import json
 
 from bpy.types import Panel, Operator, PropertyGroup, UIList
 from bpy.utils import register_class, unregister_class
@@ -31,38 +30,22 @@ from bpy.props import (
 from os import path, mkdir
 from glob import glob
 
+from bsmax.data_file import (
+	get_datafiles_path,
+	open_folder_in_explorer,
+	write_dictionary_to_json_file,
+	read_json_file_to_dictionary
+)
 
-def get_datafiles_path():
-	user_resource_path = bpy.utils.resource_path('USER')
-	datafiles_path = os.path.join(user_resource_path, "datafiles")
 
-	datafiles_path += os.sep + 'BsMax'
-	if not path.isdir(datafiles_path):
-		mkdir(datafiles_path)
+def get_preset_files_path():
+	datafiles_path = get_datafiles_path()
 
 	datafiles_path += os.sep + 'Render_presets'
 	if not path.isdir(datafiles_path):
 		mkdir(datafiles_path)	
 
 	return datafiles_path
-
-
-def write_dictionary_to_json_file(data, file_path):
-	try:
-		with open(file_path, 'w', encoding='utf-8') as json_file:
-			json.dump(data, json_file, ensure_ascii=False, indent=4)
-		return True
-	except:
-		return False
-
-
-def read_json_file_to_dictionary(file_path):
-	try:
-		with open(file_path, 'r', encoding='utf-8') as json_file:
-			data = json.load(json_file)
-		return data
-	except:
-		return {}
 
 
 # not a good method but for now works fine
@@ -303,22 +286,8 @@ def create_preset_dictionary(ctx):
 	return dictionary
 
 
-def open_folder_in_explorer(path):
-	if not os.path.isdir(path):
-		return
-
-	if platform.system() == "Windows":
-		os.startfile(path)
-	
-	elif platform.system() == "Darwin":
-		subprocess.call(["open", path])
-	
-	elif platform.system() == "Linux":
-		subprocess.call(["xdg-open", path])
-
-
 def get_list_of_presets():
-	preset_path = get_datafiles_path()
+	preset_path = get_preset_files_path()
 	return [
 		path.splitext(path.basename(f))[0]
 			for f in glob(preset_path+"/*.json")
@@ -332,13 +301,13 @@ def render_preset_reload(ctx):
 		ps.name = name
 
 
-def render_preset_add(ctx):
+def render_preset_add(ctx, overwrite=False):
 	name = ctx.scene.render_preset_name
-	file_name = get_datafiles_path() + os.sep + name + ".json"
+	file_name = get_preset_files_path() + os.sep + name + ".json"
 
-	if os.path.exists(file_name):
-		pass
-		#TODO check is name avalible warn or use auto digit
+	if os.path.exists(file_name) and not overwrite:
+		bpy.ops.render.preset('INVOKE_DEFAULT', action='CONFIRM_ADD')
+		return
 
 	write_dictionary_to_json_file(
 		create_preset_dictionary(ctx), file_name
@@ -347,20 +316,31 @@ def render_preset_add(ctx):
 	render_preset_reload(ctx)
 
 
+def get_active_preset_name(ctx):
+	if ctx.scene.render_presets:
+		index = ctx.scene.render_presets_index
+		return ctx.scene.render_presets[index].name
+	return None
+
+
 def render_preset_remove(ctx):
-	index = ctx.scene.render_presets_index
-	name = ctx.scene.render_presets[index].name
-	file_name = get_datafiles_path() + os.sep + name + ".json"
+	name = get_active_preset_name(ctx)
+	if not name:
+		return
+
+	file_name = get_preset_files_path() + os.sep + name + ".json"
 	#TODO ask for permition
 	os.remove(file_name)
 	render_preset_reload(ctx)
 
 
 def render_preset_name_update(ctx):
-	index = ctx.scene.render_presets_index
-	new_name = ctx.scene.render_presets[index].name
+	new_name = get_active_preset_name(ctx)
+	if not new_name:
+		return
+
 	old_name = ctx.scene.render_preset_name
-	file_path = get_datafiles_path() + os.sep
+	file_path = get_preset_files_path() + os.sep
 
 	os.rename(
 		file_path + new_name + ".json",
@@ -370,16 +350,26 @@ def render_preset_name_update(ctx):
 	render_preset_reload(ctx)
 
 
+def get_expression(key, value):
+	expression = 'bpy.context.' + key + '='
+	if type(value) == str:
+		expression += '"' + value + '"'
+	else:
+		expression += str(value)
+	return expression
+
 def render_preset_load(ctx):
-	index = ctx.scene.render_presets_index
-	name = ctx.scene.render_presets[index].name
-	file_name = get_datafiles_path() + os.sep + name + ".json"
+	name = get_active_preset_name(ctx)
+	if not name:
+		return
+
+	file_name = get_preset_files_path() + os.sep + name + ".json"
 	dictionary = read_json_file_to_dictionary(file_name)
-	scope = {'ctx': ctx}
+
 	for key, value in dictionary.items():
-		expression = 'ctx.' + key
+		expression = get_expression(key, value)
 		try:
-			exec(f"{expression} = {value}", {"__builtins__": None}, scope)
+			exec(expression)
 		except:
 			pass
 
@@ -398,15 +388,52 @@ class Render_OT_Preset(Operator):
 
 	action: EnumProperty(
 		items=[
-			('RELOAD', 'Reload', "Save Render Setting to File"),
-			('ADD', 'Add', "Save Render Setting to File"),
-			('REMOVE', 'Remove', "Remove Active Preset"),
-			('UPDATE', 'Update', "Update active preset"),
-			('LOAD', 'Load', 'Load Rendert Setting from File'),
-			('REVEAL', 'Reveal', 'Reveal Render Presets Folder')
+			('RELOAD', "Reload", "Save Render Setting to File"),
+
+			('ADD', "Add", "Save Render Setting to File"),
+			('CONFIRM_ADD', "", ""), 
+
+			('REMOVE', "Remove", "Remove Active Preset"),
+			('CONFIRM_REMOVE', "", ""), 
+
+			('UPDATE', "Update", "Update active preset"),
+			('CONFIRM_UPDATE', "", ""),
+
+			('RENAME', "Rename", "Rename current Preset"),
+			('CONFIRM_RENAME', "", ""),
+
+			('LOAD', "Load", 'Load Rendert Setting from File'),
+
+			('REVEAL', "Reveal", 'Reveal Render Presets Folder')
 		],
 		default='RELOAD'
 	) # type: ignore
+
+	@classmethod
+	def description(self, ctx, properties):
+		if properties.action == 'RELOAD':
+			return "Reload preset List"
+
+		elif properties.action == 'ADD':
+			return 'Save as New Preset'
+
+		elif properties.action == 'REMOVE':
+			return 'Remove Selected Preset'
+
+		elif properties.action == 'RENAME':
+			return 'Rename Selected Preset'
+
+		elif properties.action == 'LOAD':
+			return 'Load Selected Preset'
+
+		elif properties.action == 'REVEAL':
+			return 'Open preset directory in explorer'
+
+		return ""
+	
+	def draw(self, ctx):
+		self.layout.prop(self, "confirm", expand=True, text=self.action)
+		self.layout.label("asdfasd")
 
 	def execute(self, ctx):
 		if self.action == 'RELOAD':
@@ -414,20 +441,42 @@ class Render_OT_Preset(Operator):
 
 		elif self.action == 'ADD':
 			render_preset_add(ctx)
+		
+		elif self.action == 'CONFIRM_ADD':
+			render_preset_add(ctx, overwrite=True)
 
 		elif self.action == 'REMOVE':
+			bpy.ops.render.preset('INVOKE_DEFAULT', action='CONFIRM_REMOVE')
+		
+		elif self.action == 'CONFIRM_REMOVE':
 			render_preset_remove(ctx)
 
-		elif self.action == 'UPDATE':
+		elif self.action == 'RENAME':
+			bpy.ops.render.preset('INVOKE_DEFAULT', action='CONFIRM_RENAME')
+		
+		elif self.action == 'CONFIRM_RENAME':
 			render_preset_name_update(ctx)
+
+		elif self.action == 'UPDATE':
+			pass
+			# bpy.ops.render.preset('INVOKE_DEFAULT', action='CONFIRM_UPDATE')
+
+		elif self.action == 'CONFIRM_UPDATE':
+			print(">>>updated>>")
 
 		elif self.action == 'LOAD':
 			render_preset_load(ctx)
 
 		elif self.action == 'REVEAL':
-			open_folder_in_explorer(get_datafiles_path())
+			open_folder_in_explorer(get_preset_files_path())
 
 		return{'FINISHED'}
+	
+	def invoke(self, context, event):
+		if self.action in {'CONFIRM_ADD', 'CONFIRM_REMOVE', 'CONFIRM_UPDATE'}:
+			return context.window_manager.invoke_confirm(self, event)
+
+		return self.execute(context)
 
 
 class RENDER_UI_Preset(UIList):
@@ -461,7 +510,12 @@ class RENDER_PT_Preset(Panel):
 			scene, "render_presets",
 			scene, "render_presets_index"
 		)
-		sub_col.prop(ctx.scene, 'render_preset_name')
+		sub_row = sub_col.row(align=True)
+		sub_row.operator( 
+			'render.preset', text='', icon='GREASEPENCIL'
+		).action='RENAME'
+		sub_row.prop(ctx.scene, 'render_preset_name')
+		
 
 		col = row.column()
 
@@ -480,9 +534,10 @@ class RENDER_PT_Preset(Panel):
 			'render.preset', text='', icon='REMOVE'
 		).action='REMOVE'
 
-		sub_col.operator( 
-			'render.preset', text='', icon='GREASEPENCIL'
-		).action='UPDATE'
+
+		# sub_col.operator( 
+		# 	'render.preset', text='', icon='LINE_DATA'
+		# ).action='UPDATE'
 
 		sub_col = col.column()
 		sub_col.operator(

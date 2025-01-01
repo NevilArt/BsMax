@@ -186,7 +186,7 @@ def put_everything_in_new_collection(ctx):
 
 # objects are in condition that not able to auto detect for now
 # listed here and to delete by name
-# TODO pout this in a text file in project refrence or repository folder
+# TODO put this in a text file in project refrence or repository folder
 # and let code stay dynamic for difrent projects
 def check_black_list():
 	balack_list = {
@@ -195,7 +195,10 @@ def check_black_list():
 		"Ayse_Rig_Final:Ayse_Face_main7",
 		"Ayse_Rig_Final:Ayse_Face_main6",
 		"Cemil_Rig_Final:Cemil_Labtume_bl_shape_geo",
-		"Zahra_Rig_Final:Zahra_Face1"
+		"Zahra_Rig_Final:Zahra_Face1",
+		"kerim_Rig_V1:Kerim_Eyebrows_Wrapped",
+		"kerim_Rig_V1:Kerim_Face1",
+		"kerim_Rig_V1:Kerim_Face2"
 	}
 	for name in balack_list:
 		if name in bpy.data.objects:

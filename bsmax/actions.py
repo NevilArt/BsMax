@@ -12,7 +12,7 @@
 #	You should have received a copy of the GNU General Public License
 #	along with this program.  If not, see <https://www.gnu.org/licenses/>.
 ############################################################################
-# 2024/03/04
+# 2024/12/27
 
 import bpy
 
@@ -84,10 +84,14 @@ def set_as_active_object(ctx, obj):
 		return:
 			None
 	"""
-	if obj:
-		bpy.ops.object.select_all(action='DESELECT')
-		obj.select_set(state=True)
-		ctx.view_layer.objects.active = obj
+	if not obj:
+		return
+
+	for obj in ctx.selected_objects:
+		obj.select_set(False)
+
+	obj.select_set(state=True)
+	ctx.view_layer.objects.active = obj
 
 
 def set_create_target(obj, target, distance=(0.0, 0.0, -2.0), align=True):
@@ -186,7 +190,10 @@ def set_origen(ctx, obj, location):
 	saved_location = scene.cursor.location.copy()
 	saved_rotation = scene.cursor.rotation_euler.copy()
 	scene.cursor.location = location
-	bpy.ops.object.select_all(action='DESELECT')
+
+	for obj in ctx.selected_objects:
+		obj.select_set(False)
+
 	ctx.view_layer.objects.active = obj
 	obj.select_set(state=True)
 	bpy.ops.object.origin_set(type='ORIGIN_CURSOR', center='MEDIAN')
@@ -211,16 +218,17 @@ def match_transform(ctx, obj, target):
 	target_location = target.matrix_world.to_translation()
 	target_rotation = target.matrix_world.to_euler()
 	target_scale = target.matrix_world.to_scale()
-	
+
 	# store and set the mode
 	use_transform_state = ctx.scene.tool_settings.use_transform_data_origin
 	ctx.scene.tool_settings.use_transform_data_origin = True
 
 	# arrange selection
-	bpy.ops.object.select_all(action='DESELECT')
+	for obj in ctx.selected_objects:
+		obj.select_set(False)
 	obj.select_set(state=True)
 	ctx.view_layer.objects.active = obj
-	
+
 	#TODO Rotation part not perfect but work for most cases
 	# match the rotation axis by axis
 	obj_rotation = obj.matrix_world.to_euler()

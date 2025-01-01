@@ -12,8 +12,10 @@
 #	You should have received a copy of the GNU General Public License
 #	along with this program.  If not, see <https://www.gnu.org/licenses/>.
 ############################################################################
-# 2024/02/18
+# 2024/12/27
 
+import bpy
+import os
 from math import pi
 from mathutils import Vector
 

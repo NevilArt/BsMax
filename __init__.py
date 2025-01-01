@@ -15,23 +15,13 @@
 #	You should have received a copy of the GNU General Public License
 #	along with this program.  If not, see <https://www.gnu.org/licenses/>.
 ############################################################################
-# 2024/07/21
-
-import bpy
-import sys
-import os
-
-from bpy.types import AddonPreferences, Operator
-from bpy.props import EnumProperty, BoolProperty, FloatProperty
-from time import sleep
-from _thread import start_new_thread
-from bpy.utils import register_class, unregister_class
+# 2024/12/27
 
 bl_info = {
 	'name': "BsMax",
-	'description': "BsMax UI simulations and Tool pack (Blender 3.6LTS ~ 4.2LTS)",
-	'author': "Naser Merati (Nevil)",
-	'version': (0, 1, 3, 20241225),
+	'description': "BsMax UI simulations and Tool pack (Blender 3.6LTS ~ 4.3)",
+	'author': "Nevil Tan (Naser Merati)",
+	'version': (0, 1, 3, 20250101),
 	'blender': (3, 6, 0), # Minimum Version
 	'location': "Almost Everywhere in Blender",
 	'doc_url': 'https://github.com/NevilArt/BsMax/wiki',
@@ -39,30 +29,42 @@ bl_info = {
 	'category': "Interface"
 }
 
-# TODO switch prefrence saving data to jason
+import bpy
+import sys
+import os
+
 # Add public classes, variables and functions path if not in list.
 path = os.path.dirname(os.path.realpath(__file__))
 if path not in sys.path:
 	sys.path.append(path)
 
-from .bsmax.math import isfloat
+from bpy.types import AddonPreferences, Operator
+from bpy.props import EnumProperty, BoolProperty, FloatProperty
+from time import sleep
+from _thread import start_new_thread
+from bpy.utils import register_class, unregister_class
+
 from .bsmax import register_bsmax, unregister_bsmax
 from .keymaps import register_keymaps, unregister_keymaps
 from .menu import register_menu, unregister_menu
 from .primitive import register_primitives, unregister_primitives
 from .startup import register_startup, unregister_startup
 from .tools import register_tools, unregister_tools
+from bsmax.data_file import (
+	get_datafiles_path,
+	write_dictionary_to_json_file,
+	read_json_file_to_dictionary,
+	open_folder_in_explorer
+)
 
 # import templates
 
-addons = bpy.context.preferences.addons
-wiki = 'https://github.com/NevilArt/BsMax/wiki/'
-iniFileName = bpy.utils.user_resource('SCRIPTS') + '\\addons\\BsMax.ini'
-
+def wiki():
+	return 'https://github.com/NevilArt/BsMax/wiki/'
 
 # Addon preferences
 def update_preferences(cls, _, action):
-	global addons
+	addons = bpy.context.preferences.addons
 	preferences = addons[__name__].preferences
 	""" Quick Selection """
 	if cls.mode == 'QUICK' and action == 'APLICATION':
@@ -124,12 +126,11 @@ def update_preferences(cls, _, action):
 
 
 def row_prop(cls, col, name, page):
-	global wiki
 	row = col.row()
 	row.prop(cls, name)
 	srow = row.row()
 	srow.scale_x = 1
-	srow.operator('wm.url_open', icon='HELP').url= wiki + page
+	srow.operator('wm.url_open', icon='HELP').url= wiki() + page
   
 
 def draw_simple_panel(cls, layout):
@@ -187,51 +188,41 @@ def draw_option_panel(cls, layout):
 	row = box.row()
 	row.prop(cls, 'experimental')
 
+def get_bsmax_json_file_name():
+	return get_datafiles_path() + os.sep + 'BsMax.json'
+
 
 def save_preferences(preferences):
-	global iniFileName
-	string = ''
+	file_name = get_bsmax_json_file_name()
+	dictionary = {}
 
 	for prop in preferences.bl_rna.properties:
-		if not prop.is_readonly:
-			key = prop.identifier
-			if key != 'bl_idname':
-				val = str(getattr(preferences, key))
-				string += key + '=' + val + os.linesep
+		if prop.is_readonly:
+			continue
+		
+		key = prop.identifier
+		if key == 'bl_idname':
+			continue
+		
+		dictionary[key] = getattr(preferences, key)
 
-	ini = open(iniFileName, 'w')
-	ini.write(string)
-	ini.close()
+	write_dictionary_to_json_file(dictionary, file_name)
 
 
 def load_preferences(preferences):
-	global iniFileName
+	file_name = get_bsmax_json_file_name()
 
-	if not os.path.exists(iniFileName):
+	if not os.path.exists(file_name):
 		return
-
-	string = open(iniFileName).read()
-	props = string.splitlines()
-
-	for prop in props:
-		key = prop.split('=')
-
-		if len(key) != 2:
-			continue
-
-		if isfloat(key[1]):
-			value = float(key[1])
-
-		elif key[1] in {'True', 'False'}:
-			value = key[1] == 'True'
-
-		else:
-			value = key[1].upper()
-
-		if hasattr(preferences, key[0]):
-			current_value = getattr(preferences, key[0])
+	
+	dictionary = read_json_file_to_dictionary(file_name)
+	
+	for key, value in dictionary.items():
+		if hasattr(preferences, key):
+			current_value = getattr(preferences, key)
+			# apply value only if has changed
 			if value != current_value:
-				setattr(preferences, key[0], value)
+				setattr(preferences, key, value)
 
 
 class BsMax_AddonPreferences(AddonPreferences):
@@ -537,6 +528,11 @@ class BsMax_AddonPreferences(AddonPreferences):
 			text="Save Preferences Setting",
 			icon='FILE_TICK'
 		)
+
+		row.operator(
+			'bsmax.open_data_file_directory',
+			text="", icon='FILEBROWSER'
+		)
 		
 		if self.options:
 			draw_option_panel(self, box)
@@ -551,8 +547,18 @@ class BsMax_OT_Save_Preferences(Operator):
 	bl_options = {'REGISTER', 'INTERNAL'}
 
 	def execute(self, _):
-		global addons
+		addons = bpy.context.preferences.addons
 		save_preferences(addons[__name__].preferences)
+		return{'FINISHED'}
+
+
+class BsMax_OT_Open_Data_File_Directory(Operator):
+	bl_idname = 'bsmax.open_data_file_directory'
+	bl_label = "Open datafile directory"
+	bl_options = {'REGISTER', 'INTERNAL'}
+
+	def execute(self, _):
+		open_folder_in_explorer(get_datafiles_path() + os.sep)
 		return{'FINISHED'}
 
 
@@ -564,12 +570,15 @@ def register_delay(preferences):
 
 classes = {
 	BsMax_OT_Save_Preferences,
+	BsMax_OT_Open_Data_File_Directory,
 	BsMax_AddonPreferences
 }
 
 
 def register():
-	global classes, addons
+	global classes
+	
+	addons = bpy.context.preferences.addons
 	for cls in classes:
 		register_class(cls)
 
@@ -586,7 +595,8 @@ def register():
 	
 
 def unregister():
-	global classes, addons
+	global classes
+	addons = bpy.context.preferences.addons
 	save_preferences(addons[__name__].preferences)
 
 	unregister_keymaps()

@@ -252,7 +252,7 @@ def fix_type_visablity(subclass, ctx):
 
 def set_active_tool(cls, ctx):
 	activeToolName = ""
-	# 
+
 	if cls.subclass:
 		# TODO just temprary solution for quick update
 		try:
@@ -260,8 +260,6 @@ def set_active_tool(cls, ctx):
 			activeToolName = cls.subclass.classname
 		except:
 			activeToolName = ""
-	else:
-		activeToolName = ""
 
 	primitive_setting = ctx.scene.primitive_setting
 	primitive_setting.active_tool = activeToolName

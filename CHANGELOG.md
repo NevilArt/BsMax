@@ -1,4 +1,8 @@
-# 0, 1, 3, 20240823
+# 0, 1, 3, 20241226
+* Marker Copy/Paste added.
+* Render preset tool updated.
+
+# 0, 1, 3, 202408234
 * Topo Symmetrize tool that keep UV data (under the EditMesh/Mesh menu)
 * Camera target select search from last constraint and ignore disable ones this makes better result.
 * Alingt Target to camera matchs the target to camera direction (Camera/Target/Align).
