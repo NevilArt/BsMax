@@ -285,11 +285,19 @@ def register_shapekey():
 	for cls in classes:
 		register_class(cls)
 
-	bpy.types.DATA_PT_shape_keys.append(shapekey_tools)
+	if hasattr(bpy.types, "DATA_PT_shape_keys"):
+		bpy.types.DATA_PT_shape_keys.append(shapekey_tools)
+	
+	elif hasattr(bpy.types, "DATA_PT_shape_keys_plus"):
+		hasattr(bpy.types, "DATA_PT_shape_keys_plus")
 
 
 def unregister_shapekey():
-	bpy.types.DATA_PT_shape_keys.remove(shapekey_tools)
+	if hasattr(bpy.types, "DATA_PT_shape_keys"):
+		bpy.types.DATA_PT_shape_keys.remove(shapekey_tools)
+	
+	elif hasattr(bpy.types, "DATA_PT_shape_keys_plus"):
+		hasattr(bpy.types, "DATA_PT_shape_keys_plus")
 
 	for cls in classes:
 		unregister_class(cls)

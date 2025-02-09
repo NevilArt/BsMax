@@ -1,3 +1,9 @@
+# 0, 1, 3, 20250101
+* New Render preset tool has update and bug fixed.
+* Add-on preference save method changed.
+* All setting and saved preset files are collection in to datafile directory.
+* Open datafile directory button added to BsMax prefrence panel.
+
 # 0, 1, 3, 20241226
 * Marker Copy/Paste added.
 * Render preset tool updated.

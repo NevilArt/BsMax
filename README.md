@@ -36,10 +36,7 @@ If you found this product useful and want to support this project you can Donate
 * [Download Older Version for Blender 2.80 ~ 3.5](https://github.com/NevilArt/BsMax_2_80)
 
 ## Recent Updates and Changes
-* New Render preset tool has update and bug fixed.
-* Add-on preference save method changed.
-* All setting and saved preset files are collection in to datafile directory.
-* Open datafile directory button added to BsMax prefrence panel.
+* Compatibility issue with "Shapekey plus" addon has fixed.
 * [Change log ...](https://github.com/NevilArt/BsMax/blob/master/CHANGELOG.md)
 
 ## Special Thanks
