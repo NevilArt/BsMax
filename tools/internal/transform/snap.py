@@ -41,7 +41,7 @@ class Object_OT_Snap_Setting(Operator):
 			('ROTATE','Rotate',''),
 			('SCALE','Scale','')
 		]
-		)
+		) # type: ignore
 
 	def execute(self, ctx):
 		tool_settings = ctx.scene.tool_settings
@@ -102,7 +102,7 @@ snap_setting = Snap_Setting()
 class Object_OT_Snap_Toggle(Operator):
 	bl_idname = "object.snap_toggle"
 	bl_label = "Snap Toggle"
-	auto: BoolProperty(default=False)
+	auto: BoolProperty(default=False) # type: ignore
 
 	def execute(self, ctx):
 		global snap_setting
@@ -130,7 +130,7 @@ class Object_OT_Angel_Snap(Operator):
 	bl_idname = "object.angel_snap"
 	bl_label = "Angel Snap"
 	
-	auto: BoolProperty(default=False)
+	auto: BoolProperty(default=False) # type: ignore
 	
 	def execute(self, ctx):
 		global snap_setting

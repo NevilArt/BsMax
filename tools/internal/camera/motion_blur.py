@@ -17,7 +17,7 @@
 from typing import Any
 import bpy
 
-from bpy.types import Context, Operator
+from bpy.types import Operator
 from bpy.props import IntProperty
 from bpy.utils import register_class, unregister_class
 

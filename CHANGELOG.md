@@ -1,3 +1,6 @@
+# 0, 1, 3, 20250209
+* Compatibility issue with "Shapekey plus" addon has fixed.
+
 # 0, 1, 3, 20250101
 * New Render preset tool has update and bug fixed.
 * Add-on preference save method changed.

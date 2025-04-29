@@ -1,5 +1,5 @@
 
-# BsMax Blender Addon 3.6LTS ~ 4.3
+# BsMax Blender Addon 3.6LTS ~ 4.4
 
 BsMax is package of Modeling, Rig & Animation, Render tools and UI mimic for [Blender 3D](https://www.blender.org/).
 
@@ -36,7 +36,7 @@ If you found this product useful and want to support this project you can Donate
 * [Download Older Version for Blender 2.80 ~ 3.5](https://github.com/NevilArt/BsMax_2_80)
 
 ## Recent Updates and Changes
-* Compatibility issue with "Shapekey plus" addon has fixed.
+* Compositor/Add/Tools/Auto EXR Connector Updtated and works better now.
 * [Change log ...](https://github.com/NevilArt/BsMax/blob/master/CHANGELOG.md)
 
 ## Special Thanks

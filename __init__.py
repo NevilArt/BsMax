@@ -15,13 +15,13 @@
 #	You should have received a copy of the GNU General Public License
 #	along with this program.  If not, see <https://www.gnu.org/licenses/>.
 ############################################################################
-# 2024/12/27
+# 2025/02/10
 
 bl_info = {
 	'name': "BsMax",
-	'description': "BsMax UI simulations and Tool pack (Blender 3.6LTS ~ 4.3)",
+	'description': "BsMax Toolkit (Blender 3.6LTS ~ 4.4 )",
 	'author': "Nevil Tan (Naser Merati)",
-	'version': (0, 1, 3, 20250209),
+	'version': (1, 3, 20250429),
 	'blender': (3, 6, 0), # Minimum Version
 	'location': "Almost Everywhere in Blender",
 	'doc_url': 'https://github.com/NevilArt/BsMax/wiki',
