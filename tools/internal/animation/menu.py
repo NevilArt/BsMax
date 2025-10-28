@@ -12,9 +12,10 @@
 #	You should have received a copy of the GNU General Public License
 #	along with this program.  If not, see <https://www.gnu.org/licenses/>.
 ############################################################################
-# 2024/04/19
+# 2025/10/03
 
 import bpy
+from bpy.app import version
 
 
 class BsMax_MT_Animation_Tools(bpy.types.Menu):
@@ -84,23 +85,28 @@ def key_filter_menu(self, ctx):
 
 def register_menu():
 	bpy.utils.register_class(BsMax_MT_Animation_Tools)
-	bpy.types.TIME_MT_editor_menus.append(key_menu)
-	bpy.types.DOPESHEET_MT_editor_menus.append(key_menu)
-	bpy.types.GRAPH_MT_editor_menus.append(key_menu)
-	bpy.types.NLA_MT_view.append(key_menu)
+	types = bpy.types
+	types.DOPESHEET_MT_editor_menus.append(key_menu)
+	types.GRAPH_MT_editor_menus.append(key_menu)
+	types.NLA_MT_view.append(key_menu)
 
-	bpy.types.TIME_MT_editor_menus.append(key_filter_menu)
+	if version < (5, 0, 0):
+		types.TIME_MT_editor_menus.append(key_menu)
+		types.TIME_MT_editor_menus.append(key_filter_menu)
 
 def unregister_menu():
 	bpy.utils.unregister_class(BsMax_MT_Animation_Tools)
-	bpy.types.TIME_MT_editor_menus.remove(key_menu)
-	bpy.types.DOPESHEET_MT_editor_menus.remove(key_menu)
-	bpy.types.GRAPH_MT_editor_menus.remove(key_menu)
-	bpy.types.NLA_MT_view.remove(key_menu)
+	types = bpy.types
+	types.DOPESHEET_MT_editor_menus.remove(key_menu)
+	types.GRAPH_MT_editor_menus.remove(key_menu)
+	types.NLA_MT_view.remove(key_menu)
 	
-	bpy.types.TIME_MT_editor_menus.remove(key_filter_menu)
+	if version < (5, 0, 0):
+		types.TIME_MT_editor_menus.remove(key_menu)
+		types.TIME_MT_editor_menus.remove(key_filter_menu)
 
 
 if __name__ == '__main__':
 	# register_menu()
-	bpy.types.TIME_MT_editor_menus.append(key_filter_menu)
+	# bpy.types.TIME_MT_editor_menus.append(key_filter_menu)
+	pass

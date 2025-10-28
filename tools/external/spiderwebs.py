@@ -12,6 +12,7 @@
 #	You should have received a copy of the GNU General Public License
 #	along with this program.  If not, see <https://www.gnu.org/licenses/>.
 ############################################################################
+# 2025/10/10
 
 import bpy
 import bmesh
@@ -23,26 +24,26 @@ from math import pi, inf
 from random import random, randint, shuffle, sample, seed
 from bpy.types import Operator
 from bpy.props import IntProperty, FloatProperty, BoolProperty
+from bpy.app import version
 
-bl_info = {
-	"name": "Spider Webs",
-	"author": "Create by Maxime Herpin / Update by Nevil",
-	"version": (1, 0, 1), # 2021-09-02
-	"blender": (2, 80, 0), # 2.8 ~ 3.x
-	"location": "View 3d / Create / Mesh / Mesh extera / Spider Web",
-	"description": "Adds a new spider web object",
-	"warning": "",
-	"wiki_url": "",
-	"category": "Add Mesh",
-}
+# bl_info = {
+# 	"name": "Spider Webs",
+# 	"author": "Create by Maxime Herpin / Update by Nevil",
+# 	"version": (1, 0, 1), # 2021-09-02
+# 	"blender": (4, 2, 0), # 4.2 ~ 5.0
+# 	"location": "View 3d / Create / Mesh / Mesh extera / Spider Web",
+# 	"description": "Adds a new spider web object",
+# 	"warning": "",
+# 	"wiki_url": "",
+# 	"category": "Add Mesh",
+# }
 
-
-def menu_func(self, ctx):
+def menu_func(self, _):
 	layout = self.layout
 	layout.label("Spider Webs:")
-	layout.operator("mesh.add_spider_web",
-					text="Spider Webs")
-
+	layout.operator(
+		'mesh.add_spider_web', text="Spider Webs"
+	)
 
 # class AddSpiderWeb(Operator):
 class Render_OT_Add_Spider_Web(Operator):
@@ -52,20 +53,24 @@ class Render_OT_Add_Spider_Web(Operator):
 	bl_options = {'REGISTER', 'UNDO'}
 
 	size: FloatProperty(name='Size', min=0.001, default=1,
-		description='Distance of the corner that web will connect')
+		description='Distance of the corner that web will connect'
+	)
 	
 	density: FloatProperty(name='Densty', min=0.0001, default=1, soft_max=5,
-		description='5 is soft limit you can enter bigger number')
+		description='5 is soft limit you can enter bigger number'
+	)
 	
 	randomness: FloatProperty(name='Randomness', min=0, default=0.2)
 	
 	gravity: FloatProperty(name="Gravity Strength", default=1,
-		soft_min=-2, soft_max=2, step=0.01)
+		soft_min=-2, soft_max=2, step=0.01
+	)
 	
 	detect_floor: BoolProperty(name='Detect Floor', default=True)
-	number: IntProperty(name="Number of webs", default=1, min=1,
-		soft_max=5)
-	
+
+	number: IntProperty(name="Number of webs", default=1, min=1, soft_max=5
+	)
+
 	draw_3d: BoolProperty(name="Create Mesh web strands", default=False)
 	
 	draw_curve: BoolProperty(name="Create Curve web strands", default=True)
@@ -77,10 +82,10 @@ class Render_OT_Add_Spider_Web(Operator):
 	SeedProp: IntProperty(name='Seed', default=0)
 
 	@classmethod
-	def poll(self, ctx):
-		return ctx.mode == "OBJECT"
+	def poll(self, context):
+		return context.mode == "OBJECT"
 	
-	def draw(self, ctx):
+	def draw(self, _):
 		layout = self.layout
 		box = layout.box()
 		box.prop(self, 'size')
@@ -97,7 +102,7 @@ class Render_OT_Add_Spider_Web(Operator):
 		# box.prop(self, 'draw_2d', icon='TEXTURE_DATA')
 		# box.prop(self, 'texture_size')
 
-	def execute(self, ctx):
+	def execute(self, _):
 		seed(self.SeedProp)
 		Webs(
 			size=self.size,
@@ -129,7 +134,8 @@ class Thread:
 		else:
 			random_vect = Vector((0, 0, 0))
 		
-		point_a, point_c = self.web_parent.verts[self.points[segment_index]], self.web_parent.verts[self.points[segment_index + 1]]
+		point_a = self.web_parent.verts[self.points[segment_index]]
+		point_c = self.web_parent.verts[self.points[segment_index + 1]]
 		
 		if self.thread_type == 'frame':
 			point_b = (point_a + point_c) / 2 + (point_a - point_c).length * (self.web_parent.position - (point_a + point_c) / 2) * 0.05
@@ -205,10 +211,15 @@ class Webs:
 
 	def generate_webs(self, number):
 		for _ in range(number):
-			web = Web(anchor_points_candidates=self.anchor_points,
-				gravity_strength=self.gravity_strength, size=self.size,
-				density=self.density, ground=self.detect_floor,
-				randomness=self.randomness)
+			web = Web(
+				anchor_points_candidates=self.anchor_points,
+				gravity_strength=self.gravity_strength,
+				size=self.size,
+				density=self.density,
+				ground=self.detect_floor,
+				randomness=self.randomness
+			)
+			
 			self.webs.append(web)
 			# new_anchors = [web.verts[i] for i in sample(range(len(web.verts)), min(10, len(web.verts)))]
 			# self.anchor_points.extend(new_anchors)
@@ -383,11 +394,10 @@ class Webs:
 
 		self.clock.end_clock('creating_planes')
 
-
 class Web:
 	def __init__(self, gravity_strength, draw=False, draw_2d=False,
-		curve=False, anchor_points_candidates=[], size=1,
-		density=1, ground=False, randomness=0.2):
+				curve=False, anchor_points_candidates=[], size=1,
+				density=1, ground=False, randomness=0.2):
 
 		self.density = density
 		self.size = size
@@ -618,7 +628,7 @@ class Web:
 				factor = random()/2
 				self.verts[point_index] = factor * point_a + (0.5 - factor) * point_b + 0.5 * self.verts[point_index]
 
-		hub_indexes = [i for i in center_indexes]
+		# hub_indexes = [i for i in center_indexes]
 		center_indexes.extend(center_limits)
 		links = {i: [] for i in center_indexes}
 
@@ -793,7 +803,6 @@ class Web:
 		obj.select = False
 		# obj.active_material = bpy.data.materials['wire']
 
-
 class Clock:
 	def __init__(self):
 		self.clocks = {}
@@ -805,7 +814,6 @@ class Clock:
 		dt = time.time() - self.clocks.pop(name)
 		# print(name, dt)
 
-
 def draw_point(pixels, x, y, color, alpha, res, res_x):
 	y = res - y
 	coord = min(y * res_x + x, res * res_x - 1)
@@ -813,7 +821,6 @@ def draw_point(pixels, x, y, color, alpha, res, res_x):
 	pixels[coord] += (1 - pixels[coord]) / 2 * alpha
 	# for i in range(4):
 	#	 pixels[i, coord] = min(pixels[i, coord] + color * alpha, 1.0)   #tuple([min(color[i]*alpha + pixels[coord][i], 1) for i in range(4)])
-
 
 def draw_line(pixels, x0, y0, x1, y1, color, res, res_x=None):
 	"Bresenham's line algorithm, with antialiasing"
@@ -941,14 +948,33 @@ def center_normal(points):
 	normal.normalize()
 	return center, normal
 
+def get_active_note(grease_pencil):
+	if version < (4, 5, 0): #TODO fined the version that API has changed
+		return grease_pencil.layers.active
+	else:
+		return grease_pencil.layers[grease_pencil.layers.active_note]
 
 def get_grease_points():
-	points = []
-	gp = bpy.context.scene.grease_pencil
+	grease_pencil = bpy.context.scene.grease_pencil
 
-	if gp is not None and gp.layers.active is not None and gp.layers.active.active_frame is not None and len(gp.layers.active.active_frame.strokes) > 0:
-		for stroke in gp.layers.active.active_frame.strokes:
-			points.extend([i.co.copy() for i in stroke.points.values()])
+	if not grease_pencil:
+		return []
+	
+	active_note = get_active_note(grease_pencil)
+
+	if not active_note:
+		return []
+	
+	if not active_note.active_frame:
+		return []
+
+	if not active_note.active_frame.strokes:
+		return []
+
+	points = []
+	strokes = active_note.active_frame.strokes
+	for stroke in strokes:
+		points.extend([i.co.copy() for i in stroke.points.values()])
 
 	return points
 
@@ -1119,22 +1145,15 @@ def detect_ground(points, precision=0.003):
 	else:
 		return None
 
-def create_extera_spiderweb_menu(self, ctx):
+def create_extera_spiderweb_menu(self, _):
 	layout = self.layout
 	layout.operator("mesh.add_spider_web", text="Spider Web", icon="FREEZE")
 
 def register_spider_web():
 	bpy.utils.register_class(Render_OT_Add_Spider_Web)
-	# bpy.types.VIEW3D_PT_tools_object.append(menu_func)
-	# bpy.types.VIEW3D_PT_tools_object_options.append(menu_func)
-
-	# bpy.types.BSMAX_MT_mesh_extera_menu.append(create_extera_spiderweb_menu)
 
 def unregister_spider_web():
 	bpy.utils.unregister_class(Render_OT_Add_Spider_Web)
-	# bpy.types.VIEW3D_PT_tools_object_options.remove(menu_func)
-
-	# bpy.types.BSMAX_MT_mesh_extera_menu.remove(create_extera_spiderweb_menu)
 
 if __name__ == "__main__":
 	register_spider_web()

@@ -455,7 +455,8 @@ class Render_OT_Preset(Operator):
 			# bpy.ops.render.preset('INVOKE_DEFAULT', action='CONFIRM_UPDATE')
 
 		elif self.action == 'CONFIRM_UPDATE':
-			print(">>>updated>>")
+			# print(">>>updated>>")
+			pass
 
 		elif self.action == 'LOAD':
 			render_preset_load(ctx)
@@ -472,7 +473,7 @@ class Render_OT_Preset(Operator):
 		return self.execute(context)
 
 
-class RENDER_UI_Preset(UIList):
+class RENDER_UL_Preset(UIList):
 	def draw_item(self, ctx, layout, data, item, icon,
 		active_data, active_property, index = 0, flt_flag = 0):
 		
@@ -499,7 +500,7 @@ class RENDER_PT_Preset(Panel):
 		col = row.column()
 		sub_col = col.column(align=True)
 		sub_col.template_list(
-			"RENDER_UI_Preset", "",
+			"RENDER_UL_Preset", "",
 			scene, "render_presets",
 			scene, "render_presets_index"
 		)
@@ -569,7 +570,7 @@ class Render_PrePostScript(PropertyGroup):
 
 classes = {
 	Render_Preset,
-	RENDER_UI_Preset,
+	RENDER_UL_Preset,
 	Render_OT_Preset,
 	RENDER_PT_Preset
 }

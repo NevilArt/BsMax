@@ -20,7 +20,7 @@ def get_concave_vertices(vertices):
 		# Calculate the cross product of the vectors formed by the adjacent vertices
 		cross_product = np.cross(prevVertex - currentVertex, nextVertex - currentVertex)
 		
-		print(cross_product)
+		# print(cross_product)
 		# If the cross product is negative, it means the vertex is concave
 		# if cross_product < 0:
 		# 	concaveVertices.append(currentVertex)
@@ -92,7 +92,7 @@ def get_convex_hull_vertices(vertices):
 def test(ctx):
 	vertices = ctx.object.data.vertices
 	newVertices = get_concave_vertices(vertices)
-	print(newVertices)
+	# print(newVertices)
 	return newVertices, [], []
 
 

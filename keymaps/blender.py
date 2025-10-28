@@ -12,7 +12,7 @@
 #	You should have received a copy of the GNU General Public License
 #	along with this program.  If not,see <https://www.gnu.org/licenses/>.
 ############################################################################
-# 2024/05/29
+# 2025/10/13
 
 import bpy
 from bsmax.keymaps import KeyMaps
@@ -20,14 +20,87 @@ from bsmax.keymaps import KeyMaps
 #TODO sub selection keys for mesh
 
 class Blender_State():
-	def __init__(self):
+	def __init__(self) -> None:
 		self.select_mouse = self.get_select_mouse()
 	
-	def get_select_mouse(self):
+	def get_select_mouse(self) -> str:
 		keyconfig = bpy.context.window_manager.keyconfigs.active
 		return getattr(keyconfig.preferences, 'select_mouse', 'LEFT')
 
 blender_state = Blender_State()
+
+
+def add_subobject(km, space) -> None:
+	""" Use nummeric to switch between modes """
+	km.new(space, 'object.subobject_level', 'ONE', 'PRESS', [('level', 1)])
+	km.new(space, 'object.subobject_level', 'TWO', 'PRESS', [('level', 2)])
+	km.new(space, 'object.subobject_level', 'THREE', 'PRESS', [('level', 3)])
+	km.new(space, 'object.subobject_level', 'FOUR', 'PRESS', [('level', 4)])
+	# km.new(space, 'object.subobject_level', 'FIVE', 'PRESS', [('level', 5)])
+	# km.new(space, 'object.subobject_level', 'SIX', 'PRESS', [('level', 6)])
+	# km.new(space, 'object.subobject_level', 'SEVEN', 'PRESS', [('level', 7)])
+	# km.new(space, 'object.subobject_level', 'EIGHT', 'PRESS', [('level', 8)])
+	# km.new(space, 'object.subobject_level', 'NINE', 'PRESS', [('level', 9)])
+	# km.new(space, 'object.subobject_level', 'ZERO', 'PRESS', [('level', 0)])
+
+
+def add_droptool(km, space) -> None:
+	global blender_state
+	if blender_state.select_mouse == 'LEFT':
+		km.new(space,'view3d.drop_tool', 'RIGHTMOUSE', 'CLICK',[])
+
+
+def mute_numbers(km) -> None:
+	""" Disable all hide collection operators """
+	km.mute(
+		'Object Mode', 'object.hide_collection', 'ONE', 'PRESS',
+		alt=True, ctrl=True, shift=True, any=True
+	)
+
+	km.mute(
+		'Object Mode', 'object.hide_collection', 'TWO', 'PRESS',
+		alt=True, ctrl=True, shift=True, any=True
+	)
+
+	km.mute(
+		'Object Mode', 'object.hide_collection', 'THREE', 'PRESS',
+		alt=True, ctrl=True, shift=True, any=True
+	)
+
+	km.mute(
+		'Object Mode', 'object.hide_collection', 'FOUR', 'PRESS',
+		alt=True, ctrl=True, shift=True, any=True
+	)
+
+	km.mute(
+		'Object Mode', 'object.hide_collection', 'FIVE', 'PRESS',
+		alt=True, ctrl=True, shift=True, any=True
+	)
+
+	km.mute(
+		'Object Mode', 'object.hide_collection', 'SIX', 'PRESS',
+		alt=True, ctrl=True, shift=True, any=True
+	)
+
+	km.mute(
+		'Object Mode', 'object.hide_collection', 'SEVEN', 'PRESS',
+		alt=True, ctrl=True, shift=True, any=True
+	)
+
+	km.mute(
+		'Object Mode', 'object.hide_collection', 'EIGHT', 'PRESS',
+		alt=True, ctrl=True, shift=True, any=True
+	)
+
+	km.mute(
+		'Object Mode', 'object.hide_collection', 'NINE', 'PRESS',
+		alt=True, ctrl=True, shift=True, any=True
+	)
+
+	km.mute(
+		'Object Mode', 'object.hide_collection', 'ZERO', 'PRESS',
+		alt=True, ctrl=True, shift=True, any=True
+	)
 
 
 def window(km):
@@ -66,9 +139,7 @@ def view3d(km):
 
 def view3d_navigation(km,preferences):
 	space = km.space('3D View', 'VIEW_3D', 'WINDOW')
-
-	if blender_state.select_mouse == 'LEFT':
-		km.new(space,'view3d.drop_tool', 'RIGHTMOUSE', 'PRESS',[])
+	add_droptool(km, space)
 
 	if preferences.view_undo:
 		km.new(
@@ -132,10 +203,10 @@ def transform(km):
 
 
 def object_mode(km):
+	mute_numbers(km)
 	space = km.space('Object Non-modal', 'EMPTY', 'WINDOW')
-
-	if blender_state.select_mouse == 'LEFT':
-		km.new(space,'view3d.drop_tool', 'RIGHTMOUSE', 'PRESS', [])
+	add_subobject(km, space)
+	add_droptool(km, space)
 
 	km.new(space, 'bsmax.mode_set', 'F9', 'PRESS', [])
 	km.new(
@@ -154,17 +225,20 @@ def object_mode(km):
 		space, 'wm.call_menu', 'V', 'PRESS',
 		[('name', 'BSMAX_MT_view3d_paste')], ctrl=True
 	)
-	
 	km.new(space, 'object.link_to', 'P', 'PRESS', [], shift=True, ctrl=True)
-
 	km.new(space, 'object.delete_plus', 'DEL', 'PRESS', [])
+	km.new(space, 'object.modify_pivotpoint', 'INSERT', 'PRESS', [])
+	km.new(
+		space, 'wm.call_menu', 'INSERT', 'PRESS',
+		[('name', 'OBJECT_MT_Set_Pivot_Point')], ctrl=True
+	)
 
 
 def mesh(km):
+	mute_numbers(km)
 	space = km.space('Mesh', 'EMPTY', 'WINDOW')
-
-	if blender_state.select_mouse == 'LEFT':
-		km.new(space, 'view3d.drop_tool', 'RIGHTMOUSE', 'PRESS', [])
+	add_subobject(km, space)
+	add_droptool(km, space)
 
 	km.new(space, 'mesh.copy', 'C', 'PRESS', [], ctrl=True)
 	km.new(space, 'mesh.paste', 'V', 'PRESS', [], ctrl=True)
@@ -181,32 +255,28 @@ def mesh(km):
 
 
 def curve(km):
+	mute_numbers(km)
 	space = km.space('Curve', 'EMPTY', 'WINDOW')
-
-	if blender_state.select_mouse == 'LEFT':
-		km.new(space, 'view3d.drop_tool', 'RIGHTMOUSE', 'PRESS', [])
+	add_droptool(km, space)
 
 
 def armature(km):
+	mute_numbers(km)
 	space = km.space('Armature', 'EMPTY', 'WINDOW')
-
-	if blender_state.select_mouse == 'LEFT':
-		km.new(space, 'view3d.drop_tool', 'RIGHTMOUSE', 'PRESS', [])
-
+	add_droptool(km, space)
 	km.new(space, 'wm.multi_item_rename', 'F2', 'PRESS', [])
 
 
 def metaball(km):
+	mute_numbers(km)
 	space = km.space('Metaball', 'EMPTY', 'WINDOW')
-
-	if blender_state.select_mouse == 'LEFT':
-		km.new(space, 'view3d.drop_tool', 'RIGHTMOUSE', 'PRESS', [])
+	add_droptool(km, space)
 
 
 def lattice(km):
+	mute_numbers(km)
 	space = km.space('Lattice', 'EMPTY', 'WINDOW')
-	if blender_state.select_mouse == 'LEFT':
-		km.new(space, 'view3d.drop_tool', 'RIGHTMOUSE', 'PRESS', [])
+	add_droptool(km, space)
 
 
 def grease_pencil(km):
@@ -214,10 +284,9 @@ def grease_pencil(km):
 
 
 def pos(km):
+	mute_numbers(km)
 	space = km.space('Pose', 'EMPTY', 'WINDOW')
-
-	if blender_state.select_mouse == 'LEFT':
-		km.new(space, 'view3d.drop_tool', 'RIGHTMOUSE', 'PRESS',[])
+	add_droptool(km, space)
 
 	km.new(
 		space, 'pose.select_hierarchy_plus', 'LEFT_BRACKET', 'PRESS',
@@ -286,6 +355,26 @@ def uv_editor(km):
 def sequence_editor(km):
 	space = km.space('Sequencer', 'SEQUENCE_EDITOR', 'WINDOW')
 	km.new(space, 'wm.multi_item_rename', 'F2', 'PRESS', [])
+
+	km.new(
+		space, 'sequencer.shift', 'UP_ARROW', 'PRESS',
+		[('direction', 'UP')], alt=True
+	)
+
+	km.new(
+		space, 'sequencer.shift', 'DOWN_ARROW', 'PRESS',
+		[('direction', 'DOWN')], alt=True
+	)
+
+	km.new(
+		space, 'sequencer.shift', 'RIGHT_ARROW', 'PRESS',
+		[('direction', 'RIGHT')], alt=True
+	)
+
+	km.new(
+		space, 'sequencer.shift', 'LEFT_ARROW', 'PRESS',
+		[('direction', 'LEFT')], alt=True
+	)
 
 
 def text(km):

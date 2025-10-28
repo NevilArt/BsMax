@@ -55,21 +55,21 @@ def view_pan(ctx,x,y):
 
 	# # cast the ray
 	# hit, normal, face_index = obj.ray_cast(ray_origin_obj, ray_target_obj)
-	print("Pan")
+	# print("Pan")
 	pass
 
 
 
 def view_orbit(ctx,x,y):
 	#bpy.ops.view3d.rotate('INVOKE_DEFAULT')
-	print("Orbit")
+	# print("Orbit")
 	pass
 
 
 
 def view_dolly(ctx,x,y):
 	#bpy.ops.view3d.dolly('INVOKE_DEFAULT')
-	print("dolly")
+	# print("dolly")
 	pass
 
 
@@ -96,7 +96,7 @@ class View2D_OT_3DsMax_Navigation(bpy.types.Operator):
 		return ctx.area.type == 'VIEW_3D'
 
 	def modal(self,ctx,event):
-		print(event.type)
+		# print(event.type)
 		if not event.type in ['MIDDLEMOUSE','MOUSEMOVE','LEFT_CTRL','RIGHT_CTRL',
 							'LEFT_ALT','RIGHT_ALT','LEFT_SHIFT','RIGHT_SHIFT',]:
 			return {'PASS_THROUGH'}

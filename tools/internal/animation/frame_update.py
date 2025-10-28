@@ -12,34 +12,40 @@
 #	You should have received a copy of the GNU General Public License
 #	along with this program.  If not, see <https://www.gnu.org/licenses/>.
 ############################################################################
-# 2024/05/26
+# 2025/10/03
 
 import bpy
 
 from bpy.types import Operator
 from bpy.app.handlers import persistent
 from bpy.utils import register_class, unregister_class
+from bpy.app import version
 
 from bsmax.graphic import get_header_color
 
 
-def mode_updated(cls, ctx):
-	if cls.active_auto_use_select_pick_depth:
-		""" uspds use_select_pick_depth State """
-		uspds = False if (ctx.mode == 'POSE') else cls.use_select_pick_depth
-		ctx.preferences.system.use_select_pick_depth = uspds
+def mode_updated(cls, context:bpy.types.Context) -> None:
+	if version >= (5, 0, 0):
+		return
+	if not cls.active_auto_use_select_pick_depth:
+		return
+	""" uspds use_select_pick_depth State """
+	uspds = False if (context.mode == 'POSE') else cls.use_select_pick_depth
+	context.preferences.system.use_select_pick_depth = uspds
 
 
-def autokey_state_updated(cls, ctx):
-	autoKey = ctx.scene.tool_settings.use_keyframe_insert_auto
+def autokey_state_updated(cls, context:bpy.types.Context) -> None:
+	autoKey = context.scene.tool_settings.use_keyframe_insert_auto
 	color = (0.5, 0.0, 0.0, 1.0) if autoKey else get_header_color()
 	# allow to update if affect_theme active in preference
 	if color and cls.preferences.affect_theme:
-		ctx.preferences.themes['Default'].dopesheet_editor.space.header = color
+		#TODO get active theme
+		theme = context.preferences.themes['Default']
+		theme.dopesheet_editor.space.header = color
 
 
 class Scene_Stata:
-	def __init__(self):
+	def __init__(self) -> None:
 		self.mode = 'OBJECT'
 		self.pose_mode = False
 		self.use_select_pick_depth = False
@@ -47,43 +53,50 @@ class Scene_Stata:
 		self.use_keyframe_insert_auto = False
 		self.preferences = None
 	
-	def store(self, ctx, preferences):
-		""" Store use_select_pick_depth State """
-		system = ctx.preferences.system
-		self.use_select_pick_depth = system.use_select_pick_depth
+	def store(
+		self,
+		context:bpy.types.Context,
+		preferences:bpy.types.Preferences
+	) -> None:
+
+		if version < (5, 0, 0):
+			""" Store use_select_pick_depth State """
+			system = context.preferences.system
+			self.use_select_pick_depth = system.use_select_pick_depth
 
 		self.preferences = preferences
 		
 		# """ Store use_keyframe_insert_auto state """
-		# ukias = ctx.scene.tool_settings.use_keyframe_insert_auto
+		# ukias = context.scene.tool_settings.use_keyframe_insert_auto
 		# self.use_keyframe_insert_auto = ukias
 
-	def check(self, ctx):
+	def check(self, context:bpy.types.Context) -> None:
 		""" Calls once on mode changed """
-		if self.mode != ctx.mode:
-			mode_updated(self, ctx)
-			self.mode = ctx.mode
+		if self.mode != context.mode:
+			mode_updated(self, context)
+			self.mode = context.mode
 
 		""" Call once on autokey state changes """
-		tool_settings = ctx.scene.tool_settings
+		tool_settings = context.scene.tool_settings
 		if tool_settings.use_keyframe_insert_auto != self.use_keyframe_insert_auto:
-			autokey_state_updated(self, ctx)
+			autokey_state_updated(self, context)
 			self.use_keyframe_insert_auto = tool_settings.use_keyframe_insert_auto
 
-	def restore(self, ctx):
+	def restore(self, context:bpy.types.Context) -> None:
 		""" Restore use_select_pick_depth State """
-		system = bpy.context.preferences.system
-		system.use_select_pick_depth = self.use_select_pick_depth
+		if version < (5, 0, 0):
+			system = bpy.context.preferences.system
+			system.use_select_pick_depth = self.use_select_pick_depth
 
 		""" Restore dopesheet_editor.header Color """
 		color = get_header_color()
-		ctx.preferences.themes['Default'].dopesheet_editor.space.header = color
+		context.preferences.themes['Default'].dopesheet_editor.space.header = color
 
 scene_state = Scene_Stata()
 
 
 @persistent
-def render_init(scene):
+def render_init(scene:bpy.types.Scene) -> None:
 	""" Fix the overide issue befor render start """
 	# Cause the crash on hevy scenes and has to be disable
 	# dr = Driver_Reconnect()
@@ -92,7 +105,7 @@ def render_init(scene):
 
 
 @persistent
-def depsgraph_update(scene):
+def depsgraph_update(scene:bpy.types.Scene) -> None:
 	global scene_state
 	scene_state.check(bpy.context)
 
@@ -103,11 +116,11 @@ class Anim_OT_Auto_Key_Toggle(Operator):
 	bl_label = "Auto Key Toggle"
 	bl_options = {'REGISTER', 'INTERNAL'}
 
-	def execute(self, ctx):
-		state = ctx.scene.tool_settings.use_keyframe_insert_auto
-		ctx.scene.tool_settings.use_keyframe_insert_auto = not state
+	def execute(self, context:bpy.types.Context) -> set[str]:
+		state = context.scene.tool_settings.use_keyframe_insert_auto
+		context.scene.tool_settings.use_keyframe_insert_auto = not state
 		global scene_state
-		scene_state.check(ctx)
+		scene_state.check(context)
 		return{'FINISHED'}
 
 
@@ -117,7 +130,7 @@ class Anim_OT_Auto_Use_Select_Pick_Depth_Toggle(Operator):
 	bl_label = "Auto Use Select Pick Depth Toggle"
 	bl_options = {'REGISTER'}
 
-	def execute(self, ctx):
+	def execute(self, _) -> set[str]:
 		global scene_state
 		scene_state.active_auto_use_select_pick_depth = \
 			not scene_state.active_auto_use_select_pick_depth

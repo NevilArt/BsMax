@@ -84,7 +84,7 @@ class File_OT_Save_Check(Operator):
 	bl_description = ""
 
 	def compar_versions(self, file_ver, app_ver):
-		print(file_ver[0], app_ver[0], file_ver[1], app_ver[1])
+		# print(file_ver[0], app_ver[0], file_ver[1], app_ver[1])
 		return file_ver[0] == app_ver[0] and file_ver[1] == app_ver[1]
 
 	def draw(self, ctx):

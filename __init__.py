@@ -19,9 +19,9 @@
 
 bl_info = {
 	'name': "BsMax",
-	'description': "BsMax Toolkit (Blender 4.2LTS ~ 4.5LTS )",
+	'description': "BsMax Toolkit (Blender 4.2LTS ~ 4.5LTS & 5.0Beta)",
 	'author': "Nevil Tan (Naser Merati)",
-	'version': (1, 4, 250912),
+	'version': (1, 4, 251028),
 	'blender': (4, 2, 0), # Minimum Version
 	'location': "Almost Everywhere in Blender",
 	'doc_url': 'https://github.com/NevilArt/BsMax/wiki',
@@ -63,7 +63,7 @@ def wiki():
 	return 'https://github.com/NevilArt/BsMax/wiki/'
 
 # Addon preferences
-def update_preferences(cls, _, action):
+def update_preferences(cls, _, action:str):
 	addons = bpy.context.preferences.addons
 	preferences = addons[__name__].preferences
 	""" Quick Selection """
@@ -282,18 +282,13 @@ class BsMax_AddonPreferences(AddonPreferences):
 			"3DsMax (Quad Menu)",
 			"Simulate 3DsMax Quad menu"
 		),
-		
-		(	'PIEMAX',
-   			"3DsMax (Pie Menu) (Under Construction)",
-			"Simulate 3DsMax Quad menu as Pie Menu"
-		),
-		
+
 		(
-			'MAYA',
-			"Maya (Not ready yet)",
-			""
+			'NUMPIE',
+			"NumpadPie (Numpad Pie Menu)",
+			"Reach Everything from Numpad"
 		),
-		
+	
 		(
 			'BLENDER',
 			"Blender (Default)",

@@ -22,7 +22,7 @@ def bsmax_matt_menu(self, ctx):
 	layout.separator()
 	
 	if ctx.space_data.type == "NODE_EDITOR":
-		print(ctx.area.ui_type)
+		# print(ctx.area.ui_type)
 	
 		if ctx.area.ui_type == 'GeometryNodeTree':
 			layout.menu("BSMAX_MT_geometrynode_import")

@@ -1,5 +1,5 @@
 
-# BsMax Blender Addon 4.2LTS ~ 4.5LTS
+# BsMax Blender Addon 4.2LTS ~ 4.5LTS & 5.0Beta
 
 BsMax is package of Modeling, Rig & Animation, Render tools and UI mimic for [Blender 3D](https://www.blender.org/).
 
@@ -37,10 +37,12 @@ If you found this product useful and want to support this project you can Donate
 * [Download Older Version for Blender 2.80 ~ 4.1](https://github.com/NevilArt/BsMax_2_80)
 
 ## Recent Updates and Changes
-* Stuff for older than Blender 4.2 removed.
-* 3DsMax Quadmenu Clone tool bug fixed.
-* Add and Draw Primitive issue fixed.
-* Character Set can be instal stand alone too.
+* Update for Compatiblity with upcoming blender 5.0
+* Bring some of 3DsMax mode keys to Blender Adaptive mode too.
+* Insert -> Edit origin, Ctrl + Inserts -> Open Pivot tools menu
+* Disable Numeric Hide Collection keys for Blender adaptive mode too.
+* Right Mouse Navigation extention issue with BsMax fixed.
+* Node Editor (Ctrl+RMC) Cut wire isuue fixe for Blender Mode.
 * [Change log ...](https://github.com/NevilArt/BsMax/blob/master/CHANGELOG.md)
 
 ## Special Thanks

@@ -12,23 +12,31 @@
 #	You should have received a copy of the GNU General Public License
 #	along with this program.  If not, see <https://www.gnu.org/licenses/>.
 ############################################################################
-# 2024/07/09
+# 2025/10/14
 
-from .arabic import register_arabic, unregister_arabic
+from bpy.app import version
+
 from .console import register_console, unregister_console
 from .info import register_info, unregister_info
 from .text_editor import register_text_editor, unregister_text_editor
 
+if version < (5, 0, 0):
+	from .arabic import register_arabic, unregister_arabic
+
 
 def register_text():
-	register_arabic()
 	register_console()
 	register_info()
 	register_text_editor()
 
+	if version < (5, 0, 0):
+		register_arabic()
+
 
 def unregister_text():
-	unregister_arabic()
 	unregister_console()
 	unregister_info()
 	unregister_text_editor()
+
+	if version < (5, 0, 0):
+		unregister_arabic()

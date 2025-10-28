@@ -16,7 +16,6 @@
 import bpy
 
 
-
 def key_map_key(self):
 	if self._key:
 		return self._key
@@ -35,7 +34,6 @@ def key_map_key(self):
 				
 				self._key = k
 				break
-
 
 
 def key_map_compare(
@@ -84,7 +82,6 @@ def key_map_compare(
 	return True
 
 
-
 def key_maps_new(
 		self, space, idname, type, value, properties,
 		alt, ctrl, shift, any, modal, repeat, direction):
@@ -109,7 +106,6 @@ def key_maps_new(
 		self.newkeys.append(newkey)
 
 
-
 def key_maps_mute(self, space, idname, inputtype, value,
 	alt, ctrl, shift,any, modal, direction):
 
@@ -120,12 +116,10 @@ def key_maps_mute(self, space, idname, inputtype, value,
 	self.mutekeys.append(newkey)
 
 
-
 def key_maps_set_mute(self, state):
 	for mutekey in self.mutekeys:
 		if mutekey.key != None:
 			mutekey.key.active = not state
-
 
 
 def key_maps_register(self):
@@ -153,7 +147,6 @@ def key_maps_register(self):
 	self.set_mute(True, 0)
 
 
-
 def key_maps_unregister(self):
 	for km,kmi in self.keymaps:
 		km.keymap_items.remove(kmi)
@@ -161,11 +154,12 @@ def key_maps_unregister(self):
 	self.set_mute(False, 0)
 
 
-
 class KeyMap:
-	def __init__(self, space, idname, type, value,
-				alt, ctrl, shift, any,
-				repeat , modal, direction):
+	def __init__(
+			self, space, idname, type, value,
+			alt, ctrl, shift, any,
+			repeat , modal, direction) -> None:
+
 		self.space = space
 		self.idname = idname
 		self.type = type
@@ -191,7 +185,6 @@ class KeyMap:
 				alt, ctrl, shift, any, direction, properties)
 
 
-
 class KeyMaps:
 	def __init__(self):
 		self.newkeys = []
@@ -206,7 +199,7 @@ class KeyMaps:
 
 	def new(self, space, idname, type, value, properties,
 			alt=False, ctrl=False, shift=False,
-			any=False, modal=False, repeat=False, direction=''):
+			any=False, modal=False, repeat=False, direction='') -> None:
 		key_maps_new(
 			self, space, idname, type, value, properties,
 			alt, ctrl, shift, any, modal, repeat, direction
@@ -214,16 +207,16 @@ class KeyMaps:
 	
 	def mute(self, space, idname, inputtype, value,
 			alt=False, ctrl=False, shift=False,
-			any=False, modal=False, direction=''):
+			any=False, modal=False, direction='') -> None:
 		key_maps_mute(self, space, idname, inputtype, value,
 			alt, ctrl, shift, any, modal, direction
 		)
 	
-	def set_mute(self, state, delay):
+	def set_mute(self, state, delay) -> None:
 		key_maps_set_mute(self, state)
 
-	def register(self):
+	def register(self) -> None:
 		key_maps_register(self)
 	
-	def unregister(self):
+	def unregister(self) -> None:
 		key_maps_unregister(self)

@@ -12,7 +12,7 @@
 #	You should have received a copy of the GNU General Public License
 #	along with this program.  If not, see <https://www.gnu.org/licenses/>.
 ############################################################################
-# 2024/12/27
+# 2025/09/22
 
 import bpy
 
@@ -165,7 +165,7 @@ def link_to(objects, target, keepHierarchy):
 		obj.matrix_parent_inverse = target.matrix_world.inverted()
 
 
-def get_object_target(object):
+def get_object_target(object: bpy.types.Object) -> None:
 	"""get objects lookat target"""
 	for constraint in object.constraints:
 		if constraint.type == 'TRACK_TO':
@@ -173,61 +173,57 @@ def get_object_target(object):
 	return None
 
 
-def set_origen(ctx, obj, location):
+# TODO: Transform rather than locaion
+# TODO: free from bpy.ops and remove context
+def set_origen(
+	context: bpy.types.Context,
+	obj: bpy.types.Object | list[bpy.types.Object],
+	location
+) -> None:
 	""" Set object origen in new location\n
-		TODO: Transform rather than locaion
-		TODO: free from bpy.ops and remove context
-
-		args:
-			ctx: bpy.context
-			obj: Object or List
 			location: Vector3
-		
-		return:
-			None
 	"""
-	scene = ctx.scene
-	saved_location = scene.cursor.location.copy()
-	saved_rotation = scene.cursor.rotation_euler.copy()
-	scene.cursor.location = location
+	cursor = context.scene.cursor
+	saved_location = cursor.location.copy()
+	saved_rotation = cursor.rotation_euler.copy()
+	cursor.location = location
 
-	for obj in ctx.selected_objects:
+	for obj in context.selected_objects:
 		obj.select_set(False)
 
-	ctx.view_layer.objects.active = obj
+	context.view_layer.objects.active = obj
 	obj.select_set(state=True)
 	bpy.ops.object.origin_set(type='ORIGIN_CURSOR', center='MEDIAN')
-	scene.cursor.location = saved_location
-	scene.cursor.rotation_euler = saved_rotation
+	cursor.location = saved_location
+	cursor.rotation_euler = saved_rotation
 
 
-def match_transform(ctx, obj, target):
-	""" Keep obj condition, set origen match with target on world space
-		TODO free from bpy.ops and remove ctx
-		TODO can be merg with set_origen function
-		TODO target object could be a transform matrix
-		TODO had to support multi objects too
+# TODO free from bpy.ops and remove ctx
+# TODO can be merg with set_origen function
+# TODO target object could be a transform matrix
+# TODO had to support multi objects too
+def match_transform(
+	context: bpy.types.Context,
+	obj: bpy.types.Object,
+	target: bpy.types.Object,
+) -> None:
 
-		args:
-			ctx: bpy.context
-			obj: Object
-			target: Object
-		return:
-			None
-	"""
+	""" Keep obj condition, set origen match with target on world space """
+
 	target_location = target.matrix_world.to_translation()
 	target_rotation = target.matrix_world.to_euler()
 	target_scale = target.matrix_world.to_scale()
 
 	# store and set the mode
-	use_transform_state = ctx.scene.tool_settings.use_transform_data_origin
-	ctx.scene.tool_settings.use_transform_data_origin = True
+	tool_settings = context.scene.tool_settings
+	use_transform_state = tool_settings.use_transform_data_origin
+	tool_settings.use_transform_data_origin = True
 
 	# arrange selection
-	for obj in ctx.selected_objects:
+	for obj in context.selected_objects:
 		obj.select_set(False)
 	obj.select_set(state=True)
-	ctx.view_layer.objects.active = obj
+	context.view_layer.objects.active = obj
 
 	#TODO Rotation part not perfect but work for most cases
 	# match the rotation axis by axis
@@ -235,34 +231,33 @@ def match_transform(ctx, obj, target):
 	delta_rotation_x = obj_rotation.x - target_rotation.x
 	
 	bpy.ops.transform.rotate(
-			value=delta_rotation_x,
-			orient_axis='X',
-			orient_type='LOCAL',
-		)
+		value=delta_rotation_x,
+		orient_axis='X',
+		orient_type='LOCAL',
+	)
 
 	obj_rotation = obj.matrix_world.to_euler()
 	delta_rotation_y = obj_rotation.y - target_rotation.y
 	
 	bpy.ops.transform.rotate(
-			value=delta_rotation_y,
-			orient_axis='Y',
-			orient_type='LOCAL',
-		)
+		value=delta_rotation_y,
+		orient_axis='Y',
+		orient_type='LOCAL',
+	)
 
 	obj_rotation = obj.matrix_world.to_euler()
 	delta_rotation_z = obj_rotation.z - target_rotation.z
 	bpy.ops.transform.rotate(
-			value=delta_rotation_z,
-			orient_axis='Z',
-			orient_type='LOCAL',
-		)
+		value=delta_rotation_z,
+		orient_axis='Z',
+		orient_type='LOCAL',
+	)
 	
 	# Match Location
 	obj_location = obj.matrix_world.to_translation()
 	delta_location = target_location - obj_location
 	dlx, dly, dlz = delta_location
 	bpy.ops.transform.translate(value=(dlx, dly, dlz), 	orient_type='GLOBAL')
-
 	
 	# Match Scale
 	obj_scale = obj.matrix_world.to_scale()
@@ -272,21 +267,16 @@ def match_transform(ctx, obj, target):
 	bpy.ops.transform.resize(value=(dsx, dsy, dsz))
 
 	# Restore Transform Mode
-	ctx.scene.tool_settings.use_transform_data_origin = use_transform_state
+	tool_settings.use_transform_data_origin = use_transform_state
 
 
-def freeze_transform(objs, location=True, rotation=True, scale=True):
-	""" Add current transform to deleta transform and
-		reset to 0 in given objects
+def freeze_transform(
+	objs: list[bpy.types.Object],
+	location: bool=True,
+	rotation: bool=True,
+	scale: bool=True
+) -> None:
 
-		args:
-			objs: array of objects
-			location: boolean defoult True
-			rotation: boolean defoult True
-			scale: boolean defoult True
-		retuen:
-			None
-	"""
 	if not isinstance(objs, list):
 		objs = [objs]
 	
@@ -317,18 +307,14 @@ def freeze_transform(objs, location=True, rotation=True, scale=True):
 			obj.scale = [1, 1, 1]
 
 
-def insert_key_to_current_state(chanel, frame, location, rotation, scale):
-	""" Set key to given chanel in specific frame
+def insert_key_to_current_state(
+		chanel: bpy.types.FCurve,
+		frame: int,
+		location: bool,
+		rotation: bool,
+		scale: bool
+) -> None:
 
-		args:
-			chanel: data chanel (attribute)
-			frame: integer frame number
-			location: Boolean
-			rotation: Boolean
-			scale: Boolean
-		return:
-			None
-	"""
 	# Set key for Location and Scale always is same
 	if location:
 		chanel.keyframe_insert(data_path='location', frame=frame)
@@ -348,14 +334,12 @@ def insert_key_to_current_state(chanel, frame, location, rotation, scale):
 			chanel.keyframe_insert(data_path='rotation_euler', frame=frame)
 
 
-def copy_array_to_clipboard(key, array):
+def copy_array_to_clipboard(key:str, array:list) -> None:
 	""" Convert given array to string lines and copy to clipboard
 
 		args:
 			key: string value detector for check on paste
 			array: only 1D array with basic variables allowed
-		retuen:
-			No return
 	"""
 	string = key + "\n"
 
@@ -368,7 +352,7 @@ def copy_array_to_clipboard(key, array):
 	bpy.context.window_manager.clipboard = string
 
 
-def paste_array_from_clipboard(key):
+def paste_array_from_clipboard(key:str) -> None | list:
 	""" Read array from clipboard
 
 		args:
@@ -378,45 +362,40 @@ def paste_array_from_clipboard(key):
 	"""
 	# read clipboard
 	string = bpy.context.window_manager.clipboard
+
 	# split by lines
 	lines = string.splitlines()
+
 	# check key and ignore wrongs
 	if lines:
 		if lines[0] != key:
 			return None
 	else:
 		return None
+
 	# cast all line to variable and return the array
 	return [eval(line) for line in lines[1:]]
 
 
-def catche_collection(ctx, name):
-	""" Find and return collection by name, create new one if not exist.
+def catche_collection(
+	context: bpy.types.Context,
+	name: str
+) -> bpy.types.Collection:
 
-		args:
-			ctx: bpy.context
-			name: string collection name
-		rettun:
-			collection
-	"""
 	if name in bpy.data.collections:
 		return bpy.data.collections[name]
 
 	collection = bpy.data.collections.new(name)
-	ctx.scene.collection.children.link(collection)
+	context.scene.collection.children.link(collection)
 
 	return collection
 
 
-def move_to_collection(objs, collection):
-	""" Clear all collection and link to given one
+def move_to_collection(
+		objs: bpy.types.Object | list[bpy.types.Object],
+		collection: bpy.types.Collection
+) -> None:
 
-		args:
-			objs: Object or list
-			collection: collection
-		return:
-			None
-	"""
 	if not isinstance(objs, list):
 		objs = [objs]
 
@@ -426,14 +405,10 @@ def move_to_collection(objs, collection):
 		collection.objects.link(obj)
 
 
-def clear_relations(objs):
-	""" Clear objecrts all relations and make it free
+def clear_relations(
+	objs: bpy.types.Object | list[bpy.types.Object]
+) -> None:
 
-			args:
-				objs = Object or List
-			return:
-				None
-	"""
 	if not isinstance(objs, list):
 		objs = [objs]
 
@@ -456,14 +431,10 @@ def clear_relations(objs):
 
 
 #TODO need to apply modifier properly work on this
-def convert_to_solid_mesh(objs):
-	"""Convert mesh object(s) to a solid freezed collapsed object
+def convert_to_solid_mesh(
+	objs: bpy.types.Object | list[bpy.types.Object]
+) -> None:
 
-		args:
-			obj: mesh object or List
-		return:
-			None
-	"""
 	if not isinstance(objs, list):
 		objs = [objs]
 	
@@ -482,7 +453,13 @@ def convert_to_solid_mesh(objs):
 		obj.to_mesh()
 
 
-def new_collection(ctx, name, colorIndex=0, parent=None):
+def new_collection(
+	ctx,
+	name:str,
+	colorIndex: int=0,
+	parent:bpy.types.Object | None = None
+) -> bpy.types.Collection:
+
 	collections = bpy.data.collections
 	colorTag = 'COLOR_0' + str(colorIndex) if colorIndex > 0 else 'NONE'
 

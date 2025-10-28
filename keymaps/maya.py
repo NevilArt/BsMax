@@ -26,6 +26,58 @@ from bsmax.keymaps import KeyMaps
 # [] Undo rido only camera
 # Right click up down move for zoom
 
+def mute_numbers(km) -> None:
+	""" Disable all hide collection operators """
+	km.mute(
+		'Object Mode', 'object.hide_collection', 'ONE', 'PRESS',
+		alt=True, ctrl=True, shift=True, any=True
+	)
+
+	km.mute(
+		'Object Mode', 'object.hide_collection', 'TWO', 'PRESS',
+		alt=True, ctrl=True, shift=True, any=True
+	)
+
+	km.mute(
+		'Object Mode', 'object.hide_collection', 'THREE', 'PRESS',
+		alt=True, ctrl=True, shift=True, any=True
+	)
+
+	km.mute(
+		'Object Mode', 'object.hide_collection', 'FOUR', 'PRESS',
+		alt=True, ctrl=True, shift=True, any=True
+	)
+
+	km.mute(
+		'Object Mode', 'object.hide_collection', 'FIVE', 'PRESS',
+		alt=True, ctrl=True, shift=True, any=True
+	)
+
+	km.mute(
+		'Object Mode', 'object.hide_collection', 'SIX', 'PRESS',
+		alt=True, ctrl=True, shift=True, any=True
+	)
+
+	km.mute(
+		'Object Mode', 'object.hide_collection', 'SEVEN', 'PRESS',
+		alt=True, ctrl=True, shift=True, any=True
+	)
+
+	km.mute(
+		'Object Mode', 'object.hide_collection', 'EIGHT', 'PRESS',
+		alt=True, ctrl=True, shift=True, any=True
+	)
+
+	km.mute(
+		'Object Mode', 'object.hide_collection', 'NINE', 'PRESS',
+		alt=True, ctrl=True, shift=True, any=True
+	)
+
+	km.mute(
+		'Object Mode', 'object.hide_collection', 'ZERO', 'PRESS',
+		alt=True, ctrl=True, shift=True, any=True
+	)
+
 
 def add_search(km, space):
 	km.new(space, 'wm.search_menu', 'X', 'PRESS', [])
@@ -211,6 +263,7 @@ def transform(km):
 
 
 def object_mode(km, preferences):
+	mute_numbers(km)
 	space = km.space( 'Object Non-modal', 'EMPTY', 'WINDOW')
 	km.new(space, 'bsmax.mode_set', 'TAB', 'PRESS', [])
 
@@ -242,6 +295,7 @@ def object_mode(km, preferences):
 
 
 def mesh(km, preferences):
+	mute_numbers(km)
 	space = km.space('Mesh', 'EMPTY', 'WINDOW')
 	add_search(km, space)
 	add_undo(km, space)
@@ -249,6 +303,7 @@ def mesh(km, preferences):
 
 
 def curve(km, preferences):
+	mute_numbers(km)
 	space = km.space('Curve', 'EMPTY', 'WINDOW')
 	add_search(km, space)
 	add_undo(km, space)
@@ -256,6 +311,7 @@ def curve(km, preferences):
 
 
 def armature(km, preferences):
+	mute_numbers(km)
 	space = km.space('Armature', 'EMPTY', 'WINDOW')
 	add_search(km, space)
 	add_undo(km, space)
@@ -263,6 +319,7 @@ def armature(km, preferences):
 
 
 def metaball(km, preferences):
+	mute_numbers(km)
 	space = km.space('Metaball', 'EMPTY', 'WINDOW')
 	add_search(km, space)
 	add_undo(km, space)
@@ -270,6 +327,7 @@ def metaball(km, preferences):
 
 
 def lattice(km, preferences):
+	mute_numbers(km)
 	space = km.space('Lattice', 'EMPTY', 'WINDOW')
 	add_search(km, space)
 	add_undo(km, space)
@@ -277,12 +335,14 @@ def lattice(km, preferences):
 
 
 def grease_pencil(km, preferences):
+	mute_numbers(km)
 	space = km.space('Grease Pencil', 'EMPTY', 'WINDOW')
 	add_search(km, space)
 	add_transform_tool(km, space, preferences)
 
 
 def pos(km, preferences):
+	mute_numbers(km)
 	space = km.space('Pose', 'EMPTY', 'WINDOW')
 	add_search(km, space)
 	add_transform_tool(km, space, preferences)

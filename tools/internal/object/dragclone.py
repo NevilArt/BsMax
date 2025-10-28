@@ -49,7 +49,7 @@ class Object_OT_Drag_Clone(bpy.types.Operator):
 			if self.point_a != None:
 				self.point_b = cp.view
 				tr = get_axis_constraint(self.point_a, self.point_b)
-				print(tr)
+				# print(tr)
 		# get active tool
 		# set action
 		if event.type in {'RIGHTMOUSE', 'ESC'}:

@@ -12,23 +12,24 @@
 #	You should have received a copy of the GNU General Public License
 #	along with this program.  If not,see <https://www.gnu.org/licenses/>.
 ############################################################################
-# 2024/10/21
+# 2025/10/03
 
 import bpy
 
 from bpy.types import Operator
 from bpy.props import BoolProperty
 from bpy.utils import register_class, unregister_class
+from bpy.app import version
 
 
-def is_digits(string):
+def is_digits(string:str) -> bool:
 	for char in string:
 		if not char in '0123456789':
 			return False
 	return True
 
 
-def fix_marker_name(marker):
+def fix_marker_name(marker) -> None:
 	parts = marker.name.split('_')
 	if len(parts) != 2:
 		return
@@ -36,9 +37,13 @@ def fix_marker_name(marker):
 		marker.name = "F_" + str(marker.frame)
 
 
-def copy_markers_to_clipboard(ctx, copy_all):
+def copy_markers_to_clipboard(
+	context:bpy.types.Context,
+	copy_all:bool
+) -> None:
+
 	markers =[
-		marker for marker in ctx.scene.timeline_markers
+		marker for marker in context.scene.timeline_markers
 		if marker.select or copy_all
 	]
 	text = "BSMAXCOPYMARKERKEYWORD\n"
@@ -46,11 +51,11 @@ def copy_markers_to_clipboard(ctx, copy_all):
 		text += marker.name + ','
 		text += str(marker.frame) + '\n'
 
-	ctx.window_manager.clipboard = text
+	context.window_manager.clipboard = text
 
 
-def paste_markers_from_clipboard(ctx):
-	keys = ctx.window_manager.clipboard.split('\n')
+def paste_markers_from_clipboard(context:bpy.types.Context) -> None:
+	keys = context.window_manager.clipboard.split('\n')
 
 	if not keys:
 		return
@@ -64,7 +69,7 @@ def paste_markers_from_clipboard(ctx):
 			continue
 		name = parts[0]
 		frame = int(parts[1])
-		ctx.scene.timeline_markers.new(name, frame=frame)
+		context.scene.timeline_markers.new(name, frame=frame)
 
 
 class Marker_OT_Auto_Rename(Operator):
@@ -73,12 +78,12 @@ class Marker_OT_Auto_Rename(Operator):
 	bl_description = "Rename shifted Marker to Frame Name (Ignore Manualy Renamed)"
 	bl_options = {'REGISTER', 'UNDO'}
 	
-	@classmethod
-	def poll(self, ctx):
-		return True
+	# @classmethod
+	# def poll(self, _):
+	# 	return True
 	
-	def execute(self, ctx):
-		for marker in ctx.scene.timeline_markers:
+	def execute(self, context:bpy.types.Context) -> set[str]:
+		for marker in context.scene.timeline_markers:
 			fix_marker_name(marker)
 		return{'FINISHED'}
 
@@ -94,17 +99,17 @@ class Marker_OT_Copy(Operator):
 		description="Copy All Markers"
 	) # type: ignore
 
-	@classmethod
-	def poll(self, ctx):
-		return True
+	# @classmethod
+	# def poll(self, ctx):
+	# 	return True
 	
-	def draw(self, ctx):
+	def draw(self, _) -> None:
 		self.layout.prop(
 			self, 'all', text="Copy All Markers"
 		)
 	
-	def execute(self, ctx):
-		copy_markers_to_clipboard(ctx, self.all)
+	def execute(self, context:bpy.types.Context) -> set[str]:
+		copy_markers_to_clipboard(context, self.all)
 		return{'FINISHED'}
 
 
@@ -114,17 +119,17 @@ class Marker_OT_Paste(Operator):
 	bl_description = "Paste Marker in other scene or blender"
 	bl_options = {'REGISTER', 'UNDO'}
 
-	@classmethod
-	def poll(self, ctx):
-		return True
+	# @classmethod
+	# def poll(self, ctx):
+	# 	return True
 	
-	def execute(self, ctx):
-		paste_markers_from_clipboard(ctx)	
+	def execute(self, context:bpy.types.Context) -> set[str]:
+		paste_markers_from_clipboard(context)	
 		return{'FINISHED'}
 
 
-class Marker_OT_shift(Operator):
-	bl_idname = 'marker.shiftm'
+# class Marker_OT_shift(Operator):
+# 	bl_idname = 'marker.shiftm'
 
 
 def marker_rename_menu(self, _):
@@ -145,20 +150,26 @@ classes = {
 def register_marker():
 	for cls in classes:
 		register_class(cls)
-	
-	bpy.types.DOPESHEET_MT_marker.prepend(marker_rename_menu)
-	bpy.types.GRAPH_MT_marker.prepend(marker_rename_menu)
-	bpy.types.NLA_MT_marker.prepend(marker_rename_menu)
-	bpy.types.SEQUENCER_MT_marker.prepend(marker_rename_menu)
-	bpy.types.TIME_MT_marker.prepend(marker_rename_menu)
+
+	types = bpy.types
+	types.DOPESHEET_MT_marker.prepend(marker_rename_menu)
+	types.GRAPH_MT_marker.prepend(marker_rename_menu)
+	types.NLA_MT_marker.prepend(marker_rename_menu)
+	types.SEQUENCER_MT_marker.prepend(marker_rename_menu)
+
+	if version < (5, 0, 0):
+		types.TIME_MT_marker.prepend(marker_rename_menu)
 
 
 def unregister_marker():
-	bpy.types.DOPESHEET_MT_marker.remove(marker_rename_menu)
-	bpy.types.GRAPH_MT_marker.remove(marker_rename_menu)
-	bpy.types.NLA_MT_marker.remove(marker_rename_menu)
-	bpy.types.SEQUENCER_MT_marker.remove(marker_rename_menu)
-	bpy.types.TIME_MT_marker.remove(marker_rename_menu)
+	types = bpy.types
+	types.DOPESHEET_MT_marker.remove(marker_rename_menu)
+	types.GRAPH_MT_marker.remove(marker_rename_menu)
+	types.NLA_MT_marker.remove(marker_rename_menu)
+	types.SEQUENCER_MT_marker.remove(marker_rename_menu)
+
+	if version < (5, 0, 0):
+		types.TIME_MT_marker.remove(marker_rename_menu)
 
 	for cls in classes:
 		unregister_class(cls)

@@ -46,7 +46,7 @@ class VIEW3D_OT_Maya_Display_Presets(Operator):
 		return ctx.area.type == 'VIEW_3D'
 	
 	def execute(self, ctx):
-		print(self.mode)
+		# print(self.mode)
 		if self.mode == 'DEFAULT':
 			ctx.space_data.shading.type = 'SOLID'
 			ctx.space_data.shading.show_specular_highlight = True

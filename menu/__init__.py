@@ -14,12 +14,15 @@
 ############################################################################
 
 from .quad import register_quad, unregister_quad
-from .pie_max import register_pie_max, unregister_pie_max
+from .numpie import register_numpie_main, unregister_numpie_main
 
 def register_menu(preferences):
-	register_quad(preferences)
-	register_pie_max()
+	if preferences.floatmenus == 'NUMPIE':
+		register_numpie_main()
+	elif preferences.floatmenus == '3DSMAX':
+		register_quad(preferences)
+	
 
 def unregister_menu():
 	unregister_quad()
-	unregister_pie_max()
+	unregister_numpie_main()

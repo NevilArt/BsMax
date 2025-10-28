@@ -1,3 +1,9 @@
+# 1, 4, 250912
+* Stuff for older than Blender 4.2 removed.
+* 3DsMax Quadmenu Clone tool bug fixed.
+* Add and Draw Primitive issue fixed.
+* Character Set can be instal stand alone too.
+
 # 1, 3, 20250609
 * Compositor/Add/Tools/Cryptomatte to EXR operator added.
 * View3D edit mode switch keys (1,2,3,...) improwed and bug fixed (3Ds Max mode only).

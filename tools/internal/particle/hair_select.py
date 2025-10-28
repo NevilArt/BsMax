@@ -48,8 +48,9 @@ class Particle_OT_Hair_Select(Operator):
 	def execute(self, ctx):
 		particles = ctx.active_object.particle_systems.active.particles
 		for particle in particles:
-			print( particle.location.x )
+			# print( particle.location.x )
 			# need to find python API for select hair particle via script
+			pass
 		return{"FINISHED"}
 	
 	def invoke(self, ctx, event):

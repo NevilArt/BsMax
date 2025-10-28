@@ -12,7 +12,7 @@
 #	You should have received a copy of the GNU General Public License
 #	along with this program.  If not, see <https://www.gnu.org/licenses/>.
 ############################################################################
-# 2024/04/08
+# 2025/10/09
 # TODO need to clear function for all parenting types
 # Need a better pick operator with more clear arg names
 

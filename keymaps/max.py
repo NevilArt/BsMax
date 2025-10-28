@@ -12,7 +12,7 @@
 #	You should have received a copy of the GNU General Public License
 #	along with this program.  If not, see <https://www.gnu.org/licenses/>.
 ############################################################################
-# 2024/05/29
+# 2025/10/09
 
 import bpy
 
@@ -32,6 +32,63 @@ def add_subobject(km, space):
 	# km.new(space, 'object.subobject_level', 'EIGHT', 'PRESS', [('level', 8)])
 	# km.new(space, 'object.subobject_level', 'NINE', 'PRESS', [('level', 9)])
 	# km.new(space, 'object.subobject_level', 'ZERO', 'PRESS', [('level', 0)])
+
+
+def add_droptool(km, space) -> None:
+	km.new(space,'view3d.drop_tool', 'RIGHTMOUSE', 'CLICK',[])
+
+
+def mute_numbers(km) -> None:
+	""" Disable all hide collection operators """
+	km.mute(
+		'Object Mode', 'object.hide_collection', 'ONE', 'PRESS',
+		alt=True, ctrl=True, shift=True, any=True
+	)
+
+	km.mute(
+		'Object Mode', 'object.hide_collection', 'TWO', 'PRESS',
+		alt=True, ctrl=True, shift=True, any=True
+	)
+
+	km.mute(
+		'Object Mode', 'object.hide_collection', 'THREE', 'PRESS',
+		alt=True, ctrl=True, shift=True, any=True
+	)
+
+	km.mute(
+		'Object Mode', 'object.hide_collection', 'FOUR', 'PRESS',
+		alt=True, ctrl=True, shift=True, any=True
+	)
+
+	km.mute(
+		'Object Mode', 'object.hide_collection', 'FIVE', 'PRESS',
+		alt=True, ctrl=True, shift=True, any=True
+	)
+
+	km.mute(
+		'Object Mode', 'object.hide_collection', 'SIX', 'PRESS',
+		alt=True, ctrl=True, shift=True, any=True
+	)
+
+	km.mute(
+		'Object Mode', 'object.hide_collection', 'SEVEN', 'PRESS',
+		alt=True, ctrl=True, shift=True, any=True
+	)
+
+	km.mute(
+		'Object Mode', 'object.hide_collection', 'EIGHT', 'PRESS',
+		alt=True, ctrl=True, shift=True, any=True
+	)
+
+	km.mute(
+		'Object Mode', 'object.hide_collection', 'NINE', 'PRESS',
+		alt=True, ctrl=True, shift=True, any=True
+	)
+
+	km.mute(
+		'Object Mode', 'object.hide_collection', 'ZERO', 'PRESS',
+		alt=True, ctrl=True, shift=True, any=True
+	)
 
 
 def add_switch_view(km, space):
@@ -304,6 +361,7 @@ def view3d(km, preferences):
 	add_view3d_tweak_selection(km, space)
 	add_float_editors(km, space)
 	add_transform_tool(km, space, preferences, smax=True)
+	add_droptool(km, space)
 
 	if preferences.view_undo:
 		km.new(space, 'view3d.movecover', 'MIDDLEMOUSE', 'PRESS', [])
@@ -330,8 +388,6 @@ def view3d(km, preferences):
 		km.new(space, 'view3d.zoom', 'WHEELINMOUSE', 'PRESS', [('delta', 1)])
 		km.new(space, 'view3d.zoom', 'WHEELOUTMOUSE', 'PRESS', [('delta', -1)])
 	
-	km.new(space, 'view3d.drop_tool', 'RIGHTMOUSE', 'PRESS', [])
-
 	km.new(
 		space, 'view3d.view_axis', 'MIDDLEMOUSE', 'CLICK_DRAG',
 		[('type', 'TOP'), ('relative', True)], shift=True, direction='NORTH'
@@ -553,56 +609,7 @@ def transform(km):
 
 
 def object_mode(km, preferences):
-	# Disable all hide collection operators
-	km.mute(
-		'Object Mode', 'object.hide_collection', 'ONE', 'PRESS',
-		alt=True, ctrl=True, shift=True, any=True
-	)
-
-	km.mute(
-		'Object Mode', 'object.hide_collection', 'TWO', 'PRESS',
-		alt=True, ctrl=True, shift=True, any=True
-	)
-
-	km.mute(
-		'Object Mode', 'object.hide_collection', 'THREE', 'PRESS',
-		alt=True, ctrl=True, shift=True, any=True
-	)
-
-	km.mute(
-		'Object Mode', 'object.hide_collection', 'FOUR', 'PRESS',
-		alt=True, ctrl=True, shift=True, any=True
-	)
-
-	km.mute(
-		'Object Mode', 'object.hide_collection', 'FIVE', 'PRESS',
-		alt=True, ctrl=True, shift=True, any=True
-	)
-
-	km.mute(
-		'Object Mode', 'object.hide_collection', 'SIX', 'PRESS',
-		alt=True, ctrl=True, shift=True, any=True
-	)
-
-	km.mute(
-		'Object Mode', 'object.hide_collection', 'SEVEN', 'PRESS',
-		alt=True, ctrl=True, shift=True, any=True
-	)
-
-	km.mute(
-		'Object Mode', 'object.hide_collection', 'EIGHT', 'PRESS',
-		alt=True, ctrl=True, shift=True, any=True
-	)
-
-	km.mute(
-		'Object Mode', 'object.hide_collection', 'NINE', 'PRESS',
-		alt=True, ctrl=True, shift=True, any=True
-	)
-
-	km.mute(
-		'Object Mode', 'object.hide_collection', 'ZERO', 'PRESS',
-		alt=True, ctrl=True, shift=True, any=True
-	)
+	mute_numbers(km)
 
 	space = km.space('Object Non-modal', 'EMPTY', 'WINDOW')
 	km.new(space, 'bsmax.mode_set', 'TAB', 'PRESS', [])
@@ -618,9 +625,9 @@ def object_mode(km, preferences):
 	# add_float_menu(km, space, preferences)
 	add_show_types(km, space)
 	add_transform_tool(km, space, preferences, smax=False)
+	add_droptool(km, space)
 	
 	km.new(space, 'object.auto_coordinate_toggle', 'W', 'PRESS', [], ctrl=True)
-	km.new(space, 'view3d.drop_tool', 'RIGHTMOUSE', 'PRESS', [])
 	km.new(
 		space, 'view3d.select', 'LEFTMOUSE', 'RELEASE',
 		[('enumerate', True)], shift=True
@@ -734,6 +741,7 @@ def object_mode(km, preferences):
 
 
 def mesh(km, preferences):
+	mute_numbers(km)
 	km.mute('Mesh', 'mesh.shortest_path_pick', 'LEFTMOUSE', 'CLICK', ctrl=True)
 	km.mute('Mesh', 'mesh.loop_select', 'LEFTMOUSE', 'CLICK', alt=True)
 	km.mute('Mesh', 'mesh.select_all', 'A', 'PRESS')
@@ -747,6 +755,7 @@ def mesh(km, preferences):
 	# add_float_menu(km, space, preferences)
 	add_subobject(km, space)
 	add_transform_tool(km, space, preferences, smax=False)
+	add_droptool(km, space)
 
 	km.new(
 		space, 'mesh.select_element_toggle', 'FIVE', 'PRESS', [('mode', 'SET')]
@@ -768,7 +777,6 @@ def mesh(km, preferences):
 		[('mode', 'SUB')], alt=True
 	)
  
-	km.new(space, 'view3d.drop_tool', 'RIGHTMOUSE', 'PRESS', [])
 	km.new(
 		space, 'mesh.select_all', 'A', 'PRESS',
 		[('action', 'SELECT')], ctrl=True
@@ -905,6 +913,7 @@ def mesh(km, preferences):
 
 
 def curve(km, preferences):
+	mute_numbers(km)
 	space = km.space('Curve', 'EMPTY', 'WINDOW')
 
 	add_search(km, space)
@@ -916,6 +925,7 @@ def curve(km, preferences):
 	add_switch_view(km, space)
 	# add_float_menu(km, space, preferences)
 	add_transform_tool(km, space, preferences, smax=False)
+	add_droptool(km, space)
 
 	km.new(
 		space, 'mesh.select_element_toggle', 'FIVE', 'PRESS', [('mode', 'SET')]
@@ -932,7 +942,6 @@ def curve(km, preferences):
 		[('mode', 'SUB')], alt=True
 	)
 
-	km.new(space, 'view3d.drop_tool', 'RIGHTMOUSE', 'PRESS', [])
 	km.new(
 		space, 'curve.select_all', 'A', 'PRESS',
 		[('action', 'SELECT')], ctrl=True
@@ -1045,6 +1054,7 @@ def armature_select_hierarchy_plus(km, space):
 
 
 def armature(km, preferences):
+	mute_numbers(km)
 	space = km.space('Armature', 'EMPTY', 'WINDOW')
 	add_search(km, space)
 	add_side_panel(km, space)
@@ -1055,8 +1065,8 @@ def armature(km, preferences):
 	# add_float_menu(km, space, preferences)
 	add_transform_tool(km, space, preferences, smax=False)
 	armature_select_hierarchy_plus(km, space)
+	add_droptool(km, space)
 
-	km.new(space, 'view3d.drop_tool', 'RIGHTMOUSE', 'PRESS', [])
 	km.new(
 		space, 'armature.select_all', 'A', 'PRESS',
 		[('action', 'SELECT')], ctrl=True
@@ -1130,12 +1140,14 @@ def armature(km, preferences):
 	
 
 def metaball(km, preferences):
+	mute_numbers(km)
 	space = km.space('Metaball', 'EMPTY', 'WINDOW')
 	add_search(km, space)
 	add_side_panel(km, space)
 	add_subobject(km, space)
 	add_transform_tool(km, space, preferences, smax=False)
-	km.new(space, 'view3d.drop_tool', 'RIGHTMOUSE', 'PRESS', [])
+	add_droptool(km, space)
+
 	km.new(
 		space, 'mball.select_all', 'A', 'PRESS',
 		[('action', 'SELECT')], ctrl=True
@@ -1159,14 +1171,15 @@ def metaball(km, preferences):
 
 
 def lattice(km, preferences):
+	mute_numbers(km)
 	space = km.space('Lattice', 'EMPTY', 'WINDOW')
 	add_search(km, space)
 	add_side_panel(km, space)
 	add_subobject(km, space)
 	add_transform_tool(km, space, preferences, smax=False)
 	add_view3d_click_selection(km, space)
+	add_droptool(km, space)
 
-	km.new(space, 'view3d.drop_tool', 'RIGHTMOUSE', 'PRESS', [])
 	km.new(
 		space, 'lattice.select_all', 'A', 'PRESS',
 		[('action', 'SELECT')], ctrl=True
@@ -1200,6 +1213,7 @@ def lattice(km, preferences):
 
 
 def grease_pencil(km, preferences):
+	mute_numbers(km)
 	space = km.space('Grease Pencil', 'EMPTY', 'WINDOW')
 	add_search(km, space)
 	add_side_panel(km, space)
@@ -1210,6 +1224,7 @@ def grease_pencil(km, preferences):
 
 
 def pos(km, preferences):
+	mute_numbers(km)
 	space = km.space('Pose', 'EMPTY', 'WINDOW')
 
 	add_view3d_click_selection(km, space)
@@ -1220,8 +1235,8 @@ def pos(km, preferences):
 	# add_float_menu(km, space, preferences)
 	add_transform_tool(km, space, preferences, smax=False)
 	armature_select_hierarchy_plus(km, space)
+	add_droptool(km, space)
 
-	km.new(space, 'view3d.drop_tool', 'RIGHTMOUSE', 'PRESS', [])
 	km.new(space, 'screen.screen_full_area', 'X', 'PRESS', [], ctrl=True)
 	km.new(
 		space, 'pose.select_all', 'A', 'PRESS',
