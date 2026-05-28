@@ -19,8 +19,21 @@ import bmesh
 
 from bpy.types import Operator
 from bpy.utils import register_class, unregister_class
+from bpy.app import version
 
 #############################################################
+
+def loop_select(ring):
+	if version < (5, 1, 0):
+		bpy.ops.mesh.loop_multi_select(ring=ring)
+		return
+
+	if ring:
+		bpy.ops.mesh.select_edge_ring_multi()
+		return
+
+	bpy.ops.mesh.select_edge_loop_multi()
+
 
 def get_mode(ctx):
 	mode = ctx.mode
@@ -244,12 +257,7 @@ def get_selected(ctx, mode='', item=True, ordered=False, all=False):
 
 
 def select_face_loops(ctx, ring=False):
-	if ring:
-		bpy.ops.mesh.loop_multi_select(ring=True)
-
-	else:
-		bpy.ops.mesh.loop_multi_select(ring=False)
-
+	loop_select(ring)
 	set_mode(ctx, 'EDGE')
 	bpy.ops.mesh.select_more()
 	set_mode(ctx, 'FACE')
@@ -262,12 +270,7 @@ def select_vert_loops(ctx, ring=False):
 	vert = get_selected(ctx, 'VERT', item=False)
 	edges = [edge.index for edge in bm.verts[vert[0]].link_edges]
 	select(ctx, edges, 'EDGE', item=False)
-
-	if ring:
-		bpy.ops.mesh.loop_multi_select(ring=True)
-
-	else:
-		bpy.ops.mesh.loop_multi_select(ring=False)
+	loop_select(ring)
 
 
 def distance_between_elements(ctx, elements, mode, ring=False):
@@ -306,8 +309,10 @@ def organize_elements_by_loop(ctx, elements, mode, ring=False):
 
 		if mode == 'VERT':
 			select_vert_loops(ctx, ring=ring)
+
 		elif mode == 'EDGE':
-			bpy.ops.mesh.loop_multi_select(ring=ring)
+			loop_select(ring)
+
 		elif mode == 'FACE':
 			select_face_loops(ctx, ring=ring)
 
@@ -398,7 +403,7 @@ def smart_loop(ctx, ring=False):
 					ctx, loop, mode, item=False,
 					replace=True, add_to_history=True
 				)
-				bpy.ops.mesh.loop_multi_select(ring=ring)
+				loop_select(ring)
 
 		else:
 			if mode == 'EDGE':
@@ -406,7 +411,7 @@ def smart_loop(ctx, ring=False):
 					ctx, loop, mode, item=False,
 					replace=True, add_to_history=True
 				)
-				bpy.ops.mesh.loop_multi_select(ring=ring)
+				loop_select(ring)
 
 		final_selection += get_selected(ctx, mode, item=False)
 

@@ -20,6 +20,7 @@
 * kuroiluna@hotmail.com
 * solenekinkielele@yahoo.fr
 * youngjaekim
+* m.w.clapperton@gmail.com
 
 * Nattapong Khwanpray
 * Florian Schreiber
@@ -30,3 +31,4 @@
 * ddr3653@gmail.com
 * richierr@gmail.com
 * jackpot0006@yahoo.com
+* zeusjustine@gmail.com

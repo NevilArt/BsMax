@@ -610,6 +610,7 @@ def transform(km):
 
 def object_mode(km, preferences):
 	mute_numbers(km)
+	km.mute('Object Mode', 'wm.call_menu', 'RIGHTMOUSE', 'PRESS')
 
 	space = km.space('Object Non-modal', 'EMPTY', 'WINDOW')
 	km.new(space, 'bsmax.mode_set', 'TAB', 'PRESS', [])
@@ -745,6 +746,7 @@ def mesh(km, preferences):
 	km.mute('Mesh', 'mesh.shortest_path_pick', 'LEFTMOUSE', 'CLICK', ctrl=True)
 	km.mute('Mesh', 'mesh.loop_select', 'LEFTMOUSE', 'CLICK', alt=True)
 	km.mute('Mesh', 'mesh.select_all', 'A', 'PRESS')
+	km.mute('Mesh', 'wm.call_menu', 'RIGHTMOUSE', 'PRESS')
 
 	space = km.space('Mesh', 'EMPTY', 'WINDOW')
 
@@ -914,6 +916,7 @@ def mesh(km, preferences):
 
 def curve(km, preferences):
 	mute_numbers(km)
+	km.mute('Curve', 'wm.call_menu', 'RIGHTMOUSE', 'PRESS')
 	space = km.space('Curve', 'EMPTY', 'WINDOW')
 
 	add_search(km, space)
@@ -1055,6 +1058,7 @@ def armature_select_hierarchy_plus(km, space):
 
 def armature(km, preferences):
 	mute_numbers(km)
+	km.mute('Armature', 'wm.call_menu', 'RIGHTMOUSE', 'PRESS')
 	space = km.space('Armature', 'EMPTY', 'WINDOW')
 	add_search(km, space)
 	add_side_panel(km, space)
@@ -1141,6 +1145,7 @@ def armature(km, preferences):
 
 def metaball(km, preferences):
 	mute_numbers(km)
+	km.mute('Metaball', 'wm.call_menu', 'RIGHTMOUSE', 'PRESS')
 	space = km.space('Metaball', 'EMPTY', 'WINDOW')
 	add_search(km, space)
 	add_side_panel(km, space)
@@ -1172,6 +1177,7 @@ def metaball(km, preferences):
 
 def lattice(km, preferences):
 	mute_numbers(km)
+	km.mute('Lattice', 'wm.call_menu', 'RIGHTMOUSE', 'PRESS')
 	space = km.space('Lattice', 'EMPTY', 'WINDOW')
 	add_search(km, space)
 	add_side_panel(km, space)
@@ -1214,6 +1220,7 @@ def lattice(km, preferences):
 
 def grease_pencil(km, preferences):
 	mute_numbers(km)
+	km.mute('Grase pencill', 'wm.call_menu', 'RIGHTMOUSE', 'PRESS')
 	space = km.space('Grease Pencil', 'EMPTY', 'WINDOW')
 	add_search(km, space)
 	add_side_panel(km, space)
@@ -1225,6 +1232,7 @@ def grease_pencil(km, preferences):
 
 def pos(km, preferences):
 	mute_numbers(km)
+	km.mute('Pose', 'wm.call_menu', 'RIGHTMOUSE', 'PRESS')
 	space = km.space('Pose', 'EMPTY', 'WINDOW')
 
 	add_view3d_click_selection(km, space)

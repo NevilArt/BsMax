@@ -1,3 +1,11 @@
+# 1, 4, 251028
+* Update for Compatiblity with upcoming blender 5.0
+* Bring some of 3DsMax mode keys to Blender Adaptive mode too.
+* Insert -> Edit origin, Ctrl + Inserts -> Open Pivot tools menu
+* Disable Numeric Hide Collection keys for Blender adaptive mode too.
+* Right Mouse Navigation extention issue with BsMax fixed.
+* Node Editor (Ctrl+RMC) Cut wire isuue fixe for Blender Mode.
+
 # 1, 4, 250912
 * Stuff for older than Blender 4.2 removed.
 * 3DsMax Quadmenu Clone tool bug fixed.

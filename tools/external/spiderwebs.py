@@ -948,19 +948,20 @@ def center_normal(points):
 	normal.normalize()
 	return center, normal
 
-def get_active_note(grease_pencil):
+def get_active_note(annotations):
 	if version < (4, 5, 0): #TODO fined the version that API has changed
-		return grease_pencil.layers.active
+		return annotations.layers.active
 	else:
-		return grease_pencil.layers[grease_pencil.layers.active_note]
+		return annotations.layers[annotations.layers.active_note]
 
 def get_grease_points():
-	grease_pencil = bpy.context.scene.grease_pencil
+	scene = bpy.context.scene
+	annotations = scene.grease_pencil if version < (5, 0, 0) else scene.annotation
 
-	if not grease_pencil:
+	if not annotations:
 		return []
 	
-	active_note = get_active_note(grease_pencil)
+	active_note = get_active_note(annotations)
 
 	if not active_note:
 		return []
