@@ -20,6 +20,7 @@ from .divid import register_divid, unregister_divid
 from .menu import register_menu, unregister_menu
 from .outline import register_outline, unregister_outline
 from .selection import register_selection, unregister_selection
+from .simplify import register_simplify, unregister_simplify
 from .weld import register_weld, unregister_weld
 
 
@@ -31,6 +32,7 @@ def register_curve():
 	register_menu()
 	register_outline() #DONE but need to refactor
 	register_selection()
+	register_simplify()
 	register_weld()
 
 
@@ -42,4 +44,5 @@ def unregister_curve():
 	unregister_menu()
 	unregister_outline()
 	unregister_selection()
+	unregister_simplify()
 	unregister_weld()

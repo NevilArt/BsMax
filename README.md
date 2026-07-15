@@ -1,5 +1,5 @@
 
-# BsMax Blender Addon 4.2LTS ~ 5.2LTS
+# BsMax Blender Addon 4.5LTS ~ 5.2LTS
 
 BsMax is package of Modeling, Rig & Animation, Render tools and UI mimic for [Blender 3D](https://www.blender.org/).
 
@@ -34,10 +34,19 @@ If you found this product useful and want to support this project you can Donate
 * [shapekey.py](https://raw.github.com/NevilArt/BsMax/master/tools/internal/rigg/shapekey.py)
 
 ## Older Version
-* [Download Older Version for Blender 2.80 ~ 4.1](https://github.com/NevilArt/BsMax_2_80)
+* [Download Older Version for Blender 2.80 ~ 4.4](https://github.com/NevilArt/BsMax_2_80)
+
+## Support Me on Yourube
+* If you enjoy BsMax and would like to support my work, check out my other creative project: John & Brainy, a series of short 3D animated dark comedies.
+Subscribe and follow the adventures on [YouTube](https://www.youtube.com/@John-and-brainy).
 
 ## Recent Updates and Changes
-* Backburner submiter submit to beack burner with absolute path.
+* Codes for older than Blender 4.5 removed.
+* Set timline range base on markers (All, To first, To Last, Selected, Current).
+* Sort Selected Collections by Alphabetical order operator added to Outliner.
+* Hair Style on/off operator (Render/Curves) Taturial.
+* Bone select API change issue fixed.
+* Mouse button 5 local view not frame for view3d and Graph editor (Blender adaptive and 3dsMax mode)
 * [Change log ...](https://github.com/NevilArt/BsMax/blob/master/CHANGELOG.md)
 
 ## Special Thanks

@@ -26,6 +26,7 @@
 * Florian Schreiber
 * Ibra SOW
 * Filip Streck
+* Kevin Harris
 * revovl@gmail.com
 * shane@studiopiper.com.au
 * tmdals1825@gmail.com
@@ -33,3 +34,4 @@
 * richierr@gmail.com
 * jackpot0006@yahoo.com
 * zeusjustine@gmail.com
+* ziinhan@gmail.com

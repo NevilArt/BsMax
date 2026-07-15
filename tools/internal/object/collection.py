@@ -13,6 +13,7 @@
 #	along with this program.  If not, see <https://www.gnu.org/licenses/>.
 ############################################################################
 # 2024/06/28
+# 2026/08/02 Sort Selected Collection added
 
 import bpy
 from bpy.types import Operator
@@ -22,6 +23,70 @@ from bpy.utils import register_class, unregister_class
 def clear_collections(obj):
 	for collection in obj.users_collection:
 		collection.objects.unlink(obj)
+
+
+def sorted_children_order(children, selected_set):
+	selected = [c for c in children if c in selected_set]
+	if not selected:
+		return list(children)
+
+	first_selected_index = next(i for i, c in enumerate(children) if c in selected_set)
+	unselected = [c for c in children if c not in selected_set]
+	selected_sorted = sorted(selected, key=lambda c: c.name.lower())
+
+	before = [c for c in children[:first_selected_index] if c not in selected_set]
+	after = [c for c in unselected if c not in before]
+
+	return before + selected_sorted + after
+
+
+def get_collection_parent_map(root):
+	parent_map = {}
+
+	def recurse(coll):
+		for child in coll.children:
+			parent_map[child] = coll
+			recurse(child)
+
+	recurse(root)
+	return parent_map
+
+
+def sort_selected_collections(context):
+	selected = get_selected_collections(context)
+	if not selected:
+		return
+
+	parent_map = get_collection_parent_map(context.scene.collection)
+
+	groups = {}
+	for c in selected:
+		parent = parent_map.get(c)
+		if parent is None:
+			continue  # scene root collection itself has no parent, skip it
+		groups.setdefault(parent, []).append(c)
+
+	for parent, sel_children in groups.items():
+		children = list(parent.children)
+		selected_set = set(sel_children)
+		new_order = sorted_children_order(children, selected_set)
+
+		if new_order == children:
+			continue  # already in order, avoid needless unlink/relink
+
+		for c in children:
+			parent.children.unlink(c)
+		for c in new_order:
+			parent.children.link(c)
+
+
+def get_selected_collections(context):
+	"""
+	Returns the list of selected Collection objects from the Outliner.
+	Must be called with outliner context (e.g. via context override,
+	or from an operator invoked while hovering the Outliner).
+	"""
+	return [item for item in context.selected_ids if isinstance(item, bpy.types.Collection)]
 
 
 #TODO move selected collecion to active collection too
@@ -121,7 +186,22 @@ class Outliner_OT_Link_Collection_To_Scenes(Operator):
 		return {'FINISHED'}
 
 
-def outliner_header(self, ctx):
+class Collection_OT_Sort_Selected_Collection(Operator):
+	bl_idname = 'collection.sort_selected'
+	bl_label = "Sort Selected Collection"
+	bl_description = "Sort Selected Collection by Name"
+	bl_options = {'REGISTER', 'UNDO'}
+
+	@classmethod
+	def poll(self, context):
+		return bool(getattr(context, "selected_ids", None))
+	
+	def execute(self, context):
+		sort_selected_collections(context)
+		return {'FINISHED'}
+
+
+def outliner_header(self, _):
 	layout = self.layout
 	layout.operator(
 		'collection.move_to_active', text="", icon='ADD'
@@ -135,8 +215,12 @@ def outliner_header(self, ctx):
 		'collection.link_to_active', text="", icon='LIBRARY_DATA_DIRECT'
 	)
 
+	layout.operator(
+			'collection.sort_selected', text="", icon='SORTALPHA'
+		)
 
-def outliner_collection(self, ctx):
+
+def outliner_collection(self, _):
 	layout = self.layout
 	layout.operator('outliner.link_to_scenes', text="Link to other Scenes")
 	layout.separator()
@@ -147,7 +231,8 @@ classes = {
 	Collection_OT_Link_To_Active,
 	Collection_OT_Remove_From_Collection,
 	Outliner_OT_Rename_Selection,
-	Outliner_OT_Link_Collection_To_Scenes
+	Outliner_OT_Link_Collection_To_Scenes,
+	Collection_OT_Sort_Selected_Collection
 }
 
 

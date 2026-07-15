@@ -13,6 +13,7 @@
 #	along with this program.  If not, see <https://www.gnu.org/licenses/>.
 ############################################################################
 # 2025/10/09
+# 2026/08/13 local view mouse button 5 support
 
 import bpy
 
@@ -464,6 +465,12 @@ def view3d(km, preferences):
 	km.new(space, 'view.undoredo', 'Z', 'PRESS', [('redo', False)], shift=True)
 	km.new(space, 'view.undoredo', 'Y', 'PRESS', [('redo', True)], shift=True)
 	km.new(space, 'view3d.pastebuffer', 'INSERT', 'PRESS', [], shift=True)
+
+	if version >= (5, 2, 0):
+		km.new(
+			space, 'view3d.localview', 'BUTTON5MOUSE', 'PRESS',
+			[("frame_selected", False)]
+		)
 
 
 def view3d_navigation(km, preferences):
@@ -1743,6 +1750,12 @@ def graph_editor(km):
 	km.new(space, 'camera.select', 'C', 'PRESS', [])
 	km.new(space, 'graph.copy', 'INSERT', 'PRESS', [], ctrl=True)
 	km.new(space, 'graph.paste', 'INSERT', 'PRESS', [], shift=True)
+
+	if version >= (5, 2, 0):
+		km.new(
+			space, 'graph.localview', 'BUTTON5MOUSE', 'PRESS',
+			[("frame_selected", False)]
+		)
 
 
 def dopesheet_editor(km):

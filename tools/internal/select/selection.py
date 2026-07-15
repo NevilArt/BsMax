@@ -13,6 +13,7 @@
 #	along with this program.  If not, see <https://www.gnu.org/licenses/>.
 ############################################################################
 # 2024/05/27
+# 2026/08/12 Bone selection API update
 
 import bpy
 
@@ -22,13 +23,14 @@ from bpy.props import (
 	EnumProperty, FloatProperty, FloatVectorProperty,
 	BoolProperty, PointerProperty
 )
-
+from bpy.app import version
 
 def select_everything(ctx):
 	bpy.ops.object.select_all(action='SELECT')
 	for obj in ctx.selected_objects:
 		if obj.type == 'ARMATURE':
-			for bone in obj.data.bones:
+			pose_bones = obj.data.bones if version < (5, 0, 0) else obj.pose.bones
+			for bone in pose_bones:
 				bone.select = True
 
 

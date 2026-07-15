@@ -13,17 +13,20 @@
 #	along with this program.  If not, see <https://www.gnu.org/licenses/>.
 ############################################################################
 # 2024/05/30
+# 2026/08/12 Bone selection API update
 
 import bpy
 
 from bpy.types import Operator
 from bpy.props import BoolProperty, EnumProperty
 from bpy.utils import register_class, unregister_class
+from bpy.app import version
 
 
 def get_selected_bones(ctx, armature):
 	if ctx.mode == 'POSE':
-		return [bone for bone in armature.data.bones if bone.select]
+		pose_bones = armature.data.bones if version < (5, 0, 0) else armature.pose.bones
+		return [bone for bone in pose_bones if bone.select]
 
 	elif ctx.mode == 'EDIT_ARMATURE':
 		return [bone for bone in armature.data.edit_bones if bone.select]

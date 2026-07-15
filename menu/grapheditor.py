@@ -54,7 +54,7 @@ class BsMax_MT_ToolMenuGraph(bpy.types.Menu):
 		op.data_path = 'area.type'
 		op.value = 'DOPESHEET_EDITOR'
 		layout.separator()
-		layout.operator("wm.context_menu_enum", text="Rotation/Scale Pivot", icon="ROTATE").data_path='space_data.pivot_point'
+		"wm.context_menu_enum", text="Rotation/Scale Pivot", icon="ROTATE").data_path='space_data.pivot_point'
 		if ctx.screen.show_fullscreen:
 			layout.operator("screen.screen_full_area", text="Restore Viewport", icon="SPLITSCREEN")
 		else:

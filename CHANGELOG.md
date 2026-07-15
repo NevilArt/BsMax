@@ -1,3 +1,6 @@
+# 1, 4, 260715
+* Backburner submiter submit to backburner with absolute path.
+
 # 1, 4, 260430
 * Animation chanel short key add to blender adapive too
 * Spider web object updated to work on Blender 5.x.

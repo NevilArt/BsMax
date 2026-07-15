@@ -12,7 +12,9 @@
 #	You should have received a copy of the GNU General Public License
 #	along with this program.  If not, see <https://www.gnu.org/licenses/>.
 ############################################################################
-# 2024/07/17
+# 2026/07/15 auto data rename affect material name too
+
+#TODO add rename too to UI
 
 import bpy
 
@@ -28,14 +30,25 @@ class OBJECT_TO_Data_Auto_Rename(Operator):
 	bl_description = "Copy Object Name to Data Name much as possible"
 	bl_options = {'REGISTER', 'UNDO'}
 
+	material: BoolProperty(
+		name="Material", default=True,
+		description="Copy Object Name to Material Name"
+	) # type: ignore
+
 	@classmethod
 	def poll(self, ctx):
 		return ctx.mode == 'OBJECT'
 	
+	def rename_material(self, obj):
+		if obj.type == 'MESH' and self.material:
+			if len(obj.data.materials) == 1:
+				obj.data.materials[0].name = obj.name
+	
 	def execute(self,ctx):
 		for obj in ctx.selected_objects:
 			obj.data.name = obj.name
-		
+			self.rename_material(obj)
+
 		return{'FINISHED'}
 
 

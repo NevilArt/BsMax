@@ -13,8 +13,12 @@
 #	along with this program.  If not,see <https://www.gnu.org/licenses/>.
 ############################################################################
 # 2025/10/13
+# 2026/08/13 local view mouse button 5 support
 
 import bpy
+
+from bpy.app import version
+
 from bsmax.keymaps import KeyMaps
 
 #TODO sub selection keys for mesh
@@ -131,10 +135,18 @@ def view2d_navigation(km, preferences):
 def view3d(km):
 	space = km.space('3D View', 'VIEW_3D', 'WINDOW')
 	km.new(space, 'wm.multi_item_rename', 'F2', 'PRESS', [])
+	km.new(space, 'wm.toolbar', 'W', 'PRESS', [])
+
 	km.new(
 		space, 'wm.call_menu', 'A', 'PRESS',
 		[('name', 'BsMax_MT_Create')], ctrl=True, shift=True
 	)
+
+	if version >= (5, 2, 0):
+		km.new(
+			space, 'view3d.localview', 'BUTTON5MOUSE', 'PRESS',
+			[("frame_selected", False)]
+		)
 
 
 def view3d_navigation(km,preferences):
@@ -337,7 +349,13 @@ def node_editor(km):
 
 
 def graph_editor(km):
-	pass
+	space = km.space('Graph Editor', 'GRAPH_EDITOR', 'WINDOW')
+
+	if version >= (5, 2, 0):
+		km.new(
+			space, 'graph.localview', 'BUTTON5MOUSE', 'PRESS',
+			[("frame_selected", False)]
+		)
 
 
 def dopesheet_editor(km):

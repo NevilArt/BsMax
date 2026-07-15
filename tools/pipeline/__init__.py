@@ -21,12 +21,20 @@
 # 	register_make_ready_render_v2, unregister_make_ready_render_v2
 # )
 
-from .make_render_ready_v3 import (
-	register_make_ready_render_v3, unregister_make_ready_render_v3
+# from .make_render_ready_v3 import (
+# 	register_make_ready_render_v3, unregister_make_ready_render_v3
+# )
+
+# from .maya_abc_cleaner import (
+# 	register_maya_abc_cleaner, unregister_maya_abc_cleaner
+# )
+
+from .meshy_tools import (
+	register_meshy_tools, unregister_meshy_tools
 )
 
-from .maya_abc_cleaner import (
-	register_maya_abc_cleaner, unregister_maya_abc_cleaner
+from .cloudrig_tools import (
+	register_cloudrig_tools, unregister_cloudrig_tools
 )
 
 
@@ -34,12 +42,16 @@ def register_pipeline(preferences):
 	if preferences.nevil_stuff:
 		# register_make_ready_render_v1()
 		# register_make_ready_render_v2()
-		register_make_ready_render_v3()
-		register_maya_abc_cleaner()
+		# register_make_ready_render_v3()
+		# register_maya_abc_cleaner()
+		register_meshy_tools()
+		register_cloudrig_tools()
 
 
 def unregister_pipeline():
 	# unregister_make_ready_render_v1()
 	# unregister_make_ready_render_v2()
-	unregister_make_ready_render_v3()
-	unregister_maya_abc_cleaner()
+	# unregister_make_ready_render_v3()
+	# unregister_maya_abc_cleaner()
+	unregister_meshy_tools()
+	unregister_cloudrig_tools()
