@@ -1,3 +1,8 @@
+# 1, 4, 260430
+* Animation chanel short key add to blender adapive too
+* Spider web object updated to work on Blender 5.x.
+* Loop selection for 3DsMax mode in Blender 5.1 fixes.
+
 # 1, 4, 251028
 * Update for Compatiblity with upcoming blender 5.0
 * Bring some of 3DsMax mode keys to Blender Adaptive mode too.

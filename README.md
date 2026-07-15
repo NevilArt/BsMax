@@ -1,4 +1,5 @@
-# BsMax Blender Addon 4.2LTS ~ 4.5LTS & 5.1
+
+# BsMax Blender Addon 4.2LTS ~ 5.2LTS
 
 BsMax is package of Modeling, Rig & Animation, Render tools and UI mimic for [Blender 3D](https://www.blender.org/).
 
@@ -36,9 +37,7 @@ If you found this product useful and want to support this project you can Donate
 * [Download Older Version for Blender 2.80 ~ 4.1](https://github.com/NevilArt/BsMax_2_80)
 
 ## Recent Updates and Changes
-* Animation chanel short key add to blender adapive too
-* Spider web object updated to work on Blender 5.x.
-* Loop selection for 3DsMax mode in Blender 5.1 fixes.
+* Backburner submiter submit to beack burner with absolute path.
 * [Change log ...](https://github.com/NevilArt/BsMax/blob/master/CHANGELOG.md)
 
 ## Special Thanks
@@ -46,5 +45,3 @@ If you found this product useful and want to support this project you can Donate
 
 ## License
 This project is licensed under the GPL (GENERAL PUBLIC LICENSE) license. See [LICENSE](https://www.gnu.org/licenses/gpl-3.0.en.html) for more information.
-
-git add .

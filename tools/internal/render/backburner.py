@@ -17,7 +17,7 @@
 # https://www.dropbox.com/s/ivschytl309jm2n/render_backburner.zip?dl=0 #
 # Update and Modified for Blender 2.8x to 4.x by Nevil #
 
-# 2024/12/27
+# 2026/07/15 - update for output path absolut and relative autoswitch
 
 #TODO List
 # out of range warning
@@ -44,6 +44,10 @@ bl_info = {
 	"tracker_url": "https://github.com/NevilArt/BsMax/issues",
 	"category": "Render"
 }
+
+from importlib.resources import path
+from multiprocessing import context
+from posixpath import relpath
 
 import bpy
 import os
@@ -76,17 +80,17 @@ def backburner_path():
 	return ''
 
 
-def get_job_name(ctx):
+def get_job_name(context):
 	name = bpy.path.basename(bpy.data.filepath)
 	name = (name.split('.'))[0]
 
 	# Add scene name if there more than one scenes
 	if len(bpy.data.scenes) > 1:
-		name += '_' + ctx.scene.name
+		name += '_' + context.scene.name
 
 	# Add viewlayer name if there more than one view layer
-	if len(ctx.scene.view_layers) > 1:
-		name += '_' + ctx.window.view_layer.name
+	if len(context.scene.view_layers) > 1:
+		name += '_' + context.window.view_layer.name
 	
 	return name
 
@@ -150,8 +154,8 @@ def get_max_file_name_digit(file_path, file_name, extention):
 	return max(numbers)+1 if numbers else 0
 
 
-def create_new_unigue_file_name(ctx):
-	backburner = ctx.scene.backburner
+def create_new_unigue_file_name(context):
+	backburner = context.scene.backburner
 
 	file_path = backburner.repository_path \
 		if backburner.use_repository else \
@@ -159,7 +163,7 @@ def create_new_unigue_file_name(ctx):
 
 	# create a file name
 	file_name = backburner.job_name \
-		if backburner.use_job_name else	get_job_name(ctx)
+		if backburner.use_job_name else	get_job_name(context)
 	
 	file_name += "_BACKBURNERTEMPFILE_"
 	number = get_max_file_name_digit(file_path, file_name, '.blend')
@@ -167,23 +171,23 @@ def create_new_unigue_file_name(ctx):
 	return full_name
 
 
-def check_start_frame(_, ctx):
+def check_start_frame(_, context):
 	""" Make sure start frame always smaller than end frame """
-	backburner = ctx.scene.backburner
+	backburner = context.scene.backburner
 	if backburner.frame_start > backburner.frame_end:
 		backburner.frame_end = backburner.frame_start
 
 
-def check_end_frame(_, ctx):
+def check_end_frame(_, context):
 	""" Make sure end frame always bigger than start frame """
-	backburner = ctx.scene.backburner
+	backburner = context.scene.backburner
 	if backburner.frame_end < backburner.frame_start:
 		backburner.frame_start = backburner.frame_end
 
 
-def filter_frames_bitarray(_, ctx):
+def filter_frames_bitarray(_, context):
 	""" Remove illeagle character from Frames field """
-	backburner = ctx.scene.backburner
+	backburner = context.scene.backburner
 	string = ''
 
 	for l in backburner.frames_bitarray:
@@ -194,8 +198,8 @@ def filter_frames_bitarray(_, ctx):
 		backburner.frames_bitarray = string
 
 
-def get_render_frames_count(ctx):
-	scene = ctx.scene
+def get_render_frames_count(context):
+	scene = context.scene
 	backburner = scene.backburner
 	mode = backburner.override_frame_range
 	
@@ -210,6 +214,13 @@ def get_render_frames_count(ctx):
 	return end_frame - start_frame + 1
 
 
+def output_path_mode_switch(context, mode):
+	if mode == 'ABSOLUTE':
+		context.scene.render.filepath = bpy.path.abspath(context.scene.render.filepath)
+	else:
+		context.scene.render.filepath = bpy.path.relpath(context.scene.render.filepath)
+
+
 def task_fild(start, end):
 	""" Create one field of render task for multiple Frame per task mode  """
 	field = 'Frame_' + str(start)
@@ -222,11 +233,11 @@ def task_fild(start, end):
 	return field
 
 
-def create_task_list_file(ctx, filename):
+def create_task_list_file(context, filename):
 	""" Combine all taskes and write in
 	file for submit to Backburner manager """
 
-	scene = ctx.scene
+	scene = context.scene
 	backburner = scene.backburner
 	mode = backburner.override_frame_range
 
@@ -286,12 +297,20 @@ def create_task_list_file(ctx, filename):
 	return task_list_file_name
 
 
-def create_cmd_command(ctx):
-	backburner = ctx.scene.backburner
+def create_cmd_command(context):
+	backburner = context.scene.backburner
 
-	file_name = create_new_unigue_file_name(ctx)
+	relpath = bpy.path.relpath(context.scene.render.filepath)
+	if relpath:
+		output_path_mode_switch(context, 'ABSOLUTE')
+
+	file_name = create_new_unigue_file_name(context)
 	bpy.ops.wm.save_as_mainfile(filepath=file_name, copy=True)
-	task_list_file = create_task_list_file(ctx, file_name)
+
+	if relpath:
+		output_path_mode_switch(context, 'RELATIVE')
+
+	task_list_file = create_task_list_file(context, file_name)
 
 	# cmdjob.exe
 	# -jobname "testJob"
@@ -348,8 +367,8 @@ def create_cmd_command(ctx):
 	return task_list_file, cmd
 
 
-def submit(ctx):
-	task_list_file, cmd = create_cmd_command(ctx)
+def submit(context):
+	task_list_file, cmd = create_cmd_command(context)
 	""" Try to Submit job to backburner """
 	try:
 		subprocess.check_output(cmd, shell=True)
@@ -378,8 +397,8 @@ def get_preset_file_name():
 	return get_datafiles_path() + os.sep + 'Backburner.json'
 
 
-def backburner_state_as_dictionary(ctx):
-	backburner = ctx.scene.backburner
+def backburner_state_as_dictionary(context):
+	backburner = context.scene.backburner
 	return {
 		'timeout': backburner.timeout,
 		'priority': backburner.priority,
@@ -415,8 +434,8 @@ def read_json_file_to_dictionary(file_path):
 		return {}
 
 
-def draw_backburner_panel(cls, ctx):
-	backburner = ctx.scene.backburner
+def draw_backburner_panel(cls, context):
+	backburner = context.scene.backburner
 
 	layout = cls.layout
 	row = layout.row()
@@ -425,7 +444,7 @@ def draw_backburner_panel(cls, ctx):
 		icon='HELP'
 	).url= "https://github.com/NevilArt/BsMax/wiki/Render-Tools"
 
-	button_text = "Submit " + str(get_render_frames_count(ctx))
+	button_text = "Submit " + str(get_render_frames_count(context))
 	button_text += " frames to Backburner"
 	row.operator(
 		'render.backburner_action',
@@ -504,23 +523,23 @@ def draw_backburner_panel(cls, ctx):
 		row.prop(backburner, 'repository_path')
 
 
-def subcation_get_name(ctx):
+def subcation_get_name(context):
 	job_name = "New Job"
 	
 	if bpy.data.filepath:
-		job_name = get_job_name(ctx)
+		job_name = get_job_name(context)
 
-	ctx.scene.backburner.job_name = job_name
+	context.scene.backburner.job_name = job_name
 
 
-def subaction_save(ctx):
+def subaction_save(context):
 	file_name = get_preset_file_name()
-	backburner_state = backburner_state_as_dictionary(ctx)
+	backburner_state = backburner_state_as_dictionary(context)
 	write_dictionary_to_json_file(backburner_state, file_name)
 
 
-def subaction_load(ctx):
-	backburner = ctx.scene.backburner
+def subaction_load(context):
+	backburner = context.scene.backburner
 	file_name = get_preset_file_name()
 	backburner_state = read_json_file_to_dictionary(file_name)
 
@@ -529,12 +548,12 @@ def subaction_load(ctx):
 			setattr(backburner, key, value)
 
 
-def subaction_refine_frames(ctx):
+def subaction_refine_frames(context):
 	frames = string_to_integer_array("")
 	integer_array_to_bitarray_string(frames)
 
 
-def subaction_riverce_frames(ctx):
+def subaction_riverce_frames(context):
 	pass
 
 
@@ -549,12 +568,12 @@ def repository_path_check(cls, _):
 		cls.repository_path = last_acceptable_repository_path
 
 
-def subaction_submit(self, ctx):
-	if ctx.blend_data.filepath == '':
+def subaction_submit(self, context):
+	if context.blend_data.filepath == '':
 		self.report({'WARNING'}, "Save File Before Submit")
 		return{'FINISHED'}
 
-	backburner = ctx.scene.backburner
+	backburner = context.scene.backburner
 
 	if backburner.blender_path == '':
 		self.report({'ERROR'}, "Network path to Blender hasn't been set")
@@ -565,8 +584,8 @@ def subaction_submit(self, ctx):
 		return {'CANCELLED'}
 
 	self.report({'OPERATOR'}, "Submitting...")
-
-	if submit(ctx):
+	
+	if submit(context):
 		self.report({'OPERATOR'}, "Job Submited to backburner manager")
 
 	else:
@@ -749,25 +768,25 @@ class Render_OT_Backburner_Action(Operator):
 	
 	action: StringProperty(name='Action') # type: ignore
 
-	def execute(self, ctx):
+	def execute(self, context):
 
 		if self.action == 'SUBMIT':
-			subaction_submit(self, ctx)
+			subaction_submit(self, context)
 
 		elif self.action == 'GETNAME':
-			subcation_get_name(ctx)
+			subcation_get_name(context)
 
 		elif self.action == 'SAVE':
-			subaction_save(ctx)
+			subaction_save(context)
 
 		elif self.action == 'LOAD':
-			subaction_load(ctx)
+			subaction_load(context)
 
 		elif self.action == 'REFINEFRAMES':
-			subaction_refine_frames(ctx)
+			subaction_refine_frames(context)
 
 		elif self.action == 'REVERCEFRAMES':
-			subaction_riverce_frames(ctx)
+			subaction_riverce_frames(context)
 
 		return {'FINISHED'}
 
@@ -778,14 +797,14 @@ class Render_OT_Backburner(Operator):
 	bl_label = "Backburner"
 	bl_options = {'REGISTER'}
 
-	def draw(self, ctx):
-		draw_backburner_panel(self, ctx)
+	def draw(self, context):
+		draw_backburner_panel(self, context)
 	
 	def execute(self, _):
 		return{'FINISHED'}
 	
-	def invoke(self, ctx, _):
-		return ctx.window_manager.invoke_props_dialog(self, width=500)
+	def invoke(self, context, _):
+		return context.window_manager.invoke_props_dialog(self, width=500)
 
 
 class RENDER_PT_Backburner(Panel):
@@ -795,8 +814,8 @@ class RENDER_PT_Backburner(Panel):
 	bl_label = "Backburner"
 	bl_options = {'DEFAULT_CLOSED'}
 
-	def draw(self, ctx):
-		draw_backburner_panel(self, ctx)
+	def draw(self, context):
+		draw_backburner_panel(self, context)
 
 
 def backburner_menu(self, _):

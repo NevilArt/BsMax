@@ -25,6 +25,7 @@
 * Nattapong Khwanpray
 * Florian Schreiber
 * Ibra SOW
+* Filip Streck
 * revovl@gmail.com
 * shane@studiopiper.com.au
 * tmdals1825@gmail.com
