@@ -19,9 +19,9 @@
 
 bl_info = {
 	'name': "BsMax",
-	'description': "BsMax Toolkit (Blender 4.5LTS ~ 5.2LTS)",
+	'description': "BsMax Toolkit (Blender 4.5LTS ~ 5.0)",
 	'author': "Nevil Tan (Naser Merati)",
-	'version': (1, 5, 260815),
+	'version': (1, 4, 260815),
 	'blender': (4, 5, 0), # Minimum Version
 	'location': "Almost Everywhere in Blender",
 	'doc_url': 'https://github.com/NevilArt/BsMax/wiki',
