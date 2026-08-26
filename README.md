@@ -15,8 +15,12 @@ Your Reports and Ideas will help me alot and don't forget the sharing. let more 
 
 If not have Github account use 'NevilArt@Gmail.Com' for bug report.
 
-## Support and Contribute
+## Support on Gumroad
 If you found this product useful and want to support this project you can Donate from [Gumroad](https://nevilart.gumroad.com/l/BsMax).
+
+## Support Me on Yourube
+If you enjoy BsMax and would like to support my work, check out my other creative project: John & Brainy, a series of short 3D animated dark comedies.
+Subscribe and follow the adventures on [YouTube](https://www.youtube.com/@John-and-brainy).
 
 ## Download / Installation
 * Download all the package as zip file.
@@ -35,10 +39,6 @@ If you found this product useful and want to support this project you can Donate
 
 ## Older Version
 * [Download Older Version for Blender 2.80 ~ 4.4](https://github.com/NevilArt/BsMax_2_80)
-
-## Support Me on Yourube
-* If you enjoy BsMax and would like to support my work, check out my other creative project: John & Brainy, a series of short 3D animated dark comedies.
-Subscribe and follow the adventures on [YouTube](https://www.youtube.com/@John-and-brainy).
 
 ## Recent Updates and Changes
 * Codes for older than Blender 4.5 removed.
