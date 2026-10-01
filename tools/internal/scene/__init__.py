@@ -13,17 +13,19 @@
 #	along with this program.  If not, see <https://www.gnu.org/licenses/>.
 ############################################################################
 
+from .asset import register_asset, unregister_asset
 from .file import register_file, unregister_file
 from .crowds import register_crowds, unregister_crowds
 
 
-
 def register_scene():
+	register_asset()
 	register_file()
 	register_crowds()
 
 
-
 def unregister_scene():
+	unregister_asset()
 	unregister_file()
 	unregister_crowds()
+	

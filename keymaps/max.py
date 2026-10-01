@@ -465,6 +465,7 @@ def view3d(km, preferences):
 	km.new(space, 'view.undoredo', 'Z', 'PRESS', [('redo', False)], shift=True)
 	km.new(space, 'view.undoredo', 'Y', 'PRESS', [('redo', True)], shift=True)
 	km.new(space, 'view3d.pastebuffer', 'INSERT', 'PRESS', [], shift=True)
+	# km.new(space, 'wm.tool_key_toggle', 'Q', 'PRESS', [], shift=True)
 
 	if version >= (5, 2, 0):
 		km.new(

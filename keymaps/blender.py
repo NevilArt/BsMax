@@ -135,7 +135,8 @@ def view2d_navigation(km, preferences):
 def view3d(km):
 	space = km.space('3D View', 'VIEW_3D', 'WINDOW')
 	km.new(space, 'wm.multi_item_rename', 'F2', 'PRESS', [])
-	km.new(space, 'wm.toolbar', 'W', 'PRESS', [])
+	# km.new(space, 'wm.toolbar', 'W', 'PRESS', [])
+	km.new(space, 'wm.tool_key_toggle', 'Q', 'PRESS', [], shift=True)
 
 	km.new(
 		space, 'wm.call_menu', 'A', 'PRESS',
@@ -299,6 +300,8 @@ def pos(km):
 	mute_numbers(km)
 	space = km.space('Pose', 'EMPTY', 'WINDOW')
 	add_droptool(km, space)
+
+	km.new(space, 'wm.tool_key_toggle', 'Q', 'PRESS', [], shift=True)
 
 	km.new(
 		space, 'pose.select_hierarchy_plus', 'LEFT_BRACKET', 'PRESS',

@@ -17,6 +17,7 @@ from .align_objects import register_align_objects, unregister_align_objects
 from .coordinate import register_coordinate, unregister_coordinate
 from .mirror import register_mirror, unregister_mirror
 from .snap import register_snap, unregister_snap
+from .tool_key_pimenu import register_tool_key_pimenu, unregister_tool_key_pimenu
 from .transform_control import register_transform_control, unregister_transform_control
 from .transforms import register_transforms, unregister_transforms
 from .transform_type_in import register_transform_type_in, unregister_transform_type_in
@@ -27,6 +28,7 @@ def register_transform():
 	register_coordinate()
 	register_mirror()
 	register_snap()
+	# register_tool_key_pimenu()
 	register_transform_control()
 	register_transforms()
 	register_transform_type_in()
@@ -37,6 +39,7 @@ def unregister_transform():
 	unregister_coordinate()
 	unregister_mirror()
 	unregister_snap()
+	# unregister_tool_key_pimenu()
 	unregister_transform_control()
 	unregister_transforms()
 	unregister_transform_type_in()

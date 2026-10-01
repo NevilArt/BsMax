@@ -12,9 +12,12 @@
 #	You should have received a copy of the GNU General Public License
 #	along with this program.  If not, see <https://www.gnu.org/licenses/>.
 ############################################################################
+# 2024/07/10
+# 2026/09/11 update for blender 4.5+
 
 import bpy
 from bpy.types import Operator, Menu
+# from bpy.app import version
 
 from bsmax.math import point_on_spline
 from bsmax.actions import link_to_scene, match_transform
@@ -140,14 +143,25 @@ class Hair_Guide:
 		"""
 		bpy.ops.object.mode_set(mode='PARTICLE_EDIT', toggle=False)
 		bpy.ops.wm.tool_set_by_id(name='builtin_brush.Comb')
-		
-		bpy.ops.particle.brush_edit(stroke=[{'name':'',
-					'location':(0, 0, 0), 'mouse':(0, 0),
+
+		bpy.ops.particle.brush_edit(
+			stroke=[
+				{
+					'name':'',
+					'location':(0, 0, 0),
+					'mouse':(0, 0),
 					'mouse_event':(0, 0),
-					'pressure':0, 'size':0, 'pen_flip':False,
-					'x_tilt':0, 'y_tilt':0,
-					'time':0, 'is_start':False}])
-		
+					'pressure':0,
+					'size':0,
+					'x_tilt':0,
+					'y_tilt':0,
+					'time':0,
+					'is_start':False
+				}
+			],
+			pen_flip=False
+		)
+
 		# Commit the Brush
 		bpy.ops.particle.connect_hair()
 		bpy.ops.object.mode_set(mode='OBJECT', toggle=False)

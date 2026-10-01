@@ -31,6 +31,7 @@
 * shane@studiopiper.com.au
 * tmdals1825@gmail.com
 * ddr3653@gmail.com
+* lomeligd@gmail.com
 * richierr@gmail.com
 * jackpot0006@yahoo.com
 * zeusjustine@gmail.com

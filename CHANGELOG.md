@@ -1,3 +1,11 @@
+# 1, 5, 260815
+* Codes for older than Blender 4.5 removed.
+* Set timline range base on markers (All, To first, To Last, Selected, Current).
+* Sort Selected Collections by Alphabetical order operator added to Outliner.
+* Hair Style on/off operator (Render/Curves) Taturial.
+* Bone select API change issue fixed.
+* Mouse button 5 local view not frame for view3d and Graph editor (Blender adaptive and 3dsMax mode)
+
 # 1, 4, 260715
 * Backburner submiter submit to backburner with absolute path.
 

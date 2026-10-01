@@ -16,16 +16,19 @@
 
 from .marker import register_marker, unregister_marker
 from .selection import register_selection, unregister_selection
+from .fcurves_tools import register_fcurve_tools, unregister_fcurve_tools
 # from .tool_bar import register_tool_bar, unregister_tool_bar
 
 
 def register_graph_editor():
     register_marker()
     register_selection()
+    register_fcurve_tools()
     # register_tool_bar()
 
 
 def unregister_graph_editor():
     unregister_marker()
     unregister_selection()
+    unregister_fcurve_tools()
     # unregister_tool_bar()

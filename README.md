@@ -41,12 +41,12 @@ Subscribe and follow the adventures on [YouTube](https://www.youtube.com/@John-a
 * [Download Older Version for Blender 2.80 ~ 4.4](https://github.com/NevilArt/BsMax_2_80)
 
 ## Recent Updates and Changes
-* Codes for older than Blender 4.5 removed.
-* Set timline range base on markers (All, To first, To Last, Selected, Current).
-* Sort Selected Collections by Alphabetical order operator added to Outliner.
-* Hair Style on/off operator (Render/Curves) Taturial.
-* Bone select API change issue fixed.
-* Mouse button 5 local view not frame for view3d and Graph editor (Blender adaptive and 3dsMax mode)
+* "wm.tool_key_toggle" operatpr added for toggle between "Immediate/Active Tool"
+* "Shift + Q" set for "wm.tool_key_toggle" (Blender Adaptive Mode)
+* Set pivot to buttom center issue with multiple object fixed (ctrl+Ins / Set pivot to object base)
+* Left right handle tool added to curve editor n panel, FC Tools.
+* Create Shepekey mirror (Create mirroeshpekey out of selected with name end with .L or .R)
+* "Object to own Collection" New operator that Create and move a collection for each selected object.
 * [Change log ...](https://github.com/NevilArt/BsMax/blob/master/CHANGELOG.md)
 
 ## Special Thanks

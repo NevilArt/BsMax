@@ -20,8 +20,8 @@ from .joystick import register_joystic, unregister_joystic
 from .menu import register_menu, unregister_menu
 from .naming import register_naming, unregister_naming
 from .shapekey import register_shapekey, unregister_shapekey
+from .shapeky_mirror import register_shapekey_mirror, unregister_shapekey_mirror
 from .wire_parameter import register_wire_parameter, unregister_wire_parameter
-
 
 
 def register_rigg():
@@ -32,8 +32,8 @@ def register_rigg():
 	register_menu()
 	register_naming()
 	register_shapekey()
+	register_shapekey_mirror()
 	register_wire_parameter()
-
 
 
 def unregister_rigg():
@@ -44,4 +44,5 @@ def unregister_rigg():
 	unregister_menu()
 	unregister_naming()
 	unregister_shapekey()
+	unregister_shapekey_mirror()
 	unregister_wire_parameter()

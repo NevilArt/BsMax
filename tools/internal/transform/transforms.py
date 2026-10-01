@@ -13,11 +13,13 @@
 #	along with this program.  If not, see <https://www.gnu.org/licenses/>.
 ############################################################################
 # 2024/05/29
+# 2026/08/30 Tool key toggle added
 
 import bpy
 
 from bpy.props import StringProperty, BoolProperty, IntProperty
 from bpy.types import Operator
+from bui import label
 
 
 def get_tool(ctx):
@@ -238,13 +240,33 @@ class View3D_OT_Tweak_Better(Operator):
 			return {'CANCELLED'}
 
 
+class WM_OT_Tool_Key_Toggle(Operator):
+	bl_idname = 'wm.tool_key_toggle'
+	bl_label = "Tool Key Toggle"
+	bl_options = {'REGISTER', 'INTERNAL'}
+	
+	def execute(self, context):
+		kc = context.window_manager.keyconfigs.active
+		prefs = kc.preferences
+
+		if hasattr(prefs, "tool_key_mode"):
+			prefs.tool_key_mode = \
+				'TOOL' if prefs.tool_key_mode == 'IMMEDIATE' else 'IMMEDIATE'
+
+		label = "Active Tool" if prefs.tool_key_mode == 'TOOL' else "Immediate"
+		self.report({'INFO'}, f"Tool Keys: {label}")
+
+		return{'FINISHED'}
+
+
 classes = {
 	View3D_OT_Transform_Gizmo_Size,
 	Object_OT_Auto_Coordinate_Toggle,
 	Object_OT_Move,
 	Object_OT_Rotate,
 	Object_OT_Scale,
-	View3D_OT_Tweak_Better
+	View3D_OT_Tweak_Better,
+	WM_OT_Tool_Key_Toggle
 }
 
 
@@ -259,4 +281,4 @@ def unregister_transforms():
 
 
 if __name__ == '__main__':
-	[bpy.utils.register_class(cls) for cls in classes]
+	register_transforms()

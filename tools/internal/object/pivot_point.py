@@ -12,6 +12,7 @@
 #	You should have received a copy of the GNU General Public License
 #	along with this program.  If not, see <https://www.gnu.org/licenses/>.
 ############################################################################
+# 2026/09/04 cleanup, Pivote to base multiple objects
 
 import bpy
 
@@ -21,7 +22,6 @@ from bpy.types import Menu, Operator
 from bpy.props import EnumProperty
 
 from bsmax.actions import set_origen
-
 
 
 class BoundBox():
@@ -47,7 +47,6 @@ class BoundBox():
 		self.center.z = (self.min.z + self.max.z) / 2
 
 
-
 class Object_OT_Modify_Pivot(Operator):
 	bl_idname = "object.modify_pivotpoint"
 	bl_label = "Modify Pivot Point"
@@ -64,7 +63,6 @@ class Object_OT_Modify_Pivot(Operator):
 
 
 
-
 # TODO add this for mesh objects too
 class Object_OT_Pivot_To_First_Point(Operator):
 	bl_idname = "object.pivot_to_first_point"
@@ -72,25 +70,32 @@ class Object_OT_Pivot_To_First_Point(Operator):
 	bl_options = {'REGISTER', 'UNDO'}
 
 	@classmethod
-	def poll(self, ctx):
-		if len(ctx.selected_objects) > 0:
-			for obj in ctx.selected_objects:
-				if obj.type != 'CURVE':
-					return False
-			return True
-		return False
+	def poll(self, context):
+		if not context.selected_objects:
+			return False
+		
+		for obj in context.selected_objects:
+			if obj.type != 'CURVE':
+				return False
+		return True
 
-	def execute(self,ctx):
-		for obj in ctx.selected_objects:
-			if len(obj.data.splines)>0:
-				if len(obj.data.splines[0].bezier_points)>0:
-					old_origin = obj.matrix_world @ obj.data.splines[0].bezier_points[0].co
-					delta_origin = obj.data.splines[0].bezier_points[0].co.copy()
-					obj.data.transform(Matrix.Translation(-delta_origin))
-					obj.matrix_world.translation = old_origin
+
+	def execute(self, context):
+		for obj in context.selected_objects:
+			if not obj.data.splines:
+				continue
+			# if len(obj.data.splines)>0:
+
+			if not obj.data.splines[0].bezier_points:
+				continue
+#			if len(obj.data.splines[0].bezier_points)>0:
+
+			old_origin = obj.matrix_world @ obj.data.splines[0].bezier_points[0].co
+			delta_origin = obj.data.splines[0].bezier_points[0].co.copy()
+			obj.data.transform(Matrix.Translation(-delta_origin))
+			obj.matrix_world.translation = old_origin
 
 		return {"FINISHED"}
-
 
 
 def get_mass_center(obj):
@@ -120,11 +125,9 @@ def get_mass_center(obj):
 	return Vector((center_x, center_y, minCo.z))
 
 
-
 def get_bound_center(obj):
 	bBox = BoundBox(obj)
 	return Vector((bBox.center.x, bBox.center.y, bBox.min.z))
-
 
 
 def get_touched_center(obj):
@@ -161,7 +164,6 @@ def get_touched_center(obj):
 	return Vector((center_x, center_y, min.z))
 
 
-
 class Object_OT_Pivot_To_Buttom_Center(Operator):
 	bl_idname = "object.pivot_to_buttom_center"
 	bl_label = "Pivot to object base"
@@ -175,14 +177,22 @@ class Object_OT_Pivot_To_Buttom_Center(Operator):
 			("MASS", "Mass Center", "Center Pivot by vertex position avrage"),
 			("TOUCH", "Touch Center", "Center by vertex on the lover part of object")
 		]
-	)
+	) # type: ignore
 
 	@classmethod
-	def poll(self, ctx):
-		return len(ctx.selected_objects) > 0
+	def poll(self, context):
+		return len(context.selected_objects) > 0
 	
-	def execute(self, ctx):
-		for obj in ctx.selected_objects:
+	def execute(self, context):
+		selected_objects = context.selected_objects.copy()
+
+		# Deselect all objects to avoid issues with setting origins
+		for obj in selected_objects:
+			obj.select_set(False)
+
+		# Select the objects again to set their origins
+		for obj in selected_objects:
+			obj.select_set(True)
 
 			if self.center == "MASS":
 				location = get_mass_center(obj)
@@ -193,95 +203,104 @@ class Object_OT_Pivot_To_Buttom_Center(Operator):
 			else:
 				location = get_bound_center(obj)
 
-			set_origen(ctx, obj, location)
+			set_origen(context, obj, location)
 
 		return {"FINISHED"}
-
 
 
 class OBJECT_MT_Set_Pivot_Object_Base(Menu):
 	bl_idname = "OBJECT_MT_Set_Pivot_to_object_base"
 	bl_label = "Pivot to objects Base"
 
-	def draw(self, ctx):
+	def draw(self, _):
 		layout = self.layout
-		layout.operator("object.pivot_to_buttom_center",
-			text="Bound Center"
-		).center="BOUND"
+		layout.operator(
+			"object.pivot_to_buttom_center", text="Bound Center"
+			).center="BOUND"
 
-		layout.operator("object.pivot_to_buttom_center",
-			text="Mass Center"
-		).center="MASS"
+		layout.operator(
+			"object.pivot_to_buttom_center", text="Mass Center"
+			).center="MASS"
 
-		layout.operator("object.pivot_to_buttom_center",
-			text="Touch Center"
-		).center="TOUCH"
-
+		layout.operator(
+			"object.pivot_to_buttom_center", text="Touch Center"
+			).center="TOUCH"
 
 
 class OBJECT_MT_Set_Pivot_Point(Menu):
 	bl_idname = "OBJECT_MT_Set_Pivot_Point"
 	bl_label = "Set Pivot Point"
 
-	def draw(self, ctx):
+	def draw(self, _):
 		layout = self.layout
-		layout.operator("object.origin_set",
-						text="Object to Pivot").type='GEOMETRY_ORIGIN'
+		layout.operator(
+			"object.origin_set",text="Object to Pivot"
+			).type='GEOMETRY_ORIGIN'
 
-		layout.operator("object.origin_set",
-						text="Pivot to Object").type='ORIGIN_GEOMETRY'
+		layout.operator(
+			"object.origin_set", text="Pivot to Object"
+			).type='ORIGIN_GEOMETRY'
 
-		layout.operator("object.origin_set",
-						text="Pivot to 3D Cursor").type='ORIGIN_CURSOR'
+		layout.operator(
+			"object.origin_set", text="Pivot to 3D Cursor"
+			).type='ORIGIN_CURSOR'
 
-		layout.operator("object.origin_set",
-						text="Pivot to Center").type='ORIGIN_CENTER_OF_VOLUME'
+		layout.operator(
+			"object.origin_set", text="Pivot to Center"
+			).type='ORIGIN_CENTER_OF_VOLUME'
 
-		layout.operator("object.origin_set",
-						text="Pivot to Geometry").type='ORIGIN_CENTER_OF_MASS'
+		layout.operator(
+			"object.origin_set", text="Pivot to Geometry"
+			).type='ORIGIN_CENTER_OF_MASS'
 
 		layout.menu("OBJECT_MT_Set_Pivot_to_object_base")
 
-		layout.operator("object.pivot_to_first_point",
-						text="Pivot to First BezierPoint")
+		layout.operator(
+			"object.pivot_to_first_point", text="Pivot to First BezierPoint"
+			)
 
 		layout.separator()
 
-		layout.operator("view3d.snap_cursor_to_selected",
-						text="Cursur to Selected")
+		layout.operator(
+			"view3d.snap_cursor_to_selected", text="Cursur to Selected"
+			)
 
-		layout.operator("view3d.snap_cursor_to_center",
-						text="Cursor to World Origin")
+		layout.operator(
+			"view3d.snap_cursor_to_center", text="Cursor to World Origin"
+			)
 
-		layout.operator("view3d.snap_cursor_to_grid",
-						text="Cursor to Grid")
+		layout.operator(
+			"view3d.snap_cursor_to_grid", text="Cursor to Grid"
+			)
 
-		layout.operator("view3d.snap_cursor_to_active",
-						text="Cursor to Active")
+		layout.operator(
+			"view3d.snap_cursor_to_active", text="Cursor to Active"
+			)
 
 		layout.separator()
 
-		layout.operator("view3d.snap_selected_to_grid",
-						text="Selection to Gride")
+		layout.operator(
+			"view3d.snap_selected_to_grid", text="Selection to Gride"
+			)
 
-		layout.operator("view3d.snap_selected_to_cursor",
-						text="Selection to Cursor (keep offset)"
-						).use_offset=False
+		layout.operator(
+			"view3d.snap_selected_to_cursor",
+			text="Selection to Cursor (keep offset)"
+			).use_offset=False
 
-		layout.operator("view3d.snap_selected_to_cursor",
-						text="Selection to Cursor"
-						).use_offset=True
+		layout.operator(
+			"view3d.snap_selected_to_cursor", text="Selection to Cursor"
+			).use_offset=True
 
-		layout.operator("view3d.snap_selected_to_active",
-						text="Selection to Active")
+		layout.operator(
+			"view3d.snap_selected_to_active", text="Selection to Active"
+			)
 
 
-
-def snap_menu(self, ctx):
+def snap_menu(self, _):
 	layout = self.layout
 	layout.separator()
 	layout.operator("object.pivot_to_first_point")
-
 
 
 classes = {
@@ -293,13 +312,11 @@ classes = {
 }
 
 
-
 def register_pivot_point():
 	for cls in classes:
 		bpy.utils.register_class(cls)
 
 	bpy.types.VIEW3D_MT_snap.append(snap_menu)
-
 
 
 def unregister_pivot_point():
@@ -309,6 +326,6 @@ def unregister_pivot_point():
 		bpy.utils.unregister_class(cls)
 
 
-
 if __name__ == "__main__":
-	register_pivot_point()
+	# register_pivot_point()
+	bpy.utils.register_class(Object_OT_Pivot_To_Buttom_Center)
